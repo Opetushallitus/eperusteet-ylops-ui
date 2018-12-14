@@ -1,5 +1,7 @@
 # eperusteet-ylops-lukio-ui
 
+[![Build Status](https://travis-ci.org/Opetushallitus/eperusteet-ylops-lukio.svg?branch=master)](https://travis-ci.org/Opetushallitus/eperusteet-ylops-lukio)
+
 ## Project setup
 ```
 npm install
