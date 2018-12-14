@@ -1,0 +1,17 @@
+# Use travis in https://github.com/Opetushallitus/eperusteet-ylops to deploy
+# This is only for running tests
+
+language: node_js
+
+node_js:
+  - "lts"
+
+before_script:
+  - npm install
+
+script:
+  - npm run ci
+
+cache:
+  directories:
+    - $HOME/.npm
