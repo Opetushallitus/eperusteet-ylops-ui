@@ -8,6 +8,7 @@ npm install
 ```
 
 ### Compiles and hot-reloads for development
+
 ```
 npm run serve
 ```
@@ -17,9 +18,19 @@ npm run serve
 npm run build
 ```
 
-### Run your tests
+### Testing
 ```
+# Run all tests
 npm run test
+
+# Run unit tests only
+npm run test:unit
+
+# Run e2e tests
+npm run test:e2e
+
+# Edit e2e tests
+npm run dev:e2e
 ```
 
 ### Lints and fixes files
@@ -31,6 +42,3 @@ npm run lint
 ```
 npm run test:unit
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
