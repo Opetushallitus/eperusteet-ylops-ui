@@ -6,12 +6,13 @@ language: node_js
 node_js:
   - "10.14.2"
 
-before_script:
-  - npm install
+install:
+  - npm ci
 
 script:
-  - npm run ci
+  - npm run ci:start
 
 cache:
+  npm: true
   directories:
-    - $HOME/.npm
+    - $HOME/.cache
