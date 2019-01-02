@@ -6,7 +6,7 @@ import {
 describe('tests', () => {
 
   it('should fail on all unmocked requests', async () => {
-    let errormsg = "";
+    let errormsg = '';
     try {
       await Api.get('/helloworld');
     } catch (err) {
