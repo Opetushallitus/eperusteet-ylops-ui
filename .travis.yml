@@ -1,6 +1,9 @@
 sudo: false
 language: node_js
 
+env:
+  - YLOPS_SERVICE_DIR=$PWD/eperusteet-ylops/eperusteet-ylops-service
+
 node_js:
   - "10.15.0"
 
@@ -8,6 +11,8 @@ install:
   - npm ci
 
 script:
+  - git clone https://github.com/Opetushallitus/eperusteet-ylops
+  - npm run gen:api
   - npm run ci:start
 
 cache:
