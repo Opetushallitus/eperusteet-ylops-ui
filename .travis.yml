@@ -18,4 +18,6 @@ script:
 cache:
   npm: true
   directories:
+    - $HOME/.npm
+    - $HOME/.m2
     - $HOME/.cache
