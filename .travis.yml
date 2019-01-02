@@ -1,10 +1,8 @@
-# Use travis in https://github.com/Opetushallitus/eperusteet-ylops to deploy
-# This is only for running tests
-
+sudo: false
 language: node_js
 
 node_js:
-  - "10.14.2"
+  - "10.15.0"
 
 install:
   - npm ci

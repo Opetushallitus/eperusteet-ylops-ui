@@ -1,4 +1,20 @@
 module.exports = {
+  globals: {
+    'ts-jest': {
+      diagnostics: {
+        warnOnly: true,
+      }
+    },
+  },
+  setupFiles: [
+    "./tests/jestsetup.ts"
+  ],
+  collectCoverageFrom: [
+    "src/**/*",
+    "!src/generated/**",
+    "!src/shim*",
+    "!src/api.ts",
+  ],
   moduleFileExtensions: [
     'js',
     'jsx',
