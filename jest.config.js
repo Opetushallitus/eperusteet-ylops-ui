@@ -35,7 +35,8 @@ module.exports = {
     'jest-serializer-vue'
   ],
   testMatch: [
-    '**/*.spec.(js|jsx|ts|tsx)'
+    '**/*.spec.(js|jsx|ts|tsx)',
+    '!**/eperusteet-ylops/**',
   ],
   testURL: 'http://localhost/'
 }
