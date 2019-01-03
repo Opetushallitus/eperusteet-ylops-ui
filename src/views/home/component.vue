@@ -1,4 +1,3 @@
-<!-- <template src="./template.html"></template> -->
 <template>
   <div class="home">
     no moro
