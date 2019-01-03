@@ -8,11 +8,11 @@ node_js:
   - "10.15.0"
 
 install:
+  - git clone https://github.com/Opetushallitus/eperusteet-ylops
+  - cd eperusteet-ylops && mvn dependency:resolve --quiet && cd ..
   - npm ci
 
 script:
-  - git clone https://github.com/Opetushallitus/eperusteet-ylops
-  - cd eperusteet-ylops && mvn dependency:resolve --quiet && cd ..
   - npm run ci:start
 
 cache:
