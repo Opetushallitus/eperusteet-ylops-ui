@@ -1,4 +1,20 @@
 module.exports = {
+  globals: {
+    'ts-jest': {
+      diagnostics: {
+        warnOnly: true,
+      }
+    },
+  },
+  setupFiles: [
+    "./tests/jestsetup.ts"
+  ],
+  collectCoverageFrom: [
+    "src/**/*",
+    "!src/generated/**",
+    "!src/shim*",
+    "!src/api.ts",
+  ],
   moduleFileExtensions: [
     'js',
     'jsx',
@@ -19,7 +35,8 @@ module.exports = {
     'jest-serializer-vue'
   ],
   testMatch: [
-    '**/*.spec.(js|jsx|ts|tsx)'
+    '**/*.spec.(js|jsx|ts|tsx)',
+    '!**/eperusteet-ylops/**',
   ],
   testURL: 'http://localhost/'
 }

@@ -1,26 +1,22 @@
-.DS_Store
-node_modules
-/dist
-tests/e2e/videos/**
-coverage/**
-tests/e2e/screenshots/**
-
-# local env files
-.env.local
+*.njsproj
+*.ntvs*
+*.sln
+*.suo
+*.sw*
 .env.*.local
-
-yarn.lock
-
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor directories and files
+.env.local
 .idea
 .vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw*
+/dist
+coverage
+dist
+generated
+node_modules
+npm-debug.log*
+tests/e2e/screenshots
+tests/e2e/videos
+typings
+wwwroot/*.js
+yarn-debug.log*
+yarn-error.log*
+yarn.lock

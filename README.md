@@ -3,42 +3,53 @@
 [![Build Status](https://travis-ci.org/Opetushallitus/eperusteet-ylops-lukio.svg?branch=master)](https://travis-ci.org/Opetushallitus/eperusteet-ylops-lukio)
 
 ## Project setup
-```
-npm install
+```sh
+$ npm install
 ```
 
 ### Compiles and hot-reloads for development
-
-```
-npm run serve
+```sh
+$ npm run serve
 ```
 
 ### Compiles and minifies for production
-```
-npm run build
+```sh
+$ npm run build
 ```
 
 ### Testing
-```
+```sh
 # Run all tests
-npm run test
+$ npm run test
 
 # Run unit tests only
-npm run test:unit
+$ npm run test:unit
 
 # Run e2e tests
-npm run test:e2e
+$ npm run test:e2e
 
 # Edit e2e tests
-npm run dev:e2e
+$ npm run dev:e2e
 ```
 
 ### Lints and fixes files
-```
-npm run lint
+```sh
+$ npm run lint
 ```
 
 ### Run your unit tests
+```sh
+$ npm run test:unit
+$ npm run test:unit:dev # Pitää testit käynnissä
 ```
-npm run test:unit
+
+### Api SDK generation
+```sh
+# Generointi väliaikaisella apuskriptilla
+$ npm run gen:api
+
+# Generointi ilman
+$ mkdir -p src/generated
+$ cd src/generated
+$ openapi-generator generate -i <specfile> -g typescript-axios
 ```
