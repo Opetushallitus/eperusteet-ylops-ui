@@ -13,7 +13,6 @@ install:
 script:
   - git clone https://github.com/Opetushallitus/eperusteet-ylops
   - cd eperusteet-ylops && mvn dependency:resolve --quiet && cd ..
-  - npm run gen:api
   - npm run ci:start
 
 cache:

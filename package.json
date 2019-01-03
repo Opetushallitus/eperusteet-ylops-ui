@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "ci:start": "npm run lint && npm run build && npm run test:unit && npm run test:e2e",
+    "ci:start": "npm run lint && npm run gen:api && npm run build && npm run test:unit && npm run test:e2e",
     "gen:api": "sh ./scripts/buildapi.sh",
     "dev:e2e": "vue-cli-service test:e2e",
     "test:e2e": "vue-cli-service test:e2e --headless",
