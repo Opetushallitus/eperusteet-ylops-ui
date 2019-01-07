@@ -50,6 +50,7 @@
     "ts-jest": "^23.0.0",
     "typescript": "^3.0.0",
     "vue-cli-plugin-styleguidist": "^0.1.10",
+    "vue-styleguidist": "^2.1.2",
     "vue-template-compiler": "^2.5.17"
   }
 }
