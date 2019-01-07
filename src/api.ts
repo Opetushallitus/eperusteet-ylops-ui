@@ -1,9 +1,17 @@
 import { Configuration } from '@/generated/configuration';
 import axios, { AxiosInstance } from 'axios';
 import {
-  BaseAPI,
+  DokumentitApi,
+  KommentitApi,
+  LiitetiedostotApi,
+  OhjeetApi,
+  OpetussuunnitelmanSisaltoApi,
   OpetussuunnitelmatApi,
+  OpetussuunnitelmatJulkisetApi,
+  TermistoApi,
+  UlkopuolisetApi,
 } from '@/generated/api';
+
 
 type FactoryFn<T> = (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;
 
@@ -21,7 +29,15 @@ function initApi<T>(t: BaseAPIConstructor<T>): T {
 
 
 export const Api = ax;
+export const Dokumentit = initApi(DokumentitApi);
+export const Kommentit = initApi(KommentitApi);
+export const Liitetiedostot = initApi(LiitetiedostotApi);
+export const Ohjeet = initApi(OhjeetApi);
+export const OpetussuunnitelmanSisalto = initApi(OpetussuunnitelmanSisaltoApi);
 export const Opetussuunnitelmat = initApi(OpetussuunnitelmatApi);
+export const OpetussuunnitelmatJulkiset = initApi(OpetussuunnitelmatJulkisetApi);
+export const Termisto = initApi(TermistoApi);
+export const Ulkopuoliset = initApi(UlkopuolisetApi);
 
 
 // Types (just use vim to edit this)
@@ -30,7 +46,6 @@ export {
   AihekokonaisuusDto,
   DokumenttiDto,
   JarjestysDto,
-  JsonNode,
   KayttajanTietoDto,
   KeskeinenSisaltoalueDto,
   KommenttiDto,

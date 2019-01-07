@@ -1,9 +1,9 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import Collapse from './component.vue';
+import EpCollapse from '../EpCollapse.vue';
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
-describe('Collapse component', () => {
+describe('EpCollapse component', () => {
   const options = {
     slots: {
       header: '<h3>Hello world</h3>',
@@ -12,13 +12,13 @@ describe('Collapse component', () => {
   };
 
   it('Renders header and content', () => {
-    const wrapper = mount(Collapse, options);
+    const wrapper = mount(EpCollapse, options);
     expect(wrapper.html()).toContain(options.slots.header);
     expect(wrapper.html()).toContain(options.slots.content);
   });
 
-  it('Renders header and content', () => {
-    const wrapper = mount(Collapse, options);
+  it('Renders header only when collapsed', () => {
+    const wrapper = mount(EpCollapse, options);
     wrapper.find('button.btn').trigger('click');
     expect(wrapper.html()).toContain(options.slots.header);
     expect(wrapper.html()).not.toContain(options.slots.content);

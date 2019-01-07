@@ -14,6 +14,6 @@ curdir=$(pwd)
 
 specfile="$YLOPS_SERVICE_DIR/target/openapi/ylops.spec.json"
 cd ${YLOPS_SERVICE_DIR} \
-  && mvn compile \
+  && mvn clean compile \
   && cd $curdir \
   && openapi-generator generate -c ../../generator.config.json -i "${specfile}" -g typescript-axios
