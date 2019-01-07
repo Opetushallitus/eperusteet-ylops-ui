@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Collapse from '@/components/collapse/component.vue';
+import Collapse from '@/components/collapse/EpCollapse.vue';
 
 @Component({
   components: {
