@@ -13,6 +13,7 @@
 coverage
 dist
 generated
+styleguide
 node_modules
 npm-debug.log*
 tests/e2e/screenshots
