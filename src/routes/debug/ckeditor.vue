@@ -1,14 +1,20 @@
 <template>
 <div>
   <h1>Debug</h1>
-  Editori 1:<br/>
+
+  <h3>Editori 1:</h3>
   <ckeditor id="editor1" v-model="editor1Data" />
   <br/>
-  Editori 2:<br/>
+  <span v-html="editor1Data"/>
+  <br/>
+
+  <br/>
+
+  <h3>Editori 2:</h3>
   <ckeditor id="editor2" v-model="editor2Data"/>
   <br/>
-  Editori 3 (not editable):<br/>
-  <ckeditor id="editor3" :editable="false" v-model="editor3Data"/>
+  <span v-html="editor2Data"/>
+  <br/>
 </div>
 </template>
 

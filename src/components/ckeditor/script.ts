@@ -24,48 +24,67 @@ const defaultId = new Date().getTime();
 export default class CKEditor extends Vue {
 
     @Prop({ default: 'ckeditor-' + defaultId }) private id!: string;
-    @Prop({ default: () => ({}) }) private config!: object;
-    @Prop({ default: true }) private editable!: boolean;
     @Prop() private value!: string;
 
+    //
+    private instance: any = null;
+
     public mounted() {
-        // Component not editable? Don't initialize editor
-        if(!this.editable) {
-            return;
-        }
-
         // Setup ckeditor
-        ClassicEditor.create ( document.getElementById(this.id), {
-            plugins: [
-                Alignment,
-                Bold,
-                Essentials,
-                Image,
-                ImageStyle,
-                ImageToolbar,
-                Italic,
-                LinkPlugin,
-                ListPlugin,
-                ParagraphPlugin,
-                Table,
-                TableToolbar,
-            ],
+        ClassicEditor
+            .create ( document.getElementById(this.id), {
+                plugins: [
+                    Alignment,
+                    Bold,
+                    Essentials,
+                    Image,
+                    ImageStyle,
+                    ImageToolbar,
+                    Italic,
+                    LinkPlugin,
+                    ListPlugin,
+                    ParagraphPlugin,
+                    Table,
+                    TableToolbar,
+                ],
 
-            toolbar: [
-                'alignment', 'bold', 'italic',
-                '|',
-                'numberedList', 'bulletedList',
-                '|',
-                'link', 'insertTable',
-                '|',
-                'undo', 'redo',
-            ],
+                toolbar: [
+                    'alignment', 'bold', 'italic',
+                    '|',
+                    'numberedList', 'bulletedList',
+                    '|',
+                    'link', 'insertTable',
+                    '|',
+                    'undo', 'redo',
+                ],
 
-            image: {
-                toolbar: [ 'imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:side' ],
-            },
+                image: {
+                    toolbar: [ 'imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:side' ],
+                },
+            } )
 
-        } );
+            .then( (editor: any) => {
+                this.instance = editor;
+
+                editor.setData(this.value);
+                this.setEditorEvents();
+            });
+    }
+
+    public beforeDestroy() {
+        if ( this.instance ) {
+            this.instance.destroy();
+            this.instance = null;
+        }
+    }
+
+    private setEditorEvents() {
+        const editor = this.instance;
+
+        editor.model.document.on( 'change:data' , (event: any) => {
+            const data = editor.getData();
+            this.$emit( 'input' , data, event, editor  );
+        });
     }
 
 }
