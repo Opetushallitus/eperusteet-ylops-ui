@@ -1,4 +1,4 @@
-import { Store, Action, State } from './store';
+import { Store, Mutation, Action, State } from './store';
 import {
   KayttajanTietoDto,
 } from '@/api';
@@ -10,6 +10,12 @@ class KayttajaStore {
   public tiedot: KayttajanTietoDto = {
     kayttajanimi: 'foo',
   };
+
+  @Mutation()
+  public aseta(nimi: string, sukunimi: string) {
+    this.tiedot.kayttajanimi = nimi;
+    this.tiedot.sukunimi = sukunimi;
+  }
 
   @Action()
   public async fetchTiedot() {

@@ -2,7 +2,12 @@
   <div class="about">
     <h1>This is an about page</h1>
     <pre>{{ tiedot }}</pre>
-    <button @click="setKayttajanimi">Click</button>
+    <button @click="fetchKayttajanimi">Click</button>
+
+    <div>
+      <input type="text" v-model="name">
+      <button @click="setKayttajanimi(name)">Aseta</button>
+    </div>
   </div>
 </template>
 
@@ -13,12 +18,15 @@ import { Kayttajat } from '@/stores/kayttaja';
 
 @Component
 export default class Home extends Vue {
+  private name: string = '';
+
   get tiedot() {
     return Kayttajat.tiedot;
   }
 
-  private setKayttajanimi() {
+  private fetchKayttajanimi() {
     Kayttajat.fetchTiedot();
   }
+
 }
 </script>
