@@ -30,7 +30,6 @@ export {
   AihekokonaisuusDto,
   DokumenttiDto,
   JarjestysDto,
-  JsonNode,
   KayttajanTietoDto,
   KeskeinenSisaltoalueDto,
   KommenttiDto,

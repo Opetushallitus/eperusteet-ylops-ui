@@ -42,7 +42,9 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-clipboard": "^10.0.4",
     "@ckeditor/ckeditor5-dev-utils": "^11.0.1",
+    "@ckeditor/ckeditor5-editor-classic": "^11.0.2",
     "@fortawesome/fontawesome-free": "^5.6.3",
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
     "@fortawesome/free-brands-svg-icons": "^5.6.3",
@@ -60,8 +62,9 @@
     "@vue/test-utils": "^1.0.0-beta.28",
     "axios-mock-adapter": "^1.16.0",
     "babel-core": "7.0.0-bridge.0",
-    "eslint-plugin-cypress": "^2.2.0",
+    "babel-jest": "^23.6.0",
     "lodash-es": "^4.17.11",
+    "mutationobserver-shim": "^0.3.2",
     "node-sass": "^4.9.0",
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
