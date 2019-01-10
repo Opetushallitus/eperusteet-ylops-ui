@@ -1,10 +1,16 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/component.vue';
-import Debug from '@/routes/debug/component.vue';
 import Route404 from '@/routes/debug/component.vue';
 import VirheRoute from '@/routes/virhe/component.vue';
+import Debug from '@/routes/debug/component.vue';
+import About from '@/routes/about/component.vue';
+
+import CollapseDebug from '@/routes/debug/collapse.vue';
+import CKEditorDebug from '@/routes/debug/ckeditor.vue';
+
 import { Virheet } from '@/stores/virheet';
 import { SovellusVirhe } from '@/tyypit';
 
@@ -30,6 +36,15 @@ const router = new Router({
       path: 'debug',
       name: 'debug',
       component: Debug,
+      children: [{
+        path: 'collapse',
+        name: 'collapseDebug',
+        component: CollapseDebug,
+      }, {
+        path: 'ckeditor',
+        name: 'ckeditorDebug',
+        component: CKEditorDebug,
+      }],
     }],
   }, {
     path: '*',

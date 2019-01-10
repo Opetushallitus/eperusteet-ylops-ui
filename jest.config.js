@@ -26,8 +26,12 @@ module.exports = {
   transform: {
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.jsx?$': 'babel-jest'
   },
+  "transformIgnorePatterns": [
+    "/node_modules/(?!(@ckeditor|lodash\-es)/)",
+  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
@@ -35,7 +39,7 @@ module.exports = {
     'jest-serializer-vue'
   ],
   testMatch: [
-    '**/*.spec.(js|jsx|ts|tsx)',
+    '**/*.spec.(ts|tsx)',
     '!**/eperusteet-ylops/**',
   ],
   testURL: 'http://localhost/'
