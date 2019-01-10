@@ -1,16 +1,15 @@
-<template>
-<div>
-  <h1>Debug</h1>
-  <ep-collapse>
-    <template slot="header">Headeri</template>
-    <template slot="content">Contentti</template>
-  </ep-collapse>
-</div>
+<template lang="pug">
+div
+  h1 Debug
+  pre {{ debug }}
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import EpCollapse from '@/components/EpCollapse.vue';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import { Kayttajat } from '@/stores/kayttaja';
+import { Kielet } from '@/stores/kieli';
+
 
 @Component({
   components: {
@@ -18,5 +17,10 @@ import EpCollapse from '@/components/EpCollapse.vue';
   },
 })
 export default class Debug extends Vue {
+  get debug() {
+    return {
+      kayttaja: Kayttajat.tiedot,
+    };
+  }
 }
 </script>

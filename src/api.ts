@@ -3,6 +3,7 @@ import axios, { AxiosInstance } from 'axios';
 import {
   DokumentitApi,
   KommentitApi,
+  KayttajatApi,
   LiitetiedostotApi,
   OhjeetApi,
   OpetussuunnitelmanSisaltoApi,
@@ -30,6 +31,7 @@ function initApi<T>(t: BaseAPIConstructor<T>): T {
 
 export const Api = ax;
 export const Dokumentit = initApi(DokumentitApi);
+export const Kayttajat = initApi(KayttajatApi);
 export const Kommentit = initApi(KommentitApi);
 export const Liitetiedostot = initApi(LiitetiedostotApi);
 export const Ohjeet = initApi(OhjeetApi);
@@ -38,81 +40,3 @@ export const Opetussuunnitelmat = initApi(OpetussuunnitelmatApi);
 export const OpetussuunnitelmatJulkiset = initApi(OpetussuunnitelmatJulkisetApi);
 export const Termisto = initApi(TermistoApi);
 export const Ulkopuoliset = initApi(UlkopuolisetApi);
-
-
-// Types (just use vim to edit this)
-export {
-  AihekokonaisuudetDto,
-  AihekokonaisuusDto,
-  DokumenttiDto,
-  JarjestysDto,
-  KayttajanTietoDto,
-  KeskeinenSisaltoalueDto,
-  KommenttiDto,
-  KoodistoDto,
-  KoodistoKoodiDto,
-  KoodistoMetadataDto,
-  LaajaalainenosaaminenDto,
-  LiiteDto,
-  LokalisoituTekstiDto,
-  Matala,
-  OhjeDto,
-  OpetuksenKeskeinensisaltoalueDto,
-  OpetuksenKohdealueDto,
-  OpetuksenTavoiteDto,
-  OpetuksenYleisetTavoitteetDto,
-  OpetussuunnitelmaBaseDto,
-  OpetussuunnitelmaDto,
-  OpetussuunnitelmaInfoDto,
-  OpetussuunnitelmaJulkinenDto,
-  OpetussuunnitelmaKevytDto,
-  OpetussuunnitelmaLaajaDto,
-  OpetussuunnitelmaLuontiDto,
-  OpetussuunnitelmaNimiDto,
-  OpetussuunnitelmaStatistiikkaDto,
-  OppiaineDto,
-  OppiaineLaajaDto,
-  OppiaineSuppeaDto,
-  OppiaineenVuosiluokkaDto,
-  OppiaineenVuosiluokkaKevytDto,
-  OppiaineenVuosiluokkakokonaisuusDto,
-  OppiaineenVuosiluokkakokonaisuusSuppeaDto,
-  OpsOppiaineDto,
-  OpsOppiaineKevytDto,
-  OpsOppiaineLaajaDto,
-  OpsVuosiluokkakokonaisuusDto,
-  OpsVuosiluokkakokonaisuusKevytDto,
-  OrganisaatioDto,
-  OrganisaatioLaajaDto,
-  PerusopetuksenPerusteenSisaltoDto,
-  PerusteDto,
-  PerusteInfoDto,
-  PerusteKeskeinensisaltoalueDto,
-  PerusteKoulutusDto,
-  PerusteLaajaalainenosaaminenDto,
-  PerusteOpetuksenkohdealueDto,
-  PerusteOpetuksentavoiteDto,
-  PerusteOppiaineDto,
-  PerusteOppiaineenVuosiluokkakokonaisuusDto,
-  PerusteTavoitteenArviointiDto,
-  PerusteTekstiKappaleDto,
-  PerusteTekstiKappaleViiteDto,
-  PerusteTekstiOsaDto,
-  PerusteVersionDto,
-  PerusteVuosiluokkakokonaisuudenLaajaalainenosaaminenDto,
-  PerusteVuosiluokkakokonaisuusDto,
-  PoistettuTekstiKappaleDto,
-  Puu,
-  Reference,
-  RevisionDto,
-  TavoitteenArviointiDto,
-  TekstiKappaleDto,
-  TekstiKappaleKevytDto,
-  TekstiKappaleViiteKevytDto,
-  TekstiosaDto,
-  TermiDto,
-  Validointi,
-  Virhe,
-  VuosiluokkakokonaisuusDto,
-  VuosiluokkakokonaisuusSuppeaDto,
-} from '@/generated/api';

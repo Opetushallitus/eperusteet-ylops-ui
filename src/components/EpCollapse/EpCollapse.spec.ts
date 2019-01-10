@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import EpCollapse from '../EpCollapse.vue';
+import EpCollapse from './EpCollapse.vue';
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
