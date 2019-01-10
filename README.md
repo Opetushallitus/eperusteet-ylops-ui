@@ -53,3 +53,6 @@ $ mkdir -p src/generated
 $ cd src/generated
 $ openapi-generator generate -i <specfile> -g typescript-axios
 ```
+
+### Recommended resources
+- [Vue style guide](https://vuejs.org/v2/style-guide)
