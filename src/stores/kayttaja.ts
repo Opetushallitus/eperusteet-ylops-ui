@@ -1,33 +1,19 @@
-import { Store, Mutation, Action, State } from './store';
-import {
-  KayttajanTietoDto,
-} from '@/api';
+import Vue from 'vue';
+import { Store, Getter, Mutation, Action, State } from './store';
+import { KayttajanTietoDto } from '@/tyypit';
+import { Kayttajat as KayttajatApi } from '@/api';
 
 
 @Store
 class KayttajaStore {
+
   @State()
-  public tiedot: KayttajanTietoDto = {
-    kayttajanimi: 'foo',
-  };
+  public tiedot: KayttajanTietoDto = { };
 
-  @Mutation()
-  public aseta(nimi: string, sukunimi: string) {
-    this.tiedot.kayttajanimi = nimi;
-    this.tiedot.sukunimi = sukunimi;
+  public async init() {
+    this.tiedot = (await KayttajatApi.get()).data;
   }
 
-  @Action()
-  public async fetchTiedot() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        Kayttajat.tiedot = {
-          kayttajanimi: 'bar',
-        };
-        resolve();
-      }, 1000);
-    });
-  }
 }
 
 export const Kayttajat = new KayttajaStore();

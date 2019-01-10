@@ -21,6 +21,7 @@ export function Store<T extends StoreConstructor>(constructor: T) {
         const ClassName = this.constructor.prototype.__proto__.constructor.name;
         const config = (this as any)._storeconfig;
         const vuexConfig = {
+          namespaced: true,
           strict: process.env.NODE_ENV !== 'production',
           state: config.state,
           mutations: {
