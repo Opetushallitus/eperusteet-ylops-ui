@@ -6,7 +6,7 @@ div
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import EpCollapse from '@/components/EpCollapse.vue';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import { Kayttajat } from '@/stores/kayttaja';
 import { Kielet } from '@/stores/kieli';
 
