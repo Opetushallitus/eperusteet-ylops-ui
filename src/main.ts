@@ -2,6 +2,9 @@ import Vue from 'vue';
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
+import 'bootstrap/dist/css/bootstrap.min';
+import 'bootstrap-vue/dist/bootstrap-vue';
+
 import App from './App.vue';
 import router from './router';
 import { Kielet, i18n } from './stores/kieli';

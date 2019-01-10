@@ -1,8 +1,5 @@
 import Vue from 'vue';
 
-import 'bootstrap/scss/bootstrap.scss';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
-
 import dropdown from 'bootstrap-vue/es/components/dropdown/dropdown';
 import dropdownItem from 'bootstrap-vue/es/components/dropdown/dropdown-item';
 import dropdownItemButton from 'bootstrap-vue/es/components/dropdown/dropdown-item-button';
