@@ -2,8 +2,8 @@ import Vue from 'vue';
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
-import 'bootstrap/dist/css/bootstrap.min';
-import 'bootstrap-vue/dist/bootstrap-vue';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 import App from './App.vue';
 import router from './router';
