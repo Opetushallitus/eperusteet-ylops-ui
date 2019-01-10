@@ -21,19 +21,27 @@ export const i18n = new VueI18n({
 
 @Store
 class KieliStore {
-  @State() public sisaltoKieli: Kieli = Kieli.fi;
+  @State() private sisaltoKieli: Kieli = Kieli.fi;
   @State() private uiKieli: Kieli = Kieli.fi;
 
   @Getter()
-  public getUiKieli() {
-    return this.uiKieli;
-  }
+  public getUiKieli() { return this.uiKieli; }
+
+  @Getter()
+  public getSisaltoKieli() { return this.sisaltoKieli; }
 
   @Mutation()
   public setUiKieli(kieli: Kieli) {
     if (this.uiKieli !== kieli && _.includes(UiKielet, kieli)) {
       this.uiKieli = kieli;
       i18n.locale = kieli;
+    }
+  }
+
+  @Mutation()
+  public setSisaltoKieli(kieli: Kieli) {
+    if (this.sisaltoKieli !== kieli && _.includes(UiKielet, kieli)) {
+      this.sisaltoKieli = kieli;
     }
   }
 

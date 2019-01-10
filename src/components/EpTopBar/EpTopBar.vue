@@ -2,12 +2,23 @@
 div.topbar
   b-navbar(type="dark" toggleable="md" variant="info")
     b-navbar-nav.ml-auto
+      // Sisällön kieli
+      b-nav-item-dropdown.btn(id="lang-selector" size="sm" right="")
+        template(slot="button-content")
+          span {{ $t("kieli-sisalto") }} ({{ sisaltoKieli }})
+        b-dropdown-item(
+          @click="valitseSisaltoKieli(kieli)"
+          v-for="kieli in sovelluksenKielet"
+          :disabled="kieli === sisaltoKieli")
+          span {{ kieli }}
+
+      // Käyttöliittymän kieli
       b-nav-item-dropdown.btn(id="lang-selector" size="sm" right="")
         template(slot="button-content")
           span {{ $t("kieli") }} ({{ uiKieli }})
         b-dropdown-item(
-          @click="valitseKieli(kieli)"
-          v-for="kieli in uiKielet"
+          @click="valitseUiKieli(kieli)"
+          v-for="kieli in sovelluksenKielet"
           :disabled="kieli === uiKieli")
           span {{ kieli }}
 </template>
@@ -20,12 +31,17 @@ import { Kielet, UiKielet } from '@/stores/kieli';
 @Component
 export default class Root extends Vue {
   get uiKieli() { return Kielet.getUiKieli(); }
+  get sisaltoKieli() { return Kielet.getSisaltoKieli(); }
+  get sovelluksenKielet() { return UiKielet; }
 
-  get uiKielet() { return UiKielet; }
-
-  private valitseKieli(kieli: Kieli) {
+  private valitseUiKieli(kieli: Kieli) {
     Kielet.setUiKieli(kieli);
   }
+
+  private valitseSisaltoKieli(kieli: Kieli) {
+    Kielet.setSisaltoKieli(kieli);
+  }
+
 }
 </script>
 
