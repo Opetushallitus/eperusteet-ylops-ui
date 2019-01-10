@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import CKEditor from '@/components/ckeditor/component.vue';
+import CKEditor from '@/components/CKEditor/CKEditor.vue';
 
 @Component({
   components: {
