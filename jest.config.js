@@ -26,8 +26,8 @@ module.exports = {
   transform: {
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.(tsx?|jsx?)$': 'ts-jest',
-    // '^.+\\.jsx?$': 'babel-jest'
+    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.jsx?$': 'babel-jest',
   },
   "transformIgnorePatterns": [
     "/node_modules/(?!(@ckeditor|lodash\-es|bootstrap-vue)/)",

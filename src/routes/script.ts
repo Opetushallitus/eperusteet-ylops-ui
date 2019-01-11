@@ -1,9 +1,11 @@
 import { Component, Vue } from 'vue-property-decorator';
-import EpTopBar from '@/components/EpTopBar/EpTopBar.vue';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import { Kieli } from '@/tyypit';
+import { UiKielet } from '@/stores/kieli';
 
 @Component({
   components: {
-    EpTopBar,
+    EpNavigation,
   },
 })
 export default class Root extends Vue {

@@ -11,16 +11,11 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": "../..",
     "types": [
       "webpack-env",
-      "jest"
+      "cypress"
     ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
     "lib": [
       "esnext",
       "dom",
@@ -29,11 +24,7 @@
     ]
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/integration/**/*.ts",
-    "tests/integration/**/*.tsx"
+    "specs/**/*.ts"
   ],
   "exclude": [
     "node_modules"

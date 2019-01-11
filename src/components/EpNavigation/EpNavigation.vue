@@ -3,24 +3,24 @@ div.topbar
   b-navbar(type="dark" toggleable="md" variant="info")
     b-navbar-nav.ml-auto
       // Sisällön kieli
-      b-nav-item-dropdown.btn(id="lang-selector" size="sm" right="")
+      b-nav-item-dropdown.btn(id="content-lang-selector" size="sm" right="")
         template(slot="button-content")
           span {{ $t("kieli-sisalto") }} ({{ sisaltoKieli }})
         b-dropdown-item(
           @click="valitseSisaltoKieli(kieli)"
           v-for="kieli in sovelluksenKielet"
-          :disabled="kieli === sisaltoKieli")
-          span {{ kieli }}
+          :key="kieli"
+          :disabled="kieli === sisaltoKieli") {{ kieli }}
 
       // Käyttöliittymän kieli
-      b-nav-item-dropdown.btn(id="lang-selector" size="sm" right="")
+      b-nav-item-dropdown.btn(id="ui-lang-selector" size="sm" right="")
         template(slot="button-content")
           span {{ $t("kieli") }} ({{ uiKieli }})
         b-dropdown-item(
           @click="valitseUiKieli(kieli)"
           v-for="kieli in sovelluksenKielet"
-          :disabled="kieli === uiKieli")
-          span {{ kieli }}
+          :key="kieli"
+          :disabled="kieli === uiKieli") {{ kieli }}
 </template>
 
 <script lang="ts">
@@ -35,7 +35,15 @@ export default class Root extends Vue {
   get sovelluksenKielet() { return UiKielet; }
 
   private valitseUiKieli(kieli: Kieli) {
-    Kielet.setUiKieli(kieli);
+    const router = this.$router;
+    const current = router.currentRoute;
+    router.push({
+      ...current,
+      params: {
+        ...current.params,
+        lang: kieli || this.$i18n.fallbackLocale,
+      },
+    });
   }
 
   private valitseSisaltoKieli(kieli: Kieli) {
