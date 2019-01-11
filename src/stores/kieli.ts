@@ -7,11 +7,11 @@ import { Store, Getter, Mutation, Action, State } from './store';
 import { Kieli } from '@/tyypit';
 import { Ulkopuoliset } from '@/api';
 
-
 export const UiKielet = Object.freeze(_.values(Kieli as object));
 
 export const i18n = new VueI18n({
-  locale: 'fi',
+  fallbackLocale: Kieli.fi,
+  locale: Kieli.fi,
   messages: {
     fi: require('@/translations/locale-fi.json'),
     sv: require('@/translations/locale-sv.json'),
@@ -22,20 +22,15 @@ export const i18n = new VueI18n({
 @Store
 class KieliStore {
   @State() private sisaltoKieli: Kieli = Kieli.fi;
-  @State() private uiKieli: Kieli = Kieli.fi;
 
   @Getter()
-  public getUiKieli() { return this.uiKieli; }
+  public getUiKieli() {
+    return i18n.locale;
+  }
 
   @Getter()
-  public getSisaltoKieli() { return this.sisaltoKieli; }
-
-  @Mutation()
-  public setUiKieli(kieli: Kieli) {
-    if (this.uiKieli !== kieli && _.includes(UiKielet, kieli)) {
-      this.uiKieli = kieli;
-      i18n.locale = kieli;
-    }
+  public getSisaltoKieli() {
+    return this.sisaltoKieli;
   }
 
   @Mutation()
