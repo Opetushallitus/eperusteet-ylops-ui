@@ -9,19 +9,22 @@ module.exports = {
   setupFiles: [
     "./tests/jestsetup.ts"
   ],
+  coverageReporters: [
+    "text",
+    "json",
+    "lcov",
+  ],
   collectCoverageFrom: [
-    "src/**/*",
-    "!src/generated/**",
-    "!src/shim*",
-    "!src/api.ts",
+    "<rootDir>/src/**/*.ts",
+    "!<rootDir>/src/generated/**/*.ts",
   ],
   moduleFileExtensions: [
+    'ts',
+    'tsx',
+    'vue',
     'js',
     'jsx',
     'json',
-    'vue',
-    'ts',
-    'tsx'
   ],
   transform: {
     '^.+\\.vue$': 'vue-jest',
@@ -39,8 +42,8 @@ module.exports = {
     'jest-serializer-vue'
   ],
   testMatch: [
-    '**/*.spec.(ts|tsx)',
-    '!**/eperusteet-ylops/**',
+    '<rootDir>/src/**/*.spec.(ts|tsx)',
+    '<rootDir>/tests/integration/**/*.spec.(ts|tsx)',
   ],
   testURL: 'http://localhost/'
 }

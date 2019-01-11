@@ -20,3 +20,4 @@ export interface SovellusVirhe {
 // FIXME: vue-loader issue 1281
 import * as GApi from '@/generated/api';
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
+export type OpetussuunnitelmaInfoDto = GApi.OpetussuunnitelmaInfoDto;

@@ -7,6 +7,7 @@ import Home from '@/routes/home/component.vue';
 import NotFound from '@/routes/NotFound.vue';
 import VirheRoute from '@/routes/virhe/component.vue';
 import Debug from '@/routes/debug/component.vue';
+import AdminRoute from '@/routes/admin/AdminRoute.vue';
 
 import CollapseDebug from '@/routes/debug/collapse.vue';
 import CKEditorDebug from '@/routes/debug/ckeditor.vue';
@@ -23,12 +24,15 @@ const router = new Router({
     redirect: (to) => '/fi',
   }, {
     path: '/:lang',
-    name: 'root',
     component: Root,
     children: [{
-      path: 'home',
-      name: 'home',
+      path: '',
+      name: 'root',
       component: Home,
+    }, {
+      path: 'admin',
+      name: 'admin',
+      component: AdminRoute,
     }, {
       path: 'virhe',
       name: 'virhe',
@@ -78,15 +82,15 @@ router.beforeEach((to, from, next) => {
     && to.params.lang !== from.params.lang
     && _.includes(UiKielet, to.params.lang)) {
     i18n.locale = to.params.lang;
-    next();
   }
-  else {
-    router.push({
-      ...to,
-      params: {
-        ...to.params,
-        lang: i18n.fallbackLocale || 'fi',
-      },
-    });
-  }
+  next();
+  // else {
+  //   router.push({
+  //     ...to,
+  //     params: {
+  //       ...to.params,
+  //       lang: i18n.fallbackLocale || 'fi',
+  //     },
+  //   });
+  // }
 });
