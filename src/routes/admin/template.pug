@@ -1,0 +1,18 @@
+div
+  h2 {{ $t('hallinta') }}
+  table.table
+    thead
+      tr
+        th {{ $t('nimi') }}
+        th {{ $t('koulutustyyppi') }}
+        th {{ $t('tila') }}
+        th {{ $t('toiminto') }}
+    tbody
+      tr(
+        v-for="ops in adminlist"
+        :key="id")
+        td
+          pre {{ ops.nimi }}
+        td {{ $t(ops.koulutustyyppi) }}
+        td {{ $t(ops.tila) }}
+        td

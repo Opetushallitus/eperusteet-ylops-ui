@@ -5,5 +5,7 @@ import * as solid from '@fortawesome/free-solid-svg-icons';
 
 library.add(solid.faChevronDown);
 library.add(solid.faChevronRight);
+library.add(solid.faCog);
+library.add(solid.faHome);
 
 Vue.component('fas', FontAwesomeIcon);

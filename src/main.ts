@@ -16,12 +16,13 @@ import * as _ from 'lodash';
 Vue.config.productionTip = false;
 
 function errorCaptured(err: Error, vm: Vue, info: string) {
-  Virheet.lisaaVirhe({
-    path: vm.$route.path,
-    state: _.cloneDeep(vm.$data),
-    err: err.message,
-    info,
-  });
+  console.error(err.message);
+  // Virheet.lisaaVirhe({
+  //   path: vm.$route.path,
+  //   state: _.cloneDeep(vm.$data),
+  //   err: err.message,
+  //   info,
+  // });
 }
 
 async function main() {

@@ -13,7 +13,11 @@ install:
   - npm ci
 
 script:
-  - npm run ci:start
+  - npm run gen:api
+  - rm -rf eperusteet-ylops
+  - npm run lint
+  - npm run build
+  - npm run test
 
 cache:
   npm: true

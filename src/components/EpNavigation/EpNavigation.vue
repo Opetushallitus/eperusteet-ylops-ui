@@ -1,9 +1,18 @@
 <template lang="pug">
 div.topbar
-  b-navbar(type="dark" toggleable="md" variant="info")
+  b-navbar(
+    type="dark"
+    variant="dark"
+    toggleable="md"
+    :sticky="true")
+
+    b-navbar-nav
+      b-nav-item(id="nav-admin" :to="{ name: 'root' }")
+        fas.fa-fw(icon="home")
+
     b-navbar-nav.ml-auto
       // Sisällön kieli
-      b-nav-item-dropdown.btn(id="content-lang-selector" size="sm" right="")
+      b-nav-item-dropdown(id="content-lang-selector")
         template(slot="button-content")
           span {{ $t("kieli-sisalto") }} ({{ sisaltoKieli }})
         b-dropdown-item(
@@ -13,7 +22,7 @@ div.topbar
           :disabled="kieli === sisaltoKieli") {{ kieli }}
 
       // Käyttöliittymän kieli
-      b-nav-item-dropdown.btn(id="ui-lang-selector" size="sm" right="")
+      b-nav-item-dropdown(id="ui-lang-selector")
         template(slot="button-content")
           span {{ $t("kieli") }} ({{ uiKieli }})
         b-dropdown-item(
@@ -21,6 +30,10 @@ div.topbar
           v-for="kieli in sovelluksenKielet"
           :key="kieli"
           :disabled="kieli === uiKieli") {{ kieli }}
+
+      // Admin
+      b-nav-item(id="nav-admin" :to="{ name: 'admin' }")
+        fas.fa-fw(icon="cog")
 </template>
 
 <script lang="ts">
