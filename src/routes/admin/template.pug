@@ -10,7 +10,7 @@ div
     tbody
       tr(
         v-for="ops in adminlist"
-        :key="id")
+        :key="ops.id")
         td
           pre {{ ops.nimi }}
         td {{ $t(ops.koulutustyyppi) }}

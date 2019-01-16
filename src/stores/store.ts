@@ -13,13 +13,15 @@ function vuexCase(val: string) {
 }
 
 export function Store<T extends StoreConstructor>(constructor: T) {
-    return class extends constructor {
-      public store: any;
+  return class StoreBase extends constructor {
+    public static store: any;
 
-      constructor(...args: any[]) {
-        super();
-        const ClassName = this.constructor.prototype.__proto__.constructor.name;
-        const config = (this as any)._storeconfig;
+    constructor(...args: any[]) {
+      super();
+
+      const ClassName = this.constructor.prototype.__proto__.constructor.name;
+      const config = (this as any)._storeconfig;
+      if (!StoreBase.store) {
         const vuexConfig = {
           namespaced: true,
           strict: process.env.NODE_ENV !== 'production',
@@ -28,7 +30,7 @@ export function Store<T extends StoreConstructor>(constructor: T) {
             ...config.stateSetters,
             ..._.mapValues(config.mutations, ({ value }) =>
               (state: any, payload: any) =>
-                value.apply(state, payload)),
+              value.apply(state, payload)),
           },
           getters: {
             ..._.mapValues(config.getters, (fn) =>
@@ -36,48 +38,45 @@ export function Store<T extends StoreConstructor>(constructor: T) {
           },
         };
 
-        this.store = new Vuex.Store(_.cloneDeep(vuexConfig));
-        // console.log(this.store._mutations);
-        // console.log(_.mapValues(config.mutations, 'value'));
-        // console.log(this.store._mutations);
-
-        // Override states
-        _.forEach(config.state, (v, k) => {
-          const mutationName = vuexCase(ClassName) + '_SET_' + vuexCase(k);
-
-          Object.defineProperty(this, k, {
-            enumerable: true,
-            configurable: false,
-            // Only for initial configuration
-            get() {
-              return this.store.state[k];
-            },
-            set(newValue) {
-              this.store.commit(mutationName, newValue);
-            },
-          });
-        });
-
-        // Override getters
-        _.forEach(config.getters, (fn, k) => {
-          Object.defineProperty(this, k, {
-            enumerable: true,
-            value: () => this.store.getters[k],
-          });
-        });
-
-        // Override mutations
-        _.forEach(config.mutations, (v, k) => {
-          Object.defineProperty(this, v.key, {
-            enumerable: false,
-            value: (...payload: any[]) => {
-              this.store.commit(k, payload);
-            },
-          });
-        });
-
+        StoreBase.store = new Vuex.Store(_.cloneDeep(vuexConfig));
       }
-    };
+
+      // Override states
+      _.forEach(config.state, (v, k) => {
+        const mutationName = vuexCase(ClassName) + '_SET_' + vuexCase(k);
+
+        Object.defineProperty(this, k, {
+          enumerable: true,
+          configurable: false,
+          // Only for initial configuration
+          get() {
+            return StoreBase.store.state[k];
+          },
+          set(newValue) {
+            StoreBase.store.commit(mutationName, newValue);
+          },
+        });
+      });
+
+      // Override getters
+      _.forEach(config.getters, (fn, k) => {
+        Object.defineProperty(this, k, {
+          enumerable: true,
+          value: () => StoreBase.store.getters[k],
+        });
+      });
+
+      // Override mutations
+      _.forEach(config.mutations, (v, k) => {
+        Object.defineProperty(this, v.key, {
+          enumerable: false,
+          value: (...payload: any[]) => {
+            StoreBase.store.commit(k, payload);
+          },
+        });
+      });
+    }
+  };
 }
 
 
@@ -118,9 +117,6 @@ export function State(config?: StateConfig) {
       configurable: false,
 
       // Only for initial configuration
-      get() {
-        return storeconfig.state[key];
-      },
       set(newValue) {
         storeconfig.state[key] = newValue;
       },
