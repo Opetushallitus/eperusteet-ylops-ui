@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import * as _ from 'lodash';
+
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
@@ -11,7 +13,6 @@ import { Kielet, i18n } from './stores/kieli';
 import { Kayttajat } from './stores/kayttaja';
 import { Virheet } from './stores/virheet';
 import './registerServiceWorker';
-import * as _ from 'lodash';
 
 Vue.config.productionTip = false;
 

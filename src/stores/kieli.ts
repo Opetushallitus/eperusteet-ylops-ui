@@ -51,10 +51,7 @@ class KieliStore {
       const result: any = {};
       const localeObj = (await Ulkopuoliset.getLokalisoinnit()).data;
       _.forEach(localeObj, (locales, lang) => {
-        if (!result[lang]) {
-          result[lang] = {};
-        }
-
+        result[lang] = {};
         for (const locale of locales) {
           if (locale.key && locale.value) {
             result[lang][locale.key] = locale.value;
@@ -65,8 +62,8 @@ class KieliStore {
     }
     catch (err) {
       console.error(err);
+      return {};
     }
-    return {};
   }
 }
 

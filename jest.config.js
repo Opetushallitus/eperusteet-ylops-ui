@@ -36,7 +36,7 @@ module.exports = {
     "/node_modules/(?!(@ckeditor|lodash\-es|bootstrap-vue)/)",
   ],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
   snapshotSerializers: [
     'jest-serializer-vue'

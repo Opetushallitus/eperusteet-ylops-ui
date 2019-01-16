@@ -32,7 +32,7 @@ div.topbar
           :disabled="kieli === uiKieli") {{ kieli }}
 
       // Admin
-      b-nav-item(id="nav-admin" :to="{ name: 'admin' }")
+      b-nav-item(id="nav-admin" :to="{ name: 'admin' }" v-oikeustarkastelu="'hallinta'")
         fas.fa-fw(icon="cog")
 </template>
 
@@ -40,8 +40,13 @@ div.topbar
 import { Component, Vue } from 'vue-property-decorator';
 import { Kieli } from '@/tyypit';
 import { Kielet, UiKielet } from '@/stores/kieli';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
-@Component
+@Component({
+  directives: {
+    oikeustarkastelu,
+  },
+})
 export default class Root extends Vue {
   get uiKieli() { return Kielet.getUiKieli(); }
   get sisaltoKieli() { return Kielet.getSisaltoKieli(); }
