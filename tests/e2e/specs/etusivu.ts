@@ -12,6 +12,14 @@ function createServer() {
     url: '/eperusteet-ylops-service/api/kayttaja',
     response: {},
   });
+  cy.route({
+    method: 'GET',
+    url: '/eperusteet-ylops-service/api/opetussuunnitelmat/oikeudet',
+    response: {
+      opetussuunnitelma: ['muokkaus'],
+      pohja: ['luonti'],
+    },
+  });
 }
 
 describe('Etusivu', () => {
