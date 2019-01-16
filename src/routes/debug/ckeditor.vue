@@ -1,13 +1,13 @@
 <template lang="pug">
 div
   h1 Debug (ckeditor):
-  h3 Editori 1:
+  h3 Editori 1 (basic):
   ckeditor(id="editor1", v-model="editor1Data")
   br
   span(v-html="editor1Data")
   br
-  h3 Editori 2:
-  ckeditor(id="editor2", v-model="editor2Data")
+  h3 Editori 2 (extended):
+  ckeditor(id="editor2", v-model="editor2Data", :isExtended="true")
   br
   span(v-html="editor2Data")
   br
