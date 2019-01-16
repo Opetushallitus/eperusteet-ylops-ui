@@ -11,6 +11,7 @@ import AdminRoute from '@/routes/admin/AdminRoute.vue';
 
 import CollapseDebug from '@/routes/debug/collapse.vue';
 import CKEditorDebug from '@/routes/debug/ckeditor.vue';
+import EpContentDebug from '@/routes/debug/epcontent.vue';
 
 import { Virheet } from '@/stores/virheet';
 import { i18n, UiKielet } from '@/stores/kieli';
@@ -49,6 +50,10 @@ const router = new Router({
         path: 'ckeditor',
         name: 'ckeditorDebug',
         component: CKEditorDebug,
+      }, {
+        path: 'epcontent',
+        name: 'epcontentDebug',
+        component: EpContentDebug,
       }],
     }],
   }, {
