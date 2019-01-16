@@ -7,7 +7,7 @@ describe('EpContent component', () => {
             propsData: {
                 value: '<p>Non editable</p>',
                 isEditable: false,
-            }
+            },
         });
 
         expect(wrapper.html()).toContain('Non editable');

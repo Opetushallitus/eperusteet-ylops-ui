@@ -2,11 +2,12 @@
 div
   h1 Debug (epcontent):
   hr
-  epcontent(:isEditable="true", v-model="editableValue")
+  epcontent(:isEditable="true", v-model="content1Value")
+  span(v-html="content1Value")
   hr
-  span(v-html="editableValue")
-  hr
-  epcontent(:isEditable="false", :value="fixedValue")
+  button(@click="content2Editable=true") Edit value
+  epcontent(:isEditable="content2Editable", v-model="content2Value")
+  span(v-html="content2Value")
 </template>
 
 <script lang="ts">
@@ -22,8 +23,10 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 export default class EpContentDebug extends Vue {
   public data() {
     return {
-      editableValue: 'Editable',
-      fixedValue: '<b>Not</b> editable value',
+      content1Value: 'Initially editable',
+
+      content2Editable: false,
+      content2Value: 'Initially <b>not</b> editable',
     };
   }
 }

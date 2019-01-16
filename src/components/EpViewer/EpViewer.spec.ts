@@ -5,8 +5,8 @@ describe('EpViewer component', () => {
     it('Renders given content', () => {
         const wrapper = mount(EpViewer, {
             propsData: {
-                value: '<p>Test</p>'
-            }
+                value: '<p>Test</p>',
+            },
         });
 
         expect(wrapper.html()).toContain('Test');

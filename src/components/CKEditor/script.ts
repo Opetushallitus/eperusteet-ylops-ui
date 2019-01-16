@@ -18,52 +18,84 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 
-// Current time in milliseconds
-const defaultId = () => new Date().getTime();
-
 @Component
 export default class CKEditor extends Vue {
 
-    @Prop({ default: 'ckeditor-' + defaultId() }) private id!: string;
+    // Editorin dom-elementin ID
+    @Prop({ default: '' }) private id!: string;
+
+    // Muokattava tieto (tukee v-model:ia)
     @Prop() private value!: string;
 
-    //
+    // Käytetäänkö laajennettua editoria
+    @Prop({ default: false }) private isExtended!: boolean;
+
+    // CKEditorin JS instanssi
     private instance: any = null;
 
+    public async beforeMount() {
+        // Luodaan editorille uniikki ID (jos sellaista ei ole annettu)
+        if (this.id === '') {
+            this.id = 'ckeditor-' + new Date().getTime();
+        }
+    }
+
     public async mounted() {
-        // Setup ckeditor
+        // Luodaan ckeditor instanssi
         try {
-            this.instance = await ClassicEditor
-                .create(document.getElementById(this.id), {
-                    plugins: [
-                        Alignment,
-                        Bold,
-                        Clipboard,
-                        Essentials,
-                        Image,
-                        ImageStyle,
-                        ImageToolbar,
-                        Italic,
-                        LinkPlugin,
-                        ListPlugin,
-                        ParagraphPlugin,
-                        Table,
-                        TableToolbar,
-                    ],
+            // Perustilan asetukset
+            const config: any = {
+                plugins: [
+                    Bold,
+                    Italic,
+                    Clipboard,
+                    Essentials,
+                    ParagraphPlugin,
+                ],
+                toolbar: [
+                    'bold', 'italic',
+                    '|',
+                    'undo', 'redo',
+                ],
+            };
+
+            // Laajennetun tilan asetukset
+            if (this.isExtended) {
+                config.plugins = [
+                    ...config.plugins,
+                    Alignment,
+                    Image,
+                    ImageStyle,
+                    ImageToolbar,
+                    LinkPlugin,
+                    ListPlugin,
+                    Table,
+                    TableToolbar,
+                ];
+
+                config.toolbar = [
+                    'alignment', 'bold', 'italic',
+                    '|',
+                    'numberedList', 'bulletedList',
+                    '|',
+                    'link', 'insertTable',
+                    '|',
+                    'undo', 'redo',
+                ];
+
+                config.image = {
                     toolbar: [
-                        'alignment', 'bold', 'italic',
+                        'imageTextAlternative',
                         '|',
-                        'numberedList', 'bulletedList',
-                        '|',
-                        'link', 'insertTable',
-                        '|',
-                        'undo', 'redo',
+                        'imageStyle:full',
+                        'imageStyle:side',
                     ],
-                    image: {
-                        toolbar: [
-                            'imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:side' ],
-                    },
-                });
+                };
+            }
+
+            // Instanssin luonti
+            this.instance = await ClassicEditor
+                .create(document.getElementById(this.id), config);
             this.instance.setData(this.value);
             this.setEditorEvents();
         } catch (err) {
