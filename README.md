@@ -15,6 +15,20 @@ Node.js 10 LTS
 $ npm install
 ```
 
+### Rajapintojen generoiminen
+
+Aseta ympäristömuuttuja YLOPS_SERVICE_DIR osoittamaan [eperusteet-ylops](https://github.com/Opetushallitus/eperusteet-ylops)\/eperusteet-ylops-service hakemistoon.
+
+```sh
+# Generointi väliaikaisella apuskriptilla
+$ npm run gen:api
+
+# Generointi ilman
+$ mkdir -p src/generated
+$ cd src/generated
+$ openapi-generator generate -i <specfile> -g typescript-axios
+```
+
 ### Kehitysympäristön käynistäminen
 ```sh
 $ npm run serve
@@ -49,17 +63,6 @@ $ npm run lint
 ```sh
 $ npm run test:unit
 $ npm run test:unit:dev # Pitää testit käynnissä
-```
-
-### Rajapintojen generoiminen
-```sh
-# Generointi väliaikaisella apuskriptilla
-$ npm run gen:api
-
-# Generointi ilman
-$ mkdir -p src/generated
-$ cd src/generated
-$ openapi-generator generate -i <specfile> -g typescript-axios
 ```
 
 ### Suositeltavat resurssit
