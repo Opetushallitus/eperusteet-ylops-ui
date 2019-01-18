@@ -1,6 +1,8 @@
 # eperusteet-ylops-lukio-ui
 
 [![Build Status](https://travis-ci.org/Opetushallitus/eperusteet-ylops-lukio.svg?branch=master)](https://travis-ci.org/Opetushallitus/eperusteet-ylops-lukio)
+[![codecov](https://codecov.io/gh/Opetushallitus/eperusteet-ylops-lukio/branch/master/graph/badge.svg)](https://codecov.io/gh/Opetushallitus/eperusteet-ylops)
+
 
 ## Project setup
 ```sh
