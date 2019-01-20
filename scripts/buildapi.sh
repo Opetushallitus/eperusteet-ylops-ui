@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 # Generoi SDK:n apikuvauksen perusteella.
 
-if [ $YLOPS_SERVICE_DIR ]
+if [[ -z $YLOPS_SERVICE_DIR ]]
 then
   printf "\x1b[1mYLOPS_SERVICE_DIR\x1b[0m is not set.\n"
   printf "For example, call export \x1b[1mYLOPS_SERVICE_DIR="
