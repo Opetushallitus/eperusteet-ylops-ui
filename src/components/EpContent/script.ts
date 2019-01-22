@@ -8,7 +8,7 @@ import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
 @Component({
   name: 'EpContent',
   components: {
-    'ep-content-base': EpContentBase,
+    EpContentBase,
   },
 })
 export default class EpContent extends Vue {

@@ -18,7 +18,7 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 
 @Component({
   components: {
-    'ep-content': EpContent,
+    EpContent,
   },
 })
 

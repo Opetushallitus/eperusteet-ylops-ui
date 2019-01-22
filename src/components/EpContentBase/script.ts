@@ -1,13 +1,13 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import CKEditor from '@/components/CKEditor/CKEditor.vue';
+import CkEditor from '@/components/CkEditor/CkEditor.vue';
 import EpViewer from '@/components/EpViewer/EpViewer.vue';
 
 @Component({
   name: 'EpContentBase',
   components: {
-    'ep-viewer': EpViewer,
-    'ck-editor': CKEditor,
+    EpViewer,
+    CkEditor,
   },
 })
 export default class EpContentBase extends Vue {

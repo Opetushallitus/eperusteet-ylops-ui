@@ -13,7 +13,7 @@ import TemplatesRoute from '@/routes/templates/Templates.vue';
 import NewTemplateRoute from '@/routes/templates/NewTemplate.vue';
 
 import CollapseDebug from '@/routes/debug/collapse.vue';
-import CKEditorDebug from '@/routes/debug/ckeditor.vue';
+import CkEditorDebug from '@/routes/debug/ckeditor.vue';
 import EpContentDebug from '@/routes/debug/epcontent.vue';
 
 import { Virheet } from '@/stores/virheet';
@@ -61,7 +61,7 @@ const router = new Router({
       }, {
         path: 'ckeditor',
         name: 'ckeditorDebug',
-        component: CKEditorDebug,
+        component: CkEditorDebug,
       }, {
         path: 'epcontent',
         name: 'epcontentDebug',
