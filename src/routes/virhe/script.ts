@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class Virhe extends Vue {
+export default class VirheRoute extends Vue {
   private error: any = {};
 
   public mounted() {

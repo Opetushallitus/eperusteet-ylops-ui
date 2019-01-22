@@ -3,7 +3,7 @@ import { Opetussuunnitelmat } from '@/api';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 
 @Component
-export default class AdminRoute extends Vue {
+export default class HallintaRoute extends Vue {
   private adminlist: OpetussuunnitelmaInfoDto[] = [];
 
   public mounted() {

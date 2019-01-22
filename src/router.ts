@@ -5,12 +5,15 @@ import * as _ from 'lodash';
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/component.vue';
 import NotFound from '@/routes/NotFound.vue';
-import VirheRoute from '@/routes/virhe/component.vue';
+import VirheRoute from '@/routes/virhe/VirheRoute.vue';
 import Debug from '@/routes/debug/component.vue';
-import AdminRoute from '@/routes/admin/AdminRoute.vue';
+import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
+
+import PohjatRoute from '@/routes/pohjat/PohjatRoute.vue';
+import UusiPohjaRoute from '@/routes/pohjat/UusiPohjaRoute.vue';
 
 import CollapseDebug from '@/routes/debug/collapse.vue';
-import CKEditorDebug from '@/routes/debug/ckeditor.vue';
+import CkEditorDebug from '@/routes/debug/ckeditor.vue';
 import EpContentDebug from '@/routes/debug/epcontent.vue';
 
 import { Virheet } from '@/stores/virheet';
@@ -33,11 +36,20 @@ const router = new Router({
     }, {
       path: 'admin',
       name: 'admin',
-      component: AdminRoute,
+      component: HallintaRoute,
     }, {
       path: 'virhe',
       name: 'virhe',
       component: VirheRoute,
+    }, {
+      path: 'pohjat',
+      name: 'pohjat',
+      component: PohjatRoute,
+      children: [{
+        path: 'uusi',
+        name: 'uusipohja',
+        component: UusiPohjaRoute,
+      }],
     }, {
       path: 'debug',
       name: 'debug',
@@ -49,7 +61,7 @@ const router = new Router({
       }, {
         path: 'ckeditor',
         name: 'ckeditorDebug',
-        component: CKEditorDebug,
+        component: CkEditorDebug,
       }, {
         path: 'epcontent',
         name: 'epcontentDebug',

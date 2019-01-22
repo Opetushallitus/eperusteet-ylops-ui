@@ -1,3 +1,23 @@
 div.home
   h2 Kayttaja
   pre {{ kayttaja }}
+
+  hr
+  router-link(
+    :to="{ name: 'uusipohja' }"
+    tag="button") {{ $t('luo-pohja') }}
+  hr
+  table.table
+    thead
+      tr
+        th {{ $t('nimi') }}
+        th {{ $t('tila') }}
+        th {{ $t('luotu') }}
+    tbody
+      tr(
+        v-for="ops in opspohjalista"
+        :key="ops.id")
+        td
+          pre {{ ops.nimi }}
+        td {{ $t(ops.tila) }}
+        td {{ ops.luotu }}

@@ -2,11 +2,13 @@
 div
   h1 Debug (epcontent):
   hr
-  epcontent(:isEditable="true", v-model="content1Value")
+  ep-content(:isEditable="true"
+    v-model="content1Value")
   span(v-html="content1Value")
   hr
   button(@click="content2Editable=true") Edit value
-  epcontent(:isEditable="content2Editable", v-model="content2Value")
+  ep-content(:isEditable="content2Editable"
+    v-model="content2Value")
   span(v-html="content2Value")
 </template>
 
@@ -16,7 +18,7 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 
 @Component({
   components: {
-    epcontent: EpContent,
+    EpContent,
   },
 })
 
