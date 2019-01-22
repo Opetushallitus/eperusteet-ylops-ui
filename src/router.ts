@@ -9,6 +9,9 @@ import VirheRoute from '@/routes/virhe/component.vue';
 import Debug from '@/routes/debug/component.vue';
 import AdminRoute from '@/routes/admin/AdminRoute.vue';
 
+import TemplatesRoute from '@/routes/templates/Templates.vue';
+import NewTemplateRoute from '@/routes/templates/NewTemplate.vue';
+
 import CollapseDebug from '@/routes/debug/collapse.vue';
 import CKEditorDebug from '@/routes/debug/ckeditor.vue';
 import EpContentDebug from '@/routes/debug/epcontent.vue';
@@ -38,6 +41,15 @@ const router = new Router({
       path: 'virhe',
       name: 'virhe',
       component: VirheRoute,
+    }, {
+      path: 'pohjat',
+      name: 'pohjat',
+      component: TemplatesRoute,
+      children: [{
+        path: 'uusi',
+        name: 'uusipohja',
+        component: NewTemplateRoute,
+      }],
     }, {
       path: 'debug',
       name: 'debug',

@@ -32,12 +32,11 @@ export default class CKEditor extends Vue {
 
     // CKEditorin JS instanssi
     private instance: any = null;
+    private divId: string = '';
 
     public async beforeMount() {
         // Luodaan editorille uniikki ID (jos sellaista ei ole annettu)
-        if (this.id === '') {
-            this.id = 'ckeditor-' + new Date().getTime();
-        }
+        this.divId = this.id === '' ? 'ckeditor-' + new Date().getTime() : this.id;
     }
 
     public async mounted() {
@@ -95,7 +94,7 @@ export default class CKEditor extends Vue {
 
             // Instanssin luonti
             this.instance = await ClassicEditor
-                .create(document.getElementById(this.id), config);
+                .create(document.getElementById(this.divId), config);
             this.instance.setData(this.value);
             this.setEditorEvents();
         } catch (err) {
