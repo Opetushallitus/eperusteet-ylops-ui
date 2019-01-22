@@ -5,12 +5,12 @@ import * as _ from 'lodash';
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/component.vue';
 import NotFound from '@/routes/NotFound.vue';
-import VirheRoute from '@/routes/virhe/component.vue';
+import VirheRoute from '@/routes/virhe/VirheRoute.vue';
 import Debug from '@/routes/debug/component.vue';
-import AdminRoute from '@/routes/admin/AdminRoute.vue';
+import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
-import TemplatesRoute from '@/routes/templates/Templates.vue';
-import NewTemplateRoute from '@/routes/templates/NewTemplate.vue';
+import PohjatRoute from '@/routes/pohjat/PohjatRoute.vue';
+import UusiPohjaRoute from '@/routes/pohjat/UusiPohjaRoute.vue';
 
 import CollapseDebug from '@/routes/debug/collapse.vue';
 import CkEditorDebug from '@/routes/debug/ckeditor.vue';
@@ -36,7 +36,7 @@ const router = new Router({
     }, {
       path: 'admin',
       name: 'admin',
-      component: AdminRoute,
+      component: HallintaRoute,
     }, {
       path: 'virhe',
       name: 'virhe',
@@ -44,11 +44,11 @@ const router = new Router({
     }, {
       path: 'pohjat',
       name: 'pohjat',
-      component: TemplatesRoute,
+      component: PohjatRoute,
       children: [{
         path: 'uusi',
         name: 'uusipohja',
-        component: NewTemplateRoute,
+        component: UusiPohjaRoute,
       }],
     }, {
       path: 'debug',

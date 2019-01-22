@@ -20,11 +20,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Ulkopuoliset } from '@/api';
 import { PerusteInfoDto } from '@/tyypit';
 
-@Component({
-  components: {
-  },
-})
-export default class NewTemplate extends Vue {
+@Component
+export default class UusiPohjaRoute extends Vue {
 
   private perusteLista: PerusteInfoDto[] = [];
 
