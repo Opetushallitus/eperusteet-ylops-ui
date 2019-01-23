@@ -10,14 +10,15 @@ div
     span {{ $t('peruste') }}:
     b-dropdown
       template(slot="button-content")
-        span(v-if="valittuPeruste.id===-1") {{ $t('valitse-peruste') }}
-        ep-content(v-if="valittuPeruste.id>=0"
+        ep-content(
+          v-if="valittuPeruste"
           v-model="valittuPeruste.nimi")
+        span(v-else) {{ $t('valitse-peruste') }}
       b-dropdown-item(
         v-for="peruste in perusteLista"
         @click="valitsePeruste(peruste)"
         :key="peruste.id"
-        :disabled="peruste.id === valittuPeruste.id")
+        :disabled="valittuPeruste && peruste.id === valittuPeruste.id")
         ep-content(v-model="peruste.nimi")
         span {{ $t('diaarinumero') }}: {{peruste.diaarinumero}}
   br
@@ -40,7 +41,7 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 export default class UusiPohjaRoute extends Vue {
 
   private perusteLista: PerusteInfoDto[] = [];
-  private valittuPeruste: PerusteInfoDto = { id: -1 };
+  private valittuPeruste: PerusteInfoDto | null = null;
 
   public mounted() {
     this.fetchPerusteet();
