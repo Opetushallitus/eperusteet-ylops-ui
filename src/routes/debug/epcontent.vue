@@ -10,6 +10,8 @@ div
   ep-content(:isEditable="content2Editable"
     v-model="content2Value")
   span(v-html="content2Value")
+  hr
+  ep-content(v-model="content3Value")
 </template>
 
 <script lang="ts">
@@ -21,15 +23,19 @@ import EpContent from '@/components/EpContent/EpContent.vue';
     EpContent,
   },
 })
-
 export default class EpContentDebug extends Vue {
-  public data() {
-    return {
-      content1Value: 'Initially editable',
 
-      content2Editable: false,
-      content2Value: 'Initially <b>not</b> editable',
-    };
-  }
+  private content1Value: string = 'Initially editable';
+
+  private content2Editable: boolean = false;
+  private content2Value: string = 'Initially <b>not</b> editable';
+
+  private content3Value: object = {
+    _tunniste: 'xxxxxxxx-xxx-xxxx-xxxx-xxxxxxxxxxxx',
+    fi: 'Testipohja',
+    sv: 'Samma på svenska',
+    _id: '1',
+  };
+
 }
 </script>
