@@ -17,8 +17,8 @@ describe('EpContent component', () => {
         const wrapper = mount(EpContent, {
             propsData: {
                 value: {
-                    fi: 'TestMsg'
-                }
+                    fi: 'TestMsg',
+                },
             },
         });
 

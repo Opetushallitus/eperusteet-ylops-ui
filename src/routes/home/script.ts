@@ -1,5 +1,4 @@
-import { Component, Mixins } from 'vue-property-decorator';
-import { validationMixin } from 'vuelidate';
+import { Component, Vue } from 'vue-property-decorator';
 
 import { Opetussuunnitelmat } from '@/api';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
@@ -13,7 +12,7 @@ import EpContent from '@/components/EpContent/EpContent.vue';
     EpContent,
   },
 })
-export default class Home extends Mixins(validationMixin) {
+export default class Home extends Vue {
   private opspohjalista: OpetussuunnitelmaInfoDto[] = [];
 
   public mounted() {

@@ -1,6 +1,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { Kieli } from '@/tyypit';
 import { Kielet } from '@/stores/kieli';
 
 import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';

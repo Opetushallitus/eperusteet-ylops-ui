@@ -3,11 +3,12 @@ div
   h1 Uusi pohja:
   br
   div
-    span {{ $t('nimi') }}:
-    input(type="text")
+    span {{ $t('nimi') }}*
+    input(type="text"
+      v-model="perusteNimi")
   br
   div
-    span {{ $t('peruste') }}:
+    span {{ $t('peruste') }}*
     b-dropdown
       template(slot="button-content")
         ep-content(
@@ -23,13 +24,31 @@ div
         span {{ $t('diaarinumero') }}: {{peruste.diaarinumero}}
   br
   div
-    button {{ $t('luo-pohja') }}
+    span {{ $t('julkaisukielet') }}*
+    input(type="checkbox"
+      v-model="julkaisukielet"
+      value="FI")
+    label fi
+  br
+  div
+    button(@click="luoUusiPeruste"
+      :disabled="$v.$invalid") {{ $t('luo-pohja') }}
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Ulkopuoliset } from '@/api';
-import { PerusteInfoDto } from '@/tyypit';
+import { Component, Prop, Mixins } from 'vue-property-decorator';
+import { validationMixin } from 'vuelidate';
+import { required } from 'vuelidate/lib/validators';
+
+import { Kielet } from '@/stores/kieli';
+
+import { Ulkopuoliset, Opetussuunnitelmat } from '@/api';
+
+import { PerusteInfoDto,
+  OpetussuunnitelmaLuontiDto,
+  JulkaisukieletEnum,
+  TyyppiEnum,
+  LokalisoituTekstiDto } from '@/tyypit';
 
 import EpContent from '@/components/EpContent/EpContent.vue';
 
@@ -37,11 +56,24 @@ import EpContent from '@/components/EpContent/EpContent.vue';
   components: {
     EpContent,
   },
+  validations: {
+    perusteNimi: {
+      required,
+    },
+    valittuPeruste: {
+      required,
+    },
+    julkaisukielet: {
+      required,
+    },
+  },
 })
-export default class UusiPohjaRoute extends Vue {
+export default class UusiPohjaRoute extends Mixins(validationMixin) {
 
   private perusteLista: PerusteInfoDto[] = [];
   private valittuPeruste: PerusteInfoDto | null = null;
+  private perusteNimi: string = '';
+  private julkaisukielet: JulkaisukieletEnum[] = [];
 
   public mounted() {
     this.fetchPerusteet();
@@ -54,6 +86,31 @@ export default class UusiPohjaRoute extends Vue {
 
   private valitsePeruste(peruste: PerusteInfoDto) {
     this.valittuPeruste = peruste;
+  }
+
+  private luoUusiPeruste() {
+    // Don't continue, if validations fail
+    if (this.$v.$invalid || this.valittuPeruste === null) {
+      return;
+    }
+
+    //
+    const sisaltoKieli = Kielet.getSisaltoKieli();
+    const pohjaNimi: LokalisoituTekstiDto = {
+      tekstit: {},
+    };
+    (pohjaNimi.tekstit as any)[sisaltoKieli] = this.perusteNimi;
+
+    //
+    const pohja: OpetussuunnitelmaLuontiDto = {
+      nimi: pohjaNimi,
+      perusteenId: this.valittuPeruste.id,
+      julkaisukielet: this.julkaisukielet,
+    };
+
+    //
+    Opetussuunnitelmat.addOpetussuunnitelma(pohja);
+
   }
 
 }
