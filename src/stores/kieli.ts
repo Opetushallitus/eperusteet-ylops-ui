@@ -1,13 +1,23 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import * as _ from 'lodash';
-Vue.use(VueI18n);
-
 import { Store, Getter, Mutation, Action, State } from './store';
 import { Kieli } from '@/tyypit';
 import { Ulkopuoliset } from '@/api';
+import Aikaleima from '@/plugins/aikaleima';
+import * as moment from 'moment';
+import 'moment/locale/fi';
+import 'moment/locale/sv';
+import 'moment/locale/se';
+import 'moment/locale/ru';
+import 'moment/locale/en-gb';
+
+Vue.use(VueI18n);
+Vue.use(Aikaleima);
 
 export const UiKielet = Object.freeze(_.values(Kieli as object));
+
+moment.locale(Kieli.fi);
 
 export const i18n = new VueI18n({
   fallbackLocale: Kieli.fi,
@@ -31,6 +41,14 @@ class KieliStore {
   @Getter()
   public getSisaltoKieli() {
     return this.sisaltoKieli;
+  }
+
+  @Mutation()
+  public setUiKieli(kieli: Kieli) {
+    if (i18n.locale !== kieli && _.includes(UiKielet, kieli)) {
+        moment.locale(kieli);
+        i18n.locale = kieli;
+    }
   }
 
   @Mutation()

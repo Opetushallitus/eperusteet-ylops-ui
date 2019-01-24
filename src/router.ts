@@ -4,7 +4,6 @@ import * as _ from 'lodash';
 
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/component.vue';
-import NotFound from '@/routes/NotFound.vue';
 import VirheRoute from '@/routes/virhe/component.vue';
 import Debug from '@/routes/debug/component.vue';
 import AdminRoute from '@/routes/admin/AdminRoute.vue';
@@ -12,9 +11,10 @@ import AdminRoute from '@/routes/admin/AdminRoute.vue';
 import CollapseDebug from '@/routes/debug/collapse.vue';
 import CKEditorDebug from '@/routes/debug/ckeditor.vue';
 import EpContentDebug from '@/routes/debug/epcontent.vue';
+import AikaleimaDebug from '@/routes/debug/aikaleima.vue';
 
 import { Virheet } from '@/stores/virheet';
-import { i18n, UiKielet } from '@/stores/kieli';
+import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 
 Vue.use(Router);
@@ -54,6 +54,10 @@ const router = new Router({
         path: 'epcontent',
         name: 'epcontentDebug',
         component: EpContentDebug,
+      }, {
+        path: 'aikaleima',
+        name: 'aikaleimaDebug',
+        component: AikaleimaDebug,
       }],
     }],
   }, {
@@ -86,7 +90,7 @@ router.beforeEach((to, from, next) => {
   if (to.params.lang
     && to.params.lang !== from.params.lang
     && _.includes(UiKielet, to.params.lang)) {
-    i18n.locale = to.params.lang;
+    Kielet.setUiKieli(to.params.lang as Kieli);
   }
   next();
   // else {
