@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import EpContent from './EpContent.vue';
 
 describe('EpContent component', () => {
-    it('Renders given content', () => {
+    it('Renders given string content', () => {
         const wrapper = mount(EpContent, {
             propsData: {
                 value: '<p>Non editable</p>',
@@ -11,5 +11,18 @@ describe('EpContent component', () => {
         });
 
         expect(wrapper.html()).toContain('Non editable');
-      });
+    });
+
+    it('Renders given object content', () => {
+        const wrapper = mount(EpContent, {
+            propsData: {
+                value: {
+                    fi: 'TestMsg'
+                }
+            },
+        });
+
+        expect(wrapper.html()).toContain('TestMsg');
+    });
+
 });
