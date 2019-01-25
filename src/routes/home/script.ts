@@ -16,16 +16,25 @@ export default class Home extends Vue {
   private opspohjalista: OpetussuunnitelmaInfoDto[] = [];
 
   public mounted() {
-    this.fetchOpsTemplates();
+    this.haeOpsPohjat();
   }
 
   private get kayttaja() {
     return Kayttajat.tiedot;
   }
 
-  private async fetchOpsTemplates() {
+  private async haeOpsPohjat() {
     const opsPohjat = await Opetussuunnitelmat.getAll('POHJA');
     this.opspohjalista = opsPohjat.data;
+  }
+
+  private naytaPohjanTiedot(id: string) {
+    this.$router.push({
+      name: 'pohjanTiedot',
+      params: {
+        id,
+      },
+    });
   }
 
 }

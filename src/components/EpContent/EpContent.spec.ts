@@ -25,4 +25,16 @@ describe('EpContent component', () => {
         expect(wrapper.html()).toContain('TestMsg');
     });
 
+    it('does not render test message', () => {
+        const wrapper = mount(EpContent, {
+            propsData: {
+                value: {
+                    foo: 'TestMsg',
+                },
+            },
+        });
+
+        expect(wrapper.text()).toEqual('');
+    });
+
 });
