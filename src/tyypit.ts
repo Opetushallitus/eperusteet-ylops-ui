@@ -26,4 +26,3 @@ export type PerusteInfoDto = GApi.PerusteInfoDto;
 export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;
 
 export type JulkaisukieletEnum = GApi.OpetussuunnitelmaInfoDto.JulkaisukieletEnum;
-export type TyyppiEnum = GApi.OpetussuunnitelmaLuontiDto.TyyppiEnum;

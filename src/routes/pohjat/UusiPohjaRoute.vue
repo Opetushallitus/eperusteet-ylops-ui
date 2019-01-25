@@ -47,7 +47,6 @@ import { Ulkopuoliset, Opetussuunnitelmat } from '@/api';
 import { PerusteInfoDto,
   OpetussuunnitelmaLuontiDto,
   JulkaisukieletEnum,
-  TyyppiEnum,
   LokalisoituTekstiDto } from '@/tyypit';
 
 import EpContent from '@/components/EpContent/EpContent.vue';
@@ -95,17 +94,16 @@ export default class UusiPohjaRoute extends Mixins(validationMixin) {
     }
 
     //
-    const sisaltoKieli = Kielet.getSisaltoKieli();
     const pohjaNimi: LokalisoituTekstiDto = {
-      tekstit: {},
+        [Kielet.getSisaltoKieli()]: this.perusteNimi,
     };
-    (pohjaNimi.tekstit as any)[sisaltoKieli] = this.perusteNimi;
 
     //
     const pohja: OpetussuunnitelmaLuontiDto = {
       nimi: pohjaNimi,
-      perusteenId: this.valittuPeruste.id,
+      perusteenDiaarinumero: this.valittuPeruste.diaarinumero,
       julkaisukielet: this.julkaisukielet,
+      tyyppi: 'pohja' as any,
     };
 
     //
