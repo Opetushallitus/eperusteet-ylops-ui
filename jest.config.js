@@ -1,6 +1,7 @@
 module.exports = {
   globals: {
     'ts-jest': {
+      tsoConfig: "tsconfig.json",
       diagnostics: {
         warnOnly: true,
       }
@@ -15,13 +16,14 @@ module.exports = {
     "lcov",
   ],
   collectCoverageFrom: [
-    "<rootDir>/src/**/*.ts",
+    "<rootDir>/src/**/*.(ts|tsx|vue)",
     "!<rootDir>/src/generated/**/*.ts",
+    "!<rootDir>/src/**/script.ts",
   ],
   moduleFileExtensions: [
+    'vue',
     'ts',
     'tsx',
-    'vue',
     'js',
     'jsx',
     'json',

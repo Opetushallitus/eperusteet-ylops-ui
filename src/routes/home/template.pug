@@ -4,7 +4,7 @@ div.home
 
   hr
   router-link(
-    :to="{ name: 'uusipohja' }"
+    :to="{ name: 'uusiPohja' }"
     tag="button") {{ $t('luo-pohja') }}
   hr
   table.table
@@ -16,8 +16,9 @@ div.home
     tbody
       tr(
         v-for="ops in opspohjalista"
-        :key="ops.id")
+        :key="ops.id"
+        @click="naytaPohjanTiedot(ops.id)")
         td
-          pre {{ ops.nimi }}
+          ep-content(v-model="ops.nimi")
         td {{ $t(ops.tila) }}
         td {{ ops.luotu }}

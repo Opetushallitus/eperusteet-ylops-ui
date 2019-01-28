@@ -21,4 +21,9 @@ export interface SovellusVirhe {
 import * as GApi from '@/generated/api';
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
 export type OpetussuunnitelmaInfoDto = GApi.OpetussuunnitelmaInfoDto;
+export type OpetussuunnitelmaLuontiDto = GApi.OpetussuunnitelmaLuontiDto;
+export type OpetussuunnitelmaKevytDto = GApi.OpetussuunnitelmaKevytDto;
 export type PerusteInfoDto = GApi.PerusteInfoDto;
+export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;
+
+export type JulkaisukieletEnum = GApi.OpetussuunnitelmaInfoDto.JulkaisukieletEnum;

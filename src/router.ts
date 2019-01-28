@@ -11,6 +11,7 @@ import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
 import PohjatRoute from '@/routes/pohjat/PohjatRoute.vue';
 import UusiPohjaRoute from '@/routes/pohjat/UusiPohjaRoute.vue';
+import PohjanTiedotRoute from '@/routes/pohjat/PohjanTiedotRoute.vue';
 
 import CollapseDebug from '@/routes/debug/collapse.vue';
 import CkEditorDebug from '@/routes/debug/ckeditor.vue';
@@ -18,7 +19,7 @@ import EpContentDebug from '@/routes/debug/epcontent.vue';
 
 import { Virheet } from '@/stores/virheet';
 import { i18n, UiKielet } from '@/stores/kieli';
-import { Kieli, SovellusVirhe } from '@/tyypit';
+import { SovellusVirhe } from '@/tyypit';
 
 Vue.use(Router);
 
@@ -43,12 +44,19 @@ const router = new Router({
       component: VirheRoute,
     }, {
       path: 'pohjat',
-      name: 'pohjat',
       component: PohjatRoute,
       children: [{
         path: 'uusi',
-        name: 'uusipohja',
+        name: 'uusiPohja',
         component: UusiPohjaRoute,
+      }, {
+        path: ':id',
+        component: PohjatRoute,
+        children: [{
+          path: 'tiedot',
+          name: 'pohjanTiedot',
+          component: PohjanTiedotRoute,
+        }],
       }],
     }, {
       path: 'debug',
