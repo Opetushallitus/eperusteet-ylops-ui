@@ -7,12 +7,12 @@ import '@/config/fontawesome';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 
-import App from './App.vue';
-import router from './router';
-import { Kielet, i18n } from './stores/kieli';
-import { Kayttajat } from './stores/kayttaja';
-import { Virheet } from './stores/virheet';
-import './registerServiceWorker';
+import App from '@/App.vue';
+import { router } from '@/router';
+import { Kielet, i18n } from '@/stores/kieli';
+import { Kayttajat } from '@/stores/kayttaja';
+import { Virheet } from '@/stores/virheet';
+import '@/registerServiceWorker';
 
 Vue.config.productionTip = false;
 
@@ -26,16 +26,17 @@ function errorCaptured(err: Error, vm: Vue, info: string) {
   // });
 }
 
+export const root = new Vue({
+  i18n,
+  router,
+  render: (h) => h(App),
+  errorCaptured,
+});
+
 async function main() {
   await Kielet.init();
   await Kayttajat.init();
-
-  new Vue({
-    i18n,
-    router,
-    render: (h) => h(App),
-    errorCaptured,
-  }).$mount('#app');
+  root.$mount('#app');
 }
 
 main();
