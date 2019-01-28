@@ -8,29 +8,55 @@ import App from '@/App.vue';
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
+import { rootConfig } from '@/mainvue';
+
 describe('Router', () => {
   function createMounted() {
-    return mount({
-      router,
-      i18n,
-      render: (h) => h(App),
-    }, {
+    jest.spyOn(Opetussuunnitelmat, 'getAll')
+      .mockImplementation(async () => []);
+    jest.spyOn(Opetussuunnitelmat, 'getAdminList')
+      .mockImplementation(async () => []);
+
+    return mount(rootConfig, {
       localVue: createLocalVue(),
     });
   }
 
-  test('Creation', () => {
-    const opetussuunnitelmatMock = jest.spyOn(Opetussuunnitelmat, 'getAll');
-    opetussuunnitelmatMock.mockImplementationOnce(async () => {
-      return [];
+  beforeEach(() => {
+    router.push({
+      name: 'root',
+      params: {
+        lang: 'fi',
+      },
     });
+  });
 
+  test('App creation', () => {
     const spyWarn = jest.spyOn(console, 'warn');
     const spyError = jest.spyOn(console, 'error');
-
     const app = createMounted();
     expect(spyError).not.toBeCalled();
     expect(spyWarn).not.toBeCalled();
+  });
+
+  test('Navigation - Root', async () => {
+    const app = createMounted();
+    expect(router.currentRoute.name).toEqual('root');
+    expect(router.currentRoute.params).toEqual({ lang: 'fi' });
+
+    router.push({
+      name: 'root',
+      params: { lang: 'sv' },
+    });
+
+    expect(router.currentRoute.params).toEqual({ lang: 'sv' });
+  });
+
+  test('Navigation - Hallinta', async () => {
+    router.push({
+      name: 'admin',
+      params: router.currentRoute.params,
+    });
   });
 
 });

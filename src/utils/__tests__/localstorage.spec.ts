@@ -1,11 +1,12 @@
 import {
   setItem,
   getItem,
-} from './localstorage';
+  removeItem,
+} from '../localstorage';
 
 describe('Localstorage', () => {
 
-  test('Typed set/get', () => {
+  test('Typed set/get/remove', () => {
     interface MySubType {
       value: number;
     }
@@ -26,8 +27,15 @@ describe('Localstorage', () => {
 
     setItem('val', val);
     const val2 = getItem<typeof val>('val');
-    expect(val2.name).toEqual('foobar');
-    expect(val2.vals[0].value).toEqual(5);
+    expect(val2).toBeTruthy();
+
+    if (val2) {
+      expect(val2.name).toEqual('foobar');
+      expect(val2.vals[0].value).toEqual(5);
+      removeItem('val');
+      expect(getItem('val')).toBeNull();
+    }
   });
+
 
 });
