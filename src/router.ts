@@ -23,7 +23,7 @@ import { SovellusVirhe } from '@/tyypit';
 
 Vue.use(Router);
 
-const router = new Router({
+export const router = new Router({
   routes: [{
     path: '/',
     redirect: (to) => '/fi',
@@ -89,8 +89,6 @@ const router = new Router({
     },
   }],
 });
-
-export default router;
 
 Virheet.onError((virhe: SovellusVirhe) => {
   router.push({
