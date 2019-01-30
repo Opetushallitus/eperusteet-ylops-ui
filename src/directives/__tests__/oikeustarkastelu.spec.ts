@@ -1,7 +1,7 @@
 jest.mock('@/stores/kayttaja');
 
 import { mount, createLocalVue } from '@vue/test-utils';
-import { oikeustarkastelu } from './oikeustarkastelu';
+import { oikeustarkastelu } from '../oikeustarkastelu';
 import { Kayttajat } from '@/stores/kayttaja';
 
 // KayttajaStore.mockImplementation({

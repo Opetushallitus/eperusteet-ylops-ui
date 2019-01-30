@@ -1,5 +1,5 @@
 import { Kieli } from '@/tyypit';
-import { UiKielet, i18n, Kielet } from './kieli';
+import { UiKielet, i18n, Kielet } from '../kieli';
 import { Ulkopuoliset } from '@/api';
 
 
