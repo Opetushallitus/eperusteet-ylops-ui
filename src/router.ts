@@ -16,10 +16,11 @@ import PohjanTiedotRoute from '@/routes/pohjat/PohjanTiedotRoute.vue';
 import CollapseDebug from '@/routes/debug/collapse.vue';
 import CkEditorDebug from '@/routes/debug/ckeditor.vue';
 import EpContentDebug from '@/routes/debug/epcontent.vue';
+import AikaleimaDebug from '@/routes/debug/aikaleima.vue';
 
 import { Virheet } from '@/stores/virheet';
-import { i18n, UiKielet } from '@/stores/kieli';
-import { SovellusVirhe } from '@/tyypit';
+import { Kielet, UiKielet } from '@/stores/kieli';
+import { Kieli, SovellusVirhe } from '@/tyypit';
 
 Vue.use(Router);
 
@@ -74,6 +75,10 @@ export const router = new Router({
         path: 'epcontent',
         name: 'epcontentDebug',
         component: EpContentDebug,
+      }, {
+        path: 'aikaleima',
+        name: 'aikaleimaDebug',
+        component: AikaleimaDebug,
       }],
     }],
   }, {
@@ -104,7 +109,7 @@ router.beforeEach((to, from, next) => {
   if (to.params.lang
     && to.params.lang !== from.params.lang
     && _.includes(UiKielet, to.params.lang)) {
-    i18n.locale = to.params.lang;
+    Kielet.setUiKieli(to.params.lang as Kieli);
   }
   next();
   // else {

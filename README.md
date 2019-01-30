@@ -4,22 +4,44 @@
 [![codecov](https://codecov.io/gh/Opetushallitus/eperusteet-ylops-lukio/branch/master/graph/badge.svg)](https://codecov.io/gh/Opetushallitus/eperusteet-ylops)
 
 
-## Project setup
+## Projektin asentaminen
+
+### Kehitysympäristön vaatimukset
+```
+Node.js 10 LTS
+```
+
+### Riippuvuuksien asentaminen
+
 ```sh
 $ npm install
 ```
 
-### Compiles and hot-reloads for development
+### Rajapintojen generoiminen
+
+Aseta ympäristömuuttuja YLOPS_SERVICE_DIR osoittamaan [eperusteet-ylops](https://github.com/Opetushallitus/eperusteet-ylops)\/eperusteet-ylops-service hakemistoon.
+
+```sh
+# Generointi väliaikaisella apuskriptilla
+$ npm run gen:api
+
+# Generointi ilman
+$ mkdir -p src/generated
+$ cd src/generated
+$ openapi-generator generate -i <specfile> -g typescript-axios
+```
+
+### Kehitysympäristön käynistäminen
 ```sh
 $ npm run serve
 ```
 
-### Compiles and minifies for production
+### Tuotantoversion rakentaminen
 ```sh
 $ npm run build
 ```
 
-### Testing
+### Testaaminen
 ```sh
 # Run all tests
 $ npm run test
@@ -34,27 +56,16 @@ $ npm run test:e2e
 $ npm run dev:e2e
 ```
 
-### Lints and fixes files
+### Lähdekoodin analysoiminen
 ```sh
 $ npm run lint
 ```
 
-### Run your unit tests
+### Yksikkötestien ajaminen
 ```sh
 $ npm run test:unit
 $ npm run test:unit:dev # Pitää testit käynnissä
 ```
 
-### Api SDK generation
-```sh
-# Generointi väliaikaisella apuskriptilla
-$ npm run gen:api
-
-# Generointi ilman
-$ mkdir -p src/generated
-$ cd src/generated
-$ openapi-generator generate -i <specfile> -g typescript-axios
-```
-
-### Recommended resources
+### Suositeltavat resurssit
 - [Vue style guide](https://vuejs.org/v2/style-guide)
