@@ -1,9 +1,9 @@
-import { PluginFunction, PluginObject } from 'vue';
-import { Vue as _Vue  } from 'vue/types/vue';
+import { PluginFunction } from 'vue';
+import Vue from 'vue';
 import moment from 'moment';
 
 export class Aikaleima {
-  public install: PluginFunction<any> = (vue: typeof _Vue) => {
+  public install(vue: typeof Vue) {
 
     // Long datetime
     vue.prototype.$ldt = function(value: number) {
