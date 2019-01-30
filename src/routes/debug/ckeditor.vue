@@ -25,11 +25,7 @@ import CkEditor from '@/components/CkEditor/CkEditor.vue';
 })
 
 export default class CkEditorDebug extends Vue {
-  public data() {
-    return {
-      editor1Data: '<p>Editori1</p>',
-      editor2Data: '<p>Editori2</p>',
-    };
-  }
+  private editor1Data: string = '<p>Editori1</p>';
+  private editor2Data: string = '<p>Editori2</p>';
 }
 </script>
