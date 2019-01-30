@@ -14,6 +14,7 @@
     "styleguide:build": "vue-cli-service styleguidist:build",
     "test:e2e": "vue-cli-service test:e2e --headless",
     "test:e2e:dev": "vue-cli-service test:e2e",
+    "test:unit:report": "$BROWSER coverage/lcov-report/index.html",
     "test:unit": "TZ=Europe/Helsinki vue-cli-service test:unit --ci --coverage --no-cache",
     "test:unit:dev": "TZ=Europe/Helsinki vue-cli-service test:unit --watch"
   },

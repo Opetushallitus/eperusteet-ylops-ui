@@ -92,7 +92,6 @@ export class EditointiKontrolli {
       this.logger.debug('Tallentaminen ei mahdollista');
     }
   }
-
 }
 
 export function editointi(config: EditointiKontrolliConfig = {}) {
