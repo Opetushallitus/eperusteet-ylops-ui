@@ -1,5 +1,12 @@
 {
+  "hallinta": "Hallinta",
   "kieli": "kieli",
   "kieli-sisalto": "sisältö",
-  "palaa-etusivulle": "Palaa etusivulle"
+  "koulutustyyppi": "Koulutustyyppi",
+  "luo-pohja": "Luo pohja",
+  "luotu": "Luotu",
+  "nimi": "Nimi",
+  "palaa-etusivulle": "Palaa etusivulle",
+  "tila": "Tila",
+  "toiminto": "Toiminto"
 }

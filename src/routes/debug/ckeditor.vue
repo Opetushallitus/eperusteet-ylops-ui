@@ -2,12 +2,13 @@
 div
   h1 Debug (ckeditor):
   h3 Editori 1 (basic):
-  ckeditor(id="editor1", v-model="editor1Data")
+  ck-editor(v-model="editor1Data")
   br
   span(v-html="editor1Data")
   br
   h3 Editori 2 (extended):
-  ckeditor(id="editor2", v-model="editor2Data", :isExtended="true")
+  ck-editor(v-model="editor2Data"
+    :isExtended="true")
   br
   span(v-html="editor2Data")
   br
@@ -15,15 +16,15 @@ div
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import CKEditor from '@/components/CKEditor/CKEditor.vue';
+import CkEditor from '@/components/CkEditor/CkEditor.vue';
 
 @Component({
   components: {
-    ckeditor: CKEditor,
+    CkEditor,
   },
 })
 
-export default class CKEditorDebug extends Vue {
+export default class CkEditorDebug extends Vue {
   public data() {
     return {
       editor1Data: '<p>Editori1</p>',

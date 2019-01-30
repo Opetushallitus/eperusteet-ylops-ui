@@ -18,8 +18,10 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 
-@Component
-export default class CKEditor extends Vue {
+@Component({
+    name: 'CkEditor',
+})
+export default class CkEditor extends Vue {
 
     // Editorin dom-elementin ID
     @Prop({ default: '' }) private id!: string;
@@ -32,13 +34,6 @@ export default class CKEditor extends Vue {
 
     // CKEditorin JS instanssi
     private instance: any = null;
-
-    public async beforeMount() {
-        // Luodaan editorille uniikki ID (jos sellaista ei ole annettu)
-        if (this.id === '') {
-            this.id = 'ckeditor-' + new Date().getTime();
-        }
-    }
 
     public async mounted() {
         // Luodaan ckeditor instanssi
@@ -95,7 +90,7 @@ export default class CKEditor extends Vue {
 
             // Instanssin luonti
             this.instance = await ClassicEditor
-                .create(document.getElementById(this.id), config);
+                .create(this.$refs.ckeditor, config);
             this.instance.setData(this.value);
             this.setEditorEvents();
         } catch (err) {

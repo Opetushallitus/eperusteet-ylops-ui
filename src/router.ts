@@ -4,12 +4,17 @@ import * as _ from 'lodash';
 
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/component.vue';
-import VirheRoute from '@/routes/virhe/component.vue';
+import NotFound from '@/routes/NotFound.vue';
+import VirheRoute from '@/routes/virhe/VirheRoute.vue';
 import Debug from '@/routes/debug/component.vue';
-import AdminRoute from '@/routes/admin/AdminRoute.vue';
+import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
+
+import PohjatRoute from '@/routes/pohjat/PohjatRoute.vue';
+import UusiPohjaRoute from '@/routes/pohjat/UusiPohjaRoute.vue';
+import PohjanTiedotRoute from '@/routes/pohjat/PohjanTiedotRoute.vue';
 
 import CollapseDebug from '@/routes/debug/collapse.vue';
-import CKEditorDebug from '@/routes/debug/ckeditor.vue';
+import CkEditorDebug from '@/routes/debug/ckeditor.vue';
 import EpContentDebug from '@/routes/debug/epcontent.vue';
 import AikaleimaDebug from '@/routes/debug/aikaleima.vue';
 
@@ -19,7 +24,7 @@ import { Kieli, SovellusVirhe } from '@/tyypit';
 
 Vue.use(Router);
 
-const router = new Router({
+export const router = new Router({
   routes: [{
     path: '/',
     redirect: (to) => '/fi',
@@ -33,11 +38,27 @@ const router = new Router({
     }, {
       path: 'admin',
       name: 'admin',
-      component: AdminRoute,
+      component: HallintaRoute,
     }, {
       path: 'virhe',
       name: 'virhe',
       component: VirheRoute,
+    }, {
+      path: 'pohjat',
+      component: PohjatRoute,
+      children: [{
+        path: 'uusi',
+        name: 'uusiPohja',
+        component: UusiPohjaRoute,
+      }, {
+        path: ':id',
+        component: PohjatRoute,
+        children: [{
+          path: 'tiedot',
+          name: 'pohjanTiedot',
+          component: PohjanTiedotRoute,
+        }],
+      }],
     }, {
       path: 'debug',
       name: 'debug',
@@ -49,7 +70,7 @@ const router = new Router({
       }, {
         path: 'ckeditor',
         name: 'ckeditorDebug',
-        component: CKEditorDebug,
+        component: CkEditorDebug,
       }, {
         path: 'epcontent',
         name: 'epcontentDebug',
@@ -73,8 +94,6 @@ const router = new Router({
     },
   }],
 });
-
-export default router;
 
 Virheet.onError((virhe: SovellusVirhe) => {
   router.push({
