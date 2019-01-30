@@ -1,38 +1,48 @@
 <template lang="pug">
-div
-  h1 Uusi pohja:
-  br
-  div
-    span {{ $t('nimi') }}*
-    input(type="text"
-      v-model="perusteNimi")
-  br
-  div
-    span {{ $t('peruste') }}*
-    b-dropdown
-      template(slot="button-content")
-        ep-content(
-          v-if="valittuPeruste"
-          v-model="valittuPeruste.nimi")
-        span(v-else) {{ $t('valitse-peruste') }}
-      b-dropdown-item(
-        v-for="peruste in perusteLista"
-        @click="valitsePeruste(peruste)"
-        :key="peruste.id"
-        :disabled="valittuPeruste && peruste.id === valittuPeruste.id")
-        ep-content(v-model="peruste.nimi")
-        span {{ $t('diaarinumero') }}: {{peruste.diaarinumero}}
-  br
-  div
-    span {{ $t('julkaisukielet') }}*
-    input(type="checkbox"
-      v-model="julkaisukielet"
-      value="FI")
-    label fi
-  br
-  div
-    button(@click="luoUusiPeruste"
-      :disabled="$v.$invalid") {{ $t('luo-pohja') }}
+div(class="container")
+  div(class="row")
+    div(class="col-md")
+      h1 Uusi pohja:
+
+  div(class="row")
+    div(class="col-md-3 text-md-right")
+      strong {{ $t('nimi') }}*
+    div(class="col-md-9")
+      input(type="text"
+        v-model="perusteNimi")
+
+  div(class="row")
+    div(class="col-md-3 text-md-right")
+      strong {{ $t('peruste') }}*
+    div(class="col-md-9")
+      b-dropdown
+        template(slot="button-content")
+          ep-content(
+            v-if="valittuPeruste"
+            v-model="valittuPeruste.nimi")
+          span(v-else) {{ $t('valitse-peruste') }}
+        b-dropdown-item(
+          v-for="peruste in perusteLista"
+          @click="valitsePeruste(peruste)"
+          :key="peruste.id"
+          :disabled="valittuPeruste && peruste.id === valittuPeruste.id")
+          ep-content(v-model="peruste.nimi")
+          span {{ $t('diaarinumero') }}: {{peruste.diaarinumero}}
+
+  div(class="row")
+    div(class="col-md-3 text-md-right")
+      strong {{ $t('julkaisukielet') }}*
+    div(class="col-md-9")
+      input(type="checkbox"
+        v-model="julkaisukielet"
+        value="FI")
+      label fi
+
+  div(class="row")
+    div(class="col-md-3")
+    div(class="col-md-9")
+      b-button(@click="luoUusiPeruste"
+        :disabled="$v.$invalid") {{ $t('luo-pohja') }}
 </template>
 
 <script lang="ts">
