@@ -1,28 +1,28 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-function createServer() {
-  cy.server();
-  cy.route({
-    method: 'GET',
-    url: '/eperusteet-ylops-service/api/ulkopuoliset/lokalisoinnit',
-    response: [],
-  });
-  cy.route({
-    method: 'GET',
-    url: '/eperusteet-ylops-service/api/kayttaja',
-    response: {},
-  });
-  cy.route({
-    method: 'GET',
-    url: '/eperusteet-ylops-service/api/opetussuunnitelmat/oikeudet',
-    response: {
-      opetussuunnitelma: ['muokkaus'],
-      pohja: ['luonti'],
-    },
-  });
-}
-
 describe('Etusivu', () => {
+
+  function createServer() {
+    cy.server();
+    cy.route({
+      method: 'GET',
+      url: '/eperusteet-ylops-service/api/ulkopuoliset/lokalisoinnit',
+      response: [],
+    });
+    cy.route({
+      method: 'GET',
+      url: '/eperusteet-ylops-service/api/kayttaja',
+      response: {},
+    });
+    cy.route({
+      method: 'GET',
+      url: '/eperusteet-ylops-service/api/opetussuunnitelmat/oikeudet',
+      response: {
+        opetussuunnitelma: ['muokkaus'],
+        pohja: ['luonti'],
+      },
+    });
+  }
 
   it('renderöityy ja uudelleenohjautuu', () => {
     createServer();
