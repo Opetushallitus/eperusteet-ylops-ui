@@ -62,6 +62,7 @@ export default class Root extends Vue {
         lang: kieli || this.$i18n.fallbackLocale,
       },
     });
+    Kielet.setUiKieli(kieli);
   }
 
   private valitseSisaltoKieli(kieli: Kieli) {

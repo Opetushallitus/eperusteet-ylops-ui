@@ -48,4 +48,4 @@ module.exports = {
     '<rootDir>/tests/integration/**/*.spec.(ts|tsx)',
   ],
   testURL: 'http://localhost/'
-}
+};
