@@ -16,6 +16,11 @@ export interface SovellusVirhe {
   info?: string;
 }
 
+export interface LokalisoituTekstiDto {
+  // id?: number;
+  // tunniste?: string;
+  [key: string]: string;
+}
 
 // FIXME: vue-loader issue 1281
 import * as GApi from '@/generated/api';
@@ -24,6 +29,4 @@ export type OpetussuunnitelmaInfoDto = GApi.OpetussuunnitelmaInfoDto;
 export type OpetussuunnitelmaLuontiDto = GApi.OpetussuunnitelmaLuontiDto;
 export type OpetussuunnitelmaKevytDto = GApi.OpetussuunnitelmaKevytDto;
 export type PerusteInfoDto = GApi.PerusteInfoDto;
-export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;
-
-export type JulkaisukieletEnum = GApi.OpetussuunnitelmaInfoDto.JulkaisukieletEnum;
+// export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;

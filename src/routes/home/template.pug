@@ -15,10 +15,11 @@ div.home
         th {{ $t('luotu') }}
     tbody
       tr(
-        v-for="ops in opspohjalista"
-        :key="ops.id"
+        v-for="ops in opspohjalista",
+        :key="ops.id",
         @click="naytaPohjanTiedot(ops.id)")
         td
           ep-content(v-model="ops.nimi")
         td {{ $t(ops.tila) }}
-        td {{ ops.luotu }}
+        td
+          ep-aikaleima(:value="ops.luotu")

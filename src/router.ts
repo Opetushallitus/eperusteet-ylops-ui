@@ -17,6 +17,7 @@ import CollapseDebug from '@/routes/debug/collapse.vue';
 import CkEditorDebug from '@/routes/debug/ckeditor.vue';
 import EpContentDebug from '@/routes/debug/epcontent.vue';
 import AikaleimaDebug from '@/routes/debug/aikaleima.vue';
+import EditointiDebug from '@/routes/debug/editointi.vue';
 
 import { Virheet } from '@/stores/virheet';
 import { Kielet, UiKielet } from '@/stores/kieli';
@@ -64,9 +65,9 @@ export const router = new Router({
       name: 'debug',
       component: Debug,
       children: [{
-        path: 'collapse',
-        name: 'collapseDebug',
-        component: CollapseDebug,
+        path: 'editointi',
+        name: 'editointiDebug',
+        component: EditointiDebug,
       }, {
         path: 'ckeditor',
         name: 'ckeditorDebug',

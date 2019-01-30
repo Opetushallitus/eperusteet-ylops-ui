@@ -5,10 +5,13 @@ import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 
 import { Kayttajat } from '@/stores/kayttaja';
 
+import EpAikaleima from '@/components/EpAikaleima/EpAikaleima.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
+
 
 @Component({
   components: {
+    EpAikaleima,
     EpContent,
   },
 })
