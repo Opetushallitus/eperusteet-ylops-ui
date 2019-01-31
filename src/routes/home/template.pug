@@ -27,4 +27,5 @@ div.home(class="container")
             td
               ep-content(v-model="ops.nimi")
             td {{ $t(ops.tila) }}
-            td {{ ops.luotu }}
+            td
+              ep-aikaleima(:value="ops.luotu")
