@@ -51,5 +51,5 @@ plugins:
   markdownlint:
     enabled: true
   tslint:
-    enabled: true
+    enabled: false
     config: tslint.json
