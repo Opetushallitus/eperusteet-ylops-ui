@@ -16,7 +16,8 @@
     "test:e2e:dev": "vue-cli-service test:e2e",
     "test:unit:report": "$BROWSER coverage/lcov-report/index.html",
     "test:unit": "TZ=Europe/Helsinki vue-cli-service test:unit --ci --coverage --no-cache",
-    "test:unit:dev": "TZ=Europe/Helsinki vue-cli-service test:unit --watch"
+    "clean": "npx jest --clearCache",
+    "test:unit:dev": "TZ=Europe/Helsinki vue-cli-service test:unit --watch --no-cache"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-alignment": "^10.0.4",
@@ -81,5 +82,8 @@
   },
   "engines": {
     "node": "10.x.x"
+  },
+  "devDependencies": {
+    "reflect-metadata": "^0.1.13"
   }
 }

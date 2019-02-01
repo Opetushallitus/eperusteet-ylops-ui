@@ -1,9 +1,21 @@
-body {
+@import './variables';
+
+:root {
   margin: 0;
   padding: 0;
+
+  color: $font-color-base;
+
   -webkit-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
+
+  a {
+    color: $link-color;
+
+    &:hover {
+      text-decoration: none;
+      color: $link-color-hover;
+    }
+  }
 }
-
-

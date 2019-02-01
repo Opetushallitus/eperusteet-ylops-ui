@@ -1,0 +1,42 @@
+@import '../../styles/variables';
+
+.editointikontrolli {
+  width: 100%;
+
+  .ylapaneeli {
+    width: 100%;
+
+    .historia {
+      .vasen {
+        .muokattu {
+        }
+        .muokkaaja {
+        }
+        .title {
+        }
+        .value {
+        }
+      }
+      .oikea {
+        .upper-buttons {
+        }
+      }
+    }
+  }
+
+  .sisalto {
+    width: 100%;
+
+    slot {
+    }
+  }
+
+  .alapaneeli {
+    width: 100%;
+    .kommentti {
+    }
+    .lower-buttons {
+      float: right;
+    }
+  }
+}

@@ -3,13 +3,27 @@ import { createLogger } from './logger';
 import * as _ from 'lodash';
 
 
-interface EditointiKontrolliConfig {
+export interface EditointiKontrolliFeatures {
+  removal: boolean;
+  validation: boolean;
+  history: boolean;
+  restore: boolean;
+}
+
+
+export interface EditointiKontrolliConfig {
   start?: () => Promise<void>;
   save?: () => Promise<void>;
   cancel?: () => Promise<void>;
   remove?: () => Promise<void>;
   validate?: () => Promise<boolean>;
+  history?: () => Promise<void>;
+  restore?: (idx: number) => Promise<void>;
 }
+
+
+// export function editointiKontrolliConfigPropValidator() {
+// }
 
 
 const DefaultConfig: EditointiKontrolliConfig = Object.freeze({
@@ -17,6 +31,8 @@ const DefaultConfig: EditointiKontrolliConfig = Object.freeze({
   save: async () => {},
   cancel: async () => {},
   remove: async () => {},
+  history: async () => {},
+  restore: async (idx: number) => {},
   validate: async () => true,
 });
 
@@ -25,13 +41,27 @@ export class EditointiKontrolli {
   private logger = createLogger(EditointiKontrolli);
   private isEditingState = false;
   private isRemoved = false;
+  private readonly features: EditointiKontrolliFeatures;
 
-  public constructor(private config: EditointiKontrolliConfig) {
+  public constructor(
+    private config: EditointiKontrolliConfig,
+  ) {
+    this.features = {
+      removal: !!config.remove,
+      validation: !!config.validate,
+      history: !!config.history,
+      restore: !!config.restore,
+    };
+
     this.logger.debug('Initing editointikontrollit with: ', _.keys(config));
     this.config = {
       ...DefaultConfig,
       ...config,
     };
+  }
+
+  public get getFeatures() {
+    return this.features;
   }
 
   public get isEditing() {
