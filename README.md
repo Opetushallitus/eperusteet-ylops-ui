@@ -1,7 +1,8 @@
 # eperusteet-ylops-lukio-ui
 
 [![Build Status](https://travis-ci.org/Opetushallitus/eperusteet-ylops-lukio.svg?branch=master)](https://travis-ci.org/Opetushallitus/eperusteet-ylops-lukio)
-[![codecov](https://codecov.io/gh/Opetushallitus/eperusteet-ylops-lukio/branch/master/graph/badge.svg)](https://codecov.io/gh/Opetushallitus/eperusteet-ylops)
+[![Maintainability](https://api.codeclimate.com/v1/badges/eea9e59302df6e343d57/maintainability)](https://codeclimate.com/github/Opetushallitus/eperusteet-ylops-lukio/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/eea9e59302df6e343d57/test_coverage)](https://codeclimate.com/github/Opetushallitus/eperusteet-ylops-lukio/test_coverage)
 
 
 ## Projektin asentaminen
