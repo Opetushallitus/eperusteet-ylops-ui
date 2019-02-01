@@ -1,4 +1,16 @@
-version: "2"         # required to adjust maintainability checks
+version: "2"
+
+exclude_patterns:
+  - "coverage/"
+  - "tests"
+  - "**/__tests__/"
+  - "**/*.spec.ts"
+  - "**/*.vue"
+  - "**/*.js"
+  - "src/generated"
+  - "public"
+  - "**/node_modules"
+
 checks:
   argument-count:
     config:
@@ -30,3 +42,14 @@ checks:
   identical-code:
     config:
       threshold: 45
+
+plugins:
+  scss-lint:
+    enabled: false
+  shellcheck:
+    enabled: true
+  markdownlint:
+    enabled: true
+  tslint:
+    enabled: false
+    config: tslint.json

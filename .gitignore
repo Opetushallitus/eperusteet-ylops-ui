@@ -1,6 +1,6 @@
-*.njsproj
 *.js
 *.js.map
+*.njsproj
 *.ntvs*
 *.sln
 *.suo
@@ -13,9 +13,11 @@
 coverage
 dist
 generated
-styleguide
+mochawesome-report
 node_modules
 npm-debug.log*
+styleguide
+test-results.xml
 tests/e2e/screenshots
 tests/e2e/videos
 typings

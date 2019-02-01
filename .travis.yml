@@ -26,8 +26,8 @@ script:
 
 after_script:
   - ./cc-test-reporter format-coverage -t lcov ./coverage/lcov.info
-  - ./cc-test-reporter upload-coverage --debug
-  - ./cc-test-reporter after-build --debug --exit-code $TRAVIS_TEST_RESULT
+  - ./cc-test-reporter upload-coverage
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 cache:
   npm: true
