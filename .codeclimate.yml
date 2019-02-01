@@ -1,4 +1,16 @@
-version: "2"         # required to adjust maintainability checks
+version: "2"
+
+exclude_patterns:
+  - "coverage/"
+  - "tests"
+  - "**/__tests__/"
+  - "**/*.spec.ts"
+  - "**/*.vue"
+  - "**/*.js"
+  - "src/generated"
+  - "public"
+  - "**/node_modules"
+
 checks:
   argument-count:
     config:
