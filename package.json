@@ -15,7 +15,8 @@
     "test:e2e": "vue-cli-service test:e2e --headless",
     "test:e2e:dev": "vue-cli-service test:e2e",
     "test:unit": "TZ=Europe/Helsinki vue-cli-service test:unit --ci --coverage --no-cache",
-    "test:unit:dev": "TZ=Europe/Helsinki vue-cli-service test:unit --watch"
+    "test:unit:dev": "TZ=Europe/Helsinki vue-cli-service test:unit --watch",
+    "stats": "npm test && $BROWSER mochawesome-report/mochawesome.html coverage/lcov-report/index.html"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-alignment": "^10.0.4",
@@ -80,5 +81,11 @@
   },
   "engines": {
     "node": "10.x.x"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "mocha-multi-reporters": "^1.1.7",
+    "mochawesome": "^3.1.1",
+    "mochawesome-report-generator": "^3.1.5"
   }
 }
