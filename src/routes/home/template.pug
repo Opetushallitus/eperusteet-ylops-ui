@@ -1,25 +1,31 @@
-div.home
-  h2 Kayttaja
-  pre {{ kayttaja }}
+div.home(class="container")
 
-  hr
-  router-link(
-    :to="{ name: 'uusiPohja' }"
-    tag="button") {{ $t('luo-pohja') }}
-  hr
-  table.table
-    thead
-      tr
-        th {{ $t('nimi') }}
-        th {{ $t('tila') }}
-        th {{ $t('luotu') }}
-    tbody
-      tr(
-        v-for="ops in opspohjalista",
-        :key="ops.id",
-        @click="naytaPohjanTiedot(ops.id)")
-        td
-          ep-content(v-model="ops.nimi")
-        td {{ $t(ops.tila) }}
-        td
-          ep-aikaleima(:value="ops.luotu")
+  div(class="row")
+    div(class="col-md")
+      h2 Kayttaja
+      pre {{ kayttaja }}
+
+  div(class="row")
+    div(class="col-md")
+      router-link(
+        :to="{ name: 'uusiPohja' }"
+        tag="b-button") {{ $t('luo-pohja') }}
+
+  div(class="row")
+    div(class="col-md")
+      table.table
+        thead
+          tr
+            th {{ $t('nimi') }}
+            th {{ $t('tila') }}
+            th {{ $t('luotu') }}
+        tbody
+          tr(
+            v-for="ops in opspohjalista"
+            :key="ops.id"
+            @click="naytaPohjanTiedot(ops.id)")
+            td
+              ep-content(v-model="ops.nimi")
+            td {{ $t(ops.tila) }}
+            td
+              ep-aikaleima(:value="ops.luotu")

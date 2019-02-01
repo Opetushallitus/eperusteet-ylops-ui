@@ -7,12 +7,14 @@ import { Kayttajat } from '@/stores/kayttaja';
 
 import EpAikaleima from '@/components/EpAikaleima/EpAikaleima.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
+import EpAikaleima from '@/components/EpAikaleima/EpAikaleima.vue';
 
 
 @Component({
   components: {
     EpAikaleima,
     EpContent,
+    EpAikaleima,
   },
 })
 export default class Home extends Vue {

@@ -1,3 +1,7 @@
 {
+  "reporter": "mocha-multi-reporters",
+  "reporterOptions": {
+    "configFile": "reporters.e2e.json"
+  },
   "pluginsFile": "tests/e2e/plugins/index.js"
 }

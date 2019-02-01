@@ -1,6 +1,3 @@
-import Vue from 'vue';
-import { RouteConfig } from 'vue-router';
-
 export enum Kieli {
   fi = 'fi',
   sv = 'sv',

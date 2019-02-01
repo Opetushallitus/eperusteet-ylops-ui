@@ -17,7 +17,8 @@
     "test:unit:report": "$BROWSER coverage/lcov-report/index.html",
     "test:unit": "TZ=Europe/Helsinki vue-cli-service test:unit --ci --coverage --no-cache",
     "clean": "npx jest --clearCache",
-    "test:unit:dev": "TZ=Europe/Helsinki vue-cli-service test:unit --watch --no-cache"
+    "test:unit:dev": "TZ=Europe/Helsinki vue-cli-service test:unit --watch --no-cache",
+    "stats": "npm test && $BROWSER mochawesome-report/mochawesome.html coverage/lcov-report/index.html"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-alignment": "^10.0.4",
@@ -57,12 +58,17 @@
     "lodash": "^4.17.11",
     "lodash-es": "^4.17.11",
     "luxon": "^1.9.0",
+    "mocha": "^5.2.0",
+    "mocha-multi-reporters": "^1.1.7",
+    "mochawesome": "^3.1.1",
+    "mochawesome-report-generator": "^3.1.5",
     "moment": "^2.23.0",
     "mutationobserver-shim": "^0.3.2",
     "node-sass": "^4.9.0",
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
     "raw-loader": "0.5.1",
+    "reflect-metadata": "^0.1.13",
     "register-service-worker": "^1.5.2",
     "sass-loader": "^7.0.1",
     "ts-jest": "^23.0.0",
@@ -82,8 +88,5 @@
   },
   "engines": {
     "node": "10.x.x"
-  },
-  "devDependencies": {
-    "reflect-metadata": "^0.1.13"
   }
 }

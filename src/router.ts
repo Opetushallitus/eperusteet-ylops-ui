@@ -12,6 +12,7 @@ import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 import PohjatRoute from '@/routes/pohjat/PohjatRoute.vue';
 import UusiPohjaRoute from '@/routes/pohjat/UusiPohjaRoute.vue';
 import PohjanTiedotRoute from '@/routes/pohjat/PohjanTiedotRoute.vue';
+import PohjanSisaltoRoute from '@/routes/pohjat/PohjanSisaltoRoute.vue';
 
 import CollapseDebug from '@/routes/debug/collapse.vue';
 import CkEditorDebug from '@/routes/debug/ckeditor.vue';
@@ -58,6 +59,10 @@ export const router = new Router({
           path: 'tiedot',
           name: 'pohjanTiedot',
           component: PohjanTiedotRoute,
+        }, {
+          path: 'sisalto',
+          name: 'pohjanSisalto',
+          component: PohjanSisaltoRoute,
         }],
       }],
     }, {
