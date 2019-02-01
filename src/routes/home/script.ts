@@ -6,10 +6,12 @@ import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 import { Kayttajat } from '@/stores/kayttaja';
 
 import EpContent from '@/components/EpContent/EpContent.vue';
+import EpAikaleima from '@/components/EpAikaleima/EpAikaleima.vue';
 
 @Component({
   components: {
     EpContent,
+    EpAikaleima,
   },
 })
 export default class Home extends Vue {
