@@ -42,3 +42,14 @@ checks:
   identical-code:
     config:
       threshold: 45
+
+plugins:
+  scss-lint:
+    enabled: false
+  shellcheck:
+    enabled: true
+  markdownlint:
+    enabled: true
+  tslint:
+    enabled: true
+    config: tslint.json
