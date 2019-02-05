@@ -1,9 +1,8 @@
- import pluginIcon from './theme/icons/toolbar.svg';
+import pluginIcon from './theme/icons/toolbar.svg';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 export class CkEditorMathPlugin {
-
     private editor: any | null = null;
 
     constructor(editor: any) {

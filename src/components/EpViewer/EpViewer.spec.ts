@@ -10,5 +10,11 @@ describe('EpViewer component', () => {
         });
 
         expect(wrapper.html()).toContain('Test');
+
+        wrapper.setProps({
+            value: '<p><span class="math-tex">x=2</span></p>'
+        });
+
+        expect(wrapper.html()).toContain('mathdefault');
       });
 });

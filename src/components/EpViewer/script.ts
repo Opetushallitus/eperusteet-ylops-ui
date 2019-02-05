@@ -19,7 +19,6 @@ export default class EpViewer extends Vue {
 
     private reRenderKatex() {
       // FIXME: This method shouldn't trigger on every change, since it's quite time consuming
-
       this.$el.querySelectorAll('span.math-tex').forEach( (el) => {
         if (el.textContent) {
           const text: string = el.textContent;
