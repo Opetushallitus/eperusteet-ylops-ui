@@ -85,7 +85,7 @@ class KieliStore {
       return result;
     }
     catch (err) {
-      logger.error(err);
+      logger.error('Käännösten haku epäonnistui', err.message);
       return {};
     }
   }

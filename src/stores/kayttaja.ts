@@ -7,12 +7,14 @@ import {
   Opetussuunnitelmat,
 } from '@/api';
 
+import { createLogger } from './logger';
+const logger = createLogger('Kayttaja');
+
 
 // FIXME: tyypitä backendiin
 export type Oikeus = 'luku' | 'kommentointi' | 'muokkaus' | 'luonti' | 'poisto' | 'tilanvaihto' | 'hallinta';
 export type OikeusKohde = 'opetussuunnitelma' | 'pohja';
 export interface Oikeudet { [kohde: string]: Oikeus[]; }
-
 
 function getOikeusArvo(oikeus: Oikeus) {
   switch (oikeus) {
@@ -40,9 +42,17 @@ class KayttajaStore {
   };
 
   public async init() {
-    this.tiedot = (await KayttajatApi.get()).data;
-    const oikeudet = (await Opetussuunnitelmat.getOikeudet()).data;
-    this.oikeudet = (oikeudet as any);
+    try {
+      logger.info('Haetaan käyttäjän tiedot');
+      this.tiedot = (await KayttajatApi.get()).data;
+      const oikeudet = (await Opetussuunnitelmat.getOikeudet()).data;
+      this.oikeudet = (oikeudet as any);
+      logger.info('Käyttäjän tiedot', this.tiedot);
+      logger.info('Käyttäjän oikeudet', this.oikeudet);
+    }
+    catch (err) {
+      logger.error('Käyttäjän tietojen lataus epäonnistui', err.message);
+    }
   }
 
   public async hasOikeus(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {

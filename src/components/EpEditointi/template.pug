@@ -1,24 +1,40 @@
-.editointikontrolli(v-if="ctrls")
-  .ylapaneeli
-    .historia
-      .vasen
-        span.muokattu
-          span.title {{ $t('muokattu') }}: 
-          span.value {{ $st(new Date()) }}
-        span.muokkaaja
-          span.title {{ $t('muokkaaja') }}: 
-          span.value Joku Käyttäjä
-      .oikea
-        .upper-buttons(v-if="ctrls.isEditing")
-          button.btn.btn-danger(@click="ctrls.remove()") {{ $t('poista') }}
-        .upper-buttons(v-else)
-          button.btn.btn-primary(@click="ctrls.start()") {{ $t('muokkaa') }}
+div
+  .editointikontrolli(v-if="isInitialized")
+    .ylapaneeli.row
+      .col-auto.mr-auto
+        .row
+          .col-auto
+            .d-flex.muokattu
+              .p-2.title {{ $t('muokattu') }}: 
+              .p-2.value {{ $st(new Date()) }}
+          .col-auto
+            .d-flex.muokkaaja
+              .p-2.title {{ $t('muokkaaja') }}: 
+              .p-2.value Joku Käyttäjä
+      .col-auto
+        .d-flex
+          .buttons.p-1
+            .upper-buttons(v-if="ctrls.isEditing")
+              button.btn.btn-danger(@click="ctrls.remove()")
+                slot(name="poista") {{ $t('poista') }}
+            .upper-buttons(v-else)
+              button.btn.btn-link() {{ $t('historia') }}
+              button.btn.btn-primary(@click="ctrls.start()")
+                slot(name="muokkaa")
+                  fas.faw-fw(icon="pen")
 
-  .sisalto
-    slot
+    hr
 
-  .alapaneeli
-    .kommentti
-    .lower-buttons(v-if="ctrls.isEditing || true")
-      button.btn.btn-primary(@click="ctrls.save()") {{ $t('tallenna') }}
-      button.btn.btn-warning(@click="ctrls.cancel()") {{ $t('peruuta') }}
+    .sisalto(v-if="state.data")
+      slot(:isEditing="ctrls.isEditing", :data="state.data")
+
+    .alapaneeli.row
+      .col-auto.mr-auto
+        span
+      .col-auto
+        .btn-toolbar(v-if="ctrls.isEditing")
+          .btn-group
+            button.btn.btn-primary(@click="ctrls.save()")
+              slot(name="tallenna") {{ $t('tallenna') }}
+            button.btn.btn-warning(@click="ctrls.cancel()")
+              slot(name="peruuta") {{ $t('peruuta') }}

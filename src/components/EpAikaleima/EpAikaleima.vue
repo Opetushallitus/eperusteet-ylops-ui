@@ -20,7 +20,9 @@ export default class EpAikaleima extends Vue {
     st: 'H:mm',
   };
 
-  @Prop()
+  @Prop({
+    required: true,
+  })
   private value!: any;
 
   @Prop({ default: 'sdt' })
@@ -31,7 +33,9 @@ export default class EpAikaleima extends Vue {
 
   get formatted() {
     // Pakko olla, jotta localen vaihtuessa komponentti päivittyy
-    this.$i18n.locale; // tslint:disable-line
+    if (this.$i18n) {
+      this.$i18n.locale; // tslint:disable-line
+    }
 
     if (this.format) {
       return moment(this.value).format(this.format);

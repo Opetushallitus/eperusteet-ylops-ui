@@ -1,4 +1,4 @@
-div.home(class="container")
+div.home
 
   div(class="row")
     div(class="col-md")
@@ -21,11 +21,11 @@ div.home(class="container")
             th {{ $t('luotu') }}
         tbody
           tr(
-            v-for="ops in opspohjalista"
-            :key="ops.id"
-            @click="naytaPohjanTiedot(ops.id)")
+            v-for="ops in opspohjalista",
+            :key="ops.id")
             td
-              ep-content(v-model="ops.nimi")
+              router-link(tag="a", :to="{ name: 'pohjanTiedot', params: { id: ops.id } }")
+                ep-content(v-model="ops.nimi")
             td {{ $t(ops.tila) }}
             td
               ep-aikaleima(:value="ops.luotu")

@@ -13,9 +13,9 @@ import { rootConfig } from '@/mainvue';
 describe('Router', () => {
   function createMounted() {
     jest.spyOn(Opetussuunnitelmat, 'getAll')
-      .mockImplementation(async () => []);
+      .mockImplementation(async (): Promise<any> => []);
     jest.spyOn(Opetussuunnitelmat, 'getAdminList')
-      .mockImplementation(async () => []);
+      .mockImplementation(async (): Promise<any> => []);
 
     return mount(rootConfig, {
       localVue: createLocalVue(),

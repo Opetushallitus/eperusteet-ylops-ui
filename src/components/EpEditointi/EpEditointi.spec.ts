@@ -5,27 +5,57 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { rootConfig } from '@/mainvue';
 import { i18n } from '@/stores/kieli';
 
-describe('EpEditointi component', () => {
-  // const options = {
-  //   slots: {
-  //     default: `
-  //       <h3>
-  //         Editable stuff here
-  //       </h3>`,
-  //   },
-  // };
 
-  it('Renders header and content', () => {
+import '@/config/bootstrap';
+import '@/config/fontawesome';
+
+
+describe('EpEditointi component', () => {
+
+  const localVue = createLocalVue();
+
+  it('Renders header and content', async () => {
     const editointi: EditointiKontrolliConfig = {
+      source: {
+        async load() {
+          return {
+            name: 'foo',
+          };
+        },
+        async save() {
+        },
+      },
     };
 
-    const wrapper = mount(EpEditointi, {
-      props: {
-        hooks: editointi as any,
+    const wrapper = mount({
+      components: {
+        EpEditointi,
       },
+      data() {
+        return {
+          hooks: editointi,
+        };
+      },
+      template: `
+      <div>
+        <ep-editointi :hooks="hooks">
+          <template slot-scope="scope">
+            <pre>{{ scope.data.name }}</pre>
+          </template>
+        </ep-editointi>
+      </div>
+      `,
+    }, {
+      i18n,
+      localVue,
     });
 
-    console.log(wrapper.html());
+    // FIXME
+    await localVue.nextTick();
+    await localVue.nextTick();
+    await localVue.nextTick();
+
+    expect(wrapper.html()).toContain('<pre>foo</pre>');
   });
 
 });

@@ -8,11 +8,10 @@ div
         th {{ $t('tila') }}
         th {{ $t('toiminto') }}
     tbody
-      tr(
-        v-for="ops in adminlist"
-        :key="ops.id")
+      tr(v-for="ops in adminlist", :key="ops.id")
         td
-          pre {{ ops.nimi }}
+          router-link(tag="a", :to="{ name: 'pohjanTiedot', params: { id: ops.id } }")
+            ep-content(v-model="ops.nimi")
         td {{ $t(ops.koulutustyyppi) }}
         td {{ $t(ops.tila) }}
         td

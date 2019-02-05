@@ -26,4 +26,7 @@ export type OpetussuunnitelmaInfoDto = GApi.OpetussuunnitelmaInfoDto;
 export type OpetussuunnitelmaLuontiDto = GApi.OpetussuunnitelmaLuontiDto;
 export type OpetussuunnitelmaKevytDto = GApi.OpetussuunnitelmaKevytDto;
 export type PerusteInfoDto = GApi.PerusteInfoDto;
+export type RevisionDto = GApi.RevisionDto;
+
+export default GApi;
 // export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;

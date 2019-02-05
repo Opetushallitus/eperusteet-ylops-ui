@@ -1,12 +1,18 @@
 {
   "hallinta": "Hallinta",
+  "historia": "Historia",
   "kieli": "kieli",
   "kieli-sisalto": "sisältö",
   "koulutustyyppi": "Koulutustyyppi",
   "luo-pohja": "Luo pohja",
   "luotu": "Luotu",
+  "muokattu": "Muokattu",
+  "muokkaaja": "Muokkaaja",
   "nimi": "Nimi",
   "palaa-etusivulle": "Palaa etusivulle",
+  "peruuta": "Peruuta",
+  "poista": "Poista",
+  "tallenna": "Tallenna",
   "tila": "Tila",
   "toiminto": "Toiminto"
 }

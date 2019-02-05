@@ -7,14 +7,12 @@ import { Kayttajat } from '@/stores/kayttaja';
 
 import EpAikaleima from '@/components/EpAikaleima/EpAikaleima.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpAikaleima from '@/components/EpAikaleima/EpAikaleima.vue';
 
 
 @Component({
   components: {
     EpAikaleima,
     EpContent,
-    EpAikaleima,
   },
 })
 export default class Home extends Vue {
@@ -31,15 +29,6 @@ export default class Home extends Vue {
   private async haeOpsPohjat() {
     const opsPohjat = await Opetussuunnitelmat.getAll('POHJA');
     this.opspohjalista = opsPohjat.data;
-  }
-
-  private naytaPohjanTiedot(id: string) {
-    this.$router.push({
-      name: 'pohjanTiedot',
-      params: {
-        id,
-      },
-    });
   }
 
 }
