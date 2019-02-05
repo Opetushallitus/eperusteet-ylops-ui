@@ -7,5 +7,6 @@ library.add(solid.faChevronDown);
 library.add(solid.faChevronRight);
 library.add(solid.faCog);
 library.add(solid.faHome);
+library.add(solid.faPen);
 
 Vue.component('fas', FontAwesomeIcon);

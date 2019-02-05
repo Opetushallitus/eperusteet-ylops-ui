@@ -1,5 +1,5 @@
 import { Kieli } from '@/tyypit';
-import { UiKielet, i18n, Kielet } from './kieli';
+import { UiKielet, i18n, Kielet } from '../kieli';
 import { Ulkopuoliset } from '@/api';
 
 
@@ -31,7 +31,7 @@ describe('Kielet', () => {
 
   test('Käännösten lataus', async () => {
     const spy = jest.spyOn(Ulkopuoliset, 'getLokalisoinnit');
-    spy.mockImplementationOnce(async () => {
+    spy.mockImplementationOnce(async (): Promise<any> => {
       return {
         data: {
           fi: [{
@@ -49,7 +49,7 @@ describe('Kielet', () => {
 
   test('Käännösten lataus virheellisillä arvoilla', async () => {
     const spy = jest.spyOn(Ulkopuoliset, 'getLokalisoinnit');
-    spy.mockImplementationOnce(async () => {
+    spy.mockImplementationOnce(async (): Promise<any> => {
       return {
         data: {
           fi: [{

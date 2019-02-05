@@ -1,8 +1,14 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Opetussuunnitelmat } from '@/api';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
+import EpContent from '@/components/EpContent/EpContent.vue';
 
-@Component
+
+@Component({
+  components: {
+    EpContent,
+  },
+})
 export default class HallintaRoute extends Vue {
   private adminlist: OpetussuunnitelmaInfoDto[] = [];
 

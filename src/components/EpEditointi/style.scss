@@ -1,0 +1,32 @@
+@import '../../styles/variables';
+
+.editointikontrolli {
+  margin-top: 4px;
+
+  .ylapaneeli {
+
+    .muokattu, .muokkaaja {
+      .title {
+        font-weight: bold;
+      }
+      .value {
+      }
+    }
+  }
+
+  hr {
+    margin-top: 4px;
+  }
+
+  .sisalto {
+    margin-bottom: 6px;
+    slot {
+    }
+  }
+
+  .alapaneeli {
+
+    .lower-buttons {
+    }
+  }
+}

@@ -11,9 +11,12 @@ import 'moment/locale/sv';
 import 'moment/locale/se';
 import 'moment/locale/ru';
 import 'moment/locale/en-gb';
+import { createLogger } from './logger';
 
 Vue.use(VueI18n);
 Vue.use(Aikaleima);
+
+const logger = createLogger('Kieli');
 
 export const UiKielet = Object.freeze(_.values(Kieli as object));
 
@@ -31,6 +34,7 @@ export const i18n = new VueI18n({
 
 @Store
 class KieliStore {
+
   @State() private sisaltoKieli: Kieli = Kieli.fi;
 
   @Getter()
@@ -46,8 +50,9 @@ class KieliStore {
   @Mutation()
   public setUiKieli(kieli: Kieli) {
     if (i18n.locale !== kieli && _.includes(UiKielet, kieli)) {
-        moment.locale(kieli);
-        i18n.locale = kieli;
+      // this.logger.debug('Ui kieli ->', kieli);
+      moment.locale(kieli);
+      i18n.locale = kieli;
     }
   }
 
@@ -59,6 +64,7 @@ class KieliStore {
   }
 
   public async init() {
+    logger.info('Initing locales');
     _.forEach(await this.fetchLocaleMap(), (locales, lang) => {
       i18n.mergeLocaleMessage(lang, locales);
     });
@@ -79,7 +85,7 @@ class KieliStore {
       return result;
     }
     catch (err) {
-      console.error(err);
+      logger.error('Käännösten haku epäonnistui', err.message);
       return {};
     }
   }

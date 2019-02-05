@@ -45,7 +45,9 @@ div(class="container")
         :disabled="$v.$invalid") {{ $t('luo-pohja') }}
 </template>
 
+
 <script lang="ts">
+import Vue from 'vue';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
@@ -56,8 +58,9 @@ import { Ulkopuoliset, Opetussuunnitelmat } from '@/api';
 
 import { PerusteInfoDto,
   OpetussuunnitelmaLuontiDto,
-  JulkaisukieletEnum,
-  LokalisoituTekstiDto } from '@/tyypit';
+  LokalisoituTekstiDto,
+  Kieli,
+} from '@/tyypit';
 
 import EpContent from '@/components/EpContent/EpContent.vue';
 
@@ -76,13 +79,13 @@ import EpContent from '@/components/EpContent/EpContent.vue';
       required,
     },
   },
-})
-export default class UusiPohjaRoute extends Mixins(validationMixin) {
+} as any)
+export default class UusiPohjaRoute extends Vue {
 
   private perusteLista: PerusteInfoDto[] = [];
   private valittuPeruste: PerusteInfoDto | null = null;
   private perusteNimi: string = '';
-  private julkaisukielet: JulkaisukieletEnum[] = [];
+  private julkaisukielet: Kieli[] = [];
 
   public mounted() {
     this.fetchPerusteet();
@@ -99,7 +102,7 @@ export default class UusiPohjaRoute extends Mixins(validationMixin) {
 
   private luoUusiPeruste() {
     // Don't continue, if validations fail
-    if (this.$v.$invalid || this.valittuPeruste === null) {
+    if ((this as any).$v.$invalid || this.valittuPeruste === null) {
       return;
     }
 
@@ -111,8 +114,8 @@ export default class UusiPohjaRoute extends Mixins(validationMixin) {
     //
     const pohja: OpetussuunnitelmaLuontiDto = {
       nimi: pohjaNimi,
-      perusteenDiaarinumero: this.valittuPeruste.diaarinumero,
-      julkaisukielet: this.julkaisukielet,
+      perusteenDiaarinumero: this.valittuPeruste!.diaarinumero,
+      julkaisukielet: this.julkaisukielet as any,
       tyyppi: 'pohja' as any,
     };
 

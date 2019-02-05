@@ -1,6 +1,7 @@
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
+  lintOnSave: false,
 
   // CKEditor 5 theme
   css: {
@@ -23,12 +24,17 @@ module.exports = {
   },
 
   devServer: {
+    overlay: {
+      warnings: false,
+      errors: true,
+    },
+    clientLogLevel: "none",
     port: 9040,
     proxy: {
       "/eperusteet-ylops-service": {
         target: "http://localhost:8080",
         secure: false
       }
-    }
+    },
   }
 };

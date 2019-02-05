@@ -1,4 +1,4 @@
-import { Kayttajat } from './kayttaja';
+import { Kayttajat } from '../kayttaja';
 
 
 describe('Kayttajat', () => {

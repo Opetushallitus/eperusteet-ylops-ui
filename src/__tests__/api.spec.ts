@@ -5,7 +5,7 @@ import {
 describe('Api facade', () => {
   it('contains opetussuunnitelma methods', async () => {
     const spy = jest.spyOn(Opetussuunnitelmat, 'getAll');
-    spy.mockImplementationOnce(async () => {
+    spy.mockImplementationOnce(async (): Promise<any> => {
       return {
         data: [{
           id: 42,

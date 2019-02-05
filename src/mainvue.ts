@@ -10,7 +10,7 @@ import { Virheet } from '@/stores/virheet';
 import App from '@/App.vue';
 
 function errorCaptured(err: Error, vm: Vue, info: string) {
-  console.error(err.message);
+  console.error(err, info);
   // Virheet.lisaaVirhe({
   //   path: vm.$route.path,
   //   state: _.cloneDeep(vm.$data),

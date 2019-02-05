@@ -1,6 +1,7 @@
 <template lang="pug">
   span {{ formatted }}
 </template>
+
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import moment from 'moment';
@@ -19,7 +20,9 @@ export default class EpAikaleima extends Vue {
     st: 'H:mm',
   };
 
-  @Prop()
+  @Prop({
+    required: true,
+  })
   private value!: any;
 
   @Prop({ default: 'sdt' })
@@ -30,7 +33,9 @@ export default class EpAikaleima extends Vue {
 
   get formatted() {
     // Pakko olla, jotta localen vaihtuessa komponentti päivittyy
-    this.$i18n.locale; // tslint:disable-line
+    if (this.$i18n) {
+      this.$i18n.locale; // tslint:disable-line
+    }
 
     if (this.format) {
       return moment(this.value).format(this.format);
@@ -43,6 +48,5 @@ export default class EpAikaleima extends Vue {
       return moment(this.value).format(selectedFormat);
     }
   }
-
 }
 </script>

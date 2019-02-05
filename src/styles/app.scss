@@ -1,6 +1,41 @@
-body {
+@import './variables';
+
+:root {
   margin: 0;
   padding: 0;
+
+  color: $font-color-base;
+
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+
+  a {
+    color: $link-color;
+
+    &:hover {
+      text-decoration: none;
+      color: $link-color-hover;
+    }
+  }
 }
 
 
+.dev1 {
+  background: $green;
+}
+
+
+.dev2 {
+  background: $red;
+}
+
+
+.dev3 {
+  background: $blue;
+}
+
+
+.dev4 {
+  background: $yellow;
+}

@@ -18,12 +18,16 @@ import CollapseDebug from '@/routes/debug/collapse.vue';
 import CkEditorDebug from '@/routes/debug/ckeditor.vue';
 import EpContentDebug from '@/routes/debug/epcontent.vue';
 import AikaleimaDebug from '@/routes/debug/aikaleima.vue';
+import EditointiDebug from '@/routes/debug/editointi/editointi.vue';
 
 import { Virheet } from '@/stores/virheet';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 
 Vue.use(Router);
+
+import { createLogger } from '@/stores/logger';
+const logger = createLogger('Router');
 
 export const router = new Router({
   routes: [{
@@ -69,21 +73,21 @@ export const router = new Router({
       name: 'debug',
       component: Debug,
       children: [{
-        path: 'collapse',
-        name: 'collapseDebug',
-        component: CollapseDebug,
-      }, {
-        path: 'ckeditor',
-        name: 'ckeditorDebug',
-        component: CkEditorDebug,
-      }, {
-        path: 'epcontent',
-        name: 'epcontentDebug',
-        component: EpContentDebug,
-      }, {
-        path: 'aikaleima',
-        name: 'aikaleimaDebug',
-        component: AikaleimaDebug,
+        path: 'editointi',
+        name: 'editointiDebug',
+        component: EditointiDebug,
+      // }, {
+      //   path: 'ckeditor',
+      //   name: 'ckeditorDebug',
+      //   component: CkEditorDebug,
+      // }, {
+      //   path: 'epcontent',
+      //   name: 'epcontentDebug',
+      //   component: EpContentDebug,
+      // }, {
+      //   path: 'aikaleima',
+      //   name: 'aikaleimaDebug',
+      //   component: AikaleimaDebug,
       }],
     }],
   }, {
@@ -101,6 +105,7 @@ export const router = new Router({
 });
 
 Virheet.onError((virhe: SovellusVirhe) => {
+  logger.error('Route error', virhe);
   router.push({
     name: 'virhe',
     query: {
@@ -116,6 +121,7 @@ router.beforeEach((to, from, next) => {
     && _.includes(UiKielet, to.params.lang)) {
     Kielet.setUiKieli(to.params.lang as Kieli);
   }
+  logger.debug(`Route change ${from.name} -> ${to.name}`, from, to);
   next();
   // else {
   //   router.push({

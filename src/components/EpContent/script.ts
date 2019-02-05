@@ -10,8 +10,15 @@ import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
   },
 })
 export default class EpContent extends Vue {
-    @Prop() private value!: string | object;
-    @Prop() private isEditable!: boolean;
+  @Prop({
+    required: true,
+  })
+  private value!: string | object;
+
+  @Prop({
+    default: false,
+  })
+  private isEditable!: boolean;
 
     get contentValue() {
       if (typeof this.value === 'string') {
