@@ -9,16 +9,21 @@ import 'katex/dist/katex.min.css';
 export default class EpViewer extends Vue {
     @Prop() private value!: string;
 
+    private timeoutId: number | undefined = undefined;
+
     public mounted() {
       this.reRenderKatex();
     }
 
     public updated() {
-      this.reRenderKatex();
+      // Debounce render katex method, as it's quite time consuming
+      clearTimeout(this.timeoutId);
+      this.timeoutId = setTimeout(() => {
+        this.reRenderKatex();
+      }, 150);
     }
 
     private reRenderKatex() {
-      // FIXME: This method shouldn't trigger on every change, since it's quite time consuming
       this.$el.querySelectorAll('span.math-tex').forEach( (el) => {
         if (el.textContent) {
           const text: string = el.textContent;
