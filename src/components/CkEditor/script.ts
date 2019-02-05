@@ -21,7 +21,7 @@ import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import '@ckeditor/ckeditor5-build-classic/build/translations/fi.js';
 import '@ckeditor/ckeditor5-build-classic/build/translations/sv.js';
 
-import { CkEditorMathPlugin } from '@/plugins/CkEditorMath/CkEditorMath';
+import { CkEditorMathPlugin } from './CkEditorMathPlugin';
 
 @Component({
     name: 'CkEditor',
