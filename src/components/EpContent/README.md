@@ -38,7 +38,7 @@ new Vue({
   template: `
     <div>
         <button @click="muokkaa()">Muokkaa</button>
-        <pre>{{ value }}</pre>
+        <pre v-html="value"></pre>
         <ep-content v-model="value" :is-editable="isEditing" />
     </div>
   `
@@ -54,7 +54,7 @@ Tukee myös kieliä:
 <div>
     <button @click="muokkaa()">Muokkaa</button>
     <button @click="vaihdaKieli()">Vaihda kieli</button>
-    <pre>{{ value }}</pre>
+    <pre v-html="value"></pre>
     <ep-content v-model="value" :is-editable="isEditing" />
 </div>
 </template>
