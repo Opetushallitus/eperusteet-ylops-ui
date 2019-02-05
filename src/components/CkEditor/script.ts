@@ -18,6 +18,11 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 
+import '@ckeditor/ckeditor5-build-classic/build/translations/fi.js';
+import '@ckeditor/ckeditor5-build-classic/build/translations/sv.js';
+
+import { CkEditorMathPlugin } from '@/plugins/CkEditorMath/CkEditorMath';
+
 @Component({
     name: 'CkEditor',
 })
@@ -32,6 +37,9 @@ export default class CkEditor extends Vue {
     // Käytetäänkö laajennettua editoria
     @Prop({ default: false }) private isExtended!: boolean;
 
+    // Editorin käyttöliittymän kieli
+    @Prop({ default: 'fi' }) private locale!: string;
+
     // CKEditorin JS instanssi
     private instance: any = null;
 
@@ -40,6 +48,7 @@ export default class CkEditor extends Vue {
         try {
             // Perustilan asetukset
             const config: any = {
+                language: this.locale,
                 plugins: [
                     Bold,
                     Italic,
@@ -64,6 +73,7 @@ export default class CkEditor extends Vue {
                     ImageToolbar,
                     LinkPlugin,
                     ListPlugin,
+                    CkEditorMathPlugin,
                     Table,
                     TableToolbar,
                 ];
@@ -73,7 +83,7 @@ export default class CkEditor extends Vue {
                     '|',
                     'numberedList', 'bulletedList',
                     '|',
-                    'link', 'insertTable',
+                    'link', 'insertTable', 'insertKatex',
                     '|',
                     'undo', 'redo',
                 ];
