@@ -1,17 +1,33 @@
-div.home
+.home
+  .header
+    h3 {{ $t('tervetuloa', { nimi }) }}
+    p {{ $t('tervetuloa-kuvaus') }}
 
-  div(class="row")
+  .tilecontainer
+    .tiles.row
+      tile-opetussuunnitelmat()
+      tile-pohjat()
+      tile-uusi-opetussuunnitelma()
+      tile-uusi-pohja()
+      tile-valtakunnalliset-perusteet()
+      tile-faq()
+      tile-tiedotteet()
+      tile-organisaatio()
+      tile-loki()
+
+
+  //- div(class="row")
     div(class="col-md")
       h2 Kayttaja
       pre {{ kayttaja }}
 
-  div(class="row")
+  //- div(class="row")
     div(class="col-md")
       router-link(
         :to="{ name: 'uusiPohja' }"
         tag="b-button") {{ $t('luo-pohja') }}
 
-  div(class="row")
+  //- div(class="row")
     div(class="col-md")
       table.table
         thead

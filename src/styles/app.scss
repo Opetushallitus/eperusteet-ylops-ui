@@ -1,4 +1,5 @@
 @import './variables';
+@import 'oph-virkailija-style-guide/oph-styles.css';
 
 :root {
   margin: 0;
@@ -9,6 +10,14 @@
   -webkit-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
+
+  div.form {
+    padding: 20px;
+
+    label {
+      font-size: 120%;
+    }
+  }
 
   a {
     color: $link-color;

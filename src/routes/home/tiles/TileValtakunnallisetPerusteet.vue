@@ -1,0 +1,29 @@
+<template lang="pug">
+base-tile
+  template(slot="icon")
+    fas(icon="landmark")
+  template(slot="header")
+    span {{ $t('tile-perusteet') }}
+  template(slot="content")
+    p {{ $t('tile-perusteet-kuvaus') }}
+    a(:href="'https://eperusteet.opintopolku.fi/#/' + kieli")  {{ $t('tile-perusteet-siirry') }}
+</template>
+
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator';
+import BaseTile from './BaseTile.vue';
+import { Kielet } from '@/stores/kieli';
+
+@Component({
+  components: {
+    BaseTile,
+  }
+})
+export default class TileOpetussuunnitelmat extends Vue {
+  private get kieli() {
+    return Kielet.getUiKieli();
+  }
+}
+</script>
+
+<style scoped lang="scss" src="./style.scss"></style>

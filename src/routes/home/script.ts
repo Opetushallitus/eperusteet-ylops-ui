@@ -7,28 +7,39 @@ import { Kayttajat } from '@/stores/kayttaja';
 
 import EpAikaleima from '@/components/EpAikaleima/EpAikaleima.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
+import TileFaq from './tiles/TileFaq.vue';
+import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
+import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
+import TileUusiOpetussuunnitelma from './tiles/TileUusiOpetussuunnitelma.vue';
+import TileUusiPohja from './tiles/TileUusiPohja.vue';
+import TileLoki from './tiles/TileLoki.vue';
+import TileOrganisaatio from './tiles/TileOrganisaatio.vue';
+import TilePohjat from './tiles/TilePohjat.vue';
+import TileTiedotteet from './tiles/TileTiedotteet.vue';
 
 
 @Component({
   components: {
     EpAikaleima,
     EpContent,
+    TileFaq,
+    TileOpetussuunnitelmat,
+    TileValtakunnallisetPerusteet,
+    TileUusiOpetussuunnitelma,
+    TileUusiPohja,
+    TileLoki,
+    TileOrganisaatio,
+    TilePohjat,
+    TileTiedotteet,
   },
 })
 export default class Home extends Vue {
-  private opspohjalista: OpetussuunnitelmaInfoDto[] = [];
-
-  public mounted() {
-    this.haeOpsPohjat();
+  private get nimi() {
+    return Kayttajat.nimi();
   }
 
   private get kayttaja() {
     return Kayttajat.tiedot;
-  }
-
-  private async haeOpsPohjat() {
-    const opsPohjat = await Opetussuunnitelmat.getAll('POHJA');
-    this.opspohjalista = opsPohjat.data;
   }
 
 }

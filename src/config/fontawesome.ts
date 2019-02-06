@@ -8,5 +8,11 @@ library.add(solid.faChevronRight);
 library.add(solid.faCog);
 library.add(solid.faHome);
 library.add(solid.faPen);
+library.add(solid.faQuestion);
+library.add(solid.faLandmark);
+library.add(solid.faBell);
+library.add(solid.faFileSignature);
+library.add(solid.faUsers);
+library.add(solid.faClock);
 
 Vue.component('fas', FontAwesomeIcon);

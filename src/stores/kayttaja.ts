@@ -41,6 +41,16 @@ class KayttajaStore {
     pohja: [],
   };
 
+  @Getter()
+  public nimi() {
+    if (this.tiedot.kutsumanimi && this.tiedot.sukunimi) {
+      return this.tiedot.kutsumanimi + ' ' + this.tiedot.sukunimi;
+    }
+    else {
+      return this.tiedot.oidHenkilo;
+    }
+  }
+
   public async init() {
     try {
       logger.info('Haetaan käyttäjän tiedot');

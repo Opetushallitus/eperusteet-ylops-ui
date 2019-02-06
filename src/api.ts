@@ -1,5 +1,6 @@
 import { Configuration } from '@/generated/configuration';
 import axios, { AxiosInstance } from 'axios';
+import { createLogger } from '@/stores/logger';
 import {
   DokumentitApi,
   KommentitApi,
@@ -14,11 +15,27 @@ import {
 } from '@/generated/api';
 
 
+
 type FactoryFn<T> = (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;
 
+const logger = createLogger('Axios');
 const basePath = '';
 const ax = axios.create({
   baseURL: '/eperusteet-ylops-service/api',
+});
+
+ax.interceptors.response.use((response) => {
+  return response;
+}, async (err) => {
+  logger.error('Response error', err);
+  return err;
+});
+
+ax.interceptors.request.use((config) => {
+  return config;
+}, async (err) => {
+  logger.error('Request error', err);
+  return err;
 });
 
 // https://github.com/Microsoft/TypeScript/issues/20719

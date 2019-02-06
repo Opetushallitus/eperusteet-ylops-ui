@@ -3,7 +3,7 @@ import Router from 'vue-router';
 import * as _ from 'lodash';
 
 import Root from '@/routes/Root.vue';
-import Home from '@/routes/home/component.vue';
+import Home from '@/routes/home/RouteHome.vue';
 import NotFound from '@/routes/NotFound.vue';
 import VirheRoute from '@/routes/virhe/VirheRoute.vue';
 import Debug from '@/routes/debug/component.vue';
