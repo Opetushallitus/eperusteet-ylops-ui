@@ -1,10 +1,11 @@
 {
+  "kieli": "kieli",
+  "kieli-sisalto": "sisältö",
+
   "faq": "Usein kysytyt kysymykset",
   "faq-kuvaus": "Täältä löydät kysytyimmät kysymykset",
   "hallinta": "Hallinta",
   "historia": "Historia",
-  "kieli": "kieli",
-  "kieli-sisalto": "sisältö",
   "koulutustyyppi": "Koulutustyyppi",
   "luo-pohja": "Luo pohja",
   "luo-uusi": "Luo uusi",
