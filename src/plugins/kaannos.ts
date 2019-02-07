@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import moment from 'moment';
 import _ from 'lodash';
+import { createLogger } from '@/stores/logger';
+
+
+const logger = createLogger('Kaannos');
+const Varoitus = '"$kaanna" on tekstiolioiden kääntämiseen. Käytä vue-i18n vastaavaa funktiota. Esimerkiksi "$t()".';
 
 class Kaannos {
   public install(vue: typeof Vue) {
@@ -14,6 +19,7 @@ class Kaannos {
         return (value as any)[locale];
       }
       else {
+        logger.warn(Varoitus, 'Käännös:', '"' + value + '"');
         return value;
       }
     };

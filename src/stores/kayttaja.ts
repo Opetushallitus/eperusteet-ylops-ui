@@ -70,9 +70,14 @@ class KayttajaStore {
       return false;
     }
     else if (oikeus === 'hallinta') {
-      return _.includes(this.oikeudet['pohja' as OikeusKohde], 'luonti');
+      return this.hasHallintaoikeus();
     }
     else {
+      return this.vertaa(oikeus, kohde);
+    }
+  }
+
+  private vertaa(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {
       const haettu = getOikeusArvo(oikeus);
       if (haettu === 0) {
         return false;
@@ -81,7 +86,10 @@ class KayttajaStore {
         const korkein = _.max(_.map(this.oikeudet[kohde], getOikeusArvo)) || 0;
         return korkein >= haettu;
       }
-    }
+  }
+
+  private hasHallintaoikeus() {
+      return _.includes(this.oikeudet['pohja' as OikeusKohde], 'luonti');
   }
 
 }
