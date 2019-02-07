@@ -7,6 +7,7 @@ base-tile
   template(slot="content")
     p {{ $t('tile-uusi-pohja-kuvaus') }}
     router-link.btn.btn-primary(
+      id="etusivu-luo-uusi-pohja"
       :to="{ name: 'uusiPohja' }"
       tag="button") {{ $t('luo-uusi') }}
 </template>

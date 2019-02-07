@@ -28,14 +28,14 @@ ax.interceptors.response.use((response) => {
   return response;
 }, async (err) => {
   logger.error('Response error', err);
-  return err;
+  throw err;
 });
 
 ax.interceptors.request.use((config) => {
   return config;
 }, async (err) => {
   logger.error('Request error', err);
-  return err;
+  throw err;
 });
 
 // https://github.com/Microsoft/TypeScript/issues/20719

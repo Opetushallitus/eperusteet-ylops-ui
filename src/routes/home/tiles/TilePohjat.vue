@@ -5,17 +5,22 @@ base-tile
   template(slot="header")
     span {{ $t('tile-pohjasi') }}
   template(slot="content")
-    p {{ $t('tile-pohjasi-kuvaus') }}
     ep-spinner(v-if="isLoading")
-    .pohja(v-for="pohja in pohjat")
-      // pre {{ pohja }}
-      .name(v-if="pohja.nimi")
-        router-link(:to=`{ name: 'pohjanTiedot', \
-          params: { id: pohja.id } }`)
-          ep-content(:value="pohja.nimi")
-      .tiedot
-        .muokattu {{ $t('muokattu-viimeksi') }} {{ $ago(pohja.muokattu) }}
-    button.btn.btn-link {{ $t('nayta-lisaa') }}
+    div(v-else)
+      .alert.alert-light(v-if="pohjat.length === 0")
+        span {{ $t('tile-pohjasi-pohjia-ei-loytynyt') }}
+      div(v-else)
+        p {{ $t('tile-pohjasi-kuvaus') }}
+        .pohja(v-for="pohja in nakyvat")
+          .name(v-if="pohja.nimi")
+            router-link(:to=`{ name: 'pohjanTiedot', \
+              params: { id: pohja.id } }`)
+              ep-content(:value="pohja.nimi")
+          .tiedot
+            .muokattu {{ $t('muokattu-viimeksi') }} {{ $ago(pohja.muokattu) }}
+
+        button.btn.btn-link(v-if="pohjat.length > Maara" @click="naytaKaikki = !naytaKaikki")
+          | {{ naytaKaikki ? $t('nayta-vahemman') : $t('nayta-lisaa') }}
 </template>
 
 <script lang="ts">
@@ -40,17 +45,31 @@ import VueApexCharts from 'vue-apexcharts';
   }
 })
 export default class TilePohjat extends Vue {
+  private readonly Maara = 3;
+  private naytaKaikki = false;
   private isLoading = true;
   private ladatut: OpetussuunnitelmaInfoDto[] = [];
 
   public async mounted() {
     await delay(500);
-    this.ladatut = (await Opetussuunnitelmat.getAll('POHJA')).data;
-    this.isLoading = false;
+    try {
+      const res = await Opetussuunnitelmat.getAll('POHJA');
+      this.ladatut = res.data;
+    }
+    finally {
+      this.isLoading = false;
+    }
+  }
+
+  private get nakyvat() {
+    return this.naytaKaikki
+      ? this.pohjat
+      : _.take(this.pohjat, this.Maara);
   }
 
   private get pohjat() {
     return _(this.ladatut)
+      .sortBy('muokattu')
       .map((pohja) => ({
         ...pohja,
         $route: {

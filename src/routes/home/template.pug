@@ -14,34 +14,3 @@
       tile-tiedotteet()
       tile-organisaatio()
       tile-loki()
-
-
-  //- div(class="row")
-    div(class="col-md")
-      h2 Kayttaja
-      pre {{ kayttaja }}
-
-  //- div(class="row")
-    div(class="col-md")
-      router-link(
-        :to="{ name: 'uusiPohja' }"
-        tag="b-button") {{ $t('luo-pohja') }}
-
-  //- div(class="row")
-    div(class="col-md")
-      table.table
-        thead
-          tr
-            th {{ $t('nimi') }}
-            th {{ $t('tila') }}
-            th {{ $t('luotu') }}
-        tbody
-          tr(
-            v-for="ops in opspohjalista",
-            :key="ops.id")
-            td
-              router-link(tag="a", :to="{ name: 'pohjanTiedot', params: { id: ops.id } }")
-                ep-content(v-model="ops.nimi")
-            td {{ $t(ops.tila) }}
-            td
-              ep-aikaleima(:value="ops.luotu")

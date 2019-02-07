@@ -1,9 +1,8 @@
 <template lang="pug">
 div
-  h1 Uusi pohja
+  h1 {{ $t('uusi-pohja') }}
 
   .form
-
     .form-group
       label(for="uusi-ops-nimi") {{ $t('nimi') }}
       input.form-control(
@@ -15,24 +14,27 @@ div
     .form-group
       label(for="uusi-ops-tyyppi") {{ $t('peruste') }}
       div(v-if="valittavat.length > 0")
-        select.form-control(v-model="uusi.valittuPeruste")
+        select.form-control(
+          id="uusi-ops-peruste"
+          v-model="uusi.valittuPeruste")
           option(disabled value="null") {{ $t('valitse-peruste') }}
           option(v-for="peruste in valittavat" :key="peruste.id" :value="peruste")
-            span {{ $st(peruste.nimi) }} ({{peruste.diaarinumero}})
+            span {{ $kaanna(peruste.nimi) }} ({{peruste.diaarinumero}})
         small.form-text.text-muted {{ $t('uusi-ops-ohje-peruste') }}
       ep-spinner(v-else)
 
     button.btn.btn-primary(
       @click="luoUusiPeruste"
-      :disabled="$v.$invalid") {{ $t('luo-pohja') }}
-
-  pre {{ uusi }}
+      :disabled="$v.$invalid || isSaving") 
+      span {{ $t('luo-pohja') }}
+      ep-spinner-inline(v-if="isSaving")
 
 </template>
 
 <script lang="ts">
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
 import _ from 'lodash';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import { Kielet } from '@/stores/kieli';
@@ -51,6 +53,7 @@ import {
   components: {
     EpContent,
     EpSpinner,
+    EpSpinnerInline,
   },
   validations: {
     uusi: {
@@ -64,6 +67,7 @@ import {
   },
 } as any)
 export default class UusiPohjaRoute extends Mixins(validationMixin) {
+  private isSaving = false;
   private perusteet: PerusteInfoDto[] = [];
   private uusi = {
     valittuPeruste: null as (PerusteInfoDto | null),
@@ -77,7 +81,7 @@ export default class UusiPohjaRoute extends Mixins(validationMixin) {
   private get valittavat() {
     return _(this.perusteet)
       .filter((peruste) => _.includes(YlopsKoulutustyypit, peruste.koulutustyyppi))
-      .sortBy((peruste) => (this as any).$st(peruste.nimi))
+      .sortBy((peruste) => (this as any).$kaanna(peruste.nimi))
       .value();
   }
 
@@ -91,11 +95,11 @@ export default class UusiPohjaRoute extends Mixins(validationMixin) {
       return;
     }
 
-    //
+    this.isSaving = true;
+
     const pohjaNimi: LokalisoituTekstiDto = {
         [Kielet.getSisaltoKieli()]: this.uusi.nimi,
     };
-
 
     //
     try {
@@ -108,11 +112,20 @@ export default class UusiPohjaRoute extends Mixins(validationMixin) {
         tyyppi: 'pohja' as any,
       };
 
-      const res = await Opetussuunnitelmat.addOpetussuunnitelma(pohja);
+      const data = (await Opetussuunnitelmat.addOpetussuunnitelma(pohja)).data;
+      if (_.isNumber(data.id)) {
+        this.$router.replace({
+          name: 'pohjanTiedot',
+          params: {
+            id: '' + data.id,
+          },
+        });
+      }
 
     }
     catch (err) {
       console.log(err);
+      this.isSaving = false;
     }
 
   }

@@ -4,8 +4,8 @@ import _ from 'lodash';
 
 class Kaannos {
   public install(vue: typeof Vue) {
-    // Sisältö Translate
-    vue.prototype.$st = function(value: string | object) {
+    // Sisällön kääntäminen
+    vue.prototype.$kaanna = function(value: object) {
       if (!value) {
         return '';
       }

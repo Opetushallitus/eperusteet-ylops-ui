@@ -5,28 +5,33 @@ base-tile
   template(slot="header")
     span {{ $t('tile-opetussuunnitelmasi') }}
   template(slot="content")
-    p {{ $t('tile-opetussuunnitelmasi-kuvaus') }}
     ep-spinner(v-if="isLoading")
-    .ops(v-for="ops in opetussuunnitelmat")
-      // pre {{ ops }}
-      .d-flex
-        .stats.p-2.flex-shrink-1
-          div(style="height: 80px; width: 80px; top: -24px;")
-            apexchart(
-              type="radialBar",
-              :height="ops.$$tila.height",
-              :options="ops.$$tila.options",
-              :series="ops.$$tila.series")
-        .data.p-2
-          .name(v-if="ops.nimi")
-            ep-content(:value="ops.nimi")
-          .tiedot
-            .description
-              span(v-if="ops.kuvaus")
-                ep-content(:value="ops.kuvaus")
-              span(v-else) {{ ops.perusteenDiaarinumero }}
-            .muokattu {{ $t('muokattu-viimeksi') }} {{ $ago(ops.muokattu) }}
-    button.btn.btn-link {{ $t('nayta-lisaa') }}
+    div(v-else)
+      .alert.alert-light(v-if="ladatut.length === 0")
+        span {{ $t('tile-opetussuunnitelmia-ei-loytynyt') }}
+      div(v-else)
+        p {{ $t('tile-opetussuunnitelmasi-kuvaus') }}
+        .ops(v-for="ops in nakyvat")
+          // pre {{ ops }}
+          .d-flex
+            .stats.p-2.flex-shrink-1
+              div(style="height: 80px; width: 80px; top: -24px;")
+                // apexchart(
+                  type="radialBar",
+                  :height="ops.$$tila.height",
+                  :options="ops.$$tila.options",
+                  :series="ops.$$tila.series")
+            .data.p-2
+              .name(v-if="ops.nimi")
+                ep-content(:value="ops.nimi")
+              .tiedot
+                .description
+                  span(v-if="ops.kuvaus")
+                    ep-content(:value="ops.kuvaus")
+                  span(v-else) {{ ops.perusteenDiaarinumero }}
+                .muokattu {{ $t('muokattu-viimeksi') }} {{ $ago(ops.muokattu) }}
+        button.btn.btn-link(v-if="opetussuunnitelmat.length > Maara" @click="naytaKaikki = !naytaKaikki")
+          | {{ naytaKaikki ? $t('nayta-vahemman') : $t('nayta-lisaa') }}
 </template>
 
 <script lang="ts">
@@ -51,13 +56,26 @@ import VueApexCharts from 'vue-apexcharts';
   }
 })
 export default class TileOpetussuunnitelmat extends Vue {
+  private readonly Maara = 3;
+  private naytaKaikki = false;
   private isLoading = true;
   private ladatut: OpetussuunnitelmaInfoDto[] = [];
 
   public async mounted() {
     await delay(500);
-    this.ladatut = (await Opetussuunnitelmat.getAll()).data;
-    this.isLoading = false;
+    try {
+      const res = await Opetussuunnitelmat.getAll();
+      this.ladatut = res.data;
+    }
+    finally {
+      this.isLoading = false;
+    }
+  }
+
+  private get nakyvat() {
+    return this.naytaKaikki
+      ? this.ladatut
+      : _.take(this.ladatut, this.Maara);
   }
 
   private get opetussuunnitelmat() {

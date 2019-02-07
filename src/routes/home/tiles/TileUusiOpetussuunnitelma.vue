@@ -7,6 +7,7 @@ base-tile
   template(slot="content")
     p {{ $t('tile-uusi-opetussuunnitelma-kuvaus') }}
     router-link.btn.btn-primary(
+      id="etusivu-luo-uusi-opetussuunnitelma"
       disabled,
       :to="{ name: 'uusiPohja' }",
       tag="button") {{ $t('luo-uusi') }}

@@ -1,8 +1,8 @@
 <template lang="pug">
 div.topbar
   b-navbar(
-    type="dark"
-    variant="dark"
+    type="light"
+    variant="light"
     toggleable="md"
     :sticky="true")
 
@@ -31,9 +31,6 @@ div.topbar
           :key="kieli"
           :disabled="kieli === uiKieli") {{ kieli }}
 
-      // Admin
-      b-nav-item(id="nav-admin" :to="{ name: 'admin' }" v-oikeustarkastelu="'hallinta'")
-        fas.fa-fw(icon="cog")
 </template>
 
 <script lang="ts">
