@@ -18,12 +18,12 @@
       "jest"
     ],
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"],
+      "&/*": ["tests/*"]
     },
     "lib": [
       "esnext",
+      "es2015.promise",
       "dom",
       "dom.iterable",
       "scripthost"

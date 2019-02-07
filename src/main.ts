@@ -14,6 +14,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 import { createLogger } from '@/stores/logger';
+
 const logger = createLogger('Main');
 
 Vue.config.productionTip = false;

@@ -1,0 +1,27 @@
+.home {
+  padding: 30px;
+  // margin: 0 10px 0 10px;
+
+  @media screen and (min-width: 1124px) {
+    width: 100%;
+    max-width: 1024px;
+    margin: auto;
+    padding: 30px;
+  }
+
+  @media screen and (max-width: 1023px) {
+  }
+
+  .header {
+    margin-top: 20px;
+  }
+
+  .tilecontainer {
+    margin-top: 60px;
+
+    .tiles {
+      display: flex;
+      flex-flow: row wrap;
+    }
+  }
+}

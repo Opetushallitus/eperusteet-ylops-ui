@@ -11,6 +11,17 @@ import navbarNav from 'bootstrap-vue/es/components/navbar/navbar-nav';
 import navbarToggle from 'bootstrap-vue/es/components/navbar/navbar-toggle';
 import table from 'bootstrap-vue/es/components/table/table';
 
+// Layout
+import col from 'bootstrap-vue/es/components/layout/col';
+import container from 'bootstrap-vue/es/components/layout/container';
+import formRow from 'bootstrap-vue/es/components/layout/form-row';
+import row from 'bootstrap-vue/es/components/layout/row';
+
+Vue.component('b-col', col);
+Vue.component('b-container', container);
+Vue.component('b-formRow', formRow);
+Vue.component('b-row', row);
+
 Vue.component('b-button' , button);
 Vue.component('b-dropdown' , dropdown);
 Vue.component('b-dropdown-item' , dropdownItem);

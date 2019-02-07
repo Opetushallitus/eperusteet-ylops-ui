@@ -1,6 +1,7 @@
 <template lang="pug">
 div
-  router-view()
+  transition
+    router-view()
 </template>
 
 <script lang="ts">

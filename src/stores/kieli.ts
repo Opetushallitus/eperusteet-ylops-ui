@@ -5,16 +5,19 @@ import { Store, Getter, Mutation, Action, State } from './store';
 import { Kieli } from '@/tyypit';
 import { Ulkopuoliset } from '@/api';
 import Aikaleima from '@/plugins/aikaleima';
+import Kaannos from '@/plugins/kaannos';
 import * as moment from 'moment';
+
 import 'moment/locale/fi';
 import 'moment/locale/sv';
 import 'moment/locale/se';
 import 'moment/locale/ru';
 import 'moment/locale/en-gb';
-import { createLogger } from './logger';
+import { createLogger } from '@/stores/logger';
 
 Vue.use(VueI18n);
 Vue.use(Aikaleima);
+Vue.use(Kaannos);
 
 const logger = createLogger('Kieli');
 
