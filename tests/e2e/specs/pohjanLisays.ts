@@ -66,11 +66,11 @@ describe('Virkailijana pystyn luomaan opetussuunnitelmien pohjan', () => {
   it('Navigoitavissa', () => {
     cy.visit('/#/fi');
     cy.get('#etusivu-luo-uusi-pohja').click();
-    cy.contains('.btn', 'Luo pohja').should('be.disabled');
+    cy.contains('.oph-button', 'Luo pohja').should('be.disabled');
     cy.get('#uusi-ops-nimi').type('Uuden pohjan nimi');
-    cy.contains('.btn', 'Luo pohja').should('be.disabled');
+    cy.contains('.oph-button', 'Luo pohja').should('be.disabled');
     cy.get('#uusi-ops-peruste').select('Perusteen nimi (diaari123)');
-    cy.contains('.btn', 'Luo pohja').click();
+    cy.contains('.oph-button', 'Luo pohja').click();
     cy.location().should((loc) => expect(loc.href).to.contain('/#/fi/pohjat/42/tiedot'));
     cy.contains('.container', 'Uuden pohjan nimi');
     cy.contains('.container', 'diaari123');

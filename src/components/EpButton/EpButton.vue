@@ -1,6 +1,6 @@
 <template lang="pug">
 button.oph-button.oph-button-primary(
-    :disabled="disabled"
+    v-bind="$attrs"
     @click="$emit('click')")
   ep-spinner-inline(v-if="showSpinner")
   slot(name="content")
@@ -17,12 +17,6 @@ import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
   },
 })
 export default class EpButton extends Vue {
-
-  @Prop({
-    default: false,
-  })
-  private disabled!: boolean;
-
   @Prop({
     default: false,
   })
