@@ -14,3 +14,10 @@ Ajan muutos nykyhetkeen:
 
 ```
 
+Mahdollista käyttää myös funktiona:
+
+```vue
+
+<p>{{ $ldt(1548070246000) }}</p>
+
+```
