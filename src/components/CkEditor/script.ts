@@ -21,8 +21,6 @@ import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import '@ckeditor/ckeditor5-build-classic/build/translations/fi.js';
 import '@ckeditor/ckeditor5-build-classic/build/translations/sv.js';
 
-import { CkEditorMathPlugin } from './CkEditorMathPlugin';
-
 @Component({
     name: 'CkEditor',
 })
@@ -73,7 +71,6 @@ export default class CkEditor extends Vue {
                     ImageToolbar,
                     LinkPlugin,
                     ListPlugin,
-                    CkEditorMathPlugin,
                     Table,
                     TableToolbar,
                 ];
@@ -83,7 +80,7 @@ export default class CkEditor extends Vue {
                     '|',
                     'numberedList', 'bulletedList',
                     '|',
-                    'link', 'insertTable', 'insertKatex',
+                    'link', 'insertTable',
                     '|',
                     'undo', 'redo',
                 ];
