@@ -18,7 +18,7 @@ module.exports = {
   // SVG pictures for CKEditor must be added via raw-loader
   chainWebpack: config => {
     config.module.rule('svg')
-      .test( /(ckeditor5-[^/\\]+|CkEditor)[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
+      .test( /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
       .use( 'file-loader' )
       .loader( 'raw-loader' );
   },
