@@ -5,13 +5,7 @@ import { Kayttajat } from '@/stores/kayttaja';
 import { rootConfig } from '@/mainvue';
 
 import '@/registerServiceWorker';
-
-import { editointi } from '@/stores/editointi';
-
-import '@/config/bootstrap';
-import '@/config/fontawesome';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
+import '@/config/styles';
 
 import { createLogger } from '@/stores/logger';
 
@@ -32,6 +26,5 @@ async function main() {
     logger.error('Top level error:', err);
   }
 }
-
 
 main();

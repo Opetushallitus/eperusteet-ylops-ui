@@ -25,6 +25,10 @@ export default class EpAikaleima extends Vue {
   })
   private value!: any;
 
+  /**
+  Aikaleiman muoto, mahdolliset arvot:
+  `ago, ldt, ld, st, sdt, sd, st`
+  */
   @Prop({ default: 'sdt' })
   private type!: string;
 

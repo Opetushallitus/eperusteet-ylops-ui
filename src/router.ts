@@ -14,8 +14,6 @@ import UusiPohjaRoute from '@/routes/pohjat/UusiPohjaRoute.vue';
 import PohjanTiedotRoute from '@/routes/pohjat/PohjanTiedotRoute.vue';
 import PohjanSisaltoRoute from '@/routes/pohjat/PohjanSisaltoRoute.vue';
 
-import CollapseDebug from '@/routes/debug/collapse.vue';
-import AikaleimaDebug from '@/routes/debug/aikaleima.vue';
 import EditointiDebug from '@/routes/debug/editointi/editointi.vue';
 
 import { Virheet } from '@/stores/virheet';
@@ -74,10 +72,6 @@ export const router = new Router({
         path: 'editointi',
         name: 'editointiDebug',
         component: EditointiDebug,
-      // }, {
-      //   path: 'aikaleima',
-      //   name: 'aikaleimaDebug',
-      //   component: AikaleimaDebug,
       }],
     }],
   }, {

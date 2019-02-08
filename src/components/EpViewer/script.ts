@@ -1,8 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import katex from 'katex';
 
-import 'katex/dist/katex.min.css';
-
 @Component({
   name: 'EpViewer',
 })
