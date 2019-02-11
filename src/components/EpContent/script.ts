@@ -32,4 +32,15 @@ export default class EpContent extends Vue {
 
     return '';
   }
+
+  private handleContentChange(content:string) {
+    if (typeof this.value === 'string') {
+      this.$emit('input', content);
+    }
+
+    // Jos alkuperäinen arvo oli objekti, korvataan objektista vain
+    // kyseisen sisältökielen mukainen arvo
+    const kieli = Kielet.getSisaltoKieli();
+    (this.value as any)[kieli] = content;
+  }
 }

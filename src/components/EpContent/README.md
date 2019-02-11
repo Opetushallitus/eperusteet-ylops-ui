@@ -54,6 +54,7 @@ Tukee myös kieliä:
 <div>
     <button @click="muokkaa()">Muokkaa</button>
     <button @click="vaihdaKieli()">Vaihda kieli</button>
+    <span>( Editorin kieli: {{ kieli }} )</span>
     <pre v-html="value"></pre>
     <ep-content v-model="value" :is-editable="isEditing" />
 </div>
@@ -64,10 +65,17 @@ export default {
   data(){
     return {
       value: {
+        someNonEditorRelatedAttr: 'test',
         fi: 'hello',
         sv: 'world',
       },
       isEditing: true,
+    }
+  },
+  computed: {
+    kieli: function() {
+      return 'fi';
+//      return Kielet.getSisaltoKieli();
     }
   },
   methods: {
