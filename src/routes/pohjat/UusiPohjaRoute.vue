@@ -23,18 +23,18 @@ div
         small.form-text.text-muted {{ $t('uusi-ops-ohje-peruste') }}
       ep-spinner(v-else)
 
-    button.btn.btn-primary(
+    ep-button(
       @click="luoUusiPeruste"
-      :disabled="$v.$invalid || isSaving") 
-      span {{ $t('luo-pohja') }}
-      ep-spinner-inline(v-if="isSaving")
+      :disabled="$v.$invalid || isSaving"
+      :showSpinner="isSaving")
+      span(slot="content") {{ $t('luo-pohja') }}
 
 </template>
 
 <script lang="ts">
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
+import EpButton from '@/components/EpButton/EpButton.vue';
 import _ from 'lodash';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import { Kielet } from '@/stores/kieli';
@@ -53,7 +53,7 @@ import {
   components: {
     EpContent,
     EpSpinner,
-    EpSpinnerInline,
+    EpButton,
   },
   validations: {
     uusi: {

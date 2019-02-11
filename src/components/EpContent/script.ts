@@ -20,16 +20,16 @@ export default class EpContent extends Vue {
   })
   private isEditable!: boolean;
 
-    get contentValue() {
-      if (typeof this.value === 'string') {
-        return this.value;
-      }
-
-      const kieli = Kielet.getSisaltoKieli();
-      if (this.value.hasOwnProperty(kieli)) {
-          return (this.value as any)[kieli];
-      }
-
-      return '';
+  get contentValue() {
+    if (typeof this.value === 'string') {
+      return this.value;
     }
+
+    const kieli = Kielet.getSisaltoKieli();
+    if (this.value.hasOwnProperty(kieli)) {
+        return (this.value as any)[kieli];
+    }
+
+    return '';
+  }
 }
