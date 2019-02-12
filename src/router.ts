@@ -9,10 +9,10 @@ import VirheRoute from '@/routes/virhe/VirheRoute.vue';
 import Debug from '@/routes/debug/component.vue';
 import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
-import PohjatRoute from '@/routes/pohjat/PohjatRoute.vue';
-import UusiPohjaRoute from '@/routes/pohjat/UusiPohjaRoute.vue';
-import PohjanTiedotRoute from '@/routes/pohjat/PohjanTiedotRoute.vue';
-import PohjanSisaltoRoute from '@/routes/pohjat/PohjanSisaltoRoute.vue';
+import RouteOpetussuunnitelma from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelma.vue';
+import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
+import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
+import RouteSisalto from '@/routes/opetussuunnitelmat/sisalto/RouteSisalto.vue';
 
 import EditointiDebug from '@/routes/debug/editointi/editointi.vue';
 
@@ -45,24 +45,21 @@ export const router = new Router({
       name: 'virhe',
       component: VirheRoute,
     }, {
-      path: 'pohjat',
-      component: PohjatRoute,
+      path: 'uusi/pohja',
+      name: 'uusiPohja',
+      component: RoutePohjaUusi,
+    }, {
+      path: 'uusi/ops',
+      name: 'uusiPohja',
+      component: RoutePohjaUusi,
+    }, {
+      path: 'opetussuunnitelmat/:id',
+      name: 'opetussuunnitelma',
+      component: RouteOpetussuunnitelma,
       children: [{
-        path: 'uusi',
-        name: 'uusiPohja',
-        component: UusiPohjaRoute,
-      }, {
-        path: ':id',
-        component: PohjatRoute,
-        children: [{
-          path: 'tiedot',
-          name: 'pohjanTiedot',
-          component: PohjanTiedotRoute,
-        }, {
-          path: 'sisalto',
-          name: 'pohjanSisalto',
-          component: PohjanSisaltoRoute,
-        }],
+        path: 'tiedot',
+        component: RouteTiedot,
+        name: 'opsTiedot',
       }],
     }, {
       path: 'debug',

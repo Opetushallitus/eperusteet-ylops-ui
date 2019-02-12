@@ -1,11 +1,10 @@
 <template lang="pug">
-div(class="container")
-
+div
   div(class="row tab-area-row")
     div(class="col-md")
       div(class="oph-tabs")
         router-link(
-          :to="{ name: 'pohjanTiedot' }"
+          :to="{ name: 'opsTiedot' }"
           tag="div"
           class="oph-tab-item") {{ $t('pohjan-tiedot') }}
         div(class="oph-tab-item oph-tab-item-is-active") {{ $t('yhteiset-osuudet') }}

@@ -1,11 +1,8 @@
 div.ep-collapse
   div.header
-    b-button(variant="link" @click="toggled = !toggled")
-      span.icon
-        slot(v-if="toggled" name="icon-opened")
-          fas.fa-fw(icon="chevron-down")
-        slot(v-else name="icon-closed")
-          fas.fa-fw(icon="chevron-right")
+    button.btn.btn-link(variant="link" @click="toggled = !toggled")
       slot(name="header")
+
   div.content(v-if="toggled")
+    // @slot Content that is hidden/shown
     slot(name="content")

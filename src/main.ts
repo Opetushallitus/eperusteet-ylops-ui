@@ -1,7 +1,5 @@
 import Vue from 'vue';
 
-import { Kielet, i18n } from '@/stores/kieli';
-import { Kayttajat } from '@/stores/kayttaja';
 import { rootConfig } from '@/mainvue';
 
 import '@/registerServiceWorker';
@@ -17,8 +15,6 @@ Vue.config.performance = process.env.NODE_ENV === 'development';
 
 async function main() {
   try {
-    await Kielet.init();
-    await Kayttajat.init();
     logger.info('Mounting #app');
     (new Vue(rootConfig)).$mount('#app');
   }

@@ -1,4 +1,11 @@
 import Vue from 'vue';
+import Loading from 'vue-loading-overlay';
+
+Vue.use(Loading, {
+  fullPage: true,
+  color: '#159ecb',
+  loader: 'dots',
+});
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';

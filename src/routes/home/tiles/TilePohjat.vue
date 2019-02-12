@@ -13,7 +13,7 @@ base-tile
         p {{ $t('tile-pohjasi-kuvaus') }}
         .pohja(v-for="pohja in nakyvat")
           .name(v-if="pohja.nimi")
-            router-link(:to=`{ name: 'pohjanTiedot', \
+            router-link(:to=`{ name: 'opsTiedot', \
               params: { id: pohja.id } }`)
               ep-content(:value="pohja.nimi")
           .tiedot

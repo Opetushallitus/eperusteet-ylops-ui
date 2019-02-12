@@ -115,7 +115,7 @@ export default class UusiPohjaRoute extends Mixins(validationMixin) {
       const data = (await Opetussuunnitelmat.addOpetussuunnitelma(pohja)).data;
       if (_.isNumber(data.id)) {
         this.$router.replace({
-          name: 'pohjanTiedot',
+          name: 'opsTiedot',
           params: {
             id: '' + data.id,
           },

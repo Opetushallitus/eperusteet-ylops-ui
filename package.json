@@ -83,6 +83,7 @@
     "vue-i18n": "^8.8.0",
     "vue-property-decorator": "^7.3.0",
     "vue-router": "^3.0.1",
+    "vue-spinner": "^1.0.3",
     "vue-styleguidist": "^3.0.9",
     "vue-template-compiler": "^2.6.2",
     "vuedraggable": "^2.17.0",
@@ -98,7 +99,9 @@
     "eslint": "^5.13.0",
     "eslint-plugin-vue": "^5.0.0",
     "html-loader": "^0.5.5",
-    "vue-apexcharts": "^1.2.9"
+    "vue-apexcharts": "^1.2.9",
+    "vue-loading-overlay": "^3.1.1",
+    "vue-sticky-directive": "0.0.8"
   },
   "engines": {
     "node": "10.x.x"

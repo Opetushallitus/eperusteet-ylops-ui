@@ -15,13 +15,13 @@
 import { Vue, Component } from 'vue-property-decorator';
 
 @Component
-export default class TileFaq extends Vue {
-
+export default class BaseTile extends Vue {
 }
 </script>
 
 <style scoped lang="scss">
 .tile {
+  width: 440px;
   flex: 0 0 440px;
   margin-bottom: 28px;
 

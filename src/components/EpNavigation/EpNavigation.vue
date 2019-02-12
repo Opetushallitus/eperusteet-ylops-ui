@@ -1,10 +1,8 @@
 <template lang="pug">
-div.topbar
+div.topbar(style="position: relative")
   b-navbar(
-    type="light"
-    variant="light"
-    toggleable="md"
-    :sticky="true")
+    type="dark"
+    toggleable="md")
 
     b-navbar-nav
       b-nav-item(id="nav-admin" :to="{ name: 'root' }")
@@ -14,7 +12,7 @@ div.topbar
       // Sisällön kieli
       b-nav-item-dropdown(id="content-lang-selector")
         template(slot="button-content")
-          span {{ $t("kieli-sisalto") }} ({{ sisaltoKieli }})
+          span.kielivalitsin {{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}
         b-dropdown-item(
           @click="valitseSisaltoKieli(kieli)"
           v-for="kieli in sovelluksenKielet"
@@ -24,7 +22,7 @@ div.topbar
       // Käyttöliittymän kieli
       b-nav-item-dropdown(id="ui-lang-selector")
         template(slot="button-content")
-          span {{ $t("kieli") }} ({{ uiKieli }})
+          span.kielivalitsin {{ $t("kieli") }} ({{ uiKieli }})
         b-dropdown-item(
           @click="valitseUiKieli(kieli)"
           v-for="kieli in sovelluksenKielet"
@@ -38,6 +36,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Kieli } from '@/tyypit';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
+import Loading from 'vue-loading-overlay';
 
 @Component({
   directives: {
@@ -70,4 +69,19 @@ export default class Root extends Vue {
 </script>
 
 <style scoped lang="scss">
+@import '../../styles/variables';
+
+.topbar {
+  .navbar {
+    top: 0;
+    position: sticky;
+    background: $color-ops-header;
+    font-weight: 600;
+
+    .kielivalitsin {
+      color: white;
+    }
+  }
+}
+
 </style>

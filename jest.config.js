@@ -19,6 +19,9 @@ module.exports = {
     "<rootDir>/src/**/*.(ts|tsx|vue)",
     "!<rootDir>/src/generated/**/*.ts",
     "!<rootDir>/src/**/script.ts",
+    "!<rootDir>/**/*.d.ts",
+    "!<rootDir>/src/config/styles.ts",
+    "!<rootDir>/src/main.ts",
   ],
   moduleFileExtensions: [
     'vue',

@@ -14,9 +14,11 @@ $blue-lighten-1:   #159ecb;
 $blue-lighten-2:   #00b5f0;
 $blue-lighten-3:   #a6dcee;
 $blue-lighten-4:   #def2ff;
+$blue-lighten-5:   #0041DC;
 $blue-darken-1:    #00526c;
 $green:            #4c7f00;
 $green-lighten-1:  #e6ffc1;
+$green-lighten-2:  #5BCA13;
 $yellow:           #ffd024;
 $yellow-lighten-1: #fff7bc;
 
@@ -32,3 +34,6 @@ $bg-color-info:    var($blue-lighten-4);
 $bg-color-success: var($green-lighten-1);
 $bg-color-warning: var($yellow-lighten-1);
 $bg-color-error:   var($red-lighten-2);
+
+$color-ops-header: #001A58;
+$color-ops-header-text: #fff;
