@@ -14,5 +14,6 @@ library.add(solid.faBell);
 library.add(solid.faFileSignature);
 library.add(solid.faUsers);
 library.add(solid.faClock);
+library.add(solid.faSearch);
 
 Vue.component('fas', FontAwesomeIcon);

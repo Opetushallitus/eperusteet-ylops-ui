@@ -1,15 +1,18 @@
-import { Mixins, Component } from 'vue-property-decorator';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import EpRoute from '@/mixins/EpRoot';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import VueApexCharts from 'vue-apexcharts';
 import _ from 'lodash';
+import { Mixins, Component } from 'vue-property-decorator';
+
+import EpRoute from '@/mixins/EpRoot';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
+import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { bigChart } from '@/utils/graphs';
 
 
 @Component({
   components: {
     EpSpinner,
+    EpSidebar,
     apexchart: VueApexCharts,
   },
 })
