@@ -5,7 +5,7 @@ import { Kieli } from '@/tyypit';
 describe('Plugin kaannos', () => {
 
   beforeEach(() => {
-    Kielet.setUiKieli(Kieli.fi);
+    Kielet.setSisaltoKieli(Kieli.fi);
   });
 
   function createWrapper(data: object) {
@@ -31,7 +31,7 @@ describe('Plugin kaannos', () => {
 
     expect(wrapper.text()).toEqual('suomeksi');
 
-    Kielet.setUiKieli(Kieli.sv);
+    Kielet.setSisaltoKieli(Kieli.sv);
     expect(wrapper.text()).toEqual('ruotsiksi');
   });
 

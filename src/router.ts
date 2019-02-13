@@ -48,10 +48,10 @@ export const router = new Router({
       path: 'uusi/pohja',
       name: 'uusiPohja',
       component: RoutePohjaUusi,
-    }, {
-      path: 'uusi/ops',
-      name: 'uusiPohja',
-      component: RoutePohjaUusi,
+    // }, {
+    //   path: 'uusi/ops',
+    //   name: 'uusiOps',
+    //   component: RoutePohjaUusi,
     }, {
       path: 'opetussuunnitelmat/:id',
       name: 'opetussuunnitelma',

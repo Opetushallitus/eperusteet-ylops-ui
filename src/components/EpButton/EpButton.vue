@@ -2,8 +2,8 @@
 button.oph-button.oph-button-primary(
     v-bind="$attrs"
     @click="$emit('click')")
-  ep-spinner-inline(v-if="showSpinner")
   slot(name="content")
+  ep-spinner-inline(v-if="showSpinner")
 </template>
 
 <script lang="ts">

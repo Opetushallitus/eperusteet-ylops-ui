@@ -2,6 +2,7 @@ import Vue from 'vue';
 import moment from 'moment';
 import _ from 'lodash';
 import { createLogger } from '@/stores/logger';
+import { Kielet } from '@/stores/kieli';
 
 
 const logger = createLogger('Kaannos');
@@ -10,12 +11,12 @@ const Varoitus = '"$kaanna" on tekstiolioiden kääntämiseen. Käytä vue-i18n 
 class Kaannos {
   public install(vue: typeof Vue) {
     // Sisällön kääntäminen
-    vue.prototype.$kaanna = function(value: object) {
+    vue.prototype.$kaanna = (value: object) => {
       if (!value) {
         return '';
       }
       else if (_.isObject(value)) {
-        const locale = this.$i18n.locale;
+        const locale = Kielet.getSisaltoKieli();
         return (value as any)[locale];
       }
       else {
