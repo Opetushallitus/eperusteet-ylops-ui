@@ -23,7 +23,8 @@ div
                     :series="ops.graph.series")
               .data.p-2
                 .name(v-if="ops.nimi")
-                  ep-content(:value="ops.nimi")
+                  router-link(:to=`{ name: 'opsTiedot', params: { id: ops.id } }`)
+                    ep-content(:value="ops.nimi")
                 .tiedot
                   .description
                     span(v-if="ops.kuvaus")

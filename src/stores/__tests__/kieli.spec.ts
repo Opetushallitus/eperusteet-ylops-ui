@@ -1,6 +1,12 @@
 import { Kieli } from '@/tyypit';
 import { UiKielet, i18n, Kielet } from '../kieli';
 import { Ulkopuoliset } from '@/api';
+import _ from 'lodash';
+
+const locales = {
+  fi: require('@/translations/locale-fi.json'),
+  sv: require('@/translations/locale-sv.json'),
+};
 
 
 describe('Kielet', () => {
@@ -8,6 +14,11 @@ describe('Kielet', () => {
   beforeEach(() => {
     i18n.locale = Kieli.fi;
     Kielet.setSisaltoKieli(Kieli.fi);
+  });
+
+  test('Käännökset kaikilla kielillä', () => {
+    expect(_.sortBy(_.keys(locales.fi)))
+      .toEqual(_.sortBy(_.keys(locales.sv)));
   });
 
   test('UI-kieli', async () => {
@@ -24,7 +35,7 @@ describe('Kielet', () => {
   });
 
   test('Ui käännökset', async () => {
-    expect(i18n.t('kieli-sisalto')).toEqual('sisältö');
+    expect(i18n.t('kieli-sisalto')).toEqual('Sisällön kieli');
     i18n.locale = Kieli.sv;
     expect(i18n.t('kieli-sisalto')).toEqual('innehåll');
   });

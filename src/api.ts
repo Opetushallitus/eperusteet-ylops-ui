@@ -23,12 +23,11 @@ const logger = createLogger('Axios');
 const basePath = '';
 const ax = axios.create({
   baseURL: '/eperusteet-ylops-service/api',
-  timeout: 2000,
 });
 
 function axiosHandler(msg: string) {
   return async (err: any) => {
-    // logger.error(msg, err);
+    logger.error(msg, err);
     throw err;
   };
 }

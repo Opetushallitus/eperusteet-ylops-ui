@@ -3,12 +3,12 @@
 input.input-style.form-control(
   v-if="isObject && isEditing"
   :attrs="$attrs"
-  v-model="model[$i18n.locale]")
+  v-model="model[kieli]")
 
 div.input-content(
   v-else-if="isObject && !isEditing"
   :attrs="$attrs")
-  | {{ model[$i18n.locale] }}
+  | {{ model[kieli] }}
 
 input.input-style.form-control(
   v-else-if="!isObject && isEditing"
@@ -25,6 +25,7 @@ div.input-content(
 <script lang="ts">
 import { Vue, Component, Prop, Model } from 'vue-property-decorator';
 import _ from 'lodash';
+import { Kielet } from '@/stores/kieli';
 
 
 @Component
@@ -35,9 +36,14 @@ export default class RouteTiedot extends Vue {
   @Model('change', { required: true })
   private model!: string | object;
 
+  get kieli() {
+    return Kielet.getSisaltoKieli();
+  }
+
   get isObject() {
     return _.isObject(this.model);
   }
+
 }
 </script>
 

@@ -22,7 +22,7 @@ div.topbar(style="position: relative")
       // Käyttöliittymän kieli
       b-nav-item-dropdown(id="ui-lang-selector")
         template(slot="button-content")
-          span.kielivalitsin {{ $t("kieli") }} ({{ uiKieli }})
+          span.kielivalitsin {{ $t("kieli") }}: {{ uiKieli }}
         b-dropdown-item(
           @click="valitseUiKieli(kieli)"
           v-for="kieli in sovelluksenKielet"

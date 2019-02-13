@@ -1,15 +1,16 @@
 version: "2"
 
 exclude_patterns:
-  - "coverage/"
-  - "tests"
-  - "**/__tests__/"
+  - "**/*.d.ts"
+  - "**/*.js"
   - "**/*.spec.ts"
   - "**/*.vue"
-  - "**/*.js"
-  - "src/generated"
-  - "public"
+  - "**/__tests__/"
   - "**/node_modules"
+  - "coverage/"
+  - "public"
+  - "src/generated"
+  - "tests"
 
 checks:
   argument-count:
