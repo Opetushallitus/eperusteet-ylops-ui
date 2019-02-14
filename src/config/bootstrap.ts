@@ -4,6 +4,7 @@ import button from 'bootstrap-vue/es/components/button/button';
 import dropdown from 'bootstrap-vue/es/components/dropdown/dropdown';
 import dropdownItem from 'bootstrap-vue/es/components/dropdown/dropdown-item';
 import dropdownItemButton from 'bootstrap-vue/es/components/dropdown/dropdown-item-button';
+import formSelect from 'bootstrap-vue/es/components/form-select/form-select';
 import navItem from 'bootstrap-vue/es/components/nav/nav-item';
 import navItemDropdown from 'bootstrap-vue/es/components/nav/nav-item-dropdown';
 import navbar from 'bootstrap-vue/es/components/navbar/navbar';
@@ -19,7 +20,8 @@ import row from 'bootstrap-vue/es/components/layout/row';
 
 Vue.component('b-col', col);
 Vue.component('b-container', container);
-Vue.component('b-formRow', formRow);
+Vue.component('b-form-row', formRow);
+Vue.component('b-form-select', formSelect);
 Vue.component('b-row', row);
 
 Vue.component('b-button' , button);

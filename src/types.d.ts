@@ -5,3 +5,4 @@ declare module 'bootstrap-vue/es/components/*';
 declare module 'vue-apexcharts';
 declare module 'vue-sticky-directive';
 declare module 'vue-loading-overlay';
+declare module 'vue-progressbar';

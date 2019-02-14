@@ -1,5 +1,5 @@
 <template lang="pug">
-div.topbar(style="position: relative")
+div.topbar
   b-navbar(
     type="dark"
     toggleable="md")
@@ -74,7 +74,6 @@ export default class Root extends Vue {
 .topbar {
   .navbar {
     top: 0;
-    position: sticky;
     background: $color-ops-header;
     font-weight: 600;
 
