@@ -36,11 +36,13 @@ export default class EpContent extends Vue {
   private handleContentChange(content:string) {
     if (typeof this.value === 'string') {
       this.$emit('input', content);
+      return;
     }
 
-    // Jos alkuperäinen arvo oli objekti, korvataan objektista vain
-    // kyseisen sisältökielen mukainen arvo
+    // Jos alkuperäinen arvo oli objekti, luodaan objektista uusi kopio ja
+    // korvataan siitä kyseisen sisältökielen mukainen arvo. Kts:
+    // https://github.com/vuejs/vue/issues/4373#issuecomment-279826554
     const kieli = Kielet.getSisaltoKieli();
-    (this.value as any)[kieli] = content;
+    this.$emit('input', { ...this.value, [kieli]: content });
   }
 }
