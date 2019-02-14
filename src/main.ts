@@ -1,4 +1,12 @@
 import Vue from 'vue';
+import { Component } from 'vue-property-decorator';
+import VueProgressBar from 'vue-progressbar';
+
+Vue.use(VueProgressBar, {
+  color: '#def2ff',
+  failedColor: 'red',
+  height: '2px',
+});
 
 import { rootConfig } from '@/mainvue';
 
@@ -9,9 +17,11 @@ import { createLogger } from '@/stores/logger';
 
 const logger = createLogger('Main');
 
+const inDev = process.env.NODE_ENV === 'development';
+
 Vue.config.productionTip = false;
-Vue.config.devtools = false;
-Vue.config.performance = process.env.NODE_ENV === 'development';
+Vue.config.devtools = inDev;
+Vue.config.performance = inDev;
 
 async function main() {
   try {

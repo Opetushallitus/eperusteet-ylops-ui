@@ -5,6 +5,7 @@ import { Mixins, Component } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoot';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
+import OpsSidenav from './OpsSidenav.vue';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { bigChart } from '@/utils/graphs';
 
@@ -12,6 +13,7 @@ import { bigChart } from '@/utils/graphs';
 @Component({
   components: {
     EpSpinner,
+    OpsSidenav,
     EpSidebar,
     apexchart: VueApexCharts,
   },
@@ -36,4 +38,5 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
     const id = this.$route.params.id;
     await Opetussuunnitelma.init(_.parseInt(id));
   }
+
 }

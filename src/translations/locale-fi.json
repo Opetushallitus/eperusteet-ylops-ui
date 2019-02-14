@@ -3,6 +3,7 @@
   "kieli-sisalto": "Sisällön kieli",
 
   "faq": "Usein kysytyt kysymykset",
+  "oma": "Oma",
   "faq-kuvaus": "Täältä löydät kysytyimmät kysymykset",
   "hallinta": "Hallinta",
   "historia": "Historia",
@@ -31,6 +32,7 @@
   "nayta-lisaa": "Näytä lisää",
   "nayta-vahemman": "Näytä vähemmän",
   "nimi": "Nimi",
+  "oppiaineet": "Oppiaineet",
   "ops-nimi": "Opetussuunnitelman nimi",
   "ops-nimi-ohje": "Tähän opetussuunnitelman nimi",
   "palaa-etusivulle": "Palaa etusivulle",
@@ -39,6 +41,7 @@
   "tallenna": "Tallenna",
   "tervetuloa": "Hei {nimi}, tervetuloa ePerusteet OPS-työkaluun!",
   "tervetuloa-kuvaus": "Tämän työkalun avulla lorem ipsum",
+  "tiedot": "Tiedot",
   "tila": "Tila",
   "tile-loki": "Loki",
   "tile-loki-kuvaus": "Ei lokitapahtumia",

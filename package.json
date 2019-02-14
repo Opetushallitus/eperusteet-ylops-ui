@@ -81,6 +81,7 @@
     "vue-cli-plugin-styleguidist": "^1.0.4",
     "vue-docgen-api": "^2.6.12",
     "vue-i18n": "^8.8.0",
+    "vue-progressbar": "^0.7.5",
     "vue-property-decorator": "^7.3.0",
     "vue-router": "^3.0.1",
     "vue-spinner": "^1.0.3",

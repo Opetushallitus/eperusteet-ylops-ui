@@ -1,7 +1,8 @@
 <template lang="pug">
-div(v-if="!isInitializing")
-  transition
-    router-view()
+div
+  div(v-if="!isInitializing")
+    transition
+      router-view()
 </template>
 
 <script lang="ts">
@@ -10,12 +11,14 @@ import { Kielet, i18n } from '@/stores/kieli';
 import { Kayttajat } from '@/stores/kayttaja';
 import { delay } from '@/utils/delay';
 
+
 @Component
 export default class App extends Vue {
   private isInitializing = true;
 
   public async mounted() {
     const loader = (this as any).$loading.show({
+      color: '#001A58',
     });
 
     await Kielet.init();

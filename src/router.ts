@@ -13,6 +13,8 @@ import RouteOpetussuunnitelma from '@/routes/opetussuunnitelmat/RouteOpetussuunn
 import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
 import RouteSisalto from '@/routes/opetussuunnitelmat/sisalto/RouteSisalto.vue';
+import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
+import RouteOppiaineet from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaineet.vue';
 
 import EditointiDebug from '@/routes/debug/editointi/editointi.vue';
 
@@ -60,15 +62,14 @@ export const router = new Router({
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
-      }],
-    }, {
-      path: 'debug',
-      name: 'debug',
-      component: Debug,
-      children: [{
-        path: 'editointi',
-        name: 'editointiDebug',
-        component: EditointiDebug,
+      }, {
+        path: 'oppiaineet',
+        component: RouteOppiaineet,
+        name: 'oppiaineet',
+      }, {
+        path: 'tekstikappale/:osaId',
+        component: RouteTekstikappale,
+        name: 'tekstikappale',
       }],
     }],
   }, {
