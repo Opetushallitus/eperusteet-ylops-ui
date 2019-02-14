@@ -1,29 +1,33 @@
 <template lang="pug">
-.tekstiviite(v-if="value")
+.tekstiviite(v-if="value && hooks")
   .kappale(v-if="value.tekstiKappale")
-    .otsikko
-      .d-flex.justify-content-between
-        .p-2
-          h3 {{ $kaanna(value.tekstiKappale.nimi) }}
-        .p-2
-          .badges
-            span.badge.badge-pill.badge-light(v-if="value.omistussuhde !== 'oma'") {{ $t('vieras') }}
-            span.badge.badge-pill.badge-warning(v-if="value.pakollinen") {{ $t('pakollinen') }}
-            span
-              span.badge.badge-pill.badge-info(v-if="value.tekstiKappale.tila === 'luonnos'") {{ $t('luonnos') }}
-              span.badge.badge-pill.badge-success(v-if="value.tekstiKappale.tila === 'valmis'") {{ $t('valmis') }}
-    .teksti
-      .row
-        .col-lg
-          p(v-html="$kaanna(value.tekstiKappale.teksti)")
-        .col-lg.ohjeet(v-if="ohjeet.length > 0")
-          .ohje(v-for="ohje in ohjeet")
-            p(v-html="$kaanna(ohje.teksti)")
+    ep-editointi(:hooks="hooks")
+      template(slot="header" slot-scope="scope")
+        .otsikko
+          h3 {{ $kaanna(scope.data.tekstiKappale.nimi) }}
+      template(slot-scope="scope")
+        .teksti
+          .row
+            .col-lg-8
+              p(v-html="$kaanna(scope.data.tekstiKappale.teksti)")
+              // ep-content(v-model="scope.data.tekstiKappale.teksti" :is-editing="scope.isEditing")
+            .col-lg-4
+              .ohjeet(v-if="ohjeet.length > 0")
+                .ohje(v-for="ohje in ohjeet")
+                  p(v-html="$kaanna(ohje.teksti)")
+              .infos
+                .badges
+                  span.badge.badge-pill.badge-light(v-if="scope.data.omistussuhde !== 'oma'") {{ $t('vieras') }}
+                  span.badge.badge-pill.badge-warning(v-if="scope.data.pakollinen") {{ $t('pakollinen') }}
+                  span
+                    span.badge.badge-pill.badge-info(v-if="scope.data.tekstiKappale.tila === 'luonnos'") {{ $t('luonnos') }}
+                    span.badge.badge-pill.badge-success(v-if="scope.data.tekstiKappale.tila === 'valmis'") {{ $t('valmis') }}
 
     // pre {{ value }}
   .alikappale
     tekstikappale-teksti(
       v-for="lapsi in value.lapset"
+      :key="lapsi.id"
       :value="lapsi")
 </template>
 
@@ -33,30 +37,37 @@
 @import "@/styles/_variables.scss";
 
 .tekstiviite {
-  .badges {
-    .badge {
-      margin: 4px;
-    }
-  }
-
   .kappale {
     .otsikko {
     }
 
     .teksti {
-      margin-left: 20px;
+      margin-left: 0px;
+    }
+
+    .infos {
+      margin-bottom: 20px;
+
+      .badges {
+        .badge {
+          margin: 0 4px 0 4px;
+        }
+      }
     }
 
     .ohjeet {
       .ohje {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-left: 5px solid #eee;
         font-size: 80%;
         color: #777;
       }
     }
+
   }
 
   .alikappale {
-    margin-left: 8px;
   }
 
 }

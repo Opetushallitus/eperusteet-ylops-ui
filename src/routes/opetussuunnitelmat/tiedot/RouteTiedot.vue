@@ -1,6 +1,6 @@
 <template lang="pug">
 div.content
-  h2 Tiedot
+  h2 {{ $t('tiedot') }}
   div(v-if="hooks")
     ep-editointi(:hooks="hooks")
       template(slot-scope="scope")

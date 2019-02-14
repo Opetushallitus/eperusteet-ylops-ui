@@ -1,4 +1,4 @@
-import { Mixins, Component, Prop } from 'vue-property-decorator';
+import { Watch, Mixins, Component, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpContent from '@/components/EpContent/EpContent.vue';
@@ -28,6 +28,14 @@ export default class TekstikappaleTeksti extends Mixins(EpRoot) {
 
   private ohjeet: OhjeDto[] = [];
 
+  private hooks: EditointiKontrolliConfig = {
+    source: {
+      load: async () => _.omit(_.cloneDeep(this.value), 'lapset'),
+      async save() {
+      },
+    },
+  };
+
   protected async init() {
     if (this.value.tekstiKappale) {
       try {
@@ -37,4 +45,13 @@ export default class TekstikappaleTeksti extends Mixins(EpRoot) {
       finally {}
     }
   }
+
+  @Watch('$route.params.osaId')
+  private scrollIntoView() {
+    if (_.parseInt(this.$route.params.osaId) === this.value.id) {
+      this.$el.scrollIntoView(true);
+      window.scrollBy(0, -80);
+    }
+  }
+
 }

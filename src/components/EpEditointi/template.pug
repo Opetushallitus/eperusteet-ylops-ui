@@ -1,5 +1,6 @@
 div
   .editointikontrolli(v-if="isInitialized")
+    slot(name="header", :data="state.data")
     .ylapaneeli.row
       .col-auto.mr-auto
         .row
@@ -15,15 +16,13 @@ div
         .d-flex
           .buttons.p-1
             .upper-buttons(v-if="ctrls.isEditing")
-              button.btn.btn-danger(@click="ctrls.remove()")
+              button.btn.btn-xs.btn-danger(@click="ctrls.remove()")
                 slot(name="poista") {{ $t('poista') }}
             .upper-buttons(v-else)
-              button.btn.btn-link() {{ $t('historia') }}
-              button.btn.btn-primary(@click="ctrls.start()")
+              button.btn.btn-xs.btn-link() {{ $t('historia') }}
+              button.btn.btn-xs.btn-primary(@click="ctrls.start()")
                 slot(name="muokkaa")
                   fas.faw-fw(icon="pen")
-
-    hr
 
     .sisalto(v-if="state.data")
       slot(:isEditing="ctrls.isEditing", :data="state.data")

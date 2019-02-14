@@ -17,7 +17,7 @@
       template(slot="bar")
         ops-sidenav
       template(slot="view")
-        transition
+        transition(name="fade" mode="out-in")
           router-view()
 </template>
 
@@ -42,7 +42,6 @@
       top: -34px;
     }
     .info {
-      float: left;
       min-height: $ops-header-height;
       padding: 10px 30px 30px 30px;
 
