@@ -10,9 +10,7 @@ import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
   },
 })
 export default class EpContent extends Vue {
-  @Prop({
-    required: true,
-  })
+  @Prop()
   private value!: string | object;
 
   @Prop({
@@ -21,16 +19,16 @@ export default class EpContent extends Vue {
   private isEditable!: boolean;
 
   get contentValue() {
+    if(!this.value) {
+      return '';
+    }
+
     if (typeof this.value === 'string') {
       return this.value;
     }
 
     const kieli = Kielet.getSisaltoKieli();
-    if (this.value.hasOwnProperty(kieli)) {
-        return (this.value as any)[kieli];
-    }
-
-    return '';
+    return (this.value as any)[kieli];
   }
 
   private handleContentChange(content:string) {

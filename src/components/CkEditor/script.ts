@@ -1,4 +1,4 @@
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -40,6 +40,7 @@ export default class CkEditor extends Vue {
 
     // CKEditorin JS instanssi
     private instance: any = null;
+    private lastEmittedValue: string = '';
 
     public async mounted() {
         // Luodaan ckeditor instanssi
@@ -112,11 +113,23 @@ export default class CkEditor extends Vue {
         }
     }
 
+    @Watch('value')
+    onValueChanged(val: string, oldval: string) {
+        // Ei reagoida itse aiheutettuihin muutoksiin
+        if(val === this.lastEmittedValue) {
+            return;
+        }
+
+        // Päivitetään editoriin uusi arvo
+        this.instance.setData( val?val:'' );
+    }
+
     private setEditorEvents() {
         const editor = this.instance;
 
         editor.model.document.on('change:data', (event: any) => {
             const data = editor.getData();
+            this.lastEmittedValue = data;
             this.$emit('input' , data, event, editor);
         });
     }

@@ -1,16 +1,16 @@
 div
   .editointikontrolli(v-if="isInitialized")
-    slot(name="header", :data="state.data")
+    slot(name="header", :isEditing="ctrls.isEditing", :data="state.data")
     .ylapaneeli.row
       .col-auto.mr-auto
         .row
           .col-auto
             .d-flex.muokattu
-              .p-2.title {{ $t('muokattu') }}: 
+              .p-2.title {{ $t('muokattu') }}:
               .p-2.value {{ $st(new Date()) }}
           .col-auto
             .d-flex.muokkaaja
-              .p-2.title {{ $t('muokkaaja') }}: 
+              .p-2.title {{ $t('muokkaaja') }}:
               .p-2.value Joku Käyttäjä
       .col-auto
         .d-flex
