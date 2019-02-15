@@ -19,7 +19,7 @@ export default class EpContent extends Vue {
   private isEditable!: boolean;
 
   get contentValue() {
-    if(!this.value) {
+    if (!this.value) {
       return '';
     }
 
@@ -31,7 +31,7 @@ export default class EpContent extends Vue {
     return (this.value as any)[kieli];
   }
 
-  private handleContentChange(content:string) {
+  private handleContentChange(content: string) {
     if (typeof this.value === 'string') {
       this.$emit('input', content);
       return;

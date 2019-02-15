@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test": "npm run test:unit && npm run test:e2e",
-    "lint": "vue-cli-service lint",
+    "lint": "tslint --project .",
     "eslint": "eslint src/**/*.{ts,vue}",
     "ci:start": "npm run lint && npm run gen:api && npm run build && npm run test",
     "clean": "npx jest --clearCache",

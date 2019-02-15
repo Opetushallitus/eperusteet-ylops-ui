@@ -114,14 +114,14 @@ export default class CkEditor extends Vue {
     }
 
     @Watch('value')
-    onValueChanged(val: string, oldval: string) {
+    private onValueChanged(val: string, oldval: string) {
         // Ei reagoida itse aiheutettuihin muutoksiin
-        if(val === this.lastEmittedValue) {
+        if (val === this.lastEmittedValue) {
             return;
         }
 
         // Päivitetään editoriin uusi arvo
-        this.instance.setData( val?val:'' );
+        this.instance.setData(val ? val : '');
     }
 
     private setEditorEvents() {
