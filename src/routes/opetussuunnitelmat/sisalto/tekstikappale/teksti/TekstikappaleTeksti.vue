@@ -4,13 +4,12 @@
     ep-editointi(:hooks="hooks")
       template(slot="header" slot-scope="scope")
         .otsikko
-          h3 {{ $kaanna(scope.data.tekstiKappale.nimi) }}
+          ep-input(v-model="scope.data.tekstiKappale.nimi" type="text" :is-editing="scope.isEditing")
       template(slot-scope="scope")
         .teksti
           .row
             .col-lg-8
-              p(v-html="$kaanna(scope.data.tekstiKappale.teksti)")
-              // ep-content(v-model="scope.data.tekstiKappale.teksti" :is-editing="scope.isEditing")
+              ep-content(v-model="scope.data.tekstiKappale.teksti" :is-editable="scope.isEditing")
             .col-lg-4
               .ohjeet(v-if="ohjeet.length > 0")
                 .ohje(v-for="ohje in ohjeet")
