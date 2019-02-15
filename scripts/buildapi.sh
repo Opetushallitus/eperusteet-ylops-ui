@@ -16,6 +16,6 @@ gendir=$(pwd)
 
 specfile="$YLOPS_SERVICE_DIR/target/openapi/ylops.spec.json"
 cd "$YLOPS_SERVICE_DIR" \
-  && mvn clean compile \
+  && mvn clean compile -Pgenerate-openapi \
   && cd "$gendir" \
   && npx openapi-generator generate -c ../../generator.config.json -i "$specfile" -g typescript-axios
