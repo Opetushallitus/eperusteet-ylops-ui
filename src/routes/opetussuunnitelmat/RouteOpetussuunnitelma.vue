@@ -30,6 +30,8 @@
   .header {
     min-height: $ops-header-height;
     background: $color-ops-header;
+    display: flex;
+    flex: stretch;
 
     * {
       background: $color-ops-header;
@@ -37,9 +39,14 @@
     }
 
     .progress {
-      float: left;
+      min-width: $sidebar-width;
+      max-width: $sidebar-width;
       min-height: $ops-header-height;
       top: -34px;
+
+      @media only screen and (max-width: 1024px) {
+        display: none;
+      }
     }
     .info {
       min-height: $ops-header-height;
