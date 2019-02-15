@@ -1,4 +1,4 @@
 div
   ep-content-base(:isEditable="isEditable",
     :value="contentValue",
-    @input="$emit('input', $event)")
+    @input="handleContentChange")

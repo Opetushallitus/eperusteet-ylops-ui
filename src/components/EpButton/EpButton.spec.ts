@@ -1,4 +1,4 @@
-import { mount, shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import EpButton from './EpButton.vue';
 
 describe('EpButton component', () => {
