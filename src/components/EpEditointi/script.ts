@@ -1,11 +1,16 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { editointi, EditointiKontrolli, EditointiKontrolliConfig } from '@/stores/editointi';
+import EpButton from '@/components/EpButton/EpButton.vue';
 import '@/stores/kieli';
 
 export { EditointiKontrolliConfig } from '@/stores/editointi';
 
 
-@Component
+@Component({
+  components: {
+    EpButton,
+  },
+})
 export default class EpEditointi extends Vue {
   @Prop({ required: true })
   private hooks!: EditointiKontrolliConfig;

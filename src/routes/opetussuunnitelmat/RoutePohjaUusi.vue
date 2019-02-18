@@ -26,8 +26,7 @@ div
     ep-button(
       @click="luoUusiPeruste"
       :disabled="$v.$invalid || isSaving"
-      :showSpinner="isSaving")
-      span(slot="content") {{ $t('luo-pohja') }}
+      :show-spinner="isSaving") {{ $t('luo-pohja') }}
 
 </template>
 

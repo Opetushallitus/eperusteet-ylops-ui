@@ -53,7 +53,7 @@ export default class RouteTiedot extends Vue {
   mounted() {
     this.hooks = {
       source: {
-        save: async (ops) => {
+        async save(ops) {
           return Opetussuunnitelma.save(ops);
         },
         load: this.load,

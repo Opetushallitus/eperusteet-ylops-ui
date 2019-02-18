@@ -20,13 +20,13 @@ const logger = createLogger('Opetussuunnitelma');
 class OpetussuunnitelmaStore {
 
   @State()
-  public opetussuunnitelma: OpetussuunnitelmaKevytDto | null = null;
-
-  @State()
   public tekstit: Puu | null = null;
 
   @State()
   public sisalto: TekstiKappaleViiteKevytDto | null = null;
+
+  @State()
+  public opetussuunnitelma: OpetussuunnitelmaKevytDto | null = null;
 
   public async init(id: number) {
     this.opetussuunnitelma = await this.get(id);
@@ -40,7 +40,6 @@ class OpetussuunnitelmaStore {
 
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
     try {
-      this.opetussuunnitelma = opetussuunnitelma;
       const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma);
       this.opetussuunnitelma = res.data;
     }
