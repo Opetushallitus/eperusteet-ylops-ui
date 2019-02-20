@@ -13,14 +13,12 @@ div
         div(v-else)
           p {{ $t('tile-opetussuunnitelmasi-kuvaus') }}
           .ops(v-for="ops in opetussuunnitelmat")
-            .d-flex
+            .d-flex.ops-container
               .stats.p-2.flex-shrink-1
                 div
-                  apexchart(
-                    type="radialBar",
-                    :height="200",
-                    :options="ops.graph.options",
-                    :series="ops.graph.series")
+                  ep-chart(:value="ops.valmiusaste",
+                    :width="80",
+                    :height="80")
               .data.p-2
                 .name(v-if="ops.nimi")
                   router-link(:to=`{ name: 'opsTiedot', params: { id: ops.id } }`)
@@ -39,14 +37,13 @@ div
 import { Vue, Component, Mixins } from 'vue-property-decorator';
 import EpRoot from '@/mixins/EpRoot';
 import BaseTile from './BaseTile.vue';
+import EpChart from '@/components/EpChart/EpChart';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { Opetussuunnitelmat } from '@/api';
 import { delay } from '@/utils/delay';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
-import { roundChart } from '@/utils/graphs';
 import _ from 'lodash';
-import VueApexCharts from 'vue-apexcharts';
 
 
 @Component({
@@ -54,7 +51,7 @@ import VueApexCharts from 'vue-apexcharts';
     BaseTile,
     EpContent,
     EpSpinner,
-    apexchart: VueApexCharts,
+    EpChart,
   },
   mixins: [EpRoot],
 })
@@ -79,7 +76,7 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
     const result = _(this.nakyvat)
       .map(ops => ({
         ...ops,
-        graph: roundChart(''),
+        valmiusaste: 50,
       }))
       .value();
     return result;
@@ -90,12 +87,18 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
 
 <style scoped lang="scss">
 .ops {
+  .ops-container {
+    align-items: center;
+  }
+
   .data {
     .name {
       font-weight: bold;
     }
+
     .tiedot {
       margin-left: 10px;
+
       .description {
         font-size: 80%;
       }
@@ -104,8 +107,6 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
         font-size: 70%;
       }
     }
-  }
-  .stats {
   }
 }
 </style>
