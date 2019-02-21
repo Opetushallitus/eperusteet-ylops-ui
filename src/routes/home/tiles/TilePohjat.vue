@@ -30,17 +30,13 @@ import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { Opetussuunnitelmat } from '@/api';
 import { delay } from '@/utils/delay';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
-import { roundChart } from '@/utils/graphs';
 import _ from 'lodash';
-import VueApexCharts from 'vue-apexcharts';
-
 
 @Component({
   components: {
     BaseTile,
     EpContent,
     EpSpinner,
-    apexchart: VueApexCharts,
   }
 })
 export default class TilePohjat extends Vue {
