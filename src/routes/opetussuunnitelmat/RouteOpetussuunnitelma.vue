@@ -4,7 +4,9 @@
     .progress
       div
         ep-chart(
-          :value="80")
+          labelColor="white",
+          :chartColor="graph.colorScheme",
+          :value="graph.value")
     .info
       h1 {{ $kaanna(ops.nimi) }}
       h4.secondary {{ $t(ops.koulutustyyppi) }}

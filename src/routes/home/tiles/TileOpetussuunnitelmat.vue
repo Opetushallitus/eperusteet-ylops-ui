@@ -17,6 +17,7 @@ div
               .stats.p-2.flex-shrink-1
                 div
                   ep-chart(:value="ops.valmiusaste",
+                    :labelSize="15",
                     :width="80",
                     :height="80")
               .data.p-2

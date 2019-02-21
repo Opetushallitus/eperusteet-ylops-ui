@@ -1,4 +1,5 @@
 import { Doughnut } from 'vue-chartjs';
+import { DiagrammiVarit } from '@/tyypit';
 
 import 'chartjs-plugin-doughnutlabel';
 
@@ -6,7 +7,22 @@ export default {
   extends: Doughnut,
 
   props: {
-    value: Number,
+    value: {
+      type: Number,
+      default: 0,
+    },
+    chartColor: {
+      type: String,
+      default: DiagrammiVarit.vaalea_sininen
+    },
+    labelColor: {
+      type: String,
+      default: 'black'
+    },
+    labelSize: {
+      type: Number,
+      default: '30',
+    },
     styles: {
       type: Object,
       default: () => ({
@@ -25,38 +41,33 @@ export default {
 
     return {
       componentData: {
-        datasets: [
-          {
-            borderWidth: 0,
-            backgroundColor: [ '#5BCA13', '#0041DC'],
-            data: [chartValue, 100-chartValue]
-          }
-        ]
+        datasets: (this as any).createInitialData(chartValue, (this as any).chartColor),
       },
 
       componentOptions: {
-          cutoutPercentage: 85,
+        cutoutPercentage: 85,
 
-          tooltips: {
-            enabled: false,
-          },
+        tooltips: {
+          enabled: false,
+        },
 
-          hover: {
-            mode: null,
-          },
+        hover: {
+          mode: null,
+        },
 
-          plugins: {
-            doughnutlabel: {
-              labels: [
-                {
-                  text: chartValue+' %',
-                  font: {
-                    size: '15',
-                  }
-                },
-              ]
-            },
+        plugins: {
+          doughnutlabel: {
+            labels: [
+              {
+                text: chartValue+' %',
+                color: (this as any).labelColor,
+                font: {
+                  size: (this as any).labelSize,
+                }
+              },
+            ]
           },
+        },
       },
     };
   },
@@ -78,11 +89,27 @@ export default {
     }
   },
 
-  created() {
-
-  },
-
   mounted () {
     (this as any).renderChart( (this as any).componentData, (this as any).componentOptions );
-  }
+  },
+
+  methods: {
+    // Luodaan graafin data objektin sisältö (värimaailma + piirakan koko)
+    createInitialData (chartValue: number, chartColor: String) {
+      // Oletuksena sini-vihreä värimaailma
+      var varimaailma = [ '#5BCA13', '#0041DC'];
+
+      if(chartColor === DiagrammiVarit.vaalea_sininen) {
+        varimaailma = [ '#2e44d8','#cfd8f6' ]
+      }
+
+      return [
+        {
+          borderWidth: 0,
+          backgroundColor: varimaailma,
+          data: [chartValue, 100-chartValue]
+        }
+      ];
+    },
+  },
 }
