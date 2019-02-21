@@ -54,10 +54,13 @@ export class EditointiKontrolli {
   private logger = createLogger(EditointiKontrolli);
   private isEditingState = false;
   private isRemoved = false;
+
   private readonly features: EditointiKontrolliFeatures;
   private mstate = Vue.observable({
     data: null,
     backup: null,
+    disabled: true,
+    isSaving: false,
   });
   private backup: any = null;
 
@@ -95,17 +98,21 @@ export class EditointiKontrolli {
     this.logger.debug('Haetaan data', data);
     this.backup = JSON.stringify(data);
     this.mstate.data = data;
+    this.mstate.disabled = false;
     // this.config.setData!(data);
   }
 
   public async start() {
+    this.mstate.disabled = true;
     if (this.isEditing) {
       this.logger.warn('Editointi jo käynnissä');
+      this.mstate.disabled = false;
       return;
     }
 
     if (this.isRemoved) {
       this.logger.warn('Poistettua resurssia ei voi editoida');
+      this.mstate.disabled = false;
       return;
     }
 
@@ -120,9 +127,13 @@ export class EditointiKontrolli {
     catch (err) {
       this.logger.error('Editoinnin aloitus epäonnistui:', err);
     }
+    finally {
+      this.mstate.disabled = false;
+    }
   }
 
   public async cancel() {
+    this.mstate.disabled = true;
     if (!this.isEditing) {
       this.logger.warn('Ei voi perua');
       return;
@@ -135,6 +146,7 @@ export class EditointiKontrolli {
     this.mstate.data = JSON.parse(this.backup);
     // this.config.setData!(JSON.parse(this.backup));
     this.isEditingState = false;
+    this.mstate.disabled = false;
   }
 
   public async validate() {
@@ -144,6 +156,7 @@ export class EditointiKontrolli {
   }
 
   public async remove() {
+    this.mstate.disabled = true;
     await this.config.remove!();
     this.isRemoved = true;
     this.isEditingState = false;
@@ -151,13 +164,13 @@ export class EditointiKontrolli {
   }
 
   public async save() {
+    this.mstate.disabled = true;
+    this.mstate.isSaving = true;
+
     if (!this.isEditing) {
       this.logger.warn('Ei voi tallentaa ilman editointia');
-      return;
     }
-
-    if (await this.validate()) {
-      // await this.config.source.save(await this.config.getData!());
+    else if (await this.validate()) {
       await this.config.source.save(this.mstate.data);
       this.isEditingState = false;
       this.logger.success('Tallennettu');
@@ -165,6 +178,8 @@ export class EditointiKontrolli {
     else {
       this.logger.debug('Tallentaminen ei mahdollista');
     }
+    this.mstate.disabled = false;
+    this.mstate.isSaving = false;
   }
 
   private async fetch() {

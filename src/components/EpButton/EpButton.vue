@@ -1,8 +1,10 @@
 <template lang="pug">
-button.oph-button.oph-button-primary(
-    v-bind="$attrs"
+button.btn(
+    :class="'btn-' + variant"
+    v-bind="$attrs",
+    :disabled="showSpinner",
     @click="$emit('click')")
-  slot(name="content")
+  slot
   ep-spinner-inline(v-if="showSpinner")
 </template>
 
@@ -17,10 +19,11 @@ import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
   },
 })
 export default class EpButton extends Vue {
-  @Prop({
-    default: false,
-  })
+  @Prop({ default: false })
   private showSpinner!: boolean;
+
+  @Prop({ default: 'primary' })
+  private variant!: boolean;
 
 }
 </script>

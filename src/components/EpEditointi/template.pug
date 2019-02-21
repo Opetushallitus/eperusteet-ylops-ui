@@ -16,11 +16,19 @@ div
         .d-flex
           .buttons.p-1
             .upper-buttons(v-if="ctrls.isEditing")
-              button.btn.btn-xs.btn-danger(@click="ctrls.remove()")
+              ep-button(
+                @click="ctrls.remove()",
+                :disabled="state.disabled",
+                variant="danger")
                 slot(name="poista") {{ $t('poista') }}
             .upper-buttons(v-else)
-              button.btn.btn-xs.btn-link() {{ $t('historia') }}
-              button.btn.btn-xs.btn-primary(@click="ctrls.start()")
+              ep-button(
+                variant="link",
+                :disabled="state.disabled")
+                | {{ $t('historia') }}
+              ep-button(
+                @click="ctrls.start()",
+                :disabled="state.disabled")
                 slot(name="muokkaa")
                   fas.faw-fw(icon="pen")
 
@@ -33,7 +41,12 @@ div
       .col-auto
         .btn-toolbar(v-if="ctrls.isEditing")
           .btn-group
-            button.btn.btn-primary(@click="ctrls.save()")
+            ep-button(@click="ctrls.save()",
+              :disabled="state.disabled",
+              :show-spinner="state.isSaving")
               slot(name="tallenna") {{ $t('tallenna') }}
-            button.btn.btn-warning(@click="ctrls.cancel()")
+            ep-button(
+              @click="ctrls.cancel()",
+              :disabled="state.disabled",
+              variant="warning")
               slot(name="peruuta") {{ $t('peruuta') }}

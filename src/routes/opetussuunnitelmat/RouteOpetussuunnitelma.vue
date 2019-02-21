@@ -18,7 +18,7 @@
         ops-sidenav
       template(slot="view")
         transition(name="fade" mode="out-in")
-          router-view()
+          router-view(:key="$route.fullPath")
 </template>
 
 <script lang="ts" src="./script.ts" />

@@ -1,33 +1,37 @@
 <template lang="pug">
-.tekstiviite(v-if="value && hooks")
-  .kappale(v-if="value.tekstiKappale")
+.tekstiviite(v-if="hooks")
+  .kappale
     ep-editointi(:hooks="hooks")
       template(slot="header" slot-scope="scope")
         .otsikko
-          ep-input(v-model="scope.data.tekstiKappale.nimi" type="text" :is-editing="scope.isEditing")
+          ep-input(
+            v-if="scope.isEditing",
+            type="text",
+            v-model="scope.data.tov.tekstiKappale.nimi",
+            :is-editing="true")
+          h1(v-else)
+            span {{ $kaanna(scope.data.tov.tekstiKappale.nimi) }}
+            ep-button(variant="link" @click="addAlikappale(scope.data.tov)")
+              fas(icon="plus")
+              span {{ $t('lisaa-alikappale') }}
       template(slot-scope="scope")
         .teksti
           .row
             .col-lg-8
-              ep-content(v-model="scope.data.tekstiKappale.teksti" :is-editable="scope.isEditing")
+              ep-content(v-model="scope.data.tov.tekstiKappale.teksti" :is-editable="scope.isEditing")
             .col-lg-4
-              .ohjeet(v-if="ohjeet.length > 0")
-                .ohje(v-for="ohje in ohjeet")
-                  p(v-html="$kaanna(ohje.teksti)")
+              .ohjeet(v-if="scope.data.ohjeet.length > 0")
+                .ohje(v-for="ohje in scope.data.ohjeet", :key="ohje.id", :class="'ohje-' + ohje.tyyppi")
+                  ep-content(
+                    v-model="ohje.teksti",
+                    :is-editable="allowOhjeEdit && scope.isEditing")
               .infos
                 .badges
-                  span.badge.badge-pill.badge-light(v-if="scope.data.omistussuhde !== 'oma'") {{ $t('vieras') }}
-                  span.badge.badge-pill.badge-warning(v-if="scope.data.pakollinen") {{ $t('pakollinen') }}
+                  span.badge.badge-pill.badge-light(v-if="scope.data.tov.omistussuhde !== 'oma'") {{ $t('vieras') }}
+                  span.badge.badge-pill.badge-warning(v-if="scope.data.tov.pakollinen") {{ $t('pakollinen') }}
                   span
-                    span.badge.badge-pill.badge-info(v-if="scope.data.tekstiKappale.tila === 'luonnos'") {{ $t('luonnos') }}
-                    span.badge.badge-pill.badge-success(v-if="scope.data.tekstiKappale.tila === 'valmis'") {{ $t('valmis') }}
-
-    // pre {{ value }}
-  .alikappale
-    tekstikappale-teksti(
-      v-for="lapsi in value.lapset"
-      :key="lapsi.id"
-      :value="lapsi")
+                    span.badge.badge-pill.badge-info(v-if="scope.data.tov.tekstiKappale.tila === 'luonnos'") {{ $t('luonnos') }}
+                    span.badge.badge-pill.badge-success(v-if="scope.data.tov.tekstiKappale.tila === 'valmis'") {{ $t('valmis') }}
 </template>
 
 <script lang="ts" src="./script.ts"></script>
@@ -58,9 +62,16 @@
       .ohje {
         padding: 10px;
         margin-bottom: 10px;
-        border-left: 5px solid #eee;
         font-size: 80%;
         color: #777;
+      }
+
+      .ohje-perusteteksti {
+        background: #F5FBF0;
+      }
+
+      .ohje-ohje {
+        background: #FBF1FA;
       }
     }
 

@@ -1,6 +1,10 @@
 <template lang="pug">
 .content
-  tekstikappale-teksti(:value="root")
+  tekstikappale-teksti(
+    :ops-id="$route.params.id",
+    :osa-id="$route.params.osaId",
+    :key="$route.params.osaId",
+    :allow-ohje-edit="isPohja")
 </template>
 
 <script lang="ts" src="./script.ts"></script>

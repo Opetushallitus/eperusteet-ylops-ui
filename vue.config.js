@@ -32,7 +32,7 @@ module.exports = {
     port: 9040,
     proxy: {
       "/eperusteet-ylops-service": {
-        target: "http://localhost:8080",
+        target: process.env.NODE_ENV === "e2e" ? "http://app:8080" : "http://localhost:8080",
         secure: false
       }
     },

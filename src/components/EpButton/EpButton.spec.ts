@@ -8,7 +8,7 @@ describe('EpButton component', () => {
   it('Renders button with content', () => {
     const wrapper = mount(EpButton, {
       slots: {
-        content: 'Test',
+        default: 'Test',
       },
     });
     expect(wrapper.html()).toContain("Test");
@@ -17,7 +17,7 @@ describe('EpButton component', () => {
   it('Renders button with spinner', () => {
     const wrapper = mount(EpButton, {
       slots: {
-        content: 'Test',
+        default: 'Test',
       },
       propsData: {
         showSpinner: true,

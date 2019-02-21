@@ -4,13 +4,14 @@ import { Kielet } from '@/stores/kieli';
 
 import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
 
+
 @Component({
   components: {
     EpContentBase,
   },
 })
 export default class EpContent extends Vue {
-  @Prop()
+  @Prop({ required: true })
   private value!: string | object;
 
   @Prop({

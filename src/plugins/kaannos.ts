@@ -4,7 +4,6 @@ import _ from 'lodash';
 import { createLogger } from '@/stores/logger';
 import { Kielet } from '@/stores/kieli';
 
-
 const logger = createLogger('Kaannos');
 const Varoitus = '"$kaanna" on tekstiolioiden kääntämiseen. Käytä vue-i18n vastaavaa funktiota. Esimerkiksi "$t()".';
 

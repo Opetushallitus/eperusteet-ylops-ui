@@ -1,7 +1,10 @@
 <template lang="pug">
 .form-group.form-content
   label {{ $t(name) }}:
-  ep-input.form-data(v-model="model" :is-editing="isEditing")
+  ep-input.form-data(
+    :value="value",
+    @input="$emit('input', $event)",
+    :is-editing="isEditing")
   small(v-if="help && isEditing").form-text.text-muted {{ $t(help) }}
 </template>
 
@@ -27,8 +30,8 @@ export default class RouteTiedot extends Vue {
   @Prop({ default: false })
   private isEditing!: boolean;
 
-  @Model('change', { required: true })
-  private model!: string | object;
+  @Prop({ required: true })
+  private value!: string | object;
 
 }
 </script>
