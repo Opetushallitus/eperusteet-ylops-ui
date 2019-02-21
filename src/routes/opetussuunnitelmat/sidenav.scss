@@ -21,10 +21,11 @@
 
     li {
       a.btn {
+        font-size: 80%;
         text-align: left;
       }
 
-      padding: 12px;
+      padding: 8px;
       border-left: 10px solid rgba(255, 255, 255, 0);
     }
 
@@ -43,6 +44,12 @@
       list-style: none;
       padding: 0px;
 
+      li {
+        padding-left: 20px;
+      }
+    }
+
+    ul.subnav-1 {
       li {
         padding-left: 40px;
       }

@@ -1,23 +1,21 @@
+import '@/config/styles';
+import '@/registerServiceWorker';
 import Vue from 'vue';
+import devtools from '@vue/devtools';
 import { Component } from 'vue-property-decorator';
-import VueProgressBar from 'vue-progressbar';
-
-Vue.use(VueProgressBar, {
-  color: '#def2ff',
-  failedColor: 'red',
-  height: '2px',
-});
-
+import { createLogger } from '@/stores/logger';
 import { rootConfig } from '@/mainvue';
 
-import '@/registerServiceWorker';
-import '@/config/styles';
 
-import { createLogger } from '@/stores/logger';
+
+Vue.use(devtools);
 
 const logger = createLogger('Main');
-
 const inDev = process.env.NODE_ENV === 'development';
+
+if (inDev) {
+  devtools.connect();
+}
 
 Vue.config.productionTip = false;
 Vue.config.devtools = inDev;

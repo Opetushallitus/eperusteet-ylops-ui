@@ -7,18 +7,14 @@
   ul.navigation(v-if="sisalto")
     router-link(:to="{ 'name': 'opsTiedot' }" tag="li")
       a.btn.btn-link {{ $t('tiedot') }}
-    div(v-for="teksti in sisalto.lapset", :key="teksti.id")
-      router-link(
-        :to="{ 'name': 'tekstikappale', params: { osaId: teksti.id } }",
-        tag="li")
-        a.btn.btn-link {{ $kaanna(teksti.tekstiKappale.nimi) }}
-      ul.subnav(v-for="lapsi in teksti.lapset", :key="lapsi.id")
-        router-link(
-          :to="{ 'name': 'tekstikappale', params: { osaId: lapsi.id } }",
-          tag="li")
-          a.btn.btn-link {{ $kaanna(lapsi.tekstiKappale.nimi) }}
-    router-link(:to="{ 'name': 'oppiaineet' }" tag="li")
-      a.btn.btn-link {{ $t('oppiaineet') }}
+    ops-sidenav-item(
+      v-for="teksti in sisalto.lapset",
+      :value="teksti",
+      :key="teksti.id")
+    li
+      button.btn.btn-primary(@click="addTekstikappale()")
+        fas(icon="plus")
+        span {{ $t('lisaa-tekstikappale') }}
 </template>
 
 <script lang="ts">
@@ -27,14 +23,28 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import EpRoute from '@/mixins/EpRoot';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import OpsSidenavItem from './OpsSidenavItem.vue';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 
-@Component
+@Component({
+  components: {
+    OpsSidenavItem,
+  },
+})
 export default class RouteOpetussuunnitelma extends Vue {
 
   private get sisalto() {
     return Opetussuunnitelma.sisalto;
+  }
+
+  private async addTekstikappale() {
+    const uusi = await Opetussuunnitelma.addTeksti({
+      tekstiKappale: {
+        nimi: {
+        },
+      },
+    });
   }
 
 }

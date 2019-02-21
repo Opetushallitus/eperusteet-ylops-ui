@@ -1,24 +1,13 @@
 <template lang="pug">
-
 input.input-style.form-control(
-  v-if="isObject && isEditing"
-  :attrs="$attrs"
-  v-model="model[kieli]")
-
+  v-if="isEditing",
+  @input="onInput($event.target.value)",
+  :attrs="$attrs",
+  :value="val")
 div.input-content(
-  v-else-if="isObject && !isEditing"
+  v-else,
   :attrs="$attrs")
-  | {{ model[kieli] }}
-
-input.input-style.form-control(
-  v-else-if="!isObject && isEditing"
-  :attrs="$attrs"
-  v-model="model")
-
-div.input-content(
-  v-else
-  :attrs="$attrs")
-  | {{ model }}
+  | {{ val }}
 
 </template>
 
@@ -31,17 +20,33 @@ import { Kielet } from '@/stores/kieli';
 @Component
 export default class RouteTiedot extends Vue {
   @Prop({ default: false })
+  private isString!: boolean;
+
+  @Prop({ default: false })
   private isEditing!: boolean;
 
-  @Model('change', { required: true })
-  private model!: string | object;
+  @Prop({ required: true })
+  private value!: string | object;
 
-  get kieli() {
-    return Kielet.getSisaltoKieli();
+  public onInput(input: any) {
+    if (_.isString(this.value)) {
+      this.$emit('input', input);
+    }
+    else {
+      this.$emit('input', {
+        ...(_.isObject(this.value) ? this.value as any : {}),
+        [Kielet.getSisaltoKieli()]: input,
+      });
+    }
   }
 
-  get isObject() {
-    return _.isObject(this.model);
+  get val() {
+    if (_.isObject(this.value)) {
+      return (this.value as any)[Kielet.getSisaltoKieli()];
+    }
+    else {
+      return this.value;
+    }
   }
 
 }

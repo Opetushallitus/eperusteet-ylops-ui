@@ -1,7 +1,6 @@
 <template lang="pug">
 div(v-if="!isInitializing")
-  transition(name="fade" mode="out-in")
-    router-view()
+  router-view
 </template>
 
 <script lang="ts">
