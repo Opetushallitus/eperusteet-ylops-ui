@@ -2,11 +2,11 @@
 .opetussuunnitelma(v-if="ops")
   .header
     .progress
-      apexchart(
-        type="radialBar",
-        :height="200",
-        :options="graph.options",
-        :series="graph.series")
+      div
+        ep-chart(
+          labelColor="white",
+          :chartColor="graph.colorScheme",
+          :value="graph.value")
     .info
       h1 {{ $kaanna(ops.nimi) }}
       h4.secondary {{ $t(ops.koulutustyyppi) }}
@@ -28,10 +28,11 @@
 
 .opetussuunnitelma {
   .header {
-    min-height: $ops-header-height;
+    height: $ops-header-height;
     background: $color-ops-header;
     display: flex;
     flex: stretch;
+    align-items: center;
 
     * {
       background: $color-ops-header;
@@ -39,22 +40,28 @@
     }
 
     .progress {
-      min-width: $sidebar-width;
-      max-width: $sidebar-width;
-      min-height: $ops-header-height;
-      top: -34px;
+      width: $sidebar-width;
+      height: 150px;
 
       @media only screen and (max-width: 1024px) {
         display: none;
       }
     }
-    .info {
-      min-height: $ops-header-height;
-      padding: 10px 30px 30px 30px;
 
+    .progress > div {
+      width: 150px;
+      margin: 0 auto;
+    }
+
+    .info {
       .secondary {
         color: #bbb;
       }
+
+      @media only screen and (max-width: 1024px) {
+        padding-left: 30px;
+      }
+
     }
   }
 
