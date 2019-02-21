@@ -44,31 +44,10 @@ export default {
         datasets: (this as any).createInitialData(chartValue, (this as any).chartColor),
       },
 
-      componentOptions: {
-        cutoutPercentage: 85,
-
-        tooltips: {
-          enabled: false,
-        },
-
-        hover: {
-          mode: null,
-        },
-
-        plugins: {
-          doughnutlabel: {
-            labels: [
-              {
-                text: chartValue+' %',
-                color: (this as any).labelColor,
-                font: {
-                  size: (this as any).labelSize,
-                }
-              },
-            ]
-          },
-        },
-      },
+      componentOptions: (this as any).createInitialConfig(
+        chartValue,
+        (this as any).labelColor,
+        (this as any).labelSize)
     };
   },
 
@@ -94,6 +73,7 @@ export default {
   },
 
   methods: {
+
     // Luodaan graafin data objektin sisältö (värimaailma + piirakan koko)
     createInitialData (chartValue: number, chartColor: String) {
       // Oletuksena sini-vihreä värimaailma
@@ -111,5 +91,35 @@ export default {
         }
       ];
     },
+
+    // Luodaan graafin konfiguraatio-objektin sisältö
+    createInitialConfig (chartValue: number, labelColor: String, labelSize: Number) {
+      return {
+        cutoutPercentage: 85,
+
+        tooltips: {
+          enabled: false,
+        },
+
+        hover: {
+          mode: null,
+        },
+
+        plugins: {
+          doughnutlabel: {
+            labels: [
+              {
+                text: chartValue+' %',
+                color: labelColor,
+                font: {
+                  size: labelSize,
+                }
+              },
+            ]
+          },
+        },
+      };
+    },
+
   },
 }
