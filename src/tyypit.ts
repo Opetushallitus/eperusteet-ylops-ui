@@ -6,6 +6,11 @@ export enum Kieli {
   en = 'en',
 }
 
+export enum DiagrammiVarit {
+  vaalea_sininen = 'vaalea_sininen',
+  vihrea_sininen = 'vihrea_sininen',
+}
+
 export interface SovellusVirhe {
   path?: string;
   err?: string;

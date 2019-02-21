@@ -4,10 +4,10 @@
     .icon
       slot(name="icon")
   .right.p-2.flex-grow-1
-    .header
+    .tileHeader
       h3.oph-h3
         slot(name="header")
-    .content
+    .tileContent
       slot(name="content")
 </template>
 
