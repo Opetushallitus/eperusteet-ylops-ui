@@ -1,6 +1,7 @@
 div.ep-content-base
   ck-editor(v-if="isEditable"
     :value="value"
+    :layout="layout"
     @input="$emit('input', $event)")
   ep-viewer(v-if="!isEditable"
     :value="value")
