@@ -20,7 +20,7 @@ import BaseTile from './BaseTile.vue';
     BaseTile,
   }
 })
-export default class extends Vue {
+export default class TileUusiPohja extends Vue {
   
 }
 </script>

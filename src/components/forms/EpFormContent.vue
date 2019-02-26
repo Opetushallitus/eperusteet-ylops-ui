@@ -9,7 +9,7 @@
 import { Vue, Component, Prop, Model } from 'vue-property-decorator';
 
 @Component
-export default class extends Vue {
+export default class extends EpFormContent Vue {
   @Prop({ required: true })
   private name!: string;
 

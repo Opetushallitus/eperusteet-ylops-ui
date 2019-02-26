@@ -67,7 +67,7 @@ import {
     EpButton,
   },
 })
-export default class extends Vue {
+export default class Tilanvaihto extends Vue {
 
   @Prop({ required: true })
   private onSave!: (tila: string) => Promise<boolean>;

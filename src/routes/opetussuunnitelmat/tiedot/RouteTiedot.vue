@@ -63,7 +63,7 @@ import { Mixins, Component, Prop } from 'vue-property-decorator';
     Tilanvaihto,
   },
 })
-export default class extends Mixins(EpRoute) {
+export default class RouteTiedot extends Mixins(EpRoute) {
   private hooks: EditointiKontrolliConfig | null = null;
 
   async mounted() {

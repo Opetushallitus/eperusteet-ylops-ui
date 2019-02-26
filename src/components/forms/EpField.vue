@@ -20,7 +20,7 @@ import EpInput from '@/components/forms/EpInput.vue';
     EpInput,
   },
 })
-export default class extends Vue {
+export default class EpField extends Vue {
   @Prop({ required: true })
   private name!: string;
 

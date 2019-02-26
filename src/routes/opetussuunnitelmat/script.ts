@@ -19,7 +19,7 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
     Tilanvaihto,
   },
 })
-export default class extends Mixins(EpRoute) {
+export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
   get graph() {
     return {
       colorScheme: DiagrammiVarit.vihrea_sininen,

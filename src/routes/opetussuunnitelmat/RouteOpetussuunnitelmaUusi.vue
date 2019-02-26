@@ -109,7 +109,7 @@ import {
     },
   },
 } as any)
-export default class extends Mixins(validationMixin, EpRoute) {
+export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, EpRoute) {
   private pohjat: OpetussuunnitelmaInfoDto[] | null = null;
   private oletuspohjasta: "pohjasta" | "opsista" | null = null;
   private uusi = {
