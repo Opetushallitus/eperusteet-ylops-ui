@@ -3,7 +3,6 @@ div
   h1 {{ $t('uusi-opetussuunnitelma') }}
 
   .form
-
     ep-form-content(name="nimi", ohje="uusi-ops-ohje-nimi")
       ep-input.form-control(
         id="uusi-ops-nimi",
@@ -49,11 +48,12 @@ div
           small.form-text.text-muted {{ $t('uusi-ops-ohje-pohja') }}
         ep-spinner(v-else)
 
-    ep-organizations
+    ep-organizations(v-model="uusi.organisaatiot")
+    pre {{ uusi.organisaatiot }}
 
     ep-button(
-      @click="luoUusiOpetussuunnitelma"
-      :show-spinner="false") {{ $t('luo-opetussuunnitelma') }}
+      @click="luoUusiOpetussuunnitelma",
+      :show-spinner="isLoading") {{ $t('luo-opetussuunnitelma') }}
 
 </template>
 
@@ -115,6 +115,11 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   private uusi = {
     pohja: null as (OpetussuunnitelmaInfoDto | null),
     nimi: {},
+    organisaatiot: {
+      jarjestajat: [],
+      oppilaitokset: [],
+      kunnat: [],
+    },
   };
 
   protected async init() {
@@ -123,6 +128,27 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   }
 
   public async luoUusiOpetussuunnitelma() {
+    this.loading(async () => {
+      const ops: OpetussuunnitelmaLuontiDto = {
+        nimi: this.uusi.nimi,
+        julkaisukielet: [],
+        tyyppi: 'ops' as any,
+        organisaatiot: [
+          ...this.uusi.organisaatiot.jarjestajat,
+          ...this.uusi.organisaatiot.oppilaitokset,
+        ],
+      };
+
+      // FIXME: #swagger
+      (ops as any)._pohja = '' + this.uusi.pohja!.id;
+      const luotu = await Opetussuunnitelmat.addOpetussuunnitelma(ops);
+      this.$router.replace({
+        name: 'opsTiedot',
+        params: {
+          id: '' + luotu.data.id,
+        },
+      });
+    });
   }
 
 }

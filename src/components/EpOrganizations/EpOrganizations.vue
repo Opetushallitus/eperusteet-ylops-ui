@@ -8,7 +8,7 @@
       v-model="jarjestajat",
       track-by="oid"
       :options="filteredJarjestajat",
-      :close-on-select="false",
+      :close-on-select="true",
       :clear-on-select="true",
       :placeholder="''",
       :internalSearch="false",
@@ -32,7 +32,7 @@
       v-model="oppilaitokset",
       track-by="oid"
       :options="filteredOppilaitokset",
-      :close-on-select="false",
+      :close-on-select="true",
       :clear-on-select="true",
       :placeholder="''",
       :internalSearch="false",
@@ -56,15 +56,6 @@
       ul.kunnat
         li(v-for="kunta in kunnat") {{ $kaanna(kunta.nimi) }}
 
-  // multiselect(
-    v-model="oppilaitokset",
-    :options="koodisto.oppilaitokset")
-    template(slot="option")
-      div moro
-
-  // pre {{ jarjestajat }}
-  // pre {{ oppilaitokset }}
-
 </template>
 
 
@@ -77,7 +68,7 @@ import {
 
 import _ from 'lodash';
 import Multiselect from 'vue-multiselect';
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
+import { Watch, Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { Kielet } from '@/stores/kieli';
 import { hasOrganisaatioTyyppi, metadataToTeksti } from '@/utils/organisaatiot';
 
@@ -132,6 +123,15 @@ export default class EpOrganizations extends Vue {
       .map((org) => this.koodisto.kuntaMap[org.kotipaikkaUri])
       .uniq()
       .value();
+  }
+
+  @Watch('kunnat')
+  onChange() {
+    this.$emit('input', {
+      jarjestajat: _.map(this.jarjestajat, (org) => _.pick(org, 'oid')),
+      oppilaitokset: _.map(this.oppilaitokset, (org) => _.pick(org, 'oid')),
+      kunnat: _.map(this.kunnat, (org) => _.pick(org, 'koodiUri', 'koodiArvo', 'versio')),
+    });
   }
 
   public async mounted() {
