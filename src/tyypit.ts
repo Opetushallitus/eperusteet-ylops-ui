@@ -6,6 +6,13 @@ export enum Kieli {
   en = 'en',
 }
 
+export enum OrganisaatioTyyppi {
+  Muu = 'Muu organisaatio',
+  Varhaiskasvatus = 'Varhaiskasvatuksen jarjestaja',
+  Oppilaitos = 'Oppilaitos',
+  Toimija = 'Koulutustoimija',
+}
+
 export enum DiagrammiVarit {
   vaalea_sininen = 'vaalea_sininen',
   vihrea_sininen = 'vihrea_sininen',

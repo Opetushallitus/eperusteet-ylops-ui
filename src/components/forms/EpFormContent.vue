@@ -1,37 +1,20 @@
 <template lang="pug">
 .form-group.form-content
   label {{ $t(name) }}:
-  ep-input.form-data(
-    :value="value",
-    @input="$emit('input', $event)",
-    :is-editing="isEditing")
-  small(v-if="help && isEditing").form-text.text-muted {{ $t(help) }}
+  slot
+  small(v-if="help").form-text.text-muted {{ $t(help) }}
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop, Model } from 'vue-property-decorator';
 
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
-
-@Component({
-  components: {
-    EpContent,
-    EpInput,
-  },
-})
+@Component
 export default class extends Vue {
   @Prop({ required: true })
   private name!: string;
 
   @Prop({ default: '' })
   private help!: string;
-
-  @Prop({ default: false })
-  private isEditing!: boolean;
-
-  @Prop({ required: true })
-  private value!: string | object;
 
 }
 </script>

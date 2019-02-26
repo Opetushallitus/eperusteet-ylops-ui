@@ -33,6 +33,9 @@ function getOikeusArvo(oikeus: Oikeus) {
 class KayttajaStore {
 
   @State()
+  public organisaatiot: string[] = [];
+
+  @State()
   public tiedot: KayttajanTietoDto = { };
 
   @State()
@@ -55,6 +58,7 @@ class KayttajaStore {
     try {
       logger.info('Haetaan käyttäjän tiedot');
       this.tiedot = (await KayttajatApi.get()).data;
+      this.organisaatiot = (await KayttajatApi.getOrganisaatioOikeudet()).data;
       const oikeudet = (await Opetussuunnitelmat.getOikeudet()).data;
       this.oikeudet = (oikeudet as any);
       logger.info('Käyttäjän tiedot', this.tiedot);

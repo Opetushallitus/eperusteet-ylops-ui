@@ -21,22 +21,24 @@ import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import '@ckeditor/ckeditor5-build-classic/build/translations/fi.js';
 import '@ckeditor/ckeditor5-build-classic/build/translations/sv.js';
 
-@Component({
-    name: 'CkEditor',
-})
+@Component
 export default class CkEditor extends Vue {
 
     // Editorin dom-elementin ID
-    @Prop({ default: '' }) private id!: string;
+    @Prop({ default: '' })
+    private id!: string;
 
     // Muokattava tieto (tukee v-model:ia)
-    @Prop() private value!: string;
+    @Prop({ required: true })
+    private value!: string;
 
     // Käytetäänkö laajennettua editoria
-    @Prop({ default: false }) private isExtended!: boolean;
+    @Prop({ default: false })
+    private isExtended!: boolean;
 
     // Editorin käyttöliittymän kieli
-    @Prop({ default: 'fi' }) private locale!: string;
+    @Prop({ default: 'fi' })
+    private locale!: string;
 
     // CKEditorin JS instanssi
     private instance: any = null;
@@ -114,14 +116,14 @@ export default class CkEditor extends Vue {
     }
 
     @Watch('value')
-    onValueChanged(val: string, oldval: string) {
+    private onValueChanged(val: string, oldval: string) {
         // Ei reagoida itse aiheutettuihin muutoksiin
-        if(val === this.lastEmittedValue) {
+        if (val === this.lastEmittedValue) {
             return;
         }
 
         // Päivitetään editoriin uusi arvo
-        this.instance.setData( val?val:'' );
+        this.instance.setData(val ? val : '');
     }
 
     private setEditorEvents() {
@@ -133,5 +135,6 @@ export default class CkEditor extends Vue {
             this.$emit('input' , data, event, editor);
         });
     }
+
 
 }

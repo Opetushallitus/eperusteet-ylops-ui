@@ -65,7 +65,7 @@ import {
     },
   },
 } as any)
-export default class UusiPohjaRoute extends Mixins(validationMixin) {
+export default class extends Mixins(validationMixin) {
   private isSaving = false;
   private perusteet: PerusteInfoDto[] = [];
   private uusi = {

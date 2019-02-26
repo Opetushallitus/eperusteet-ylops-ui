@@ -38,6 +38,7 @@
   "ops-nimi": "Opetussuunnitelman nimi",
   "ops-nimi-ohje": "Tähän opetussuunnitelman nimi",
   "palaa-etusivulle": "Palaa etusivulle",
+  "peruste": "Peruste",
   "peruuta": "Peruuta",
   "poista": "Poista",
   "tallenna": "Tallenna",
@@ -68,5 +69,6 @@
   "toiminto": "Toiminto",
   "uusi-ops-ohje-nimi": "Uuden pohjan nimi",
   "uusi-ops-ohje-peruste": "Uuden pohjan peruste",
-  "uusi-pohja": "Uusi pohja"
+  "uusi-pohja": "Uusi pohja",
+  "valitse-peruste": "Valitse peruste"
 }

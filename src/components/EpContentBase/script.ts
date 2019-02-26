@@ -10,6 +10,9 @@ import EpViewer from '@/components/EpViewer/EpViewer.vue';
   },
 })
 export default class EpContentBase extends Vue {
-    @Prop() private value!: string;
-    @Prop() private isEditable!: boolean;
+  @Prop({ required: true })
+  private value!: string;
+
+  @Prop({ required: true })
+  private isEditable!: boolean;
 }

@@ -66,6 +66,16 @@ class OpetussuunnitelmaStore {
     return osa.data;
   }
 
+  public async updateTila(uusiTila: string) {
+    if (uusiTila) {
+      await Opetussuunnitelmat.updateTila(this.opetussuunnitelma!.id!, uusiTila as any);
+      this.opetussuunnitelma = {
+        ...this.opetussuunnitelma!,
+        tila: uusiTila as any,
+      };
+    }
+  }
+
   public async saveTeksti(tov: Puu, parentId?: number) {
     await OpetussuunnitelmanSisalto.updateTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!, tov);
     await this.updateSisalto();

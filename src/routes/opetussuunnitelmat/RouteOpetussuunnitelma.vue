@@ -19,6 +19,7 @@
       template(slot="view")
         transition(name="fade" mode="out-in")
           router-view(:key="$route.fullPath")
+
 </template>
 
 <script lang="ts" src="./script.ts" />
@@ -58,7 +59,7 @@
         color: #bbb;
       }
 
-      @media only screen and (max-width: 1024px) {
+      @media only screen and (max-width: 768px) {
         padding-left: 30px;
       }
 

@@ -21,7 +21,7 @@ export default {
     },
     labelSize: {
       type: Number,
-      default: '30',
+      default: 30,
     },
     styles: {
       type: Object,

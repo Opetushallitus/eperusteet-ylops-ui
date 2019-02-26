@@ -4,7 +4,7 @@ input.input-style.form-control(
   @input="onInput($event.target.value)",
   :attrs="$attrs",
   :value="val")
-div.input-content(
+.input-content(
   v-else,
   :attrs="$attrs")
   | {{ val }}

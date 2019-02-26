@@ -5,7 +5,7 @@
       slot(name="icon")
   .right.p-2.flex-grow-1
     .tileHeader
-      h3.oph-h3
+      h3.oph-h3.tileheader
         slot(name="header")
     .tileContent
       slot(name="content")

@@ -11,10 +11,12 @@ import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
 import RouteOpetussuunnitelma from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelma.vue';
 import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
+import RouteOpetussuunnitelmaUusi from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaUusi.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
 import RouteSisalto from '@/routes/opetussuunnitelmat/sisalto/RouteSisalto.vue';
 import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
 import RouteOppiaineet from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaineet.vue';
+import UnderConstruction from '@/routes/UnderConstruction.vue';
 
 import EditointiDebug from '@/routes/debug/editointi/editointi.vue';
 
@@ -50,10 +52,10 @@ export const router = new Router({
       path: 'uusi/pohja',
       name: 'uusiPohja',
       component: RoutePohjaUusi,
-    // }, {
-    //   path: 'uusi/ops',
-    //   name: 'uusiOps',
-    //   component: RoutePohjaUusi,
+    }, {
+      path: 'uusi/opetussuunnitelma',
+      name: 'uusiOpetussuunnitelma',
+      component: RouteOpetussuunnitelmaUusi,
     }, {
       path: 'opetussuunnitelmat/:id',
       name: 'opetussuunnitelma',
@@ -62,6 +64,18 @@ export const router = new Router({
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
+      }, {
+        path: 'dokumentti',
+        component: UnderConstruction,
+        name: 'opsDokumentti',
+      }, {
+        path: 'poistetut',
+        component: UnderConstruction,
+        name: 'opsPoistetut',
+      }, {
+        path: 'kasitteet',
+        component: UnderConstruction,
+        name: 'opsKasitteet',
       }, {
         path: 'oppiaineet',
         component: RouteOppiaineet,
