@@ -1,6 +1,6 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
@@ -18,8 +18,8 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 
-import '@ckeditor/ckeditor5-build-classic/build/translations/fi.js';
-import '@ckeditor/ckeditor5-build-classic/build/translations/sv.js';
+import '@ckeditor/ckeditor5-build-inline/build/translations/fi.js';
+import '@ckeditor/ckeditor5-build-inline/build/translations/sv.js';
 
 @Component({
     name: 'CkEditor',
@@ -97,7 +97,7 @@ export default class CkEditor extends Vue {
             }
 
             // Instanssin luonti
-            this.instance = await ClassicEditor
+            this.instance = await InlineEditor
                 .create(this.$refs.ckeditor, config);
             this.instance.setData(this.value);
             this.setEditorEvents();
