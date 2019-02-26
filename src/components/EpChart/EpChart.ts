@@ -21,7 +21,7 @@ export default {
     },
     labelSize: {
       type: Number,
-      default: '30',
+      default: 30,
     },
     styles: {
       type: Object,
@@ -34,10 +34,7 @@ export default {
   },
 
   data () {
-    var chartValue: number = (this as any).value ? (this as any).value : 0;
-    if(chartValue < 0 || chartValue > 100) {
-      chartValue = 0;
-    }
+    var chartValue: number = (this as any).getValidatedChartValue();
 
     return {
       componentData: {
@@ -53,10 +50,7 @@ export default {
 
   watch: {
     value() {
-      var chartValue: number = this.value ? (this as any).value : 0;
-      if(chartValue < 0 || chartValue > 100) {
-        chartValue = 0;
-      }
+      var chartValue: number = (this as any).getValidatedChartValue();
 
       (this as any).componentData.datasets[0].data = [
         chartValue,
@@ -73,6 +67,10 @@ export default {
   },
 
   methods: {
+    getValidatedChartValue() {
+      var chartVal: number = (this as any).value ? (this as any).value : 0
+      return chartVal >= 0 && chartVal <= 100 ? chartVal : 0;
+    },
 
     // Luodaan graafin data objektin sisältö (värimaailma + piirakan koko)
     createInitialData (chartValue: number, chartColor: String) {
