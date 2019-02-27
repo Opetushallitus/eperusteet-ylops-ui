@@ -2,16 +2,13 @@ import { mount } from '@vue/test-utils';
 import EpButton from './EpButton.vue';
 
 describe('EpButton component', () => {
-  const options = {
-  };
-
   it('Renders button with content', () => {
     const wrapper = mount(EpButton, {
       slots: {
         default: 'Test',
       },
     });
-    expect(wrapper.html()).toContain("Test");
+    expect(wrapper.html()).toContain('Test');
   });
 
   it('Renders button with spinner', () => {
@@ -23,6 +20,6 @@ describe('EpButton component', () => {
         showSpinner: true,
       },
     });
-    expect(wrapper.html()).toContain("oph-spinner");
+    expect(wrapper.html()).toContain('oph-spinner');
   });
 });

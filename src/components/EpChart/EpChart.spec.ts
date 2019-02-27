@@ -7,7 +7,7 @@ describe('EpChart component', () => {
     const wrapper = mount(EpChartTester, {
       propsData: {
         chartColor: DiagrammiVarit.vaalea_sininen,
-      }
+      },
     });
     expect(wrapper.find('#doughnut-chart').is('canvas') ).toBe(true);
 

@@ -56,13 +56,13 @@ export default class CkEditor extends Vue {
   }
 
   @Watch('layout')
-  onLayoutChanged(val: EditorLayout, oldval: EditorLayout) {
+  private onLayoutChanged(val: EditorLayout, oldval: EditorLayout) {
     this.instance.destroy();
     this.createEditorInstance();
   }
 
   @Watch('value')
-  onValueChanged(val: string, oldval: string) {
+  private onValueChanged(val: string, oldval: string) {
     // Ei reagoida itse aiheutettuihin muutoksiin
     if (val === this.lastEmittedValue) {
       return;
@@ -74,7 +74,7 @@ export default class CkEditor extends Vue {
 
   private async createEditorInstance() {
     // Luodaan asetusobjekti
-    var config: object;
+    let config: object;
     switch (this.layout) {
       case EditorLayout.simplified:
         config = this.getSimplifiedSettings();
