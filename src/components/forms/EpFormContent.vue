@@ -22,7 +22,7 @@ export default class EpFormContent extends Vue {
 <style scoped lang="scss">
 
 .form-content {
-  padding: 20px;
+  margin: 0 40px 40px 0;
 
   label {
     font-weight: 600;

@@ -1,39 +1,49 @@
 <template lang="pug">
 div
-  h1 {{ $t('uusi-pohja') }}
+  ep-navigation
+  .content
+    h1 {{ $t('uusi-pohja') }}
 
-  .form
-    .form-group
-      label(for="uusi-ops-nimi") {{ $t('nimi') }}
-      input.form-control(
-        id="uusi-ops-nimi"
-        type="text"
-        v-model="uusi.nimi")
-      small.form-text.text-muted {{ $t('uusi-ops-ohje-nimi') }}
+    .form
+      .form-group
+        label(for="uusi-ops-nimi") {{ $t('nimi') }}
+        input.form-control(
+          id="uusi-ops-nimi"
+          type="text"
+          v-model="uusi.nimi")
+        small.form-text.text-muted {{ $t('uusi-ops-ohje-nimi') }}
 
-    .form-group
-      label(for="uusi-ops-tyyppi") {{ $t('peruste') }}
-      div(v-if="valittavat.length > 0")
-        select.form-control(
-          id="uusi-ops-peruste"
-          v-model="uusi.valittuPeruste")
-          option(disabled value="null") {{ $t('valitse-peruste') }}
-          option(v-for="peruste in valittavat" :key="peruste.id" :value="peruste")
-            span {{ $kaanna(peruste.nimi) }} ({{peruste.diaarinumero}})
-        small.form-text.text-muted {{ $t('uusi-ops-ohje-peruste') }}
-      ep-spinner(v-else)
+      .form-group
+        label(for="uusi-ops-tyyppi") {{ $t('peruste') }}
+        div(v-if="valittavat.length > 0")
+          select.form-control(
+            id="uusi-ops-peruste"
+            v-model="uusi.valittuPeruste")
+            option(disabled value="null") {{ $t('valitse-peruste') }}
+            option(v-for="peruste in valittavat" :key="peruste.id" :value="peruste")
+              span {{ $kaanna(peruste.nimi) }} ({{peruste.diaarinumero}})
+          small.form-text.text-muted {{ $t('uusi-ops-ohje-peruste') }}
+        ep-spinner(v-else)
 
-    ep-button(
-      @click="luoUusiPeruste"
-      :disabled="$v.$invalid || isSaving"
-      :show-spinner="isSaving") {{ $t('luo-pohja') }}
+      ep-button(
+        @click="luoUusiPeruste"
+        :disabled="$v.$invalid || isSaving"
+        :show-spinner="isSaving") {{ $t('luo-pohja') }}
 
 </template>
 
+
 <script lang="ts">
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import {
+  EpButton,
+  EpContent,
+  EpFormContent,
+  EpInput,
+  EpNavigation,
+  EpOrganizations,
+  EpSpinner,
+} from '@/components';
+
 import _ from 'lodash';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import { Kielet } from '@/stores/kieli';
@@ -50,9 +60,10 @@ import {
 
 @Component({
   components: {
-    EpContent,
-    EpSpinner,
     EpButton,
+    EpContent,
+    EpNavigation,
+    EpSpinner,
   },
   validations: {
     uusi: {
@@ -120,14 +131,19 @@ export default class RoutePohjaUusi extends Mixins(validationMixin) {
           },
         });
       }
-
     }
     catch (err) {
       console.log(err);
       this.isSaving = false;
     }
-
   }
-
 }
+
 </script>
+
+
+<style scoped lang="scss">
+
+@import '@/styles/_variables.scss';
+
+</style>

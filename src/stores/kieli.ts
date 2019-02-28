@@ -47,6 +47,19 @@ class KieliStore {
   }
 
   @Getter()
+  public getAikakaannokset() {
+    const kieli = this.sisaltoKieli;
+    return {
+      days: _.map(moment.weekdays(), (day: string) => _.toUpper(_.first(day))),
+      months: moment.monthsShort(),
+      placeholder: {
+        date: i18n.t('valitse-pvm'),
+        dateRange: i18n.t('valitse-pvm-jana'),
+      },
+    };
+  }
+
+  @Getter()
   public getSisaltoKieli() {
     return this.sisaltoKieli;
   }

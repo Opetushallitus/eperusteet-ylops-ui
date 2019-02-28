@@ -1,5 +1,5 @@
-div
-  ep-navigation
+.home-container
+  ep-navigation(:sticky="false")
   .home
     .header
       h3 {{ $t('tervetuloa', { nimi }) }}
@@ -7,7 +7,7 @@ div
 
     //- .tilecontainer
       //- .tiles
-    div(
+    .tilecontainer(
       v-masonry,
       origin-left="true", 
       fit-width="true",

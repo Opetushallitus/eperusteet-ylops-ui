@@ -45,13 +45,15 @@
   "opetussuunnitelman-pohjatyyppi": "Käytä pohjana",
   "oppiaineet": "Oppiaineet",
   "oppilaitokset": "Oppilaitokset",
+  "ops-hyvaksyjataho": "Hyväksyjätaho",
+  "ops-hyvaksyjataho-ohje": "",
+  "ops-hyvaksymispvm": "Hyväksymispäivämäärä",
+  "ops-hyvaksymispvm-ohje": "",
   "ops-kuvaus": "Tiivistelmä",
   "ops-kuvaus-ohje": "Yleinen kuvaus opetussuunnitelmasta",
   "ops-nimi": "Opetussuunnitelman nimi",
   "ops-nimi-ohje": "Tähän opetussuunnitelman nimi",
   "organisaatiot": "Organisaatiot",
-  "ops-hyvaksyjataho": "Hyväksyjätaho",
-  "ops-hyvaksyjataho-ohje": "",
   "palaa-etusivulle": "Palaa etusivulle",
   "peruste": "Peruste",
   "peruuta": "Peruuta",
@@ -95,5 +97,7 @@
   "uusi-pohja": "Uusi pohja",
   "vaihda-tilaa": "Vaihda tilaa",
   "valitse-peruste": "Valitse peruste",
-  "valitse-pohja": "Valitse pohja"
+  "valitse-pohja": "Valitse pohja",
+  "valitse-pvm": "Valitse päivämäärä",
+  "valitse-pvm-jana": "Valitse aikajana"
 }

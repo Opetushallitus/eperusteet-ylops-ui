@@ -14,13 +14,6 @@ div.content
                 help="ops-nimi-ohje",
                 :is-editing="scope.isEditing")
             .col-md-6
-              ep-select(
-                name="julkaisukielet",
-                :is-editing="scope.isEditing",
-                :items="kielet",
-                v-model="scope.data.julkaisukielet",
-                :multiple="true")
-            .col-md-6
               ep-field(
                 name="peruste",
                 v-model="scope.data.perusteenDiaarinumero")
@@ -28,18 +21,31 @@ div.content
               ep-field(
                 name="tila",
                 v-model="scope.data.tila")
+            .col-md-6
+              ep-form-content(
+                name="julkaisukielet",
+                ohje="ops-julkaisukielet-ohje")
+                ep-select(
+                  name="julkaisukielet",
+                  :is-editing="scope.isEditing",
+                  :items="kielet",
+                  v-model="scope.data.julkaisukielet",
+                  :multiple="true")
             .col-md-6(v-if="isOps")
               ep-field(
                 name="ops-hyvaksyjataho",
                 v-model="scope.data.hyvaksyjataho",
+                :is-string="true",
                 help="ops-hyvaksyjataho-ohje",
                 :is-editing="scope.isEditing")
             .col-md-6(v-if="isOps")
-              ep-datepicker(
+              ep-form-content(
                 name="ops-hyvaksymispvm",
-                v-model="scope.data.paatospaivamaara",
                 help="ops-hyvaksymispvm-ohje",
                 :is-editing="scope.isEditing")
+                ep-datepicker(
+                  v-model="scope.data.paatospaivamaara",
+                  :is-editing="scope.isEditing")
             .col-md-6(v-if="isOps")
               ep-toggle(
                 name="ops-esikatseltavissa",

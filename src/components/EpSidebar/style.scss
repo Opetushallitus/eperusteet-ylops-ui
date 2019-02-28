@@ -3,6 +3,20 @@
 .sidenav {
   height: 100%;
 
+  .closed {
+    height: 100vh;
+
+    button {
+      width: 26px;
+      height: 100vh;
+      border-right: 1px solid #eee;
+
+      span.bar {
+        margin-left: -8px;
+      }
+    }
+  }
+
   @media only screen and (min-width: 768px) {
     display: flex;
     flex: stretch;

@@ -1,5 +1,5 @@
 <template lang="pug">
-div.topbar(v-sticky)
+div.topbar(v-sticky="sticky")
   b-navbar(
     type="dark",
     toggleable="md",
@@ -48,6 +48,9 @@ import Sticky from 'vue-sticky-directive';
   },
 })
 export default class EpNavigation extends Vue {
+  @Prop({ default: true })
+  private sticky!: boolean;
+
   @Prop({ default: 'normaali' })
   private tyyli!: string;
 
@@ -80,6 +83,7 @@ export default class EpNavigation extends Vue {
 
 .topbar {
   .navbar {
+    background-color: inherit;
     top: 0;
     font-weight: 600;
 
@@ -89,11 +93,14 @@ export default class EpNavigation extends Vue {
   }
 
   .navbar-style-normaali {
-    background: $etusivu-header-background;
+    /* background-color: $etusivu-header-background; */
+    /* background-image: url('/img/banners/etusivu_tausta.svg'); */
+    /* background-position: 100% 0; */
+    /* background-repeat: no-repeat; */
   }
 
   .navbar-style-ops {
-    background: $color-ops-header;
+    background-color: $color-ops-header;
   }
 
 }

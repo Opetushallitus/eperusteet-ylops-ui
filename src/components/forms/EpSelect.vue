@@ -1,6 +1,5 @@
 <template lang="pug">
-.form-group.form-content(v-if="isEditing")
-  label {{ $t(name) }}:
+div(v-if="isEditing")
   div(v-if="items")
     select.form-control(
       v-model="innerModel",
@@ -11,12 +10,12 @@
         slot(name="item") {{ item }}
     small(v-if="help").form-text.text-muted {{ $t(help) }}
   ep-spinner(v-else)
-.form-content(v-else)
-  label.content-label {{ $t(name) }}:
+div(v-else)
   ul
     li(v-for="item in model")
       slot(name="item")
         span {{ item }}
+
 </template>
 
 <script lang="ts">

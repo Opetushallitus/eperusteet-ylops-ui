@@ -15,10 +15,14 @@ input.input-style.form-control(
 import { Vue, Component, Prop, Model } from 'vue-property-decorator';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
+import { createLogger } from '@/stores/logger';
+
+const logger = createLogger('EpInput');
 
 
 @Component
-export default class RouteTiedot extends Vue {
+export default class EpInput extends Vue {
+
   @Prop({ default: false })
   private isString!: boolean;
 
@@ -29,7 +33,15 @@ export default class RouteTiedot extends Vue {
   private value!: string | object;
 
   public onInput(input: any) {
-    if (_.isString(this.value)) {
+    if (this.isString && !_.isString(this.value)) {
+      logger.warn('Given value is not a string:', this.value);
+    }
+
+    if (!this.isString && !_.isPlainObject(this.value)) {
+      logger.warn('Given value is not an object:', this.value);
+    }
+
+    if (this.isString || _.isString(this.value)) {
       this.$emit('input', input);
     }
     else {
