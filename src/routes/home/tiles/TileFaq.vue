@@ -1,7 +1,5 @@
 <template lang="pug">
-base-tile
-  template(slot="icon")
-    fas(icon="question")
+base-tile(icon="question", color="#CE52C6")
   template(slot="header")
     span {{ $t('faq') }}
   template(slot="content")

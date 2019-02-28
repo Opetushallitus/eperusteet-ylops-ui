@@ -7,7 +7,6 @@ import { createLogger } from '@/stores/logger';
 import { rootConfig } from '@/mainvue';
 
 
-
 Vue.use(devtools);
 
 const logger = createLogger('Main');

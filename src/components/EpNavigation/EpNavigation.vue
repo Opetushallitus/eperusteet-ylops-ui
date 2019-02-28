@@ -1,8 +1,9 @@
 <template lang="pug">
-div.topbar
+div.topbar(v-sticky)
   b-navbar(
-    type="dark"
-    toggleable="md")
+    type="dark",
+    toggleable="md",
+    :class="'navbar-style-' + tyyli")
 
     b-navbar-nav
       b-nav-item(id="nav-admin" :to="{ name: 'root' }")
@@ -32,25 +33,31 @@ div.topbar
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Kieli } from '@/tyypit';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Loading from 'vue-loading-overlay';
+import Sticky from 'vue-sticky-directive';
+
 
 @Component({
   directives: {
     oikeustarkastelu,
+    Sticky,
   },
 })
-export default class Root extends Vue {
+export default class EpNavigation extends Vue {
+  @Prop({ default: 'normaali' })
+  private tyyli!: string;
+
   get uiKieli() { return Kielet.getUiKieli(); }
   get sisaltoKieli() { return Kielet.getSisaltoKieli(); }
   get sovelluksenKielet() { return UiKielet; }
 
   private valitseUiKieli(kieli: Kieli) {
     const router = this.$router;
-    const current = router.currentRoute;
+    const current: any = router.currentRoute;
     router.push({
       ...current,
       params: {
@@ -69,18 +76,26 @@ export default class Root extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import '../../styles/variables';
+@import '@/styles/_variables.scss';
 
 .topbar {
   .navbar {
     top: 0;
-    background: $color-ops-header;
     font-weight: 600;
 
     .kielivalitsin {
       color: white;
     }
   }
+
+  .navbar-style-normaali {
+    background: $etusivu-header-background;
+  }
+
+  .navbar-style-ops {
+    background: $color-ops-header;
+  }
+
 }
 
 </style>

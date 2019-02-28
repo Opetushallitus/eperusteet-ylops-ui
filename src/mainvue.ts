@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
+import { VueMasonryPlugin } from 'vue-masonry';
 
+Vue.use(VueMasonryPlugin);
 Vue.use(Loading, {
   fullPage: true,
   color: '#159ecb',

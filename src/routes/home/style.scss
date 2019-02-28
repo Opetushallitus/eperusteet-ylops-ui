@@ -1,26 +1,20 @@
+@import '@/styles/_variables.scss';
+
 .home {
-  padding: 30px;
-
-  @media screen and (min-width: 1124px) {
-    width: 100%;
-    max-width: 1024px;
-    margin: auto;
-    padding: 30px;
-  }
-
-  @media screen and (max-width: 1023px) {
-  }
 
   .header {
-    margin-top: 20px;
+    padding: 40px;
+    background: $etusivu-header-background;
+    color: white;
   }
 
   .tilecontainer {
-    margin-top: 60px;
+    margin-top: 30px;
 
     .tiles {
+      justify-content: center;
       display: flex;
-      flex-flow: row wrap;
+      flex-flow: wrap;
     }
   }
 }

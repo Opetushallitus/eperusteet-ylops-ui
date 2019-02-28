@@ -1,7 +1,5 @@
 <template lang="pug">
-base-tile.tile
-  template(slot="icon")
-    fas.icon(icon="plus")
+base-tile.tile(icon="plus")
   template(slot="header")
     router-link(
       id="etusivu-luo-uusi-opetussuunnitelma",
@@ -25,4 +23,5 @@ export default class TileUusiOpetussuunnitelma extends Vue {
 }
 </script>
 
-<style scoped lang="scss" src="./style.scss"></style>
+<style scoped lang="scss">
+</style>

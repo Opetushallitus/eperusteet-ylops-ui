@@ -1,21 +1,25 @@
-import EpChart from '@/components/EpChart/EpChart';
 import EpRoute from '@/mixins/EpRoot';
-import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import OpsSidenav from './OpsSidenav.vue';
 import Tilanvaihto from './Tilanvaihto.vue';
 import _ from 'lodash';
 import { DiagrammiVarit } from '@/tyypit';
 import { Mixins, Component } from 'vue-property-decorator';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import {
+  EpChart,
+  EpNavigation,
+  EpSidebar,
+  EpSpinner,
+} from '@/components';
 
 
 @Component({
   components: {
+    EpChart,
+    EpNavigation,
+    EpSidebar,
     EpSpinner,
     OpsSidenav,
-    EpSidebar,
-    EpChart,
     Tilanvaihto,
   },
 })

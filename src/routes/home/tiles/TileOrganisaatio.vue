@@ -1,7 +1,5 @@
 <template lang="pug">
-base-tile
-  template(slot="icon")
-    fas(icon="users")
+base-tile(icon="users", color="#82D4FF")
   template(slot="header")
     span {{ $t('tile-organisaatio') }}
   template(slot="content")

@@ -1,8 +1,11 @@
 import { Component, Vue } from 'vue-property-decorator';
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpFooter from '@/components/EpFooter/EpFooter.vue';
+import {
+  EpNavigation,
+  EpFooter,
+} from '@/components';
 
 import Sticky from 'vue-sticky-directive';
+
 
 @Component({
   directives: {

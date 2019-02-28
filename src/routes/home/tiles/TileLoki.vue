@@ -1,7 +1,5 @@
 <template lang="pug">
-base-tile
-  template(slot="icon")
-    fas(icon="clock")
+base-tile(icon="clock", color="#5BCA13")
   template(slot="header")
     span {{ $t('tile-loki') }}
   template(slot="content")

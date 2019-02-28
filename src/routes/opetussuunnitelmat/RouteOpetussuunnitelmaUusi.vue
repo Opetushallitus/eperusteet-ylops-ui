@@ -49,7 +49,6 @@ div
         ep-spinner(v-else)
 
     ep-organizations(v-model="uusi.organisaatiot")
-    pre {{ uusi.organisaatiot }}
 
     ep-button(
       @click="luoUusiOpetussuunnitelma",
