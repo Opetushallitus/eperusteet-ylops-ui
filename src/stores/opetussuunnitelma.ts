@@ -1,23 +1,9 @@
-import Vue from 'vue';
-import * as _ from 'lodash';
+import { Ohjeet, OpetussuunnitelmanSisalto, Opetussuunnitelmat } from '@/api';
+import { Matala, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import { AxiosResponse } from 'axios';
-import { Store, Getter, Mutation, Action, State } from './store';
-import {
-  KayttajanTietoDto,
-  OhjeDto,
-  OpetussuunnitelmaKevytDto,
-  Puu,
-  Matala,
-  TekstiKappaleViiteKevytDto,
-} from '@/tyypit';
-import {
-  Kayttajat as KayttajatApi,
-  Ohjeet,
-  OpetussuunnitelmanSisalto,
-  Opetussuunnitelmat,
-} from '@/api';
-
 import { createLogger } from './logger';
+import { State, Store } from './store';
+
 const logger = createLogger('Opetussuunnitelma');
 
 @Store
@@ -76,7 +62,7 @@ class OpetussuunnitelmaStore {
     }
   }
 
-  public async saveTeksti(tov: Puu, parentId?: number) {
+  public async saveTeksti(tov: Puu) {
     await OpetussuunnitelmanSisalto.updateTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!, tov);
     await this.updateSisalto();
   }

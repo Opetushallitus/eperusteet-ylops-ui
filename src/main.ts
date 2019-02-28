@@ -1,11 +1,9 @@
 import '@/config/styles';
-import '@/registerServiceWorker';
-import Vue from 'vue';
-import devtools from '@vue/devtools';
-import { Component } from 'vue-property-decorator';
-import { createLogger } from '@/stores/logger';
 import { rootConfig } from '@/mainvue';
-
+import '@/registerServiceWorker';
+import { createLogger } from '@/stores/logger';
+import devtools from '@vue/devtools';
+import Vue from 'vue';
 
 Vue.use(devtools);
 

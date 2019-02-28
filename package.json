@@ -107,6 +107,7 @@
     "@vue/eslint-config-typescript": "^4.0.0",
     "apexcharts": "^3.2.2",
     "babel-eslint": "^10.0.1",
+    "canvas": "^2.3.1",
     "eslint": "^5.13.0",
     "eslint-plugin-vue": "^5.0.0",
     "html-loader": "^0.5.5",
