@@ -15,4 +15,15 @@ module.exports = {
       name: 'Komponentit',
       components: 'src/components/**/[A-Z]*.vue'
   }],
+  webpackConfig: {
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/
+        }
+      ],
+    }
+  },
 }

@@ -13,11 +13,11 @@ export default {
     },
     chartColor: {
       type: String,
-      default: DiagrammiVarit.vaalea_sininen
+      default: DiagrammiVarit.vaalea_sininen,
     },
     labelColor: {
       type: String,
-      default: 'black'
+      default: 'black',
     },
     labelSize: {
       type: Number,
@@ -33,11 +33,8 @@ export default {
     },
   },
 
-  data () {
-    var chartValue: number = (this as any).value ? (this as any).value : 0;
-    if(chartValue < 0 || chartValue > 100) {
-      chartValue = 0;
-    }
+  data() {
+    const chartValue: number = (this as any).getValidatedChartValue();
 
     return {
       componentData: {
@@ -47,53 +44,52 @@ export default {
       componentOptions: (this as any).createInitialConfig(
         chartValue,
         (this as any).labelColor,
-        (this as any).labelSize)
+        (this as any).labelSize),
     };
   },
 
   watch: {
     value() {
-      var chartValue: number = this.value ? (this as any).value : 0;
-      if(chartValue < 0 || chartValue > 100) {
-        chartValue = 0;
-      }
+      const chartValue: number = (this as any).getValidatedChartValue();
 
       (this as any).componentData.datasets[0].data = [
         chartValue,
-        100-chartValue,
+        100 - chartValue,
       ];
-      (this as any).componentOptions.plugins.doughnutlabel.labels[0].text=chartValue+' %';
+      (this as any).componentOptions.plugins.doughnutlabel.labels[0].text = chartValue + ' %';
 
       (this as any).$data._chart.update();
-    }
+    },
   },
 
-  mounted () {
+  mounted() {
     (this as any).renderChart( (this as any).componentData, (this as any).componentOptions );
   },
 
   methods: {
+    getValidatedChartValue() {
+      const chartVal: number = (this as any).value ? (this as any).value : 0;
+      return chartVal >= 0 && chartVal <= 100 ? chartVal : 0;
+    },
 
     // Luodaan graafin data objektin sisältö (värimaailma + piirakan koko)
-    createInitialData (chartValue: number, chartColor: String) {
+    createInitialData(chartValue: number, chartColor: string) {
       // Oletuksena sini-vihreä värimaailma
-      var varimaailma = [ '#5BCA13', '#0041DC'];
+      let varimaailma = [ '#5BCA13', '#0041DC'];
 
-      if(chartColor === DiagrammiVarit.vaalea_sininen) {
-        varimaailma = [ '#2e44d8','#cfd8f6' ]
+      if (chartColor === DiagrammiVarit.vaalea_sininen) {
+        varimaailma = [ '#2e44d8', '#cfd8f6' ];
       }
 
-      return [
-        {
+      return [{
           borderWidth: 0,
           backgroundColor: varimaailma,
-          data: [chartValue, 100-chartValue]
-        }
-      ];
+          data: [chartValue, 100 - chartValue],
+      }];
     },
 
     // Luodaan graafin konfiguraatio-objektin sisältö
-    createInitialConfig (chartValue: number, labelColor: String, labelSize: Number) {
+    createInitialConfig(chartValue: number, labelColor: string, labelSize: number) {
       return {
         cutoutPercentage: 85,
 
@@ -109,17 +105,17 @@ export default {
           doughnutlabel: {
             labels: [
               {
-                text: chartValue+' %',
+                text: chartValue + ' %',
                 color: labelColor,
                 font: {
                   size: labelSize,
-                }
+                },
               },
-            ]
+            ],
           },
         },
       };
     },
 
   },
-}
+};
