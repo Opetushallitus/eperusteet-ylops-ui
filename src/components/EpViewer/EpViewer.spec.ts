@@ -21,7 +21,7 @@ describe('EpViewer component', () => {
 
         // Should call updated method & katex render
         wrapper.setProps({
-            value: '<p><span class="math-tex">x=2</span></p>'
+            value: '<p><span class="math-tex">x=2</span></p>',
         });
 
         // Note, updated method has 150ms debounce value, so this test
@@ -29,6 +29,6 @@ describe('EpViewer component', () => {
         setTimeout( () => {
             expect(wrapper.html()).toContain('mathdefault');
             done();
-        },300);
+        }, 300);
       });
 });
