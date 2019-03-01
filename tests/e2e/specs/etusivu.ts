@@ -1,6 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Etusivu', () => {
+describe.skip('Etusivu', () => {
 
   function createServer() {
     cy.server();
