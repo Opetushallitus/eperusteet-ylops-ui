@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="300px" viewBox="0 0 1440 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>Group 2</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="tausta">
+            <g id="Group">
+                <g id="Group-2">
+                    <rect id="Rectangle-Copy-3" fill="#2F5FD1" x="0" y="0" width="1440" height="300"></rect>
+                    <path d="M638,0 C774.389951,8.87003535 901.445448,39.6145224 1019.16649,92.2334611 C1195.74806,171.161869 1247.1506,290.996688 1440,300 C1440,300 1440,200 1440,0 L638,0 Z" id="Path" fill="#0034B0"></path>
+                    <path d="M1007,0 C1080.63697,8.5743675 1149.23426,38.2940383 1212.79188,89.1590124 C1308.12832,165.456473 1335.88056,281.296798 1440,290 C1440,290 1440,193.333333 1440,0 L1007,0 Z" id="Path-Copy" fill="#002D9A"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -7,6 +7,12 @@
   ul.navigation(v-if="sisalto")
     router-link(:to="{ 'name': 'opsTiedot' }" tag="li")
       a.btn.btn-link {{ $t('tiedot') }}
+    router-link.minor(:to="{ 'name': 'opsPoistetut' }" tag="li")
+      a.btn.btn-link {{ $t('poistetut') }}
+    router-link.minor(:to="{ 'name': 'opsDokumentti' }" tag="li")
+      a.btn.btn-link {{ $t('dokumentti') }}
+    router-link.minor(:to="{ 'name': 'opsKasitteet' }" tag="li")
+      a.btn.btn-link {{ $t('kasitteet') }}
     ops-sidenav-item(
       v-for="teksti in sisalto.lapset",
       :value="teksti",

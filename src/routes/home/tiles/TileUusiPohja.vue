@@ -1,15 +1,12 @@
 <template lang="pug">
-base-tile
-  template(slot="icon")
-    fas(icon="landmark")
+base-tile(icon="plus")
   template(slot="header")
-    span {{ $t('tile-uusi-pohja') }}
+    router-link(
+      id="etusivu-luo-uusi-pohja"
+      :to="{ name: 'uusiPohja' }")
+      | {{ $t('tile-uusi-pohja') }}
   template(slot="content")
     p {{ $t('tile-uusi-pohja-kuvaus') }}
-    router-link.btn.btn-primary(
-      id="etusivu-luo-uusi-pohja"
-      :to="{ name: 'uusiPohja' }"
-      tag="button") {{ $t('luo-uusi') }}
 </template>
 
 <script lang="ts">
@@ -21,9 +18,10 @@ import BaseTile from './BaseTile.vue';
     BaseTile,
   }
 })
-export default class TilePohja extends Vue {
+export default class TileUusiPohja extends Vue {
   
 }
 </script>
 
-<style scoped lang="scss" src="./style.scss"></style>
+<style scoped lang="scss">
+</style>

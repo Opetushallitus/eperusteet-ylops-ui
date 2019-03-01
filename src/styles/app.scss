@@ -1,6 +1,10 @@
 @import './variables';
 @import 'oph-virkailija-style-guide/oph-styles.css';
 
+.form-content {
+  padding: 0px !important;
+}
+
 :root {
   margin: 0;
   padding: 0;

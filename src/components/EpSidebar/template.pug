@@ -1,8 +1,12 @@
 div
-  button.btn.btn-link(@click="toggled = !toggled")
-    fas(icon="bars")
   div.sidenav
+    .closed
+      button.btn.btn-link(@click="toggled = !toggled", v-if="!toggled")
+        span.bar
+          fas(icon="bars")
     div.bar(v-if="toggled")
+      button.btn.btn-link(@click="toggled = !toggled", v-if="toggled")
+        fas(icon="bars")
       slot(name="bar")
     div.view
       slot(name="view")

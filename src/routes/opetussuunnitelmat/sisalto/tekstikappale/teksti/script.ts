@@ -60,7 +60,6 @@ export default class TekstikappaleTeksti extends Mixins(EpRoot) {
   };
 
   private async addAlikappale(parent: Puu) {
-    console.log(parent);
     const uusi = await Opetussuunnitelma.addTeksti({}, parent.id);
     this.$router.push({
       name: 'tekstikappale',

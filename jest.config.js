@@ -38,7 +38,7 @@ module.exports = {
     '^.+\\.jsx?$': 'babel-jest',
   },
   "transformIgnorePatterns": [
-    "/node_modules/(?!(@ckeditor|katex|lodash\-es|bootstrap-vue)/)",
+    "/node_modules/(?!(@ckeditor|katex|vue-masonry|lodash\-es|bootstrap-vue)/)",
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

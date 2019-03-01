@@ -1,10 +1,18 @@
-.home
-  .header
-    h3 {{ $t('tervetuloa', { nimi }) }}
-    p {{ $t('tervetuloa-kuvaus') }}
+.home-container
+  ep-navigation(:sticky="false")
+  .home
+    .header
+      h3 {{ $t('tervetuloa', { nimi }) }}
+      p {{ $t('tervetuloa-kuvaus') }}
 
-  .tilecontainer
-    .tiles.row
+    //- .tilecontainer
+      //- .tiles
+    .tilecontainer(
+      v-masonry,
+      origin-left="true", 
+      fit-width="true",
+      transition-duration="0.1s",
+      item-selector=".tile")
       tile-opetussuunnitelmat()
       tile-pohjat()
       tile-uusi-opetussuunnitelma()

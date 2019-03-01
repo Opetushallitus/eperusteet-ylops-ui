@@ -28,12 +28,20 @@ import { rootConfig } from '@/mainvue';
 
 
 describe('Router', () => {
-  async function createMounted(oikeudet = genOikeudet('oph')) {
+  async function createMounted(
+    oikeudet = genOikeudet('oph'),
+  ) {
     jest.spyOn(KayttajatApi, 'get')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
 
     jest.spyOn(Opetussuunnitelmat, 'getOikeudet')
       .mockImplementation(async () => makeAxiosResponse(oikeudet));
+
+    jest.spyOn(KayttajatApi, 'getOrganisaatioOikeudet')
+      .mockImplementation(async () => makeAxiosResponse([
+        '1234',
+        '2234',
+      ]));
 
     jest.spyOn(Opetussuunnitelmat, 'getAll')
       .mockImplementation(async (tyyppi: 'OPS' | 'POHJA' | undefined) => {

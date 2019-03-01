@@ -1,26 +1,28 @@
 <template lang="pug">
-.form-group.form-content
-  label {{ $t(name) }}:
+ep-form-content(
+  :name="name",
+  :help="help")
   ep-input.form-data(
     :value="value",
     @input="$emit('input', $event)",
-    :is-editing="isEditing")
-  small(v-if="help && isEditing").form-text.text-muted {{ $t(help) }}
+    :is-editing="isEditing",
+    :is-string="isString")
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop, Model } from 'vue-property-decorator';
 
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
+import EpFormContent from './EpFormContent.vue';
+import EpInput from './EpInput.vue';
+
 
 @Component({
   components: {
-    EpContent,
+    EpFormContent,
     EpInput,
   },
 })
-export default class RouteTiedot extends Vue {
+export default class EpField extends Vue {
   @Prop({ required: true })
   private name!: string;
 
@@ -30,25 +32,11 @@ export default class RouteTiedot extends Vue {
   @Prop({ default: false })
   private isEditing!: boolean;
 
+  @Prop({ default: false })
+  private isString!: boolean;
+
   @Prop({ required: true })
   private value!: string | object;
 
 }
 </script>
-
-<style scoped lang="scss">
-
-.form-content {
-  padding: 20px;
-
-  label {
-    font-weight: 600;
-  }
-
-  .form-data {
-    margin-top: -5px;
-    padding-left: 2px;
-  }
-}
-
-</style>

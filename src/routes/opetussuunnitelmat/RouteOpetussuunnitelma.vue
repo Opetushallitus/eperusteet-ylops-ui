@@ -1,24 +1,28 @@
 <template lang="pug">
-.opetussuunnitelma(v-if="ops")
-  .header
-    .progress
-      div
-        ep-chart(
-          labelColor="white",
-          :chartColor="graph.colorScheme",
-          :value="graph.value")
-    .info
-      h1 {{ $kaanna(ops.nimi) }}
-      h4.secondary {{ $t(ops.koulutustyyppi) }}
-      h6.secondary {{ ops.perusteenDiaarinumero }}
 
-  .lower
-    ep-sidebar
-      template(slot="bar")
-        ops-sidenav
-      template(slot="view")
-        transition(name="fade" mode="out-in")
-          router-view(:key="$route.fullPath")
+div
+  ep-navigation(tyyli="ops")
+  .opetussuunnitelma(v-if="ops")
+    .header
+      .progress
+        div
+          ep-chart(
+            labelColor="white",
+            :chartColor="graph.colorScheme",
+            :value="graph.value")
+      .info
+        h1 {{ $kaanna(ops.nimi) }}
+        h4.secondary {{ $t(ops.koulutustyyppi) }}
+        h6.secondary {{ ops.perusteenDiaarinumero }}
+
+    .lower
+      ep-sidebar
+        template(slot="bar")
+          ops-sidenav
+        template(slot="view")
+          transition(name="fade" mode="out-in")
+            router-view(:key="$route.fullPath")
+
 </template>
 
 <script lang="ts" src="./script.ts" />
@@ -27,6 +31,8 @@
 @import "@/styles/_variables.scss";
 
 .opetussuunnitelma {
+  background: white;
+
   .header {
     height: $ops-header-height;
     background: $color-ops-header;
@@ -58,7 +64,7 @@
         color: #bbb;
       }
 
-      @media only screen and (max-width: 1024px) {
+      @media only screen and (max-width: 768px) {
         padding-left: 30px;
       }
 

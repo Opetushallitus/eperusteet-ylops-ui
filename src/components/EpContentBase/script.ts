@@ -12,13 +12,14 @@ import { EditorLayout } from '@/tyypit';
   },
 })
 export default class EpContentBase extends Vue {
+  @Prop({ required: true })
+  private value!: string;
 
-  @Prop() private value!: string;
-
-  // Jos (true), näytetään ckeditor, muuten epviewer
-  @Prop() private isEditable!: boolean;
+  @Prop({ required: true })
+  private isEditable!: boolean;
 
   // CkEditorin layout (määrittää ominaisuudet)
-  @Prop({ default: EditorLayout.simplified }) private layout!: EditorLayout;
+  @Prop({ default: EditorLayout.simplified })
+  private layout!: EditorLayout;
 
 }

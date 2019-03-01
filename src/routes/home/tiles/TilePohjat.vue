@@ -1,7 +1,5 @@
 <template lang="pug">
-base-tile
-  template(slot="icon")
-    fas(icon="file-signature")
+base-tile(icon="file-signature", color="#5bca13")
   template(slot="header")
     span {{ $t('tile-pohjasi') }}
   template(slot="content")

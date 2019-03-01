@@ -38,11 +38,25 @@ export const i18n = new VueI18n({
 @Store
 class KieliStore {
 
-  @State() private sisaltoKieli: Kieli = Kieli.fi;
+  @State()
+  private sisaltoKieli: Kieli = Kieli.fi;
 
   @Getter()
   public getUiKieli() {
     return i18n.locale;
+  }
+
+  @Getter()
+  public getAikakaannokset() {
+    const kieli = this.sisaltoKieli;
+    return {
+      days: _.map(moment.weekdays(), (day: string) => _.toUpper(_.first(day))),
+      months: moment.monthsShort(),
+      placeholder: {
+        date: i18n.t('valitse-pvm'),
+        dateRange: i18n.t('valitse-pvm-jana'),
+      },
+    };
   }
 
   @Getter()
@@ -64,6 +78,20 @@ class KieliStore {
     if (this.sisaltoKieli !== kieli && _.includes(UiKielet, kieli)) {
       this.sisaltoKieli = kieli;
     }
+  }
+
+  public search(query: string, text: any) {
+    if (text && query) {
+      const target = _.isString(text) ? text : text[this.sisaltoKieli];
+      return _.includes(_.toLower(target), _.toLower(query));
+    }
+    else {
+      return true;
+    }
+  }
+
+  public searchFn(query: string) {
+    return (text: any) => this.search(query, text);
   }
 
   public async init() {

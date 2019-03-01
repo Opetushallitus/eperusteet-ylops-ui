@@ -1,8 +1,6 @@
 <template lang="pug">
 div
-  base-tile
-    template(slot="icon")
-      fas(icon="file-signature")
+  base-tile(icon="file-signature", color="#5bca13")
     template(slot="header")
       span {{ $t('tile-opetussuunnitelmasi') }}
     template(slot="content")
@@ -17,14 +15,14 @@ div
               .stats.p-2.flex-shrink-1
                 div
                   ep-chart(:value="ops.valmiusaste",
-                    :labelSize="15",
-                    :width="80",
-                    :height="80")
+                    :labelSize="12",
+                    :width="60",
+                    :height="60")
               .data.p-2
                 .name(v-if="ops.nimi")
                   router-link(:to=`{ name: 'opsTiedot', params: { id: ops.id } }`)
                     ep-content(:value="ops.nimi")
-                .tiedot
+                // .tiedot
                   .description
                     span(v-if="ops.kuvaus")
                       ep-content(:value="ops.kuvaus")
@@ -93,15 +91,16 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
   }
 
   .data {
+    text-align: left;
+
     .name {
       font-weight: bold;
     }
 
     .tiedot {
-      margin-left: 10px;
 
       .description {
-        font-size: 80%;
+        font-size: 70%;
       }
 
       .muokattu {

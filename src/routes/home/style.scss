@@ -1,26 +1,32 @@
-.home {
-  padding: 30px;
+@import '@/styles/_variables.scss';
 
-  @media screen and (min-width: 1124px) {
-    width: 100%;
-    max-width: 1024px;
-    margin: auto;
-    padding: 30px;
-  }
+.home-container {
+  background-color: $etusivu-header-background;
+  background-image: url('/img/banners/etusivu_tausta.svg');
+  background-position: 100% 0;
+  background-repeat: no-repeat;
 
-  @media screen and (max-width: 1023px) {
-  }
+  .home {
+    background-color: $etusivu-background;
 
-  .header {
-    margin-top: 20px;
-  }
+    .header {
+      background-color: $etusivu-header-background;
+      padding: 40px;
+      color: white;
+      background-image: url('/img/banners/etusivu_tausta.svg');
+      background-position: 100% -56px;
+      background-repeat: no-repeat;
+    }
 
-  .tilecontainer {
-    margin-top: 60px;
+    .tilecontainer {
+      width: 100%;
+      margin: 30px;
 
-    .tiles {
-      display: flex;
-      flex-flow: row wrap;
+      .tiles {
+        justify-content: center;
+        display: flex;
+        flex-flow: wrap;
+      }
     }
   }
 }

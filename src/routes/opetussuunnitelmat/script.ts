@@ -1,20 +1,26 @@
-import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
-import { DiagrammiVarit } from '@/tyypit';
-
 import EpRoute from '@/mixins/EpRoot';
-import EpChart from '@/components/EpChart/EpChart';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
 import OpsSidenav from './OpsSidenav.vue';
+import Tilanvaihto from './Tilanvaihto.vue';
+import _ from 'lodash';
+import { DiagrammiVarit } from '@/tyypit';
+import { Mixins, Component } from 'vue-property-decorator';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import {
+  EpChart,
+  EpNavigation,
+  EpSidebar,
+  EpSpinner,
+} from '@/components';
+
 
 @Component({
   components: {
+    EpChart,
+    EpNavigation,
+    EpSidebar,
     EpSpinner,
     OpsSidenav,
-    EpSidebar,
-    EpChart,
+    Tilanvaihto,
   },
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
@@ -22,7 +28,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
     return {
       colorScheme: DiagrammiVarit.vihrea_sininen,
       value: 80,
-    }
+    };
   }
 
   private get ops() {

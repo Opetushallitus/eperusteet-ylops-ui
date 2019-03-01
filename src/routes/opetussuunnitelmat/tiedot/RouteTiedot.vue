@@ -1,4 +1,5 @@
 <template lang="pug">
+
 div.content
   h2 {{ $t('tiedot') }}
   div(v-if="hooks")
@@ -10,47 +11,94 @@ div.content
               ep-field(
                 name="ops-nimi",
                 v-model="scope.data.nimi",
-                help="ops-nimi-ohje"
+                help="ops-nimi-ohje",
                 :is-editing="scope.isEditing")
-            .col-md-6
-              ep-select(
-                name="julkaisukielet",
-                :is-editing="scope.isEditing"
-                :items="kielet",
-                v-model="scope.data.julkaisukielet",
-                :multiple="true")
             .col-md-6
               ep-field(
                 name="peruste",
                 v-model="scope.data.perusteenDiaarinumero")
+            .col-md-6
+              ep-field(
+                name="tila",
+                v-model="scope.data.tila")
+            .col-md-6
+              ep-form-content(
+                name="julkaisukielet",
+                ohje="ops-julkaisukielet-ohje")
+                ep-select(
+                  name="julkaisukielet",
+                  :is-editing="scope.isEditing",
+                  :items="kielet",
+                  v-model="scope.data.julkaisukielet",
+                  :multiple="true")
+            .col-md-6(v-if="isOps")
+              ep-field(
+                name="ops-hyvaksyjataho",
+                v-model="scope.data.hyvaksyjataho",
+                :is-string="true",
+                help="ops-hyvaksyjataho-ohje",
+                :is-editing="scope.isEditing")
+            .col-md-6(v-if="isOps")
+              ep-form-content(
+                name="ops-hyvaksymispvm",
+                help="ops-hyvaksymispvm-ohje",
+                :is-editing="scope.isEditing")
+                ep-datepicker(
+                  v-model="scope.data.paatospaivamaara",
+                  :is-editing="scope.isEditing")
+            .col-md-6(v-if="isOps")
+              ep-toggle(
+                name="ops-esikatseltavissa",
+                v-model="scope.data.esikatseltavissa",
+                help="ops-esikatseltavissa-ohje",
+                :is-editing="scope.isEditing")
+            .col-md-12
+              ep-form-content(name="ops-kuvaus", ohje="ops-kuvaus-ohje")
+                ep-content(v-model="scope.data.kuvaus", :is-editable="scope.isEditing")
+        div(v-if="!scope.isEditing")
+          tilanvaihto(v-model="scope.data.tila", :onSave="tryTilanvaihto")
 
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import _ from 'lodash';
 
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
-import EpField from '@/components/forms/EpField.vue';
-import EpSelect from '@/components/forms/EpSelect.vue';
+<script lang="ts">
+
+import {
+  EpContent,
+  EpDatepicker,
+  EpEditointi,
+  EpField,
+  EpFormContent,
+  EpSelect,
+  EpToggle,
+} from '@/components';
+
+import EpOpsRoute from '@/mixins/EpOpsRoute';
+
+import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
+import _ from 'lodash';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { OpetussuunnitelmaDto } from '@/tyypit';
 import { Opetussuunnitelmat } from '@/api';
+import { Mixins, Component, Prop } from 'vue-property-decorator';
 
 @Component({
   components: {
     EpContent,
+    EpDatepicker,
     EpEditointi,
     EpField,
+    EpFormContent,
     EpSelect,
+    EpToggle,
+    Tilanvaihto,
   },
 })
-export default class RouteTiedot extends Vue {
+export default class RouteTiedot extends EpOpsRoute {
   private hooks: EditointiKontrolliConfig | null = null;
 
-  mounted() {
+  async mounted() {
     this.hooks = {
       source: {
         async save(ops) {
@@ -59,6 +107,16 @@ export default class RouteTiedot extends Vue {
         load: this.load,
       },
     };
+  }
+
+  public async tryTilanvaihto(tila: string) {
+    try {
+      await Opetussuunnitelma.updateTila(tila);
+      return true;
+    }
+    catch (err) {
+      return false;
+    }
   }
 
   private get kielet() {

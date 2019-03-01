@@ -1,12 +1,9 @@
 <template lang="pug">
-base-tile
-  template(slot="icon")
-    fas(icon="landmark")
+base-tile(icon="landmark")
   template(slot="header")
-    span {{ $t('tile-perusteet') }}
+    a(:href="'https://eperusteet.opintopolku.fi/#/' + kieli")  {{ $t('tile-perusteet') }}
   template(slot="content")
     p {{ $t('tile-perusteet-kuvaus') }}
-    a(:href="'https://eperusteet.opintopolku.fi/#/' + kieli")  {{ $t('tile-perusteet-siirry') }}
 </template>
 
 <script lang="ts">
@@ -26,4 +23,5 @@ export default class TileOpetussuunnitelmat extends Vue {
 }
 </script>
 
-<style scoped lang="scss" src="./style.scss"></style>
+<style scoped lang="scss">
+</style>

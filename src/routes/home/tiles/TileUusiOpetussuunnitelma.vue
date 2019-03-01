@@ -1,16 +1,12 @@
 <template lang="pug">
-base-tile
-  template(slot="icon")
-    fas(icon="landmark")
+base-tile.tile(icon="plus")
   template(slot="header")
-    span {{ $t('tile-uusi-opetussuunnitelma') }}
+    router-link(
+      id="etusivu-luo-uusi-opetussuunnitelma",
+      :to="{ name: 'uusiOpetussuunnitelma' }")
+      | {{ $t('tile-uusi-opetussuunnitelma') }}
   template(slot="content")
     p {{ $t('tile-uusi-opetussuunnitelma-kuvaus') }}
-    router-link.btn.btn-primary(
-      id="etusivu-luo-uusi-opetussuunnitelma"
-      disabled,
-      :to="{ name: 'uusiPohja' }",
-      tag="button") {{ $t('luo-uusi') }}
 </template>
 
 <script lang="ts">
@@ -22,9 +18,10 @@ import BaseTile from './BaseTile.vue';
     BaseTile,
   }
 })
-export default class TileOpetussuunnitelmat extends Vue {
+export default class TileUusiOpetussuunnitelma extends Vue {
   
 }
 </script>
 
-<style scoped lang="scss" src="./style.scss"></style>
+<style scoped lang="scss">
+</style>

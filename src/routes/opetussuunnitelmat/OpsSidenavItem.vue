@@ -20,7 +20,7 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 @Component({
   name: 'ops-sidenav-item',
 })
-export default class extends Vue {
+export default class OpsSidenavItem extends Vue {
 
   @Prop({ default: 0 })
   private depth!: number;

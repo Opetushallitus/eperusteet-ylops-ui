@@ -1,4 +1,5 @@
 div
-  ep-content-base(:isEditable="isEditable",
+  ep-content-base(
     :value="contentValue",
+    :isEditable="isEditable",
     @input="handleContentChange")
