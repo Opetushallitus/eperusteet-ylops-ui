@@ -19,7 +19,7 @@ export default class EpContentBase extends Vue {
   private isEditable!: boolean;
 
   // CkEditorin layout (määrittää ominaisuudet)
-  @Prop({ default: EditorLayout.simplified })
+  @Prop({ default: 'simplified' })
   private layout!: EditorLayout;
 
 }
