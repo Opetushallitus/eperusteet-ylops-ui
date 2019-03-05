@@ -27,7 +27,7 @@ class OpetussuunnitelmaStore {
   }
 
   public async get(id: number) {
-    return (await Opetussuunnitelmat.get(id)).data;
+    return (await Opetussuunnitelmat.getOpetussuunnitelma(id)).data;
   }
 
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
@@ -43,7 +43,7 @@ class OpetussuunnitelmaStore {
   public async addTeksti(tov: Puu, parentId?: number) {
     let osa: AxiosResponse<Matala>;
     if (parentId) {
-      osa = await OpetussuunnitelmanSisalto.addTekstiKappaleLapsi_1(this.opetussuunnitelma!.id!, parentId, tov);
+      osa = await OpetussuunnitelmanSisalto.addTekstiKappaleLapsi(this.opetussuunnitelma!.id!, parentId, tov);
     }
     else {
       osa = await OpetussuunnitelmanSisalto.addTekstiKappale(this.opetussuunnitelma!.id!, tov);
