@@ -18,11 +18,7 @@ export enum DiagrammiVarit {
   vihrea_sininen = 'vihrea_sininen',
 }
 
-export enum EditorLayout {
-  minimal,
-  simplified,
-  normal,
-}
+export type EditorLayout = 'minimal' | 'simplified' | 'normal';
 
 export interface SovellusVirhe {
   path?: string;
