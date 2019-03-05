@@ -33,6 +33,9 @@ export default class EpDatepicker extends Vue {
   @Prop({ required: true })
   private value!: any;
 
+  @Prop()
+  private validation!: object;
+
   @Prop({
     default: 'date',
     validator(value) {
@@ -42,6 +45,7 @@ export default class EpDatepicker extends Vue {
   private type!: string;
 
   get locdate() {
+    
     if (this.type === 'datetime') {
       return (this as any).$ldt(this.value);
     }
@@ -65,6 +69,9 @@ export default class EpDatepicker extends Vue {
 
   private onInput(event: any) {
     this.$emit('input', event);
+    if (this.validation) {
+      (this.validation as any).$touch();
+    }
   }
 
 }

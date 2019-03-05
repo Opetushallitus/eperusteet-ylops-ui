@@ -1,6 +1,6 @@
 div
   .editointikontrolli(v-if="isInitialized")
-    slot(name="header", :isEditing="ctrls.isEditing", :data="state.data")
+    slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
     .ylapaneeli.row
       .col-auto.mr-auto
         .row
@@ -33,7 +33,7 @@ div
                   fas.faw-fw(icon="pen")
 
     .sisalto(v-if="state.data")
-      slot(:isEditing="ctrls.isEditing", :data="state.data")
+      slot(:isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
 
     .alapaneeli.row
       .col-auto.mr-auto

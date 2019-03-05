@@ -27,7 +27,7 @@ class OpetussuunnitelmaStore {
   }
 
   public async get(id: number) {
-    return (await Opetussuunnitelmat.get(id)).data;
+    return (await Opetussuunnitelmat.getOpetussuunnitelma(id)).data;
   }
 
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {

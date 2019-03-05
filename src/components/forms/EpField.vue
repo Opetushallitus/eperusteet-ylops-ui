@@ -1,12 +1,14 @@
 <template lang="pug">
 ep-form-content(
   :name="name",
-  :help="help")
+  :help="help",
+  :validation="validation")
   ep-input.form-data(
     :value="value",
     @input="$emit('input', $event)",
     :is-editing="isEditing",
-    :is-string="isString")
+    :is-string="isString",
+    :validation="validation")
 </template>
 
 <script lang="ts">
@@ -28,6 +30,9 @@ export default class EpField extends Vue {
 
   @Prop({ default: '' })
   private help!: string;
+
+  @Prop()
+  private validation!: object;
 
   @Prop({ default: false })
   private isEditing!: boolean;

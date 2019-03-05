@@ -3,7 +3,8 @@ input.input-style.form-control(
   v-if="isEditing",
   @input="onInput($event.target.value)",
   :attrs="$attrs",
-  :value="val")
+  :value="val",
+  :class="{ 'is-invalid': validation && validation.$invalid && validation.$dirty, 'is-valid': validation && !validation.$invalid && validation.$dirty }")
 .input-content(
   v-else,
   :attrs="$attrs")
@@ -32,6 +33,9 @@ export default class EpInput extends Vue {
   @Prop({ required: true })
   private value!: string | object;
 
+  @Prop()
+  private validation!: object;
+
   public onInput(input: any) {
     if (this.isString && !_.isString(this.value)) {
       logger.warn('Given value is not a string:', this.value);
@@ -49,6 +53,9 @@ export default class EpInput extends Vue {
         ...(_.isObject(this.value) ? this.value as any : {}),
         [Kielet.getSisaltoKieli()]: input,
       });
+    }
+    if (this.validation) {
+      (this.validation as any).$touch();
     }
   }
 
@@ -75,7 +82,7 @@ input.input-style {
   font-weight: 500;
 
   &:focus {
-    border-bottom: 1px solid #47a4f5;
+    //border-bottom: 1px solid #47a4f5;
     outline: none !important;
     box-shadow: none !important;
   }
