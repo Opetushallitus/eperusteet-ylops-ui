@@ -6,7 +6,7 @@ EpCollapse:
     <div slot="header">
         Hi, i'm a header!
     </div>
-    <div slot="content">
+    <div>
         Hi, i'm the content!
     </div>
 </ep-collapse>

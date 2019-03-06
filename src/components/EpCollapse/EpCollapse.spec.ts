@@ -7,20 +7,20 @@ describe('EpCollapse component', () => {
   const options = {
     slots: {
       header: '<h3>Hello world</h3>',
-      content: '<b>Foobar</b>',
+      default: '<b>Foobar</b>',
     },
   };
 
   it('Renders header and content', () => {
     const wrapper = mount(EpCollapse, options);
     expect(wrapper.html()).toContain(options.slots.header);
-    expect(wrapper.html()).toContain(options.slots.content);
+    expect(wrapper.html()).toContain(options.slots.default);
   });
 
   it('Renders header only when collapsed', () => {
     const wrapper = mount(EpCollapse, options);
-    wrapper.find('button.btn').trigger('click');
+    wrapper.find('div.header').trigger('click');
     expect(wrapper.html()).toContain(options.slots.header);
-    expect(wrapper.html()).not.toContain(options.slots.content);
+    expect(wrapper.html()).not.toContain(options.slots.default);
   });
 });

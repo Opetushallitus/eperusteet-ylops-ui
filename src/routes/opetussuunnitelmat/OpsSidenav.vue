@@ -4,7 +4,7 @@
     .inlay
       input.form-control.megasearch(type="text" placeholder="Etsi")
       fas.inner-icon(icon="search")
-  ul.navigation(v-if="sisalto")
+  ul.navigation(v-if="sisalto && !kayttajaOppiainenakymassa")
     router-link(:to="{ 'name': 'opsTiedot' }" tag="li")
       a.btn.btn-link {{ $t('tiedot') }}
     router-link.minor(:to="{ 'name': 'opsPoistetut' }" tag="li")
@@ -17,10 +17,14 @@
       v-for="teksti in sisalto.lapset",
       :value="teksti",
       :key="teksti.id")
+    router-link.oppiainelinkki(:to="{ 'name': 'oppiaine', params: { aineId: 2 } }" tag="li")
+      a.btn.btn-link {{ $t('oppiaineet') }}
+      fas(icon="chevron-right")
     li
       button.btn.btn-primary(@click="addTekstikappale()")
         fas(icon="plus")
         span {{ $t('lisaa-tekstikappale') }}
+  ops-sidenav-oppiaineet(v-if="sisalto && kayttajaOppiainenakymassa")
 </template>
 
 <script lang="ts">
@@ -30,18 +34,24 @@ import { Component, Vue } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoot';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import OpsSidenavItem from './OpsSidenavItem.vue';
+import OpsSidenavOppiaineet from './OpsSidenavOppiaineet.vue';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 
 @Component({
   components: {
     OpsSidenavItem,
+    OpsSidenavOppiaineet,
   },
 })
 export default class RouteOpetussuunnitelma extends Vue {
 
   private get sisalto() {
     return Opetussuunnitelma.sisalto;
+  }
+
+  private get kayttajaOppiainenakymassa() {
+    return this.$route.name === 'oppiaine' || this.$route.name === 'opintojakso';
   }
 
   private async addTekstikappale() {
@@ -57,4 +67,3 @@ export default class RouteOpetussuunnitelma extends Vue {
 </script>
 
 <style scoped lang="scss" src="./sidenav.scss"></style>
-
