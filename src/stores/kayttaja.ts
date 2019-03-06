@@ -57,7 +57,7 @@ class KayttajaStore {
   public async init() {
     try {
       logger.info('Haetaan käyttäjän tiedot');
-      this.tiedot = (await KayttajatApi.get()).data;
+      this.tiedot = (await KayttajatApi.getKayttaja()).data;
       this.organisaatiot = (await KayttajatApi.getOrganisaatioOikeudet()).data;
       const oikeudet = (await Opetussuunnitelmat.getOikeudet()).data;
       this.oikeudet = (oikeudet as any);

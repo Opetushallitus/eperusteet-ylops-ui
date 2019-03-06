@@ -31,7 +31,7 @@ describe('Router', () => {
   async function createMounted(
     oikeudet = genOikeudet('oph'),
   ) {
-    jest.spyOn(KayttajatApi, 'get')
+    jest.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
 
     jest.spyOn(Opetussuunnitelmat, 'getOikeudet')

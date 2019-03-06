@@ -135,7 +135,7 @@ export default class EpOrganizations extends Vue {
   }
 
   public async mounted() {
-    const kunnat = _((await Ulkopuoliset.kaikki('kunta')).data)
+    const kunnat = _((await Ulkopuoliset.kaikkiKoodistonKoodit('kunta')).data)
       .map((kunta: any) => ({
         ...kunta,
         nimi: metadataToTeksti('nimi', kunta.metadata),
