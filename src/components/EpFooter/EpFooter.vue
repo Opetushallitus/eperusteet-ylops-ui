@@ -5,6 +5,16 @@ footer
     slot(name="footer-content")
 </template>
 
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+
+@Component({
+  name: 'EpFooter',
+})
+export default class EpFooter extends Vue { }
+</script>
+
+
 <style scoped lang="scss">
 footer {
   border-top: 1px solid #ccc;

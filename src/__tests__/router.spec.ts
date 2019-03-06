@@ -114,14 +114,9 @@ describe('Router', () => {
 
     expect(router.currentRoute.params).toEqual({ lang: 'sv' });
 
-    // FIXME: Apexchart
-    const warnSpy = jest.spyOn(console, 'warn')
-      .mockImplementation(() => {});
-
     await expectEventually(() =>
       expect(app.html()).toContain('Hei Keke Käyttäjä, tervetuloa ePerusteet OPS-työkaluun!'));
     await expectEventually(() => expect(app.html()).toContain('Jokin opetussuunnitelman pohja'));
-    // await expectEventually(() => expect(app.html()).toContain('Jokin opetussuunnitelma'));
     await expectEventually(() => expect(app.html()).toContain('Tämä on tiedote'));
   });
 
