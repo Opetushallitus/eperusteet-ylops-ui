@@ -36,7 +36,8 @@ export default class CkEditor extends Mixins(EpValidation) {
   @Prop() private value!: string;
 
   // Editorin layout (määrittää ominaisuudet)
-  @Prop({ default: EditorLayout.simplified }) private layout!: EditorLayout;
+  @Prop({ default: 'simplified' })
+  private layout!: EditorLayout;
 
   // Editorin käyttöliittymän kieli
   @Prop({ default: 'fi' }) private locale!: string;
@@ -77,10 +78,10 @@ export default class CkEditor extends Mixins(EpValidation) {
     // Luodaan asetusobjekti
     let config: object;
     switch (this.layout) {
-      case EditorLayout.simplified:
+      case 'simplified':
         config = this.getSimplifiedSettings();
         break;
-      case EditorLayout.normal:
+      case 'normal':
         config = this.getNormalSettings();
         break;
       default:

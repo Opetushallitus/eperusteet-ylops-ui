@@ -21,7 +21,7 @@ export default class EpContentBase extends Mixins(EpValidation) {
   private isEditable!: boolean;
 
   // CkEditorin layout (määrittää ominaisuudet)
-  @Prop({ default: EditorLayout.simplified })
+  @Prop({ default: 'simplified' })
   private layout!: EditorLayout;
 
 }

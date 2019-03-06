@@ -6,10 +6,10 @@ const Tyypit = require('../../tyypit.ts');
 new Vue({
   data(){
     return {
-      layout: Tyypit.EditorLayout.normal,
-      layoutMinimal:Tyypit.EditorLayout.minimal,
-      layoutSimplified:Tyypit.EditorLayout.simplified,
-      layoutNormal: Tyypit.EditorLayout.normal,
+      layout: 'normal',
+      layoutMinimal: 'minimal',
+      layoutSimplified: 'simplified',
+      layoutNormal: 'normal',
       value: 'Tekstiä',
     }
   },

@@ -33,6 +33,14 @@
       font-size: 80%;
     }
 
+    li.oppiainelinkki {
+      display: flex;
+      align-items: center;
+      a {
+        width: 100%;
+      }
+    }
+
     li.router-link-exact-active {
       a {
         font-weight: bold;
