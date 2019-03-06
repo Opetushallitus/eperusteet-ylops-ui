@@ -36,9 +36,6 @@ import { EpFormContent } from '@/components';
 })
 export default class EpDatepicker extends Mixins(EpValidation) {
 
-  @Prop({ default: false })
-  private isEditing!: any;
-
   @Prop({ required: true })
   private value!: any;
 

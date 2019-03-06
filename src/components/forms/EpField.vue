@@ -35,9 +35,6 @@ export default class EpField extends Mixins(EpValidation) {
   private help!: string;
 
   @Prop({ default: false })
-  private isEditing!: boolean;
-
-  @Prop({ default: false })
   private isString!: boolean;
 
   @Prop({ required: true })

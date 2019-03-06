@@ -28,9 +28,6 @@ export default class EpInput extends Mixins(EpValidation) {
   @Prop({ default: false })
   private isString!: boolean;
 
-  @Prop({ default: false })
-  private isEditing!: boolean;
-
   @Prop({ required: true })
   private value!: string | object;
 
