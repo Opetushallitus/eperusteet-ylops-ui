@@ -6,6 +6,8 @@ import * as solid from '@fortawesome/free-solid-svg-icons';
 library.add(solid.faBars);
 library.add(solid.faBell);
 library.add(solid.faChevronDown);
+library.add(solid.faChevronUp);
+library.add(solid.faChevronLeft);
 library.add(solid.faChevronRight);
 library.add(solid.faClock);
 library.add(solid.faCog);

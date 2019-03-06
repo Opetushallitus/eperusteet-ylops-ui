@@ -1,8 +1,10 @@
 div.ep-collapse
-  div.header
-    button.btn.btn-link(variant="link" @click="toggled = !toggled")
+  div.header(@click="toggled = !toggled")
+    div.header-content
       slot(name="header")
-
+    div.header-btn
+      fas(icon="chevron-up", v-if="toggled")
+      fas(icon="chevron-down", v-else)
   div.content(v-if="toggled")
     // @slot Content that is hidden/shown
-    slot(name="content")
+    slot
