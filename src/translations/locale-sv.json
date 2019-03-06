@@ -99,5 +99,7 @@
   "valitse-peruste": "Valitse peruste",
   "valitse-pohja": "Valitse pohja",
   "valitse-pvm": "Valitse päivämäärä",
-  "valitse-pvm-jana": "Valitse aikajana"
+  "valitse-pvm-jana": "Valitse aikajana",
+  "validation-error-required": "Pakollinen tieto",
+  "validation-error-min-length": "Minimipituus on {min}"
 }
