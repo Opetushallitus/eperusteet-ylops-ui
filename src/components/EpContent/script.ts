@@ -1,7 +1,8 @@
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 import { Kielet } from '@/stores/kieli';
 import _ from 'lodash';
 import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
+import EpValidation from '@/mixins/EpValidation';
 
 
 @Component({
@@ -9,7 +10,7 @@ import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
     EpContentBase,
   },
 })
-export default class EpContent extends Vue {
+export default class EpContent extends Mixins(EpValidation) {
   @Prop({ default: true })
   private lokalisoitu!: boolean;
 
@@ -18,9 +19,6 @@ export default class EpContent extends Vue {
 
   @Prop({ default: false })
   private isEditable!: boolean;
-
-  @Prop()
-  private validation!: any;
 
   get contentValue() {
     if (!this.value) {

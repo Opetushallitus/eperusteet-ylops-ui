@@ -26,7 +26,8 @@ div.content
             .col-md-6
               ep-form-content(
                 name="julkaisukielet",
-                ohje="ops-julkaisukielet-ohje")
+                ohje="ops-julkaisukielet-ohje"
+                :is-editing="isEditing")
                 ep-select(
                   name="julkaisukielet",
                   v-model="data.julkaisukielet",
@@ -62,7 +63,8 @@ div.content
               ep-form-content(
                 name="ops-kuvaus",
                 ohje="ops-kuvaus-ohje"
-                :validation="validation.kuvaus")
+                :validation="validation.kuvaus"
+                :is-editing="isEditing")
                 ep-content(
                   v-model="data.kuvaus",
                   :validation="validation.kuvaus",

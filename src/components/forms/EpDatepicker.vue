@@ -9,20 +9,23 @@ div(v-if="isEditing")
     :input-class="inputClass",
     :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }"
     :width="'100%'",
-    :append-to-body="true",
     :clearable="!validation",
+    :append-to-body="true",
     :first-day-of-week="1")
+    fas.fa-fw(slot="calendar-icon", icon="calendar-day")
+    fas.fa-fw(slot="mx-clear-icon", icon="times")
 div(v-else)
   | {{ locdate }}
 </template>
 
 <script lang="ts">
 
-import { Vue, Component, Prop, Model } from 'vue-property-decorator';
+  import { Vue, Component, Prop, Model, Mixins } from "vue-property-decorator";
 import _ from 'lodash';
 import DatePicker from 'vue2-datepicker';
 import { Kielet } from '@/stores/kieli';
 import { EpFormContent } from '@/components';
+  import EpValidation from '@/mixins/EpValidation';
 
 
 @Component({
@@ -31,7 +34,7 @@ import { EpFormContent } from '@/components';
     EpFormContent,
   },
 })
-export default class EpDatepicker extends Vue {
+export default class EpDatepicker extends Mixins(EpValidation) {
 
   @Prop({ default: false })
   private isEditing!: any;
@@ -46,17 +49,6 @@ export default class EpDatepicker extends Vue {
     },
   })
   private type!: string;
-
-  @Prop()
-  private validation!: any;
-
-  get isInvalid() {
-    return this.validation && this.validation.$invalid;
-  }
-
-  get isValid() {
-    return this.validation && !this.validation.$invalid;
-  }
 
   get inputClass() {
     if (this.isInvalid) {
@@ -103,5 +95,14 @@ export default class EpDatepicker extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+.mx-input-append {
+  font-size: 1rem;
+}
+.ep-datepicker-validation {
+  padding-right: calc(3em + .75rem) !important;
+}
+.ep-datepicker-validation ~ .mx-input-append {
+  right: 30px;
+}
 </style>

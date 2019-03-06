@@ -9,37 +9,16 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Model } from 'vue-property-decorator';
-import _ from 'lodash';
+import { Component, Prop, Mixins } from "vue-property-decorator";
+import EpValidation from '@/mixins/EpValidation';
 
 @Component
-export default class EpFormContent extends Vue {
+export default class EpFormContent extends Mixins(EpValidation) {
   @Prop({ required: true })
   private name!: string;
 
   @Prop({ default: '' })
   private help!: string;
-
-  @Prop({ default: '' })
-  private validMessage!: string;
-
-  @Prop({ default: '' })
-  private invalidMessage!: string;
-
-  @Prop({ default: null })
-  private validation!: any;
-
-  get validationError() {
-    if (this.validation) {
-      return _(this.validation)
-        .keys()
-        .reject(key => _.startsWith(key, '$'))
-        .reject(key => this.validation[key])
-        .head();
-    } else {
-      return '';
-    }
-  }
 }
 </script>
 

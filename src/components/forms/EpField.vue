@@ -2,7 +2,8 @@
 ep-form-content(
   :name="name",
   :help="help",
-  :validation="validation")
+  :validation="validation"
+  :is-editing="isEditing")
   ep-input.form-data(
     :value="value",
     @input="$emit('input', $event)",
@@ -12,10 +13,11 @@ ep-form-content(
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Model } from 'vue-property-decorator';
+import { Component, Prop, Mixins } from "vue-property-decorator";
 
 import EpFormContent from './EpFormContent.vue';
 import EpInput from './EpInput.vue';
+import EpValidation from '@/mixins/EpValidation';
 
 
 @Component({
@@ -24,15 +26,13 @@ import EpInput from './EpInput.vue';
     EpInput,
   },
 })
-export default class EpField extends Vue {
+export default class EpField extends Mixins(EpValidation) {
+
   @Prop({ required: true })
   private name!: string;
 
   @Prop({ default: '' })
   private help!: string;
-
-  @Prop()
-  private validation!: object;
 
   @Prop({ default: false })
   private isEditing!: boolean;

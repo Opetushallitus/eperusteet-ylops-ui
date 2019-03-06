@@ -13,16 +13,17 @@ input.input-style.form-control(
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Model } from 'vue-property-decorator';
+import { Component, Prop, Mixins } from "vue-property-decorator";
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { createLogger } from '@/stores/logger';
+import EpValidation from '@/mixins/EpValidation';
 
 const logger = createLogger('EpInput');
 
 
 @Component
-export default class EpInput extends Vue {
+export default class EpInput extends Mixins(EpValidation) {
 
   @Prop({ default: false })
   private isString!: boolean;
@@ -32,17 +33,6 @@ export default class EpInput extends Vue {
 
   @Prop({ required: true })
   private value!: string | object;
-
-  @Prop({ default: null })
-  private validation!: any;
-
-  get isInvalid() {
-    return this.validation && this.validation.$invalid;
-  }
-
-  get isValid() {
-    return this.validation && !this.validation.$invalid;
-  }
 
   public onInput(input: any) {
     if (this.isString && !_.isString(this.value)) {

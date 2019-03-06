@@ -7,7 +7,7 @@ div(v-if="isEditing")
       multiple,
       @change="updateValue($event.target.value)"
       :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
-      option(disabled value="null")
+      option(disabled, value="null")
       option(v-for="item in items" :value="item")
         slot(name="item") {{ item }}
     .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
@@ -24,12 +24,12 @@ div(v-else)
 </template>
 
 <script lang="ts">
-import { Vue, Watch, Component, Prop, Model } from 'vue-property-decorator';
+import { Component, Prop, Model, Mixins } from "vue-property-decorator";
 
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpInput from '@/components/forms/EpInput.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import _ from 'lodash';
+import EpValidation from '@/mixins/EpValidation';
 
 @Component({
   components: {
@@ -38,7 +38,7 @@ import _ from 'lodash';
     EpSpinner,
   },
 })
-export default class RouteTiedot extends Vue {
+export default class EpSelect extends Mixins(EpValidation) {
   @Prop({ required: true })
   private name!: string;
 
@@ -58,39 +58,7 @@ export default class RouteTiedot extends Vue {
   private help!: string;
 
   @Prop({ default: false })
-  private isEditing!: boolean;
-
-  @Prop({ default: false })
   private multiple!: boolean;
-
-  @Prop()
-  private validation!: any;
-
-  @Prop({ default: '' })
-  private validMessage!: string;
-
-  @Prop({ default: '' })
-  private invalidMessage!: string;
-
-  get isInvalid() {
-    return this.validation && this.validation.$invalid;
-  }
-
-  get isValid() {
-    return this.validation && !this.validation.$invalid;
-  }
-
-  get validationError() {
-    if (this.validation) {
-      return _(this.validation)
-        .keys()
-        .reject(key => _.startsWith(key, '$'))
-        .reject(key => this.validation[key])
-        .head();
-    } else {
-      return '';
-    }
-  }
 
   private innerModel: any = null;
 
