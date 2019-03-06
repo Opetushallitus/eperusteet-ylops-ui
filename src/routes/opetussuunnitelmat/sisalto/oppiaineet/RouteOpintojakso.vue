@@ -83,12 +83,9 @@ export default class RouteOpintojakso extends Vue {
     this.hooks = {
       source: {
         async save(param) {
-
         },
-        async load(): Promise<Object> {
-          return new Promise<Object>( (resolve) => {
-            resolve({});
-          });
+        async load() {
+          return {};
         },
       },
     };
