@@ -4,7 +4,7 @@ input.input-style.form-control(
   @input="onInput($event.target.value)",
   :attrs="$attrs",
   :value="val",
-  :class="{ 'is-invalid': validation && validation.$invalid && validation.$dirty, 'is-valid': validation && !validation.$invalid && validation.$dirty }")
+  :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
 .input-content(
   v-else,
   :attrs="$attrs")
@@ -33,8 +33,16 @@ export default class EpInput extends Vue {
   @Prop({ required: true })
   private value!: string | object;
 
-  @Prop()
-  private validation!: object;
+  @Prop({ default: null })
+  private validation!: any;
+
+  get isInvalid() {
+    return this.validation && this.validation.$invalid;
+  }
+
+  get isValid() {
+    return this.validation && !this.validation.$invalid;
+  }
 
   public onInput(input: any) {
     if (this.isString && !_.isString(this.value)) {
@@ -55,7 +63,7 @@ export default class EpInput extends Vue {
       });
     }
     if (this.validation) {
-      (this.validation as any).$touch();
+      this.validation.$touch();
     }
   }
 
@@ -82,10 +90,18 @@ input.input-style {
   font-weight: 500;
 
   &:focus {
-    //border-bottom: 1px solid #47a4f5;
+    border-color: #47a4f5;
     outline: none !important;
     box-shadow: none !important;
   }
+}
+
+input.is-invalid:focus {
+  border-color: #dc3545;
+}
+
+input.is-valid:focus {
+  border-color: #28a745;
 }
 
 .input-content {

@@ -2,17 +2,17 @@ div
   .editointikontrolli(v-if="isInitialized")
     slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
     .ylapaneeli.row
-      .col-auto.mr-auto
+      .col-auto.mr-auto.align-self-center
         .row
           .col-auto
             .d-flex.muokattu
-              .p-2.title {{ $t('muokattu') }}:
-              .p-2.value {{ $st(new Date()) }}
+              .title {{ $t('muokattu') }}:
+              .value {{ $sdt(new Date()) }}
           .col-auto
             .d-flex.muokkaaja
-              .p-2.title {{ $t('muokkaaja') }}:
-              .p-2.value Joku Käyttäjä
-      .col-auto
+              .title {{ $t('muokkaaja') }}:
+              .value Joku Käyttäjä
+      .col-auto.align-self-center
         .d-flex
           .buttons.p-1
             .upper-buttons(v-if="ctrls.isEditing")

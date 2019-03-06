@@ -1,11 +1,17 @@
 <template lang="pug">
 div(v-if="isEditing")
   date-picker(
+    @input="onInput",
     :format="format",
     :value="value",
-    @input="onInput",
     :lang="lang",
-    :type="type")
+    :type="type",
+    :input-class="inputClass",
+    :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }"
+    :width="'100%'",
+    :append-to-body="true",
+    :clearable="!validation",
+    :first-day-of-week="1")
 div(v-else)
   | {{ locdate }}
 </template>
@@ -33,9 +39,6 @@ export default class EpDatepicker extends Vue {
   @Prop({ required: true })
   private value!: any;
 
-  @Prop()
-  private validation!: object;
-
   @Prop({
     default: 'date',
     validator(value) {
@@ -44,8 +47,31 @@ export default class EpDatepicker extends Vue {
   })
   private type!: string;
 
+  @Prop()
+  private validation!: any;
+
+  get isInvalid() {
+    return this.validation && this.validation.$invalid;
+  }
+
+  get isValid() {
+    return this.validation && !this.validation.$invalid;
+  }
+
+  get inputClass() {
+    if (this.isInvalid) {
+      return 'form-control ep-datepicker-validation is-invalid';
+    }
+    else if (this.isValid) {
+      return 'form-control ep-datepicker-validation is-valid';
+    }
+    else {
+      return 'form-control';
+    }
+  }
+
   get locdate() {
-    
+
     if (this.type === 'datetime') {
       return (this as any).$ldt(this.value);
     }

@@ -1,17 +1,6 @@
 import _ from 'lodash';
+import he from 'he';
 import { Kieli } from '@/tyypit';
-
-export const req = (value: any) => {
-  if (value === undefined || value === null) {
-    return false;
-  }
-
-  if (value === false) {
-    return true;
-  }
-
-  return !!String(value).length;
-};
 
 export function requiredLokalisoituTeksti(kielet: Kieli[]) {
   return {
@@ -22,7 +11,10 @@ export function requiredLokalisoituTeksti(kielet: Kieli[]) {
 
       let valid = true;
       _.each(kielet, (kieli: Kieli) => {
-        if (!_.has(value, kieli) || !req(value[kieli])) {
+        // Poistetaan HTML-tagit, -entiteetit ja välilyönnit molemmista päistä
+        const clean = he.decode(value[kieli].replace(/<[^>]+>/g, '')).trim();
+        if (!_.has(value, kieli) || _.isEmpty(clean)) {
+          // Jos vaadittua kieltä ei ole tai vaaditun kielen teksti on tyhjä
           valid = false;
         }
       });

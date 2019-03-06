@@ -19,6 +19,9 @@ export default class EpContent extends Vue {
   @Prop({ default: false })
   private isEditable!: boolean;
 
+  @Prop()
+  private validation!: any;
+
   get contentValue() {
     if (!this.value) {
       return '';

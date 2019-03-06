@@ -3,6 +3,7 @@ div.ep-content-base
     v-if="isEditable",
     :value="value"
     :layout="layout"
+    :validation="validation",
     @input="$emit('input', $event)")
   ep-viewer(
     v-else,

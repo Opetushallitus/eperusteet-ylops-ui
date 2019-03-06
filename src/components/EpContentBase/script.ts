@@ -22,4 +22,6 @@ export default class EpContentBase extends Vue {
   @Prop({ default: EditorLayout.simplified })
   private layout!: EditorLayout;
 
+  @Prop()
+  private validation!: any;
 }

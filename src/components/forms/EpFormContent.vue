@@ -30,7 +30,7 @@ export default class EpFormContent extends Vue {
   private validation!: any;
 
   get validationError() {
-    if (this.validation && this.validation.$dirty) {
+    if (this.validation) {
       return _(this.validation)
         .keys()
         .reject(key => _.startsWith(key, '$'))
@@ -46,7 +46,7 @@ export default class EpFormContent extends Vue {
 <style scoped lang="scss">
 
 .form-content {
-  margin: 0 40px 40px 0;
+  margin: 0 0 30px 0;
 
   label {
     font-weight: 600;
@@ -55,6 +55,10 @@ export default class EpFormContent extends Vue {
   .form-data {
     margin-top: -5px;
     padding-left: 2px;
+  }
+
+  .invalid-feedback, .valid-feedback {
+    display: block;
   }
 }
 

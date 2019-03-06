@@ -40,6 +40,17 @@ export default class CkEditor extends Vue {
   // Editorin käyttöliittymän kieli
   @Prop({ default: 'fi' }) private locale!: string;
 
+  // Sisällön validointi
+  @Prop() private validation!: any;
+
+  get isInvalid() {
+    return this.validation && this.validation.$invalid;
+  }
+
+  get isValid() {
+    return this.validation && !this.validation.$invalid;
+  }
+
   // CKEditorin JS instanssi
   private instance: any = null;
   private lastEmittedValue: string = '';

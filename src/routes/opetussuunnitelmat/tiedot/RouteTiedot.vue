@@ -11,8 +11,8 @@ div.content
             .col-md-6
               ep-field(
                 name="ops-nimi",
-                v-model="data.nimi",
                 help="ops-nimi-ohje",
+                v-model="data.nimi",
                 :validation="validation.nimi",
                 :is-editing="isEditing")
             .col-md-6
@@ -29,21 +29,24 @@ div.content
                 ohje="ops-julkaisukielet-ohje")
                 ep-select(
                   name="julkaisukielet",
+                  v-model="data.julkaisukielet",
+                  :validation="validation.julkaisukielet",
                   :is-editing="isEditing",
                   :items="kielet",
-                  v-model="data.julkaisukielet",
                   :multiple="true")
             .col-md-6(v-if="isOps")
               ep-field(
                 name="ops-hyvaksyjataho",
-                v-model="data.hyvaksyjataho",
-                :is-string="true",
                 help="ops-hyvaksyjataho-ohje",
+                v-model="data.hyvaksyjataho",
+                :validation="validation.hyvaksyjataho",
+                :is-string="true",
                 :is-editing="isEditing")
             .col-md-6(v-if="isOps")
               ep-form-content(
                 name="ops-hyvaksymispvm",
                 help="ops-hyvaksymispvm-ohje",
+                :validation="validation.paatospaivamaara",
                 :is-editing="isEditing")
                 ep-datepicker(
                   v-model="data.paatospaivamaara",
@@ -52,12 +55,19 @@ div.content
             .col-md-6(v-if="isOps")
               ep-toggle(
                 name="ops-esikatseltavissa",
-                v-model="data.esikatseltavissa",
                 help="ops-esikatseltavissa-ohje",
+                v-model="data.esikatseltavissa",
                 :is-editing="isEditing")
             .col-md-12
-              ep-form-content(name="ops-kuvaus", ohje="ops-kuvaus-ohje")
-                ep-content(v-model="data.kuvaus", :is-editable="isEditing")
+              ep-form-content(
+                name="ops-kuvaus",
+                ohje="ops-kuvaus-ohje"
+                :validation="validation.kuvaus")
+                ep-content(
+                  v-model="data.kuvaus",
+                  :validation="validation.kuvaus",
+                  :is-editable="isEditing")
+
         div(v-if="!isEditing")
           tilanvaihto(v-model="data.tila", :onSave="tryTilanvaihto")
 
@@ -76,7 +86,7 @@ div.content
   import { Opetussuunnitelma } from "@/stores/opetussuunnitelma";
   import { Component } from "vue-property-decorator";
   import { opsTiedotValidator } from "@/validators/ops";
-  import { Kieli } from '@/tyypit';
+  import { Kielet } from '@/stores/kieli';
 
   @Component({
   components: {
@@ -105,7 +115,9 @@ export default class RouteTiedot extends EpOpsRoute {
   }
 
   get validator() {
-    return opsTiedotValidator([Kieli.fi]);
+    return opsTiedotValidator([
+      Kielet.getSisaltoKieli() // Validoidaan kentät sisältökielen mukaan
+    ]);
   }
 
   public async tryTilanvaihto(tila: string) {
