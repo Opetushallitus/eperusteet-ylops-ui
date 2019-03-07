@@ -35,9 +35,26 @@ describe('Kielet', () => {
   });
 
   test('Ui käännökset', async () => {
-    expect(i18n.t('kieli-sisalto')).toEqual('Sisällön kieli');
+    const spy = jest.spyOn(Ulkopuoliset, 'getLokalisoinnit');
+    spy.mockImplementationOnce(async (): Promise<any> => {
+      return {
+        data: {
+          fi: [{
+            key: 'kieli-sisalto',
+            value: 'suomeksi',
+          }],
+          sv: [{
+            key: 'kieli-sisalto',
+            value: 'ruotsiksi',
+          }],
+        },
+      };
+    });
+
+    await Kielet.init();
+    expect(i18n.t('kieli-sisalto')).toEqual('suomeksi');
     i18n.locale = Kieli.sv;
-    expect(i18n.t('kieli-sisalto')).toEqual('innehåll');
+    expect(i18n.t('kieli-sisalto')).toEqual('ruotsiksi');
   });
 
   test('Käännösten lataus', async () => {
