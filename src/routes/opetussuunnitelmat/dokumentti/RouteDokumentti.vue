@@ -1,6 +1,3 @@
-import {TilaEnum} from "../../../generated/api";
-import {TilaEnum} from "../../../generated/api";
-import {TilaEnum} from "../../../generated/api";
 <template lang="pug">
 
 div.content
@@ -17,7 +14,7 @@ div.content
         | &nbsp;&nbsp;
         span {{ $t('luo-uusi-dokumentti') }}
       a.btn.btn-secondary(
-        v-if="dto && dto.tila === 'valmis'",
+        v-if="href",
         :href="href",
         target="_blank",
         rel="noopener noreferrer")
@@ -131,6 +128,10 @@ export default class RouteDokumentti extends EpOpsRoute {
       || _.kebabCase(this.dto.tila) == _.kebabCase(TilaEnum.VALMIS)) {
       clearInterval(this.polling);
       this.polling = null;
+
+      if (_.kebabCase(this.dto.tila) == _.kebabCase(TilaEnum.VALMIS) && this.dto.id) {
+        this.href = baseURL + DokumentitParams.get(this.dto.id).url;
+      }
     }
   }
 
