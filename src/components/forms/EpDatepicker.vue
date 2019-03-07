@@ -70,8 +70,10 @@ export default class EpDatepicker extends Mixins(EpValidation) {
   }
 
   get locdate() {
-
-    if (this.type === 'datetime') {
+    if (!this.value) {
+      return this.$t('ei-asetettu');
+    }
+    else if (this.type === 'datetime') {
       return (this as any).$ldt(this.value);
     }
     else {
