@@ -106,5 +106,19 @@
   "valmis": "Valmis",
   "validation-error-required": "Pakollinen tieto",
   "validation-error-min-length": "Minimipituus on {min}",
-  "ops-julkaisukielet-ohje": "Tähän opetussuunnitelman julkaisukielet"
+  "ops-julkaisukielet-ohje": "Tähän opetussuunnitelman julkaisukielet",
+  "dokumentti": "Dokumentti",
+  "dokumentti-ei-ole": "Dokumenttia ei ole",
+  "dokumentti-jonossa": "Dokumentin luonti on jonossa",
+  "dokumentti-luodaan": "Dokumentin luodaan",
+  "dokumentti-epaonnistui": "Dokumentin luominen epäonnistui",
+  "dokumentti-valmis": "Dokumentti on luotu onnistuneesti {valmistumisaika}",
+  "luo-uusi-dokumentti": "Luo uusi dokumentti",
+  "lisaasetukset": "Lisäasetukset",
+  "kansilehti": "Kansilehti",
+  "fu-placeholder": "Kuvaa ei ole valittu",
+  "fu-drop-placeholder": "Pudota kuva tähän",
+  "fu-browse-text": "Selaa",
+  "fu-valittu-tiedosto": "Valittu kuva",
+  "lataa-dokumentti": "Lataa dokumentti"
 }

@@ -26,7 +26,7 @@ library.add(solid.faSearch);
 library.add(solid.faThumbsUp);
 library.add(solid.faTimes);
 library.add(solid.faUsers);
-library.add(solid.faTimes);
 library.add(solid.faCalendarDay);
+library.add(solid.faFileDownload);
 
 Vue.component('fas', FontAwesomeIcon);

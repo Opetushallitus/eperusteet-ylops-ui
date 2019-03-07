@@ -23,6 +23,7 @@
     li
       button.btn.btn-primary(@click="addTekstikappale()")
         fas(icon="plus")
+        | &nbsp;&nbsp;
         span {{ $t('lisaa-tekstikappale') }}
   ops-sidenav-oppiaineet(v-if="sisalto && kayttajaOppiainenakymassa")
 </template>

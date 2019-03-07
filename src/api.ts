@@ -12,7 +12,7 @@ import {
   OpetussuunnitelmatApi,
   OpetussuunnitelmatJulkisetApi,
   TermistoApi,
-  UlkopuolisetApi,
+  UlkopuolisetApi, DokumentitApiAxiosParamCreator,
 } from '@/generated/api';
 
 
@@ -21,8 +21,11 @@ type FactoryFn<T> = (configuration?: Configuration, basePath?: string, axios?: A
 
 const logger = createLogger('Axios');
 const basePath = '';
+
+export const baseURL = '/eperusteet-ylops-service/api';
+
 const ax = axios.create({
-  baseURL: '/eperusteet-ylops-service/api',
+  baseURL,
 });
 
 function axiosHandler(msg: string) {
@@ -38,8 +41,10 @@ ax.interceptors.request.use(_.identity, axiosHandler('Request error'));
 // https://github.com/Microsoft/TypeScript/issues/20719
 type BaseAPIConstructor<T> = new(configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;
 
+const configuration = { basePath };
+
 function initApi<T>(t: BaseAPIConstructor<T>): T {
-  return new t({ basePath }, basePath, ax);
+  return new t(configuration, basePath, ax);
 }
 
 
@@ -54,3 +59,5 @@ export const Opetussuunnitelmat = initApi(OpetussuunnitelmatApi);
 export const OpetussuunnitelmatJulkiset = initApi(OpetussuunnitelmatJulkisetApi);
 export const Termisto = initApi(TermistoApi);
 export const Ulkopuoliset = initApi(UlkopuolisetApi);
+
+export const DokumentitParams = DokumentitApiAxiosParamCreator(configuration);
