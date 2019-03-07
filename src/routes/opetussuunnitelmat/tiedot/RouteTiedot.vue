@@ -11,25 +11,19 @@ div.content
             .col-md-6
               ep-form-content(name="ops-nimi")
                 ep-field(
-                  name="ops-nimi",
                   help="ops-nimi-ohje",
                   v-model="data.nimi",
                   :validation="validation.nimi",
                   :is-editing="isEditing")
             .col-md-6
               ep-form-content(name="peruste")
-                ep-field(
-                  name="peruste",
-                  v-model="data.perusteenDiaarinumero")
+                ep-field(v-model="data.perusteenDiaarinumero")
             .col-md-6
               ep-form-content(name="tila")
-                ep-field(
-                  name="tila",
-                  v-model="data.tila")
+                ep-field(v-model="data.tila")
             .col-md-6
               ep-form-content(name="julkaisukielet")
                 ep-select(
-                  name="julkaisukielet",
                   help="ops-julkaisukielet-ohje",
                   v-model="data.julkaisukielet",
                   :validation="validation.julkaisukielet",
@@ -39,7 +33,6 @@ div.content
             .col-md-6(v-if="isOps")
               ep-form-content(name="ops-hyvaksyjataho")
                 ep-field(
-                  name="ops-hyvaksyjataho",
                   help="ops-hyvaksyjataho-ohje",
                   v-model="data.hyvaksyjataho",
                   :validation="validation.hyvaksyjataho",
@@ -52,12 +45,12 @@ div.content
                   help="ops-hyvaksymispvm-ohje",
                   :validation="validation.paatospaivamaara",
                   :is-editing="isEditing")
-            .col-md-6(v-if="isOps")
-              ep-toggle(
-                name="ops-esikatseltavissa",
-                help="ops-esikatseltavissa-ohje",
-                v-model="data.esikatseltavissa",
-                :is-editing="isEditing")
+            //.col-md-6(v-if="isOps")
+            //  ep-form-content(name="ops-esikatseltavissa")
+            //    ep-toggle(
+            //      help="ops-esikatseltavissa-ohje",
+            //      v-model="data.esikatseltavissa",
+            //      :is-editing="isEditing")
             .col-md-12
               ep-form-content(name="ops-kuvaus")
                 ep-content(
@@ -74,19 +67,19 @@ div.content
 
 <script lang="ts">
 
-  import { EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle, } from "@/components";
+import { EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle, } from "@/components";
 
-  import EpOpsRoute from "@/mixins/EpOpsRoute";
+import EpOpsRoute from "@/mixins/EpOpsRoute";
 
-  import Tilanvaihto from "@/routes/opetussuunnitelmat/Tilanvaihto.vue";
-  import _ from "lodash";
-  import { EditointiKontrolliConfig } from "@/stores/editointi";
-  import { Opetussuunnitelma } from "@/stores/opetussuunnitelma";
-  import { Component } from "vue-property-decorator";
-  import { opsTiedotValidator } from "@/validators/ops";
-  import { Kielet } from '@/stores/kieli';
+import Tilanvaihto from "@/routes/opetussuunnitelmat/Tilanvaihto.vue";
+import _ from "lodash";
+import { EditointiKontrolliConfig } from "@/stores/editointi";
+import { Opetussuunnitelma } from "@/stores/opetussuunnitelma";
+import { Component } from "vue-property-decorator";
+import { opsTiedotValidator } from "@/validators/ops";
+import { Kielet } from '@/stores/kieli';
 
-  @Component({
+@Component({
   components: {
     EpContent,
     EpDatepicker,

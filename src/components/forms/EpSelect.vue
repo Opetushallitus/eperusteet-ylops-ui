@@ -44,9 +44,6 @@ export default class EpSelect extends Mixins(EpValidation) {
   private isEditing!: boolean;
 
   @Prop({ required: true })
-  private name!: string;
-
-  @Prop({ required: true })
   private items!: any[];
 
   @Model('change', {
