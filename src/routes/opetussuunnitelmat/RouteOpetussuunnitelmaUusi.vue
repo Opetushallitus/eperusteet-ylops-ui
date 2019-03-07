@@ -5,12 +5,13 @@ div
     h1 {{ $t('uusi-opetussuunnitelma') }}
 
     .form
-      ep-form-content(name="nimi", ohje="uusi-ops-ohje-nimi")
-        ep-input.form-control(
+      ep-form-content(name="nimi")
+        ep-input(
           id="uusi-ops-nimi",
+          v-model="uusi.nimi",
           type="text",
-          :is-editing="true",
-          v-model="uusi.nimi")
+          help="uusi-ops-ohje-nimi",
+          :is-editing="true")
 
       fieldset.form-group
         .row
