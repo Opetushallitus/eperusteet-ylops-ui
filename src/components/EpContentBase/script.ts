@@ -24,4 +24,12 @@ export default class EpContentBase extends Mixins(EpValidation) {
   @Prop({ default: 'simplified' })
   private layout!: EditorLayout;
 
+  @Prop({ default: '' })
+  private help!: string;
+
+  // Validointi tapahtuu tämän metodin avulla
+  get isEditing() {
+    return this.isEditable;
+  }
+
 }

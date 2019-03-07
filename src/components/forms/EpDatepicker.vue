@@ -14,18 +14,22 @@ div(v-if="isEditing")
     :first-day-of-week="1")
     fas.fa-fw(slot="calendar-icon", icon="calendar-day")
     fas.fa-fw(slot="mx-clear-icon", icon="times")
+  .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
+  .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
+  .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
+  small.form-text.text-muted(v-if="help && isEditing") {{ $t(help) }}
 div(v-else)
   | {{ locdate }}
 </template>
 
 <script lang="ts">
 
-  import { Vue, Component, Prop, Model, Mixins } from "vue-property-decorator";
+import { Component, Prop, Mixins } from "vue-property-decorator";
 import _ from 'lodash';
 import DatePicker from 'vue2-datepicker';
 import { Kielet } from '@/stores/kieli';
 import { EpFormContent } from '@/components';
-  import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@/mixins/EpValidation';
 
 
 @Component({
@@ -46,6 +50,12 @@ export default class EpDatepicker extends Mixins(EpValidation) {
     },
   })
   private type!: string;
+
+  @Prop({ default: false })
+  private isEditing!: boolean;
+
+  @Prop({ default: '' })
+  private help!: string;
 
   get inputClass() {
     if (this.isInvalid) {
@@ -101,5 +111,8 @@ export default class EpDatepicker extends Mixins(EpValidation) {
 }
 .ep-datepicker-validation ~ .mx-input-append {
   right: 30px;
+}
+.invalid-feedback, .valid-feedback {
+  display: block;
 }
 </style>

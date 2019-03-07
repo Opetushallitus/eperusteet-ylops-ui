@@ -1,15 +1,11 @@
 <template lang="pug">
-ep-form-content(
-  :name="name",
-  :help="help",
-  :validation="validation"
-  :is-editing="isEditing")
-  ep-input.form-data(
-    :value="value",
-    @input="$emit('input', $event)",
-    :is-editing="isEditing",
-    :is-string="isString",
-    :validation="validation")
+ep-input.form-data(
+  :value="value",
+  @input="$emit('input', $event)",
+  :is-editing="isEditing",
+  :is-string="isString",
+  :validation="validation",
+  :help="help")
 </template>
 
 <script lang="ts">
@@ -29,16 +25,16 @@ import EpValidation from '@/mixins/EpValidation';
 export default class EpField extends Mixins(EpValidation) {
 
   @Prop({ required: true })
-  private name!: string;
+  private value!: string | object;
 
-  @Prop({ default: '' })
-  private help!: string;
+  @Prop({ default: false })
+  private isEditing!: boolean;
 
   @Prop({ default: false })
   private isString!: boolean;
 
-  @Prop({ required: true })
-  private value!: string | object;
+  @Prop({ default: '' })
+  private help!: string;
 
 }
 </script>

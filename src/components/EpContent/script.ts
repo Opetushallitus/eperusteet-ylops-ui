@@ -20,6 +20,9 @@ export default class EpContent extends Mixins(EpValidation) {
   @Prop({ default: false })
   private isEditable!: boolean;
 
+  @Prop({ default: '' })
+  private help!: string;
+
   get contentValue() {
     if (!this.value) {
       return '';

@@ -5,7 +5,7 @@ div(v-if="isEditing")
     select.form-control(
       v-model="innerModel",
       multiple,
-      @change="updateValue($event.target.value)"
+      @change="updateValue($event.target.value)",
       :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
       option(disabled, value="null")
       option(v-for="item in items" :value="item")
@@ -13,7 +13,7 @@ div(v-if="isEditing")
     .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
     .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
     .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
-    small(v-if="help").form-text.text-muted {{ $t(help) }}
+    small.form-text.text-muted(v-if="help && isEditing") {{ $t(help) }}
   ep-spinner(v-else)
 div(v-else)
   ul
@@ -39,6 +39,10 @@ import EpValidation from '@/mixins/EpValidation';
   },
 })
 export default class EpSelect extends Mixins(EpValidation) {
+
+  @Prop({ default: false })
+  private isEditing!: boolean;
+
   @Prop({ required: true })
   private name!: string;
 
@@ -54,11 +58,11 @@ export default class EpSelect extends Mixins(EpValidation) {
   @Prop({ default: true })
   private useCheckboxes!: boolean;
 
-  @Prop({ default: '' })
-  private help!: string;
-
   @Prop({ default: false })
   private multiple!: boolean;
+
+  @Prop({ default: '' })
+  private help!: string;
 
   private innerModel: any = null;
 

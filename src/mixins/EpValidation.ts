@@ -4,9 +4,6 @@ import _ from 'lodash';
 @Component
 export default class EpValidation extends Vue {
 
-  @Prop({ default: false })
-  private isEditing!: boolean;
-
   @Prop({ default: '' })
   private validMessage!: string;
 
@@ -26,7 +23,7 @@ export default class EpValidation extends Vue {
 
   get validationError() {
     // Validointi näyteään vain muokkaustilassa
-    if (this.isEditing && this.validation) {
+    if ((this as any).isEditing !== undefined && (this as any).isEditing && this.validation) {
       return _(this.validation)
         .keys()
         .reject((key) => _.startsWith(key, '$'))

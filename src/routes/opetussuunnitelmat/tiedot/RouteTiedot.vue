@@ -9,48 +9,47 @@ div.content
         div
           .row
             .col-md-6
-              ep-field(
-                name="ops-nimi",
-                help="ops-nimi-ohje",
-                v-model="data.nimi",
-                :validation="validation.nimi",
-                :is-editing="isEditing")
+              ep-form-content(name="ops-nimi")
+                ep-field(
+                  name="ops-nimi",
+                  help="ops-nimi-ohje",
+                  v-model="data.nimi",
+                  :validation="validation.nimi",
+                  :is-editing="isEditing")
             .col-md-6
-              ep-field(
-                name="peruste",
-                v-model="data.perusteenDiaarinumero")
+              ep-form-content(name="peruste")
+                ep-field(
+                  name="peruste",
+                  v-model="data.perusteenDiaarinumero")
             .col-md-6
-              ep-field(
-                name="tila",
-                v-model="data.tila")
+              ep-form-content(name="tila")
+                ep-field(
+                  name="tila",
+                  v-model="data.tila")
             .col-md-6
-              ep-form-content(
-                name="julkaisukielet",
-                ohje="ops-julkaisukielet-ohje"
-                :is-editing="isEditing")
+              ep-form-content(name="julkaisukielet")
                 ep-select(
                   name="julkaisukielet",
+                  help="ops-julkaisukielet-ohje",
                   v-model="data.julkaisukielet",
                   :validation="validation.julkaisukielet",
                   :is-editing="isEditing",
                   :items="kielet",
                   :multiple="true")
             .col-md-6(v-if="isOps")
-              ep-field(
-                name="ops-hyvaksyjataho",
-                help="ops-hyvaksyjataho-ohje",
-                v-model="data.hyvaksyjataho",
-                :validation="validation.hyvaksyjataho",
-                :is-string="true",
-                :is-editing="isEditing")
+              ep-form-content(name="ops-hyvaksyjataho")
+                ep-field(
+                  name="ops-hyvaksyjataho",
+                  help="ops-hyvaksyjataho-ohje",
+                  v-model="data.hyvaksyjataho",
+                  :validation="validation.hyvaksyjataho",
+                  :is-string="true",
+                  :is-editing="isEditing")
             .col-md-6(v-if="isOps")
-              ep-form-content(
-                name="ops-hyvaksymispvm",
-                help="ops-hyvaksymispvm-ohje",
-                :validation="validation.paatospaivamaara",
-                :is-editing="isEditing")
+              ep-form-content(name="ops-hyvaksymispvm")
                 ep-datepicker(
                   v-model="data.paatospaivamaara",
+                  help="ops-hyvaksymispvm-ohje",
                   :validation="validation.paatospaivamaara",
                   :is-editing="isEditing")
             .col-md-6(v-if="isOps")
@@ -60,13 +59,10 @@ div.content
                 v-model="data.esikatseltavissa",
                 :is-editing="isEditing")
             .col-md-12
-              ep-form-content(
-                name="ops-kuvaus",
-                ohje="ops-kuvaus-ohje"
-                :validation="validation.kuvaus"
-                :is-editing="isEditing")
+              ep-form-content(name="ops-kuvaus")
                 ep-content(
                   v-model="data.kuvaus",
+                  help="ops-kuvaus-ohje",
                   :validation="validation.kuvaus",
                   :is-editable="isEditing")
 

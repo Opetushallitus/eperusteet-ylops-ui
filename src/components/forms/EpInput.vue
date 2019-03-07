@@ -1,14 +1,19 @@
 <template lang="pug">
-input.input-style.form-control(
-  v-if="isEditing",
-  @input="onInput($event.target.value)",
-  :attrs="$attrs",
-  :value="val",
-  :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
+
+div(v-if="isEditing")
+  input.input-style.form-control(
+    @input="onInput($event.target.value)",
+    :attrs="$attrs",
+    :value="val",
+    :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
+  .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
+  .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
+  .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
+  small.form-text.text-muted(v-if="help && isEditing") {{ $t(help) }}
 .input-content(
-  v-else,
-  :attrs="$attrs")
-  | {{ val }}
+    v-else,
+    :attrs="$attrs")
+    | {{ val }}
 
 </template>
 
@@ -30,6 +35,12 @@ export default class EpInput extends Mixins(EpValidation) {
 
   @Prop({ required: true })
   private value!: string | object;
+
+  @Prop({ default: false })
+  private isEditing!: boolean;
+
+  @Prop({ default: '' })
+  private help!: string;
 
   public onInput(input: any) {
     if (this.isString && !_.isString(this.value)) {

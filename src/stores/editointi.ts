@@ -22,7 +22,7 @@ export interface EditointiKontrolliHistory {
 
 export interface EditointiKontrolliData {
   load: () => Promise<unknown>;
-  save: (data: any) => Promise<boolean | void | any>;
+  save: (data: any) => Promise<any>;
   cancel?: () => Promise<void>;
 }
 
