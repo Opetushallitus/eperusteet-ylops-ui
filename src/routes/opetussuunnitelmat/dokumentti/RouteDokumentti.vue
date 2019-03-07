@@ -27,30 +27,32 @@ div.content
 
   h2 {{ $t('lisaasetukset') }}
 
-  div.form-group
-    ep-form-content(name="kansilehti")
-      b-form-file(
-        v-model="file",
-        accept="image/jpeg, image/png"
-        :placeholder="placeholder",
-        :drop-placeholder="dropPlaceholder",
-        :browse-text="browseText",
-        @input="onInput")
+  .row
+    .col-lg-6
+      div.form-group
+        ep-form-content(name="kansilehti")
+          b-form-file(
+            v-model="file",
+            accept="image/jpeg, image/png"
+            :placeholder="placeholder",
+            :drop-placeholder="dropPlaceholder",
+            :browse-text="browseText",
+            @input="onInput")
 
-      .row.mt-3(v-if="file")
-        .col-auto.mr-auto.align-self-center
-          div {{ $t('fu-valittu-tiedosto') }}: {{ file ? file.name : '' }}
-        .col-auto
-          .btn-toolbar
-            .btn-group
-              ep-button(@click="save()")
-                slot(name="tallenna") {{ $t('tallenna') }}
-              ep-button(
-                @click="file = null",
-                variant="warning")
-                slot(name="peruuta") {{ $t('peruuta') }}
+          .row.mt-3(v-if="file")
+            .col-auto.mr-auto.align-self-center
+              div {{ $t('fu-valittu-tiedosto') }}: {{ file ? file.name : '' }}
+            .col-auto
+              .btn-toolbar
+                .btn-group
+                  ep-button(@click="save()")
+                    slot(name="tallenna") {{ $t('tallenna') }}
+                  ep-button(
+                    @click="file = null",
+                    variant="warning")
+                    slot(name="peruuta") {{ $t('peruuta') }}
 
-      img.mt-3.img-fluid(v-if="previewUrl", :src="previewUrl")
+          img.mt-3.img-fluid(v-if="previewUrl", :src="previewUrl")
 
 </template>
 
