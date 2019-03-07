@@ -1,4 +1,4 @@
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -22,11 +22,12 @@ import '@ckeditor/ckeditor5-build-inline/build/translations/fi.js';
 import '@ckeditor/ckeditor5-build-inline/build/translations/sv.js';
 
 import { EditorLayout } from '@/tyypit';
+import EpValidation from '@/mixins/EpValidation';
 
 @Component({
   name: 'CkEditor',
 })
-export default class CkEditor extends Vue {
+export default class CkEditor extends Mixins(EpValidation) {
 
   // Editorin dom-elementin ID
   @Prop({ default: '' }) private id!: string;

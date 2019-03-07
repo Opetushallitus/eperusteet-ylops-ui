@@ -1,6 +1,15 @@
 @import './variables';
 @import 'oph-virkailija-style-guide/oph-styles.css';
 
+
+.content {
+  margin: 5px;
+
+  @media only screen and (min-width: 768px) {
+    margin: 30px;
+  }
+}
+
 .form-content {
   padding: 0px !important;
 }
@@ -33,22 +42,19 @@
   }
 }
 
-
 .dev1 {
   background: $green;
 }
-
 
 .dev2 {
   background: $red;
 }
 
-
 .dev3 {
   background: $blue;
 }
 
-
 .dev4 {
   background: $yellow;
 }
+
