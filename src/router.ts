@@ -11,6 +11,7 @@ import RouteOpetussuunnitelma from '@/routes/opetussuunnitelmat/RouteOpetussuunn
 import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RouteOpetussuunnitelmaUusi from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaUusi.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
+import RouteDokumentti from '@/routes/opetussuunnitelmat/dokumentti/RouteDokumentti.vue';
 import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
 import RouteOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaine.vue';
 import RouteOpintojakso from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOpintojakso.vue';
@@ -62,7 +63,7 @@ export const router = new Router({
         name: 'opsTiedot',
       }, {
         path: 'dokumentti',
-        component: UnderConstruction,
+        component: RouteDokumentti,
         name: 'opsDokumentti',
       }, {
         path: 'poistetut',
