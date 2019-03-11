@@ -61,3 +61,17 @@ export const Termisto = initApi(TermistoApi);
 export const Ulkopuoliset = initApi(UlkopuolisetApi);
 
 export const DokumentitParams = DokumentitApiAxiosParamCreator(configuration);
+
+// FIXME: Genereoitua rajapintaa ei toimi multipart-pyyntöjen kanssa.
+Dokumentit.addImage = (opsId, tyyppi, kieli, formData) => {
+  return Api.post('/dokumentit/kuva', formData, {
+    params: {
+      opsId,
+      tyyppi,
+      kieli,
+    },
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
