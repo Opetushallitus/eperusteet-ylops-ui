@@ -223,6 +223,10 @@ export default class RouteDokumentti extends EpOpsRoute {
     }
   }
 
+  destroyed() {
+    clearInterval(this.polling);
+  }
+
 }
 
 </script>
