@@ -1,4 +1,5 @@
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 
 module.exports = {
   lintOnSave: false,
@@ -13,6 +14,15 @@ module.exports = {
         minify: true
       } )
     }
+  },
+
+  configureWebpack: {
+    plugins: [
+      new CKEditorWebpackPlugin( {
+        language: 'fi',
+        additionalLanguages: ['sv','en'],
+      } )
+    ],
   },
 
   // SVG pictures for CKEditor must be added via raw-loader

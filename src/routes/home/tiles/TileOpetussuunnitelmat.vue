@@ -2,7 +2,9 @@
 div
   base-tile(icon="file-signature", color="#5bca13")
     template(slot="header")
-      span {{ $t('tile-opetussuunnitelmasi') }}
+      router-link(
+        :to="{ name: 'opetussuunnitelmaListaus' }")
+        | {{ $t('tile-opetussuunnitelmasi') }}
     template(slot="content")
       ep-spinner(v-if="isLoading")
       div(v-else)

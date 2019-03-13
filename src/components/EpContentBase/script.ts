@@ -27,6 +27,9 @@ export default class EpContentBase extends Mixins(EpValidation) {
   @Prop({ default: '' })
   private help!: string;
 
+  @Prop({ default: 'fi' })
+  private locale!: string;
+
   // Validointi tapahtuu tämän metodin avulla
   get isEditing() {
     return this.isEditable;
