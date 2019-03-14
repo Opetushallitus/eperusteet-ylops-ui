@@ -25,7 +25,7 @@ import {
 export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
   get graph() {
     return {
-      colorScheme: DiagrammiVarit.vihrea_sininen,
+      colorScheme: 'vihrea_sininen',
       value: 80,
     };
   }

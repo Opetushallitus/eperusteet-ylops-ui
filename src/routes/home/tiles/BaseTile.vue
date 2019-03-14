@@ -28,7 +28,7 @@ export default class BaseTile extends Vue {
 
 @import '@/styles/_variables.scss';
 
-$tile-height: 280px;
+$tile-height: 360px;
 $tile-width: 440px;
 
 .tile {

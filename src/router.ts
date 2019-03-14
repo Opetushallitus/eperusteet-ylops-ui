@@ -8,6 +8,7 @@ import VirheRoute from '@/routes/virhe/VirheRoute.vue';
 import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
 import RouteOpetussuunnitelma from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelma.vue';
+import RouteOpetussuunnitelmaListaus from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaListaus.vue';
 import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RouteOpetussuunnitelmaUusi from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaUusi.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
@@ -16,6 +17,8 @@ import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappal
 import RouteOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaine.vue';
 import RouteOpintojakso from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOpintojakso.vue';
 import UnderConstruction from '@/routes/UnderConstruction.vue';
+import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
+import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 
 import { Virheet } from '@/stores/virheet';
 import { Kielet, UiKielet } from '@/stores/kieli';
@@ -53,6 +56,18 @@ export const router = new Router({
       path: 'uusi/opetussuunnitelma',
       name: 'uusiOpetussuunnitelma',
       component: RouteOpetussuunnitelmaUusi,
+    }, {
+      path: 'tiedotteet',
+      name: 'tiedotteet',
+      component: RouteTiedotteet,
+    }, {
+      path: 'ukk',
+      name: 'useinkysytyt',
+      component: RouteUkk,
+    }, {
+      path: 'opetussuunnitelmat',
+      name: 'opetussuunnitelmaListaus',
+      component: RouteOpetussuunnitelmaListaus,
     }, {
       path: 'opetussuunnitelmat/:id',
       name: 'opetussuunnitelma',

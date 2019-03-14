@@ -1,15 +1,16 @@
 .ep-collapse {
   .header {
-    cursor: pointer;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
     display:flex;
     align-items: center;
   }
 
   .header-content {
     flex:1 0 auto;
+    border: 0;
+    padding: 0;
+    background: inherit;
+    text-align: inherit;
+    outline: none;
   }
 
   .content {

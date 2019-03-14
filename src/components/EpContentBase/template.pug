@@ -3,7 +3,8 @@ div.ep-content-base
     ck-editor(
       :value="value"
       :layout="layout"
-      :validation="validation",
+      :validation="validation"
+      :locale="locale"
       @input="$emit('input', $event)")
     .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
     .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}

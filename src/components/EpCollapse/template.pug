@@ -1,6 +1,6 @@
 div.ep-collapse
-  div.header(@click="toggled = !toggled")
-    div.header-content
+  div.header
+    button.header-content(@click="toggled = !toggled")
       slot(name="header")
     div.header-btn
       fas(icon="chevron-up", v-if="toggled")
