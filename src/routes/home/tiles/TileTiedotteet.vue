@@ -1,7 +1,9 @@
 <template lang="pug">
 base-tile(icon="bell", color="#000")
   template(slot="header")
-    span {{ $t('tile-tiedotteet') }}
+    router-link(
+      :to="{ name: 'tiedotteet' }")
+      | {{ $t('tiedotteet') }}
   template(slot="content")
     ep-spinner(v-if="isLoading")
     .tiedotteet

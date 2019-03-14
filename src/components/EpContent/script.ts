@@ -23,6 +23,10 @@ export default class EpContent extends Mixins(EpValidation) {
   @Prop({ default: '' })
   private help!: string;
 
+  get locale() {
+    return Kielet.getUiKieli();
+  }
+
   get contentValue() {
     if (!this.value) {
       return '';

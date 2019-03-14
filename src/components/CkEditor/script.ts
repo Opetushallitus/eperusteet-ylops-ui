@@ -18,9 +18,6 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 // import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 // import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 
-import '@ckeditor/ckeditor5-build-inline/build/translations/fi.js';
-import '@ckeditor/ckeditor5-build-inline/build/translations/sv.js';
-
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
 
