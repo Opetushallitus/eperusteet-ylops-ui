@@ -1,8 +1,8 @@
-jest.mock('@/stores/kayttaja');
-
 import { mount, createLocalVue } from '@vue/test-utils';
 import { oikeustarkastelu } from '../oikeustarkastelu';
 import { Kayttajat } from '@/stores/kayttaja';
+
+jest.mock('@/stores/kayttaja');
 
 // KayttajaStore.mockImplementation({
 //   Kayttajat: {},
@@ -66,5 +66,4 @@ describe('Directive oikeustarkastelu', () => {
     expect((wrapper.element as HTMLInputElement).disabled).toEqual(true);
     expect(wrapper.element.style.display).toEqual('');
   });
-
 });

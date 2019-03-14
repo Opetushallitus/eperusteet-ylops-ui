@@ -3,9 +3,7 @@ import Vue from 'vue';
 import { Store, Getter, Mutation, Action, State } from './store';
 import { SovellusVirhe } from '@/tyypit';
 
-
 export type ErrorHandler = (virhe: SovellusVirhe) => Promise<void> | void;
-
 
 @Store
 class VirheStore {

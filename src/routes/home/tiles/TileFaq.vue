@@ -13,7 +13,7 @@ import BaseTile from './BaseTile.vue';
 @Component({
   components: {
     BaseTile,
-  }
+  },
 })
 export default class TileFaq extends Vue {
 

@@ -64,19 +64,18 @@ div.content
 
 </template>
 
-
 <script lang="ts">
 
-import { EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle, } from "@/components";
+import { EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle } from '@/components';
 
-import EpOpsRoute from "@/mixins/EpOpsRoute";
+import EpOpsRoute from '@/mixins/EpOpsRoute';
 
-import Tilanvaihto from "@/routes/opetussuunnitelmat/Tilanvaihto.vue";
-import _ from "lodash";
-import { EditointiKontrolliConfig } from "@/stores/editointi";
-import { Opetussuunnitelma } from "@/stores/opetussuunnitelma";
-import { Component } from "vue-property-decorator";
-import { opsTiedotValidator } from "@/validators/ops";
+import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
+import _ from 'lodash';
+import { EditointiKontrolliConfig } from '@/stores/editointi';
+import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { Component } from 'vue-property-decorator';
+import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@/stores/kieli';
 
 @Component({
@@ -107,7 +106,7 @@ export default class RouteTiedot extends EpOpsRoute {
 
   get validator() {
     return opsTiedotValidator([
-      Kielet.getSisaltoKieli() // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli(), // Validoidaan kentät sisältökielen mukaan
     ]);
   }
 
@@ -130,7 +129,6 @@ export default class RouteTiedot extends EpOpsRoute {
       return Opetussuunnitelma.get(_.parseInt(this.$route.params.id));
     }
   }
-
 }
 </script>
 

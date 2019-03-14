@@ -38,7 +38,6 @@ import OpsSidenavItem from './OpsSidenavItem.vue';
 import OpsSidenavOppiaineet from './OpsSidenavOppiaineet.vue';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
-
 @Component({
   components: {
     OpsSidenavItem,
@@ -46,7 +45,6 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
   },
 })
 export default class RouteOpetussuunnitelma extends Vue {
-
   private get sisalto() {
     return Opetussuunnitelma.sisalto;
   }
@@ -63,7 +61,6 @@ export default class RouteOpetussuunnitelma extends Vue {
       },
     });
   }
-
 }
 </script>
 

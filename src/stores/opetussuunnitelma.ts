@@ -8,7 +8,6 @@ const logger = createLogger('Opetussuunnitelma');
 
 @Store
 class OpetussuunnitelmaStore {
-
   @State()
   public sisalto: TekstiKappaleViiteKevytDto | null = null;
 
@@ -77,7 +76,6 @@ class OpetussuunnitelmaStore {
       return res.data;
     }
   }
-
 }
 
 export const Opetussuunnitelma = new OpetussuunnitelmaStore();

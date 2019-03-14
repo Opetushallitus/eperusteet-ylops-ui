@@ -2,6 +2,7 @@ import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import { createLogger } from '@/stores/logger';
 
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -24,11 +25,10 @@ import '@ckeditor/ckeditor5-build-inline/build/translations/sv.js';
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
 
-@Component({
-  name: 'CkEditor',
-})
-export default class CkEditor extends Mixins(EpValidation) {
+const logger = createLogger('CkEditor');
 
+@Component
+export default class CkEditor extends Mixins(EpValidation) {
   // Editorin dom-elementin ID
   @Prop({ default: '' }) private id!: string;
 
@@ -71,22 +71,22 @@ export default class CkEditor extends Mixins(EpValidation) {
     }
 
     // Päivitetään editoriin uusi arvo
-    this.instance.setData(val ? val : '');
+    this.instance.setData(val || '');
   }
 
   private async createEditorInstance() {
     // Luodaan asetusobjekti
     let config: object;
     switch (this.layout) {
-      case 'simplified':
-        config = this.getSimplifiedSettings();
-        break;
-      case 'normal':
-        config = this.getNormalSettings();
-        break;
-      default:
-        config = this.getMinimalSettings();
-        break;
+    case 'simplified':
+      config = this.getSimplifiedSettings();
+      break;
+    case 'normal':
+      config = this.getNormalSettings();
+      break;
+    default:
+      config = this.getMinimalSettings();
+      break;
     }
 
     // Luodaan ckeditor instanssi
@@ -96,8 +96,9 @@ export default class CkEditor extends Mixins(EpValidation) {
         .create(this.$refs.ckeditor, config);
       this.instance.setData(this.value);
       this.setEditorEvents();
-    } catch (err) {
-      console.error(err);
+    }
+    catch (err) {
+      logger.error(err);
     }
   }
 
@@ -171,5 +172,4 @@ export default class CkEditor extends Mixins(EpValidation) {
       ],
     };
   }
-
 }

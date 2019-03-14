@@ -8,9 +8,7 @@ const locales = {
   sv: require('@/translations/locale-sv.json'),
 };
 
-
 describe('Kielet', () => {
-
   beforeEach(() => {
     i18n.locale = Kieli.fi;
     Kielet.setSisaltoKieli(Kieli.fi);
@@ -109,5 +107,4 @@ describe('Kielet', () => {
     await Kielet.init();
     expect(errorSpy).toBeCalled();
   });
-
 });

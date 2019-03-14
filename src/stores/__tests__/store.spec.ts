@@ -38,7 +38,6 @@ class SomeDataStore {
     this.data.bar = a;
     this.data.foo = value;
   }
-
 }
 
 const store = new SomeDataStore();
@@ -135,5 +134,4 @@ describe('Store annotations', () => {
       value: (x: any) => 5,
     })).toThrowError(/should have no parameters/);
   });
-
 });

@@ -1,6 +1,5 @@
 import { Kayttajat } from '../kayttaja';
 
-
 describe('Kayttajat', () => {
   beforeEach(() => {
     Kayttajat.oikeudet = {
@@ -58,5 +57,4 @@ describe('Kayttajat', () => {
     expect(await Kayttajat.hasOikeus('luonti', 'opetussuunnitelma')).toEqual(false);
     expect(await Kayttajat.hasOikeus('poisto', 'opetussuunnitelma')).toEqual(false);
   });
-
 });

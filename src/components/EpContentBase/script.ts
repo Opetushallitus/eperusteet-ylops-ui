@@ -13,7 +13,6 @@ import EpValidation from '@/mixins/EpValidation';
   },
 })
 export default class EpContentBase extends Mixins(EpValidation) {
-
   @Prop({ required: true })
   private value!: string;
 
@@ -31,5 +30,4 @@ export default class EpContentBase extends Mixins(EpValidation) {
   get isEditing() {
     return this.isEditable;
   }
-
 }

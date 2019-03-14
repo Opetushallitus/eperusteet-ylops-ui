@@ -5,7 +5,6 @@ import _ from 'lodash';
 Vue.use(Vuex);
 const StoreConfigFieldName = '_storeconfig';
 
-
 type StoreConstructor = new(...args: any[]) => {};
 
 function vuexCase(val: string) {
@@ -34,7 +33,7 @@ function overrideGetters(store: any, config: any, target: any) {
 
 function overrideStates(store: any, config: any, target: any) {
   _.forEach(config.state, (v, k) => {
-    const ClassName = target.constructor.prototype.__proto__.constructor.name;
+    const ClassName = Object.getPrototypeOf(target.constructor.prototype).constructor.name;
     const mutationName = vuexCase(ClassName) + '_SET_' + vuexCase(k);
 
     Object.defineProperty(target, k, {
@@ -61,7 +60,7 @@ function vuexBaseConfig(config: any) {
       ...config.stateSetters,
       ..._.mapValues(config.mutations, ({ value }) =>
         (state: any, payload: any) =>
-        value.apply(state, payload)),
+          value.apply(state, payload)),
     },
     getters: {
       ..._.mapValues(config.getters, (fn) =>
@@ -76,7 +75,7 @@ export function Store<T extends StoreConstructor>(constructor: T) {
 
     constructor(...args: any[]) {
       super();
-      const ClassName = this.constructor.prototype.__proto__.constructor.name;
+      const ClassName = Object.getPrototypeOf(this.constructor.prototype).constructor.name;
       const config = (this as any)._storeconfig;
 
       if (!StoreBase.store) {
@@ -89,7 +88,6 @@ export function Store<T extends StoreConstructor>(constructor: T) {
     }
   };
 }
-
 
 function targetStoreConfig(target: object): any {
   if (!(target as any)[StoreConfigFieldName]) {
@@ -110,11 +108,9 @@ function targetStoreConfig(target: object): any {
   return (target as any)[StoreConfigFieldName];
 }
 
-
 export interface StateConfig {
   mutationName?: string;
 }
-
 
 export function State(config?: StateConfig) {
   return (target: object, key: string) => {
@@ -131,16 +127,18 @@ export function State(config?: StateConfig) {
       set(newValue) {
         storeconfig.state[key] = newValue;
       },
+      get() {
+        return storeconfig.state[key];
+      },
     });
 
     // Add default mutation
-    storeconfig.stateSetters[mutationName] =
-      (state: any, value: any) => {
+    storeconfig.stateSetters[mutationName]
+      = (state: any, value: any) => {
         state[key] = value;
       };
   };
 }
-
 
 export interface MutationConfig {
   name?: string;
@@ -163,7 +161,6 @@ export function Mutation(config?: MutationConfig) {
   };
 }
 
-
 export function Getter() {
   return (target: any, key: string, descriptor: any) => {
     const fn = descriptor.value;
@@ -179,7 +176,6 @@ export function Getter() {
     targetStoreConfig(target).getters[key] = fn;
   };
 }
-
 
 export function Action() {
   return (target: any, key: string, descriptor: any) => {

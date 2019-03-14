@@ -1,4 +1,4 @@
-const path = require("path");
+const path = require('path');
 
 module.exports = {
   title: 'ePerusteet Ylops lukio components',
@@ -7,13 +7,13 @@ module.exports = {
   usageMode: 'expand',
   pagePerSection: true,
   require: [
-    path.join(__dirname, 'config/styleguide.plugins.ts')
+    path.join(__dirname, 'config/styleguide.plugins.ts'),
   ],
   renderRootJsx: path.join(__dirname, 'config/styleguide.root.ts'),
   components: '',
   sections: [{
-      name: 'Komponentit',
-      components: 'src/components/**/[A-Z]*.vue'
+    name: 'Komponentit',
+    components: 'src/components/**/[A-Z]*.vue',
   }],
   webpackConfig: {
     module: {
@@ -21,9 +21,9 @@ module.exports = {
         {
           test: /\.tsx?$/,
           use: 'ts-loader',
-          exclude: /node_modules/
-        }
+          exclude: /node_modules/,
+        },
       ],
-    }
+    },
   },
-}
+};

@@ -44,7 +44,6 @@ import { delay } from '@/utils/delay';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 import _ from 'lodash';
 
-
 @Component({
   components: {
     BaseTile,
@@ -80,7 +79,6 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
       .value();
     return result;
   }
-
 }
 </script>
 

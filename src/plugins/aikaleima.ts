@@ -3,11 +3,10 @@ import moment from 'moment';
 
 export class Aikaleima {
   public install(vue: typeof Vue) {
-
     function aikaleimaFnFactory(this: void, format: string) {
-      // tslint:disable:only-arrow-functions
+      // eslint-disable-next-line only-arrow-functions
       return function(this: void, value: number) {
-        (this as any).$i18n.locale; // tslint:disable-line
+        (this as any).$i18n.locale; // eslint-disable-line
         return moment(value).format(format);
       };
     }
@@ -32,17 +31,16 @@ export class Aikaleima {
 
     // Time until or ago an event counting from now
     vue.prototype.$ago = function(value: number) {
-      this.$i18n.locale; // tslint:disable-line
+      this.$i18n.locale; // eslint-disable-line
       return moment(value).fromNow();
     };
 
     // Custom datetime
     vue.prototype.$cdt = function(value: number, format: string) {
       // Pakko olla, jotta localen vaihtuessa komponentti päivittyy
-      this.$i18n.locale; // tslint:disable-line
+      this.$i18n.locale; // eslint-disable-line
       return moment(value).format(format);
     };
-
   }
 }
 

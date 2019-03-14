@@ -12,7 +12,6 @@ import {
   EpSpinner,
 } from '@/components';
 
-
 @Component({
   components: {
     EpChart,
@@ -39,5 +38,4 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
     const id = this.$route.params.id;
     await Opetussuunnitelma.init(_.parseInt(id));
   }
-
 }

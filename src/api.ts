@@ -15,8 +15,6 @@ import {
   UlkopuolisetApi, DokumentitApiAxiosParamCreator,
 } from '@/generated/api';
 
-
-
 type FactoryFn<T> = (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;
 
 const logger = createLogger('Axios');
@@ -43,10 +41,9 @@ type BaseAPIConstructor<T> = new(configuration?: Configuration, basePath?: strin
 
 const configuration = { basePath };
 
-function initApi<T>(t: BaseAPIConstructor<T>): T {
-  return new t(configuration, basePath, ax);
+function initApi<T>(X: BaseAPIConstructor<T>): T {
+  return new X(configuration, basePath, ax);
 }
-
 
 export const Api = ax;
 export const Dokumentit = initApi(DokumentitApi);

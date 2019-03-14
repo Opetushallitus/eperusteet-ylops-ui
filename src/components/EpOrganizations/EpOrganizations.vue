@@ -58,7 +58,6 @@
 
 </template>
 
-
 <script lang="ts">
 
 import {
@@ -100,9 +99,9 @@ export default class EpOrganizations extends Vue {
   };
 
   private koodisto: any = {
-    jarjestajat: [],   // Koulutuksen järjestäjät
-    kunnat: [],        // Kunnat joihin järjestävät kuuluvat
-    kuntaMap: {},      // Kunnat joihin järjestävät kuuluvat
+    jarjestajat: [], // Koulutuksen järjestäjät
+    kunnat: [], // Kunnat joihin järjestävät kuuluvat
+    kuntaMap: {}, // Kunnat joihin järjestävät kuuluvat
     oppilaitokset: [], // Oppilaitokset
     organisaatiot: [], // Käyttöoikeuksia sisältävät organisaatiot
   };
@@ -117,9 +116,9 @@ export default class EpOrganizations extends Vue {
 
   get kunnat() {
     return _([
-        ...this.jarjestajat,
-        ...this.oppilaitokset,
-      ])
+      ...this.jarjestajat,
+      ...this.oppilaitokset,
+    ])
       .map((org) => this.koodisto.kuntaMap[org.kotipaikkaUri])
       .uniq()
       .value();
@@ -159,7 +158,6 @@ export default class EpOrganizations extends Vue {
       .filter((org) => hasOrganisaatioTyyppi([OrganisaatioTyyppi.Toimija], org.tyypit))
       .value();
   }
-
 }
 
 </script>

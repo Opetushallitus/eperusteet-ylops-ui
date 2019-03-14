@@ -3,7 +3,6 @@ import { Opetussuunnitelmat } from '@/api';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 import EpContent from '@/components/EpContent/EpContent.vue';
 
-
 @Component({
   components: {
     EpContent,

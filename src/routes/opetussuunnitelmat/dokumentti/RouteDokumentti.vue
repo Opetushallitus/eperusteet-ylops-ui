@@ -63,16 +63,15 @@ div.content
 
 </template>
 
-
 <script lang="ts">
 
-import _ from "lodash";
-import EpOpsRoute from "@/mixins/EpOpsRoute";
-import { EpButton, EpFormContent } from "@/components";
-import { Component, Watch } from "vue-property-decorator";
-import { baseURL, Dokumentit, DokumentitParams } from "@/api";
-import { Kielet } from "@/stores/kieli";
-import { DokumenttiDto } from "@/generated";
+import _ from 'lodash';
+import EpOpsRoute from '@/mixins/EpOpsRoute';
+import { EpButton, EpFormContent } from '@/components';
+import { Component, Watch } from 'vue-property-decorator';
+import { baseURL, Dokumentit, DokumentitParams } from '@/api';
+import { Kielet } from '@/stores/kieli';
+import { DokumenttiDto } from '@/generated';
 import TilaEnum = DokumenttiDto.TilaEnum;
 
 @Component({
@@ -82,7 +81,6 @@ import TilaEnum = DokumenttiDto.TilaEnum;
   },
 })
 export default class RouteDokumentti extends EpOpsRoute {
-
   private file = null;
   private previewUrl = null;
   private dto: DokumenttiDto | null = null;
@@ -99,13 +97,13 @@ export default class RouteDokumentti extends EpOpsRoute {
     this.init();
   }
 
-
   get tilaFormatted() {
     if (this.dto) {
       return this.$t('dokumentti-' + _.kebabCase(this.dto.tila), {
-        valmistumisaika: (this as any).$sdt(this.dto.valmistumisaika)
+        valmistumisaika: (this as any).$sdt(this.dto.valmistumisaika),
       });
-    } else {
+    }
+    else {
       return this.$t('dokumentti-' + _.kebabCase(TilaEnum.EIOLE));
     }
   }
@@ -140,7 +138,7 @@ export default class RouteDokumentti extends EpOpsRoute {
       };
 
       // Ladataan kuva Base64 muodossa
-      reader.readAsDataURL(file)
+      reader.readAsDataURL(file);
     }
     else {
       // Poistetaan kuvan esikatselu
@@ -214,7 +212,6 @@ export default class RouteDokumentti extends EpOpsRoute {
     }
   }
 
-
   // Poistetaan kansikuva
   private async removeImage() {
     await Dokumentit.deleteImage(this.opsId, 'kansikuva', this.kieli);
@@ -226,7 +223,6 @@ export default class RouteDokumentti extends EpOpsRoute {
   destroyed() {
     clearInterval(this.polling);
   }
-
 }
 
 </script>

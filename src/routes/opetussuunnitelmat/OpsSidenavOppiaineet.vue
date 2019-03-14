@@ -8,10 +8,10 @@ ul.navigation
 <style scoped lang="scss" src="./sidenav.scss"></style>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
-  name: "ops-sidenav-oppiaineet"
+  name: 'ops-sidenav-oppiaineet',
 })
 export default class OpsSidenavOppiaineet extends Vue {
 

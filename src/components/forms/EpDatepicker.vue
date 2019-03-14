@@ -24,13 +24,12 @@ div(v-else)
 
 <script lang="ts">
 
-import { Component, Prop, Mixins } from "vue-property-decorator";
+import { Component, Prop, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 import DatePicker from 'vue2-datepicker';
 import { Kielet } from '@/stores/kieli';
 import { EpFormContent } from '@/components';
 import EpValidation from '@/mixins/EpValidation';
-
 
 @Component({
   components: {
@@ -39,7 +38,6 @@ import EpValidation from '@/mixins/EpValidation';
   },
 })
 export default class EpDatepicker extends Mixins(EpValidation) {
-
   @Prop({ required: true })
   private value!: any;
 
@@ -100,7 +98,6 @@ export default class EpDatepicker extends Mixins(EpValidation) {
       (this.validation as any).$touch();
     }
   }
-
 }
 </script>
 

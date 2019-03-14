@@ -5,13 +5,10 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { rootConfig } from '@/mainvue';
 import { i18n } from '@/stores/kieli';
 
-
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
-
 describe('EpEditointi component', () => {
-
   const localVue = createLocalVue();
 
   it('Renders header and content', async () => {
@@ -57,5 +54,4 @@ describe('EpEditointi component', () => {
 
     expect(wrapper.html()).toContain('<pre>foo</pre>');
   });
-
 });

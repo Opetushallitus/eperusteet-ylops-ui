@@ -14,7 +14,6 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import { Getter, Mutation, State, Store } from './store';
 
-
 Vue.use(VueI18n);
 Vue.use(Aikaleima);
 Vue.use(Kaannos);
@@ -34,10 +33,8 @@ export const i18n = new VueI18n({
   },
 });
 
-
 @Store
 class KieliStore {
-
   @State()
   private sisaltoKieli: Kieli = Kieli.fi;
 

@@ -18,7 +18,7 @@ div(v-if="isEditing")
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from "vue-property-decorator";
+import { Component, Prop, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { createLogger } from '@/stores/logger';
@@ -26,10 +26,8 @@ import EpValidation from '@/mixins/EpValidation';
 
 const logger = createLogger('EpInput');
 
-
 @Component
 export default class EpInput extends Mixins(EpValidation) {
-
   @Prop({ default: false })
   private isString!: boolean;
 
@@ -73,7 +71,6 @@ export default class EpInput extends Mixins(EpValidation) {
       return this.value;
     }
   }
-
 }
 </script>
 

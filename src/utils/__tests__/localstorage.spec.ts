@@ -5,7 +5,6 @@ import {
 } from '../localstorage';
 
 describe('Localstorage', () => {
-
   test('Typed set/get/remove', () => {
     interface MySubType {
       value: number;
@@ -36,6 +35,4 @@ describe('Localstorage', () => {
       expect(getItem('val')).toBeNull();
     }
   });
-
-
 });

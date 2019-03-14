@@ -22,10 +22,10 @@ import BaseTile from './BaseTile.vue';
 @Component({
   components: {
     BaseTile,
-  }
+  },
 })
 export default class TileOrganisaatio extends Vue {
-  
+
 }
 </script>
 

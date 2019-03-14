@@ -21,7 +21,6 @@ export default class BaseTile extends Vue {
 
   @Prop({ default: '#3367E3' })
   private color!: string;
-
 }
 </script>
 

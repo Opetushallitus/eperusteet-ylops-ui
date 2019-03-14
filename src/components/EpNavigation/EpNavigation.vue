@@ -40,7 +40,6 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Loading from 'vue-loading-overlay';
 import Sticky from 'vue-sticky-directive';
 
-
 @Component({
   directives: {
     oikeustarkastelu,
@@ -54,9 +53,15 @@ export default class EpNavigation extends Vue {
   @Prop({ default: 'normaali' })
   private tyyli!: string;
 
-  get uiKieli() { return Kielet.getUiKieli(); }
-  get sisaltoKieli() { return Kielet.getSisaltoKieli(); }
-  get sovelluksenKielet() { return UiKielet; }
+  get uiKieli() {
+    return Kielet.getUiKieli();
+  }
+  get sisaltoKieli() {
+    return Kielet.getSisaltoKieli();
+  }
+  get sovelluksenKielet() {
+    return UiKielet;
+  }
 
   private valitseUiKieli(kieli: Kieli) {
     const router = this.$router;
@@ -74,7 +79,6 @@ export default class EpNavigation extends Vue {
   private valitseSisaltoKieli(kieli: Kieli) {
     Kielet.setSisaltoKieli(kieli);
   }
-
 }
 </script>
 

@@ -2,13 +2,11 @@ import { Component } from 'vue-property-decorator';
 import EpRoute from './EpRoute';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
-
 /**
  * Mixin näkymäkomponenteille mitkä tarvitsevat opetussuunnitelman sisällön
  */
 @Component
 export default class EpOpsRoute extends EpRoute {
-
   get ops() {
     return Opetussuunnitelma.opetussuunnitelma!;
   }
@@ -24,6 +22,4 @@ export default class EpOpsRoute extends EpRoute {
   get isOps() {
     return Opetussuunnitelma.opetussuunnitelma!.tyyppi as string === 'ops';
   }
-
 }
-

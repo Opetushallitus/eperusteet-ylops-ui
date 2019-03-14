@@ -13,9 +13,9 @@ div(v-if="mahdollisetTilat")
       | {{ $t('vaihda-tilaa') }}
 
     template(slot="modal-footer")
-      ep-button(@click="tallenna()", :disabled="!selected", :show-spinner="isUpdating") 
+      ep-button(@click="tallenna()", :disabled="!selected", :show-spinner="isUpdating")
         | {{ $t('ok') }}
-      ep-button(@click="peruuta()", :disabled="isUpdating") 
+      ep-button(@click="peruuta()", :disabled="isUpdating")
         | {{ $t('peruuta') }}
 
     .tilat
@@ -68,7 +68,6 @@ import {
   },
 })
 export default class Tilanvaihto extends Vue {
-
   @Prop({ required: true })
   private onSave!: (tila: string) => Promise<boolean>;
 
@@ -90,8 +89,6 @@ export default class Tilanvaihto extends Vue {
         (this.$refs.modal as any).hide();
       }
     }
-    catch (err) {
-    }
     finally {
       this.isUpdating = false;
     }
@@ -105,7 +102,6 @@ export default class Tilanvaihto extends Vue {
   private async vaihdaTila(tila: string) {
     this.selected = tila;
   }
-
 }
 
 </script>

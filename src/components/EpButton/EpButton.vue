@@ -24,6 +24,5 @@ export default class EpButton extends Vue {
 
   @Prop({ default: 'primary' })
   private variant!: boolean;
-
 }
 </script>

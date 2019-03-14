@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 
-
 const Radius = '4px';
 function pillRight(color: string) {
   return `
@@ -28,6 +27,7 @@ const PillWarning = pillRight('#fff7bc');
 const PillInfo = pillRight('#def2ff');
 
 abstract class Logger<T> {
+  // eslint-disable-next-line
   public constructor(protected readonly name: string) { }
   public abstract error(...args: any): void;
   public abstract info(...args: any): void;
@@ -37,11 +37,10 @@ abstract class Logger<T> {
   public abstract log(...args: any): void;
 
   protected impl(method: string, style: string, ...args: any[]) {
-    // tslint:disable-next-line:no-console
+    // eslint-disable-next-line no-console
     (console as any)[method](`%c${this.name}%c${method}`, PillStyle, style, '»',
       ...args);
   }
-
 }
 
 // tslint:disable-next-line:max-classes-per-file
@@ -64,8 +63,14 @@ class ProdLogger<T> extends Logger<T> {
   public success = _.noop;
   public log = _.noop;
 
-  public constructor(readonly name: string) { super(name); }
+  public constructor(readonly name: string) {
+    super(name);
+  }
+
+  // eslint-disable-next-line no-console
   public error = (...args: any) => console.error(...args);
+
+  // eslint-disable-next-line no-console
   public warn = (...args: any) => console.warn(...args);
 }
 

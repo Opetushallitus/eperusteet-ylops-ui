@@ -14,7 +14,7 @@ import { Kielet } from '@/stores/kieli';
 @Component({
   components: {
     BaseTile,
-  }
+  },
 })
 export default class TileOpetussuunnitelmat extends Vue {
   private get kieli() {
