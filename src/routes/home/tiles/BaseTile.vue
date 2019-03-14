@@ -1,26 +1,43 @@
 <template lang="pug">
+
+mixin innertile-content
+  .iconline
+    ep-icon(:icon="icon", :background-color="color")
+  .tile-header
+    h3.oph-h3.tileheader
+      slot(name="header")
+  .tile-content
+    slot(name="content")
+
 .tile
-  .innertile
-    .iconline
-      .icon(:style="{ background: color }")
-        fas(:icon="icon")
-    .tile-header
-      h3.oph-h3.tileheader
-        slot(name="header")
-    .tile-content
-      slot(name="content")
+  router-link(v-if="route", :to="route")
+    .innertile.route-tila
+      +innertile-content
+
+  .innertile(v-else)
+    +innertile-content
+
 </template>
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'vue-property-decorator';
+import { EpIcon } from '@/components';
 
-@Component
+@Component({
+  components: {
+    EpIcon,
+  }
+})
 export default class BaseTile extends Vue {
+
   @Prop({ required: true })
   private icon!: string;
 
   @Prop({ default: '#3367E3' })
   private color!: string;
+
+  @Prop()
+  private route!: object | string;
 
 }
 </script>
@@ -35,10 +52,8 @@ $tile-width: 440px;
 .tile {
   background: inherit;
   width: $tile-width;
-  min-height: $tile-height;
   flex: 0 0 $tile-width;
-  margin-bottom: 28px;
-  margin: 8px;
+  margin: 8px 8px 28px;
   text-align: center;
 
   .innertile {
@@ -49,12 +64,9 @@ $tile-width: 440px;
     border-radius: 6px;
     box-shadow: 2px 2px 3px #eee;
 
-    &:hover {
-      box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
-    }
-
     .tile-content {
       overflow: hidden;
+      color: black;
     }
 
     .iconline {
@@ -67,7 +79,7 @@ $tile-width: 440px;
         width: 52px;
         height: 52px;
         border-radius: 26px;
-        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         color: white;
 
         svg {
@@ -81,6 +93,12 @@ $tile-width: 440px;
 
   .content {
     font-size: 85%;
+  }
+}
+
+.route-tila {
+  &:hover {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   }
 }
 

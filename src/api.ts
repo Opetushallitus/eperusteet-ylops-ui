@@ -12,7 +12,7 @@ import {
   OpetussuunnitelmatApi,
   OpetussuunnitelmatJulkisetApi,
   TermistoApi,
-  UlkopuolisetApi, DokumentitApiAxiosParamCreator,
+  UlkopuolisetApi, DokumentitApiAxiosParamCreator, KysymyksetApi,
 } from '@/generated/api';
 
 
@@ -52,6 +52,7 @@ export const Api = ax;
 export const Dokumentit = initApi(DokumentitApi);
 export const Kayttajat = initApi(KayttajatApi);
 export const Kommentit = initApi(KommentitApi);
+export const Kysymykset = initApi(KysymyksetApi);
 export const Liitetiedostot = initApi(LiitetiedostotApi);
 export const Ohjeet = initApi(OhjeetApi);
 export const OpetussuunnitelmanSisalto = initApi(OpetussuunnitelmanSisaltoApi);

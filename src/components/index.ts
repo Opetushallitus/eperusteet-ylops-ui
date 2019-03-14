@@ -5,6 +5,7 @@ export { default as EpOrganizations } from './EpOrganizations/EpOrganizations.vu
 export { default as EpSpinner } from './EpSpinner/EpSpinner.vue';
 export { default as EpChart } from './EpChart/EpChart';
 export { default as EpSidebar } from './EpSidebar/EpSidebar.vue';
+export { default as EpIcon } from './EpIcon/EpIcon.vue';
 
 export { default as EpField } from './forms/EpField.vue';
 export { default as EpFormContent } from './forms/EpFormContent.vue';
