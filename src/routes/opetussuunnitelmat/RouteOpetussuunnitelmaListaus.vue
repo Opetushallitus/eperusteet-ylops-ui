@@ -4,6 +4,8 @@ div
   .opetussuunnitelma
     .header
     .content
+      .info(v-if="opslista.length === 0")
+        span {{ $t('opetussuunnitelmia-ei-loytynyt') }}
       router-link(
         tag="button"
         v-for="ops in opslista"
