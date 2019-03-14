@@ -9,12 +9,11 @@ ep-input.form-data(
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from "vue-property-decorator";
+import { Component, Prop, Mixins } from 'vue-property-decorator';
 
 import EpFormContent from './EpFormContent.vue';
 import EpInput from './EpInput.vue';
 import EpValidation from '@/mixins/EpValidation';
-
 
 @Component({
   components: {
@@ -23,7 +22,6 @@ import EpValidation from '@/mixins/EpValidation';
   },
 })
 export default class EpField extends Mixins(EpValidation) {
-
   @Prop({ required: true })
   private value!: string | object;
 
@@ -35,6 +33,5 @@ export default class EpField extends Mixins(EpValidation) {
 
   @Prop({ default: '' })
   private help!: string;
-
 }
 </script>

@@ -13,9 +13,9 @@ import BaseTile from './BaseTile.vue';
 @Component({
   components: {
     BaseTile,
-  }
+  },
 })
 export default class TileLoki extends Vue {
-  
+
 }
 </script>

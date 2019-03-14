@@ -23,5 +23,4 @@ export default class EpRoute extends EpRoot {
   public async beforeRouteLeave(to: any, from: any, next: any) {
     next();
   }
-
 }

@@ -40,7 +40,6 @@ import {
   EpSpinner,
 } from '@/components';
 
-
 @Component({
   components: {
     EpChart,
@@ -54,7 +53,7 @@ import {
 export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
   get graph() {
     return {
-      colorScheme: DiagrammiVarit.vihrea_sininen,
+      colorScheme: 'vihrea_sininen',
       value: 80,
     };
   }
@@ -67,7 +66,6 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
     const id = this.$route.params.id;
     await Opetussuunnitelma.init(_.parseInt(id));
   }
-
 }
 </script>
 

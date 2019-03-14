@@ -10,7 +10,6 @@ import moment from 'moment';
   name: 'EpAikaleima',
 })
 export default class EpAikaleima extends Vue {
-
   private static Formats: { [key: string]: string } = {
     ldt: 'LLL',
     ld: 'LL',
@@ -38,14 +37,16 @@ export default class EpAikaleima extends Vue {
   get formatted() {
     // Pakko olla, jotta localen vaihtuessa komponentti päivittyy
     if (this.$i18n) {
-      this.$i18n.locale; // tslint:disable-line
+      this.$i18n.locale; // eslint-disable-line
     }
 
     if (this.format) {
       return moment(this.value).format(this.format);
-    } else if (this.type === 'ago') {
+    }
+    else if (this.type === 'ago') {
       return moment(this.value).fromNow();
-    } else {
+    }
+    else {
       const defaultKey = 'sdt';
       const selectedFormat = EpAikaleima.Formats[this.type]
         || EpAikaleima.Formats[defaultKey];

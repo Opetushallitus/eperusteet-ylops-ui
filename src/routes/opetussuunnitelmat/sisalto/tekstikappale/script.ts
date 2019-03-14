@@ -10,16 +10,13 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Puu } from '@/tyypit';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
-
 @Component({
   components: {
     TekstikappaleTeksti,
   },
 })
 export default class RouteTekstikappale extends Mixins(EpRoute) {
-
   get isPohja() {
     return Opetussuunnitelma.opetussuunnitelma!.tyyppi as string === 'pohja';
   }
-
 }

@@ -115,7 +115,7 @@ import {
 } as any)
 export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, EpRoute) {
   private pohjat: OpetussuunnitelmaInfoDto[] | null = null;
-  private oletuspohjasta: "pohjasta" | "opsista" | null = null;
+  private oletuspohjasta: 'pohjasta' | 'opsista' | null = null;
   private uusi = {
     pohja: null as (OpetussuunnitelmaInfoDto | null),
     nimi: {},
@@ -154,7 +154,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       });
     });
   }
-
 }
 
 </script>

@@ -1,0 +1,8 @@
+config/**
+dist/**
+mochawesome-report/**
+node_modules/**
+public/**
+scripts/**
+src/generated/**
+tests/**

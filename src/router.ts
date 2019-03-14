@@ -24,9 +24,9 @@ import { Virheet } from '@/stores/virheet';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 
-Vue.use(Router);
-
 import { createLogger } from '@/stores/logger';
+
+Vue.use(Router);
 const logger = createLogger('Router');
 
 export const router = new Router({
@@ -125,7 +125,6 @@ Virheet.onError((virhe: SovellusVirhe) => {
     },
   });
 });
-
 
 router.beforeEach((to, from, next) => {
   if (to.params.lang

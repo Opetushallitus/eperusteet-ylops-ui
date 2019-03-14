@@ -1,3 +1,6 @@
+// FIXME: vue-loader issue 1281
+import * as GApi from '@/generated/api';
+
 export enum Kieli {
   fi = 'fi',
   sv = 'sv',
@@ -13,10 +16,7 @@ export enum OrganisaatioTyyppi {
   Toimija = 'Koulutustoimija',
 }
 
-export enum DiagrammiVarit {
-  vaalea_sininen = 'vaalea_sininen',
-  vihrea_sininen = 'vihrea_sininen',
-}
+export type DiagrammiVarit = 'vaalea_sininen' | 'vihrea_sininen';
 
 export type EditorLayout = 'minimal' | 'simplified' | 'normal';
 
@@ -32,9 +32,6 @@ export interface LokalisoituTekstiDto {
   // tunniste?: string;
   [key: string]: string;
 }
-
-// FIXME: vue-loader issue 1281
-import * as GApi from '@/generated/api';
 
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
 export type Matala = GApi.Matala;

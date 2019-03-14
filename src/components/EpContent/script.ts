@@ -4,7 +4,6 @@ import _ from 'lodash';
 import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
 import EpValidation from '@/mixins/EpValidation';
 
-
 @Component({
   components: {
     EpContentBase,

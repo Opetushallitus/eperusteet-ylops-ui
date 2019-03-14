@@ -41,7 +41,6 @@ import {
   },
 })
 export default class RouteUkk extends Mixins(EpRoute) {
-
   //
   private kysymykset = [
     {
@@ -56,7 +55,6 @@ export default class RouteUkk extends Mixins(EpRoute) {
       content: 'Tiedote 2 sisältö',
     },
   ];
-
 }
 </script>
 

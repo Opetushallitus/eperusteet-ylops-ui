@@ -5,7 +5,6 @@ import { i18n } from '@/stores/kieli';
 import '@/config/fontawesome';
 
 describe('EpDatepicker component', () => {
-
   const localVue = createLocalVue();
 
   it('Render component', () => {
@@ -18,7 +17,6 @@ describe('EpDatepicker component', () => {
     });
 
     expect(wrapper.find('div').text()).toBe('7. tammikuuta 2019');
-
   });
 
   it('Render component in editing mode', () => {
@@ -30,7 +28,6 @@ describe('EpDatepicker component', () => {
         isEditing: true,
       },
     });
-
   });
 
   it('Test Validation fail', () => {
@@ -62,7 +59,6 @@ describe('EpDatepicker component', () => {
     expect(wrapper.find('.is-invalid').exists()).toBe(true);
     expect(wrapper.find('.valid-feedback').exists()).toBe(false);
     expect(wrapper.find('.is-valid').exists()).toBe(false);
-
   });
 
   it('Test validation success', () => {
@@ -94,7 +90,5 @@ describe('EpDatepicker component', () => {
     expect(wrapper.find('.is-invalid').exists()).toBe(false);
 
     expect(wrapper.find('.invalid-feedback').exists()).toBe(false);
-
   });
-
 });

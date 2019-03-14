@@ -26,10 +26,9 @@ import '@/config/fontawesome';
 
 import { rootConfig } from '@/mainvue';
 
-
 describe('Router', () => {
   async function createMounted(
-    oikeudet = genOikeudet('oph'),
+    oikeudet = genOikeudet('oph')
   ) {
     jest.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
@@ -137,5 +136,4 @@ describe('Router', () => {
   //     params: router.currentRoute.params,
   //   });
   // });
-
 });

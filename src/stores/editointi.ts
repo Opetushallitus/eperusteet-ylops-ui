@@ -5,7 +5,6 @@ import { createLogger } from './logger';
 import * as _ from 'lodash';
 import { RevisionDto } from '@/tyypit';
 
-
 interface EditointiKontrolliFeatures {
   removal: boolean;
   validation: boolean;
@@ -13,12 +12,10 @@ interface EditointiKontrolliFeatures {
   restore: boolean;
 }
 
-
 export interface EditointiKontrolliHistory {
   items: () => Promise<RevisionDto[]>;
   restore?: (rev: RevisionDto) => Promise<void>;
 }
-
 
 export interface EditointiKontrolliData {
   load: () => Promise<unknown>;
@@ -26,12 +23,10 @@ export interface EditointiKontrolliData {
   cancel?: () => Promise<void>;
 }
 
-
 export interface EditointiKontrolliLocks {
   acquire: () => Promise<boolean>;
   release: () => Promise<void>;
 }
-
 
 export interface EditointiKontrolliConfig {
   source: EditointiKontrolliData;
@@ -42,13 +37,11 @@ export interface EditointiKontrolliConfig {
   validate?: () => Promise<boolean>;
 }
 
-
 const DefaultConfig = {
   start: async () => {},
   remove: async () => {},
   validate: async () => true,
 };
-
 
 export class EditointiKontrolli {
   private logger = createLogger(EditointiKontrolli);
@@ -65,7 +58,7 @@ export class EditointiKontrolli {
   private backup: any = null;
 
   public constructor(
-    private config: EditointiKontrolliConfig,
+    private config: EditointiKontrolliConfig
   ) {
     this.features = {
       removal: !!config.remove,
@@ -191,7 +184,6 @@ export class EditointiKontrolli {
       throw new Error('Source must be an object or an array');
     }
   }
-
 }
 
 export function editointi(config: EditointiKontrolliConfig) {

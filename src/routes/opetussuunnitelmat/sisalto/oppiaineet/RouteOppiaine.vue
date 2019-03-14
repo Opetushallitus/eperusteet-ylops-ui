@@ -123,7 +123,7 @@ export default class RouteOppiaine extends Vue {
 
         },
         async load(): Promise<Object> {
-          return new Promise<Object>( (resolve) => {
+          return new Promise<Object>((resolve) => {
             resolve({});
           });
         },
@@ -134,6 +134,5 @@ export default class RouteOppiaine extends Vue {
   private siirryOpintojaksoon() {
 
   }
-
 }
 </script>

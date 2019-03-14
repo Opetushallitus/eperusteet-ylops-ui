@@ -10,7 +10,6 @@ import {
 import { createLogger } from './logger';
 const logger = createLogger('Kayttaja');
 
-
 // FIXME: tyypitä backendiin
 export type Oikeus = 'luku' | 'kommentointi' | 'muokkaus' | 'luonti' | 'poisto' | 'tilanvaihto' | 'hallinta';
 export type OikeusKohde = 'opetussuunnitelma' | 'pohja';
@@ -18,20 +17,18 @@ export interface Oikeudet { [kohde: string]: Oikeus[]; }
 
 function getOikeusArvo(oikeus: Oikeus) {
   switch (oikeus) {
-    case 'luku': return 1;
-    case 'kommentointi': return 2;
-    case 'muokkaus': return 3;
-    case 'luonti': return 4;
-    case 'poisto': return 5;
-    case 'tilanvaihto': return 6;
-    default: return 0;
+  case 'luku': return 1;
+  case 'kommentointi': return 2;
+  case 'muokkaus': return 3;
+  case 'luonti': return 4;
+  case 'poisto': return 5;
+  case 'tilanvaihto': return 6;
+  default: return 0;
   }
 }
 
-
 @Store
 class KayttajaStore {
-
   @State()
   public organisaatiot: string[] = [];
 
@@ -82,20 +79,19 @@ class KayttajaStore {
   }
 
   private vertaa(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {
-      const haettu = getOikeusArvo(oikeus);
-      if (haettu === 0) {
-        return false;
-      }
-      else {
-        const korkein = _.max(_.map(this.oikeudet[kohde], getOikeusArvo)) || 0;
-        return korkein >= haettu;
-      }
+    const haettu = getOikeusArvo(oikeus);
+    if (haettu === 0) {
+      return false;
+    }
+    else {
+      const korkein = _.max(_.map(this.oikeudet[kohde], getOikeusArvo)) || 0;
+      return korkein >= haettu;
+    }
   }
 
   private hasHallintaoikeus() {
-      return _.includes(this.oikeudet['pohja' as OikeusKohde], 'luonti');
+    return _.includes(this.oikeudet['pohja' as OikeusKohde], 'luonti');
   }
-
 }
 
 export const Kayttajat = new KayttajaStore();

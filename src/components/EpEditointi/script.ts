@@ -6,7 +6,6 @@ import { validationMixin } from 'vuelidate';
 
 export { EditointiKontrolliConfig } from '@/stores/editointi';
 
-
 @Component({
   validations() {
     return {
@@ -38,5 +37,4 @@ export default class EpEditointi extends Mixins(validationMixin) {
     this.state = this.ctrls.state;
     this.isInitialized = true;
   }
-
 }

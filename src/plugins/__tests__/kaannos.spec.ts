@@ -3,14 +3,13 @@ import { i18n, Kielet } from '@/stores/kieli';
 import { Kieli } from '@/tyypit';
 
 describe('Plugin kaannos', () => {
-
   beforeEach(() => {
     Kielet.setSisaltoKieli(Kieli.fi);
   });
 
   function createWrapper(data: object) {
     return mount({
-      template: `<div>{{ $kaanna(teksti) }}</div>`,
+      template: '<div>{{ $kaanna(teksti) }}</div>',
       data() {
         return {
           ...data,
@@ -55,6 +54,4 @@ describe('Plugin kaannos', () => {
     expect(wrapper.text()).toEqual('tekstiä');
     expect(spy).toBeCalled();
   });
-
 });
-

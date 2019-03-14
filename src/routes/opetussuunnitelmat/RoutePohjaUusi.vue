@@ -32,7 +32,6 @@ div
 
 </template>
 
-
 <script lang="ts">
 import {
   EpButton,
@@ -57,6 +56,9 @@ import {
   LokalisoituTekstiDto,
   Kieli,
 } from '@/tyypit';
+import { createLogger } from '@/stores/logger';
+
+const logger = createLogger('RoutePohjaUusi');
 
 @Component({
   components: {
@@ -108,7 +110,7 @@ export default class RoutePohjaUusi extends Mixins(validationMixin) {
     this.isSaving = true;
 
     const pohjaNimi: LokalisoituTekstiDto = {
-        [Kielet.getSisaltoKieli()]: this.uusi.nimi,
+      [Kielet.getSisaltoKieli()]: this.uusi.nimi,
     };
 
     //
@@ -133,14 +135,13 @@ export default class RoutePohjaUusi extends Mixins(validationMixin) {
       }
     }
     catch (err) {
-      console.log(err);
+      logger.log(err);
       this.isSaving = false;
     }
   }
 }
 
 </script>
-
 
 <style scoped lang="scss">
 

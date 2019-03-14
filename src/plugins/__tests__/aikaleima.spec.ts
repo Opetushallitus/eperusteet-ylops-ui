@@ -3,7 +3,6 @@ import { i18n, Kielet } from '@/stores/kieli';
 import { Kieli } from '@/tyypit';
 
 describe('Plugin aikaleima', () => {
-
   const localVue = createLocalVue();
 
   beforeEach(() => {
@@ -24,9 +23,8 @@ describe('Plugin aikaleima', () => {
     }, { localVue });
   }
 
-
   test('ldt', () => {
-    const wrapper = mountAikaleima(1546870463248, `$ldt(value)`);
+    const wrapper = mountAikaleima(1546870463248, '$ldt(value)');
 
     expect(wrapper.text()).toEqual('7. tammikuuta 2019, klo 16.14');
 
@@ -35,7 +33,7 @@ describe('Plugin aikaleima', () => {
   });
 
   test('ld', () => {
-    const wrapper = mountAikaleima(1546870463248, `$ld(value)`);
+    const wrapper = mountAikaleima(1546870463248, '$ld(value)');
 
     expect(wrapper.text()).toEqual('7. tammikuuta 2019');
 
@@ -44,7 +42,7 @@ describe('Plugin aikaleima', () => {
   });
 
   test('lt', () => {
-    const wrapper = mountAikaleima(1546870463248, `$lt(value)`);
+    const wrapper = mountAikaleima(1546870463248, '$lt(value)');
 
     expect(wrapper.text()).toEqual('16:14:23');
 
@@ -53,7 +51,7 @@ describe('Plugin aikaleima', () => {
   });
 
   test('sdt', () => {
-    const wrapper = mountAikaleima(1546870463248, `$sdt(value)`);
+    const wrapper = mountAikaleima(1546870463248, '$sdt(value)');
 
     expect(wrapper.text()).toEqual('7.1.2019 16:14');
 
@@ -62,7 +60,7 @@ describe('Plugin aikaleima', () => {
   });
 
   test('sd', () => {
-    const wrapper = mountAikaleima(1546870463248, `$sd(value)`);
+    const wrapper = mountAikaleima(1546870463248, '$sd(value)');
 
     expect(wrapper.text()).toEqual('7.1.2019');
 
@@ -71,7 +69,7 @@ describe('Plugin aikaleima', () => {
   });
 
   test('st', () => {
-    const wrapper = mountAikaleima(1546870463248, `$st(value)`);
+    const wrapper = mountAikaleima(1546870463248, '$st(value)');
 
     expect(wrapper.text()).toEqual('16:14');
 
@@ -80,7 +78,7 @@ describe('Plugin aikaleima', () => {
   });
 
   test('ago', () => {
-    const wrapper = mountAikaleima(1546870463248, `$ago(value)`);
+    const wrapper = mountAikaleima(1546870463248, '$ago(value)');
 
     expect(wrapper.text()).toEqual('muutama sekunti sitten');
 
@@ -90,12 +88,11 @@ describe('Plugin aikaleima', () => {
 
   test('cdt', () => {
     // $cdt(value, 'LLLL')
-    const wrapper = mountAikaleima(1546870463248, `$cdt(value, 'LLLL')`);
+    const wrapper = mountAikaleima(1546870463248, '$cdt(value, \'LLLL\')');
 
     expect(wrapper.text()).toEqual('maanantai, 7. tammikuuta 2019, klo 16.14');
 
     Kielet.setUiKieli(Kieli.sv);
     expect(wrapper.text()).toEqual('måndag 7 januari 2019 kl. 16:14');
   });
-
 });

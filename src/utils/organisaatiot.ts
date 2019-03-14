@@ -1,10 +1,9 @@
 import { OrganisaatioTyyppi } from '@/tyypit';
 import _ from 'lodash';
 
-
 export function hasOrganisaatioTyyppi(
   haetut: OrganisaatioTyyppi[],
-  tyypit: Array<OrganisaatioTyyppi | string>,
+  tyypit: Array<OrganisaatioTyyppi | string>
 ) {
   if (_.isEmpty(haetut)) {
     return false;

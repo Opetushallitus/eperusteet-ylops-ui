@@ -3,7 +3,6 @@ import _ from 'lodash';
 
 @Component
 export default class EpValidation extends Vue {
-
   @Prop({ default: '' })
   private validMessage!: string;
 
@@ -29,9 +28,9 @@ export default class EpValidation extends Vue {
         .reject((key) => _.startsWith(key, '$'))
         .reject((key) => this.validation[key])
         .head();
-    } else {
+    }
+    else {
       return '';
     }
   }
-
 }

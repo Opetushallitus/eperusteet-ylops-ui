@@ -5,17 +5,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 /**
  * Tämän komponentin tehtävä on ainoastaan esittää label lomakekentälle
  */
 @Component
 export default class EpFormContent extends Vue {
-
   @Prop({ required: true })
   private name!: string;
-
 }
 </script>
 

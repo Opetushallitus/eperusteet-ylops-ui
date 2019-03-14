@@ -6,7 +6,6 @@ import {
 
 import Sticky from 'vue-sticky-directive';
 
-
 @Component({
   directives: {
     Sticky,
