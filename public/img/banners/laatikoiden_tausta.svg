@@ -1,1 +1,29 @@
-<svg width="85mm" height="100mm" version="1.1" viewBox="0 0 85 100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><linearGradient id="linearGradient4607" x1="22.396" x2="73.365" y1="287.11" y2="193.78" gradientUnits="userSpaceOnUse"><stop stop-color="#223398" offset="0"/><stop stop-color="#384dbd" offset=".39629"/><stop stop-color="#3b50ba" offset="1"/></linearGradient></defs><g transform="translate(-67.297 -145.95)"><g transform="matrix(1.0472 0 0 1.0504 58.398 -57.322)"><rect x="8.498" y="193.52" width="81.171" height="95.2" fill="url(#linearGradient4607)"/><path d="m8.4978 202.48v21.805c0.38575 0.19777 1.1942 0.58342 1.1942 0.58342 40.232 21.982 48.747 20.742 79.977 23.908v-4.0638c-25.144-4.3806-36.157-17.077-42.45-23.3-10.126-8.5424-12.297-11.208-38.721-18.932z" fill="#3f56c6"/></g></g></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="190px" height="223px" viewBox="0 0 190 223" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" stop-opacity="0.212439904" offset="0%"></stop>
+            <stop stop-color="#DBDFE8" stop-opacity="0.322837171" offset="0%"></stop>
+            <stop stop-color="#243A70" stop-opacity="0.579791302" offset="63.3287584%"></stop>
+            <stop stop-color="#001A58" stop-opacity="0.827005026" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="1.13686838e-13" width="190" height="223" rx="10"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Opetussuunnitelmasi" transform="translate(-196.000000, -311.000000)">
+            <g id="Group" transform="translate(196.000000, 311.000000)">
+                <g id="Rectangle-Copy-6">
+                    <use fill="#0041DC" xlink:href="#path-2"></use>
+                    <use fill-opacity="0.5" fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+                </g>
+                <g id="aallot/siniset-copy-4" opacity="0.2" fill="#001A58">
+                    <path d="M0.501629228,53.1482355 C58.6267222,73.3242037 101.240446,92.9790899 190,95 C190,66.6666667 190,38.3333333 190,10 L190,10 C190,4.4771525 185.522847,7.61826213e-16 180,1.77635684e-15 L5.36197989,0 C2.71523764,0.327308007 0.927911004,1.61934434 0,3.876109 C0,3.876109 0.320556319,53.1482355 0.501629228,53.1482355 Z" id="Path" fill-opacity="0.3"></path>
+                    <path d="M0.138556485,13.6445754 C14.5748116,17.3127737 28.6499644,21.6804832 42.364015,26.7477037 C104.312013,49.636942 122.344952,84.3890394 190,87 C190,61.3333333 190,35.6666667 190,10 L190,10 C190,4.4771525 185.522847,-1.01453063e-15 180,0 L7.72322905,0 C4.8903074,3.86357613e-14 2.85108615,0.561948783 1.6055653,1.68584635 C-0.666752126,3.73627532 0.138556485,13.6445754 0.138556485,13.6445754 Z" id="Path-Copy" fill-opacity="0.65"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

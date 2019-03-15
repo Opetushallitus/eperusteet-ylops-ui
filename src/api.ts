@@ -7,12 +7,14 @@ import {
   KommentitApi,
   KayttajatApi,
   LiitetiedostotApi,
+  Lops2019PerusteControllerApi,
   OhjeetApi,
   OpetussuunnitelmanSisaltoApi,
   OpetussuunnitelmatApi,
   OpetussuunnitelmatJulkisetApi,
   TermistoApi,
-  UlkopuolisetApi, DokumentitApiAxiosParamCreator,
+  UlkopuolisetApi,
+  DokumentitApiAxiosParamCreator,
 } from '@/generated/api';
 
 type FactoryFn<T> = (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;

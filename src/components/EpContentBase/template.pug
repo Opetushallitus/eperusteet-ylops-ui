@@ -1,10 +1,10 @@
 div.ep-content-base
   div(v-if="isEditable")
     ck-editor(
-      :value="value"
-      :layout="layout"
-      :validation="validation"
-      :locale="locale"
+      :value="value",
+      :layout="layout",
+      :validation="validation",
+      :locale="locale",
       @input="$emit('input', $event)")
     .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
     .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}

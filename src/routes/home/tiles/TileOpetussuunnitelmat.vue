@@ -9,7 +9,7 @@ div
       ep-spinner(v-if="isLoading")
       div(v-else)
         .alert.alert-light(v-if="ladatut.length === 0")
-          span {{ $t('opetussuunnitelmia-ei-loytynyt') }}
+          span {{ $t('opetussuunnitelmia-ei-ole-luotu') }}
         div(v-else)
           p {{ $t('tile-opetussuunnitelmasi-kuvaus') }}
           .ops(v-for="ops in opetussuunnitelmat")
