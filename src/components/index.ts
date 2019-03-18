@@ -16,3 +16,6 @@ export { default as EpAikaleima } from './EpAikaleima/EpAikaleima.vue';
 
 export { default as EpNavigation } from './EpNavigation/EpNavigation.vue';
 export { default as EpFooter } from './EpFooter/EpFooter.vue';
+
+export { default as EpRecursiveNav } from './EpRecursiveNav/EpRecursiveNav.vue';
+export { default as OpsSidenav } from './OpsSidenav/OpsSidenav.vue';
