@@ -73,21 +73,6 @@ $tile-width: 440px;
       display: flex;
       justify-content: center;
       padding: 10px;
-
-      .icon {
-        background: #3367E3;
-        width: 52px;
-        height: 52px;
-        border-radius: 26px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        color: white;
-
-        svg {
-          width: 36px;
-          height: 36px;
-          margin-top: 8px;
-        }
-      }
     }
   }
 

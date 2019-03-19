@@ -25,8 +25,7 @@ div
 
           p
             b-button.float-right(variant="link", v-b-modal="'createKysymys'")
-              fas(icon="plus-circle")
-              | &nbsp;&nbsp;
+              fas.mr-2(icon="plus-circle")
               span {{ $t('lisaa-uusi-kysymys') }}
 
       // Kysymykset
@@ -36,6 +35,12 @@ div
           // Todo: Toteuta paremmalla tavalla uusi
           p.float-right(ng-if="(new Date().getTime() - kysymys.luotu) / 1000 / 60 / 60 / 24 < 30") {{ $t('uusi') }}
         div.col
+          .float-right
+            p
+              button.btn.btn-link
+                fas(icon="pen")
+              button.btn.btn-link
+                fas(icon="times")
           div
             p
               ep-aikaleima.text-secondary(:value="kysymys.luotu" type="ago")
@@ -49,8 +54,7 @@ div
                 :is-editable="false")
             div
               a.pr-2.d-inline(href="")
-                fas(:icon="['far','comment']")
-                | &nbsp;&nbsp;
+                fas.mr-2(:icon="['far','comment']")
                 span {{ $t('kommentoi') }}
               p.px-2.d-inline.qty {{ $t('kommenttia', { maara: 0 }) }}
             hr
@@ -61,8 +65,7 @@ div
     id="createKysymys",
     @ok="createKysymys")
     template(slot="modal-title")
-      span {{ $t('lisaa-uusi-kysymys') }}
-      | &nbsp;&nbsp;
+      span.mr-2 {{ $t('lisaa-uusi-kysymys') }}
 
       // Sisällön kieli
       b-dropdown.float-right(size="sm")
