@@ -33,6 +33,18 @@ export interface LokalisoituTekstiDto {
   [key: string]: string;
 }
 
+export interface KysymysDto {
+  id?: number;
+  kysymys?: string;
+  vastaus?: string;
+  organisaatiot: OrganisaatioDto[];
+  $uusi: boolean;
+}
+
+export interface OrganisaatioDto {
+  oid: string;
+}
+
 // FIXME: vue-loader issue 1281
 import * as GApi from '@/generated/api';
 

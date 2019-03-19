@@ -132,10 +132,15 @@
   "opetushallitus": "Opetushallitus",
   "uusi": "Uusi",
   "lisaa-uusi-kysymys": "Lisää uusi kysymys",
+  "muokkaa-kysymys": "Muokkaa kysymystä",
   "kysymys-nimi": "Kysymyksen otsikko",
   "kysymys-nimi-ohje": "Tähän kysymys",
   "kysymys-vastaus": "Kysymyksen vastaus",
   "kysymys-vastaus-ohje": "Tähän kysymyksen vastaus",
   "lisaa-kysymys": "Lisää kysymys",
-  "opetussuunnitelmia-ei-loytynyt": "Opetussuunnitelmia ei löytynyt"
+  "opetussuunnitelmia-ei-loytynyt": "Opetussuunnitelmia ei löytynyt",
+  "muokkaa": "Muokkaa",
+  "nayta-organisaatioissa": "Näytä organisaatioissa",
+  "kysymys-organisaatiot-ohje": "Tähän organisaatiot, joille kysymys rajattu",
+  "valitse-vaihtoehto": "Valitse vaihtoehto"
 }

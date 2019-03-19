@@ -9,7 +9,7 @@ div(v-if="isEditing")
       :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
       option(disabled, value="null")
       option(v-for="item in items" :value="item")
-        slot(name="item") {{ item }}
+        slot(name="item", :item="item") {{ item }}
     .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
     .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
     .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
@@ -18,7 +18,7 @@ div(v-if="isEditing")
 div(v-else)
   ul
     li(v-for="item in model")
-      slot(name="item")
+      slot(name="item", :item="item")
         span {{ item }}
 
 </template>
@@ -61,7 +61,7 @@ export default class EpSelect extends Mixins(EpValidation) {
   @Prop({ default: '' })
   private help!: string;
 
-  private innerModel: any = null;
+  private innerModel: any[] = [];
 
   private updateValue(value: any) {
     this.model.length =  0;

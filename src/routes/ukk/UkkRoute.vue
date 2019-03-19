@@ -20,27 +20,26 @@ div
 
           p {{ $t('ukk-luoja-rajaus') }}:
           .form-check.form-check-inline(v-for="org in organisaatiot")
-            input.form-check-input(:id="org.oid", type="checkbox", v-model="org.checked")
+            input.form-check-input(:id="org.oid", type="checkbox", v-model="org.$checked")
             label.form-check-label(:for="org.oid") {{ $kaanna(org.nimi) }}
 
           p
-            b-button.float-right(variant="link", v-b-modal="'createKysymys'")
+            b-button.float-right(variant="link", @click="startCreateKysymys")
               fas.mr-2(icon="plus-circle")
               span {{ $t('lisaa-uusi-kysymys') }}
 
       // Kysymykset
       div.row(v-for="kysymys in kysymyksetFormatted", :key="kysymys.id")
         div.col.col-fixed.col-new
+          // Todo: Toteuta profiililla uusi
           // Kysymys on uusi jos alle 30 päivää vanha
-          // Todo: Toteuta paremmalla tavalla uusi
-          p.float-right(ng-if="(new Date().getTime() - kysymys.luotu) / 1000 / 60 / 60 / 24 < 30") {{ $t('uusi') }}
+          //p.float-right(v-if="(new Date().getTime() - kysymys.luotu) / 1000 / 60 / 60 / 24 < 30") {{ $t('uusi') }}
         div.col
           .float-right
-            p
-              button.btn.btn-link
-                fas(icon="pen")
-              button.btn.btn-link
-                fas(icon="times")
+            button.btn.btn-link(@click="startUpdateKysymys(kysymys)")
+              fas(icon="pen")
+            button.btn.btn-link(@click="deleteKysymys(kysymys)")
+              fas(icon="times")
           div
             p
               ep-aikaleima.text-secondary(:value="kysymys.luotu" type="ago")
@@ -52,20 +51,24 @@ div
               ep-content(
                 v-model="kysymys.vastaus",
                 :is-editable="false")
-            div
+            //div
               a.pr-2.d-inline(href="")
                 fas.mr-2(:icon="['far','comment']")
                 span {{ $t('kommentoi') }}
               p.px-2.d-inline.qty {{ $t('kommenttia', { maara: 0 }) }}
             hr
 
-  // Uuden kysymyksen luonnin modaali
-  b-modal(
-    size="lg",
-    id="createKysymys",
-    @ok="createKysymys")
+  // Kysymyksen luomisen/muokkaamisen modaali
+  b-modal.backdrop(
+    id="createUpdateKysymys",
+    ref="createUpdateKysymys"
+    @ok="createUpdateKysymys",
+    :no-close-on-backdrop="true",
+    :lazy="true",
+    :ok-disabled="validation.$invalid",
+    size="lg")
     template(slot="modal-title")
-      span.mr-2 {{ $t('lisaa-uusi-kysymys') }}
+      span.mr-2 {{ kysymys.$uusi ? $t('lisaa-uusi-kysymys') : $t('muokkaa-kysymys') }}
 
       // Sisällön kieli
       b-dropdown.float-right(size="sm")
@@ -77,21 +80,33 @@ div
           :key="kieli",
           :disabled="kieli === sisaltoKieli") {{ kieli }}
 
-    div
-      ep-form-content(name="kysymys-nimi")
-        ep-content(
-          v-model="newKysymys.kysymys",
-          help="kysymys-nimi-ohje",
-          :is-editable="true")
+    ep-form-content(name="kysymys-nimi")
+      ep-content(
+        v-model="kysymys.kysymys",
+        help="kysymys-nimi-ohje",
+        :validation="validation.kysymys",
+        :is-editable="true")
 
-      ep-form-content(name="kysymys-vastaus")
-        ep-content(
-          v-model="newKysymys.vastaus",
-          help="kysymys-vastaus-ohje",
-          :is-editable="true")
+    ep-form-content(name="kysymys-vastaus")
+      ep-content(
+        v-model="kysymys.vastaus",
+        help="kysymys-vastaus-ohje",
+        :validation="validation.vastaus",
+        :is-editable="true")
+
+    ep-form-content(name="nayta-organisaatioissa")
+      ep-select(
+        help="kysymys-organisaatiot-ohje",
+        v-model="kysymys.organisaatiot",
+        :validation="validation.organisaatiot",
+        :is-editing="true",
+        :items="organisaatiot",
+        :multiple="true")
+        template(slot="item", slot-scope="{ item }")
+          span {{ $kaanna(item.nimi) }}
+
     template(slot="modal-cancel") {{ $t('peruuta') }}
-    template(slot="modal-ok") {{ $t('lisaa-kysymys') }}
-    pre {{ newKysymys }}
+    template(slot="modal-ok") {{ kysymys.$uusi ? $t('lisaa-kysymys') : $t('tallenna') }}
 
 
 </template>
@@ -100,6 +115,7 @@ div
 
 import _ from 'lodash';
 import { Component, Mixins } from 'vue-property-decorator';
+import { validationMixin } from 'vuelidate';
 import EpRoute from '@/mixins/EpRoot';
 import {
   EpAikaleima,
@@ -108,11 +124,12 @@ import {
   EpSpinner,
   EpContent,
   EpFormContent,
+  EpSelect,
 } from "@/components";
 import { Kysymykset, Ulkopuoliset } from "@/api";
-import { KysymysDto } from '@/generated';
 import { Kielet, UiKielet } from "@/stores/kieli";
-import { Kieli } from '@/tyypit';
+import { Kieli, KysymysDto } from "@/tyypit";
+import { kysymysValidator } from "@/validators/ukk";
 
 @Component({
   components: {
@@ -122,59 +139,160 @@ import { Kieli } from '@/tyypit';
     EpIcon,
     EpContent,
     EpFormContent,
+    EpSelect,
+  },
+  mixins: [
+    EpRoute,
+    validationMixin
+  ],
+  validations() {
+    return {
+      kysymys: {
+        ...(this as any).validator,
+      },
+    };
   },
 })
 export default class UkkRoute extends Mixins(EpRoute) {
 
   private rajain = '';
 
-  private kysymykset: KysymysDto[] = [];
+  private kysymykset: any[] = [];
 
   private orgs: any[] = [];
 
-  private newKysymys: KysymysDto = {};
+  private kysymys: KysymysDto = {
+    $uusi: true,
+    organisaatiot: []
+  };
 
   public async mounted() {
-    this.kysymykset = (await Kysymykset.getKysymykset()).data;
+    this.kysymykset = (await Kysymykset.getKysymykset() as any).data;
 
     // Haetaan käyttäjän organisaatiot
-    const orgs = _((await Ulkopuoliset.getUserOrganisations()).data)
-      .remove(org => org.oid !== '1.2.246.562.10.00000000001') // Asetetaan erikseen
-      .value();
+    const orgs = (await Ulkopuoliset.getUserOrganisations() as any).data;
 
-    // TODO: Tee rajapinta backendiin, joka käyttää organisaatiopalvelua
-    this.orgs.push({
-      nimi: {
-        fi: 'Opetushallitus',
-        sv: 'Utbildningsstyrelsen',
-        en: 'Finnish National Agency for Education'
-      },
-      oid: '1.2.246.562.10.00000000001',
-      checked: true
+    if (!_.find(orgs, o => o.oid === '1.2.246.562.10.00000000001')) {
+      this.orgs.push({
+        nimi: {
+          fi: 'Opetushallitus',
+          sv: 'Utbildningsstyrelsen',
+          en: 'Finnish National Agency for Education'
+        },
+        oid: '1.2.246.562.10.00000000001'
+      });
+    }
+
+    // Ei rajausta oletuksena
+    _.each(orgs, o => {
+      o.$checked = true
     });
+
     this.orgs.push(...orgs);
   }
 
+  private get validator() {
+    return kysymysValidator([
+      Kielet.getSisaltoKieli() // Validoidaan kentät sisältökielen mukaan
+    ]);
+  }
+
+  private get validation() {
+    return (this as any).$v.kysymys;
+  }
+
   private get kysymyksetFormatted() {
-    // Todo: Ota huomioon sisältökieli
     return _(this.kysymykset)
-      .filter((k: any) => _.includes(_.lowerCase(_.get(k, 'kysymys.fi')), _.lowerCase(this.rajain)))
-      .sortBy(this.kysymykset, 'luotu', 'desc')
+      // Suodata kysymyksellä
+      .filter((k: any) => _.includes(
+        _.lowerCase(_.get(k, 'kysymys.' + Kielet.getSisaltoKieli())),
+        _.lowerCase(this.rajain)
+      ))
+      // Suodata organisaatiolla
+      .filter((k: any) => {
+        // Tehdään lista valituista organisaatioista
+        const checked: string[] = [];
+        _.each(this.organisaatiot, org => {
+          if (org.$checked) {
+            checked.push(org.oid);
+          }
+        });
+
+        // Tarkistetaan, löytyykö organisaatio haettavien joukosta
+        let found = false;
+        const kOrgs = _.map(k.organisaatiot, 'oid');
+        _.each(checked, oid => {
+          found = found || _.includes(kOrgs, oid);
+        });
+
+        return found;
+      })
+      .sortBy((k: any) => -k.luotu) // Laskeva järjestys
       .value();
   }
 
   private get organisaatiot() {
-    return this.orgs;
+    return _.sortBy(this.orgs, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli()));
   }
 
-  private async createKysymys(event: any) {
-    const res = (await Kysymykset.createKysymys(this.newKysymys)).data;
-    this.kysymykset.push(res);
-    this.newKysymys = {};
-    console.log(res);
+  private get organisaatiotOptions() {
+    return _.map(this.organisaatiot, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli()));
+  }
+
+  // Luodaan uusi kysymys tai muokataan kysymystä riippuen tilanteesta
+  private async createUpdateKysymys(event: any) {
+    event.preventDefault(); // Piilotetaan modaali myöhemmin
+    try {
+      if (this.kysymys.id) {
+        // Muokataan olemassa olevaa
+        const res = (await Kysymykset.updateKysymys(this.kysymys.id, (this as any).kysymys) as any).data;
+        _.remove(this.kysymykset, k => k.id === res.id);
+        this.kysymykset.push(res);
+      }
+      else {
+        // Luodaan uusi kysymys
+        const res = (await Kysymykset.createKysymys((this as any).kysymys) as any).data;
+        this.kysymykset.push(res);
+      }
+      (this as any).$refs.createUpdateKysymys.hide();
+    }
+    catch (e) {
+      // Todo: Tallentaminen epäonnistui
+    }
+  }
+
+  // Poistetaan olemassa oleva kysymys
+  private async deleteKysymys(kysymys: any) {
+    if (kysymys.id) {
+      (await Kysymykset.deleteKysymys(kysymys.id));
+      _.remove(this.kysymykset, k => k.id === kysymys.id);
+      // Reaktiivisuus täytyy hoitaa käsin tässä tilanteessa
+      this.kysymykset = [
+        ...this.kysymykset
+      ];
+    }
+  }
+
+  // Aloitetaan kysymyksen lisäämisen modaali
+  private startCreateKysymys() {
+    this.kysymys = {
+      organisaatiot: [],
+      $uusi: true
+    };
+    (this as any).$refs.createUpdateKysymys.show();
+  }
+
+  // Aloitetaan kysymyksen muokkaamisen modaali
+  private startUpdateKysymys(kysymys: KysymysDto) {
+    this.kysymys = {
+      $uusi: false,
+      ..._.cloneDeep(kysymys)
+    };
+    (this as any).$refs.createUpdateKysymys.show();
   }
 
   // TODO: tämä voisi olla oma komponentti
+  // Modaalin kielivalitsimen metodit
   get sisaltoKieli() { return Kielet.getSisaltoKieli(); }
   get sovelluksenKielet() { return UiKielet; }
   private valitseSisaltoKieli(kieli: Kieli) {
@@ -186,6 +304,8 @@ export default class UkkRoute extends Mixins(EpRoute) {
 </script>
 
 <style scoped lang="scss">
+
+@import "@/styles/_variables.scss";
 
 .col-fixed {
   flex: 0 0 100px;
@@ -215,7 +335,6 @@ export default class UkkRoute extends Mixins(EpRoute) {
 
 }
 
-
 .has-search .form-control-feedback {
   position: absolute;
   z-index: 2;
@@ -227,6 +346,5 @@ export default class UkkRoute extends Mixins(EpRoute) {
   pointer-events: none;
   color: #aaa;
 }
-
 
 </style>
