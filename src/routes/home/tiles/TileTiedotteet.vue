@@ -1,25 +1,23 @@
 <template lang="pug">
-base-tile(icon="bell", color="#000")
+base-tile(icon="bell", color="#000", :route="{ name: 'tiedotteet' }")
   template(slot="header")
-    router-link(
-      :to="{ name: 'tiedotteet' }")
-      | {{ $t('tiedotteet') }}
+    span {{ $t('tiedotteet') }}
   template(slot="content")
     ep-spinner(v-if="isLoading")
     .tiedotteet
       .tiedote(v-for="tiedote in uusimmat")
         a(href="")
           ep-content(:value="tiedote.otsikko")
-        // pre {{ tiedote }}
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
 import { Ulkopuoliset } from '@/api';
-import { YlopsKoulutustyypit } from '@/utils/perusteet';
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import {
+  EpContent,
+  EpSpinner,
+} from '@/components';
 import _ from 'lodash';
 
 @Component({

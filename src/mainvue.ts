@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
-import { VueMasonryPlugin } from 'vue-masonry';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
@@ -14,7 +13,6 @@ import { createLogger } from '@/stores/logger';
 import App from '@/App.vue';
 const logger = createLogger('main');
 
-Vue.use(VueMasonryPlugin);
 Vue.use(Loading, {
   fullPage: true,
   color: '#159ecb',

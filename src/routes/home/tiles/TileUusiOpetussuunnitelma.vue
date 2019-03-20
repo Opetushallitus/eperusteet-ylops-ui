@@ -1,10 +1,7 @@
 <template lang="pug">
-base-tile.tile(icon="plus")
+base-tile.tile(icon="plus", :route="{ name: 'uusiOpetussuunnitelma' }")
   template(slot="header")
-    router-link(
-      id="etusivu-luo-uusi-opetussuunnitelma",
-      :to="{ name: 'uusiOpetussuunnitelma' }")
-      | {{ $t('tile-uusi-opetussuunnitelma') }}
+    span {{ $t('tile-uusi-opetussuunnitelma') }}
   template(slot="content")
     p {{ $t('tile-uusi-opetussuunnitelma-kuvaus') }}
 </template>
@@ -22,6 +19,3 @@ export default class TileUusiOpetussuunnitelma extends Vue {
 
 }
 </script>
-
-<style scoped lang="scss">
-</style>

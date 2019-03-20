@@ -17,16 +17,5 @@
       background-position: 100% -56px;
       background-repeat: no-repeat;
     }
-
-    .tilecontainer {
-      width: 100%;
-      margin: 30px;
-
-      .tiles {
-        justify-content: center;
-        display: flex;
-        flex-flow: wrap;
-      }
-    }
   }
 }

@@ -1,10 +1,7 @@
 <template lang="pug">
-base-tile(icon="plus")
+base-tile(icon="plus", :route="{ name: 'uusiPohja' }")
   template(slot="header")
-    router-link(
-      id="etusivu-luo-uusi-pohja"
-      :to="{ name: 'uusiPohja' }")
-      | {{ $t('tile-uusi-pohja') }}
+    span {{ $t('tile-uusi-pohja') }}
   template(slot="content")
     p {{ $t('tile-uusi-pohja-kuvaus') }}
 </template>

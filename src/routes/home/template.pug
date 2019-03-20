@@ -4,15 +4,7 @@
     .header
       h3 {{ $t('tervetuloa', { nimi }) }}
       p {{ $t('tervetuloa-kuvaus') }}
-
-    //- .tilecontainer
-      //- .tiles
-    .tilecontainer(
-      v-masonry,
-      origin-left="true", 
-      fit-width="true",
-      transition-duration="0.1s",
-      item-selector=".tile")
+    .d-flex.flex-wrap.justify-content-center.py-5
       tile-opetussuunnitelmat()
       tile-pohjat()
       tile-uusi-opetussuunnitelma()
