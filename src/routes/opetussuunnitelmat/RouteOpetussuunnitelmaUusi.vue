@@ -60,7 +60,6 @@ div
 </template>
 
 <script lang="ts">
-
 import {
   EpButton,
   EpContent,
@@ -126,11 +125,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     },
   };
 
-  protected async init() {
-    const response = await Opetussuunnitelmat.getAll('POHJA', 'VALMIS');
-    this.pohjat = response.data;
-  }
-
   public async luoUusiOpetussuunnitelma() {
     this.loading(async () => {
       const ops: OpetussuunnitelmaLuontiDto = {
@@ -154,8 +148,12 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       });
     });
   }
-}
 
+  protected async init() {
+    const response = await Opetussuunnitelmat.getAll('POHJA', 'VALMIS');
+    this.pohjat = response.data;
+  }
+}
 </script>
 
 <style scoped lang="scss">

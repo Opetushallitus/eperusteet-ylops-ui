@@ -79,7 +79,7 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 export default class RouteOpintojakso extends Vue {
   private hooks: EditointiKontrolliConfig | null = null;
 
-  mounted() {
+  public mounted() {
     this.hooks = {
       source: {
         async save(param) {

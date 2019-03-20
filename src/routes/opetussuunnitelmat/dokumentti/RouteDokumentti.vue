@@ -62,7 +62,6 @@ div.content
 </template>
 
 <script lang="ts">
-
 import _ from 'lodash';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import { EpButton, EpFormContent } from '@/components';
@@ -79,20 +78,9 @@ import TilaEnum = DokumenttiDto.TilaEnum;
   },
 })
 export default class RouteDokumentti extends EpOpsRoute {
-  private file = null;
-  private previewUrl = null;
-  private dto: DokumenttiDto | null = null;
-  private polling: any = null;
-  private pollingFrequency = 1000;
-  private href: string | null = null;
 
   get kieli() {
     return Kielet.getSisaltoKieli();
-  }
-
-  @Watch('kieli')
-  private kieliChanged() {
-    this.init();
   }
 
   get tilaFormatted() {
@@ -125,6 +113,41 @@ export default class RouteDokumentti extends EpOpsRoute {
   get isPolling() {
     return this.polling != null;
   }
+  private file = null;
+  private previewUrl = null;
+  private dto: DokumenttiDto | null = null;
+  private polling: any = null;
+  private pollingFrequency = 1000;
+  private href: string | null = null;
+
+  // Alustetaan komponentti
+  public async init() {
+    this.file = null;
+    this.previewUrl = null;
+    this.dto = null;
+    clearInterval(this.polling);
+    this.polling = null;
+    this.href = null;
+
+    const res = await Dokumentit.getDokumenttiId(this.opsId, this.kieli);
+
+    // Jos dokumentti löytyy, haetaan sen tila
+    if (_.isNumber(res.data)) {
+      const dokumenttiId = res.data;
+      this.href = baseURL + DokumentitParams.get(dokumenttiId).url;
+    }
+
+    await this.getDokumenttiTila();
+  }
+
+  public destroyed() {
+    clearInterval(this.polling);
+  }
+
+  @Watch('kieli')
+  private kieliChanged() {
+    this.init();
+  }
 
   // Luodaan esikatselukuva kuvan valitsemisen jälkeen
   private onInput(file: any) {
@@ -142,26 +165,6 @@ export default class RouteDokumentti extends EpOpsRoute {
       // Poistetaan kuvan esikatselu
       this.previewUrl = null;
     }
-  }
-
-  // Alustetaan komponentti
-  async init() {
-    this.file = null;
-    this.previewUrl = null;
-    this.dto = null;
-    clearInterval(this.polling);
-    this.polling = null;
-    this.href = null;
-
-    const res = await Dokumentit.getDokumenttiId(this.opsId, this.kieli);
-
-    // Jos dokumentti löytyy, haetaan sen tila
-    if (_.isNumber(res.data)) {
-      const dokumenttiId = res.data;
-      this.href = baseURL + DokumentitParams.get(dokumenttiId).url;
-    }
-
-    await this.getDokumenttiTila();
   }
 
   // Haetaan dokumentin tila ja päivitetään muuttujat
@@ -217,10 +220,5 @@ export default class RouteDokumentti extends EpOpsRoute {
       this.dto.kansikuva = undefined;
     }
   }
-
-  destroyed() {
-    clearInterval(this.polling);
-  }
 }
-
 </script>

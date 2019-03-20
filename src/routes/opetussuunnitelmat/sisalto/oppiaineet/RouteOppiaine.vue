@@ -116,14 +116,14 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 export default class RouteOppiaine extends Vue {
   private hooks: EditointiKontrolliConfig | null = null;
 
-  mounted() {
+  public mounted() {
     this.hooks = {
       source: {
-        async save(param) {
+        async save(param): Promise<object> {
 
         },
-        async load(): Promise<Object> {
-          return new Promise<Object>((resolve) => {
+        async load(): Promise<object> {
+          return new Promise<object>((resolve) => {
             resolve({});
           });
         },

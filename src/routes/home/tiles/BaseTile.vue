@@ -26,7 +26,7 @@ import { EpIcon } from '@/components';
 @Component({
   components: {
     EpIcon,
-  }
+  },
 })
 export default class BaseTile extends Vue {
   @Prop({ required: true })

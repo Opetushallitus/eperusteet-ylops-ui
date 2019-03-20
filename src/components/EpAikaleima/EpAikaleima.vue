@@ -25,9 +25,9 @@ export default class EpAikaleima extends Vue {
   private value!: any;
 
   /**
-  Aikaleiman muoto, mahdolliset arvot:
-  `ago, ldt, ld, st, sdt, sd, st`
-  */
+   * Aikaleiman muoto, mahdolliset arvot:
+   * `ago, ldt, ld, st, sdt, sd, st`
+   */
   @Prop({ default: 'sdt' })
   private type!: string;
 
@@ -37,7 +37,8 @@ export default class EpAikaleima extends Vue {
   get formatted() {
     // Pakko olla, jotta localen vaihtuessa komponentti päivittyy
     if (this.$i18n) {
-      this.$i18n.locale; // eslint-disable-line
+      // tslint:disable-next-line
+      this.$i18n.locale;
     }
 
     if (this.format) {

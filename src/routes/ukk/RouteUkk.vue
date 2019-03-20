@@ -111,7 +111,6 @@ div
 </template>
 
 <script lang="ts">
-
 import _ from 'lodash';
 import { Component, Mixins } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
@@ -142,7 +141,7 @@ import { kysymysValidator } from '@/validators/ukk';
   },
   mixins: [
     EpRoute,
-    validationMixin
+    validationMixin,
   ],
   validations() {
     return {
@@ -161,7 +160,7 @@ export default class RouteUkk extends Mixins(EpRoute) {
 
   private kysymys: KysymysDto = {
     $uusi: true,
-    organisaatiot: []
+    organisaatiot: [],
   };
 
   public async mounted() {
@@ -170,19 +169,19 @@ export default class RouteUkk extends Mixins(EpRoute) {
     // Haetaan käyttäjän organisaatiot
     const orgs = (await Ulkopuoliset.getUserOrganisations() as any).data;
 
-    if (!_.find(orgs, o => o.oid === '1.2.246.562.10.00000000001')) {
+    if (!_.find(orgs, (o) => o.oid === '1.2.246.562.10.00000000001')) {
       this.orgs.push({
         nimi: {
           fi: 'Opetushallitus',
           sv: 'Utbildningsstyrelsen',
-          en: 'Finnish National Agency for Education'
+          en: 'Finnish National Agency for Education',
         },
-        oid: '1.2.246.562.10.00000000001'
+        oid: '1.2.246.562.10.00000000001',
       });
     }
 
     // Ei rajausta oletuksena
-    _.each(orgs, o => {
+    _.each(orgs, (o) => {
       o.$checked = true;
     });
 
@@ -191,7 +190,7 @@ export default class RouteUkk extends Mixins(EpRoute) {
 
   private get validator() {
     return kysymysValidator([
-      Kielet.getSisaltoKieli() // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli(), // Validoidaan kentät sisältökielen mukaan
     ]);
   }
 
@@ -204,13 +203,13 @@ export default class RouteUkk extends Mixins(EpRoute) {
       // Suodata kysymyksellä
       .filter((k: any) => _.includes(
         _.lowerCase(_.get(k, 'kysymys.' + Kielet.getSisaltoKieli())),
-        _.lowerCase(this.rajain)
+        _.lowerCase(this.rajain),
       ))
       // Suodata organisaatiolla
       .filter((k: any) => {
         // Tehdään lista valituista organisaatioista
         const checked: string[] = [];
-        _.each(this.organisaatiot, org => {
+        _.each(this.organisaatiot, (org) => {
           if (org.$checked) {
             checked.push(org.oid);
           }
@@ -219,7 +218,7 @@ export default class RouteUkk extends Mixins(EpRoute) {
         // Tarkistetaan, löytyykö organisaatio haettavien joukosta
         let found = false;
         const kOrgs = _.map(k.organisaatiot, 'oid');
-        _.each(checked, oid => {
+        _.each(checked, (oid) => {
           found = found || _.includes(kOrgs, oid);
         });
 
@@ -230,11 +229,11 @@ export default class RouteUkk extends Mixins(EpRoute) {
   }
 
   private get organisaatiot() {
-    return _.sortBy(this.orgs, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli()));
+    return _.sortBy(this.orgs, (o) => _.get(o, 'nimi.' + Kielet.getSisaltoKieli()));
   }
 
   private get organisaatiotOptions() {
-    return _.map(this.organisaatiot, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli()));
+    return _.map(this.organisaatiot, (o) => _.get(o, 'nimi.' + Kielet.getSisaltoKieli()));
   }
 
   // Luodaan uusi kysymys tai muokataan kysymystä riippuen tilanteesta
@@ -244,7 +243,7 @@ export default class RouteUkk extends Mixins(EpRoute) {
       if (this.kysymys.id) {
         // Muokataan olemassa olevaa
         const res = (await Kysymykset.updateKysymys(this.kysymys.id, (this as any).kysymys) as any).data;
-        _.remove(this.kysymykset, k => k.id === res.id);
+        _.remove(this.kysymykset, (k) => k.id === res.id);
         this.kysymykset.push(res);
       }
       else {
@@ -263,10 +262,10 @@ export default class RouteUkk extends Mixins(EpRoute) {
   private async deleteKysymys(kysymys: any) {
     if (kysymys.id) {
       (await Kysymykset.deleteKysymys(kysymys.id));
-      _.remove(this.kysymykset, k => k.id === kysymys.id);
+      _.remove(this.kysymykset, (k) => k.id === kysymys.id);
       // Reaktiivisuus täytyy hoitaa käsin tässä tilanteessa
       this.kysymykset = [
-        ...this.kysymykset
+        ...this.kysymykset,
       ];
     }
   }
@@ -275,7 +274,7 @@ export default class RouteUkk extends Mixins(EpRoute) {
   private startCreateKysymys() {
     this.kysymys = {
       organisaatiot: [],
-      $uusi: true
+      $uusi: true,
     };
     (this as any).$refs.createUpdateKysymys.show();
   }
@@ -284,7 +283,7 @@ export default class RouteUkk extends Mixins(EpRoute) {
   private startUpdateKysymys(kysymys: KysymysDto) {
     this.kysymys = {
       $uusi: false,
-      ..._.cloneDeep(kysymys)
+      ..._.cloneDeep(kysymys),
     };
     (this as any).$refs.createUpdateKysymys.show();
   }
@@ -301,7 +300,6 @@ export default class RouteUkk extends Mixins(EpRoute) {
     Kielet.setSisaltoKieli(kieli);
   }
 }
-
 </script>
 
 <style scoped lang="scss">

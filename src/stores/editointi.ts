@@ -19,7 +19,7 @@ export interface EditointiKontrolliHistory {
 
 export interface EditointiKontrolliData {
   load: () => Promise<unknown>;
-  save: (data: any) => Promise<any>;
+  save: (data: any) => Promise<unknown>;
   cancel?: () => Promise<void>;
 }
 
@@ -58,7 +58,7 @@ export class EditointiKontrolli {
   private backup: any = null;
 
   public constructor(
-    private config: EditointiKontrolliConfig
+    private config: EditointiKontrolliConfig,
   ) {
     this.features = {
       removal: !!config.remove,

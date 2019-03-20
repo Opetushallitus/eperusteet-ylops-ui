@@ -10,8 +10,8 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import EpChart from './EpChart';
 
 /**
-  Älä käytä tätä komponenttia muuhun kuin yksikkötestaukseen / styleguideen
-*/
+ * Älä käytä tätä komponenttia muuhun kuin yksikkötestaukseen / styleguideen
+ */
 @Component({
   components: {
     EpChart,
@@ -19,9 +19,9 @@ import EpChart from './EpChart';
 })
 export default class EpChartTester extends Vue {
   @Prop()
-  private value!: Number;
+  private value!: number;
 
   @Prop()
-  private chartColor!: String;
+  private chartColor!: string;
 }
 </script>

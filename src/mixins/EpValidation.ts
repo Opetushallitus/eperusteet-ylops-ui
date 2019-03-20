@@ -3,14 +3,6 @@ import _ from 'lodash';
 
 @Component
 export default class EpValidation extends Vue {
-  @Prop({ default: '' })
-  private validMessage!: string;
-
-  @Prop({ default: '' })
-  private invalidMessage!: string;
-
-  @Prop({ default: null })
-  public validation!: any;
 
   get isInvalid() {
     return this.validation && this.validation.$invalid;
@@ -33,4 +25,12 @@ export default class EpValidation extends Vue {
       return '';
     }
   }
+
+  @Prop({ default: null })
+  public validation!: any;
+  @Prop({ default: '' })
+  private validMessage!: string;
+
+  @Prop({ default: '' })
+  private invalidMessage!: string;
 }
