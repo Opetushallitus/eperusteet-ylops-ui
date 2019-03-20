@@ -1,8 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
 
-import { Opetussuunnitelmat } from '@/api';
-import { OpetussuunnitelmaInfoDto } from '@/tyypit';
-
 import { Kayttajat } from '@/stores/kayttaja';
 
 import TileFaq from './tiles/TileFaq.vue';
@@ -19,6 +16,7 @@ import {
   EpAikaleima,
   EpNavigation,
   EpContent,
+  EpSearch,
 } from '@/components';
 
 @Component({
@@ -26,6 +24,7 @@ import {
     EpAikaleima,
     EpContent,
     EpNavigation,
+    EpSearch,
     TileFaq,
     TileLoki,
     TileOpetussuunnitelmat,
@@ -38,6 +37,9 @@ import {
   },
 })
 export default class Home extends Vue {
+
+  private rajain: string = '';
+
   private get nimi() {
     return Kayttajat.nimi();
   }

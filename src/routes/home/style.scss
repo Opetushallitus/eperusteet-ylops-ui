@@ -1,21 +1,25 @@
 @import '@/styles/_variables.scss';
 
 .home-container {
-  background-color: $etusivu-header-background;
-  background-image: url('/img/banners/etusivu_tausta.svg');
-  background-position: 100% 0;
-  background-repeat: no-repeat;
 
   .home {
-    background-color: $etusivu-background;
 
     .header {
+      h1 {
+        font-weight: 300;
+      }
       background-color: $etusivu-header-background;
-      padding: 40px;
-      color: white;
       background-image: url('/img/banners/etusivu_tausta.svg');
-      background-position: 100% -56px;
+      background-position: 100% 0;
       background-repeat: no-repeat;
+
+      color: white;
+    }
+
+    .tile-container {
+      padding: 0;
+      margin-top: 30px;
+      margin-bottom: 30px;
     }
   }
 }

@@ -52,13 +52,12 @@ export default class BaseTile extends Vue {
 @import '@/styles/_variables.scss';
 
 $tile-height: 300px;
-$tile-width: 520px;
+$tile-width: 540px;
 
 .tile {
   background: inherit;
   width: $tile-width;
-  flex: 0 0 $tile-width;
-  margin: 10px 10px;
+  margin: 15px 15px;
   text-align: center;
 
   .innertile {

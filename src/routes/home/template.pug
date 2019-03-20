@@ -1,16 +1,21 @@
 .home-container
-  ep-navigation(:sticky="false")
   .home
     .header
-      h3 {{ $t('tervetuloa', { nimi }) }}
-      p {{ $t('tervetuloa-kuvaus') }}
-    .d-flex.flex-wrap.justify-content-center.py-5
-      tile-opetussuunnitelmat()
-      tile-pohjat()
-      tile-uusi-opetussuunnitelma()
-      tile-uusi-pohja()
-      tile-valtakunnalliset-perusteet()
-      tile-faq()
-      tile-tiedotteet()
-      tile-organisaatio()
-      tile-loki()
+      ep-navigation(:sticky="false")
+      .container
+        h1 {{ $t('tervetuloa', { nimi }) }}
+        p {{ $t('tervetuloa-kuvaus') }}
+        .row
+          .col-md-4
+            ep-search(v-model="rajain")
+    .container.tile-container
+      .d-flex.flex-row.flex-wrap.justify-content-center
+        tile-opetussuunnitelmat()
+        tile-pohjat()
+        tile-uusi-opetussuunnitelma()
+        tile-uusi-pohja()
+        tile-valtakunnalliset-perusteet()
+        tile-faq()
+        tile-tiedotteet()
+        tile-organisaatio()
+        tile-loki()

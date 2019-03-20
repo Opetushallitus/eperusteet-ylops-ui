@@ -13,10 +13,7 @@ div
           h2 {{ $t('ukk') }}
 
           p {{ $t('ukk-kuvaus-nakyma') }}
-          div.form-group.has-search
-            span.form-control-feedback
-              fas(icon="search")
-            input.form-control.mb-3(type="search", :placeholder="$t('etsi') + '…'" v-model="rajain")
+          ep-search(v-model="rajain")
 
           p {{ $t('ukk-luoja-rajaus') }}:
           .form-check.form-check-inline(v-for="org in organisaatiot")
@@ -124,6 +121,7 @@ import {
   EpContent,
   EpFormContent,
   EpSelect,
+  EpSearch,
 } from '@/components';
 import { Kysymykset, Ulkopuoliset } from '@/api';
 import { Kielet, UiKielet } from '@/stores/kieli';
@@ -139,6 +137,7 @@ import { kysymysValidator } from '@/validators/ukk';
     EpContent,
     EpFormContent,
     EpSelect,
+    EpSearch,
   },
   mixins: [
     EpRoute,
@@ -321,31 +320,6 @@ export default class RouteUkk extends Mixins(EpRoute) {
 
 .btn-link {
   text-decoration: none;
-}
-
-// FIXME: Haku komponentti voisi olla oma komponentti
-.has-search .form-control {
-  padding-left: 2.375rem;
-  border-radius: 15px;
-  background: #F3F3F3;
-  border-width: 0;
-
-  &::placeholder {
-    color: #aaa;
-  }
-
-}
-
-.has-search .form-control-feedback {
-  position: absolute;
-  z-index: 2;
-  display: block;
-  width: 2.375rem;
-  height: 2.375rem;
-  line-height: 2.375rem;
-  text-align: center;
-  pointer-events: none;
-  color: #aaa;
 }
 
 </style>
