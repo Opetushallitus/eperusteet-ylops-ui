@@ -4,7 +4,6 @@ import { Kieli } from '@/tyypit';
 import EpAikaleima from '@/components/EpAikaleima/EpAikaleima.vue';
 
 describe('EpAikaleima component', () => {
-
   const localVue = createLocalVue();
 
   beforeEach(() => {
@@ -28,8 +27,7 @@ describe('EpAikaleima component', () => {
 
   test('format', () => {
     const wrapper = mountAikaleima(1546870463248,
-      `<ep-aikaleima :value="value" format="LLLL"></ep-aikaleima>`);
-
+      '<ep-aikaleima :value="value" format="LLLL"></ep-aikaleima>');
 
     expect(wrapper.text()).toEqual('maanantai, 7. tammikuuta 2019, klo 16.14');
 
@@ -39,8 +37,7 @@ describe('EpAikaleima component', () => {
 
   test('ago', () => {
     const wrapper = mountAikaleima(1546870463248,
-      `<ep-aikaleima :value="value" type="ago"></ep-aikaleima>`);
-
+      '<ep-aikaleima :value="value" type="ago"></ep-aikaleima>');
 
     expect(wrapper.text()).toEqual('muutama sekunti sitten');
 
@@ -50,8 +47,7 @@ describe('EpAikaleima component', () => {
 
   test('default', () => {
     const wrapper = mountAikaleima(1546870463248,
-      `<ep-aikaleima :value="value"></ep-aikaleima>`);
-
+      '<ep-aikaleima :value="value"></ep-aikaleima>');
 
     expect(wrapper.text()).toEqual('7.1.2019 16:14');
 
@@ -61,8 +57,7 @@ describe('EpAikaleima component', () => {
 
   test('ldt', () => {
     const wrapper = mountAikaleima(1546870463248,
-      `<ep-aikaleima :value="value" type="ldt"></ep-aikaleima>`);
-
+      '<ep-aikaleima :value="value" type="ldt"></ep-aikaleima>');
 
     expect(wrapper.text()).toEqual('7. tammikuuta 2019, klo 16.14');
 
@@ -72,8 +67,7 @@ describe('EpAikaleima component', () => {
 
   test('ld', () => {
     const wrapper = mountAikaleima(1546870463248,
-      `<ep-aikaleima :value="value" type="ld"></ep-aikaleima>`);
-
+      '<ep-aikaleima :value="value" type="ld"></ep-aikaleima>');
 
     expect(wrapper.text()).toEqual('7. tammikuuta 2019');
 
@@ -83,8 +77,7 @@ describe('EpAikaleima component', () => {
 
   test('lt', () => {
     const wrapper = mountAikaleima(1546870463248,
-      `<ep-aikaleima :value="value" type="lt"></ep-aikaleima>`);
-
+      '<ep-aikaleima :value="value" type="lt"></ep-aikaleima>');
 
     expect(wrapper.text()).toEqual('16:14:23');
 
@@ -94,8 +87,7 @@ describe('EpAikaleima component', () => {
 
   test('sdt', () => {
     const wrapper = mountAikaleima(1546870463248,
-      `<ep-aikaleima :value="value" type="sdt"></ep-aikaleima>`);
-
+      '<ep-aikaleima :value="value" type="sdt"></ep-aikaleima>');
 
     expect(wrapper.text()).toEqual('7.1.2019 16:14');
 
@@ -105,8 +97,7 @@ describe('EpAikaleima component', () => {
 
   test('sd', () => {
     const wrapper = mountAikaleima(1546870463248,
-      `<ep-aikaleima :value="value" type="sd"></ep-aikaleima>`);
-
+      '<ep-aikaleima :value="value" type="sd"></ep-aikaleima>');
 
     expect(wrapper.text()).toEqual('7.1.2019');
 
@@ -116,13 +107,11 @@ describe('EpAikaleima component', () => {
 
   test('st', () => {
     const wrapper = mountAikaleima(1546870463248,
-      `<ep-aikaleima :value="value" type="st"></ep-aikaleima>`);
-
+      '<ep-aikaleima :value="value" type="st"></ep-aikaleima>');
 
     expect(wrapper.text()).toEqual('16:14');
 
     Kielet.setUiKieli(Kieli.sv);
     expect(wrapper.text()).toEqual('16:14');
   });
-
 });

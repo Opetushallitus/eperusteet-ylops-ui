@@ -21,7 +21,6 @@ import {
   EpContent,
 } from '@/components';
 
-
 @Component({
   components: {
     EpAikaleima,
@@ -46,5 +45,4 @@ export default class Home extends Vue {
   private get kayttaja() {
     return Kayttajat.tiedot;
   }
-
 }

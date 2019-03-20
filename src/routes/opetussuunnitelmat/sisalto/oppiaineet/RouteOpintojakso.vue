@@ -90,6 +90,5 @@ export default class RouteOpintojakso extends Vue {
       },
     };
   }
-
 }
 </script>

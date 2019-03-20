@@ -53,7 +53,7 @@ export default class TekstikappaleTeksti extends Mixins(EpRoot) {
         };
       },
       async save({ tov, ohjeet }) {
-        await Opetussuunnitelma.saveTeksti(tov),
+        await Opetussuunnitelma.saveTeksti(tov);
         await Promise.all(_.map(ohjeet, Opetussuunnitelma.saveOhje));
       },
     },
@@ -69,5 +69,4 @@ export default class TekstikappaleTeksti extends Mixins(EpRoot) {
       },
     });
   }
-
 }

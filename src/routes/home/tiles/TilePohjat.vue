@@ -35,7 +35,7 @@ import _ from 'lodash';
     BaseTile,
     EpContent,
     EpSpinner,
-  }
+  },
 })
 export default class TilePohjat extends Vue {
   private readonly Maara = 3;
@@ -70,7 +70,6 @@ export default class TilePohjat extends Vue {
       }))
       .value();
   }
-
 }
 </script>
 

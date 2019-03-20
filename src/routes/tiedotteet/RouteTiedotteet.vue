@@ -38,7 +38,6 @@ import {
   },
 })
 export default class RouteTiedotteet extends Mixins(EpRoute) {
-
   //
   private tiedotteet = [
     {
@@ -53,7 +52,6 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
       content: 'Tiedote 2 sisältö',
     },
   ];
-
 }
 </script>
 

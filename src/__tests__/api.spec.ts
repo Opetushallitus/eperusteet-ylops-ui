@@ -18,5 +18,4 @@ describe('Api facade', () => {
       id: 42,
     }]);
   });
-
 });

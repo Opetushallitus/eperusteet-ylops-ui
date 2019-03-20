@@ -27,7 +27,7 @@ import _ from 'lodash';
     BaseTile,
     EpContent,
     EpSpinner,
-  }
+  },
 })
 export default class TileTiedotteet extends Vue {
   private isLoading = true;
@@ -45,13 +45,11 @@ export default class TileTiedotteet extends Vue {
           && tiedote.julkinen
           && tiedote.yleinen
           && !tiedote.peruste)
-          // && _.includes(YlopsKoulutustyypit, tiedote.peruste.koulutustyyppi))
+      // && _.includes(YlopsKoulutustyypit, tiedote.peruste.koulutustyyppi))
         // .filter((tiedote: any) => tiedote.peruste.koulutu)
         .sortBy('luotu')
         .reverse()
         .value();
-    }
-    catch (err) {
     }
     finally {
       this.isLoading = false;

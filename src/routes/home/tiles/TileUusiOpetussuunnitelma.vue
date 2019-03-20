@@ -16,10 +16,10 @@ import BaseTile from './BaseTile.vue';
 @Component({
   components: {
     BaseTile,
-  }
+  },
 })
 export default class TileUusiOpetussuunnitelma extends Vue {
-  
+
 }
 </script>
 

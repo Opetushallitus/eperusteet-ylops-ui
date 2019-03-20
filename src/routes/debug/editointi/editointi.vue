@@ -10,5 +10,5 @@ div
         ep-content(v-model="scope.data.kuvaus" :is-editable="scope.isEditing")
         h2 Data:
         pre {{ scope.data }}
-</template> 
+</template>
 <script lang="ts" src="./script.ts"></script>

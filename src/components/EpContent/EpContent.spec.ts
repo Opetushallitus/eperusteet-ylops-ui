@@ -34,5 +34,4 @@ describe('EpContent component', () => {
     });
     expect(wrapper.text()).toEqual('');
   });
-
 });

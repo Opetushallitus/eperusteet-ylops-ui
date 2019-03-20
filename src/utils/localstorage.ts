@@ -1,7 +1,6 @@
 import { createLogger } from '@/stores/logger';
 const logger = createLogger('LocalStorage');
 
-
 export function removeItem(key: string) {
   logger.debug('Removing item', key);
   localStorage.removeItem(key);

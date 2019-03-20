@@ -1,5 +1,4 @@
 import { Doughnut } from 'vue-chartjs';
-import { DiagrammiVarit } from '@/tyypit';
 
 import 'chartjs-plugin-doughnutlabel';
 
@@ -13,7 +12,7 @@ export default {
     },
     chartColor: {
       type: String,
-      default: DiagrammiVarit.vaalea_sininen,
+      default: 'vaalea_sininen',
     },
     labelColor: {
       type: String,
@@ -63,7 +62,7 @@ export default {
   },
 
   mounted() {
-    (this as any).renderChart( (this as any).componentData, (this as any).componentOptions );
+    (this as any).renderChart((this as any).componentData, (this as any).componentOptions);
   },
 
   methods: {
@@ -75,16 +74,16 @@ export default {
     // Luodaan graafin data objektin sisältö (värimaailma + piirakan koko)
     createInitialData(chartValue: number, chartColor: string) {
       // Oletuksena sini-vihreä värimaailma
-      let varimaailma = [ '#5BCA13', '#0041DC'];
+      let varimaailma = ['#5BCA13', '#0041DC'];
 
-      if (chartColor === DiagrammiVarit.vaalea_sininen) {
-        varimaailma = [ '#2e44d8', '#cfd8f6' ];
+      if (chartColor === 'vaalea_sininen') {
+        varimaailma = ['#2e44d8', '#cfd8f6'];
       }
 
       return [{
-          borderWidth: 0,
-          backgroundColor: varimaailma,
-          data: [chartValue, 100 - chartValue],
+        borderWidth: 0,
+        backgroundColor: varimaailma,
+        data: [chartValue, 100 - chartValue],
       }];
     },
 

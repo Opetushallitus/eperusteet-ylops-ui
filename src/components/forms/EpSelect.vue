@@ -24,7 +24,7 @@ div(v-else)
 </template>
 
 <script lang="ts">
-import { Component, Prop, Model, Mixins } from "vue-property-decorator";
+import { Component, Prop, Model, Mixins } from 'vue-property-decorator';
 
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpInput from '@/components/forms/EpInput.vue';
@@ -39,7 +39,6 @@ import EpValidation from '@/mixins/EpValidation';
   },
 })
 export default class EpSelect extends Mixins(EpValidation) {
-
   @Prop({ default: false })
   private isEditing!: boolean;
 
@@ -64,7 +63,7 @@ export default class EpSelect extends Mixins(EpValidation) {
   private innerModel: any[] = [];
 
   private updateValue(value: any) {
-    this.model.length =  0;
+    this.model.length = 0;
     this.model.push(...this.innerModel);
     if (this.validation) {
       this.validation.$touch();
@@ -74,7 +73,6 @@ export default class EpSelect extends Mixins(EpValidation) {
   mounted() {
     this.innerModel = this.model;
   }
-
 }
 </script>
 

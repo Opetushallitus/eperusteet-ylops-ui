@@ -24,7 +24,9 @@ describe('Editointi', async () => {
           async cancel() {},
         },
         locks: {
-          async acquire() { return true; },
+          async acquire() {
+            return true;
+          },
           async release() {},
         },
         history: {
@@ -113,7 +115,6 @@ describe('Editointi', async () => {
       const warnSpy = jest.spyOn(console, 'warn')
         .mockImplementationOnce(() => {});
       expect(warnSpy).not.toBeCalled();
-
     });
   });
 });

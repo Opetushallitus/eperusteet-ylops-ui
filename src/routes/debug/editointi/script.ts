@@ -5,7 +5,6 @@ import { setItem, getItem } from '@/utils/localstorage';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import * as _ from 'lodash';
 
-
 // Fake data to be edited
 
 if (!getItem('debugEditointiData')) {
@@ -41,4 +40,3 @@ export default class EditointiDebug extends Vue {
     },
   };
 }
-

@@ -15,7 +15,7 @@ import { EpIcon } from '@/components';
   components: {
     BaseTile,
     EpIcon,
-  }
+  },
 })
 export default class TileFaq extends Vue {
 

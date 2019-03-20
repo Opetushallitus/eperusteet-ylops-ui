@@ -22,11 +22,11 @@ export default class EpViewer extends Vue {
     }
 
     private reRenderKatex() {
-      this.$el.querySelectorAll('span.math-tex').forEach( (el) => {
+      this.$el.querySelectorAll('span.math-tex').forEach((el) => {
         if (el.textContent) {
           const text: string = el.textContent;
           katex.render(text, el as HTMLElement);
         }
-      } );
+      });
     }
 }

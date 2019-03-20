@@ -26,7 +26,6 @@ import { Vue, Component, Mixins } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoot';
 import { Opetussuunnitelmat } from '@/api';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
-import { DiagrammiVarit } from '@/tyypit';
 
 import {
   EpChart,
@@ -44,14 +43,12 @@ import {
   },
 })
 export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
-
   private opslista: OpetussuunnitelmaInfoDto[] = [];
 
   protected async init() {
     const res = await Opetussuunnitelmat.getAll();
     this.opslista = res.data;
   }
-
 }
 </script>
 
