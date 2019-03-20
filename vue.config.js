@@ -31,6 +31,9 @@ module.exports = {
       .test(/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/)
       .use('file-loader')
       .loader('raw-loader');
+    // Muuten tulee varoituksia puuttuvista tyypeistä
+    // https://github.com/vuejs/vue-cli/issues/1436
+    config.optimization.providedExports(false);
   },
 
   devServer: {

@@ -89,7 +89,7 @@ div.content
 
   div.ep-collapse {
     border-top: 1px solid #ccc;
-    padding: 10px 10px 10px 0px;
+    padding: 10px 10px 10px 0;
   }
 
   div.ep-collapse:last-child {
@@ -101,9 +101,11 @@ div.content
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
-import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
-import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import {
+  EpButton,
+  EpCollapse,
+  EpEditointi,
+} from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 
 @Component({
@@ -120,7 +122,10 @@ export default class RouteOppiaine extends Vue {
     this.hooks = {
       source: {
         async save(param): Promise<object> {
-
+          return new Promise<object>((resolve) => {
+            // Todo: Toteuta tallentaminen
+            resolve();
+          });
         },
         async load(): Promise<object> {
           return new Promise<object>((resolve) => {
