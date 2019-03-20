@@ -7,6 +7,7 @@ import '@/config/fontawesome';
 
 import { router } from '@/router';
 import { i18n } from '@/stores/kieli';
+import { Virheet } from '@/stores/virheet';
 
 import { createLogger } from '@/stores/logger';
 

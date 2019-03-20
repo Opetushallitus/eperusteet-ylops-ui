@@ -59,6 +59,7 @@
 </template>
 
 <script lang="ts">
+
 import {
   EpButton,
   EpSpinner,
@@ -124,7 +125,7 @@ export default class EpOrganizations extends Vue {
   }
 
   @Watch('kunnat')
-  public onChange() {
+  onChange() {
     this.$emit('input', {
       jarjestajat: _.map(this.jarjestajat, (org) => _.pick(org, 'oid')),
       oppilaitokset: _.map(this.oppilaitokset, (org) => _.pick(org, 'oid')),
@@ -158,6 +159,7 @@ export default class EpOrganizations extends Vue {
       .value();
   }
 }
+
 </script>
 
 <style scoped lang="scss">

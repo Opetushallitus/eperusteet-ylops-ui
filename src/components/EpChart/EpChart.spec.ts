@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import EpChartTester from './EpChart.tester.vue';
+import { DiagrammiVarit } from '@/tyypit';
 
 describe('EpChart component', () => {
   it('Renders canvas element', () => {

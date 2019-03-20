@@ -65,6 +65,7 @@ div.content
 </template>
 
 <script lang="ts">
+
 import { EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle } from '@/components';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
@@ -92,7 +93,7 @@ import { Kielet } from '@/stores/kieli';
 export default class RouteTiedot extends EpOpsRoute {
   private hooks: EditointiKontrolliConfig | null = null;
 
-  public async mounted() {
+  async mounted() {
     this.hooks = {
       source: {
         async save(ops) {

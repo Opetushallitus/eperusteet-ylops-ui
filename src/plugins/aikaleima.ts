@@ -4,9 +4,9 @@ import moment from 'moment';
 export class Aikaleima {
   public install(vue: typeof Vue) {
     function aikaleimaFnFactory(this: void, format: string) {
+      // eslint-disable-next-line only-arrow-functions
       return function(this: void, value: number) {
-        // tslint:disable-next-line
-        (this as any).$i18n.locale;
+        (this as any).$i18n.locale; // eslint-disable-line
         return moment(value).format(format);
       };
     }
@@ -31,16 +31,14 @@ export class Aikaleima {
 
     // Time until or ago an event counting from now
     vue.prototype.$ago = function(value: number) {
-      // tslint:disable-next-line
-      this.$i18n.locale;
+      this.$i18n.locale; // eslint-disable-line
       return moment(value).fromNow();
     };
 
     // Custom datetime
     vue.prototype.$cdt = function(value: number, format: string) {
       // Pakko olla, jotta localen vaihtuessa komponentti päivittyy
-      // tslint:disable-next-line
-      this.$i18n.locale;
+      this.$i18n.locale; // eslint-disable-line
       return moment(value).format(format);
     };
   }

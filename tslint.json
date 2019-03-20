@@ -6,9 +6,7 @@
   "linterOptions": {
     "exclude": [
       "node_modules/**",
-      "src/generated/**",
-      "tests/**",
-      "**/*.js"
+      "src/generated/**"
     ]
   },
   "rules": {

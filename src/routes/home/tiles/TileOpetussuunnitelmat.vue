@@ -74,7 +74,7 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
 
   private get opetussuunnitelmat() {
     const result = _(this.nakyvat)
-      .map((ops) => ({
+      .map(ops => ({
         ...ops,
         valmiusaste: 50,
       }))

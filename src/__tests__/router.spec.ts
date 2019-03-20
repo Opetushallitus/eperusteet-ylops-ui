@@ -1,12 +1,17 @@
 import { mount, createLocalVue } from '@vue/test-utils';
+import { Kielet, i18n } from '@/stores/kieli';
 import { Kayttajat } from '@/stores/kayttaja';
 import { router } from '@/router';
+import { AxiosResponse } from 'axios';
 import { expectEventually } from '&/utils/assertions';
 import {
   makeAxiosResponse,
   genOikeudet,
   genKayttaja,
 } from '&/utils/data';
+import {
+  OpetussuunnitelmaInfoDto,
+} from '@/tyypit';
 
 import {
   Kayttajat as KayttajatApi,
@@ -14,6 +19,7 @@ import {
   Ulkopuoliset,
 } from '@/api';
 
+import App from '@/App.vue';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
@@ -22,7 +28,7 @@ import { rootConfig } from '@/mainvue';
 
 describe('Router', () => {
   async function createMounted(
-    oikeudet = genOikeudet('oph'),
+    oikeudet = genOikeudet('oph')
   ) {
     jest.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));

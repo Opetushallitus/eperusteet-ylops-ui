@@ -1,4 +1,5 @@
-import { Vue, Component } from 'vue-property-decorator';
+import { Watch, Vue, Component } from 'vue-property-decorator';
+import { delay } from '@/utils/delay';
 import _ from 'lodash';
 
 Component.registerHooks([
@@ -29,7 +30,7 @@ export default class EpRoot extends Vue {
   }
 
   public async loading(
-    fn: () => Promise<void>,
+    fn: () => Promise<void>
   ) {
     this.mIsLoading = true;
     try {

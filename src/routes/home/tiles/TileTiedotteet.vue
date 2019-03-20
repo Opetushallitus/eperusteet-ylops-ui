@@ -37,7 +37,7 @@ export default class TileTiedotteet extends Vue {
     return _.take(this.tiedotteet, 5);
   }
 
-  public async mounted() {
+  async mounted() {
     try {
       this.tiedotteet = _((await Ulkopuoliset.getTiedotteet()).data)
         .filter((tiedote: any) =>

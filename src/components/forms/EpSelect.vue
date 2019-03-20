@@ -62,16 +62,16 @@ export default class EpSelect extends Mixins(EpValidation) {
 
   private innerModel: any[] = [];
 
-  public mounted() {
-    this.innerModel = this.model;
-  }
-
   private updateValue(value: any) {
     this.model.length = 0;
     this.model.push(...this.innerModel);
     if (this.validation) {
       this.validation.$touch();
     }
+  }
+
+  mounted() {
+    this.innerModel = this.model;
   }
 }
 </script>
