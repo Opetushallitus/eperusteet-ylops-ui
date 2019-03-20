@@ -18,7 +18,7 @@ import RouteOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteO
 import RouteOpintojakso from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOpintojakso.vue';
 import UnderConstruction from '@/routes/UnderConstruction.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
-import UkkRoute from '@/routes/ukk/UkkRoute.vue';
+import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 
 import { Virheet } from '@/stores/virheet';
 import { Kielet, UiKielet } from '@/stores/kieli';
@@ -63,7 +63,7 @@ export const router = new Router({
     }, {
       path: 'ukk',
       name: 'useinkysytyt',
-      component: UkkRoute,
+      component: RouteUkk,
     }, {
       path: 'opetussuunnitelmat',
       name: 'opetussuunnitelmaListaus',

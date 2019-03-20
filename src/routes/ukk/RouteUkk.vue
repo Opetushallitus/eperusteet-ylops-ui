@@ -108,7 +108,6 @@ div
     template(slot="modal-cancel") {{ $t('peruuta') }}
     template(slot="modal-ok") {{ kysymys.$uusi ? $t('lisaa-kysymys') : $t('tallenna') }}
 
-
 </template>
 
 <script lang="ts">
@@ -125,11 +124,11 @@ import {
   EpContent,
   EpFormContent,
   EpSelect,
-} from "@/components";
-import { Kysymykset, Ulkopuoliset } from "@/api";
-import { Kielet, UiKielet } from "@/stores/kieli";
-import { Kieli, KysymysDto } from "@/tyypit";
-import { kysymysValidator } from "@/validators/ukk";
+} from '@/components';
+import { Kysymykset, Ulkopuoliset } from '@/api';
+import { Kielet, UiKielet } from '@/stores/kieli';
+import { Kieli, KysymysDto } from '@/tyypit';
+import { kysymysValidator } from '@/validators/ukk';
 
 @Component({
   components: {
@@ -153,8 +152,7 @@ import { kysymysValidator } from "@/validators/ukk";
     };
   },
 })
-export default class UkkRoute extends Mixins(EpRoute) {
-
+export default class RouteUkk extends Mixins(EpRoute) {
   private rajain = '';
 
   private kysymykset: any[] = [];
@@ -185,7 +183,7 @@ export default class UkkRoute extends Mixins(EpRoute) {
 
     // Ei rajausta oletuksena
     _.each(orgs, o => {
-      o.$checked = true
+      o.$checked = true;
     });
 
     this.orgs.push(...orgs);
@@ -293,12 +291,15 @@ export default class UkkRoute extends Mixins(EpRoute) {
 
   // TODO: tämä voisi olla oma komponentti
   // Modaalin kielivalitsimen metodit
-  get sisaltoKieli() { return Kielet.getSisaltoKieli(); }
-  get sovelluksenKielet() { return UiKielet; }
+  get sisaltoKieli() {
+    return Kielet.getSisaltoKieli();
+  }
+  get sovelluksenKielet() {
+    return UiKielet;
+  }
   private valitseSisaltoKieli(kieli: Kieli) {
     Kielet.setSisaltoKieli(kieli);
   }
-
 }
 
 </script>

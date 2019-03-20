@@ -29,7 +29,6 @@ import { EpIcon } from '@/components';
   }
 })
 export default class BaseTile extends Vue {
-
   @Prop({ required: true })
   private icon!: string;
 
@@ -38,7 +37,6 @@ export default class BaseTile extends Vue {
 
   @Prop()
   private route!: object | string;
-
 }
 </script>
 

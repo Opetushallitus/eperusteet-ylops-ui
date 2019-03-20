@@ -10,7 +10,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
   name: 'EpIcon',
 })
 export default class EpIcon extends Vue {
-
   @Prop({ required: true })
   private icon!: string;
 

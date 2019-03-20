@@ -45,9 +45,6 @@ export interface OrganisaatioDto {
   oid: string;
 }
 
-// FIXME: vue-loader issue 1281
-import * as GApi from '@/generated/api';
-
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
 export type Matala = GApi.Matala;
 export type OpetussuunnitelmaDto = GApi.OpetussuunnitelmaDto;

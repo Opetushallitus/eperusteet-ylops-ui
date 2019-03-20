@@ -18,8 +18,6 @@ import { EpIcon } from '@/components';
   },
 })
 export default class TileFaq extends Vue {
-
   private ukkRoute = { name: 'useinkysytyt' };
-
 }
 </script>

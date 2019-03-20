@@ -27,7 +27,7 @@ import {
   EpIcon,
   EpNavigation,
   EpSpinner,
-} from "@/components";
+} from '@/components';
 
 @Component({
   components: {
