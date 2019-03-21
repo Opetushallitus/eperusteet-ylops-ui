@@ -37,7 +37,6 @@ import {
   },
 })
 export default class Home extends Vue {
-
   private rajain: string = '';
 
   private get nimi() {
