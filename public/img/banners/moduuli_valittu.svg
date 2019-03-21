@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="168px" height="171px" viewBox="0 0 168 171" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>Group 6</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="158" height="161" rx="10"></rect>
+        <filter x="-4.4%" y="-3.7%" width="111.4%" height="111.2%" filterUnits="objectBoundingBox" id="filter-2">
+            <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="2" dy="3" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0.101960784   0 0 0 0 0.345098039  0 0 0 0.18 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <path d="M41,0 C60.8228169,1.1531046 79.2889711,5.14988791 96.3984626,11.9903499 C122.0627,22.251043 129.533508,37.8295694 157.562101,39 C157.562101,29.3333333 157.562101,19.6666667 157.562101,10 L157.562101,10 C157.562101,4.4771525 153.084948,-1.01453063e-15 147.562101,0 L41,0 Z" id="path-3"></path>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-6" transform="translate(3.000000, 2.000000)">
+            <g id="Group-7" transform="translate(0.000000, -0.000000)">
+                <g id="Rectangle-Copy">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#3367E3" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+                <g id="Path-Copy-4">
+                    <use fill-opacity="0.3" fill="#FFFFFF" xlink:href="#path-3"></use>
+                    <use fill="#4D7AE6" xlink:href="#path-3"></use>
+                </g>
+                <path d="M95,-1.0658141e-14 C105.708674,1.12327745 115.684451,5.01667671 124.927334,11.6801978 C138.791657,21.6754794 142.827534,36.8510389 157.969128,37.9911942 C157.969128,28.6607961 157.969128,19.3303981 157.969128,10 L157.969128,10 C157.969128,4.4771525 153.491975,-1.52253853e-14 147.969128,-1.42108547e-14 L95,-1.0658141e-14 Z" id="Path-Copy-5" fill="#668DEA"></path>
+            </g>
+        </g>
+    </g>
+</svg>
