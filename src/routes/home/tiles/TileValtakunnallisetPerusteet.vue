@@ -1,5 +1,5 @@
 <template lang="pug">
-base-tile(icon="landmark", :href="'https://eperusteet.opintopolku.fi/#/' + kieli")
+base-tile(icon="valtakunnalliset-perusteet", :href="'https://eperusteet.opintopolku.fi/#/' + kieli")
   template(slot="header")
     span {{ $t('tile-perusteet') }}
   template(slot="content")

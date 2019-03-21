@@ -1,6 +1,8 @@
 const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 
+const servicePort = process.env.YLOPS_SERVICE_PORT || 8070;
+
 module.exports = {
   lintOnSave: false,
 
@@ -45,7 +47,7 @@ module.exports = {
     port: 9040,
     proxy: {
       '/eperusteet-ylops-service': {
-        target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:8080',
+        target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:' + servicePort,
         secure: false,
       },
     },

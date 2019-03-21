@@ -3,6 +3,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import * as solid from '@fortawesome/free-solid-svg-icons';
 import * as regular from '@fortawesome/free-regular-svg-icons';
+import * as oph from './icons';
 
 library.add(solid.faBars);
 library.add(solid.faBell);
@@ -31,5 +32,14 @@ library.add(solid.faThumbsUp);
 library.add(solid.faTimes);
 library.add(solid.faUsers);
 library.add(solid.faPlusCircle);
+
+// OPH icons
+library.add(oph.arkisto);
+library.add(oph.luoUusi);
+library.add(oph.opetussuunnitelmasi);
+library.add(oph.tiedotteet);
+library.add(oph.tyoryhma);
+library.add(oph.ukk);
+library.add(oph.valtakunnallisetPerusteet);
 
 Vue.component('fas', FontAwesomeIcon);

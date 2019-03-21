@@ -2,7 +2,7 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import { Kayttajat } from '@/stores/kayttaja';
 
-import TileFaq from './tiles/TileFaq.vue';
+import TileUkk from './tiles/TileUkk.vue';
 import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
 import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
 import TileUusiOpetussuunnitelma from './tiles/TileUusiOpetussuunnitelma.vue';
@@ -25,7 +25,7 @@ import {
     EpContent,
     EpNavigation,
     EpSearch,
-    TileFaq,
+    TileUkk,
     TileLoki,
     TileOpetussuunnitelmat,
     TileOrganisaatio,

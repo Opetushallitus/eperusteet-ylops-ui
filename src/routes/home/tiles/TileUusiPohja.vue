@@ -1,5 +1,5 @@
 <template lang="pug">
-base-tile(icon="plus", :route="{ name: 'uusiPohja' }")
+base-tile(icon="luo-uusi", :route="{ name: 'uusiPohja' }")
   template(slot="header")
     span {{ $t('tile-uusi-pohja') }}
   template(slot="content")
