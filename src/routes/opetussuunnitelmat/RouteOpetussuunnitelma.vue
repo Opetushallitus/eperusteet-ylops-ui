@@ -22,12 +22,10 @@ div
         template(slot="view")
           transition(name="fade" mode="out-in")
             router-view(:key="$route.fullPath")
-
 </template>
 
 <script lang="ts">
 import EpRoute from '@/mixins/EpRoot';
-import OpsSidenav from './OpsSidenav.vue';
 import Tilanvaihto from './Tilanvaihto.vue';
 import _ from 'lodash';
 import { DiagrammiVarit } from '@/tyypit';
@@ -38,6 +36,7 @@ import {
   EpNavigation,
   EpSidebar,
   EpSpinner,
+  OpsSidenav,
 } from '@/components';
 
 @Component({
