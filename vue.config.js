@@ -5,6 +5,7 @@ const servicePort = process.env.YLOPS_SERVICE_PORT || 8070;
 
 module.exports = {
   lintOnSave: false,
+  publicPath: process.env.NODE_ENV === 'production' ? '/eperusteet-ylops-app/uusi/' : '/',
 
   // CKEditor 5 theme
   css: {
