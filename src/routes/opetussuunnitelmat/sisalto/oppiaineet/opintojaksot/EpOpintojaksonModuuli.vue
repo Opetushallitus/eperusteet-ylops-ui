@@ -72,7 +72,6 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
       }
     }
   }
-
 }
 </script>
 
@@ -119,7 +118,6 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
   color: white;
   animation: fade 0.1s linear;
 }
-
 
 @keyframes fade {
   from { opacity: 0; }

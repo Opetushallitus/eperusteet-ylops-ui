@@ -7,7 +7,6 @@ import Vue from 'vue';
 import _ from 'lodash';
 import { Opetussuunnitelma } from './opetussuunnitelma';
 
-
 export class PerusteCache {
   private static cache: any = Vue.observable({});
 
@@ -27,7 +26,6 @@ export class PerusteCache {
   }
 
   public async getOppiaineenModuulit(koodiUri: string) {
-    console.log(this.peruste());
     // const result = (await Lops2019Perusteet.getAllLops2019PerusteOppiaineenModuulit(this.opsId, koodiUri)).data;
     // return result;
   }
@@ -50,5 +48,4 @@ export class PerusteCache {
     await result.init();
     return result;
   }
-
 }

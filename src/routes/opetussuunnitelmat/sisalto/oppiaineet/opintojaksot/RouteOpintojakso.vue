@@ -82,7 +82,6 @@ div.content
                       .p-2
                         span {{ liitetyt.paikalliset.valittu }} / {{ liitetyt.paikalliset.max }}
 
-
           .oppiaineet(v-if="isEditing")
             div(v-for="(oppiaine, uri) in valittavat", :key="uri")
               h5 {{ $kaanna(oppiaine.nimi) }}
@@ -143,7 +142,6 @@ div.content
                 :value="oppiaine.laajaAlainenOsaaminen.kuvaus")
             ep-content(v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing")
 
-
 </template>
 
 <script lang="ts">
@@ -158,7 +156,7 @@ import {
   EpFormContent,
   EpPrefixList,
   EpSpinner,
-}from '@/components';
+} from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
 import { Opintojaksot } from '@/api';
@@ -340,11 +338,6 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   async save(opintojakso: Lops2019OpintojaksoDto) {
     await Opetussuunnitelma.saveOpintojakso(opintojakso);
   }
-
-  private toggleModuuli(moduuli: Lops2019ModuuliDto) {
-    console.log(moduuli);
-  }
-
 }
 </script>
 

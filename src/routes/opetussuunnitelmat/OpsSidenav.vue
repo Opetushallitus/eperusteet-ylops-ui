@@ -76,7 +76,6 @@ export default class RouteOpetussuunnitelma extends Vue {
       } as any,
     });
   }
-
 }
 </script>
 

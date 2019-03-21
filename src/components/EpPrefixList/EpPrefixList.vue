@@ -8,7 +8,7 @@ div
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { EpContent, }from '@/components';
+import { EpContent } from '@/components';
 import _ from 'lodash';
 
 @Component({
@@ -34,10 +34,8 @@ export default class RouteOpintojakso extends Vue {
       return [this.value];
     }
   }
-
 }
 </script>
 
 <style lang="scss" scoped>
 </style>
-

@@ -93,7 +93,6 @@ class OpetussuunnitelmaStore {
     const result = (await Opintojaksot.updateOpintojakso(this.opetussuunnitelma!.id!, opintojakso.id!, opintojakso)).data;
     return result;
   }
-
 }
 
 export const Opetussuunnitelma = new OpetussuunnitelmaStore();
