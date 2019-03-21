@@ -13,6 +13,9 @@ export { default as EpSelect } from './forms/EpSelect.vue';
 export { default as EpToggle } from './forms/EpToggle.vue';
 export { default as EpDatepicker } from './forms/EpDatepicker.vue';
 export { default as EpAikaleima } from './EpAikaleima/EpAikaleima.vue';
+export { default as EpCollapse } from './EpCollapse/EpCollapse.vue';
+export { default as EpColorBall } from './EpColorBall/EpColorBall.vue';
+export { default as EpPrefixList } from './EpPrefixList/EpPrefixList.vue';
 
 export { default as EpNavigation } from './EpNavigation/EpNavigation.vue';
 export { default as EpFooter } from './EpFooter/EpFooter.vue';

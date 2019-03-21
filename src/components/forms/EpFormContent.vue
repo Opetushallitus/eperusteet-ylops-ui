@@ -1,6 +1,7 @@
 <template lang="pug">
 .form-group.form-content
-  label {{ $t(name) }}
+  div
+    label {{ $t(name) }}
   slot
 </template>
 
