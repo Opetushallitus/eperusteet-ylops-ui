@@ -4,15 +4,18 @@ import { createLogger } from '@/stores/logger';
 import _ from 'lodash';
 import {
   DokumentitApi,
-  KommentitApi,
+  DokumentitApiAxiosParamCreator,
   KayttajatApi,
+  KommentitApi,
   LiitetiedostotApi,
+  Lops2019OpintojaksotApi,
+  Lops2019PerusteControllerApi,
   OhjeetApi,
   OpetussuunnitelmanSisaltoApi,
   OpetussuunnitelmatApi,
   OpetussuunnitelmatJulkisetApi,
   TermistoApi,
-  UlkopuolisetApi, DokumentitApiAxiosParamCreator,
+  UlkopuolisetApi,
 } from '@/generated/api';
 
 type FactoryFn<T> = (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;
@@ -52,6 +55,8 @@ export const Kommentit = initApi(KommentitApi);
 export const Liitetiedostot = initApi(LiitetiedostotApi);
 export const Ohjeet = initApi(OhjeetApi);
 export const OpetussuunnitelmanSisalto = initApi(OpetussuunnitelmanSisaltoApi);
+export const Opintojaksot = initApi(Lops2019OpintojaksotApi);
+export const Lops2019Perusteet = initApi(Lops2019PerusteControllerApi);
 export const Opetussuunnitelmat = initApi(OpetussuunnitelmatApi);
 export const OpetussuunnitelmatJulkiset = initApi(OpetussuunnitelmatJulkisetApi);
 export const Termisto = initApi(TermistoApi);

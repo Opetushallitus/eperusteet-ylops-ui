@@ -1,4 +1,4 @@
-import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
+import { Watch, Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 import { editointi, EditointiKontrolli, EditointiKontrolliConfig } from '@/stores/editointi';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import '@/stores/kieli';
@@ -30,6 +30,11 @@ export default class EpEditointi extends Mixins(validationMixin) {
   private ctrls: EditointiKontrolli | null = null;
   private state: any = null;
   private isInitialized = false;
+
+  @Watch('state.data')
+  private changed(newValue: any, oldValue: any) {
+    this.$emit('input', newValue);
+  }
 
   public async mounted() {
     this.ctrls = editointi({ ...this.hooks });

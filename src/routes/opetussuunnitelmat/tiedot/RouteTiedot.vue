@@ -1,4 +1,3 @@
-import {Kieli} from "../../../tyypit";
 <template lang="pug">
 
 div.content
