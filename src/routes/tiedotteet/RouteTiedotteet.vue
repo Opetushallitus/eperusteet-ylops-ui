@@ -5,8 +5,7 @@ div
     .header
     .content
       div.titlerow
-        div.icon
-          fas(icon="bell")
+        ep-icon(icon="bell", background-color="#000000")
         div.titlecontent
           h2 {{ $t('tiedotteet') }}
           p Täältä löydät Opetushallituksen tiedotteet. Voit myös julkaista omia paikallisia tiedotteita organisaatiollesi.
@@ -25,6 +24,7 @@ import EpRoute from '@/mixins/EpRoot';
 
 import {
   EpAikaleima,
+  EpIcon,
   EpNavigation,
   EpSpinner,
 } from '@/components';
@@ -34,6 +34,7 @@ import {
     EpAikaleima,
     EpNavigation,
     EpSpinner,
+    EpIcon,
   },
 })
 export default class RouteTiedotteet extends Mixins(EpRoute) {
@@ -57,23 +58,6 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
 <style scoped lang="scss">
 .titlerow {
   display: flex;
-
-  .icon {
-    background: #000000;
-    width: 52px;
-    height: 52px;
-    border-radius: 26px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
-    color: white;
-    text-align: center;
-    margin-right: 10px;
-
-    svg {
-      width: 36px;
-      height: 36px;
-      margin-top: 8px;
-    }
-  }
 }
 
 .tiedote {

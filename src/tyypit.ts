@@ -33,6 +33,18 @@ export interface LokalisoituTekstiDto {
   [key: string]: string;
 }
 
+export interface KysymysDto {
+  id?: number;
+  kysymys?: string;
+  vastaus?: string;
+  organisaatiot: OrganisaatioDto[];
+  $uusi: boolean;
+}
+
+export interface OrganisaatioDto {
+  oid: string;
+}
+
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
 export type Matala = GApi.Matala;
 export type OpetussuunnitelmaDto = GApi.OpetussuunnitelmaDto;
@@ -44,6 +56,10 @@ export type Puu = GApi.Puu;
 export type RevisionDto = GApi.RevisionDto;
 export type TekstiKappaleViiteKevytDto = GApi.TekstiKappaleViiteKevytDto;
 export type OhjeDto = GApi.OhjeDto;
+export type Lops2019OpintojaksoDto = GApi.Lops2019OpintojaksoDto;
+export type Lops2019ModuuliDto = GApi.Lops2019ModuuliDto;
+export type Lops2019OppiaineDto = GApi.Lops2019OppiaineDto;
+export type Lops2019OpintojaksonModuuliDto = GApi.Lops2019OpintojaksonModuuliDto;
 
 export default GApi;
 // export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;

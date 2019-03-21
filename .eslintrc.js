@@ -37,6 +37,7 @@ module.exports = {
     // "vue/space-infix-ops": "error",
     // "vue/space-unary-ops": "error",
     "array-bracket-spacing": ["error", "never"],
+    "no-useless-constructor": "off",
     "operator-linebreak": ["error", "before"],
     "newline-per-chained-call": "error",
     "brace-style": ["error", "stroustrup"],

@@ -1,46 +1,45 @@
 <template lang="pug">
-div
-  base-tile(icon="file-signature", color="#5bca13")
-    template(slot="header")
-      router-link(
-        :to="{ name: 'opetussuunnitelmaListaus' }")
-        | {{ $t('tile-opetussuunnitelmasi') }}
-    template(slot="content")
-      ep-spinner(v-if="isLoading")
+base-tile(icon="opetussuunnitelmasi", color="#5bca13", :route="{ name: 'opetussuunnitelmaListaus' }")
+  template(slot="header")
+    span {{ $t('tile-opetussuunnitelmasi') }}
+  template(slot="content")
+    ep-spinner(v-if="isLoading")
+    div(v-else)
+      .alert.alert-light(v-if="ladatut.length === 0")
+        span {{ $t('opetussuunnitelmia-ei-loytynyt') }}
       div(v-else)
-        .alert.alert-light(v-if="ladatut.length === 0")
-          span {{ $t('opetussuunnitelmia-ei-ole-luotu') }}
-        div(v-else)
-          p {{ $t('tile-opetussuunnitelmasi-kuvaus') }}
-          .ops(v-for="ops in opetussuunnitelmat")
-            .d-flex.ops-container
-              .stats.p-2.flex-shrink-1
-                div
-                  ep-chart(:value="ops.valmiusaste",
-                    :labelSize="12",
-                    :width="60",
-                    :height="60")
-              .data.p-2
-                .name(v-if="ops.nimi")
-                  router-link(:to=`{ name: 'opsTiedot', params: { id: ops.id } }`)
-                    ep-content(:value="ops.nimi")
-                // .tiedot
-                  .description
-                    span(v-if="ops.kuvaus")
-                      ep-content(:value="ops.kuvaus")
-                    span(v-else) {{ ops.perusteenDiaarinumero }}
-                  .muokattu {{ $t('muokattu-viimeksi') }} {{ $ago(ops.muokattu) }}
-          button.btn.btn-link(v-if="opetussuunnitelmat.length > Maara" @click="naytaKaikki = !naytaKaikki")
-            | {{ naytaKaikki ? $t('nayta-vahemman') : $t('nayta-lisaa') }}
+        p {{ $t('tile-opetussuunnitelmasi-kuvaus') }}
+        .ops(v-for="ops in opetussuunnitelmat")
+          .d-flex.ops-container
+            .stats.p-2.flex-shrink-1
+              div
+                ep-chart(:value="ops.valmiusaste",
+                  :labelSize="12",
+                  :width="60",
+                  :height="60")
+            .data.p-2
+              .name(v-if="ops.nimi")
+                router-link(:to=`{ name: 'opsTiedot', params: { id: ops.id } }`)
+                  ep-content(:value="ops.nimi")
+              // .tiedot
+                .description
+                  span(v-if="ops.kuvaus")
+                    ep-content(:value="ops.kuvaus")
+                  span(v-else) {{ ops.perusteenDiaarinumero }}
+                .muokattu {{ $t('muokattu-viimeksi') }} {{ $ago(ops.muokattu) }}
+        button.btn.btn-link(v-if="opetussuunnitelmat.length > Maara" @click="naytaKaikki = !naytaKaikki")
+          | {{ naytaKaikki ? $t('nayta-vahemman') : $t('nayta-lisaa') }}
 </template>
 
 <script lang="ts">
-import { Vue, Component, Mixins } from 'vue-property-decorator';
+import { Component, Mixins } from 'vue-property-decorator';
 import EpRoot from '@/mixins/EpRoot';
 import BaseTile from './BaseTile.vue';
-import EpChart from '@/components/EpChart/EpChart';
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import {
+  EpChart,
+  EpContent,
+  EpSpinner,
+} from '@/components';
 import { Opetussuunnitelmat } from '@/api';
 import { delay } from '@/utils/delay';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
@@ -74,7 +73,7 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
 
   private get opetussuunnitelmat() {
     const result = _(this.nakyvat)
-      .map(ops => ({
+      .map((ops: any) => ({
         ...ops,
         valmiusaste: 50,
       }))

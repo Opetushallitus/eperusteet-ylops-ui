@@ -40,6 +40,9 @@
       color: $link-color-hover;
     }
   }
+
+  // https://getbootstrap.com/docs/4.3/layout/overview/#z-index
+  --ck-z-default: 1080;
 }
 
 .dev1 {
@@ -58,3 +61,6 @@
   background: $yellow;
 }
 
+button:disabled {
+  cursor: not-allowed;
+}

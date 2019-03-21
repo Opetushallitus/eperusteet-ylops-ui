@@ -1,102 +1,325 @@
 <template lang="pug">
+
 div
   ep-navigation(tyyli="ops")
-  .opetussuunnitelma
-    .header
-    .content
-      div.titlerow
-        div.icon
-          fas(icon="question")
-        div.titlecontent
-          h2 {{ $t('faq') }}
-          p Täältä löydät useimmin kysytyt kysymykset. Voit suodattaa tuloksia organisaation perusteella.
-      div.kysymys(
-        v-for="kysymys in kysymykset"
-        key="kysymys.id")
-        ep-aikaleima.aika(:value="kysymys.aika" type="sd")
-        p.otsikko {{kysymys.title}}
-        p.sisus {{kysymys.content}}
-        p.kommentti
-          fas(:icon="['far','comment']")
-          span {{ $t('kommentoi') }}
-          span.qty 3 kommenttia
+
+  div.content
+    div.container-fluid
+      // Rajaimet
+      div.row
+        div.col.col-fixed
+          ep-icon.float-right(icon="question", background-color="#CE52C6")
+        div.col
+          h2 {{ $t('ukk') }}
+
+          p {{ $t('ukk-kuvaus-nakyma') }}
+          ep-search(v-model="rajain")
+
+          p {{ $t('ukk-luoja-rajaus') }}:
+          .form-check.form-check-inline(v-for="org in organisaatiot")
+            input.form-check-input(:id="org.oid", type="checkbox", v-model="org.$checked")
+            label.form-check-label(:for="org.oid") {{ $kaanna(org.nimi) }}
+
+          p
+            b-button.float-right(variant="link", @click="startCreateKysymys")
+              fas.mr-2(icon="plus-circle")
+              span {{ $t('lisaa-uusi-kysymys') }}
+
+      // Kysymykset
+      div.row(v-for="kysymys in kysymyksetFormatted", :key="kysymys.id")
+        div.col.col-fixed.col-new
+          // Todo: Toteuta profiililla uusi
+          // Kysymys on uusi jos alle 30 päivää vanha
+          //p.float-right(v-if="(new Date().getTime() - kysymys.luotu) / 1000 / 60 / 60 / 24 < 30") {{ $t('uusi') }}
+        div.col
+          .float-right
+            button.btn.btn-link(@click="startUpdateKysymys(kysymys)")
+              fas(icon="pen")
+            button.btn.btn-link(@click="deleteKysymys(kysymys)")
+              fas(icon="times")
+          div
+            p
+              ep-aikaleima.text-secondary(:value="kysymys.luotu" type="ago")
+            h5
+              ep-content(
+                v-model="kysymys.kysymys",
+                :is-editable="false")
+            p.text-secondary
+              ep-content(
+                v-model="kysymys.vastaus",
+                :is-editable="false")
+            //div
+              a.pr-2.d-inline(href="")
+                fas.mr-2(:icon="['far','comment']")
+                span {{ $t('kommentoi') }}
+              p.px-2.d-inline.qty {{ $t('kommenttia', { maara: 0 }) }}
+            hr
+
+  // Kysymyksen luomisen/muokkaamisen modaali
+  b-modal.backdrop(
+    id="createUpdateKysymys",
+    ref="createUpdateKysymys"
+    @ok="createUpdateKysymys",
+    :no-close-on-backdrop="true",
+    :lazy="true",
+    :ok-disabled="validation.$invalid",
+    size="lg")
+    template(slot="modal-title")
+      span.mr-2 {{ kysymys.$uusi ? $t('lisaa-uusi-kysymys') : $t('muokkaa-kysymys') }}
+
+      // Sisällön kieli
+      b-dropdown.float-right(size="sm")
+        template(slot="button-content")
+          span {{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}
+        b-dropdown-item(
+          @click="valitseSisaltoKieli(kieli)",
+          v-for="kieli in sovelluksenKielet",
+          :key="kieli",
+          :disabled="kieli === sisaltoKieli") {{ kieli }}
+
+    ep-form-content(name="kysymys-nimi")
+      ep-content(
+        v-model="kysymys.kysymys",
+        help="kysymys-nimi-ohje",
+        :validation="validation.kysymys",
+        :is-editable="true")
+
+    ep-form-content(name="kysymys-vastaus")
+      ep-content(
+        v-model="kysymys.vastaus",
+        help="kysymys-vastaus-ohje",
+        :validation="validation.vastaus",
+        :is-editable="true")
+
+    ep-form-content(name="nayta-organisaatioissa")
+      ep-select(
+        help="kysymys-organisaatiot-ohje",
+        v-model="kysymys.organisaatiot",
+        :validation="validation.organisaatiot",
+        :is-editing="true",
+        :items="organisaatiot",
+        :multiple="true")
+        template(slot="item", slot-scope="{ item }")
+          span {{ $kaanna(item.nimi) }}
+
+    template(slot="modal-cancel") {{ $t('peruuta') }}
+    template(slot="modal-ok") {{ kysymys.$uusi ? $t('lisaa-kysymys') : $t('tallenna') }}
+
 </template>
 
 <script lang="ts">
-import { Vue, Component, Mixins } from 'vue-property-decorator';
 
+import _ from 'lodash';
+import { Component, Mixins } from 'vue-property-decorator';
+import { validationMixin } from 'vuelidate';
 import EpRoute from '@/mixins/EpRoot';
-
 import {
   EpAikaleima,
+  EpIcon,
   EpNavigation,
   EpSpinner,
+  EpContent,
+  EpFormContent,
+  EpSelect,
+  EpSearch,
 } from '@/components';
+import { Kysymykset, Ulkopuoliset } from '@/api';
+import { Kielet, UiKielet } from '@/stores/kieli';
+import { Kieli, KysymysDto } from '@/tyypit';
+import { kysymysValidator } from '@/validators/ukk';
 
 @Component({
   components: {
     EpAikaleima,
     EpNavigation,
     EpSpinner,
+    EpIcon,
+    EpContent,
+    EpFormContent,
+    EpSelect,
+    EpSearch,
+  },
+  mixins: [
+    EpRoute,
+    validationMixin
+  ],
+  validations() {
+    return {
+      kysymys: {
+        ...(this as any).validator,
+      },
+    };
   },
 })
 export default class RouteUkk extends Mixins(EpRoute) {
-  //
-  private kysymykset = [
-    {
-      id: 1,
-      aika: 1514808000000,
-      title: 'Tiedote 1 otsikko',
-      content: 'Tiedote 1 sisältö',
-    }, {
-      id: 2,
-      aika: 1515008000000,
-      title: 'Tiedote 2 otsikko',
-      content: 'Tiedote 2 sisältö',
-    },
-  ];
+  private rajain = '';
+
+  private kysymykset: any[] = [];
+
+  private orgs: any[] = [];
+
+  private kysymys: KysymysDto = {
+    $uusi: true,
+    organisaatiot: []
+  };
+
+  public async mounted() {
+    this.kysymykset = (await Kysymykset.getKysymykset() as any).data;
+
+    // Haetaan käyttäjän organisaatiot
+    const orgs = (await Ulkopuoliset.getUserOrganisations() as any).data;
+
+    if (!_.find(orgs, o => o.oid === '1.2.246.562.10.00000000001')) {
+      this.orgs.push({
+        nimi: {
+          fi: 'Opetushallitus',
+          sv: 'Utbildningsstyrelsen',
+          en: 'Finnish National Agency for Education'
+        },
+        oid: '1.2.246.562.10.00000000001'
+      });
+    }
+
+    // Ei rajausta oletuksena
+    _.each(orgs, o => {
+      o.$checked = true;
+    });
+
+    this.orgs.push(...orgs);
+  }
+
+  private get validator() {
+    return kysymysValidator([
+      Kielet.getSisaltoKieli() // Validoidaan kentät sisältökielen mukaan
+    ]);
+  }
+
+  private get validation() {
+    return (this as any).$v.kysymys;
+  }
+
+  private get kysymyksetFormatted() {
+    return _(this.kysymykset)
+      // Suodata kysymyksellä
+      .filter((k: any) => _.includes(
+        _.lowerCase(_.get(k, 'kysymys.' + Kielet.getSisaltoKieli())),
+        _.lowerCase(this.rajain)
+      ))
+      // Suodata organisaatiolla
+      .filter((k: any) => {
+        // Tehdään lista valituista organisaatioista
+        const checked: string[] = [];
+        _.each(this.organisaatiot, org => {
+          if (org.$checked) {
+            checked.push(org.oid);
+          }
+        });
+
+        // Tarkistetaan, löytyykö organisaatio haettavien joukosta
+        let found = false;
+        const kOrgs = _.map(k.organisaatiot, 'oid');
+        _.each(checked, oid => {
+          found = found || _.includes(kOrgs, oid);
+        });
+
+        return found;
+      })
+      .sortBy((k: any) => -k.luotu) // Laskeva järjestys
+      .value();
+  }
+
+  private get organisaatiot() {
+    return _.sortBy(this.orgs, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli()));
+  }
+
+  private get organisaatiotOptions() {
+    return _.map(this.organisaatiot, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli()));
+  }
+
+  // Luodaan uusi kysymys tai muokataan kysymystä riippuen tilanteesta
+  private async createUpdateKysymys(event: any) {
+    event.preventDefault(); // Piilotetaan modaali myöhemmin
+    try {
+      if (this.kysymys.id) {
+        // Muokataan olemassa olevaa
+        const res = (await Kysymykset.updateKysymys(this.kysymys.id, (this as any).kysymys) as any).data;
+        _.remove(this.kysymykset, k => k.id === res.id);
+        this.kysymykset.push(res);
+      }
+      else {
+        // Luodaan uusi kysymys
+        const res = (await Kysymykset.createKysymys((this as any).kysymys) as any).data;
+        this.kysymykset.push(res);
+      }
+      (this as any).$refs.createUpdateKysymys.hide();
+    }
+    catch (e) {
+      // Todo: Tallentaminen epäonnistui
+    }
+  }
+
+  // Poistetaan olemassa oleva kysymys
+  private async deleteKysymys(kysymys: any) {
+    if (kysymys.id) {
+      (await Kysymykset.deleteKysymys(kysymys.id));
+      _.remove(this.kysymykset, k => k.id === kysymys.id);
+      // Reaktiivisuus täytyy hoitaa käsin tässä tilanteessa
+      this.kysymykset = [
+        ...this.kysymykset
+      ];
+    }
+  }
+
+  // Aloitetaan kysymyksen lisäämisen modaali
+  private startCreateKysymys() {
+    this.kysymys = {
+      organisaatiot: [],
+      $uusi: true
+    };
+    (this as any).$refs.createUpdateKysymys.show();
+  }
+
+  // Aloitetaan kysymyksen muokkaamisen modaali
+  private startUpdateKysymys(kysymys: KysymysDto) {
+    this.kysymys = {
+      $uusi: false,
+      ..._.cloneDeep(kysymys)
+    };
+    (this as any).$refs.createUpdateKysymys.show();
+  }
+
+  // TODO: tämä voisi olla oma komponentti
+  // Modaalin kielivalitsimen metodit
+  get sisaltoKieli() {
+    return Kielet.getSisaltoKieli();
+  }
+  get sovelluksenKielet() {
+    return UiKielet;
+  }
+  private valitseSisaltoKieli(kieli: Kieli) {
+    Kielet.setSisaltoKieli(kieli);
+  }
 }
+
 </script>
 
 <style scoped lang="scss">
-.titlerow {
-  display: flex;
 
-  .icon {
-    background: #CE52C6;
-    width: 52px;
-    height: 52px;
-    border-radius: 26px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
-    color: white;
-    text-align: center;
-    margin-right: 10px;
+@import "@/styles/_variables.scss";
 
-    svg {
-      width: 36px;
-      height: 36px;
-      margin-top: 8px;
-    }
-  }
+.col-fixed {
+  flex: 0 0 100px;
 }
 
-.kysymys {
-  margin-left: 62px;
+.col-new {
+  color: #3367E3;
+}
+.qty {
+  user-select: all;
+}
 
-  .otsikko {
-    font-size: 16pt;
-  }
-
-  .kommentti {
-    svg {
-      margin-right: 5px;
-      transform: scale(-1, 1);
-    }
-
-    .qty {
-      margin-left: 20px;
-    }
-  }
+.btn-link {
+  text-decoration: none;
 }
 
 </style>

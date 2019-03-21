@@ -10,16 +10,14 @@ div.content
         @click="createDocument",
         :disabled="isPolling",
         :show-spinner="isPolling")
-        fas(icon="cog")
-        | &nbsp;&nbsp;
+        fas.mr-2(icon="cog")
         span {{ $t('luo-uusi-dokumentti') }}
       a.btn.btn-secondary(
         v-if="dto && href",
         :href="href",
         target="_blank",
         rel="noopener noreferrer")
-        fas.icon-asd(icon="file-download")
-        | &nbsp;&nbsp;
+        fas.mr-2(icon="file-download")
         span {{ $t('lataa-dokumentti') }}
 
   h2 {{ $t('lisaasetukset') }}

@@ -1,11 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 
-import { Opetussuunnitelmat } from '@/api';
-import { OpetussuunnitelmaInfoDto } from '@/tyypit';
-
 import { Kayttajat } from '@/stores/kayttaja';
 
-import TileFaq from './tiles/TileFaq.vue';
+import TileUkk from './tiles/TileUkk.vue';
 import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
 import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
 import TileUusiOpetussuunnitelma from './tiles/TileUusiOpetussuunnitelma.vue';
@@ -19,6 +16,7 @@ import {
   EpAikaleima,
   EpNavigation,
   EpContent,
+  EpSearch,
 } from '@/components';
 
 @Component({
@@ -26,7 +24,8 @@ import {
     EpAikaleima,
     EpContent,
     EpNavigation,
-    TileFaq,
+    EpSearch,
+    TileUkk,
     TileLoki,
     TileOpetussuunnitelmat,
     TileOrganisaatio,
@@ -38,6 +37,8 @@ import {
   },
 })
 export default class Home extends Vue {
+  private rajain: string = '';
+
   private get nimi() {
     return Kayttajat.nimi();
   }

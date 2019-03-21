@@ -1,5 +1,5 @@
 <template lang="pug">
-base-tile(icon="file-signature", color="#5bca13")
+base-tile(icon="opetussuunnitelmasi", color="#5bca13")
   template(slot="header")
     span {{ $t('tile-pohjasi') }}
   template(slot="content")
