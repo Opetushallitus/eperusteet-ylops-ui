@@ -5,6 +5,7 @@ const servicePort = process.env.YLOPS_SERVICE_PORT || 8070;
 
 module.exports = {
   lintOnSave: false,
+  publicPath: process.env.NODE_ENV === 'production' ? '/eperusteet-ylops-app/uusi/' : '/',
 
   // CKEditor 5 theme
   css: {
@@ -35,7 +36,9 @@ module.exports = {
       .loader('raw-loader');
     // Muuten tulee varoituksia puuttuvista tyypeistä
     // https://github.com/vuejs/vue-cli/issues/1436
-    config.optimization.providedExports(false);
+    if (process.env.NODE_ENV === 'development') {
+      config.optimization.providedExports(false);
+    }
   },
 
   devServer: {

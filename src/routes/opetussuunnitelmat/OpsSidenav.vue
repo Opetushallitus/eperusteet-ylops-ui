@@ -24,6 +24,11 @@
       button.btn.btn-primary(@click="addTekstikappale()")
         fas.mr-2(icon="plus")
         span {{ $t('lisaa-tekstikappale') }}
+    li
+      button.btn.btn-primary(@click="addOpintojakso()")
+        fas(icon="plus")
+        | &nbsp;&nbsp;
+        span {{ $t('lisaa-opintojakso') }}
   ops-sidenav-oppiaineet(v-if="sisalto && kayttajaOppiainenakymassa")
 </template>
 
@@ -56,8 +61,18 @@ export default class RouteOpetussuunnitelma extends Vue {
     const uusi = await Opetussuunnitelma.addTeksti({
       tekstiKappale: {
         nimi: {
-        },
+          fi: 'Uusi tekstikappale',
+        } as any,
       },
+    });
+  }
+
+  private async addOpintojakso() {
+    const uusi = await Opetussuunnitelma.addOpintojakso({
+      oppiaineUri: 'oppiaineet_maa',
+      nimi: {
+        fi: 'Uusi opintojakso',
+      } as any,
     });
   }
 }
