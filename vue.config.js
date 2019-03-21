@@ -3,6 +3,7 @@ const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 
 module.exports = {
   lintOnSave: false,
+  publicPath: '/eperusteet-ylops-app/uusi/',
 
   // CKEditor 5 theme
   css: {
