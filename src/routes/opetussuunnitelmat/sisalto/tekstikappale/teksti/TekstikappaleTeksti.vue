@@ -12,8 +12,7 @@
           h1(v-else)
             span {{ $kaanna(scope.data.tov.tekstiKappale.nimi) }}
             ep-button(variant="link" @click="addAlikappale(scope.data.tov)")
-              fas(icon="plus")
-              | &nbsp;&nbsp;
+              fas.mr-2(icon="plus")
               span {{ $t('lisaa-alikappale') }}
       template(slot-scope="scope")
         .teksti

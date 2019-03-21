@@ -7,6 +7,7 @@ import {
   DokumentitApiAxiosParamCreator,
   KayttajatApi,
   KommentitApi,
+  KysymyksetApi,
   LiitetiedostotApi,
   Lops2019OpintojaksotApi,
   Lops2019PerusteControllerApi,
@@ -52,6 +53,7 @@ export const Api = ax;
 export const Dokumentit = initApi(DokumentitApi);
 export const Kayttajat = initApi(KayttajatApi);
 export const Kommentit = initApi(KommentitApi);
+export const Kysymykset = initApi(KysymyksetApi);
 export const Liitetiedostot = initApi(LiitetiedostotApi);
 export const Ohjeet = initApi(OhjeetApi);
 export const OpetussuunnitelmanSisalto = initApi(OpetussuunnitelmanSisaltoApi);

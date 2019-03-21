@@ -1,23 +1,23 @@
 <template lang="pug">
-base-tile(icon="question", color="#CE52C6")
+base-tile(icon="ukk", color="#CE52C6", :route="{ name: 'useinkysytyt' }")
   template(slot="header")
-    router-link(
-      :to="{ name: 'useinkysytyt' }")
-      | {{ $t('faq') }}
+    span {{ $t('ukk') }}
   template(slot="content")
-    p {{ $t('faq-kuvaus') }}
+    p {{ $t('ukk-kuvaus') }}
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
+import { EpIcon } from '@/components';
 
 @Component({
   components: {
     BaseTile,
+    EpIcon,
   },
 })
-export default class TileFaq extends Vue {
+export default class TileUkk extends Vue {
 
 }
 </script>

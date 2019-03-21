@@ -33,6 +33,18 @@ export interface LokalisoituTekstiDto {
   [key: string]: string;
 }
 
+export interface KysymysDto {
+  id?: number;
+  kysymys?: string;
+  vastaus?: string;
+  organisaatiot: OrganisaatioDto[];
+  $uusi: boolean;
+}
+
+export interface OrganisaatioDto {
+  oid: string;
+}
+
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
 export type Matala = GApi.Matala;
 export type OpetussuunnitelmaDto = GApi.OpetussuunnitelmaDto;
