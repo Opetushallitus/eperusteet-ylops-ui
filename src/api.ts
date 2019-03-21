@@ -7,6 +7,7 @@ import {
   DokumentitApiAxiosParamCreator,
   KayttajatApi,
   KommentitApi,
+  KysymyksetApi,
   LiitetiedostotApi,
   Lops2019OpintojaksotApi,
   Lops2019PerusteControllerApi,
@@ -15,13 +16,7 @@ import {
   OpetussuunnitelmatApi,
   OpetussuunnitelmatJulkisetApi,
   TermistoApi,
-<<<<<<< HEAD
-  UlkopuolisetApi, DokumentitApiAxiosParamCreator, KysymyksetApi,
-||||||| merged common ancestors
-  UlkopuolisetApi, DokumentitApiAxiosParamCreator,
-=======
   UlkopuolisetApi,
->>>>>>> master
 } from '@/generated/api';
 
 type FactoryFn<T> = (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;
