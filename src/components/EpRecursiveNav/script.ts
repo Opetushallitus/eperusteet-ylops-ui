@@ -17,7 +17,7 @@ export default class EpRecursiveNav extends Vue {
     const stackData = this.navStack.pop();
     this.current = stackData.curPos;
     if (this.navStack.length > 0) {
-      this.previous = this.navStack.splice(-1)[0].item;
+      this.previous = this.navStack[this.navStack.length - 1].item;
     }
     else {
       this.previous = {};
