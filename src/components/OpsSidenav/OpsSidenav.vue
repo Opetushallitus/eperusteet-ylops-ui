@@ -5,7 +5,7 @@
       input.form-control.megasearch(type="text" placeholder="Etsi")
       fas.inner-icon(icon="search")
 
-  ul.navigation(v-if="sisalto")
+  ul.navigation(v-if="sisalto.length>0")
     ep-recursive-nav(:value="valikkoData")
       template(v-slot:previousLink="{ item, navigate }")
         li.submenu(@click="navigate()")

@@ -10,4 +10,3 @@ describe('OpsSidenav component', () => {
     expect(wrapper.html()).toContain('search');
   });
 });
-

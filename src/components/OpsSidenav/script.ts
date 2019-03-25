@@ -123,26 +123,23 @@ const menuExtraData = [
 export default class OpsSidenav extends Vue {
   private get valikkoData() {
     let menuOpsData: any = [];
-    let opsSisalto = this.sisalto;
 
-    if (opsSisalto && opsSisalto.lapset) {
-      for (let teksti of opsSisalto.lapset) {
-        if (!teksti || !teksti.tekstiKappale) {
-          continue;
-        }
-
-        let valikkoLinkki: any = {
-          item: teksti.tekstiKappale.nimi,
-          route: {
-            name: 'tekstikappale',
-            params: {
-              osaId: teksti.id,
-            },
-          },
-        };
-
-        menuOpsData.push(valikkoLinkki);
+    for (let teksti of this.sisalto) {
+      if (!teksti || !teksti.tekstiKappale) {
+        continue;
       }
+
+      let valikkoLinkki: any = {
+        item: teksti.tekstiKappale.nimi,
+        route: {
+          name: 'tekstikappale',
+          params: {
+            osaId: teksti.id,
+          },
+        },
+      };
+
+      menuOpsData.push(valikkoLinkki);
     }
 
     return [...menuBaseData, ...menuOpsData, ...menuExtraData];
@@ -163,7 +160,11 @@ export default class OpsSidenav extends Vue {
   }
 
   private get sisalto() {
-    return Opetussuunnitelma.sisalto;
+    if (Opetussuunnitelma.sisalto && Opetussuunnitelma.sisalto.lapset) {
+      return Opetussuunnitelma.sisalto.lapset;
+    }
+
+    return [];
   }
 
   private async addTekstikappale() {
