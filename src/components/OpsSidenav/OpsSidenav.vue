@@ -10,12 +10,12 @@
       template(v-slot:previousLink="{ item, navigate }")
         li.submenu(@click="navigate()")
           fas(icon="chevron-left")
-          a.btn.btn-link {{item.name}}
+          a.btn.btn-link {{ kaanna(item) }}
       template(v-slot="{ item, children, isPreviousLink, isSubmenu, navigate, itemRoute }")
         router-link(tag="li", :to="itemRoute", v-if="!isSubmenu && itemRoute")
-          a.btn.btn-link {{item.name}}
+          a.btn.btn-link {{ kaanna(item) }}
         li.submenu(v-if="isSubmenu", @click="navigate(item, children)")
-          a.btn.btn-link {{item.name}}
+          a.btn.btn-link {{ kaanna(item) }}
           fas(icon="chevron-right")
 
     li
