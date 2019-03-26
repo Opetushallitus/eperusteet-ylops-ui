@@ -1,4 +1,4 @@
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 
 @Component
 export default class EpRecursiveNav extends Vue {
@@ -32,5 +32,16 @@ export default class EpRecursiveNav extends Vue {
 
   private isSubmenu(item: any) {
     return (item.children && item.children.length > 0 && !item.flatten);
+  }
+
+  @Watch('value')
+  private onValueChange() {
+    if (this.navStack.length === 0) {
+      this.current = this.value;
+    }
+    /* FIXME
+    else {
+    }
+    */
   }
 }
