@@ -20,8 +20,7 @@
 
     li
       button.btn.btn-primary(@click="addTekstikappale()")
-        fas(icon="plus")
-        | &nbsp;&nbsp;
+        fas.mr-2(icon="plus")
         span {{ $t('lisaa-tekstikappale') }}
 </template>
 

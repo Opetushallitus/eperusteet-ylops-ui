@@ -17,7 +17,6 @@ import {
   OpetussuunnitelmatJulkisetApi,
   TermistoApi,
   UlkopuolisetApi,
-  KysymyksetApi,
 } from '@/generated/api';
 
 type FactoryFn<T> = (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;
