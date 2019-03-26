@@ -19,7 +19,7 @@ describe('EpCollapse component', () => {
 
   it('Renders header only when collapsed', () => {
     const wrapper = mount(EpCollapse, options);
-    wrapper.find('button.header-content').trigger('click');
+    wrapper.find('.collapse-button').trigger('click');
     expect(wrapper.html()).toContain(options.slots.header);
     expect(wrapper.html()).not.toContain(options.slots.default);
   });
