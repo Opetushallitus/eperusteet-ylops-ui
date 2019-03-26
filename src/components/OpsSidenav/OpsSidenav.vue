@@ -24,8 +24,7 @@
         span {{ $t('lisaa-tekstikappale') }}
     li
       button.btn.btn-primary(@click="addOpintojakso()")
-        fas(icon="plus")
-        | &nbsp;&nbsp;
+        fas.mr-2(icon="plus")
         span {{ $t('lisaa-opintojakso') }}
 </template>
 
