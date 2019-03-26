@@ -179,10 +179,10 @@ export default class OpsSidenav extends Vue {
 
   private async addOpintojakso() {
     const uusi = await Opetussuunnitelma.addOpintojakso({
-      oppiaineUri: 'oppiaineet_maa',
       nimi: {
-        fi: 'Uusi opintojakso',
+        fi: 'x',
       } as any,
+      oppiaineet: ['oppiaineet_bi'],
     });
   }
 }

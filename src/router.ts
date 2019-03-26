@@ -7,18 +7,19 @@ import Home from '@/routes/home/RouteHome.vue';
 import VirheRoute from '@/routes/virhe/VirheRoute.vue';
 import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
+import RouteDokumentti from '@/routes/opetussuunnitelmat/dokumentti/RouteDokumentti.vue';
+import RouteModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteModuuli.vue';
 import RouteOpetussuunnitelma from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelma.vue';
 import RouteOpetussuunnitelmaListaus from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaListaus.vue';
-import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RouteOpetussuunnitelmaUusi from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaUusi.vue';
-import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
-import RouteDokumentti from '@/routes/opetussuunnitelmat/dokumentti/RouteDokumentti.vue';
-import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
-import RouteOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaine.vue';
 import RouteOpintojakso from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/opintojaksot/RouteOpintojakso.vue';
-import UnderConstruction from '@/routes/UnderConstruction.vue';
+import RouteOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaine.vue';
+import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
+import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
+import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
+import UnderConstruction from '@/routes/UnderConstruction.vue';
 
 import { Virheet } from '@/stores/virheet';
 import { Kielet, UiKielet } from '@/stores/kieli';
@@ -89,9 +90,13 @@ export const router = new Router({
         component: UnderConstruction,
         name: 'opsKasitteet',
       }, {
-        path: 'oppiaineet/:aineId',
+        path: 'oppiaineet/:oppiaineId',
         component: RouteOppiaine,
         name: 'oppiaine',
+      }, {
+        path: 'oppiaineet/:oppiaineId/moduulit/:moduuliId',
+        component: RouteModuuli,
+        name: 'moduuli',
       }, {
         path: 'opintojaksot/:opintojaksoId',
         component: RouteOpintojakso,

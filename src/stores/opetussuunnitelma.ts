@@ -1,10 +1,16 @@
 import { Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
-import { Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { Matala, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import { AxiosResponse } from 'axios';
 import { createLogger } from './logger';
 import { State, Store } from './store';
+import _ from 'lodash';
 
 const logger = createLogger('Opetussuunnitelma');
+
+interface OpintojaksoQuery {
+  oppiaineUri?: string;
+  moduuliUri?: string;
+}
 
 @Store
 class OpetussuunnitelmaStore {
@@ -82,6 +88,20 @@ class OpetussuunnitelmaStore {
     const result = (await Opintojaksot.addOpintojakso(this.opetussuunnitelma!.id!, opintojakso)).data;
     await this.updateSisalto();
     return result;
+  }
+
+  public async getOpintojaksot(query: OpintojaksoQuery = {}) {
+    let chain = _((await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data);
+    chain = _(chain);
+    if (query.oppiaineUri) {
+      chain.filter(oj => _.includes(oj.oppiaineet, query.oppiaineUri));
+    }
+    if (query.moduuliUri) {
+      chain.filter(oj => _.includes(
+        _.map(oj.moduulit, 'koodiUri'),
+        query.oppiaineUri));
+    }
+    return chain.value();
   }
 
   public async getOpintojakso(id: number) {
