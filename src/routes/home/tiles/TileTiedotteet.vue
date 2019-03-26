@@ -20,6 +20,7 @@ import {
 } from '@/components';
 import _ from 'lodash';
 
+
 @Component({
   components: {
     BaseTile,
@@ -29,19 +30,35 @@ import _ from 'lodash';
 export default class TileTiedotteet extends Vue {
   private isLoading = true;
   private tiedotteet: any[] = [];
+  private tiedotteetCount = 5;
 
   get uusimmat() {
-    return _.take(this.tiedotteet, 5);
+    return _.take(this.tiedotteet, this.tiedotteetCount);
   }
 
   async mounted() {
     try {
-      this.tiedotteet = _((await Ulkopuoliset.getTiedotteet()).data)
-        .filter((tiedote: any) =>
+      this.tiedotteet = _((await Ulkopuoliset.getTiedotteetHaku(
+        1,
+        this.tiedotteetCount,
+        undefined,
+        undefined,
+        undefined,
+        true,
+        true
+
+        /*{
+        sivu: 1,
+        sivukoko: this.tiedotteetCount,
+        julkinen: true,
+        yleinen: true
+      }*/
+      )).data.data)
+        /*.filter((tiedote: any) =>
           tiedote.otsikko
           && tiedote.julkinen
           && tiedote.yleinen
-          && !tiedote.peruste)
+          && !tiedote.peruste)*/
         .sortBy('luotu')
         .reverse()
         .value();

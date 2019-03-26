@@ -1,70 +1,95 @@
 <template lang="pug">
 div
   ep-navigation(tyyli="ops")
-  .opetussuunnitelma
-    .header
-    .content
-      div.titlerow
-        ep-icon(icon="bell", background-color="#000000")
-        div.titlecontent
+
+  div.content
+    div.container-fluid
+      // Rajaimet
+      div.row
+        div.col.col-fixed
+          ep-icon.float-right(icon="tiedotteet", background-color="#000000")
+        div.col
           h2 {{ $t('tiedotteet') }}
-          p Täältä löydät Opetushallituksen tiedotteet. Voit myös julkaista omia paikallisia tiedotteita organisaatiollesi.
-      div.tiedote(
-        v-for="tiedote in tiedotteet"
-        key="tiedote.id")
-        ep-aikaleima.aika(:value="tiedote.aika" type="sd")
-        p.otsikko {{tiedote.title}}
-        p.sisus {{tiedote.content}}
+          p {{ $t('tiedotteet-kuvaus-nakyma') }}
+          ep-search(v-model="rajain")
+
+      // Tiedotteet
+      div.row(v-for="tiedote in tiedotteetFormatted", :key="tiedote.id")
+        div.col.col-fixed.col-new
+          // Todo: Toteuta profiililla uusi
+        div.col
+          div
+            p
+              ep-aikaleima.text-secondary(:value="tiedote.luotu", type="sd")
+            ep-collapse.mb-2(:default-state="false")
+              h5(slot="header") {{ $kaanna(tiedote.otsikko) }}
+              ep-content(v-model="tiedote.sisalto", :is-editable="false", :class="{ preview: !tiedote.$nayta }")
+            hr
 </template>
 
 <script lang="ts">
 import { Vue, Component, Mixins } from 'vue-property-decorator';
+import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoot';
 
 import {
   EpAikaleima,
+  EpContent,
   EpIcon,
   EpNavigation,
+  EpSearch,
   EpSpinner,
+  EpCollapse,
 } from '@/components';
+import { Ulkopuoliset } from '@/api';
 
 @Component({
   components: {
     EpAikaleima,
-    EpNavigation,
-    EpSpinner,
+    EpContent,
     EpIcon,
+    EpNavigation,
+    EpSearch,
+    EpSpinner,
+    EpCollapse,
   },
 })
 export default class RouteTiedotteet extends Mixins(EpRoute) {
-  //
-  private tiedotteet = [
-    {
-      id: 1,
-      aika: 1514808000000,
-      title: 'Tiedote 1 otsikko',
-      content: 'Tiedote 1 sisältö',
-    }, {
-      id: 2,
-      aika: 1515008000000,
-      title: 'Tiedote 2 otsikko',
-      content: 'Tiedote 2 sisältö',
-    },
-  ];
+  private rajain = '';
+  private tiedotteet: any[] = [];
+
+  private get tiedotteetFormatted() {
+    return this.tiedotteet;
+  }
+
+  async mounted() {
+    try {
+      this.tiedotteet = _((await Ulkopuoliset.getTiedotteet()).data)
+        .filter((tiedote: any) =>
+          tiedote.otsikko
+          && tiedote.julkinen
+          && tiedote.yleinen
+          && !tiedote.peruste)
+        .sortBy('luotu')
+        .reverse()
+        .value();
+    }
+    finally {
+    }
+  }
+
 }
 </script>
 
 <style scoped lang="scss">
-.titlerow {
-  display: flex;
+
+.col-fixed {
+  flex: 0 0 100px;
 }
 
-.tiedote {
-  margin-left: 62px;
-
-  .otsikko {
-    font-size: 16pt;
-  }
+h5 {
+  overflow-x: hidden;
 }
+
 </style>

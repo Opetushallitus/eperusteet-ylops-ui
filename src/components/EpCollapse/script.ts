@@ -1,8 +1,12 @@
-import { Component, Vue } from 'vue-property-decorator';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component({
   name: 'EpCollapse',
 })
 export default class EpCollapse extends Vue {
-  private toggled = true;
+  @Prop({ default: true })
+  private defaultState!: boolean;
+
+  private toggled = this.defaultState;
+
 }
