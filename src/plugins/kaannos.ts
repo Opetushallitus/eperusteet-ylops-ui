@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import moment from 'moment';
 import _ from 'lodash';
 import { createLogger } from '@/stores/logger';
 import { Kielet } from '@/stores/kieli';
