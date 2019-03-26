@@ -1,7 +1,7 @@
 const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 
-const servicePort = process.env.YLOPS_SERVICE_PORT || 8070;
+const servicePort = process.env.YLOPS_SERVICE_PORT || 8080;
 
 module.exports = {
   lintOnSave: false,

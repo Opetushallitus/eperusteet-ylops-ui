@@ -1,4 +1,5 @@
 {
+  "arviointi": "Arviointi",
   "dokumentit": "Dokumentit",
   "dokumentti": "Dokumentti",
   "dokumentti-ei-ole": "Dokumenttia ei ole",
@@ -82,13 +83,17 @@
   "opetussuunnitelmia-ei-loytynyt": "Opetussuunnitelmia ei löytynyt",
   "opetussuunnitelmia-ei-ole-luotu": "Opetussuunnitelmia ei ole luotu",
   "oph": "OPH",
+  "opintojakso-nimi": "Opintojakson nimi",
+  "opintojakso-nimi-ohje": "",
   "opintojaksolle-ei-lisatty-moduuleita": "Opintojaksolle ei ole lisätty moduuleita",
   "opintojakson-modulit": "Opintojakson modulit",
   "opintojakson-moduulit": "Opintojakson moduulit",
   "opintojakson-tila": "Opintojakson tila",
+  "opintojaksot": "Opintojaksot",
   "opintopisteet": "Opintopisteet",
   "oppiaine": "Oppiaine",
   "oppiaineet": "Oppiaineet",
+  "oppiaineet-tehtava": "Oppiaineen tehtävä",
   "oppilaitokset": "Oppilaitokset",
   "ops-hyvaksyjataho": "Hyväksyjätaho",
   "ops-hyvaksyjataho-ohje": "",
@@ -157,5 +162,6 @@
   "valitse-pvm-jana": "Valitse aikajana",
   "valitse-vaihtoehto": "Valitse vaihtoehto",
   "valitut-moduulit": "Valitut moduulit",
-  "valmis": "Valmis"
+  "valmis": "Valmis",
+  "yleiset-tavoitteet": "Yleiset tavoitteet"
 }

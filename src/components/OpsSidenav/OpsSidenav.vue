@@ -22,10 +22,12 @@
       button.btn.btn-primary(@click="addTekstikappale()")
         fas.mr-2(icon="plus")
         span {{ $t('lisaa-tekstikappale') }}
+
     li
       button.btn.btn-primary(@click="addOpintojakso()")
         fas.mr-2(icon="plus")
         span {{ $t('lisaa-opintojakso') }}
+
 </template>
 
 <style scoped lang="scss" src="./style.scss"></style>
