@@ -4,10 +4,11 @@ base-tile(icon="tiedotteet", color="#000", :route="{ name: 'tiedotteet' }")
     span {{ $t('tiedotteet') }}
   template(slot="content")
     ep-spinner(v-if="isLoading")
-    .tiedotteet
-      .tiedote(v-for="tiedote in uusimmat")
-        a(href="")
-          ep-content(:value="tiedote.otsikko")
+    div(v-else)
+      .tiedotteet
+        div.tiedote(v-for="tiedote in uusimmat")
+          small.mr-4 {{ $cdt(tiedote.luotu, 'L') }}
+          span {{ $kaanna(tiedote.otsikko) }}
 </template>
 
 <script lang="ts">
@@ -15,7 +16,6 @@ import { Vue, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
 import { Ulkopuoliset } from '@/api';
 import {
-  EpContent,
   EpSpinner,
 } from '@/components';
 import _ from 'lodash';
@@ -23,7 +23,6 @@ import _ from 'lodash';
 @Component({
   components: {
     BaseTile,
-    EpContent,
     EpSpinner,
   },
 })
@@ -43,8 +42,6 @@ export default class TileTiedotteet extends Vue {
           && tiedote.julkinen
           && tiedote.yleinen
           && !tiedote.peruste)
-      // && _.includes(YlopsKoulutustyypit, tiedote.peruste.koulutustyyppi))
-        // .filter((tiedote: any) => tiedote.peruste.koulutu)
         .sortBy('luotu')
         .reverse()
         .value();
@@ -57,7 +54,19 @@ export default class TileTiedotteet extends Vue {
 </script>
 
 <style scoped lang="scss">
-.tiedote {
-  padding-top: 10px;
+.tiedotteet {
+  text-align: left;
+
+  .tiedote {
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+
+    small {
+      color: #071A58;
+    }
+  }
+
 }
+
 </style>

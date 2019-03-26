@@ -61,7 +61,7 @@ $tile-width: 540px;
   text-align: center;
 
   .innertile {
-    padding: 20px;
+    padding: 20px 40px;
     min-height: $tile-height;
     background: $etusivu-tile-background;
     border: 1px solid #eee;
@@ -70,7 +70,7 @@ $tile-width: 540px;
 
     .tile-content {
       overflow: hidden;
-      color: black;
+      color: #28344F;
     }
 
     .iconline {
