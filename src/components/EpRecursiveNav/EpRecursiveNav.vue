@@ -12,7 +12,6 @@
       :isSubmenu="isSubmenu(item)",
       :itemRoute="item.route",
       :navigate="vaihdaValikkoa")
-
     div.alivalikko(v-if="item.flatten")
       .subitem(v-for="subitem in item.children")
         slot(

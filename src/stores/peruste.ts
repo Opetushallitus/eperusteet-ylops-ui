@@ -7,7 +7,6 @@ import Vue from 'vue';
 import _ from 'lodash';
 import { Opetussuunnitelma } from './opetussuunnitelma';
 
-
 export class PerusteCache {
   private static cache: any = Vue.observable({});
 

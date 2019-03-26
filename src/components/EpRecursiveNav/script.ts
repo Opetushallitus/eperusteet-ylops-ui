@@ -1,11 +1,11 @@
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component
 export default class EpRecursiveNav extends Vue {
-  @Prop({ default: () => [] })
+  @Prop({ default: [] })
   private value: any;
 
-  private current: any;
+  private current: any = [];
   private navStack: any = [];
   private previous: any = {};
 
@@ -17,19 +17,17 @@ export default class EpRecursiveNav extends Vue {
     const stackData = this.navStack.pop();
     this.current = stackData.curPos;
     if (this.navStack.length > 0) {
-      this.previous = this.navStack.splice(-1)[0].item;
+      this.previous = this.navStack[this.navStack.length - 1].item;
     }
     else {
       this.previous = {};
     }
-    this.$forceUpdate();
   }
 
   public vaihdaValikkoa(item: any, childGroup: any) {
     this.navStack.push({ item, curPos: this.current });
     this.current = childGroup;
     this.previous = item;
-    this.$forceUpdate();
   }
 
   private isSubmenu(item: any) {

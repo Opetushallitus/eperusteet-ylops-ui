@@ -16,12 +16,15 @@
       margin-left: 20px;
     }
 
+    a.btn {
+      text-align: left;
+    }
+
     li.submenu {
       display: flex;
       align-items: center;
       cursor: pointer;
       a.btn {
-        text-align: left;
         width: 100%;
       }
     }

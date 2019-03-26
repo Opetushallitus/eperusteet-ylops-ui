@@ -12,21 +12,6 @@ interface OpintojaksoQuery {
   moduuliUri?: string;
 }
 
-
-export function sortOppiaineet(oppiaineet: Lops2019OppiaineDto[]): Lops2019OppiaineDto[] {
-  return _(oppiaineet)
-    .sortBy('koodi.arvo')
-    .value();
-}
-
-
-export function sortModuulit(moduulit: Lops2019ModuuliDto[]): Lops2019ModuuliDto[] {
-  return _(moduulit)
-    .sortBy('koodi.arvo')
-    .value();
-}
-
-
 @Store
 class OpetussuunnitelmaStore {
   @State()
