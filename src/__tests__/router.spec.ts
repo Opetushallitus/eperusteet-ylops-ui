@@ -71,13 +71,15 @@ describe('Router', () => {
     jest.spyOn(Ulkopuoliset, 'getLokalisoinnit')
       .mockImplementation(async () => makeAxiosResponse({}));
 
-    jest.spyOn(Ulkopuoliset, 'getTiedotteet')
-      .mockImplementation(async () => makeAxiosResponse([{
+    jest.spyOn(Ulkopuoliset, 'getTiedotteetHaku')
+      .mockImplementation(async () => makeAxiosResponse({
+        data: [{
         julkinen: true,
         yleinen: true,
         otsikko: { fi: 'Tämä on tiedote' },
         koulutustyyppi: 'koulutustyyppi_2',
-      }]));
+        }]
+      }));
 
     await Kayttajat.init();
     return mount(rootConfig, {
