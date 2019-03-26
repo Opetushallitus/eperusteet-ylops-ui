@@ -7,9 +7,9 @@ div.content
         div
           .row
             .col-md-6
-              ep-form-content(name="ops-nimi")
+              ep-form-content(name="opintojakso-nimi")
                 ep-field(
-                  help="ops-nimi-ohje",
+                  help="opintojakso-nimi-ohje",
                   v-model="data.nimi",
                   :validation="validation.nimi",
                   :is-editing="isEditing")
@@ -28,65 +28,61 @@ div.content
               ep-form-content(name="tila")
                 span Luonnos
 
-        hr.valiviiva
-        ep-collapse
-          h4(slot="header") {{ $t('opintojakson-moduulit') }}
-
-          div(v-if="isEditing")
-            .row
-              .col-md-6
-                ep-form-content(name="oppiaine")
-                  multiselect(
-                    v-model="selectedOppiaineet",
-                    track-by="id"
-                    :options="filteredOppiaineet",
-                    :close-on-select="true",
-                    :clear-on-select="true",
-                    :placeholder="''",
-                    :internalSearch="false",
-                    @search-change="oppiaineQuery = $event",
-                    :multiple="true")
-                    template(slot="singleLabel", slot-scope="{ option }")
-                      span.selected {{ $kaanna(option.nimi) }}
-                    template(slot="option", slot-scope="{ option, search }")
-                      div {{ $kaanna(option.nimi) }}
-                    template(slot="tag", slot-scope="{ option, search, remove }")
-                      span.selected
-                        span {{ $kaanna(option.nimi) }}
-                        button.btn.btn-link(@click="remove(option.id)")
-                          fas(icon="times")
-                    template(slot="noResult")
-                      div {{ $t('ei-hakutuloksia') }}
-                  // select.form-control()
-                    option(v-for="oa in valittujenModuulienOppiaineet", :value="oa.koodi.uri")
-                      | {{ $kaanna(oa.nimi) }}
-              .col-md-6
-                ep-form-content(name="liitetyt-moduulit")
-                  .liitetyt-moduulit
-                    div.d-flex
-                      .p-2.flex-grow-1
-                        ep-color-ball(kind="pakollinen")
-                        span.taso {{ $t('pakolliset') }}
-                      .p-2
-                        span {{ liitetyt.pakolliset.valittu }} / {{ liitetyt.pakolliset.max }}
-                    div.d-flex
-                      .p-2.flex-grow-1
-                        ep-color-ball(kind="syventava")
-                        span.taso {{ $t('syventavat') }}
-                      .p-2
-                        span {{ liitetyt.syventavat.valittu }} / {{ liitetyt.syventavat.max }}
-                    div.d-flex
-                      .p-2.flex-grow-1
-                        ep-color-ball(kind="paikallinen")
-                        span.taso {{ $t('paikalliset') }}
-                      .p-2
-                        span {{ liitetyt.paikalliset.valittu }} / {{ liitetyt.paikalliset.max }}
+        div(v-if="isEditing || data.moduulit.length > 0")
+          hr.valiviiva
+          ep-collapse
+            h4(slot="header") {{ $t('opintojakson-moduulit') }}
+            div(v-if="isEditing")
+              .row
+                .col-md-6
+                  ep-form-content(name="oppiaine")
+                    multiselect(
+                      v-model="data.oppiaineet",
+                      :options="filteredOppiaineet",
+                      :close-on-select="true",
+                      :clear-on-select="true",
+                      :placeholder="''",
+                      :internalSearch="false",
+                      @search-change="oppiaineQuery = $event",
+                      :multiple="true")
+                      template(slot="singleLabel", slot-scope="{ option }")
+                        span.selected {{ $kaanna(oppiaineetMap[option].nimi) }}
+                      template(slot="option", slot-scope="{ option, search }")
+                        div {{ $kaanna(oppiaineetMap[option].nimi) }}
+                      template(slot="tag", slot-scope="{ option, search, remove }")
+                        span.selected
+                          span {{ $kaanna(oppiaineetMap[option].nimi) }}
+                          button.btn.btn-link(@click="remove(option)")
+                            fas(icon="times")
+                      template(slot="noResult")
+                        div {{ $t('ei-hakutuloksia') }}
+                .col-md-6
+                  ep-form-content(name="liitetyt-moduulit")
+                    .liitetyt-moduulit
+                      div.d-flex
+                        .p-2.flex-grow-1
+                          ep-color-ball(kind="pakollinen")
+                          span.taso {{ $t('pakolliset') }}
+                        .p-2
+                          span {{ liitetyt.pakolliset.valittu }} / {{ liitetyt.pakolliset.max }}
+                      div.d-flex
+                        .p-2.flex-grow-1
+                          ep-color-ball(kind="syventava")
+                          span.taso {{ $t('syventavat') }}
+                        .p-2
+                          span {{ liitetyt.syventavat.valittu }} / {{ liitetyt.syventavat.max }}
+                      div.d-flex
+                        .p-2.flex-grow-1
+                          ep-color-ball(kind="paikallinen")
+                          span.taso {{ $t('paikalliset') }}
+                        .p-2
+                          span {{ liitetyt.paikalliset.valittu }} / {{ liitetyt.paikalliset.max }}
 
           .oppiaineet(v-if="isEditing")
-            div(v-for="(oppiaine, uri) in valittavat", :key="uri")
-              h5 {{ $kaanna(oppiaine.nimi) }}
+            div(v-for="uri in data.oppiaineet", :key="uri")
+              h5 {{ $kaanna(oppiaineetMap[uri].nimi) }}
               .moduulit
-                .moduuli(v-for="moduuli in oppiaine.moduulit", :key="moduuli.id")
+                .moduuli(v-for="moduuli in oppiaineetMap[uri].moduulit", :key="moduuli.id")
                   ep-opintojakson-moduuli(
                     :moduuli="moduuli",
                     :is-editing="true",
@@ -110,37 +106,46 @@ div.content
                   span.laajuus {{ moduulitMap[moduuli.koodiUri].laajuus }} op
                   ep-color-ball()
 
-        div(v-if="editable.moduulit.length > 0")
+        div
           hr.valiviiva
           ep-collapse
             h4(slot="header") {{ $t('tavoitteet') }}
-            .perustesisalto(v-for="moduuli in data.moduulit")
-              h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
-              ep-prefix-list(
-                :value="moduulitMap[moduuli.koodiUri].tavoitteet",
-                kohde="kohde",
-                arvot="tavoitteet")
-            ep-content(v-model="data.tavoitteet" :is-editable="isEditing")
+            .row
+              .col-lg-6
+                ep-content(v-model="data.tavoitteet" :is-editable="isEditing")
+              .col-lg-6
+                .perustesisalto(v-for="moduuli in data.moduulit")
+                  h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
+                  ep-prefix-list(
+                    :value="moduulitMap[moduuli.koodiUri].tavoitteet",
+                    kohde="kohde",
+                    arvot="tavoitteet")
 
           hr.valiviiva
           ep-collapse
             h4(slot="header") {{ $t('keskeiset-sisallot') }}
-            .perustesisalto(v-for="moduuli in data.moduulit")
-              h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
-              ep-prefix-list(
-                :value="moduulitMap[moduuli.koodiUri].sisallot",
-                kohde="kohde",
-                arvot="sisallot")
-            ep-content(v-model="data.keskeisetSisallot" :is-editable="isEditing")
+            .row
+              .col-lg-6
+                ep-content(v-model="data.keskeisetSisallot" :is-editable="isEditing")
+              .col-lg-6
+                .perustesisalto(v-for="moduuli in data.moduulit")
+                  h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
+                  ep-prefix-list(
+                    :value="moduulitMap[moduuli.koodiUri].sisallot",
+                    kohde="kohde",
+                    arvot="sisallot")
 
           hr.valiviiva
           ep-collapse
             h4(slot="header") {{ $t('laaja-alaiset-sisallot') }}
-            .perustesisalto(v-for="oppiaine in laajaAlaisetOsaamiset")
-              ep-content(
-                v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus",
-                :value="oppiaine.laajaAlainenOsaaminen.kuvaus")
-            ep-content(v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing")
+            .row
+              .col-lg-6
+                ep-content(v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing")
+              .col-lg-6
+                .perustesisalto(v-for="oppiaine in laajaAlaisetOsaamiset")
+                  ep-content(
+                    v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus",
+                    :value="oppiaine.laajaAlainenOsaaminen.kuvaus")
 
 </template>
 
@@ -185,7 +190,6 @@ import Multiselect from 'vue-multiselect';
   },
 })
 export default class RouteOpintojakso extends Mixins(EpRoute) {
-  private selectedOppiaineet: any[] = [];
   private oppiaineQuery = '';
   private editable: Lops2019OpintojaksoDto | null = null;
   private cache!: PerusteCache;
@@ -227,20 +231,6 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     return this.cache.peruste().oppiaineet;
   }
 
-  get valittujenModuulienOppiaineet() {
-    if (this.editable && this.editable.moduulit) {
-      return _(this.editable.moduulit)
-        .map((moduuli: any) => this.moduulitMap[moduuli.koodiUri].oppiaineUri)
-        .sortBy()
-        .uniq()
-        .map((uri: any) => this.oppiaineetMap[uri])
-        .value();
-    }
-    else {
-      return 0;
-    }
-  }
-
   get laajuus() {
     if (this.editable && this.editable.moduulit) {
       return _(this.editable.moduulit)
@@ -255,25 +245,6 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 
   get oppiaineetMap() {
     return _.keyBy(this.oppiaineetJaOppimaarat, 'koodi.uri');
-  }
-
-  get valittavat() {
-    if (this.editable && this.editable.oppiaineUri) {
-      const oppiaineUri = this.editable.oppiaineUri!;
-      const urit = [oppiaineUri, ..._.map(this.selectedOppiaineet, 'koodi.uri')];
-      return _(urit)
-        .sortBy()
-        .uniq()
-        .map((oppiaineUri) => ({
-          ...this.oppiaineetMap[oppiaineUri],
-          ..._.keyBy(this.oppiaineetMap[oppiaineUri].moduulit, 'koodi.uri'),
-        }))
-        .keyBy('koodi.uri')
-        .value();
-    }
-    else {
-      return {};
-    }
   }
 
   get moduulit() {
@@ -303,30 +274,26 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   }
 
   get filteredOppiaineet() {
-    return _.filter(
-      this.oppiaineetJaOppimaarat,
-      (org) => Kielet.search(this.oppiaineQuery, org.nimi));
+    return _(this.oppiaineetJaOppimaarat)
+      .filter((org) => Kielet.search(this.oppiaineQuery, org.nimi))
+      .map('koodi.uri')
+      .value();
   }
 
   get laajaAlaisetOsaamiset() {
-    if (this.editable && this.editable.oppiaineUri) {
-      return _([this.editable.oppiaineUri])
-        .map(uri => {
-          if (this.oppiaineetMap[uri].parentUri) {
-            return [this.oppiaineetMap[uri].parentUri, uri];
-          }
-          else {
-            return [uri];
-          }
-        })
-        .flatten()
-        .uniq()
-        .map((uri: string) => this.oppiaineetMap[uri])
-        .value();
-    }
-    else {
-      return [];
-    }
+    return _(this.editable!.oppiaineet)
+      .map(uri => {
+        if (this.oppiaineetMap[uri].parentUri) {
+          return [this.oppiaineetMap[uri].parentUri, uri];
+        }
+        else {
+          return [uri];
+        }
+      })
+      .flatten()
+      .uniq()
+      .map((uri: string) => this.oppiaineetMap[uri])
+      .value();
   }
 
   public async load() {
@@ -383,6 +350,9 @@ hr.valiviiva {
 
 .perustesisalto {
   font-size: 80%;
+  padding: 5px;
+  margin-top: 10px;
+  color: #555;
 }
 
 .moduulilista {

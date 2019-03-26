@@ -110,4 +110,14 @@ export default class OpsSidenav extends Vue {
       },
     });
   }
+
+  private async addOpintojakso() {
+    const uusi = await Opetussuunnitelma.addOpintojakso({
+      nimi: {
+        fi: 'x',
+      } as any,
+      oppiaineet: ['oppiaineet_bi'],
+    });
+  }
+
 }

@@ -17,7 +17,7 @@
       v-for="teksti in sisalto.lapset",
       :value="teksti",
       :key="teksti.id")
-    router-link.oppiainelinkki(:to="{ 'name': 'oppiaine', params: { aineId: 2 } }" tag="li")
+    router-link.oppiainelinkki(:to="{ 'name': 'oppiaine', params: { oppiaineId: 2 } }" tag="li")
       a.btn.btn-link {{ $t('oppiaineet') }}
       fas(icon="chevron-right")
     li
@@ -67,14 +67,6 @@ export default class RouteOpetussuunnitelma extends Vue {
     });
   }
 
-  private async addOpintojakso() {
-    const uusi = await Opetussuunnitelma.addOpintojakso({
-      oppiaineUri: 'oppiaineet_maa',
-      nimi: {
-        fi: 'Uusi opintojakso',
-      } as any,
-    });
-  }
 }
 </script>
 
