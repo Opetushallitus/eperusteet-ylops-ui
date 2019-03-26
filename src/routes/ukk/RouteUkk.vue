@@ -99,7 +99,7 @@ div
         :is-editing="true",
         :items="organisaatiot",
         :multiple="true")
-        template(slot="item", slot-scope="{ item }")
+        template(slot-scope="{ item }")
           span {{ $kaanna(item.nimi) }}
 
     template(slot="modal-cancel") {{ $t('peruuta') }}

@@ -35,16 +35,19 @@ $bg-color-success: var($green-lighten-1);
 $bg-color-warning: var($yellow-lighten-1);
 $bg-color-error:   var($red-lighten-2);
 
+// Paletti
+$paletti-blue-dark: #001A58;
+$paletti-blue: #3367e3;
+
 // Etusivu
 $etusivu-background: #F7F7F7;
 $etusivu-tile-background: #FFF;
 $etusivu-header-background: #2F5FD1;
 
-
 $color-links:      #051E5B;
 
 $ops-header-height: 173px;
-$color-ops-header: #001A58;
+$color-ops-header: $paletti-blue-dark;
 $color-ops-header-text: #fff;
 
 $sidebar-width: 280px;

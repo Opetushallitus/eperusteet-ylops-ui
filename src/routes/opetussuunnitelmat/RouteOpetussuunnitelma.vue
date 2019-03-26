@@ -75,7 +75,6 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
   background: white;
 
   .header {
-    height: $ops-header-height;
     background: $color-ops-header;
     display: flex;
     flex: stretch;

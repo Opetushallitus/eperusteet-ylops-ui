@@ -114,4 +114,5 @@ export default class EpDatepicker extends Mixins(EpValidation) {
 .invalid-feedback, .valid-feedback {
   display: block;
 }
+
 </style>

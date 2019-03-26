@@ -1,8 +1,8 @@
 <template lang="pug">
 button.btn(
-    :class="'btn-' + variant"
+    :class="'btn-' + variant",
     v-bind="$attrs",
-    :disabled="showSpinner",
+    :disabled="disabled || showSpinner",
     @click="$emit('click')")
   slot
   ep-spinner-inline(v-if="showSpinner")
@@ -19,6 +19,9 @@ import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
   },
 })
 export default class EpButton extends Vue {
+  @Prop({ default: false })
+  private disabled!: boolean;
+
   @Prop({ default: false })
   private showSpinner!: boolean;
 
