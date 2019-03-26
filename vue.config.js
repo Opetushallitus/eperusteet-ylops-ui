@@ -1,8 +1,11 @@
 const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 
+const servicePort = process.env.YLOPS_SERVICE_PORT || 8070;
+
 module.exports = {
   lintOnSave: false,
+  publicPath: process.env.NODE_ENV === 'production' ? '/eperusteet-ylops-app/uusi/' : '/',
 
   // CKEditor 5 theme
   css: {
@@ -33,7 +36,9 @@ module.exports = {
       .loader('raw-loader');
     // Muuten tulee varoituksia puuttuvista tyypeistä
     // https://github.com/vuejs/vue-cli/issues/1436
-    config.optimization.providedExports(false);
+    if (process.env.NODE_ENV === 'development') {
+      config.optimization.providedExports(false);
+    }
   },
 
   devServer: {
@@ -45,7 +50,7 @@ module.exports = {
     port: 9040,
     proxy: {
       '/eperusteet-ylops-service': {
-        target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:8080',
+        target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:' + servicePort,
         secure: false,
       },
     },

@@ -14,6 +14,10 @@ mixin innertile-content
     .innertile.route-tila
       +innertile-content
 
+  a(v-else-if="href", :href="href")
+    .innertile.route-tila
+      +innertile-content
+
   .innertile(v-else)
     +innertile-content
 
@@ -37,6 +41,9 @@ export default class BaseTile extends Vue {
 
   @Prop()
   private route!: object | string;
+
+  @Prop()
+  private href!: string;
 }
 </script>
 
@@ -44,14 +51,13 @@ export default class BaseTile extends Vue {
 
 @import '@/styles/_variables.scss';
 
-$tile-height: 360px;
-$tile-width: 440px;
+$tile-height: 300px;
+$tile-width: 540px;
 
 .tile {
   background: inherit;
   width: $tile-width;
-  flex: 0 0 $tile-width;
-  margin: 8px 8px 28px;
+  margin: 15px 15px;
   text-align: center;
 
   .innertile {
@@ -59,7 +65,7 @@ $tile-width: 440px;
     min-height: $tile-height;
     background: $etusivu-tile-background;
     border: 1px solid #eee;
-    border-radius: 6px;
+    border-radius: 10px;
     box-shadow: 2px 2px 3px #eee;
 
     .tile-content {

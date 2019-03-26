@@ -5,7 +5,7 @@ div
     .header
     .content
       .info(v-if="opslista.length === 0")
-        span {{ $t('opetussuunnitelmia-ei-loytynyt') }}
+        span {{ $t('opetussuunnitelmia-ei-ole-luotu') }}
       router-link(
         tag="button"
         v-for="ops in opslista"
@@ -66,10 +66,11 @@ $box-size: 350px;
   width: $box-size*0.85;
   height: $box-size;
   text-align: center;
-  padding: 20px 10px 0px 10px;
+  padding: 0px 10px;
   display: inline-block;
   margin-right: 50px;
   outline: 0;
+  border: 0;
 
   .chart {
     width: 60%;

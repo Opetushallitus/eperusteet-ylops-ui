@@ -1,5 +1,5 @@
 <template lang="pug">
-base-tile(icon="question", color="#CE52C6", :route="ukkRoute")
+base-tile(icon="ukk", color="#CE52C6", :route="{ name: 'useinkysytyt' }")
   template(slot="header")
     span {{ $t('ukk') }}
   template(slot="content")
@@ -17,7 +17,7 @@ import { EpIcon } from '@/components';
     EpIcon,
   },
 })
-export default class TileFaq extends Vue {
-  private ukkRoute = { name: 'useinkysytyt' };
+export default class TileUkk extends Vue {
+
 }
 </script>

@@ -87,7 +87,6 @@ export default class EpNavigation extends Vue {
 
 .topbar {
   .navbar {
-    background-color: inherit;
     top: 0;
     font-weight: 600;
 
