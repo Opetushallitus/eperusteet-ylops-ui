@@ -5,8 +5,8 @@ base-tile(icon="tiedotteet", color="#000", :route="{ name: 'tiedotteet' }")
   template(slot="content")
     ep-spinner(v-if="isLoading")
     div(v-else)
-      .tiedotteet
-        div.tiedote(v-for="tiedote in uusimmat")
+      div.tiedotteet
+        div.tiedote(v-for="tiedote in tiedotteet")
           small.mr-4 {{ $cdt(tiedote.luotu, 'L') }}
           span {{ $kaanna(tiedote.otsikko) }}
 </template>
@@ -19,6 +19,7 @@ import {
   EpSpinner,
 } from '@/components';
 import _ from 'lodash';
+import { delay } from '@/utils/delay';
 
 
 @Component({
@@ -30,35 +31,21 @@ import _ from 'lodash';
 export default class TileTiedotteet extends Vue {
   private isLoading = true;
   private tiedotteet: any[] = [];
-  private tiedotteetCount = 5;
-
-  get uusimmat() {
-    return _.take(this.tiedotteet, this.tiedotteetCount);
-  }
+  private sivu = 1;
+  private sivukoko = 5;
 
   async mounted() {
     try {
       this.tiedotteet = _((await Ulkopuoliset.getTiedotteetHaku(
-        1,
-        this.tiedotteetCount,
-        undefined,
-        undefined,
-        undefined,
-        true,
-        true
-
-        /*{
-        sivu: 1,
-        sivukoko: this.tiedotteetCount,
-        julkinen: true,
-        yleinen: true
-      }*/
+        this.sivu - 1,
+        this.sivukoko,
+        undefined, // kieli
+        undefined, // nimi
+        undefined, // perusteId
+        true, // perusteeton
+        true, // julkinen
+        true // yleinen
       )).data.data)
-        /*.filter((tiedote: any) =>
-          tiedote.otsikko
-          && tiedote.julkinen
-          && tiedote.yleinen
-          && !tiedote.peruste)*/
         .sortBy('luotu')
         .reverse()
         .value();

@@ -112,6 +112,7 @@
   "peruuta": "Peruuta",
   "poista": "Poista",
   "poistetut": "Poistetut",
+  "sisalto-naytetaan-kielella": "Sisältö puuttuu valitulla kielellä. Sisältö näytetään kielellä {kieli}.",
   "syventavat": "Syventävät",
   "tallenna": "Tallenna",
   "tervetuloa": "Hei {nimi}, tervetuloa ePerusteet OPS-työkaluun!",

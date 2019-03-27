@@ -11,20 +11,36 @@ div
         div.col
           h2 {{ $t('tiedotteet') }}
           p {{ $t('tiedotteet-kuvaus-nakyma') }}
-          ep-search(v-model="rajain")
+          ep-search(v-model="rajain", @input="updateSearch")
 
       // Tiedotteet
-      div.row(v-for="tiedote in tiedotteetFormatted", :key="tiedote.id")
-        div.col.col-fixed.col-new
-          // Todo: Toteuta profiililla uusi
-        div.col
-          div
-            p
-              ep-aikaleima.text-secondary(:value="tiedote.luotu", type="sd")
-            ep-collapse.mb-2(:default-state="false")
-              h5(slot="header") {{ $kaanna(tiedote.otsikko) }}
-              ep-content(v-model="tiedote.sisalto", :is-editable="false", :class="{ preview: !tiedote.$nayta }")
-            hr
+      ep-spinner(v-if="isLoading")
+      div(v-else)
+        div.row(id="tiedotteet", v-for="tiedote in tiedotteet", :key="tiedote.id")
+          div.col.col-fixed.col-new
+            // Todo: Toteuta profiililla uusi
+          div.col
+            div
+              p
+                ep-aikaleima.text-secondary(:value="tiedote.luotu", type="sd")
+              ep-collapse.mb-2(:default-state="false")
+                h5(slot="header")
+                  ep-kaanna(:value="tiedote.otsikko")
+                    div
+                  // {{ $kaanna(tiedote.otsikko) }}
+                ep-kaanna(:value="tiedote.sisalto", :class="{ preview: !tiedote.$nayta }")
+                // ep-content(v-model="tiedote.sisalto", :is-editable="false", :class="{ preview: !tiedote.$nayta }")
+              hr
+
+        div.row
+          div.col.col-fixed
+          div.col
+            b-pagination.justify-content-center(
+              v-model="sivu",
+              :per-page="sivukoko",
+              :total-rows="kokonaismaara",
+              @input="update",
+              aria-controls="tiedotteet")
 </template>
 
 <script lang="ts">
@@ -32,53 +48,68 @@ import { Vue, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoot';
+import { Kielet } from '@/stores/kieli';
+import { delay } from '@/utils/delay';
 
 import {
   EpAikaleima,
+  EpCollapse,
   EpContent,
   EpIcon,
+  EpKaanna,
   EpNavigation,
   EpSearch,
   EpSpinner,
-  EpCollapse,
 } from '@/components';
 import { Ulkopuoliset } from '@/api';
 
 @Component({
   components: {
     EpAikaleima,
+    EpCollapse,
     EpContent,
     EpIcon,
+    EpKaanna,
     EpNavigation,
     EpSearch,
     EpSpinner,
-    EpCollapse,
   },
 })
 export default class RouteTiedotteet extends Mixins(EpRoute) {
   private rajain = '';
   private tiedotteet: any[] = [];
+  private sivu = 1;
+  private sivukoko = 5;
+  private kokonaismaara = 0;
+  private debounceUpdateSearch = _.debounce(() => {
+    this.update();
+  }, 300);
 
-  private get tiedotteetFormatted() {
-    return this.tiedotteet;
+  async init() {
+    await this.update();
   }
 
-  async mounted() {
-    try {
-      this.tiedotteet = _((await Ulkopuoliset.getTiedotteet()).data)
-        .filter((tiedote: any) =>
-          tiedote.otsikko
-          && tiedote.julkinen
-          && tiedote.yleinen
-          && !tiedote.peruste)
-        .sortBy('luotu')
-        .reverse()
-        .value();
-    }
-    finally {
-    }
+  private updateSearch() {
+    this.sivu = 1;
+    this.debounceUpdateSearch();
   }
 
+  async update() {
+    const res = (await Ulkopuoliset.getTiedotteetHaku(
+      this.sivu - 1,
+      this.sivukoko,
+      undefined, // kieli
+      this.rajain, // nimi
+      undefined, // perusteId
+      true, // perusteeton
+      true, // julkinen
+      true // yleinen
+    )).data;
+
+    this.kokonaismaara = res.kokonaismäärä;
+
+    this.tiedotteet = res.data;
+  }
 }
 </script>
 
