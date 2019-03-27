@@ -1,21 +1,31 @@
 <template lang="pug">
+
 div
   ep-navigation(tyyli="ops")
 
   div.content
     div.container-fluid
-      // Rajaimet
       div.row
         div.col.col-fixed
           ep-icon.float-right(icon="tiedotteet", background-color="#000000")
         div.col
           h2 {{ $t('tiedotteet') }}
           p {{ $t('tiedotteet-kuvaus-nakyma') }}
-          ep-search(v-model="rajain", @input="updateSearch")
 
-      // Tiedotteet
       ep-spinner(v-if="isLoading")
       div(v-else)
+        // Rajaimet
+        div.row
+          div.col.col-fixed
+          div.col
+            ep-search(v-model="rajain", @input="updateSearch")
+
+
+        // Tiedotteet
+        div.row(v-if="tiedotteet.length === 0")
+          div.col.col-fixed.col-new
+          div.col
+            p {{ $t('ei-hakutuloksia') }}
         div.row(id="tiedotteet", v-for="tiedote in tiedotteet", :key="tiedote.id")
           div.col.col-fixed.col-new
             // Todo: Toteuta profiililla uusi
@@ -31,15 +41,17 @@ div
                 ep-kaanna(:value="tiedote.sisalto", :class="{ preview: !tiedote.$nayta }")
               hr
 
-        div.row
+        div.row(v-if="tiedotteet.length > 0")
           div.col.col-fixed
           div.col
             b-pagination.justify-content-center(
               v-model="sivu",
               :per-page="sivukoko",
               :total-rows="kokonaismaara",
+              :limit="10",
               @input="update",
               aria-controls="tiedotteet")
+
 </template>
 
 <script lang="ts">
