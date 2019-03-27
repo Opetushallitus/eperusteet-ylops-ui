@@ -113,19 +113,23 @@ export default class OpsSidenav extends Vue {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
   }
 
-  private vaihdaKielikoodi(menuData: any, locale: string) {
+  private taydennaMenuData(menuData: any, parent: any, locale: string) {
     for (let menuItem of menuData) {
-      if (menuItem.route && menuItem.route.params) {
-        menuItem.route.params.lang = locale;
-      }
-      else if (menuItem.route && !menuItem.route.params) {
-        menuItem.route.params = {
-          lang: locale,
-        };
+      if (menuItem.route) {
+        if (menuItem.route.params) {
+          menuItem.route.params.lang = locale;
+        }
+        else {
+          menuItem.route.params = {
+            lang: locale,
+          };
+        }
       }
 
+      menuItem.parent = parent;
+
       if (menuItem.children) {
-        this.vaihdaKielikoodi(menuItem.children, locale);
+        this.taydennaMenuData(menuItem.children, menuItem, locale);
       }
     }
   }
@@ -137,7 +141,10 @@ export default class OpsSidenav extends Vue {
       }
 
       return {
-        item: lapsi.tekstiKappale.nimi,
+        item: {
+          type: 'tekstikappale',
+          name: lapsi.tekstiKappale.nimi,
+        },
         route: {
           name: 'tekstikappale',
           params: {
@@ -155,7 +162,10 @@ export default class OpsSidenav extends Vue {
 
     return this.cache.peruste().oppiaineet.map(oppiaine => {
       return {
-        item: oppiaine.nimi,
+        item: {
+          type: 'oppiaine',
+          name: oppiaine.nimi,
+        },
         route: {
           name: 'oppiaine',
           params: {
@@ -184,23 +194,28 @@ export default class OpsSidenav extends Vue {
       },
     ];
 
-    this.vaihdaKielikoodi(menuOpsData, Kielet.getUiKieli());
+    this.taydennaMenuData(menuOpsData, null, Kielet.getUiKieli());
 
     return menuOpsData;
   }
 
   private kaanna(value) {
-    if (_.isObject(value) && value.type && value.type === 'staticlink') {
-      return this.$t(value.i18key);
+    if (!value || !_.isObject(value) || !value.type) {
+      return '';
     }
 
-    if (!value || !_.isObject(value)) {
-      return this.$t('nimetön-tekstikappale');
+    if (value.type === 'staticlink') {
+      return this.$t(value.i18key);
     }
 
     const locale = Kielet.getSisaltoKieli();
 
-    return (value as any)[locale] || this.$t('nimetön-tekstikappale');
+    if (value.type === 'tekstikappale') {
+      return (value.name as any)[locale] || this.$t('nimetön-tekstikappale');
+    }
+    else {
+      return (value.name as any)[locale] || this.$t('nimetön-oppiaine');
+    }
   }
 
   private get opsLapset() {
