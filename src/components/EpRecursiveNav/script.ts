@@ -6,28 +6,29 @@ export default class EpRecursiveNav extends Vue {
   private value: any;
 
   private current: any = [];
-  private navStack: any = [];
-  private previous: any = {};
+  private curTopItem: any = false;
 
   public beforeMount() {
-    this.current = this.value;
+    let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.value, this.curTopItem);
+    this.current = (found && newCurrent !== null) ? newCurrent : this.value;
+    this.curTopItem = newTopItem;
   }
 
-  public palaaTakaisin() {
-    const stackData = this.navStack.pop();
-    this.current = stackData.curPos;
-    if (this.navStack.length > 0) {
-      this.previous = this.navStack[this.navStack.length - 1].item;
+  public previousSubmenu() {
+    if (!this.curTopItem.parent) {
+      this.curTopItem = false;
+      this.current = this.value;
     }
     else {
-      this.previous = {};
+      const parent = this.curTopItem.parent;
+      this.current = parent.children;
+      this.curTopItem = parent;
     }
   }
 
-  public vaihdaValikkoa(item: any, childGroup: any) {
-    this.navStack.push({ item, curPos: this.current });
-    this.current = childGroup;
-    this.previous = item;
+  public enterSubmenu(item: any) {
+    this.current = item.children;
+    this.curTopItem = item;
   }
 
   private isSubmenu(item: any) {
@@ -36,12 +37,85 @@ export default class EpRecursiveNav extends Vue {
 
   @Watch('value')
   private onValueChange() {
-    if (this.navStack.length === 0) {
-      this.current = this.value;
+    let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.value, this.curTopItem);
+    this.current = (found && newCurrent !== null) ? newCurrent : this.value;
+    this.curTopItem = newTopItem;
+  }
+
+  private matchRoute(route: any): boolean {
+    if (!route || !route.name || !this.$route || route.name !== this.$route.name || this.$route.matched.length === 0) {
+      return false;
     }
-    /* FIXME
-    else {
+
+    // Parse mandatory parameters for current path
+    const matchedRoute = this.$route.matched[this.$route.matched.length - 1];
+    const parentpath = (matchedRoute.parent) ? matchedRoute.parent.path : '';
+    const pathParams = matchedRoute.path
+      .replace(parentpath, '')
+      .split('/')
+      .filter((path) => {
+        return path.substr(0, 1) === ':';
+      })
+      .map(path => {
+        return path.substr(1);
+      });
+
+    // Route does not require parameters
+    if (pathParams.length === 0) {
+      return true;
     }
-    */
+
+    // Something wrong with either current route, or route to match
+    if (!this.$route.params || !route.params) {
+      return false;
+    }
+
+    // Compare route parameters
+    for (let param of pathParams) {
+      if (!this.$route.params[param] || !route.params[param] || this.$route.params[param] !== route.params[param]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private buildCurrentFromRoute(menuData: any, curTopItem: any) {
+    for (let menuItem of menuData) {
+      if (menuItem.route && this.matchRoute(menuItem.route)) {
+        if (!menuItem.parent) {
+          return { found: true, newTopItem: false, newCurrent: null };
+        }
+
+        if (menuItem.parent.flatten) {
+          return {
+            found: true,
+            newTopItem: menuItem.parent.parent ? menuItem.parent.parent : false,
+            newCurrent: menuItem.parent.parent ? menuItem.parent.parent.children : null,
+          };
+        }
+
+        return {
+          found: true,
+          newTopItem: menuItem.parent,
+          newCurrent: menuItem.parent.children,
+        };
+      }
+
+      // Iterate children (if any)
+      if (menuItem.children) {
+        let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(menuItem.children, curTopItem);
+        if (found) {
+          return { found, newTopItem, newCurrent };
+        }
+      }
+    }
+
+    // Nothing found
+    return {
+      found: false,
+      newTopItem: false,
+      newCurrent: null,
+    };
   }
 }

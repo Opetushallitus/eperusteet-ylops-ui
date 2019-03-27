@@ -2,24 +2,22 @@
 .valikko
   slot(
     name="previousLink",
-    v-if="navStack.length>0",
-    :item="previous",
-    :navigate="palaaTakaisin")
+    v-if="curTopItem",
+    :itemData="curTopItem",
+    :navigate="previousSubmenu")
   .item(v-for="item in current")
     slot(
-      :item="item.item",
-      :children="item.children",
+      :itemData="item",
       :isSubmenu="isSubmenu(item)",
       :itemRoute="item.route",
-      :navigate="vaihdaValikkoa")
+      :navigate="enterSubmenu")
     div.alivalikko(v-if="item.flatten")
       .subitem(v-for="subitem in item.children")
         slot(
-          :item="subitem.item",
-          :children="subitem.children",
+          :itemData="subitem",
           :isSubmenu="isSubmenu(subitem)",
           :itemRoute="subitem.route",
-          :navigate="vaihdaValikkoa")
+          :navigate="enterSubmenu")
 </template>
 
 <script lang="ts" src="./script.ts"/>
