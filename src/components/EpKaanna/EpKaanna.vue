@@ -13,10 +13,10 @@ div(v-else)
         @click="selectedLocale = l") {{ l }}
     b-tooltip(
       :target="() => $refs.buttons",
-      :title="$t('sisalto-naytetaan-kielella',{ kieli: availableLocale })")
+      :title="$t('sisalto-naytetaan-kielella', { kieli: availableLocale })")
 
   // Lokalisoitu teksti
-  div(v-html="value[availableLocale]")
+  div(v-if="availableLocale", v-html="value[availableLocale]")
 
 </template>
 
@@ -37,26 +37,11 @@ export default class EpKaanna extends Vue {
 
   private selectedLocale: Kieli = this.sisaltoKieli;
 
-  get availableLocale() {
-    if (this.availableLocales.length > 0) {
-      if (_.includes(this.availableLocales, this.selectedLocale)) {
-        return this.selectedLocale;
-      }
-      else {
-        return this.availableLocales[0];
-      }
-    }
-  }
-
-  get sisaltoKieli() {
+  get sisaltoKieli(): Kieli {
     return Kielet.getSisaltoKieli();
   }
 
-  get hasContent() {
-    return _.includes(this.availableLocales, this.sisaltoKieli);
-  }
-
-  get availableLocales() {
+  get availableLocales(): string[] {
     const availableLocales: any[] = [];
 
     if (this.value != null) {
@@ -71,6 +56,21 @@ export default class EpKaanna extends Vue {
     }
 
     return availableLocales;
+  }
+
+  get availableLocale(): Kieli | undefined {
+    if (this.availableLocales.length > 0) {
+      if (_.includes(this.availableLocales, this.selectedLocale)) {
+        return this.selectedLocale;
+      }
+      else {
+        return this.availableLocales[0] as Kieli;
+      }
+    }
+  }
+
+  get hasContent(): boolean {
+    return _.includes(this.availableLocales, this.sisaltoKieli);
   }
 }
 

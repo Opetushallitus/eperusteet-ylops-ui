@@ -26,10 +26,9 @@ div
               ep-collapse.mb-2(:default-state="false")
                 h5(slot="header")
                   ep-kaanna(:value="tiedote.otsikko")
+                    // Piilotetaan valitsin
                     div
-                  // {{ $kaanna(tiedote.otsikko) }}
                 ep-kaanna(:value="tiedote.sisalto", :class="{ preview: !tiedote.$nayta }")
-                // ep-content(v-model="tiedote.sisalto", :is-editable="false", :class="{ preview: !tiedote.$nayta }")
               hr
 
         div.row
