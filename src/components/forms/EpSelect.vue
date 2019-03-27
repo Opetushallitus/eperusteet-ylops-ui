@@ -4,12 +4,12 @@ div(v-if="isEditing")
   div(v-if="items")
     select.form-control(
       v-model="innerModel",
-      multiple,
-      @change="updateValue($event.target.value)",
+      :multiple="multiple",
+      @change="updateValue()",
       :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
-      option(disabled, value="null")
-      option(v-for="item in items" :value="item")
-        slot(name="item", :item="item") {{ item }}
+      option(disabled, :value="null")
+      option(v-for="item in items", :value="item")
+        slot(name="default", :item="item") {{ item }}
     .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
     .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
     .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
@@ -18,7 +18,7 @@ div(v-if="isEditing")
 div(v-else)
   ul
     li(v-for="item in model")
-      slot(name="item", :item="item")
+      slot(name="default", :item="item")
         span {{ item }}
 
 </template>
@@ -30,6 +30,7 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 import EpInput from '@/components/forms/EpInput.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpValidation from '@/mixins/EpValidation';
+import _ from 'lodash';
 
 @Component({
   components: {
@@ -45,11 +46,8 @@ export default class EpSelect extends Mixins(EpValidation) {
   @Prop({ required: true })
   private items!: any[];
 
-  @Model('change', {
-    required: true,
-    type: Array,
-  })
-  private model!: any;
+  @Model('change', { required: true })
+  private model!: any | any[];
 
   @Prop({ default: true })
   private useCheckboxes!: boolean;
@@ -60,11 +58,16 @@ export default class EpSelect extends Mixins(EpValidation) {
   @Prop({ default: '' })
   private help!: string;
 
-  private innerModel: any[] = [];
+  private innerModel: any | any[] | null = null;
 
-  private updateValue(value: any) {
-    this.model.length = 0;
-    this.model.push(...this.innerModel);
+  private updateValue() {
+    if (_.isArray(this.innerModel)) {
+      this.$emit('change', [...this.innerModel]);
+    }
+    else {
+      this.$emit('change', this.innerModel);
+    }
+
     if (this.validation) {
       this.validation.$touch();
     }
@@ -95,6 +98,30 @@ export default class EpSelect extends Mixins(EpValidation) {
   select {
     overflow-y: auto;
   }
+}
+
+select {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+
+  &:focus {
+    border-color: #47a4f5;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+select.is-invalid:focus {
+  border-color: #dc3545;
+}
+
+select.is-valid:focus {
+  border-color: #28a745;
 }
 
 </style>

@@ -1,34 +1,35 @@
 <template lang="pug">
-div
-  ep-navigation
-  .content
+ep-main-view
+  template(slot="icon")
+    ep-icon.float-right(icon="luo-uusi")
+
+  template(slot="header")
     h1 {{ $t('uusi-pohja') }}
 
-    .form
-      .form-group
-        label(for="uusi-ops-nimi") {{ $t('nimi') }}
-        input.form-control(
-          id="uusi-ops-nimi"
-          type="text"
-          v-model="uusi.nimi")
-        small.form-text.text-muted {{ $t('uusi-ops-ohje-nimi') }}
+  div
+    ep-form-content(name="ops-nimi")
+      ep-field(
+        help="ops-nimi-ohje",
+        v-model="uusi.nimi",
+        :validation="$v.uusi.nimi",
+        :is-editing="true")
 
-      .form-group
-        label(for="uusi-ops-tyyppi") {{ $t('peruste') }}
-        div(v-if="valittavat.length > 0")
-          select.form-control(
-            id="uusi-ops-peruste"
-            v-model="uusi.valittuPeruste")
-            option(disabled value="null") {{ $t('valitse-peruste') }}
-            option(v-for="peruste in valittavat" :key="peruste.id" :value="peruste")
-              span {{ $kaanna(peruste.nimi) }} ({{peruste.diaarinumero}})
-          small.form-text.text-muted {{ $t('uusi-ops-ohje-peruste') }}
-        ep-spinner(v-else)
+  div(v-if="valittavat.length > 0")
+    ep-form-content(name="peruste")
+      ep-select(
+        help="ops-peruste-ohje",
+        v-model="uusi.valittuPeruste",
+        :items="valittavat",
+        :validation="$v.uusi.valittuPeruste",
+        :is-editing="true")
+        template(slot-scope="{ item }")
+          span {{ $kaanna(item.nimi) }} ({{ item.diaarinumero }})
+  ep-spinner(v-else)
 
-      ep-button(
-        @click="luoUusiPeruste"
-        :disabled="$v.$invalid || isSaving"
-        :show-spinner="isSaving") {{ $t('luo-pohja') }}
+  ep-button(
+    :disabled="$v.uusi.$invalid",
+    @click="luoUusiPeruste",
+    :show-spinner="isSaving") {{ $t('luo-pohja') }}
 
 </template>
 
@@ -36,11 +37,15 @@ div
 import {
   EpButton,
   EpContent,
+  EpField,
   EpFormContent,
+  EpIcon,
   EpInput,
+  EpMainView,
   EpNavigation,
-  EpOrganizations,
+  EpSelect,
   EpSpinner,
+  EpSteps,
 } from '@/components';
 
 import _ from 'lodash';
@@ -49,6 +54,7 @@ import { Kielet } from '@/stores/kieli';
 import { Ulkopuoliset, Opetussuunnitelmat } from '@/api';
 import { required } from 'vuelidate/lib/validators';
 import { validationMixin } from 'vuelidate';
+import { pohjaLuontiValidator } from '@/validators/ops';
 import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import {
   PerusteInfoDto,
@@ -57,6 +63,7 @@ import {
   Kieli,
 } from '@/tyypit';
 import { createLogger } from '@/stores/logger';
+import EpRoute from '@/mixins/EpRoute';
 
 const logger = createLogger('RoutePohjaUusi');
 
@@ -64,27 +71,36 @@ const logger = createLogger('RoutePohjaUusi');
   components: {
     EpButton,
     EpContent,
+    EpField,
+    EpFormContent,
+    EpIcon,
+    EpMainView,
     EpNavigation,
+    EpSelect,
     EpSpinner,
+    EpSteps,
   },
-  validations: {
-    uusi: {
-      nimi: {
-        required,
-      },
-      valittuPeruste: {
-        required,
-      },
-    },
+  validations() {
+    return {
+      uusi: pohjaLuontiValidator([]),
+    };
   },
-} as any)
-export default class RoutePohjaUusi extends Mixins(validationMixin) {
+})
+export default class RoutePohjaUusi extends Mixins(EpRoute, validationMixin) {
   private isSaving = false;
   private perusteet: PerusteInfoDto[] = [];
   private uusi = {
     valittuPeruste: null as (PerusteInfoDto | null),
-    nimi: '',
+    nimi: {},
   };
+
+  get steps() {
+    return [{
+      name: 'wizard-peruste',
+    }, {
+      name: 'wizard-nimi',
+    }];
+  }
 
   public async mounted() {
     this.perusteet = (await Ulkopuoliset.getPerusteet()).data;
@@ -102,24 +118,12 @@ export default class RoutePohjaUusi extends Mixins(validationMixin) {
   }
 
   private async luoUusiPeruste() {
-    // Don't continue, if validations fail
-    if ((this as any).$v.$invalid || this.uusi.valittuPeruste === null) {
-      return;
-    }
-
     this.isSaving = true;
 
-    const pohjaNimi: LokalisoituTekstiDto = {
-      [Kielet.getSisaltoKieli()]: this.uusi.nimi,
-    };
-
-    //
     try {
       const pohja: OpetussuunnitelmaLuontiDto = {
-        nimi: {
-          fi: this.uusi.nimi,
-        } as any,
-        perusteenDiaarinumero: this.uusi.valittuPeruste.diaarinumero,
+        nimi: this.uusi.nimi,
+        perusteenDiaarinumero: this.uusi.valittuPeruste!.diaarinumero,
         julkaisukielet: [Kieli.fi, Kieli.sv] as any,
         tyyppi: 'pohja' as any,
       };
