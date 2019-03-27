@@ -1,61 +1,71 @@
 <template lang="pug">
-div
-  ep-navigation
-  .content
+ep-main-view
+  template(slot="icon")
+    ep-icon.float-right(icon="luo-uusi")
+
+  template(slot="header")
     h1 {{ $t('uusi-opetussuunnitelma') }}
 
-    .form
-      ep-form-content(name="nimi")
-        ep-input(
-          id="uusi-ops-nimi",
-          v-model="uusi.nimi",
-          type="text",
-          help="uusi-ops-ohje-nimi",
-          :is-editing="true")
+  fieldset.form-group
+    .row
+      legend.col-form-label.col-sm-2.pt-0 {{ $t('opetussuunnitelman-pohjatyyppi') }}:
+      .col-sm-10
+        .form-check
+          input.form-check-input(
+            id="uusi-ops-pohjavalinta-1"
+            type="radio",
+            :value="'opsista'",
+            v-model="oletuspohjasta")
+          label.form-check-label(for="uusi-ops-pohjavalinta-1")
+            | {{ $t('toinen-opetussuunnitelma') }}
+        .form-check
+          input.form-check-input(
+            id="uusi-ops-pohjavalinta-2"
+            type="radio",
+            :value="'pohjasta'",
+            v-model="oletuspohjasta",
+            checked)
+          label.form-check-label(for="uusi-ops-pohjavalinta-2")
+            | {{ $t('oletuspohja') }}
 
-      fieldset.form-group
-        .row
-          legend.col-form-label.col-sm-2.pt-0 {{ $t('opetussuunnitelman-pohjatyyppi') }}:
-          .col-sm-10
-            .form-check
-              input.form-check-input(
-                id="uusi-ops-pohjavalinta-1"
-                type="radio",
-                :value="'opsista'",
-                v-model="oletuspohjasta")
-              label.form-check-label(for="uusi-ops-pohjavalinta-1")
-                | {{ $t('toinen-opetussuunnitelma') }}
-            .form-check
-              input.form-check-input(
-                id="uusi-ops-pohjavalinta-2"
-                type="radio",
-                :value="'pohjasta'",
-                v-model="oletuspohjasta",
-                checked)
-              label.form-check-label(for="uusi-ops-pohjavalinta-2")
-                | {{ $t('oletuspohja') }}
+    div(v-if="oletuspohjasta === 'opsista'")
+      .alert.alert-info {{ $t('ei-opetussuunnitelmia') }}
 
-      div(v-if="oletuspohjasta === 'opsista'")
-        .alert.alert-info {{ $t('ei-opetussuunnitelmia') }}
+    div(v-if="oletuspohjasta === 'pohjasta'")
+      .form-group
+        div(v-if="pohjat")
+          ep-form-content(name="uusi-ops-pohja")
+            ep-select(
+              help="uusi-ops-pohja-ohje",
+              v-model="uusi.pohja",
+              :items="pohjat",
+              :validation="$v.uusi.pohja",
+              :is-editing="true")
+              template(slot-scope="{ item }")
+                span {{ $kaanna(item.nimi) }} ({{ item.perusteenDiaarinumero }})
+        ep-spinner(v-else)
 
-      div(v-if="oletuspohjasta === 'pohjasta'")
-        .form-group
-          label(for="uusi-ops-tyyppi") {{ $t('pohja') }}
-          div(v-if="pohjat")
-            select.form-control(
-              id="uusi-ops-ops"
-              v-model="uusi.pohja")
-              option(disabled value="null") {{ $t('valitse-pohja') }}
-              option(v-for="pohja in pohjat" :key="pohja.id" :value="pohja")
-                span {{ $kaanna(pohja.nimi) }} ({{pohja.perusteenDiaarinumero}})
-            small.form-text.text-muted {{ $t('uusi-ops-ohje-pohja') }}
-          ep-spinner(v-else)
+  div(v-if="oletuspohjasta")
+    hr
 
-      ep-organizations(v-model="uusi.organisaatiot")
+    ep-form-content(name="nimi")
+      ep-input(
+        id="uusi-ops-nimi",
+        v-model="uusi.nimi",
+        :validation="$v.uusi.nimi",
+        type="text",
+        help="uusi-ops-ohje-nimi",
+        :is-editing="true")
 
-      ep-button(
-        @click="luoUusiOpetussuunnitelma",
-        :show-spinner="isLoading") {{ $t('luo-opetussuunnitelma') }}
+    hr
+    ep-organizations(
+      :validation="$v.uusi.organisaatiot",
+      v-model="uusi.organisaatiot")
+
+    ep-button(
+      :disabled="$v.uusi.$invalid",
+      @click="luoUusiOpetussuunnitelma",
+      :show-spinner="isLoading") {{ $t('luo-opetussuunnitelma') }}
 
 </template>
 
@@ -65,9 +75,12 @@ import {
   EpButton,
   EpContent,
   EpFormContent,
+  EpIcon,
   EpInput,
+  EpMainView,
   EpNavigation,
   EpOrganizations,
+  EpSelect,
   EpSpinner,
 } from '@/components';
 
@@ -92,25 +105,23 @@ import {
   Kieli,
 } from '@/tyypit';
 
+import { opsLuontiValidator } from '@/validators/ops';
+
 @Component({
   components: {
     EpButton,
     EpContent,
     EpFormContent,
+    EpIcon,
     EpInput,
+    EpMainView,
     EpNavigation,
     EpOrganizations,
+    EpSelect,
     EpSpinner,
   },
   validations: {
-    uusi: {
-      nimi: {
-        required,
-      },
-      valittuPeruste: {
-        required,
-      },
-    },
+    uusi: opsLuontiValidator(),
   },
 } as any)
 export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, EpRoute) {
@@ -125,6 +136,19 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       kunnat: [],
     },
   };
+
+  get steps() {
+    return [{
+      name: 'wizard-valitse-tyyppi',
+      hide: true,
+    }, {
+      name: 'wizard-pohjan-valinta',
+    }, {
+      name: 'wizard-perustiedot',
+    }, {
+      name: 'wizard-lisatiedot',
+    }];
+  }
 
   protected async init() {
     const response = await Opetussuunnitelmat.getAll('POHJA', 'VALMIS');

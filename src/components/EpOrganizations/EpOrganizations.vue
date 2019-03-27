@@ -1,60 +1,48 @@
 <template lang="pug">
 
 .organisaatiot
-  h5 {{ $t('organisaatiot') }}
-  .selectors
-    h6 {{ $t('jarjestajat') }}
-    multiselect(
-      v-model="jarjestajat",
-      track-by="oid"
-      :options="filteredJarjestajat",
-      :close-on-select="true",
-      :clear-on-select="true",
-      :placeholder="''",
-      :internalSearch="false",
-      @search-change="query.jarjestajat = $event",
-      :multiple="true")
-      template(slot="singleLabel", slot-scope="{ option }")
-        span.selected {{ $kaanna(option.nimi) }}
-      template(slot="option", slot-scope="{ option, search }")
-        div {{ $kaanna(option.nimi) }}
-      template(slot="tag", slot-scope="{ option, search, remove }")
-        span.selected
-          span {{ $kaanna(option.nimi) }}
-          button.btn.btn-link
-            fas(icon="times")
-      template(slot="noResult")
-        div {{ $t('ei-hakutuloksia') }}
+  ep-form-content(name="organisaatiot")
+    .selectors
+      h6 {{ $t('jarjestajat') }}
+      ep-multi-select(
+        v-model="jarjestajat",
+        track-by="oid"
+        :validation="jarjestajatValidation",
+        :is-editing="true",
+        :options="filteredJarjestajat")
+        template(slot="singleLabel", slot-scope="{ option }")
+          span.selected {{ $kaanna(option.nimi) }}
+        template(slot="option", slot-scope="{ option, search }")
+          div {{ $kaanna(option.nimi) }}
+        template(slot="tag", slot-scope="{ option, search, remove }")
+          span.selected
+            span {{ $kaanna(option.nimi) }}
+            button.btn.btn-link
+              fas(icon="times")
 
-  .selectors
-    h6 {{ $t('oppilaitokset') }}
-    multiselect(
-      v-model="oppilaitokset",
-      track-by="oid"
-      :options="filteredOppilaitokset",
-      :close-on-select="true",
-      :clear-on-select="true",
-      :placeholder="''",
-      :internalSearch="false",
-      @search-change="query.oppilaitokset = $event",
-      :multiple="true")
-      template(slot="singleLabel", slot-scope="{ option }")
-        span.selected {{ $kaanna(option.nimi) }}
-      template(slot="option", slot-scope="{ option, search }")
-        div {{ $kaanna(option.nimi) }}
-      template(slot="tag", slot-scope="{ option, search, remove }")
-        span.selected
-          span {{ $kaanna(option.nimi) }}
-          button.btn.btn-link(@click="remove(option)")
-            fas(icon="times")
-      template(slot="noResult")
-        div {{ $t('ei-hakutuloksia') }}
+    .selectors
+      h6 {{ $t('oppilaitokset') }}
+      ep-multi-select(
+        v-model="oppilaitokset",
+        :validation="oppilaitosValidation",
+        :is-editing="true",
+        track-by="oid"
+        :options="filteredOppilaitokset")
+        template(slot="singleLabel", slot-scope="{ option }")
+          span.selected {{ $kaanna(option.nimi) }}
+        template(slot="option", slot-scope="{ option, search }")
+          div {{ $kaanna(option.nimi) }}
+        template(slot="tag", slot-scope="{ option, search, remove }")
+          span.selected
+            span {{ $kaanna(option.nimi) }}
+            button.btn.btn-link(@click="remove(option)")
+              fas(icon="times")
 
-  .selectors
-    div(v-if="kunnat.length > 0")
-      h6 {{ $t('kunnat') }}
-      ul.kunnat
-        li(v-for="kunta in kunnat") {{ $kaanna(kunta.nimi) }}
+    .selectors
+      div(v-if="kunnat.length > 0")
+        h6 {{ $t('kunnat') }}
+        ul.kunnat
+          li(v-for="kunta in kunnat") {{ $kaanna(kunta.nimi) }}
 
 </template>
 
@@ -62,11 +50,12 @@
 
 import {
   EpButton,
+  EpFormContent,
+  EpMultiSelect,
   EpSpinner,
 } from '@/components';
 
 import _ from 'lodash';
-import Multiselect from 'vue-multiselect';
 import { Watch, Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { Kielet } from '@/stores/kieli';
 import { hasOrganisaatioTyyppi, metadataToTeksti } from '@/utils/organisaatiot';
@@ -81,14 +70,17 @@ import {
   OrganisaatioTyyppi,
 } from '@/tyypit';
 
+import EpValidation from '@/mixins/EpValidation';
+
 @Component({
   components: {
-    EpSpinner,
     EpButton,
-    Multiselect,
+    EpFormContent,
+    EpMultiSelect,
+    EpSpinner,
   },
 })
-export default class EpOrganizations extends Vue {
+export default class EpOrganizations extends Mixins(EpValidation) {
   private value: any = null;
   private jarjestajat: any[] = [];
   private oppilaitokset: any[] = [];
@@ -105,6 +97,14 @@ export default class EpOrganizations extends Vue {
     oppilaitokset: [], // Oppilaitokset
     organisaatiot: [], // Käyttöoikeuksia sisältävät organisaatiot
   };
+
+  get jarjestajatValidation() {
+    return this.validation && this.validation.jarjestajat;
+  }
+
+  get oppilaitosValidation() {
+    return this.validation && this.validation.oppilaitokset;
+  }
 
   get filteredJarjestajat() {
     return _.filter(this.koodisto.jarjestajat, (org) => Kielet.search(this.query.jarjestajat, org.nimi));

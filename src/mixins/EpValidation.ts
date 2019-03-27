@@ -22,7 +22,7 @@ export default class EpValidation extends Vue {
 
   get validationError() {
     // Validointi näyteään vain muokkaustilassa
-    if ((this as any).isEditing !== undefined && (this as any).isEditing && this.validation) {
+    if (this.validation && ((this as any).isEditing === undefined || (this as any).isEditing)) {
       return _(this.validation)
         .keys()
         .reject((key) => _.startsWith(key, '$'))

@@ -1,4 +1,4 @@
-import { requiredLokalisoituTeksti } from '@/validators/required';
+import { notNull, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@/tyypit';
 import { minLength, required } from 'vuelidate/lib/validators';
 
@@ -19,6 +19,33 @@ export function opsTiedotValidator(kielet: Kieli[] = []) {
     },
     kuvaus: {
       ...requiredLokalisoituTeksti(kielet),
+    },
+  };
+}
+
+export function pohjaLuontiValidator(kielet: Kieli[] = []) {
+  return {
+    nimi: {
+      ...requiredLokalisoituTeksti(kielet),
+    },
+    valittuPeruste: {
+      ...notNull(),
+    },
+  };
+}
+
+export function opsLuontiValidator(kielet: Kieli[] = []) {
+  return {
+    nimi: {
+      ...requiredLokalisoituTeksti(kielet),
+    },
+    pohja: {
+      ...notNull(),
+    },
+    organisaatiot: {
+      jarjestajat: {
+        required,
+      },
     },
   };
 }

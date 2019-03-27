@@ -31,6 +31,7 @@ Vue.use(Router);
 const logger = createLogger('Router');
 
 export const router = new Router({
+  scrollBehavior: () => ({ x: 0, y: 0 }),
   routes: [{
     path: '/',
     redirect: () => '/fi',
