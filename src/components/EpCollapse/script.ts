@@ -8,5 +8,4 @@ export default class EpCollapse extends Vue {
   private defaultState!: boolean;
 
   private toggled = this.defaultState;
-
 }

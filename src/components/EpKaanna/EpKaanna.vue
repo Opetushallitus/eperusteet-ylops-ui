@@ -50,7 +50,7 @@ export default class EpKaanna extends Vue {
 
       _.forOwn(value, (text, key) => {
         if (!_.startsWith(key, '_') && !_.isEmpty(text)) {
-          availableLocales.push(key)
+          availableLocales.push(key);
         }
       });
     }
@@ -58,7 +58,7 @@ export default class EpKaanna extends Vue {
     return availableLocales;
   }
 
-  get availableLocale(): Kieli | undefined {
+  get availableLocale(): Kieli | null {
     if (this.availableLocales.length > 0) {
       if (_.includes(this.availableLocales, this.selectedLocale)) {
         return this.selectedLocale;
@@ -67,6 +67,8 @@ export default class EpKaanna extends Vue {
         return this.availableLocales[0] as Kieli;
       }
     }
+
+    return null;
   }
 
   get hasContent(): boolean {

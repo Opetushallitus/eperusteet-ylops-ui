@@ -20,7 +20,6 @@ div
           div.col
             ep-search(v-model="rajain", @input="updateSearch")
 
-
         // Tiedotteet
         div.row(v-if="tiedotteet.length === 0")
           div.col.col-fixed.col-new

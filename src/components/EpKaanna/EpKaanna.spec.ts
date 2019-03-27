@@ -25,7 +25,6 @@ describe('EpKaanna component', () => {
       localVue,
     });
     expect(wrapper.html()).toContain('fi');
-
   });
 
   it('Renders available content', () => {
@@ -43,10 +42,8 @@ describe('EpKaanna component', () => {
     expect(wrapper.html()).toContain('en');
     expect(wrapper.findAll('button').length).toEqual(2);
 
-
     wrapper.find('button').trigger('click');
 
     expect(wrapper.html()).toContain('sv');
   });
-
 });

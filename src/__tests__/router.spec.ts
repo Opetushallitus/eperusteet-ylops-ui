@@ -74,10 +74,10 @@ describe('Router', () => {
     jest.spyOn(Ulkopuoliset, 'getTiedotteetHaku')
       .mockImplementation(async () => makeAxiosResponse({
         data: [{
-        julkinen: true,
-        yleinen: true,
-        otsikko: { fi: 'Tämä on tiedote' },
-        koulutustyyppi: 'koulutustyyppi_2',
+          julkinen: true,
+          yleinen: true,
+          otsikko: { fi: 'Tämä on tiedote' },
+          koulutustyyppi: 'koulutustyyppi_2',
         }]
       }));
 

@@ -21,7 +21,6 @@ import {
 import _ from 'lodash';
 import { delay } from '@/utils/delay';
 
-
 @Component({
   components: {
     BaseTile,
