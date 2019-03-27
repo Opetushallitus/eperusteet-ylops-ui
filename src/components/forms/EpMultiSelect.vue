@@ -8,7 +8,7 @@ div
     :clear-on-select="true",
     :placeholder="''",
     :internalSearch="false",
-    @search-change="query = $event",
+    @search-change="$emit('search', $event)",
     @input="changed($event)",
     :multiple="true")
     template(slot="singleLabel", slot-scope="{ option }")
@@ -48,8 +48,6 @@ import _ from 'lodash';
   },
 })
 export default class EpMultiSelect extends Mixins(EpValidation) {
-  private query = '';
-
   @Prop({
     required: true,
     type: Array

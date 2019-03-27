@@ -6,12 +6,8 @@ div
       .row
         .col.col-fixed
           slot(name="icon")
-          // ep-icon.float-right(icon="tiedotteet", background-color="#000000")
         .col
           slot(name="header")
-          // h2 {{ $t('tiedotteet') }}
-          // p {{ $t('tiedotteet-kuvaus-nakyma') }}
-          // ep-search(v-model="rajain")
       .viewcontent
         .row
           .col.col-fixed.col-new
@@ -21,9 +17,7 @@ div
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import {
-  EpNavigation,
-} from '@/components';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 
 @Component({
   components: {

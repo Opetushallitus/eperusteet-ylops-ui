@@ -1,11 +1,11 @@
 <template lang="pug">
 div.ep-steps
   .steps(v-if="show")
-    span.step(v-for="(step, idx) in value")
-      .ball(:class="idx === step && 'active'")
+    span.step(v-for="(data, idx) in value")
+      .ball(:class="{ 'active': idx === step }")
         .number {{ idx + 1 }}
       .stepline(v-if="idx < value.length - 1")
-      .text {{ $t(step.name) }}
+      .text {{ $t(data.name) }}
 </template>
 
 <script lang="ts">
@@ -25,7 +25,7 @@ export default class EpSteps extends Vue {
   private step!: number;
 
   get show() {
-    return !this.value[this.step].hide;
+    return this.value[this.step] && !this.value[this.step].hide;
   }
 }
 </script>
@@ -34,7 +34,7 @@ export default class EpSteps extends Vue {
 @import '@/styles/_variables.scss';
 
 .ep-steps {
-  margin-top: 50px;
+  display: inline-block;
 
   .step-content {
     margin: 30px;
