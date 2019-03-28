@@ -111,21 +111,17 @@ export default class OpsSidenav extends Vue {
     }
   }
 
-  private taydennaMenuData(menuData: any, locale: string) {
+  private taydennaMenuData(menuData: any, lang: string) {
     for (let menuItem of menuData) {
       if (menuItem.route) {
-        if (menuItem.route.params) {
-          menuItem.route.params.lang = locale;
-        }
-        else {
-          menuItem.route.params = {
-            lang: locale,
-          };
-        }
+        menuItem.route.params = {
+          ...menuItem.route.params,
+          lang,
+        };
       }
 
       if (menuItem.children) {
-        this.taydennaMenuData(menuItem.children, locale);
+        this.taydennaMenuData(menuItem.children, lang);
       }
     }
   }
@@ -205,13 +201,9 @@ export default class OpsSidenav extends Vue {
     }
 
     const locale = Kielet.getSisaltoKieli();
+    const i18key = (value.type === 'tekstikappale') ? 'nimetön-tekstikappale' : 'nimetön-oppiaine';
 
-    if (value.type === 'tekstikappale') {
-      return (value.name as any)[locale] || this.$t('nimetön-tekstikappale');
-    }
-    else {
-      return (value.name as any)[locale] || this.$t('nimetön-oppiaine');
-    }
+    return (value.name as any)[locale] || this.$t(i18key);
   }
 
   private get opsLapset() {
