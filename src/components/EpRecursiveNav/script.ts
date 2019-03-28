@@ -5,25 +5,17 @@ export default class EpRecursiveNav extends Vue {
   @Prop({ default: [] })
   private value: any;
 
+  private valueCopy: any = [];
   private current: any = [];
   private curTopItem: any = false;
 
   public beforeMount() {
-    let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.value, this.curTopItem);
-    this.current = (found && newCurrent !== null) ? newCurrent : this.value;
-    this.curTopItem = newTopItem;
+    this.processNewValue();
   }
 
   public previousSubmenu() {
-    if (!this.curTopItem.parent) {
-      this.curTopItem = false;
-      this.current = this.value;
-    }
-    else {
-      const parent = this.curTopItem.parent;
-      this.current = parent.children;
-      this.curTopItem = parent;
-    }
+    this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : false;
+    this.current = this.curTopItem.parent ? this.curTopItem.parent.children : this.valueCopy;
   }
 
   public enterSubmenu(item: any) {
@@ -37,20 +29,38 @@ export default class EpRecursiveNav extends Vue {
 
   @Watch('value')
   private onValueChange() {
-    let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.value, this.curTopItem);
-    this.current = (found && newCurrent !== null) ? newCurrent : this.value;
+    this.processNewValue();
+  }
+
+  private processNewValue() {
+    this.valueCopy = this.value;
+    this.addParentRefs(this.valueCopy, null);
+
+    let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.valueCopy, this.curTopItem);
+    this.current = (found && newCurrent !== null) ? newCurrent : this.valueCopy;
     this.curTopItem = newTopItem;
   }
 
-  private matchRoute(route: any): boolean {
-    if (!route || !route.name || !this.$route || route.name !== this.$route.name || this.$route.matched.length === 0) {
+  private matchRouteName(route: any): boolean {
+    // Structure of route information is valid?
+    if (!route || !route.name || !this.$route) {
       return false;
     }
 
+    // Most trivial check at first: name must match
+    if (route.name !== this.$route.name || this.$route.matched.length === 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private splitRouteParams(): Array<string> {
     // Parse mandatory parameters for current path
     const matchedRoute = this.$route.matched[this.$route.matched.length - 1];
     const parentpath = (matchedRoute.parent) ? matchedRoute.parent.path : '';
-    const pathParams = matchedRoute.path
+
+    return matchedRoute.path
       .replace(parentpath, '')
       .split('/')
       .filter((path) => {
@@ -59,20 +69,23 @@ export default class EpRecursiveNav extends Vue {
       .map(path => {
         return path.substr(1);
       });
+  }
 
-    // Route does not require parameters
-    if (pathParams.length === 0) {
-      return true;
-    }
+  private matchRouteParams(route: any): boolean {
+    const pathParams = this.splitRouteParams();
 
     // Something wrong with either current route, or route to match
-    if (!this.$route.params || !route.params) {
+    if (pathParams.length > 0 && (!this.$route.params || !route.params)) {
       return false;
     }
 
     // Compare route parameters
     for (let param of pathParams) {
-      if (!this.$route.params[param] || !route.params[param] || this.$route.params[param] !== route.params[param]) {
+      if (!this.$route.params[param] || !route.params[param]) {
+        return false;
+      }
+
+      if (this.$route.params[param] !== String(route.params[param])) {
         return false;
       }
     }
@@ -81,41 +94,56 @@ export default class EpRecursiveNav extends Vue {
   }
 
   private buildCurrentFromRoute(menuData: any, curTopItem: any) {
+    var found: boolean = false;
+    var newTopItem: any = false;
+    var newCurrent: any = null;
+
     for (let menuItem of menuData) {
-      if (menuItem.route && this.matchRoute(menuItem.route)) {
+      if (this.matchRouteName(menuItem.route) && this.matchRouteParams(menuItem.route)) {
+        found = true;
+
         if (!menuItem.parent) {
-          return { found: true, newTopItem: false, newCurrent: null };
+          break;
         }
 
         if (menuItem.parent.flatten) {
-          return {
-            found: true,
-            newTopItem: menuItem.parent.parent ? menuItem.parent.parent : false,
-            newCurrent: menuItem.parent.parent ? menuItem.parent.parent.children : null,
-          };
+          if (menuItem.parent.parent) {
+            newTopItem = menuItem.parent.parent;
+            newCurrent = menuItem.parent.parent.children;
+          }
+          break;
         }
 
-        return {
-          found: true,
-          newTopItem: menuItem.parent,
-          newCurrent: menuItem.parent.children,
-        };
+        newTopItem = menuItem.parent;
+        newCurrent = menuItem.parent.children;
+        break;
       }
 
       // Iterate children (if any)
       if (menuItem.children) {
-        let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(menuItem.children, curTopItem);
-        if (found) {
-          return { found, newTopItem, newCurrent };
+        const retval = this.buildCurrentFromRoute(menuItem.children, curTopItem);
+        if (!retval.found) {
+          continue;
         }
+
+        found = retval.found;
+        newTopItem = retval.newTopItem;
+        newCurrent = retval.newCurrent;
+        break;
       }
     }
 
-    // Nothing found
-    return {
-      found: false,
-      newTopItem: false,
-      newCurrent: null,
-    };
+    // Return search results
+    return { found, newTopItem, newCurrent };
+  }
+
+  private addParentRefs(menuData: any, parent: any) {
+    for (let menuItem of menuData) {
+      menuItem.parent = parent;
+
+      if (menuItem.children) {
+        this.addParentRefs(menuItem.children, menuItem);
+      }
+    }
   }
 }

@@ -57,8 +57,6 @@ const testData = [
 
 describe('EpRecursiveNav component', () => {
   it('navigates the menu structure properly', () => {
-    (testData[1].children[0] as any).parent = testData[1];
-
     const wrapper = mount(EpRecursiveNav, {
       propsData: {
         value: testData,
