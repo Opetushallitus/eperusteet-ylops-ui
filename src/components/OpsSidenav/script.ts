@@ -106,10 +106,12 @@ export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
 
   async mounted() {
-    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+    if (this.$route) {
+      this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+    }
   }
 
-  private taydennaMenuData(menuData: any, parent: any, locale: string) {
+  private taydennaMenuData(menuData: any, locale: string) {
     for (let menuItem of menuData) {
       if (menuItem.route) {
         if (menuItem.route.params) {
@@ -122,10 +124,8 @@ export default class OpsSidenav extends Vue {
         }
       }
 
-      menuItem.parent = parent;
-
       if (menuItem.children) {
-        this.taydennaMenuData(menuItem.children, menuItem, locale);
+        this.taydennaMenuData(menuItem.children, locale);
       }
     }
   }
@@ -190,7 +190,7 @@ export default class OpsSidenav extends Vue {
       },
     ];
 
-    this.taydennaMenuData(menuOpsData, null, Kielet.getUiKieli());
+    this.taydennaMenuData(menuOpsData, Kielet.getUiKieli());
 
     return menuOpsData;
   }
