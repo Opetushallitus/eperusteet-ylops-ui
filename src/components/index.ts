@@ -11,6 +11,7 @@ export { default as EpFooter } from './EpFooter/EpFooter.vue';
 export { default as EpFormContent } from './forms/EpFormContent.vue';
 export { default as EpIcon } from './EpIcon/EpIcon.vue';
 export { default as EpInput } from './forms/EpInput.vue';
+export { default as EpKaanna } from './EpKaanna/EpKaanna.vue';
 export { default as EpMainView } from './EpMainView/EpMainView.vue';
 export { default as EpMultiSelect } from './forms/EpMultiSelect.vue';
 export { default as EpNavigation } from './EpNavigation/EpNavigation.vue';

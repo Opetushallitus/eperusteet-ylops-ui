@@ -4,10 +4,11 @@ base-tile(icon="tiedotteet", color="#000", :route="{ name: 'tiedotteet' }")
     span {{ $t('tiedotteet') }}
   template(slot="content")
     ep-spinner(v-if="isLoading")
-    .tiedotteet
-      .tiedote(v-for="tiedote in uusimmat")
-        a(href="")
-          ep-content(:value="tiedote.otsikko")
+    div(v-else)
+      div.tiedotteet
+        div.tiedote(v-for="tiedote in tiedotteet")
+          small.mr-4 {{ $cdt(tiedote.luotu, 'L') }}
+          span {{ $kaanna(tiedote.otsikko) }}
 </template>
 
 <script lang="ts">
@@ -15,36 +16,35 @@ import { Vue, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
 import { Ulkopuoliset } from '@/api';
 import {
-  EpContent,
   EpSpinner,
 } from '@/components';
 import _ from 'lodash';
+import { delay } from '@/utils/delay';
 
 @Component({
   components: {
     BaseTile,
-    EpContent,
     EpSpinner,
   },
 })
 export default class TileTiedotteet extends Vue {
   private isLoading = true;
   private tiedotteet: any[] = [];
-
-  get uusimmat() {
-    return _.take(this.tiedotteet, 5);
-  }
+  private sivu = 1;
+  private sivukoko = 5;
 
   async mounted() {
     try {
-      this.tiedotteet = _((await Ulkopuoliset.getTiedotteet()).data)
-        .filter((tiedote: any) =>
-          tiedote.otsikko
-          && tiedote.julkinen
-          && tiedote.yleinen
-          && !tiedote.peruste)
-      // && _.includes(YlopsKoulutustyypit, tiedote.peruste.koulutustyyppi))
-        // .filter((tiedote: any) => tiedote.peruste.koulutu)
+      this.tiedotteet = _((await Ulkopuoliset.getTiedotteetHaku(
+        this.sivu - 1,
+        this.sivukoko,
+        undefined, // kieli
+        undefined, // nimi
+        undefined, // perusteId
+        true, // perusteeton
+        true, // julkinen
+        true // yleinen
+      )).data.data)
         .sortBy('luotu')
         .reverse()
         .value();
@@ -57,7 +57,19 @@ export default class TileTiedotteet extends Vue {
 </script>
 
 <style scoped lang="scss">
-.tiedote {
-  padding-top: 10px;
+.tiedotteet {
+  text-align: left;
+
+  .tiedote {
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+
+    small {
+      color: #071A58;
+    }
+  }
+
 }
+
 </style>
