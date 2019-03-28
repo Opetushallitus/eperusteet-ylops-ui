@@ -1,29 +1,39 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 
+import {
+  SideMenuEntry,
+  SideMenuItem,
+  SideMenuRoute,
+} from '@/tyypit';
+
 @Component
 export default class EpRecursiveNav extends Vue {
   @Prop({ default: [] })
   private value: any;
 
-  private valueCopy: any = [];
-  private current: any = [];
-  private curTopItem: any = false;
+  private valueCopy: Array<SideMenuEntry> = [];
+  private current: Array<SideMenuEntry> = [];
+  private curTopItem: SideMenuEntry | null = null;
 
   public beforeMount() {
     this.processNewValue();
   }
 
   public previousSubmenu() {
-    this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : false;
-    this.current = this.curTopItem.parent ? this.curTopItem.parent.children : this.valueCopy;
+    if (this.curTopItem) {
+      this.current = (this.curTopItem.parent && this.curTopItem.parent.children) ? this.curTopItem.parent.children : this.valueCopy;
+      this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : null;
+    }
   }
 
-  public enterSubmenu(item: any) {
-    this.current = item.children;
-    this.curTopItem = item;
+  public enterSubmenu(item: SideMenuEntry) {
+    if (item.children) {
+      this.current = item.children;
+      this.curTopItem = item;
+    }
   }
 
-  private isSubmenu(item: any) {
+  private isSubmenu(item: SideMenuEntry) {
     return (item.children && item.children.length > 0 && !item.flatten);
   }
 
@@ -36,23 +46,21 @@ export default class EpRecursiveNav extends Vue {
     this.valueCopy = this.value;
     this.addParentRefs(this.valueCopy, null);
 
-    let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.valueCopy, this.curTopItem);
-    this.current = (found && newCurrent !== null) ? newCurrent : this.valueCopy;
-    this.curTopItem = newTopItem;
+    if (this.$route) {
+      let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.valueCopy, this.curTopItem);
+
+      this.current = (found && newCurrent.length > 0) ? newCurrent : this.valueCopy;
+      this.curTopItem = newTopItem;
+    }
+    else {
+      this.current = this.valueCopy;
+      this.curTopItem = null;
+    }
   }
 
-  private matchRouteName(route: any): boolean {
-    // Structure of route information is valid?
-    if (!route || !route.name || !this.$route) {
-      return false;
-    }
-
+  private matchRouteName(route: SideMenuRoute): boolean {
     // Most trivial check at first: name must match
-    if (route.name !== this.$route.name || this.$route.matched.length === 0) {
-      return false;
-    }
-
-    return true;
+    return (route.name === this.$route.name && this.$route.matched.length > 0);
   }
 
   private splitRouteParams(): Array<string> {
@@ -71,75 +79,70 @@ export default class EpRecursiveNav extends Vue {
       });
   }
 
-  private matchRouteParams(route: any): boolean {
+  private matchRouteParams(route: SideMenuRoute): boolean {
     const pathParams = this.splitRouteParams();
-
-    // Something wrong with either current route, or route to match
-    if (pathParams.length > 0 && (!this.$route.params || !route.params)) {
-      return false;
-    }
+    var result = true;
 
     // Compare route parameters
     for (let param of pathParams) {
       if (!this.$route.params[param] || !route.params[param]) {
-        return false;
+        result = false;
       }
 
       if (this.$route.params[param] !== String(route.params[param])) {
-        return false;
+        result = false;
       }
     }
 
-    return true;
+    return result;
   }
 
-  private buildCurrentFromRoute(menuData: any, curTopItem: any) {
-    var found: boolean = false;
-    var newTopItem: any = false;
-    var newCurrent: any = null;
+  private searchForRouteMatch(menuEntry: SideMenuEntry) {
+    return (menuEntry.route && this.matchRouteName(menuEntry.route) && this.matchRouteParams(menuEntry.route));
+  }
 
+  private getEntryDetails(menuEntry: SideMenuEntry) {
+    var newTopItem: SideMenuEntry | null = null;
+    var newCurrent: Array<SideMenuEntry> = [];
+
+    if (menuEntry.parent) {
+      if (menuEntry.parent.flatten && menuEntry.parent.parent && menuEntry.parent.parent.children) {
+        newTopItem = menuEntry.parent.parent;
+        newCurrent = menuEntry.parent.parent.children;
+      }
+      else if (!menuEntry.parent.flatten && menuEntry.parent.children) {
+        newTopItem = menuEntry.parent;
+        newCurrent = menuEntry.parent.children;
+      }
+    }
+
+    return { found: true, newTopItem, newCurrent };
+  }
+
+  private buildCurrentFromRoute(menuData: Array<SideMenuEntry>, curTopItem: SideMenuEntry | null) {
     for (let menuItem of menuData) {
-      if (this.matchRouteName(menuItem.route) && this.matchRouteParams(menuItem.route)) {
-        found = true;
-
-        if (!menuItem.parent) {
-          break;
-        }
-
-        if (menuItem.parent.flatten) {
-          if (menuItem.parent.parent) {
-            newTopItem = menuItem.parent.parent;
-            newCurrent = menuItem.parent.parent.children;
-          }
-          break;
-        }
-
-        newTopItem = menuItem.parent;
-        newCurrent = menuItem.parent.children;
-        break;
+      if (this.searchForRouteMatch(menuItem)) {
+        return this.getEntryDetails(menuItem);
       }
 
       // Iterate children (if any)
       if (menuItem.children) {
-        const retval = this.buildCurrentFromRoute(menuItem.children, curTopItem);
-        if (!retval.found) {
-          continue;
+        const retval2 = this.buildCurrentFromRoute(menuItem.children, curTopItem);
+        if (retval2.found) {
+          return retval2;
         }
-
-        found = retval.found;
-        newTopItem = retval.newTopItem;
-        newCurrent = retval.newCurrent;
-        break;
       }
     }
 
     // Return search results
-    return { found, newTopItem, newCurrent };
+    return { found: false, newTopItem: null, newCurrent: [] };
   }
 
-  private addParentRefs(menuData: any, parent: any) {
+  private addParentRefs(menuData: Array<SideMenuEntry>, parent: SideMenuEntry | null) {
     for (let menuItem of menuData) {
-      menuItem.parent = parent;
+      if (parent) {
+        menuItem.parent = parent;
+      }
 
       if (menuItem.children) {
         this.addParentRefs(menuItem.children, menuItem);

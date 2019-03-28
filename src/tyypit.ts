@@ -45,6 +45,25 @@ export interface OrganisaatioDto {
   oid: string;
 }
 
+export interface SideMenuEntry {
+  item: SideMenuItem,
+  route?: SideMenuRoute,
+  flatten?: boolean,
+  children?: Array<SideMenuEntry>,
+  parent?: SideMenuEntry,
+}
+
+export interface SideMenuItem {
+  type: string,
+  i18key?: string,
+  name?: object,
+}
+
+export interface SideMenuRoute {
+  name: string,
+  params: object,
+}
+
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
 export type Matala = GApi.Matala;
 export type OpetussuunnitelmaDto = GApi.OpetussuunnitelmaDto;
