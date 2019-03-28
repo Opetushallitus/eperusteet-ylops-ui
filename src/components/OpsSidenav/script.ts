@@ -6,29 +6,16 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { PerusteCache } from '@/stores/peruste';
 
 import {
+  SideMenuEntry,
+  SideMenuItem,
+} from '@/tyypit';
+
+import {
   EpRecursiveNav,
 } from '@/components';
 
-interface sideMenuEntry {
-  item: sideMenuItem,
-  route?: sideMenuRoute,
-  flatten?: boolean,
-  children?: Array<sideMenuEntry>,
-}
-
-interface sideMenuItem {
-  type: string,
-  i18key?: string,
-  name?: object,
-}
-
-interface sideMenuRoute {
-  name: string,
-  params?: object,
-}
-
 // Static content for menu
-const menuBaseData: Array<sideMenuEntry> = [
+const menuBaseData: Array<SideMenuEntry> = [
   {
     item: {
       type: 'staticlink',
@@ -36,6 +23,7 @@ const menuBaseData: Array<sideMenuEntry> = [
     },
     route: {
       name: 'opsTiedot',
+      params: {},
     },
     flatten: true,
     children: [
@@ -46,6 +34,7 @@ const menuBaseData: Array<sideMenuEntry> = [
         },
         route: {
           name: 'opsDokumentti',
+          params: {},
         },
       }, {
         item: {
@@ -54,6 +43,7 @@ const menuBaseData: Array<sideMenuEntry> = [
         },
         route: {
           name: 'opsPoistetut',
+          params: {},
         },
       }, {
         item: {
@@ -62,6 +52,7 @@ const menuBaseData: Array<sideMenuEntry> = [
         },
         route: {
           name: 'opsKasitteet',
+          params: {},
         },
       },
     ],
@@ -69,7 +60,7 @@ const menuBaseData: Array<sideMenuEntry> = [
 ];
 
 // Mock data .. to be removed ..
-const menuExtraData: Array<sideMenuEntry> = [
+const menuExtraData: Array<SideMenuEntry> = [
   {
     item: {
       type: 'staticlink',
@@ -130,7 +121,7 @@ export default class OpsSidenav extends Vue {
     }
   }
 
-  private taydennaMenuData(menuData: Array<sideMenuEntry>, lang: string) {
+  private taydennaMenuData(menuData: Array<SideMenuEntry>, lang: string) {
     for (let menuItem of menuData) {
       if (menuItem.route) {
         menuItem.route.params = {
@@ -147,7 +138,7 @@ export default class OpsSidenav extends Vue {
 
   private OpsLapsiLinkit() {
     return this.opsLapset.map((lapsi) => {
-      const tekstiNimi = ( !lapsi.tekstiKappale || !lapsi.tekstiKappale.nimi ) ? {} : lapsi.tekstiKappale.nimi;
+      const tekstiNimi = (!lapsi.tekstiKappale || !lapsi.tekstiKappale.nimi) ? {} : lapsi.tekstiKappale.nimi;
 
       return {
         item: {
@@ -164,7 +155,7 @@ export default class OpsSidenav extends Vue {
     });
   }
 
-  private OpsOppiaineLinkit(): Array<sideMenuEntry> {
+  private OpsOppiaineLinkit(): Array<SideMenuEntry> {
     if (!this.cache) {
       return [];
     }
@@ -186,7 +177,7 @@ export default class OpsSidenav extends Vue {
   }
 
   private get valikkoData() {
-    let menuOpsData: Array<sideMenuEntry> = [
+    let menuOpsData: Array<SideMenuEntry> = [
       ...menuBaseData,
       ...this.OpsLapsiLinkit(),
     ];
@@ -213,7 +204,7 @@ export default class OpsSidenav extends Vue {
     return menuOpsData;
   }
 
-  private kaanna(value: sideMenuItem) {
+  private kaanna(value: SideMenuItem) {
     if (value.type === 'staticlink') {
       return (value.i18key) ? this.$t(value.i18key) : '';
     }
