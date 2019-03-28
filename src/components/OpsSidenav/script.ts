@@ -11,8 +11,26 @@ import {
 
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 
+interface sideMenuEntry {
+  item: sideMenuItem,
+  route?: sideMenuRoute,
+  flatten?: boolean,
+  children?: Array<sideMenuEntry>,
+}
+
+interface sideMenuItem {
+  type: string,
+  i18key?: string,
+  name?: object,
+}
+
+interface sideMenuRoute {
+  name: string,
+  params?: object,
+}
+
 // Static content for menu
-const menuBaseData = [
+const menuBaseData: Array<sideMenuEntry> = [
   {
     item: {
       type: 'staticlink',
@@ -52,7 +70,8 @@ const menuBaseData = [
   },
 ];
 
-const menuExtraData = [
+// Mock data .. to be removed ..
+const menuExtraData: Array<sideMenuEntry> = [
   {
     item: {
       type: 'staticlink',
@@ -115,7 +134,7 @@ export default class OpsSidenav extends Vue {
     }
   }
 
-  private taydennaMenuData(menuData: any, lang: string) {
+  private taydennaMenuData(menuData: Array<sideMenuEntry>, lang: string) {
     for (let menuItem of menuData) {
       if (menuItem.route) {
         menuItem.route.params = {
@@ -132,14 +151,12 @@ export default class OpsSidenav extends Vue {
 
   private OpsLapsiLinkit() {
     return this.opsLapset.map((lapsi) => {
-      if (!lapsi.tekstiKappale || !lapsi.tekstiKappale.nimi) {
-        return {};
-      }
+      const tekstiNimi = ( !lapsi.tekstiKappale || !lapsi.tekstiKappale.nimi ) ? {} : lapsi.tekstiKappale.nimi;
 
       return {
         item: {
           type: 'tekstikappale',
-          name: lapsi.tekstiKappale.nimi,
+          name: tekstiNimi,
         },
         route: {
           name: 'tekstikappale',
@@ -151,7 +168,7 @@ export default class OpsSidenav extends Vue {
     });
   }
 
-  private OpsOppiaineLinkit() {
+  private OpsOppiaineLinkit(): Array<sideMenuEntry> {
     if (!this.cache) {
       return [];
     }
@@ -173,35 +190,36 @@ export default class OpsSidenav extends Vue {
   }
 
   private get valikkoData() {
-    let menuOpsData: any = [...menuBaseData];
-
-    menuOpsData = [
+    let menuOpsData: Array<sideMenuEntry> = [
       ...menuBaseData,
       ...this.OpsLapsiLinkit(),
-      {
-        item: {
-          type: 'staticlink',
-          i18key: 'Oppiaineet',
-        },
-        children: [
-          ...this.OpsOppiaineLinkit(),
-          ...menuExtraData,
-        ],
-      },
     ];
+
+    const oppiaineLinkit = this.OpsOppiaineLinkit();
+    if (oppiaineLinkit.length > 0) {
+      menuOpsData = [
+        ...menuOpsData,
+        {
+          item: {
+            type: 'staticlink',
+            i18key: 'oppiaineet',
+          },
+          children: [
+            ...oppiaineLinkit,
+            ...menuExtraData,
+          ],
+        },
+      ];
+    }
 
     this.taydennaMenuData(menuOpsData, Kielet.getUiKieli());
 
     return menuOpsData;
   }
 
-  private kaanna(value) {
-    if (!value || !_.isObject(value) || !value.type) {
-      return '';
-    }
-
+  private kaanna(value: sideMenuItem) {
     if (value.type === 'staticlink') {
-      return this.$t(value.i18key);
+      return (value.i18key) ? this.$t(value.i18key) : '';
     }
 
     const locale = Kielet.getSisaltoKieli();
