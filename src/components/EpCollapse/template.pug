@@ -1,10 +1,15 @@
-div.ep-collapse
-  div.header
-    button.header-content(@click="toggled = !toggled")
+div
+  // Button tagia ei voida käyttää, sillä ml-auto ei toimi.
+  // Käytetään button rolea saavutettavuuden takaamiseksi.
+  div.collapse-button.d-flex(
+      @click="toggled = !toggled",
+      @keyup.enter="toggled = !toggled",
+      role="button",
+      tabindex="0")
+    div.align-self-start
       slot(name="header")
-    div.header-btn
+    div.ml-auto.align-self-start
       fas(icon="chevron-up", v-if="toggled")
       fas(icon="chevron-down", v-else)
-  div.content(v-if="toggled")
-    // @slot Content that is hidden/shown
+  div(v-if="toggled")
     slot

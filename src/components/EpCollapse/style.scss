@@ -1,20 +1,6 @@
-.ep-collapse {
-  .header {
-    display:flex;
-    align-items: center;
-  }
+@import '@/styles/_variables.scss';
 
-  .header-content {
-    flex:1 0 auto;
-    border: 0;
-    padding: 0;
-    background: inherit;
-    text-align: inherit;
-    outline: none;
-  }
-
-  .content {
-    margin: 0;
-    padding: 0;
-  }
+.collapse-button {
+  cursor: pointer;
+  outline: none;
 }
