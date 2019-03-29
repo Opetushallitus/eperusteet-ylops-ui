@@ -5,14 +5,14 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { PerusteCache } from '@/stores/peruste';
 
 import {
-  EpButton,
-  EpRecursiveNav,
-} from '@/components';
-
-import {
   SideMenuEntry,
   SideMenuItem,
 } from '@/tyypit';
+
+import {
+  EpButton,
+  EpRecursiveNav,
+} from '@/components';
 
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 
@@ -119,12 +119,6 @@ const menuExtraData: Array<SideMenuEntry> = [
 export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
 
-  async mounted() {
-    if (this.$route) {
-      this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
-    }
-  }
-
   private taydennaMenuData(menuData: Array<SideMenuEntry>, lang: string) {
     menuData.forEach(menuItem => {
       if (menuItem.route) {
@@ -133,7 +127,6 @@ export default class OpsSidenav extends Vue {
           lang,
         };
       }
-
       if (menuItem.children) {
         this.taydennaMenuData(menuItem.children, lang);
       }
@@ -143,7 +136,6 @@ export default class OpsSidenav extends Vue {
   private OpsLapsiLinkit() {
     return this.opsLapset.map((lapsi) => {
       const tekstiNimi = (!lapsi.tekstiKappale || !lapsi.tekstiKappale.nimi) ? {} : lapsi.tekstiKappale.nimi;
-
       return {
         item: {
           type: 'tekstikappale',
