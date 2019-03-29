@@ -20,10 +20,12 @@ export default class EpRecursiveNav extends Vue {
   }
 
   public previousSubmenu() {
-    if (this.curTopItem) {
-      this.current = (this.curTopItem.parent && this.curTopItem.parent.children) ? this.curTopItem.parent.children : this.valueCopy;
-      this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : null;
+    if (!this.curTopItem) {
+      return;
     }
+
+    this.current = (this.curTopItem.parent && this.curTopItem.parent.children) ? this.curTopItem.parent.children : this.valueCopy;
+    this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : null;
   }
 
   public enterSubmenu(item: SideMenuEntry) {
@@ -48,7 +50,6 @@ export default class EpRecursiveNav extends Vue {
 
     if (this.$route) {
       let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.valueCopy, this.curTopItem);
-
       this.current = (found && newCurrent.length > 0) ? newCurrent : this.valueCopy;
       this.curTopItem = newTopItem;
     }
@@ -84,7 +85,7 @@ export default class EpRecursiveNav extends Vue {
     var result = true;
 
     // Compare route parameters
-    for (let param of pathParams) {
+    pathParams.forEach(param => {
       if (!this.$route.params[param] || !route.params[param]) {
         result = false;
       }
@@ -92,7 +93,7 @@ export default class EpRecursiveNav extends Vue {
       if (this.$route.params[param] !== String(route.params[param])) {
         result = false;
       }
-    }
+    });
 
     return result;
   }
@@ -120,26 +121,39 @@ export default class EpRecursiveNav extends Vue {
   }
 
   private buildCurrentFromRoute(menuData: Array<SideMenuEntry>, curTopItem: SideMenuEntry | null) {
-    for (let menuItem of menuData) {
+    var found: boolean = false;
+    var newTopItem: SideMenuEntry | null = null;
+    var newCurrent: Array<SideMenuEntry> = [];
+
+    menuData.every(menuItem => {
       if (this.searchForRouteMatch(menuItem)) {
-        return this.getEntryDetails(menuItem);
+        const retval = this.getEntryDetails(menuItem);
+        found = true;
+        newTopItem = retval.newTopItem;
+        newCurrent = retval.newCurrent;
+        return false;
       }
 
       // Iterate children (if any)
       if (menuItem.children) {
-        const retval2 = this.buildCurrentFromRoute(menuItem.children, curTopItem);
-        if (retval2.found) {
-          return retval2;
+        const retval = this.buildCurrentFromRoute(menuItem.children, curTopItem);
+        if (retval.found) {
+          found = true;
+          newTopItem = retval.newTopItem;
+          newCurrent = retval.newCurrent;
+          return false;
         }
       }
-    }
+
+      return true;
+    });
 
     // Return search results
-    return { found: false, newTopItem: null, newCurrent: [] };
+    return { found, newTopItem, newCurrent };
   }
 
   private addParentRefs(menuData: Array<SideMenuEntry>, parent: SideMenuEntry | null) {
-    for (let menuItem of menuData) {
+    menuData.forEach(menuItem => {
       if (parent) {
         menuItem.parent = parent;
       }
@@ -147,6 +161,6 @@ export default class EpRecursiveNav extends Vue {
       if (menuItem.children) {
         this.addParentRefs(menuItem.children, menuItem);
       }
-    }
+    });
   }
 }
