@@ -119,6 +119,10 @@ const menuExtraData: Array<SideMenuEntry> = [
 export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
 
+  async mounted() {
+    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+  }
+
   private taydennaMenuData(menuData: Array<SideMenuEntry>, lang: string) {
     menuData.forEach(menuItem => {
       if (menuItem.route) {
