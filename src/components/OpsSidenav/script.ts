@@ -122,7 +122,7 @@ export default class OpsSidenav extends Vue {
   }
 
   private taydennaMenuData(menuData: Array<SideMenuEntry>, lang: string) {
-    for (let menuItem of menuData) {
+    menuData.forEach(menuItem => {
       if (menuItem.route) {
         menuItem.route.params = {
           ...menuItem.route.params,
@@ -133,7 +133,7 @@ export default class OpsSidenav extends Vue {
       if (menuItem.children) {
         this.taydennaMenuData(menuItem.children, lang);
       }
-    }
+    });
   }
 
   private OpsLapsiLinkit() {
