@@ -2,6 +2,12 @@ import { Component, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { PerusteCache } from '@/stores/peruste';
+
+import {
+  SideMenuEntry,
+  SideMenuItem,
+} from '@/tyypit';
 
 import {
   EpButton,
@@ -11,7 +17,7 @@ import {
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 
 // Static content for menu
-const menuBaseData = [
+const menuBaseData: Array<SideMenuEntry> = [
   {
     item: {
       type: 'staticlink',
@@ -19,6 +25,7 @@ const menuBaseData = [
     },
     route: {
       name: 'opsTiedot',
+      params: {},
     },
     flatten: true,
     children: [
@@ -29,6 +36,7 @@ const menuBaseData = [
         },
         route: {
           name: 'opsDokumentti',
+          params: {},
         },
       }, {
         item: {
@@ -37,6 +45,7 @@ const menuBaseData = [
         },
         route: {
           name: 'opsPoistetut',
+          params: {},
         },
       }, {
         item: {
@@ -45,69 +54,52 @@ const menuBaseData = [
         },
         route: {
           name: 'opsKasitteet',
+          params: {},
         },
       },
     ],
   },
 ];
 
-const menuExtraData = [
+// Mock data .. to be removed ..
+const menuExtraData: Array<SideMenuEntry> = [
   {
     item: {
       type: 'staticlink',
       i18key: 'testioppiaine',
     },
-    route: {
-      name: 'oppiaine',
-      params: {
-        aineId: 2,
-      },
-    },
-  }, {
-    item: {
-      type: 'staticlink',
-      i18key: 'oppiaineet',
-    },
     children: [
       {
         item: {
           type: 'staticlink',
-          i18key: 'Matematiikka',
+          i18key: 'Matematiikka lyhyt',
         },
         children: [
           {
             item: {
               type: 'staticlink',
-              i18key: 'Matematiikka lyhyt',
+              i18key: 'Opintojaksot lyhyt',
             },
             children: [
               {
                 item: {
                   type: 'staticlink',
-                  i18key: 'Opintojaksot lyhyt',
+                  i18key: 'Integraali-opintojakso',
                 },
-                children: [
-                  {
-                    item: {
-                      type: 'staticlink',
-                      i18key: 'Integraali-opintojakso',
-                    },
-                  },
-                ],
               },
+            ],
+          },
+          {
+            item: {
+              type: 'staticlink',
+              i18key: 'Modulit',
+            },
+            children: [
               {
                 item: {
                   type: 'staticlink',
-                  i18key: 'Modulit',
+                  i18key: 'Integraali',
                 },
-                children: [
-                  {
-                    item: {
-                      type: 'staticlink',
-                      i18key: 'Integraali',
-                    },
-                  },
-                ],
               },
             ],
           },
@@ -125,50 +117,114 @@ const menuExtraData = [
   },
 })
 export default class OpsSidenav extends Vue {
-  private get valikkoData() {
-    let menuOpsData: any = [];
+  private cache: PerusteCache = null as any;
 
-    for (let teksti of this.sisalto) {
-      if (!teksti || !teksti.tekstiKappale) {
-        continue;
+  async mounted() {
+    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+  }
+
+  private taydennaMenuData(menuData: Array<SideMenuEntry>, lang: string) {
+    menuData.forEach(menuItem => {
+      if (menuItem.route) {
+        menuItem.route.params = {
+          ...menuItem.route.params,
+          lang,
+        };
       }
+      if (menuItem.children) {
+        this.taydennaMenuData(menuItem.children, lang);
+      }
+    });
+  }
 
-      let valikkoLinkki: any = {
-        item: teksti.tekstiKappale.nimi,
+  private OpsLapsiLinkit() {
+    return this.opsLapset.map((lapsi) => {
+      const tekstiNimi = (!lapsi.tekstiKappale || !lapsi.tekstiKappale.nimi) ? {} : lapsi.tekstiKappale.nimi;
+      return {
+        item: {
+          type: 'tekstikappale',
+          name: tekstiNimi,
+        },
         route: {
           name: 'tekstikappale',
           params: {
-            osaId: teksti.id,
+            osaId: lapsi.id,
           },
         },
       };
-
-      menuOpsData.push(valikkoLinkki);
-    }
-
-    return [...menuBaseData, ...menuOpsData, ...menuExtraData];
+    });
   }
 
-  private kaanna(value) {
-    if (_.isObject(value) && value.type && value.type === 'staticlink') {
-      return this.$t(value.i18key);
+  private OpsOppiaineLinkit(): Array<SideMenuEntry> {
+    if (!this.cache) {
+      return [];
     }
 
-    if (!value || !_.isObject(value)) {
-      return this.$t('nimetön-tekstikappale');
+    return this.cache.peruste().oppiaineet.map(oppiaine => {
+      return {
+        item: {
+          type: 'oppiaine',
+          name: oppiaine.nimi,
+        },
+        route: {
+          name: 'oppiaine',
+          params: {
+            oppiaineId: oppiaine.id,
+          },
+        },
+      };
+    });
+  }
+
+  private get valikkoData() {
+    let menuOpsData: Array<SideMenuEntry> = [
+      ...menuBaseData,
+      ...this.OpsLapsiLinkit(),
+    ];
+
+    const oppiaineLinkit = this.OpsOppiaineLinkit();
+    if (oppiaineLinkit.length > 0) {
+      menuOpsData = [
+        ...menuOpsData,
+        {
+          item: {
+            type: 'staticlink',
+            i18key: 'oppiaineet',
+          },
+          children: [
+            ...oppiaineLinkit,
+            ...menuExtraData,
+          ],
+        },
+      ];
+    }
+
+    this.taydennaMenuData(menuOpsData, Kielet.getUiKieli());
+
+    return menuOpsData;
+  }
+
+  private kaanna(value: SideMenuItem) {
+    if (value.type === 'staticlink') {
+      return (value.i18key) ? this.$t(value.i18key) : '';
     }
 
     const locale = Kielet.getSisaltoKieli();
+    const i18key = (value.type === 'tekstikappale') ? 'nimetön-tekstikappale' : 'nimetön-oppiaine';
 
-    return (value as any)[locale] || this.$t('nimetön-tekstikappale');
+    return (value.name as any)[locale] || this.$t(i18key);
   }
 
-  private get sisalto() {
+  private get opsLapset() {
     if (Opetussuunnitelma.sisalto && Opetussuunnitelma.sisalto.lapset) {
       return Opetussuunnitelma.sisalto.lapset;
     }
 
     return [];
+  }
+
+  private get opsSisalto() {
+    return Opetussuunnitelma.sisalto;
   }
 
   private async addTekstikappale() {

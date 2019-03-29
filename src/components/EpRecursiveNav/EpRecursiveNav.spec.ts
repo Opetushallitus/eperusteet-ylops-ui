@@ -62,9 +62,9 @@ describe('EpRecursiveNav component', () => {
         value: testData,
       },
       scopedSlots: {
-        previousLink: '<div id="prevlink" @click="props.navigate()">{{props.item.name}}</div>',
-        default: '<div v-if="!props.isSubmenu">{{props.item.name}}</div>'
-          + '<div v-else @click="props.navigate(props.item,props.children)" id="sublink">{{props.item.name}}</div>',
+        previousLink: '<div id="prevlink" @click="props.navigate()">{{props.itemData.item.name}}</div>',
+        default: '<div v-if="!props.isSubmenu">{{props.itemData.item.name}}</div>'
+          + '<div v-else @click="props.navigate(props.itemData)" id="sublink">{{props.itemData.item.name}}</div>',
       },
     });
 

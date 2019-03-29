@@ -5,17 +5,17 @@
       input.form-control.megasearch(type="text" placeholder="Etsi")
       fas.inner-icon(icon="search")
 
-  ul.navigation(v-if="sisalto.length>0")
+  ul.navigation(v-if="opsLapset.length>0")
     ep-recursive-nav(:value="valikkoData")
-      template(v-slot:previousLink="{ item, navigate }")
+      template(v-slot:previousLink="{ itemData, navigate }")
         li.submenu(@click="navigate()")
           fas(icon="chevron-left")
-          a.btn.btn-link {{ kaanna(item) }}
-      template(v-slot="{ item, children, isPreviousLink, isSubmenu, navigate, itemRoute }")
+          a.btn.btn-link {{ kaanna(itemData.item) }}
+      template(v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }")
         router-link(tag="li", :to="itemRoute", v-if="!isSubmenu && itemRoute")
-          a.btn.btn-link {{ kaanna(item) }}
-        li.submenu(v-if="isSubmenu", @click="navigate(item, children)")
-          a.btn.btn-link {{ kaanna(item) }}
+          a.btn.btn-link {{ kaanna(itemData.item) }}
+        li.submenu(v-if="isSubmenu", @click="navigate(itemData)")
+          a.btn.btn-link {{ kaanna(itemData.item) }}
           fas(icon="chevron-right")
 
     // li
