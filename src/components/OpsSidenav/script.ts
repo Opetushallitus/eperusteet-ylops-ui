@@ -1,12 +1,14 @@
 import { Component, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
-
 import { Kielet } from '@/stores/kieli';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 import {
+  EpButton,
   EpRecursiveNav,
 } from '@/components';
+
+import EpSisaltoModaali from './EpSisaltoModaali.vue';
 
 // Static content for menu
 const menuBaseData = [
@@ -53,7 +55,7 @@ const menuExtraData = [
   {
     item: {
       type: 'staticlink',
-      i18key: 'Testioppiaine',
+      i18key: 'testioppiaine',
     },
     route: {
       name: 'oppiaine',
@@ -64,7 +66,7 @@ const menuExtraData = [
   }, {
     item: {
       type: 'staticlink',
-      i18key: 'Oppiaineet',
+      i18key: 'oppiaineet',
     },
     children: [
       {
@@ -117,7 +119,9 @@ const menuExtraData = [
 
 @Component({
   components: {
+    EpButton,
     EpRecursiveNav,
+    EpSisaltoModaali,
   },
 })
 export default class OpsSidenav extends Vue {

@@ -12,3 +12,5 @@ adapter.onAny().reply((config) => {
   config.url = config.url || "unknown";
   throw new Error(`No mock defined for config [${config.method.toUpperCase()}] ${config.url}\n`);
 });
+
+window.scrollTo = () => {};

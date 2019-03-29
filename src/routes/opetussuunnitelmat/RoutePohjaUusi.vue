@@ -64,6 +64,7 @@ import {
 } from '@/tyypit';
 import { createLogger } from '@/stores/logger';
 import EpRoute from '@/mixins/EpRoute';
+import EpValidation from '@/mixins/EpValidation';
 
 const logger = createLogger('RoutePohjaUusi');
 
@@ -80,19 +81,20 @@ const logger = createLogger('RoutePohjaUusi');
     EpSpinner,
     EpSteps,
   },
-  validations() {
-    return {
-      uusi: pohjaLuontiValidator([]),
-    };
-  },
 })
-export default class RoutePohjaUusi extends Mixins(EpRoute, validationMixin) {
+export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
   private isSaving = false;
   private perusteet: PerusteInfoDto[] = [];
   private uusi = {
     valittuPeruste: null as (PerusteInfoDto | null),
     nimi: {},
   };
+
+  get validationConfig() {
+    return {
+      uusi: pohjaLuontiValidator([]),
+    };
+  }
 
   get steps() {
     return [{

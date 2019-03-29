@@ -36,26 +36,7 @@ div.content
               .row
                 .col-md-6
                   ep-form-content(name="oppiaine")
-                    multiselect(
-                      v-model="data.oppiaineet",
-                      :options="filteredOppiaineet",
-                      :close-on-select="true",
-                      :clear-on-select="true",
-                      :placeholder="''",
-                      :internalSearch="false",
-                      @search-change="oppiaineQuery = $event",
-                      :multiple="true")
-                      template(slot="singleLabel", slot-scope="{ option }")
-                        span.selected {{ $kaanna(oppiaineetMap[option].nimi) }}
-                      template(slot="option", slot-scope="{ option, search }")
-                        div {{ $kaanna(oppiaineetMap[option].nimi) }}
-                      template(slot="tag", slot-scope="{ option, search, remove }")
-                        span.selected
-                          span {{ $kaanna(oppiaineetMap[option].nimi) }}
-                          button.btn.btn-link(@click="remove(option)")
-                            fas(icon="times")
-                      template(slot="noResult")
-                        div {{ $t('ei-hakutuloksia') }}
+                    ep-oppiaine-selector(:ops-id="$route.params.id", v-model="data.oppiaineet")
                 .col-md-6
                   ep-form-content(name="liitetyt-moduulit")
                     .liitetyt-moduulit
@@ -159,6 +140,8 @@ import {
   EpEditointi,
   EpField,
   EpFormContent,
+  EpMultiSelect,
+  EpOppiaineSelector,
   EpPrefixList,
   EpSpinner,
 } from '@/components';
@@ -183,7 +166,9 @@ import Multiselect from 'vue-multiselect';
     EpEditointi,
     EpField,
     EpFormContent,
+    EpMultiSelect,
     EpOpintojaksonModuuli,
+    EpOppiaineSelector,
     EpPrefixList,
     EpSpinner,
     Multiselect,

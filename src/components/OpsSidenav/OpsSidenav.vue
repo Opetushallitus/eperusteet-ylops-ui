@@ -18,15 +18,13 @@
           a.btn.btn-link {{ kaanna(item) }}
           fas(icon="chevron-right")
 
-    li
+    // li
       button.btn.btn-primary(@click="addTekstikappale()")
         fas.mr-2(icon="plus")
         span {{ $t('lisaa-tekstikappale') }}
 
     li
-      button.btn.btn-primary(@click="addOpintojakso()")
-        fas.mr-2(icon="plus")
-        span {{ $t('lisaa-opintojakso') }}
+      ep-sisalto-modaali()
 
 </template>
 
