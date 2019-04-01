@@ -17,7 +17,7 @@ ep-main-view
         div.col
           ep-search(v-model="rajain", @input="updateSearch")
       // Tiedotteet
-      div.row(v-if="hasNotTiedotteet")
+      div.row(v-if="!hasTiedotteet")
         div.col.col-fixed.col-new
         div.col
           p {{ $t('ei-hakutuloksia') }}
@@ -94,10 +94,6 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
 
   async init() {
     await this.update();
-  }
-
-  private get hasNotTiedotteet() {
-    return !this.tiedotteet || this.tiedotteet.length === 0;
   }
 
   private get hasTiedotteet() {
