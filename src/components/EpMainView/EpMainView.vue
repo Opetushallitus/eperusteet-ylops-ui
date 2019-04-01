@@ -8,11 +8,13 @@ div
           slot(name="icon")
         .col
           slot(name="header")
-      .viewcontent
+      .view-content(v-if="$slots['default']")
         .row
           .col.col-fixed.col-new
           .col
             slot(name="default")
+      slot(name="custom-content")
+  slot(name="after")
 </template>
 
 <script lang="ts">
@@ -37,7 +39,7 @@ h5 {
   overflow-x: hidden;
 }
 
-.viewcontent {
+.view-content {
   margin-top: 40px;
 }
 </style>
