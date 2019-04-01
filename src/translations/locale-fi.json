@@ -1,6 +1,9 @@
 {
   "arviointi": "Arviointi",
   "dokumentit": "Dokumentit",
+  "kommentti": "Komentti",
+  "versio": "Versio",
+  "ajankohta": "Muokkauksen ajankohta",
   "dokumentti": "Dokumentti",
   "dokumentti-ei-ole": "Dokumenttia ei ole",
   "dokumentti-epaonnistui": "Dokumentin luominen epäonnistui",
@@ -178,6 +181,7 @@
   "valitse-vaihtoehto": "Valitse vaihtoehto",
   "valitut-moduulit": "Valitut moduulit",
   "valmis": "Valmis",
+  "versiohistoria": "Versiohistoria",
   "wizard-lisatiedot": "Lisätiedot",
   "wizard-nimi": "Valitse pohjan nimi",
   "wizard-peruste": "Valitse peruste",

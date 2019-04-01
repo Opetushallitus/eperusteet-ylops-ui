@@ -1,6 +1,7 @@
 import { Watch, Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 import { editointi, EditointiKontrolli, EditointiKontrolliConfig } from '@/stores/editointi';
 import EpButton from '@/components/EpButton/EpButton.vue';
+import EpVersioModaali from './EpVersioModaali.vue';
 import '@/stores/kieli';
 import { validationMixin } from 'vuelidate';
 import _ from 'lodash';
@@ -19,6 +20,7 @@ export { EditointiKontrolliConfig } from '@/stores/editointi';
   },
   components: {
     EpButton,
+    EpVersioModaali,
   },
 })
 export default class EpEditointi extends Mixins(validationMixin) {
@@ -44,12 +46,20 @@ export default class EpEditointi extends Mixins(validationMixin) {
     this.isInitialized = true;
   }
 
+  get current() {
+    return _.first(this.historia);
+  }
+
   get latest() {
     return _.first(this.historia);
   }
 
   get historia() {
-    return this.ctrls!.state!.revisions;
+    const revs = this.ctrls!.state!.revisions || [];
+    return _.map(this.ctrls!.state!.revisions, (rev, index) => ({
+      ...rev,
+      index: revs.length - index,
+    }));
   }
 
 }

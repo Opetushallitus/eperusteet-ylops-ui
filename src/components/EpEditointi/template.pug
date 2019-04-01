@@ -1,17 +1,15 @@
 div
   .editointikontrolli(v-if="isInitialized")
     slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
-    pre {{ historia }}
-    pre {{ latest }}
     .ylapaneeli.row
       .col-auto.mr-auto.align-self-center
         .row(v-if="ctrls.features.history")
           .col-auto
             .d-flex.muokattu
               .title {{ $t('muokattu') }}:
-              .value.px-2 {{ $sdt(new Date()) }}, {{ latest.muokkaajaOid }}
+              .value.px-2 {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
               .px-2
-                a {{ $t('muokkaushistoria') }}
+                ep-versio-modaali(:value="current", :versions="historia")
       .col-auto.align-self-center
         .d-flex
           .buttons.p-1
