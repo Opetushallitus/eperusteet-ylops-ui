@@ -25,6 +25,9 @@
 
     li
       ep-sisalto-modaali(:params="$route", :cache="cache")
+    router-link(tag="li", :to="{ name: 'jarjesta' }")
+      fas(icon="sort")
+      a.btn.btn-link {{ $t('jarjesta') }}
 
 </template>
 

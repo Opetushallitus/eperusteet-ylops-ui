@@ -20,15 +20,24 @@ class OpetussuunnitelmaStore {
   @State()
   public opetussuunnitelma: OpetussuunnitelmaKevytDto | null = null;
 
-  public async updateSisalto() {
+  public async getOtsikot() {
     if (this.opetussuunnitelma && this.opetussuunnitelma.id) {
-      this.sisalto = (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opetussuunnitelma.id)).data;
+      return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opetussuunnitelma.id)).data;
+    }
+    else {
+      return null;
     }
   }
 
+  public async updateSisalto() {
+    this.sisalto = await this.getOtsikot();
+  }
+
   public async init(id: number) {
+    logger.info('Updating peruste', id);
     this.opetussuunnitelma = await this.get(id);
     await this.updateSisalto();
+    logger.info('Updating peruste', this.sisalto);
   }
 
   public async get(id: number) {
