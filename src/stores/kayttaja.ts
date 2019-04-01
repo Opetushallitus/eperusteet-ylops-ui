@@ -27,6 +27,15 @@ function getOikeusArvo(oikeus: Oikeus) {
   }
 }
 
+export function parsiEsitysnimi(tiedot) {
+  if (tiedot.kutsumanimi && tiedot.sukunimi) {
+    return tiedot.kutsumanimi + ' ' + tiedot.sukunimi;
+  }
+  else {
+    return tiedot.oidHenkilo;
+  }
+}
+
 @Store
 class KayttajaStore {
   @State()
@@ -43,12 +52,7 @@ class KayttajaStore {
 
   @Getter()
   public nimi() {
-    if (this.tiedot.kutsumanimi && this.tiedot.sukunimi) {
-      return this.tiedot.kutsumanimi + ' ' + this.tiedot.sukunimi;
-    }
-    else {
-      return this.tiedot.oidHenkilo;
-    }
+    return parsiEsitysnimi(this.tiedot);
   }
 
   public async init() {
