@@ -24,7 +24,7 @@
         span {{ $t('lisaa-tekstikappale') }}
 
     li
-      ep-sisalto-modaali()
+      ep-sisalto-modaali(:params="$route", :cache="cache")
 
 </template>
 
