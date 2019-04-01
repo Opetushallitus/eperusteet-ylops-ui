@@ -55,7 +55,6 @@ import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoot';
 import { Kielet } from '@/stores/kieli';
-import { delay } from '@/utils/delay';
 
 import {
   EpAikaleima,
