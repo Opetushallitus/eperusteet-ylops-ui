@@ -125,7 +125,8 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
       this.kokonaismaara = res.kokonaismäärä;
 
       this.tiedotteet = res.data;
-    } catch (e) {
+    }
+    catch (e) {
       // Todo: Haku epäonnistui
     }
   }

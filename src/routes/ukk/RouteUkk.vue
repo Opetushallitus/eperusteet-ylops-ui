@@ -265,7 +265,8 @@ export default class RouteUkk extends Mixins(EpRoute) {
         this.kysymykset = [
           ...this.kysymykset
         ];
-      } catch (e) {
+      }
+      catch (e) {
         // Todo: Poistaminen epäonnistui
       }
     }
