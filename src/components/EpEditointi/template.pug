@@ -1,17 +1,17 @@
 div
   .editointikontrolli(v-if="isInitialized")
     slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
+    pre {{ historia }}
+    pre {{ latest }}
     .ylapaneeli.row
       .col-auto.mr-auto.align-self-center
-        .row
+        .row(v-if="ctrls.features.history")
           .col-auto
             .d-flex.muokattu
               .title {{ $t('muokattu') }}:
-              .value.px-2 {{ $sdt(new Date()) }}
-          .col-auto
-            .d-flex.muokkaaja
-              .title {{ $t('muokkaaja') }}:
-              .value.px-2 Joku Käyttäjä
+              .value.px-2 {{ $sdt(new Date()) }}, {{ latest.muokkaajaOid }}
+              .px-2
+                a {{ $t('muokkaushistoria') }}
       .col-auto.align-self-center
         .d-flex
           .buttons.p-1
@@ -23,14 +23,11 @@ div
                 slot(name="poista") {{ $t('poista') }}
             .upper-buttons(v-else)
               ep-button(
-                variant="link",
-                :disabled="state.disabled")
-                | {{ $t('historia') }}
-              ep-button(
                 @click="ctrls.start()",
                 :disabled="state.disabled")
                 slot(name="muokkaa")
-                  fas.faw-fw(icon="pen")
+                  | {{ $t('muokkaa') }}
+                  // fas.faw-fw(icon="pen")
 
     .sisalto(v-if="state.data")
       slot(:isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")

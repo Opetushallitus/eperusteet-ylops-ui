@@ -92,16 +92,19 @@ class OpetussuunnitelmaStore {
 
   public async getOpintojaksot(query: OpintojaksoQuery = {}) {
     let chain = _((await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data);
-    chain = _(chain);
     if (query.oppiaineUri) {
-      chain.filter(oj => _.includes(oj.oppiaineet, query.oppiaineUri));
+      chain = chain.filter(oj => _.includes(oj.oppiaineet, query.oppiaineUri));
     }
     if (query.moduuliUri) {
-      chain.filter(oj => _.includes(
+      chain = chain.filter(oj => _.includes(
         _.map(oj.moduulit, 'koodiUri'),
         query.oppiaineUri));
     }
     return chain.value();
+  }
+
+  public async getOpintojaksoHistoria(opintojaksoId: number) {
+    return (await Opintojaksot.getVersionHistory(this.opetussuunnitelma!.id!, opintojaksoId)).data;
   }
 
   public async getOpintojakso(id: number) {

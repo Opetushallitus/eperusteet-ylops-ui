@@ -25,7 +25,7 @@ div
           div.col.col-fixed.col-new
           div.col
             p {{ $t('ei-hakutuloksia') }}
-        div.row(id="tiedotteet", v-for="tiedote in tiedotteet", :key="tiedote.id")
+        div.row(v-for="tiedote in tiedotteet", :key="tiedote.id")
           div.col.col-fixed.col-new
             // Todo: Toteuta profiililla uusi
           div.col
@@ -115,9 +115,7 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
       true, // julkinen
       true // yleinen
     )).data;
-
     this.kokonaismaara = res.kokonaismäärä;
-
     this.tiedotteet = res.data;
   }
 }
