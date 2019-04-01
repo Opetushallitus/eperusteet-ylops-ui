@@ -22,7 +22,7 @@ ep-main-view
         div.col
           p {{ $t('ei-hakutuloksia') }}
       div.row(v-for="tiedote in tiedotteet", :key="tiedote.id")
-        div.col.col-fixed.col-new
+        div.col.col-fixed
           // Todo: Toteuta profiililla uusi
         div.col
           div
@@ -134,13 +134,5 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
 </script>
 
 <style scoped lang="scss">
-
-.col-fixed {
-  flex: 0 0 100px;
-}
-
-h5 {
-  overflow-x: hidden;
-}
 
 </style>

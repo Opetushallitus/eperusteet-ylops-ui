@@ -31,8 +31,11 @@ export default class EpMainView extends Vue {
 </script>
 
 <style scoped lang="scss">
+
+@import "@/styles/_variables.scss";
+
 .col-fixed {
-  flex: 0 0 100px;
+  flex: 0 0 $main-view-offset;
 }
 
 h5 {

@@ -23,7 +23,7 @@ ep-main-view
   // Kysymykset
   template(slot="custom-content")
     div.row(v-if="!isLoading", v-for="kysymys in kysymyksetFormatted", :key="kysymys.id")
-      div.col.col-fixed.col-new
+      div.col.col-fixed
         // Todo: Toteuta profiililla uusi
         // Kysymys on uusi jos alle 30 päivää vanha
         //p.float-right(v-if="(new Date().getTime() - kysymys.luotu) / 1000 / 60 / 60 / 24 < 30") {{ $t('uusi') }}
@@ -306,15 +306,6 @@ export default class RouteUkk extends Mixins(EpRoute) {
 
 <style scoped lang="scss">
 
-@import "@/styles/_variables.scss";
-
-.col-fixed {
-  flex: 0 0 100px;
-}
-
-.col-new {
-  color: #3367E3;
-}
 .qty {
   user-select: all;
 }
