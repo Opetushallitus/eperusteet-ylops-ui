@@ -8,11 +8,13 @@ div
           slot(name="icon")
         .col
           slot(name="header")
-      .viewcontent
+      .view-content(v-if="$slots['default']")
         .row
           .col.col-fixed.col-new
           .col
             slot(name="default")
+      slot(name="custom-content")
+  slot(name="after")
 </template>
 
 <script lang="ts">
@@ -29,15 +31,18 @@ export default class EpMainView extends Vue {
 </script>
 
 <style scoped lang="scss">
+
+@import "@/styles/_variables.scss";
+
 .col-fixed {
-  flex: 0 0 100px;
+  flex: 0 0 $main-view-offset;
 }
 
 h5 {
   overflow-x: hidden;
 }
 
-.viewcontent {
+.view-content {
   margin-top: 40px;
 }
 </style>

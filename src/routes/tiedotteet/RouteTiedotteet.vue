@@ -1,55 +1,51 @@
 <template lang="pug">
 
-div
-  ep-navigation(tyyli="ops")
+ep-main-view
+  template(slot="icon")
+    ep-icon.float-right(icon="tiedotteet", background-color="#000000")
 
-  div.content
-    div.container-fluid
+  template(slot="header")
+    h2 {{ $t('tiedotteet') }}
+    p {{ $t('tiedotteet-kuvaus-nakyma') }}
+
+  template(slot="custom-content")
+    ep-spinner(v-if="isLoading")
+    div(v-else)
+      // Rajaimet
       div.row
         div.col.col-fixed
-          ep-icon.float-right(icon="tiedotteet", background-color="#000000")
         div.col
-          h2 {{ $t('tiedotteet') }}
-          p {{ $t('tiedotteet-kuvaus-nakyma') }}
-
-      ep-spinner(v-if="isLoading")
-      div(v-else)
-        // Rajaimet
-        div.row
-          div.col.col-fixed
-          div.col
-            ep-search(v-model="rajain", @input="updateSearch")
-
-        // Tiedotteet
-        div.row(v-if="tiedotteet.length === 0")
-          div.col.col-fixed.col-new
-          div.col
-            p {{ $t('ei-hakutuloksia') }}
-        div.row(v-for="tiedote in tiedotteet", :key="tiedote.id")
-          div.col.col-fixed.col-new
-            // Todo: Toteuta profiililla uusi
-          div.col
-            div
-              p
-                ep-aikaleima.text-secondary(:value="tiedote.luotu", type="sd")
-              ep-collapse.mb-2(:default-state="false")
-                h5(slot="header")
-                  ep-kaanna(:value="tiedote.otsikko")
-                    // Piilotetaan valitsin
-                    div
-                ep-kaanna(:value="tiedote.sisalto", :class="{ preview: !tiedote.$nayta }")
-              hr
-
-        div.row(v-if="tiedotteet.length > 0")
-          div.col.col-fixed
-          div.col
-            b-pagination.justify-content-center(
-              v-model="sivu",
-              :per-page="sivukoko",
-              :total-rows="kokonaismaara",
-              :limit="10",
-              @input="update",
-              aria-controls="tiedotteet")
+          ep-search(v-model="rajain", @input="updateSearch")
+      // Tiedotteet
+      div.row(v-if="!hasTiedotteet")
+        div.col.col-fixed.col-new
+        div.col
+          p {{ $t('ei-hakutuloksia') }}
+      div.row(v-for="tiedote in tiedotteet", :key="tiedote.id")
+        div.col.col-fixed
+          // Todo: Toteuta profiililla uusi
+        div.col
+          div
+            p
+              ep-aikaleima.text-secondary(:value="tiedote.luotu", type="sd")
+            ep-collapse.mb-2(:default-state="false")
+              h5(slot="header")
+                ep-kaanna(:value="tiedote.otsikko")
+                  // Piilotetaan valitsin
+                  div
+              ep-kaanna(:value="tiedote.sisalto", :class="{ preview: !tiedote.$nayta }")
+            hr
+      // Paginaatio
+      div.row(v-if="hasTiedotteet")
+        div.col.col-fixed
+        div.col
+          b-pagination.justify-content-center(
+            v-model="sivu",
+            :per-page="sivukoko",
+            :total-rows="kokonaismaara",
+            :limit="10",
+            @input="update",
+            aria-controls="tiedotteet")
 
 </template>
 
@@ -59,7 +55,6 @@ import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoot';
 import { Kielet } from '@/stores/kieli';
-import { delay } from '@/utils/delay';
 
 import {
   EpAikaleima,
@@ -67,6 +62,7 @@ import {
   EpContent,
   EpIcon,
   EpKaanna,
+  EpMainView,
   EpNavigation,
   EpSearch,
   EpSpinner,
@@ -80,6 +76,7 @@ import { Ulkopuoliset } from '@/api';
     EpContent,
     EpIcon,
     EpKaanna,
+    EpMainView,
     EpNavigation,
     EpSearch,
     EpSpinner,
@@ -99,36 +96,39 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
     await this.update();
   }
 
+  private get hasTiedotteet() {
+    return this.tiedotteet && this.tiedotteet.length > 0;
+  }
+
   private updateSearch() {
     this.sivu = 1;
     this.debounceUpdateSearch();
   }
 
   async update() {
-    const res = (await Ulkopuoliset.getTiedotteetHaku(
-      this.sivu - 1,
-      this.sivukoko,
-      undefined, // kieli
-      this.rajain, // nimi
-      undefined, // perusteId
-      true, // perusteeton
-      true, // julkinen
-      true // yleinen
-    )).data;
-    this.kokonaismaara = res.kokonaismäärä;
-    this.tiedotteet = res.data;
+    try {
+      const res = (await Ulkopuoliset.getTiedotteetHaku(
+        this.sivu - 1,
+        this.sivukoko,
+        undefined, // kieli
+        this.rajain, // nimi
+        undefined, // perusteId
+        true, // perusteeton
+        true, // julkinen
+        true // yleinen
+      )).data;
+
+      this.kokonaismaara = res.kokonaismäärä;
+
+      this.tiedotteet = res.data;
+    }
+    catch (e) {
+      // Todo: Haku epäonnistui
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-
-.col-fixed {
-  flex: 0 0 100px;
-}
-
-h5 {
-  overflow-x: hidden;
-}
 
 </style>
