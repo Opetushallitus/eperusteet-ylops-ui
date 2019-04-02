@@ -18,6 +18,7 @@ import RouteOrganisaatio from '@/routes/organisaatio/RouteOrganisaatio.vue';
 import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
+import RouteJarjestys from '@/routes/opetussuunnitelmat/RouteJarjestys.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 import UnderConstruction from '@/routes/UnderConstruction.vue';
@@ -84,6 +85,10 @@ export const router = new Router({
         component: RouteTiedot,
         name: 'opsTiedot',
       }, {
+        path: 'jarjesta',
+        component: RouteJarjestys,
+        name: 'jarjesta',
+      }, {
         path: 'dokumentti',
         component: RouteDokumentti,
         name: 'opsDokumentti',
@@ -116,9 +121,13 @@ export const router = new Router({
   }, {
     path: '*',
     redirect: (to) => {
+      logger.error('Unknown route', to);
       return {
         name: 'virhe',
-        params: to.params,
+        params: {
+          lang: 'fi',
+          ...to.params,
+        },
         query: {
           // virhe: JSON.stringify({}),
         },

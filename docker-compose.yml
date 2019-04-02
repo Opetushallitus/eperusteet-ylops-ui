@@ -40,3 +40,12 @@ services:
     volumes:
       - ".:/app"
       - "/tmp/dccache:/root/.cache"
+
+  codeclimate:
+    environment:
+      CODECLIMATE_CODE: "$PWD"
+    image: codeclimate/codeclimate
+    command: analyze
+    volumes:
+      - ".:/code"
+      - "/var/run/docker.sock:/var/run/docker.sock"

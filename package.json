@@ -97,6 +97,7 @@
     "sass-loader": "^7.0.1",
     "ts-jest": "^23.0.0",
     "typescript": "~3.2.1",
+    "typescript-optional": "^2.0.1",
     "vue": "^2.6.2",
     "vue-chartjs": "^3.4.0",
     "vue-cli-plugin-styleguidist": "^1.0.5",

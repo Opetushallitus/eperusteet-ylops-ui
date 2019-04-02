@@ -49,6 +49,9 @@ export default class TileTiedotteet extends Vue {
         .reverse()
         .value();
     }
+    catch (err) {
+      throw err;
+    }
     finally {
       this.isLoading = false;
     }
