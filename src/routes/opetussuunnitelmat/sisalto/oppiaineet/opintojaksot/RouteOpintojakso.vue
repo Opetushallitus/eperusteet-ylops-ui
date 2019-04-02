@@ -2,8 +2,10 @@
 div.content
   div(v-if="hooks && !isLoading")
     ep-editointi(:hooks="hooks", v-model="editable", :validator="validator")
+      template(slot="header", slot-scope="{ data, validation, isEditing }")
+        h2 {{ $kaanna(data.nimi) }}
+
       template(v-slot="{ data, validation, isEditing }")
-        h1 {{ $kaanna(data.nimi) }}
         div
           .row
             .col-md-6
@@ -182,8 +184,15 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     source: {
       save: this.save,
       load: this.load,
-    }
+    },
+    history: {
+      revisions: this.revisions,
+    },
   };
+
+  async revisions() {
+    return Opetussuunnitelma.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+  }
 
   async init() {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));

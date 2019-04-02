@@ -30,7 +30,7 @@ describe('Editointi', async () => {
           async release() {},
         },
         history: {
-          async items() {
+          async revisions() {
             return [];
           },
           async restore(rev: RevisionDto) { },
@@ -50,7 +50,7 @@ describe('Editointi', async () => {
       const cancelSpy = jest.spyOn(config.source, 'cancel');
 
       // TODO
-      const historySpy = jest.spyOn(config.history!, 'items');
+      const historySpy = jest.spyOn(config.history!, 'revisions');
       const historyReleaseSpy = jest.spyOn(config.history!, 'restore');
       const lockAcquire = jest.spyOn(config.locks!, 'acquire');
       const lockRelease = jest.spyOn(config.locks!, 'release');

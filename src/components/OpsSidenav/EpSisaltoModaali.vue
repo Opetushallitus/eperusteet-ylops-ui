@@ -52,7 +52,7 @@ div
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator';
+import { Watch, Prop, Component, Mixins } from 'vue-property-decorator';
 import {
   EpButton,
   EpFormContent,
@@ -65,8 +65,10 @@ import {
 
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpValidation from '@/mixins/EpValidation';
+import EpParams from '@/mixins/EpParams';
 import { opintojaksoLuontiValidator } from '@/validators/opintojakso';
 import { tekstikappaleLuontiValidator } from '@/validators/tekstikappaleet';
+import { PerusteCache } from '@/stores/peruste';
 
 @Component({
   components: {
@@ -78,7 +80,10 @@ import { tekstikappaleLuontiValidator } from '@/validators/tekstikappaleet';
     EpSteps,
   },
 })
-export default class EpSisaltoModaali extends Mixins(EpValidation) {
+export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
+  @Prop({ default: null })
+  private cache!: PerusteCache;
+
   private step = 0;
   private uusi: any = {
     nimi: {},
@@ -95,12 +100,19 @@ export default class EpSisaltoModaali extends Mixins(EpValidation) {
     return {};
   }
 
-  reset() {
+  async reset() {
     this.step = 0;
     this.sisallonTyyppi = null;
     this.uusi = {
       nimi: {},
     };
+
+    if (this.params.oppiaineId) {
+      const oppiaine = await this.cache.getOppiaine(this.params.oppiaineId);
+      if (oppiaine && oppiaine.koodi) {
+        this.uusi.oppiaineet = [oppiaine.koodi.uri];
+      }
+    }
   }
 
   get sisallonTyypit() {
@@ -121,10 +133,14 @@ export default class EpSisaltoModaali extends Mixins(EpValidation) {
   async tallenna() {
     switch (this.sisallonTyyppi) {
     case 'tekstikappale':
-      await this.addTekstikappale();
+      this.navigateTo('tekstikappale', {
+        osaId: (await this.addTekstikappale()).id,
+      });
       break;
     case 'opintojakso':
-      await this.addOpintojakso();
+      this.navigateTo('opintojakso', {
+        opintojaksoId: (await this.addOpintojakso()).id,
+      });
       break;
     }
     this.hide();

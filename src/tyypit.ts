@@ -65,6 +65,10 @@ export interface SideMenuRoute {
   params: object,
 }
 
+export interface RecursiveTreeItem {
+  id: number;
+}
+
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
 export type Matala = GApi.Matala;
 export type OpetussuunnitelmaDto = GApi.OpetussuunnitelmaDto;
