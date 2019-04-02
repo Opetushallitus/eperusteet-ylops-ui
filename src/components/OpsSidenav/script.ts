@@ -262,11 +262,7 @@ export default class OpsSidenav extends Vue {
   }
 
   private get opsLapset() {
-    if (Opetussuunnitelma.sisalto && Opetussuunnitelma.sisalto.lapset) {
-      return Opetussuunnitelma.sisalto.lapset;
-    }
-
-    return [];
+    return _.get(Opetussuunnitelma, 'sisalto.lapset', []);
   }
 
   private get opsSisalto() {
