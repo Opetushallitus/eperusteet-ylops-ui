@@ -14,7 +14,7 @@ async function main() {
     (new Vue(rootConfig)).$mount('#app');
   }
   catch (err) {
-    logger.error('Top level error:', err);
+    logger.error('Top level error:" ', err);
   }
 }
 

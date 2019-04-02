@@ -19,7 +19,7 @@ export function requiredLokalisoituTeksti(kielet: Kieli[]) {
         return false;
       }
 
-      const isInSomeLang = () => _.some(['fi'], kieli => exists(value, kieli));
+      const isInSomeLang = () => _.some(['fi'], kieli => exists(value, kieli as Kieli));
       const isMaaritettyInAllLangs = () => _.every(kielet, kieli => exists(value, kieli));
       const isValid = _.isEmpty(kielet) ? isInSomeLang() : isMaaritettyInAllLangs();
       return isValid;

@@ -6,11 +6,11 @@ div.content
     h2 {{ $kaanna(oppiaine.nimi) }} ({{ oppiaine.koodi.arvo }})
 
     div.collapse-container
-      ep-collapse
+      ep-collapse(v-if="oppiaine.tehtava")
         h4(slot="header") {{ $t('oppiaineet-tehtava') }}
         ep-content(v-model="oppiaine.tehtava.kuvaus")
 
-      ep-collapse
+      ep-collapse(v-if="oppiaine.laajaAlainenOsaaminen")
         h4(slot="header") {{ $t('laaja-alainen-osaaminen') }}
         ep-content(v-model="oppiaine.laajaAlainenOsaaminen.kuvaus")
 
@@ -19,7 +19,7 @@ div.content
         h4(slot="header") {{ $t('yleiset-tavoitteet') }}
         span tänne tulee sisältöä
 
-      ep-collapse
+      ep-collapse(v-if="oppiaine.arviointi")
         h4(slot="header") {{ $t('arviointi') }}
         ep-content(v-model="oppiaine.arviointi.kuvaus")
 
@@ -41,15 +41,18 @@ div.content
             span.pituus {{ moduuli.laajuus }} op
             span.tyyppi {{ moduuli.pakollinen && $t('pakollinen') }}
 
-      ep-spinner(v-if="opintojaksot.length === 0")
+      ep-spinner(v-if="!opintojaksot")
       ep-collapse(v-else)
         h4(slot="header") {{ $t('opintojaksot') }}
-        div.block-container(v-for="opintojakso in opintojaksot", :key="opintojakso.id")
-          .oj-content.pakollinen
-            span.nimi
-              router-link(:to=`{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }`)
-                | {{ $kaanna(opintojakso.nimi) }}
-            span.pituus 2 op
+        div(v-if="opintojaksot.length === 0")
+          .alert.alert-info {{ $t('opintojaksoja-ei-lisatty') }}
+        div(v-else)
+          div.block-container(v-for="opintojakso in opintojaksot", :key="opintojakso.id")
+            .oj-content.pakollinen
+              span.nimi
+                router-link(:to=`{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }`)
+                  | {{ $kaanna(opintojakso.nimi) }}
+              span.pituus 2 op
 
 </template>
 

@@ -13,7 +13,7 @@ interface EditointiKontrolliFeatures {
 }
 
 export interface EditointiKontrolliHistory {
-  items: () => Promise<RevisionDto[]>;
+  revisions: () => Promise<RevisionDto[]>;
   restore?: (rev: RevisionDto) => Promise<void>;
 }
 
@@ -51,6 +51,7 @@ export class EditointiKontrolli {
   private readonly features: EditointiKontrolliFeatures;
   private mstate = Vue.observable({
     data: null,
+    revisions: [] as RevisionDto[],
     backup: null,
     disabled: true,
     isSaving: false,
@@ -88,6 +89,9 @@ export class EditointiKontrolli {
 
   public async init() {
     const data = await this.fetch();
+    if (this.config.history && this.config.history.revisions) {
+      this.mstate.revisions = await this.config.history.revisions();
+    }
     this.logger.debug('Haetaan data', data);
     this.backup = JSON.stringify(data);
     this.mstate.data = data;
