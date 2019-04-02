@@ -165,17 +165,17 @@ export default class OpsSidenav extends Vue {
     ];
   }
 
-  private OppiaineLinkki(tyyppi, oppiaine, children) {
+  private OppiaineLinkki(type, objref, children) {
     return {
       item: {
-        type: 'oppimaara',
-        objref: oppiaine,
+        type,
+        objref,
         hideChevron: true,
       },
       route: {
         name: 'oppiaine',
         params: {
-          oppiaineId: oppiaine.id,
+          oppiaineId: objref.id,
         },
       },
       children,

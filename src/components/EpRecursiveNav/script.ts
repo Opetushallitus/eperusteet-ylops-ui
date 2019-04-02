@@ -113,7 +113,11 @@ export default class EpRecursiveNav extends Vue {
     let newTopItem: SideMenuEntry | null = null;
     let newCurrent: SideMenuEntry[] = [];
 
-    if (menuEntry.parent) {
+    if (menuEntry.children && menuEntry.children.length > 0) {
+      newTopItem = menuEntry;
+      newCurrent = menuEntry.children;
+    }
+    else if (menuEntry.parent) {
       if (menuEntry.parent.flatten && menuEntry.parent.parent && menuEntry.parent.parent.children) {
         newTopItem = menuEntry.parent.parent;
         newCurrent = menuEntry.parent.parent.children;
