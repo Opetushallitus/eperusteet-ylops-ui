@@ -1,4 +1,4 @@
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
@@ -7,6 +7,7 @@ import { PerusteCache } from '@/stores/peruste';
 import {
   SideMenuEntry,
   SideMenuItem,
+  Lops2019OpintojaksoDto,
 } from '@/tyypit';
 
 import {
@@ -82,9 +83,11 @@ const i18keys = {
 })
 export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
+  private opintojaksot: Lops2019OpintojaksoDto[] = [];
 
   async created() {
     if (this.$route) {
+      this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
       this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
     }
   }
@@ -107,7 +110,25 @@ export default class OpsSidenav extends Vue {
   }
 
   private OppimaaraOpintojaksoLinkit(oppimaara) {
-    return [];
+    const uri = oppimaara.koodi.uri;
+    return this.opintojaksot
+      .filter(oj => {
+        return oj.oppiaineet && oj.oppiaineet.indexOf(uri) > -1;
+      })
+      .map(oj => {
+        return {
+          item: {
+            type: 'opintojakso',
+            objref: oj,
+          },
+          route: {
+            name: 'opintojakso',
+            params: {
+              opintojaksoId: oj.id,
+            },
+          },
+        };
+      });
   }
 
   private OppimaaraModuuliLinkit(oppimaara) {
@@ -207,8 +228,12 @@ export default class OpsSidenav extends Vue {
     return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
   }
 
-  private naytaTilakoodi(item: SideMenuItem) {
-    return (item.type === 'moduuli');
+  private onkoModTaiOj(item: SideMenuItem) {
+    return (item.type === 'moduuli' || item.type === 'opintojakso');
+  }
+
+  private haeModuuliKoodi(item: SideMenuItem) {
+    return _.get(item, 'objref.koodi.arvo', '');
   }
 
   private get valikkoData() {
@@ -246,5 +271,12 @@ export default class OpsSidenav extends Vue {
 
   private get opsSisalto() {
     return Opetussuunnitelma.sisalto;
+  }
+
+  @Watch('Opetussuunnitelma')
+  async onOpsChange() {
+    if (this.$route) {
+      this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
+    }
   }
 }

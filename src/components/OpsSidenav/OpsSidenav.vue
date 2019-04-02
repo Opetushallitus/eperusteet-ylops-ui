@@ -13,15 +13,15 @@
           a.btn.btn-link {{ kaanna(itemData.item) }}
       template(v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }")
         ops-sidenav-link(:to="itemRoute",
-          :class="{ 'module-link': itemData.item.type=='moduuli' }",
+          :class="{ 'module-link': onkoModTaiOj(itemData.item) }",
           v-if="!isSubmenu && itemRoute")
           ep-color-ball(
-            v-if="naytaTilakoodi(itemData.item)",
+            v-if="onkoModTaiOj(itemData.item)",
             :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'normaali'"
             )
           a.btn.btn-link
             span {{ kaanna(itemData.item) }}
-            span.code-field(v-if="naytaTilakoodi(itemData.item)") ({{ itemData.item.objref.koodi.arvo }})
+            span.code-field(v-if="itemData.item.type === 'moduuli'") ({{ haeModuuliKoodi(itemData.item) }})
         li.subheader(v-if="!isSubmenu && !itemRoute")
           span {{ kaanna(itemData.item) }}
         ops-sidenav-link.submenu(
