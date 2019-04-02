@@ -27,7 +27,7 @@ export default class EpColorBall extends Vue {
 }
 
 .ball-pakollinen {
-  background: #5BCA13;
+  background: #09aee4;
 }
 
 .ball-syventava {

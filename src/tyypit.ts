@@ -56,7 +56,8 @@ export interface SideMenuEntry {
 export interface SideMenuItem {
   type: string,
   i18key?: string,
-  name?: object,
+  objref?: object,
+  hideChevron?: boolean,
 }
 
 export interface SideMenuRoute {
