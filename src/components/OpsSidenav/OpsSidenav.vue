@@ -18,10 +18,12 @@
           v-if="!isSubmenu && itemRoute"
           )
           ep-color-ball(
-            v-if="itemData.item.type=='moduuli'",
+            v-if="naytaTilakoodi(itemData.item)",
             :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'normaali'"
             )
-          a.btn.btn-link {{ kaanna(itemData.item) }}
+          a.btn.btn-link
+            span {{ kaanna(itemData.item) }}
+            span.code-field(v-if="naytaTilakoodi(itemData.item)") ({{ itemData.item.objref.koodi.arvo }})
         li.subheader(v-if="!isSubmenu && !itemRoute")
           span {{ kaanna(itemData.item) }}
         li.submenu(v-if="isSubmenu", @click="navigate(itemData)")

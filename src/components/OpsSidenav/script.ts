@@ -219,6 +219,10 @@ export default class OpsSidenav extends Vue {
     return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
   }
 
+  private naytaTilakoodi(item: SideMenuItem) {
+    return (item.type === 'moduuli');
+  }
+
   private get valikkoData() {
     let menuOpsData: SideMenuEntry[] = [
       ...menuBaseData,
