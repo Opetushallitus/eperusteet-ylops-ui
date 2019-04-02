@@ -5,6 +5,7 @@
       name="previousLink",
       v-if="curTopItem",
       :itemData="curTopItem",
+      :itemRoute="curTopItem.route",
       :navigate="previousSubmenu")
   .item(v-for="item in current")
     slot(

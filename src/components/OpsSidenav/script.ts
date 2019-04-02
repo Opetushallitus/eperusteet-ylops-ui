@@ -16,6 +16,7 @@ import {
 } from '@/components';
 
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
+import OpsSidenavLink from './OpsSidenavLink.vue';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -76,6 +77,7 @@ const i18keys = {
     EpColorBall,
     EpRecursiveNav,
     EpSisaltoModaali,
+    OpsSidenavLink,
   },
 })
 export default class OpsSidenav extends Vue {
@@ -85,20 +87,6 @@ export default class OpsSidenav extends Vue {
     if (this.$route) {
       this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
     }
-  }
-
-  private taydennaMenuData(menuData: SideMenuEntry[], lang: string) {
-    menuData.forEach(menuItem => {
-      if (menuItem.route) {
-        menuItem.route.params = {
-          ...menuItem.route.params,
-          lang,
-        };
-      }
-      if (menuItem.children) {
-        this.taydennaMenuData(menuItem.children, lang);
-      }
-    });
   }
 
   private OpsLapsiLinkit() {
@@ -244,8 +232,6 @@ export default class OpsSidenav extends Vue {
         },
       ];
     }
-
-    this.taydennaMenuData(menuOpsData, Kielet.getUiKieli());
 
     return menuOpsData;
   }
