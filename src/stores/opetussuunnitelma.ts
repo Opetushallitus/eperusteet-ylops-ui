@@ -20,15 +20,24 @@ class OpetussuunnitelmaStore {
   @State()
   public opetussuunnitelma: OpetussuunnitelmaKevytDto | null = null;
 
-  public async updateSisalto() {
+  public async getOtsikot() {
     if (this.opetussuunnitelma && this.opetussuunnitelma.id) {
-      this.sisalto = (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opetussuunnitelma.id)).data;
+      return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opetussuunnitelma.id)).data;
+    }
+    else {
+      return null;
     }
   }
 
+  public async updateSisalto() {
+    this.sisalto = await this.getOtsikot();
+  }
+
   public async init(id: number) {
+    logger.info('Updating peruste', id);
     this.opetussuunnitelma = await this.get(id);
     await this.updateSisalto();
+    logger.info('Updating peruste', this.sisalto);
   }
 
   public async get(id: number) {
@@ -92,16 +101,19 @@ class OpetussuunnitelmaStore {
 
   public async getOpintojaksot(query: OpintojaksoQuery = {}) {
     let chain = _((await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data);
-    chain = _(chain);
     if (query.oppiaineUri) {
-      chain.filter(oj => _.includes(oj.oppiaineet, query.oppiaineUri));
+      chain = chain.filter(oj => _.includes(oj.oppiaineet, query.oppiaineUri));
     }
     if (query.moduuliUri) {
-      chain.filter(oj => _.includes(
+      chain = chain.filter(oj => _.includes(
         _.map(oj.moduulit, 'koodiUri'),
         query.oppiaineUri));
     }
     return chain.value();
+  }
+
+  public async getOpintojaksoHistoria(opintojaksoId: number) {
+    return (await Opintojaksot.getVersionHistory(this.opetussuunnitelma!.id!, opintojaksoId)).data;
   }
 
   public async getOpintojakso(id: number) {

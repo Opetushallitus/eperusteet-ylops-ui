@@ -27,12 +27,13 @@ library.add(solid.faPen);
 library.add(solid.faPencilAlt);
 library.add(solid.faPencilRuler);
 library.add(solid.faPlus);
+library.add(solid.faPlusCircle);
 library.add(solid.faQuestion);
 library.add(solid.faSearch);
+library.add(solid.faSort);
 library.add(solid.faThumbsUp);
 library.add(solid.faTimes);
 library.add(solid.faUsers);
-library.add(solid.faPlusCircle);
 
 // OPH icons
 library.add(oph.arkisto);
