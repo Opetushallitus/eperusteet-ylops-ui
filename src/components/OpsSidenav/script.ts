@@ -68,7 +68,7 @@ const i18keys = {
   oppiaine: 'nimetön-oppiaine',
   oppimaara: 'nimetön-oppimäärä',
   tekstikappale: 'nimetön-tekstikappale',
-}
+};
 
 @Component({
   components: {
@@ -121,7 +121,7 @@ export default class OpsSidenav extends Vue {
   }
 
   private OppimaaraModuuliLinkit(oppimaara) {
-    return oppimaara.moduulit.map( moduuli => {
+    return oppimaara.moduulit.map(moduuli => {
       return {
         item: {
           type: 'moduuli',
@@ -135,7 +135,7 @@ export default class OpsSidenav extends Vue {
           },
         },
       };
-    } );
+    });
   }
 
   private OpintojaksoModuuliLista(source) {
@@ -163,24 +163,28 @@ export default class OpsSidenav extends Vue {
     ];
   }
 
+  private OppiaineLinkki(tyyppi, oppiaine, children) {
+    return {
+      item: {
+        type: 'oppimaara',
+        objref: oppiaine,
+        hideChevron: true,
+      },
+      route: {
+        name: 'oppiaine',
+        params: {
+          oppiaineId: oppiaine.id,
+        },
+      },
+      children,
+    };
+  }
+
   private OppiaineOppimaaraLinkit(oppiaine) {
-    return oppiaine.oppimaarat.map( oppimaara => {
+    return oppiaine.oppimaarat.map(oppimaara => {
       let children = this.OpintojaksoModuuliLista(oppimaara);
-      return {
-        item: {
-          type: 'oppimaara',
-          objref: oppimaara,
-          hideChevron: true,
-        },
-        route: {
-          name: 'oppiaine',
-          params: {
-            oppiaineId: oppimaara.id,
-          },
-        },
-        children,
-      };
-    } );
+      return this.OppiaineLinkki('oppimaara', oppimaara, children);
+    });
   }
 
   private OpsOppiaineLinkit() {
@@ -191,26 +195,14 @@ export default class OpsSidenav extends Vue {
     return this.cache.peruste().oppiaineet.map(oppiaine => {
       let children;
 
-      if(oppiaine.oppimaarat.length > 0) {
+      if (oppiaine.oppimaarat.length > 0) {
         children = this.OppiaineOppimaaraLinkit(oppiaine);
-      } else {
+      }
+      else {
         children = this.OpintojaksoModuuliLista(oppiaine);
       }
 
-      return {
-        item: {
-          type: 'oppiaine',
-          objref: oppiaine,
-          hideChevron: true,
-        },
-        route: {
-          name: 'oppiaine',
-          params: {
-            oppiaineId: oppiaine.id,
-          },
-        },
-        children,
-      };
+      return this.OppiaineLinkki('oppiaine', oppiaine, children);
     });
   }
 
@@ -222,7 +214,7 @@ export default class OpsSidenav extends Vue {
     const locale = Kielet.getSisaltoKieli();
     const i18key = i18keys[value.type] || 'nimetön';
 
-    return _.get(value.objref,'nimi.'+locale) || this.$t(i18key);
+    return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
   }
 
   private get valikkoData() {
@@ -263,5 +255,4 @@ export default class OpsSidenav extends Vue {
   private get opsSisalto() {
     return Opetussuunnitelma.sisalto;
   }
-
 }

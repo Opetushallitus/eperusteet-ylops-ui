@@ -20,11 +20,7 @@ export default class EpRecursiveNav extends Vue {
   }
 
   public previousSubmenu() {
-    if (!this.curTopItem) {
-      return;
-    }
-
-    if(this.curTopItem && this.curTopItem.route) {
+    if (this.curTopItem && this.curTopItem.route) {
       this.$router.replace({
         name: this.curTopItem.route.name,
         params: {
@@ -33,8 +29,10 @@ export default class EpRecursiveNav extends Vue {
       });
     }
 
-    this.current = (this.curTopItem.parent && this.curTopItem.parent.children) ? this.curTopItem.parent.children : this.valueCopy;
-    this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : null;
+    if (this.curTopItem) {
+      this.current = (this.curTopItem.parent && this.curTopItem.parent.children) ? this.curTopItem.parent.children : this.valueCopy;
+      this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : null;
+    }
   }
 
   public enterSubmenu(item: SideMenuEntry) {
@@ -45,7 +43,7 @@ export default class EpRecursiveNav extends Vue {
     this.current = item.children;
     this.curTopItem = item;
 
-    if(item.route) {
+    if (item.route) {
       this.$router.replace({
         name: item.route.name,
         params: {
@@ -102,7 +100,7 @@ export default class EpRecursiveNav extends Vue {
 
   private matchRouteParams(route: SideMenuRoute): boolean {
     return this.splitRouteParams().every(param => {
-      return ( this.$route.params[param] && route.params[param] && this.$route.params[param] === String(route.params[param]) );
+      return (this.$route.params[param] && route.params[param] && this.$route.params[param] === String(route.params[param]));
     });
   }
 
