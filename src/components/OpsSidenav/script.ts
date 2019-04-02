@@ -82,7 +82,9 @@ export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
 
   async created() {
-    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+    if (this.$route) {
+      this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+    }
   }
 
   private taydennaMenuData(menuData: SideMenuEntry[], lang: string) {

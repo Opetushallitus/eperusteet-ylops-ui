@@ -20,7 +20,11 @@ export default class EpRecursiveNav extends Vue {
   }
 
   public previousSubmenu() {
-    if (this.curTopItem && this.curTopItem.route) {
+    if (!this.curTopItem) {
+      return;
+    }
+
+    if (this.curTopItem.route) {
       this.$router.replace({
         name: this.curTopItem.route.name,
         params: {
@@ -29,10 +33,8 @@ export default class EpRecursiveNav extends Vue {
       });
     }
 
-    if (this.curTopItem) {
-      this.current = (this.curTopItem.parent && this.curTopItem.parent.children) ? this.curTopItem.parent.children : this.valueCopy;
-      this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : null;
-    }
+    this.current = (this.curTopItem.parent && this.curTopItem.parent.children) ? this.curTopItem.parent.children : this.valueCopy;
+    this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : null;
   }
 
   public enterSubmenu(item: SideMenuEntry) {
