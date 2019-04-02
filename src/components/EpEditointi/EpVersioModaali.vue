@@ -74,11 +74,9 @@ export default class EpSisaltoModaali extends Mixins(EpValidation) {
       kommentti: rev.kommentti || '-',
     }));
   }
-
 }
 
 </script>
-
 
 <style scoped lang="scss">
 .btn-versiohistoria {

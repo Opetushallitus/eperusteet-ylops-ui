@@ -3,7 +3,6 @@ import _ from 'lodash';
 
 @Component
 export default class EpParams extends Vue {
-
   async navigateTo(name: string, params: object = {}) {
     this.$router.push({
       name,

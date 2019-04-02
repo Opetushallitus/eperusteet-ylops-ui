@@ -20,7 +20,6 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpJarjesta from '@/components/EpJarjesta/EpJarjesta.vue';
 import _ from 'lodash';
 
-
 function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): Partial<TekstiKappaleViiteKevytDto> | null {
   if (!root) {
     return null;
@@ -50,7 +49,6 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
   onUpdate(value: any) {
     this.editable = value;
   }
-
 }
 </script>
 
@@ -76,4 +74,3 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
   }
 }
 </style>
-

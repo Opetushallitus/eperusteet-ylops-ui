@@ -1,8 +1,6 @@
 {
   "ajankohta": "Muokkauksen ajankohta",
   "arviointi": "Arviointi",
-  "jarjesta": "Järjestä",
-  "jarjesta-sisaltoa": "Järjestä sisältöä",
   "dokumentit": "Dokumentit",
   "dokumentti": "Dokumentti",
   "dokumentti-ei-ole": "Dokumenttia ei ole",
@@ -21,6 +19,8 @@
   "fu-valittu-tiedosto": "Valittu kuva",
   "hallinta": "Hallinta",
   "historia": "Historia",
+  "jarjesta": "Järjestä",
+  "jarjesta-sisaltoa": "Järjestä sisältöä",
   "jarjestajat": "Koulutuksen järjestäjät",
   "julkaisukielet": "Julkaisukielet",
   "kansikuva": "Kansikuva",

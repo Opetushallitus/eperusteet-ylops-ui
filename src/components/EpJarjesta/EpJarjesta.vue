@@ -37,9 +37,9 @@ div(v-if="value")
 import { Mixins, Prop, Component } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoute';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import draggable from 'vuedraggable'
-import { RecursiveTreeItem } from '@/tyypit'
-import _ from 'lodash'
+import draggable from 'vuedraggable';
+import { RecursiveTreeItem } from '@/tyypit';
+import _ from 'lodash';
 
 @Component({
   name: 'route-jarjestys',
@@ -61,7 +61,6 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
 
   changed(data: any, wat: any) {
     const idx = _.findIndex(this.value[this.childField], { id: data.id });
-    console.log('changed', data, wat);
     if (idx > -1) {
       const lapset = [...this.value[this.childField]];
       lapset[idx] = data;
@@ -73,7 +72,6 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
   }
 
   update(data: any) {
-    console.log('update', data);
     this.$emit('input', {
       ...this.value,
       [this.childField]: data,
@@ -88,13 +86,11 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
       ghostClass: 'placeholder',
     };
   }
-
 }
 </script>
 
 <style scoped lang="scss">
 @import '@/styles/_variables.scss';
-
 
 .flip-move {
   transition: transform 0.5s;
@@ -139,5 +135,3 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
   }
 }
 </style>
-
-

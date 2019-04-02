@@ -191,7 +191,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   };
 
   async revisions() {
-    return await Opetussuunnitelma.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+    return Opetussuunnitelma.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
   }
 
   async init() {

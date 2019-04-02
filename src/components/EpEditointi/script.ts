@@ -61,5 +61,4 @@ export default class EpEditointi extends Mixins(validationMixin) {
       index: revs.length - index,
     }));
   }
-
 }

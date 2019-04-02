@@ -48,7 +48,6 @@ export default class TileTiedotteet extends Vue {
         .sortBy('luotu')
         .reverse()
         .value();
-      console.log(this.tiedotteet);
     }
     catch (err) {
       throw err;
