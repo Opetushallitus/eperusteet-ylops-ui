@@ -20,7 +20,7 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpJarjesta from '@/components/EpJarjesta/EpJarjesta.vue';
 import _ from 'lodash';
 
-function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): Partial<TekstiKappaleViiteKevytDto> | null {
+function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKappaleViiteKevytDto | null {
   if (!root) {
     return null;
   }
@@ -29,7 +29,7 @@ function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): Partial<Te
       ..._.pick(root, ['id', 'pakollinen']),
       tekstiKappale: root.tekstiKappale && _.pick(root.tekstiKappale, ['id', 'nimi']),
       lapset: _.map(root.lapset, mapTekstikappaleet),
-    };
+    } as TekstiKappaleViiteKevytDto;
   }
 }
 
