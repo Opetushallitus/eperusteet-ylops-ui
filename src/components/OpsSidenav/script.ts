@@ -86,7 +86,7 @@ export default class OpsSidenav extends Vue {
   private opintojaksot: Lops2019OpintojaksoDto[] = [];
 
   async created() {
-    if (this.$route) {
+    if (_.get(this.$route,'params.id',null) !== null) {
       this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
       this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
     }

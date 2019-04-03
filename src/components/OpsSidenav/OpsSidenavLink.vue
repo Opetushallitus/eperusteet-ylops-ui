@@ -34,17 +34,19 @@ export default class OpsSidenavLink extends Vue {
   }
 
   private resolveRoute() {
-    const lang = Kielet.getUiKieli();
-    const id = this.$route.params.id;
+    if(!this.$route) {
+      return;
+    }
 
     this.linkRoute = {
       name: this.to.name,
       params: {
         ...this.to.params,
-        lang,
-        id
+        lang: Kielet.getUiKieli(),
+        id: this.$route.params.id,
       }
     };
+
 
     const href = this.$router.resolve(this.linkRoute).href;
     this.$el.querySelectorAll('a').forEach(el => {
