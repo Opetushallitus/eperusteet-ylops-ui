@@ -34,7 +34,7 @@ export default class OpsSidenavLink extends Vue {
   }
 
   private resolveRoute() {
-    if(!this.$route) {
+    if (!this.$route) {
       return;
     }
 
@@ -46,7 +46,6 @@ export default class OpsSidenavLink extends Vue {
         id: this.$route.params.id,
       }
     };
-
 
     const href = this.$router.resolve(this.linkRoute).href;
     this.$el.querySelectorAll('a').forEach(el => {
