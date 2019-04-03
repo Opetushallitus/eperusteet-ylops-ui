@@ -23,11 +23,9 @@ import { Vue, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoot';
-import { Kielet } from '@/stores/kieli';
 import { Ulkopuoliset } from '@/api';
-import { Kayttajat } from '@/stores/kayttaja';
+import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import { organizations } from '@/utils/organisaatiot';
-import { parsiEsitysnimi } from '@/stores/kayttaja';
 import {
   EpColorBall,
   EpIcon,

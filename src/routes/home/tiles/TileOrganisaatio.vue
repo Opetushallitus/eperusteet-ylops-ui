@@ -22,14 +22,13 @@ base-tile(icon="tyoryhma",
 import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
 import { Ulkopuoliset } from '@/api';
-import { Kayttajat } from '@/stores/kayttaja';
+import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import BaseTile from './BaseTile.vue';
 import {
   EpColorBall,
   EpSpinner,
 } from '@/components';
 import { organizations } from '@/utils/organisaatiot';
-import { parsiEsitysnimi } from '@/stores/kayttaja';
 
 @Component({
   components: {
