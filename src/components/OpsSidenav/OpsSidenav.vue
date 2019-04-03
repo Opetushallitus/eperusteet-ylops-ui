@@ -7,26 +7,28 @@
 
   ul.navigation(v-if="opsLapset.length>0")
     ep-recursive-nav(:value="valikkoData")
-      template(v-slot:previousLink="{ itemData, navigate }")
-        li.previous-link(@click="navigate()")
+      template(v-slot:previousLink="{ itemData, itemRoute, navigate }")
+        ops-sidenav-link.previous-link(:to="itemRoute", :click="navigate")
           fas(icon="chevron-left")
           a.btn.btn-link {{ kaanna(itemData.item) }}
       template(v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }")
-        router-link(tag="li",
-          :to="itemRoute",
-          :class="{ 'module-link': itemData.item.type=='moduuli' }",
-          v-if="!isSubmenu && itemRoute"
-          )
+        ops-sidenav-link(:to="itemRoute",
+          :class="{ 'module-link': onkoModTaiOj(itemData.item) }",
+          v-if="!isSubmenu && itemRoute")
           ep-color-ball(
-            v-if="naytaTilakoodi(itemData.item)",
+            v-if="onkoModTaiOj(itemData.item)",
             :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'normaali'"
             )
           a.btn.btn-link
             span {{ kaanna(itemData.item) }}
-            span.code-field(v-if="naytaTilakoodi(itemData.item)") ({{ itemData.item.objref.koodi.arvo }})
+            span.code-field(v-if="itemData.item.type === 'moduuli'") ({{ haeModuuliKoodi(itemData.item) }})
         li.subheader(v-if="!isSubmenu && !itemRoute")
           span {{ kaanna(itemData.item) }}
-        li.submenu(v-if="isSubmenu", @click="navigate(itemData)")
+        ops-sidenav-link.submenu(
+          v-if="isSubmenu",
+          :itemData="itemData",
+          :to="itemRoute",
+          :click="navigate")
           a.btn.btn-link {{ kaanna(itemData.item) }}
           fas(icon="chevron-right", v-if="!itemData.item.hideChevron")
     li

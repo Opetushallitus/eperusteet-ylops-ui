@@ -1,4 +1,4 @@
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
@@ -7,6 +7,7 @@ import { PerusteCache } from '@/stores/peruste';
 import {
   SideMenuEntry,
   SideMenuItem,
+  Lops2019OpintojaksoDto,
 } from '@/tyypit';
 
 import {
@@ -16,6 +17,7 @@ import {
 } from '@/components';
 
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
+import OpsSidenavLink from './OpsSidenavLink.vue';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -76,29 +78,18 @@ const i18keys = {
     EpColorBall,
     EpRecursiveNav,
     EpSisaltoModaali,
+    OpsSidenavLink,
   },
 })
 export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
+  private opintojaksot: Lops2019OpintojaksoDto[] = [];
 
   async created() {
-    if (this.$route) {
+    if (_.get(this.$route, 'params.id', null) !== null) {
+      this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
       this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
     }
-  }
-
-  private taydennaMenuData(menuData: SideMenuEntry[], lang: string) {
-    menuData.forEach(menuItem => {
-      if (menuItem.route) {
-        menuItem.route.params = {
-          ...menuItem.route.params,
-          lang,
-        };
-      }
-      if (menuItem.children) {
-        this.taydennaMenuData(menuItem.children, lang);
-      }
-    });
   }
 
   private OpsLapsiLinkit() {
@@ -119,7 +110,25 @@ export default class OpsSidenav extends Vue {
   }
 
   private OppimaaraOpintojaksoLinkit(oppimaara) {
-    return [];
+    const uri = oppimaara.koodi.uri;
+    return this.opintojaksot
+      .filter(oj => {
+        return oj.oppiaineet && oj.oppiaineet.indexOf(uri) > -1;
+      })
+      .map(oj => {
+        return {
+          item: {
+            type: 'opintojakso',
+            objref: oj,
+          },
+          route: {
+            name: 'opintojakso',
+            params: {
+              opintojaksoId: oj.id,
+            },
+          },
+        };
+      });
   }
 
   private OppimaaraModuuliLinkit(oppimaara) {
@@ -165,17 +174,17 @@ export default class OpsSidenav extends Vue {
     ];
   }
 
-  private OppiaineLinkki(tyyppi, oppiaine, children) {
+  private OppiaineLinkki(type, objref, children) {
     return {
       item: {
-        type: 'oppimaara',
-        objref: oppiaine,
+        type,
+        objref,
         hideChevron: true,
       },
       route: {
         name: 'oppiaine',
         params: {
-          oppiaineId: oppiaine.id,
+          oppiaineId: objref.id,
         },
       },
       children,
@@ -219,8 +228,12 @@ export default class OpsSidenav extends Vue {
     return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
   }
 
-  private naytaTilakoodi(item: SideMenuItem) {
-    return (item.type === 'moduuli');
+  private onkoModTaiOj(item: SideMenuItem) {
+    return (item.type === 'moduuli' || item.type === 'opintojakso');
+  }
+
+  private haeModuuliKoodi(item: SideMenuItem) {
+    return _.get(item, 'objref.koodi.arvo', '');
   }
 
   private get valikkoData() {
@@ -245,20 +258,21 @@ export default class OpsSidenav extends Vue {
       ];
     }
 
-    this.taydennaMenuData(menuOpsData, Kielet.getUiKieli());
-
     return menuOpsData;
   }
 
   private get opsLapset() {
-    if (Opetussuunnitelma.sisalto && Opetussuunnitelma.sisalto.lapset) {
-      return Opetussuunnitelma.sisalto.lapset;
-    }
-
-    return [];
+    return _.get(Opetussuunnitelma, 'sisalto.lapset', []);
   }
 
   private get opsSisalto() {
     return Opetussuunnitelma.sisalto;
+  }
+
+  @Watch('Opetussuunnitelma')
+  async onOpsChange() {
+    if (this.$route) {
+      this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
+    }
   }
 }
