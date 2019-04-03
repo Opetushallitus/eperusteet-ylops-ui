@@ -11,7 +11,7 @@ module.exports = {
     './tests/jestsetup.ts',
   ],
   coverageReporters: [
-    'text',
+    'text-summary',
     'json',
     'lcov',
   ],
