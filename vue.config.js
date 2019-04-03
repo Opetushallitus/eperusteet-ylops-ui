@@ -36,7 +36,7 @@ module.exports = {
       .loader('raw-loader');
     // Muuten tulee varoituksia puuttuvista tyypeistä
     // https://github.com/vuejs/vue-cli/issues/1436
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV !== 'production') {
       config.optimization.providedExports(false);
     }
   },

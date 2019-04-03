@@ -70,7 +70,7 @@ $tile-width: 540px;
 
     .tile-content {
       overflow: hidden;
-      color: #28344F;
+      color: $dark-blue;
     }
 
     .iconline {
