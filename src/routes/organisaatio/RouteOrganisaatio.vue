@@ -42,7 +42,6 @@ import {
   },
 })
 export default class RouteOrganisaatio extends Mixins(EpRoute) {
-
   async init() {
     await Kayttajat.updateOrganisaatioVirkailijat();
   }

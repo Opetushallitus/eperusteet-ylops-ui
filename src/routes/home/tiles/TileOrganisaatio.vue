@@ -53,12 +53,12 @@ export default class TileOrganisaatio extends Vue {
 
   private get virkailijatFormatted() {
     return _.map(this.virkailijat, virkailija => {
-        const esitysnimi = parsiEsitysnimi(virkailija);
-        return {
-          oid: virkailija.oid,
-          esitysnimi,
-        };
-      });
+      const esitysnimi = parsiEsitysnimi(virkailija);
+      return {
+        oid: virkailija.oid,
+        esitysnimi,
+      };
+    });
   }
 
   private get virkailijatPrewview() {
