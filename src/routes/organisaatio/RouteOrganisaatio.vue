@@ -11,10 +11,10 @@ ep-main-view
   ep-spinner(v-if="isLoading")
   div(v-else)
     b-row.virkailijat
-      b-col.virkailija.text-left(sm="6", v-for="virkailija in virkailijat", :key="virkailija.oid")
+      b-col.virkailija.text-left(sm="6", v-for="virkailija in virkailijatFormatted", :key="virkailija.oid")
         // Todo: offline / online toiminnallisuus
         ep-color-ball.mr-2(kind="offline")
-        span {{ parsiEsitysnimi(virkailija) }}
+        span {{ virkailija.esitysnimi }}
 
 </template>
 
@@ -42,21 +42,23 @@ import {
   },
 })
 export default class RouteOrganisaatio extends Mixins(EpRoute) {
-  private virkailijat: any[] = [];
 
   async init() {
-    const virkailijat = this.$route.params.virkailijat as any;
-    if (virkailijat === undefined) {
-      const orgIds = _.filter(Kayttajat.organisaatiot, oid => oid !== organizations.oph.oid);
-      this.virkailijat = (await Ulkopuoliset.getOrganisaatioVirkailijat(orgIds)).data;
-    }
-    else {
-      this.virkailijat = virkailijat;
-    }
+    await Kayttajat.updateOrganisaatioVirkailijat();
   }
 
-  private parsiEsitysnimi(kayttaja) {
-    return parsiEsitysnimi(kayttaja);
+  private get virkailijat() {
+    return Kayttajat.virkailijat;
+  }
+
+  private get virkailijatFormatted() {
+    return _.map(this.virkailijat, virkailija => {
+      const esitysnimi = parsiEsitysnimi(virkailija);
+      return {
+        oid: virkailija.oid,
+        esitysnimi,
+      };
+    });
   }
 }
 </script>

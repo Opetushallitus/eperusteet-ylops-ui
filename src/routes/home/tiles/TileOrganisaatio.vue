@@ -1,19 +1,17 @@
 <template lang="pug">
 base-tile(icon="tyoryhma",
     color="#82D4FF",
-    :route="{ name: 'organisaatio', params: { virkailijat: virkailijat } }")
+    :route="{ name: 'organisaatio' }")
   template(slot="header")
     span {{ $t('tile-organisaatio') }}
   template(slot="content")
-    // Todo: Järkevä kuvaus
-    //p {{ $t('tile-organisaatio-kuvaus') }}
     ep-spinner(v-if="isLoading")
     div(v-else)
       b-row.mx-5.virkailijat
         b-col.virkailija.text-left(sm="6", v-for="virkailija in virkailijatPrewview", :key="virkailija.oid")
           // Todo: offline / online toiminnallisuus
           ep-color-ball.mr-2(kind="offline")
-          span {{ parsiEsitysnimi(virkailija) }}
+          span {{ virkailija.esitysnimi }}
       p.mt-3(v-if="virkailijat && virkailijat.length > previewSize") {{ $t('nayta-lisaa') }}
 
 </template>
@@ -21,7 +19,6 @@ base-tile(icon="tyoryhma",
 <script lang="ts">
 import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
-import { Ulkopuoliset } from '@/api';
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import BaseTile from './BaseTile.vue';
 import {
@@ -39,25 +36,33 @@ import { organizations } from '@/utils/organisaatiot';
 })
 export default class TileOrganisaatio extends Vue {
   private isLoading = true;
-  private virkailijat: any[] = [];
-  private previewSize = 100;
+  private previewSize = 6;
+
+  private get virkailijat() {
+    return Kayttajat.virkailijat;
+  }
 
   async mounted() {
     try {
-      const orgIds = _.filter(Kayttajat.organisaatiot, oid => oid !== organizations.oph.oid);
-      this.virkailijat = (await Ulkopuoliset.getOrganisaatioVirkailijat(orgIds)).data;
+      await Kayttajat.updateOrganisaatioVirkailijat();
     }
     finally {
       this.isLoading = false;
     }
   }
 
-  private get virkailijatPrewview() {
-    return _.take(this.virkailijat, this.previewSize);
+  private get virkailijatFormatted() {
+    return _.map(this.virkailijat, virkailija => {
+        const esitysnimi = parsiEsitysnimi(virkailija);
+        return {
+          oid: virkailija.oid,
+          esitysnimi,
+        };
+      });
   }
 
-  private parsiEsitysnimi(kayttaja) {
-    return parsiEsitysnimi(kayttaja);
+  private get virkailijatPrewview() {
+    return _.take(this.virkailijatFormatted, this.previewSize);
   }
 }
 </script>

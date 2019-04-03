@@ -164,14 +164,15 @@ export default class RouteUkk extends Mixins(EpRoute) {
       const orgs = (await Ulkopuoliset.getUserOrganisations() as any).data;
 
       if (!_.find(orgs, o => o.oid === organizations.oph.oid)) {
-        this.orgs.push(organizations.oph);
+        orgs.push(organizations.oph);
       }
 
       // Ei rajausta oletuksena
       _.each(orgs, o => {
         o.$checked = true;
       });
-      this.orgs.push(...orgs);
+
+      this.orgs = orgs;
     }
     finally {
       // Todo: isLoading;

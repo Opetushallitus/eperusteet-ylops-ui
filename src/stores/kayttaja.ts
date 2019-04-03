@@ -5,7 +5,9 @@ import { KayttajanTietoDto } from '@/tyypit';
 import {
   Kayttajat as KayttajatApi,
   Opetussuunnitelmat,
+  Ulkopuoliset,
 } from '@/api';
+import { organizations } from '@/utils/organisaatiot';
 
 import { createLogger } from './logger';
 const logger = createLogger('Kayttaja');
@@ -27,12 +29,12 @@ function getOikeusArvo(oikeus: Oikeus) {
   }
 }
 
-export function parsiEsitysnimi(tiedot) {
+export function parsiEsitysnimi(tiedot: KayttajanTietoDto): string {
   if (tiedot.kutsumanimi && tiedot.sukunimi) {
     return tiedot.kutsumanimi + ' ' + tiedot.sukunimi;
   }
   else {
-    return tiedot.oidHenkilo;
+    return tiedot.oidHenkilo as string;
   }
 }
 
@@ -43,6 +45,9 @@ class KayttajaStore {
 
   @State()
   public tiedot: KayttajanTietoDto = { };
+
+  @State()
+  public virkailijat: KayttajanTietoDto[] = [];
 
   @State()
   public oikeudet: Oikeudet = {
@@ -68,6 +73,11 @@ class KayttajaStore {
     catch (err) {
       logger.error('Käyttäjän tietojen lataus epäonnistui', err.message);
     }
+  }
+
+  public async updateOrganisaatioVirkailijat() {
+    const orgIds = _.filter(this.organisaatiot, oid => oid !== organizations.oph.oid);
+    this.virkailijat = (await Ulkopuoliset.getOrganisaatioVirkailijat(orgIds)).data;
   }
 
   public async hasOikeus(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {
