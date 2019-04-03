@@ -42,6 +42,9 @@ describe('Router', () => {
         '2234',
       ]));
 
+    jest.spyOn(Ulkopuoliset, 'getOrganisaatioVirkailijat')
+      .mockImplementation(async () => makeAxiosResponse([]));
+
     jest.spyOn(Opetussuunnitelmat, 'getAll')
       .mockImplementation(async (tyyppi: 'OPS' | 'POHJA' | undefined) => {
         if (tyyppi === 'POHJA') {
