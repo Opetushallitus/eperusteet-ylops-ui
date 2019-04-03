@@ -1,4 +1,5 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import _ from 'lodash';
 
 import {
   SideMenuEntry,
@@ -112,19 +113,20 @@ export default class EpRecursiveNav extends Vue {
   private getEntryDetails(menuEntry: SideMenuEntry) {
     let newTopItem: SideMenuEntry | null = null;
     let newCurrent: SideMenuEntry[] = [];
+    const parent = menuEntry.parent;
 
-    if (menuEntry.children && menuEntry.children.length > 0) {
+    if (menuEntry.children && !menuEntry.flatten) {
       newTopItem = menuEntry;
       newCurrent = menuEntry.children;
     }
-    else if (menuEntry.parent) {
-      if (menuEntry.parent.flatten && menuEntry.parent.parent && menuEntry.parent.parent.children) {
-        newTopItem = menuEntry.parent.parent;
-        newCurrent = menuEntry.parent.parent.children;
+    else if (parent) {
+      if (parent.flatten && parent.parent && parent.parent.children) {
+        newTopItem = parent.parent;
+        newCurrent = parent.parent.children;
       }
-      else if (!menuEntry.parent.flatten && menuEntry.parent.children) {
-        newTopItem = menuEntry.parent;
-        newCurrent = menuEntry.parent.children;
+      else if (!parent.flatten && parent.children) {
+        newTopItem = parent;
+        newCurrent = parent.children;
       }
     }
 
