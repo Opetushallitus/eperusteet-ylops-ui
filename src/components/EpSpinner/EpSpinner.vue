@@ -17,10 +17,13 @@ export default class EpSpinner extends Vue {
 </script>
 
 <style scoped lang="scss">
+
+@import "@/styles/_variables.scss";
+
 .spinner {
   margin-top: 5px;
   .oph-bounce {
-    background-color: #001A58 !important;
+    background-color: $light-blue !important;
   }
 }
 </style>

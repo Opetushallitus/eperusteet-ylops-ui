@@ -8,7 +8,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 @Component
 export default class EpColorBall extends Vue {
   @Prop({ default: 'normaali' })
-  private kind!: 'normaali' | 'pakollinen' | 'syventava' | 'paikallinen';
+  private kind!: 'normaali' | 'pakollinen' | 'syventava' | 'paikallinen' | 'offline' | 'online';
 }
 </script>
 
@@ -36,6 +36,14 @@ export default class EpColorBall extends Vue {
 
 .ball-paikallinen {
   background: orange;
+}
+
+.ball-offline {
+  background: #DADADA;
+}
+
+.ball-online {
+  background: #7CD443;
 }
 
 </style>

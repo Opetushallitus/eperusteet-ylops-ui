@@ -26,3 +26,14 @@ export function metadataToTeksti(field: string, metadata: any[]) {
   }
   return result;
 }
+
+export const organizations = Object.freeze({
+  oph: {
+    nimi: {
+      fi: 'Opetushallitus',
+      sv: 'Utbildningsstyrelsen',
+      en: 'Finnish National Agency for Education'
+    },
+    oid: '1.2.246.562.10.00000000001'
+  }
+});

@@ -15,7 +15,7 @@ export default class App extends Vue {
 
   public async mounted() {
     const loader = (this as any).$loading.show({
-      color: '#001A58',
+      color: '#2E5FD1',
     });
 
     await Kielet.init();
@@ -27,4 +27,5 @@ export default class App extends Vue {
 }
 </script>
 
-<style lang="scss" src="./styles/app.scss"></style>
+<style lang="scss" src="./styles/app.scss">
+</style>

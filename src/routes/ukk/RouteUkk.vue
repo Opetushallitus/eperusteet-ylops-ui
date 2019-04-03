@@ -117,6 +117,7 @@ import { Kysymykset, Ulkopuoliset } from '@/api';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, KysymysDto } from '@/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
+import { organizations } from '@/utils/organisaatiot';
 
 @Component({
   components: {
@@ -162,15 +163,8 @@ export default class RouteUkk extends Mixins(EpRoute) {
       // Haetaan käyttäjän organisaatiot
       const orgs = (await Ulkopuoliset.getUserOrganisations() as any).data;
 
-      if (!_.find(orgs, o => o.oid === '1.2.246.562.10.00000000001')) {
-        this.orgs.push({
-          nimi: {
-            fi: 'Opetushallitus',
-            sv: 'Utbildningsstyrelsen',
-            en: 'Finnish National Agency for Education'
-          },
-          oid: '1.2.246.562.10.00000000001'
-        });
+      if (!_.find(orgs, o => o.oid === organizations.oph.oid)) {
+        orgs.push(organizations.oph);
       }
 
       // Ei rajausta oletuksena
@@ -178,7 +172,7 @@ export default class RouteUkk extends Mixins(EpRoute) {
         o.$checked = true;
       });
 
-      this.orgs.push(...orgs);
+      this.orgs = orgs;
     }
     finally {
       // Todo: isLoading;
