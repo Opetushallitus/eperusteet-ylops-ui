@@ -1,6 +1,5 @@
-import Vue from 'vue';
-import * as _ from 'lodash';
-import { Store, Getter, Mutation, Action, State } from './store';
+import _ from 'lodash';
+import { Store, Getter, State } from './store';
 import { KayttajanTietoDto } from '@/tyypit';
 import {
   Kayttajat as KayttajatApi,
@@ -29,7 +28,7 @@ function getOikeusArvo(oikeus: Oikeus) {
   }
 }
 
-export function parsiEsitysnimi(tiedot: KayttajanTietoDto): string {
+export function parsiEsitysnimi(tiedot: any): string {
   if (tiedot.kutsumanimi && tiedot.sukunimi) {
     return tiedot.kutsumanimi + ' ' + tiedot.sukunimi;
   }
@@ -47,7 +46,7 @@ class KayttajaStore {
   public tiedot: KayttajanTietoDto = { };
 
   @State()
-  public virkailijat: KayttajanTietoDto[] = [];
+  public virkailijat: any[] = []; // FIXME: tyyppi puuttuu
 
   @State()
   public oikeudet: Oikeudet = {
