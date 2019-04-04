@@ -18,6 +18,7 @@ import {
 
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
+import { MenuBuilder } from './menuBuilder';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -85,68 +86,13 @@ export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
   private opintojaksot: Lops2019OpintojaksoDto[] = [];
 
+  private menuBuilder: MenuBuilder = new MenuBuilder();
+
   async created() {
     if (_.get(this.$route, 'params.id', null) !== null) {
       this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
       this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
     }
-  }
-
-  private OpsLapsiLinkit() {
-    return this.opsLapset.map((lapsi) => {
-      return {
-        item: {
-          type: 'tekstikappale',
-          objref: lapsi.tekstiKappale,
-        },
-        route: {
-          name: 'tekstikappale',
-          params: {
-            osaId: lapsi.id,
-          },
-        },
-      };
-    });
-  }
-
-  private OppimaaraOpintojaksoLinkit(oppimaara) {
-    const uri = oppimaara.koodi.uri;
-    return this.opintojaksot
-      .filter(oj => {
-        return oj.oppiaineet && oj.oppiaineet.indexOf(uri) > -1;
-      })
-      .map(oj => {
-        return {
-          item: {
-            type: 'opintojakso',
-            objref: oj,
-          },
-          route: {
-            name: 'opintojakso',
-            params: {
-              opintojaksoId: oj.id,
-            },
-          },
-        };
-      });
-  }
-
-  private OppimaaraModuuliLinkit(oppimaara) {
-    return oppimaara.moduulit.map(moduuli => {
-      return {
-        item: {
-          type: 'moduuli',
-          objref: moduuli,
-        },
-        route: {
-          name: 'moduuli',
-          params: {
-            moduuliId: moduuli.id,
-            oppiaineId: oppimaara.id,
-          },
-        },
-      };
-    });
   }
 
   private OpintojaksoModuuliLista(source) {
@@ -158,7 +104,7 @@ export default class OpsSidenav extends Vue {
         },
         flatten: true,
         children: [
-          ...this.OppimaaraOpintojaksoLinkit(source),
+          ...this.menuBuilder.OppimaaraOpintojaksoLinkit(this.opintojaksot, source),
         ],
       },
       {
@@ -168,33 +114,16 @@ export default class OpsSidenav extends Vue {
         },
         flatten: true,
         children: [
-          ...this.OppimaaraModuuliLinkit(source),
+          ...this.menuBuilder.OppimaaraModuuliLinkit(source),
         ],
       },
     ];
   }
 
-  private OppiaineLinkki(type, objref, children) {
-    return {
-      item: {
-        type,
-        objref,
-        hideChevron: true,
-      },
-      route: {
-        name: 'oppiaine',
-        params: {
-          oppiaineId: objref.id,
-        },
-      },
-      children,
-    };
-  }
-
   private OppiaineOppimaaraLinkit(oppiaine) {
     return oppiaine.oppimaarat.map(oppimaara => {
       let children = this.OpintojaksoModuuliLista(oppimaara);
-      return this.OppiaineLinkki('oppimaara', oppimaara, children);
+      return this.menuBuilder.OppiaineLinkki('oppimaara', oppimaara, children);
     });
   }
 
@@ -213,7 +142,7 @@ export default class OpsSidenav extends Vue {
         children = this.OpintojaksoModuuliLista(oppiaine);
       }
 
-      return this.OppiaineLinkki('oppiaine', oppiaine, children);
+      return this.menuBuilder.OppiaineLinkki('oppiaine', oppiaine, children);
     });
   }
 
@@ -239,7 +168,7 @@ export default class OpsSidenav extends Vue {
   private get valikkoData() {
     let menuOpsData: SideMenuEntry[] = [
       ...menuBaseData,
-      ...this.OpsLapsiLinkit(),
+      ...this.menuBuilder.OpsLapsiLinkit(this.opsLapset),
     ];
 
     const oppiaineLinkit = this.OpsOppiaineLinkit();
