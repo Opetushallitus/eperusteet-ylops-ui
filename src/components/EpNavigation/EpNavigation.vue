@@ -97,7 +97,7 @@ export default class EpNavigation extends Vue {
 
   .navbar-style-normaali {
     background-color: $etusivu-header-background;
-    background-image: url('/img/banners/etusivu_tausta.svg');
+    background-image: url('../../../public/img/banners/etusivu_tausta.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
   }

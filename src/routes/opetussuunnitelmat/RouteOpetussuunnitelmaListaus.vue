@@ -60,7 +60,7 @@ $box-size: 350px;
 }
 
 .opskomponentti {
-  background: url('/img/banners/laatikoiden_tausta.svg');
+  background: url('../../../public/img/banners/laatikoiden_tausta.svg');
   background-size: contain;
   border-radius: 20px;
   width: $box-size*0.85;

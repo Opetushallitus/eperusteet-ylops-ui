@@ -3,6 +3,7 @@
 div(v-if="isEditing")
   div(v-if="items")
     select.form-control(
+      v-if="innerModel",
       v-model="innerModel",
       :multiple="multiple",
       @change="updateValue()",

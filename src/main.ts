@@ -1,6 +1,6 @@
 import '@/config/styles';
 import { rootConfig } from '@/mainvue';
-import '@/registerServiceWorker';
+// import '@/registerServiceWorker';
 import { createLogger } from '@/stores/logger';
 import Vue from 'vue';
 
