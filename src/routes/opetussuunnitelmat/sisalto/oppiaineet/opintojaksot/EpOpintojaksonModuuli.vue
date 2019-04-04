@@ -79,7 +79,7 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
 @import "@/styles/_variables.scss";
 
 .moduulibox {
-  background-image: url('/img/banners/moduuli_ei_valittu.svg');
+  background-image: url('../../../../../../public/img/banners/moduuli_ei_valittu.svg');
   border-radius: 8px;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.05);
   height: 162px;
@@ -114,7 +114,7 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
 }
 
 .moduulibox-valittu {
-  background-image: url('/img/banners/moduuli_valittu.svg');
+  background-image: url('../../../../../../public/img/banners/moduuli_valittu.svg');
   color: white;
   animation: fade 0.1s linear;
 }

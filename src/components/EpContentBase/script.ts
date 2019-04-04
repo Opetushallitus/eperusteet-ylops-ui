@@ -1,15 +1,18 @@
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 
-import CkEditor from '@/components/CkEditor/CkEditor.vue';
+import InlineEditor from '@ckeditor/ckeditor5-build-inline';
+import CKEditor from '@ckeditor/ckeditor5-vue';
+
 import EpViewer from '@/components/EpViewer/EpViewer.vue';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
+const Ckeditor = CKEditor.component;
 
 @Component({
   components: {
+    Ckeditor,
     EpViewer,
-    CkEditor,
   },
 })
 export default class EpContentBase extends Mixins(EpValidation) {
@@ -28,6 +31,21 @@ export default class EpContentBase extends Mixins(EpValidation) {
 
   @Prop({ default: 'fi' })
   private locale!: string;
+
+  private editor = InlineEditor;
+
+  public get config() {
+    return {
+      language: this.locale,
+      toolbar: [
+        'bold', 'italic',
+        '|',
+        'numberedList', 'bulletedList',
+        '|',
+        'undo', 'redo',
+      ],
+    };
+  }
 
   // Validointi tapahtuu tämän metodin avulla
   get isEditing() {

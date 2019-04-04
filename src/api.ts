@@ -30,9 +30,23 @@ const ax = axios.create({
   baseURL,
 });
 
+function getCasURL() {
+  const host = location.host;
+  const protocol = location.protocol;
+  const redirectURL = encodeURIComponent(window.location.href);
+  return protocol + '//' + host + '/cas/login?service=' + redirectURL;
+}
+
 function axiosHandler(msg: string) {
   return async (err: any) => {
-    logger.error(msg, err);
+    // Vaatii kirjautumisen
+    const status = _.get(err, 'response.status');
+    if (status === 401) {
+      window.location.href = getCasURL();
+    }
+
+    logger.error(msg as any, err);
+
     throw err;
   };
 }
