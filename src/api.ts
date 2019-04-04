@@ -37,21 +37,36 @@ function getCasURL() {
   return protocol + '//' + host + '/cas/login?service=' + redirectURL;
 }
 
+let redirected = false;
+
 function axiosHandler(msg: string) {
   return async (err: any) => {
-    // Vaatii kirjautumisen
     const status = _.get(err, 'response.status');
-    if (status === 401) {
-      window.location.href = getCasURL();
+    if (status === 401 && !redirected) {
+      redirected = true;
+      const location = _.get(err, 'response.headers.location');
+      window.location.href = location || getCasURL();
     }
 
     logger.error(msg as any, err);
-
     throw err;
   };
 }
 
-ax.interceptors.response.use(_.identity, axiosHandler('Response error'));
+function redirectHandler() {
+  return async (res: any) => {
+    const status = _.get(res, 'status');
+    if (status === 302 && !redirected) {
+      redirected = true;
+      const location = _.get(res, 'headers.location');
+      window.location.href = location || getCasURL();
+    }
+
+    return res;
+  }
+}
+
+ax.interceptors.response.use(redirectHandler(), axiosHandler('Response error'));
 ax.interceptors.request.use(_.identity, axiosHandler('Request error'));
 
 // https://github.com/Microsoft/TypeScript/issues/20719
