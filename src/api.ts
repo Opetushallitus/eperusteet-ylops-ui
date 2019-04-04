@@ -63,7 +63,7 @@ function redirectHandler() {
     }
 
     return res;
-  }
+  };
 }
 
 ax.interceptors.response.use(redirectHandler(), axiosHandler('Response error'));
