@@ -92,9 +92,9 @@ export default class OpsSidenav extends Vue {
     }
   }
 
-  private OpsLapsiLinkit() {
-    return this.opsLapset.map((lapsi) => {
-      return {
+  private OpsLapsiLinkit(lapset) {
+    return lapset.map((lapsi) => {
+      let obj: SideMenuEntry = {
         item: {
           type: 'tekstikappale',
           objref: lapsi.tekstiKappale,
@@ -106,6 +106,17 @@ export default class OpsSidenav extends Vue {
           },
         },
       };
+
+      if(lapsi.lapset && lapsi.lapset.length>0) {
+        obj = {
+          ...obj,
+          children: [
+            ...this.OpsLapsiLinkit(lapsi.lapset),
+          ],
+        };
+      }
+
+      return obj;
     });
   }
 
@@ -239,7 +250,7 @@ export default class OpsSidenav extends Vue {
   private get valikkoData() {
     let menuOpsData: SideMenuEntry[] = [
       ...menuBaseData,
-      ...this.OpsLapsiLinkit(),
+      ...this.OpsLapsiLinkit(this.opsLapset),
     ];
 
     const oppiaineLinkit = this.OpsOppiaineLinkit();
