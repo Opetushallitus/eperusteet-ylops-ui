@@ -183,7 +183,6 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
       ...this.uusi,
     });
   }
-
 }
 
 </script>

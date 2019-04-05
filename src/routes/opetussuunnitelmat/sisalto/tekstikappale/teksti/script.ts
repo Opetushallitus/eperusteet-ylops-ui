@@ -22,7 +22,7 @@ import {
 import {
   Puu,
   OhjeDto,
-  PerusteTekstiKappaleViiteDto ,
+  PerusteTekstiKappaleViiteDto,
 } from '@/tyypit';
 
 @Component({
@@ -64,7 +64,6 @@ export default class TekstikappaleTeksti extends Mixins(EpRoot) {
     await Opetussuunnitelma.saveTeksti(tov);
     await Promise.all(_.map(ohjeet, Opetussuunnitelma.saveOhje));
   }
-
 
   private hooks: EditointiKontrolliConfig = {
     source: {

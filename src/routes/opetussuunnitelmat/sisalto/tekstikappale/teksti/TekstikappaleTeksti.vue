@@ -16,7 +16,7 @@
             .col-lg-8
               .spacing
               ep-collapse(v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa")
-                div(slot="header") 
+                div(slot="header")
                   h5 {{ $t('perusteen-teksti') }}
                 p.perusteteksti(v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti) ")
                 div(v-if="isEditing")
