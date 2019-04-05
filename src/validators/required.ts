@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import he from 'he';
 import { Kieli } from '@/tyypit';
+import { minLength, required } from 'vuelidate/lib/validators';
 
 export function notNull() {
   return {
@@ -23,6 +24,23 @@ export function requiredLokalisoituTeksti(kielet: Kieli[]) {
       const isMaaritettyInAllLangs = () => _.every(kielet, kieli => exists(value, kieli));
       const isValid = _.isEmpty(kielet) ? isInSomeLang() : isMaaritettyInAllLangs();
       return isValid;
+    },
+  };
+}
+
+export function nimiValidator(kielet: Kieli[]) {
+  return {
+    nimi: {
+      ...requiredLokalisoituTeksti(kielet),
+    },
+  };
+}
+
+export function koodiValidator(min = 3) {
+  return {
+    koodi: {
+      required,
+      'min-length': minLength(min),
     },
   };
 }
