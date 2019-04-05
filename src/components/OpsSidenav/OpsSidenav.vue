@@ -5,7 +5,7 @@
       input.form-control.megasearch(type="text" placeholder="Etsi")
       fas.inner-icon(icon="search")
 
-  ul.navigation(v-if="opsLapset.length>0")
+  ul.navigation(v-if="valikkoData.length > 0")
     ep-recursive-nav(:value="valikkoData")
       template(v-slot:previousLink="{ itemData, itemRoute, navigate }")
         ops-sidenav-link.previous-link(:to="itemRoute", :click="navigate")
@@ -17,8 +17,7 @@
           v-if="!isSubmenu && itemRoute")
           ep-color-ball(
             v-if="onkoModTaiOj(itemData.item)",
-            :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'normaali'"
-            )
+            :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'normaali'")
           a.btn.btn-link
             span {{ kaanna(itemData.item) }}
             span.code-field(v-if="itemData.item.type === 'moduuli'") ({{ haeModuuliKoodi(itemData.item) }})
@@ -31,9 +30,10 @@
           :click="navigate")
           a.btn.btn-link {{ kaanna(itemData.item) }}
           fas(icon="chevron-right", v-if="!itemData.item.hideChevron")
-    li
+    li.separated
       ep-sisalto-modaali(:params="$route", :cache="cache")
-    router-link(tag="li", :to="{ name: 'jarjesta' }")
+
+    // router-link(tag="li", :to="{ name: 'jarjesta' }")
       fas(icon="sort")
       a.btn.btn-link {{ $t('jarjesta') }}
 

@@ -67,6 +67,7 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpValidation from '@/mixins/EpValidation';
 import EpParams from '@/mixins/EpParams';
 import { opintojaksoLuontiValidator } from '@/validators/opintojakso';
+import { oppiaineLuontiValidator } from '@/validators/oppiaine';
 import { tekstikappaleLuontiValidator } from '@/validators/tekstikappaleet';
 import { PerusteCache } from '@/stores/peruste';
 
@@ -95,6 +96,7 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
       switch (this.sisallonTyyppi) {
       case 'tekstikappale': return { uusi: tekstikappaleLuontiValidator() };
       case 'opintojakso': return { uusi: opintojaksoLuontiValidator() };
+      case 'oppiaine': return { uusi: oppiaineLuontiValidator() };
       }
     }
     return {};
@@ -119,6 +121,7 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
     return [
       'tekstikappale',
       'opintojakso',
+      'oppiaine',
     ];
   }
 
@@ -140,6 +143,11 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
     case 'opintojakso':
       this.navigateTo('opintojakso', {
         opintojaksoId: (await this.addOpintojakso()).id,
+      });
+      break;
+    case 'oppiaine':
+      this.navigateTo('poppiaine', {
+        opintojaksoId: (await this.addOppiaine()).id,
       });
       break;
     }
@@ -166,6 +174,12 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
 
   private async addOpintojakso() {
     return Opetussuunnitelma.addOpintojakso({
+      ...this.uusi,
+    });
+  }
+
+  private async addOppiaine() {
+    return Opetussuunnitelma.addOppiaine({
       ...this.uusi,
     });
   }

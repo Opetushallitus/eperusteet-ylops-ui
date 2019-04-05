@@ -1,4 +1,4 @@
-import { Watch, Mixins, Component, Prop } from 'vue-property-decorator';
+import { Mixins, Component, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpContent from '@/components/EpContent/EpContent.vue';
@@ -6,6 +6,7 @@ import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpInput from '@/components/forms/EpInput.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRoot from '@/mixins/EpRoot';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 
 import {
@@ -13,19 +14,22 @@ import {
 } from '@/stores/opetussuunnitelma';
 
 import {
-  OpetussuunnitelmanSisalto,
+  Lops2019Perusteet,
   Ohjeet,
+  OpetussuunnitelmanSisalto,
 } from '@/api';
 
 import {
   Puu,
   OhjeDto,
+  PerusteTekstiKappaleViiteDto,
 } from '@/tyypit';
 
 @Component({
   components: {
     EpButton,
     EpContent,
+    EpCollapse,
     EpEditointi,
     EpInput,
   },
@@ -41,21 +45,30 @@ export default class TekstikappaleTeksti extends Mixins(EpRoot) {
   private allowOhjeEdit!: boolean;
 
   private ohjeet: OhjeDto[] = [];
+  private perusteenTeksti: PerusteTekstiKappaleViiteDto | null = null;
+
+  private async load() {
+    const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteSyva(this.opsId, this.osaId)).data;
+    const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
+    const result = {
+      tov: _.omit(_.cloneDeep(teksti), 'lapset'),
+      ohjeet: ohjeet.data || [],
+    } as any;
+    if (teksti.perusteTekstikappaleId) {
+      this.perusteenTeksti = (await Lops2019Perusteet.getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId)).data;
+    }
+    return result;
+  }
+
+  private async save({ tov, ohjeet }) {
+    await Opetussuunnitelma.saveTeksti(tov);
+    await Promise.all(_.map(ohjeet, Opetussuunnitelma.saveOhje));
+  }
 
   private hooks: EditointiKontrolliConfig = {
     source: {
-      load: async () => {
-        const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteSyva(this.opsId, this.osaId)).data;
-        const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
-        return {
-          tov: _.omit(_.cloneDeep(teksti), 'lapset'),
-          ohjeet: ohjeet.data || [],
-        };
-      },
-      async save({ tov, ohjeet }) {
-        await Opetussuunnitelma.saveTeksti(tov);
-        await Promise.all(_.map(ohjeet, Opetussuunnitelma.saveOhje));
-      },
+      load: this.load,
+      save: this.save,
     },
   };
 

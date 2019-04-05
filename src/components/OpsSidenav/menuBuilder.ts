@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   SideMenuEntry,
 } from '@/tyypit';
@@ -10,12 +11,14 @@ interface MenuBuilderInterface {
 }
 
 export class MenuBuilder implements MenuBuilderInterface {
-  public OpsLapsiLinkit(lapset): SideMenuEntry[] {
-    return lapset.map((lapsi) => {
+  public OpsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
+    return _.map(lapset, (lapsi: any, idx) => {
+      const chapter = prefix + '' + (idx + 1);
       let obj: SideMenuEntry = {
         item: {
           type: 'tekstikappale',
           objref: lapsi.tekstiKappale,
+          prefix: chapter,
         },
         route: {
           name: 'tekstikappale',
@@ -29,7 +32,7 @@ export class MenuBuilder implements MenuBuilderInterface {
         obj = {
           ...obj,
           children: [
-            ...this.OpsLapsiLinkit(lapsi.lapset),
+            ...this.OpsLapsiLinkit(lapsi.lapset, chapter + '.'),
           ],
         };
       }

@@ -1,6 +1,8 @@
 @import '@/styles/_variables.scss';
 
-.collapse-button {
-  cursor: pointer;
-  outline: none;
+.ep-collapse {
+  .collapse-button {
+    cursor: pointer;
+    outline: none;
+  }
 }

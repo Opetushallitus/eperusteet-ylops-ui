@@ -1,9 +1,8 @@
 <template lang="pug">
 
 div(v-if="isEditing")
-  div(v-if="items")
+  div(v-if="items && (!multiple || innerModel)")
     select.form-control(
-      v-if="innerModel",
       v-model="innerModel",
       :multiple="multiple",
       @change="updateValue()",

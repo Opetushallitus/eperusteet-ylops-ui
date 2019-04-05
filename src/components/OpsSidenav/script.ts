@@ -85,7 +85,6 @@ const i18keys = {
 export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
   private opintojaksot: Lops2019OpintojaksoDto[] = [];
-
   private menuBuilder: MenuBuilder = new MenuBuilder();
 
   async created() {
@@ -95,36 +94,38 @@ export default class OpsSidenav extends Vue {
     }
   }
 
-  private OpintojaksoModuuliLista(source) {
-    return [
-      {
+  private opintojaksoModuuliLista(source) {
+    const result: SideMenuEntry[] = [];
+    const oppiaineenOpintojaksot = this.menuBuilder.OppimaaraOpintojaksoLinkit(this.opintojaksot, source);
+    if (!_.isEmpty(oppiaineenOpintojaksot)) {
+      result.push({
         item: {
           type: 'staticlink',
           i18key: 'opintojaksot',
         },
         flatten: true,
-        children: [
-          ...this.menuBuilder.OppimaaraOpintojaksoLinkit(this.opintojaksot, source),
-        ],
+        children: oppiaineenOpintojaksot,
+      });
+    }
+    result.push({
+      item: {
+        type: 'staticlink',
+        i18key: 'moduulit',
       },
-      {
-        item: {
-          type: 'staticlink',
-          i18key: 'moduulit',
-        },
-        flatten: true,
-        children: [
-          ...this.menuBuilder.OppimaaraModuuliLinkit(source),
-        ],
-      },
-    ];
+      flatten: true,
+      children: [
+        ...this.menuBuilder.OppimaaraModuuliLinkit(source),
+      ],
+    });
+    return result;
   }
 
-  private OppiaineOppimaaraLinkit(oppiaine) {
-    return oppiaine.oppimaarat.map(oppimaara => {
-      let children = this.OpintojaksoModuuliLista(oppimaara);
-      return this.menuBuilder.OppiaineLinkki('oppimaara', oppimaara, children);
-    });
+  private oppiaineOppimaaraLinkit(oppiaine) {
+    return oppiaine.oppimaarat.map(oppimaara =>
+      this.menuBuilder.OppiaineLinkki(
+        'oppimaara',
+        oppimaara,
+        this.opintojaksoModuuliLista(oppimaara)));
   }
 
   private OpsOppiaineLinkit() {
@@ -132,18 +133,13 @@ export default class OpsSidenav extends Vue {
       return [];
     }
 
-    return this.cache.peruste().oppiaineet.map(oppiaine => {
-      let children;
-
-      if (oppiaine.oppimaarat.length > 0) {
-        children = this.OppiaineOppimaaraLinkit(oppiaine);
-      }
-      else {
-        children = this.OpintojaksoModuuliLista(oppiaine);
-      }
-
-      return this.menuBuilder.OppiaineLinkki('oppiaine', oppiaine, children);
-    });
+    return this.cache.peruste().oppiaineet.map(oppiaine =>
+      this.menuBuilder.OppiaineLinkki(
+        'oppiaine',
+        oppiaine,
+        oppiaine.oppimaarat.length > 0
+          ? this.oppiaineOppimaaraLinkit(oppiaine)
+          : this.opintojaksoModuuliLista(oppiaine)));
   }
 
   private kaanna(value: SideMenuItem) {
@@ -153,8 +149,13 @@ export default class OpsSidenav extends Vue {
 
     const locale = Kielet.getSisaltoKieli();
     const i18key = i18keys[value.type] || 'nimetön';
-
-    return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
+    const compiled = _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
+    if (value.prefix) {
+      return value.prefix + ' ' + compiled;
+    }
+    else {
+      return compiled;
+    }
   }
 
   private onkoModTaiOj(item: SideMenuItem) {

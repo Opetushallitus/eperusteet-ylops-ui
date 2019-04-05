@@ -71,6 +71,15 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
 <style scoped lang="scss">
 @import "@/styles/_variables.scss";
 
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .1s;
+}
+
+.fade-enter, .fade-leave-to {
+  transition: opacity .2s;
+  opacity: 0;
+}
+
 .opetussuunnitelma {
   background: white;
 

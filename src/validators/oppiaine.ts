@@ -2,18 +2,15 @@ import { koodiValidator, nimiValidator, requiredLokalisoituTeksti } from '@/vali
 import { Kieli } from '@/tyypit';
 import { minLength, required } from 'vuelidate/lib/validators';
 
-export function opintojaksoLuontiValidator(kielet: Kieli[] = []) {
+export function oppiaineLuontiValidator(kielet: Kieli[] = []) {
   return {
     ...nimiValidator(kielet),
-    oppiaineet: {
-      required,
-    },
   };
 }
 
-export function opintojaksoValidator(kielet: Kieli[] = []) {
+export function oppiaineValidator(kielet: Kieli[] = []) {
   return {
-    ...opintojaksoLuontiValidator(kielet),
+    ...oppiaineLuontiValidator(kielet),
     ...koodiValidator(),
   };
 }

@@ -10,6 +10,7 @@ import {
   KysymyksetApi,
   LiitetiedostotApi,
   Lops2019OpintojaksotApi,
+  Lops2019OppiaineetApi,
   Lops2019PerusteControllerApi,
   OhjeetApi,
   OpetussuunnitelmanSisaltoApi,
@@ -90,6 +91,7 @@ export const Opintojaksot = initApi(Lops2019OpintojaksotApi);
 export const Lops2019Perusteet = initApi(Lops2019PerusteControllerApi);
 export const Opetussuunnitelmat = initApi(OpetussuunnitelmatApi);
 export const OpetussuunnitelmatJulkiset = initApi(OpetussuunnitelmatJulkisetApi);
+export const Oppiaineet = initApi(Lops2019OppiaineetApi);
 export const Termisto = initApi(TermistoApi);
 export const Ulkopuoliset = initApi(UlkopuolisetApi);
 

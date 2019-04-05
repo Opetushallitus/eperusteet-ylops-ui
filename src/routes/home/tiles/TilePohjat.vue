@@ -1,5 +1,5 @@
 <template lang="pug">
-base-tile(icon="opetussuunnitelmasi", color="#5bca13")
+base-tile(icon="opetussuunnitelmasi", color="#5bca13", :route="{ name: 'pohjaListaus' }")
   template(slot="header")
     span {{ $t('tile-pohjasi') }}
   template(slot="content")
@@ -63,11 +63,13 @@ export default class TilePohjat extends Vue {
   private get pohjat() {
     return _(this.ladatut)
       .sortBy('muokattu')
+      .reverse()
       .map((pohja) => ({
         ...pohja,
         $route: {
         },
       }))
+      .take(this.Maara - 1)
       .value();
   }
 }
