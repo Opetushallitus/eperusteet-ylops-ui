@@ -18,8 +18,8 @@ export default class EpColorBall extends Vue {
 .ball {
   border-radius: 50%;
   display: inline-block;
-  height: 10px;
-  width: 10px;
+  min-height: 10px;
+  min-width: 10px;
 }
 
 .ball-normaali {

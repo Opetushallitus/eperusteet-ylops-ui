@@ -5,6 +5,8 @@ div.content
   div(v-if="!isLoading")
     h2 {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
 
+    p(v-html="$kaanna(moduuli.kuvaus)")
+
     div.collapse-container
       ep-collapse
         h4(slot="header") {{ $t('yleiset-tavoitteet') }}

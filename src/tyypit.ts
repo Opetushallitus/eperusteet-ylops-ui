@@ -57,6 +57,7 @@ export interface SideMenuItem {
   type: string,
   i18key?: string,
   objref?: object,
+  prefix?: string,
   hideChevron?: boolean,
 }
 
@@ -84,6 +85,8 @@ export type Lops2019OpintojaksoDto = GApi.Lops2019OpintojaksoDto;
 export type Lops2019ModuuliDto = GApi.Lops2019ModuuliDto;
 export type Lops2019OppiaineDto = GApi.Lops2019OppiaineDto;
 export type Lops2019OpintojaksonModuuliDto = GApi.Lops2019OpintojaksonModuuliDto;
+export type PerusteTekstiKappaleViiteDto = GApi.PerusteTekstiKappaleViiteDto;
+export type Lops2019PaikallinenOppiaineDto = GApi.Lops2019PaikallinenOppiaineDto;
 
 export default GApi;
 // export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;

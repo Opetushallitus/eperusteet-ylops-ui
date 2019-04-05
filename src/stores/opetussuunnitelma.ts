@@ -1,5 +1,5 @@
-import { Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
-import { Matala, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
+import { Matala, Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import { AxiosResponse } from 'axios';
 import { createLogger } from './logger';
 import { State, Store } from './store';
@@ -93,6 +93,14 @@ class OpetussuunnitelmaStore {
   }
 
   // Lops 2021
+
+  // Paikalliset oppiaineet
+  public async addOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto = {}) {
+    const result = (await Oppiaineet.addOppiaine(this.opetussuunnitelma!.id!, oppiaine)).data;
+    return result;
+  }
+
+  // Opintojaksot
   public async addOpintojakso(opintojakso: Lops2019OpintojaksoDto = {}) {
     const result = (await Opintojaksot.addOpintojakso(this.opetussuunnitelma!.id!, opintojakso)).data;
     await this.updateSisalto();

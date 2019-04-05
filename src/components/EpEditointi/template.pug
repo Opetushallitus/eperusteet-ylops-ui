@@ -15,6 +15,7 @@ div
           .buttons.p-1
             .upper-buttons(v-if="ctrls.isEditing")
               ep-button(
+                v-if="ctrls.features.history",
                 @click="ctrls.remove()",
                 :disabled="state.disabled",
                 variant="danger")

@@ -39,7 +39,7 @@ div.content
               router-link(:to=`{ name: 'moduuli', params: { moduuliId: moduuli.id } }`)
                | {{ $kaanna(moduuli.nimi) }}
             span.pituus {{ moduuli.laajuus }} op
-            span.tyyppi {{ moduuli.pakollinen && $t('pakollinen') }}
+            span.tyyppi {{ $t(moduuli.pakollinen ? 'pakollinen' : 'valinnainen') }}
 
       ep-spinner(v-if="!opintojaksot")
       ep-collapse(v-else)
