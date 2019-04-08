@@ -31,6 +31,14 @@ const ax = axios.create({
   baseURL,
 });
 
+function axiosHandler(msg: string) {
+  return async (err: any) => {
+    logger.error(msg as any, err);
+    throw err;
+  };
+}
+
+// Apufuntio kirjautumiseen ja paluulinkin luontiin
 function getCasURL() {
   const host = location.host;
   const protocol = location.protocol;
@@ -38,37 +46,26 @@ function getCasURL() {
   return protocol + '//' + host + '/cas/login?service=' + redirectURL;
 }
 
-let redirected = false;
-
-function axiosHandler(msg: string) {
-  return async (err: any) => {
-    const status = _.get(err, 'response.status');
-    if (status === 401 && !redirected) {
-      redirected = true;
-      const location = _.get(err, 'response.headers.location');
-      window.location.href = location || getCasURL();
-    }
-
-    logger.error(msg as any, err);
-    throw err;
-  };
-}
-
-function redirectHandler() {
+function successfulResponseHandler() {
   return async (res: any) => {
-    const status = _.get(res, 'status');
-    if (status === 302 && !redirected) {
-      redirected = true;
-      const location = _.get(res, 'headers.location');
-      window.location.href = location || getCasURL();
+    try {
+      if (res.status === 200) {
+        const url = new URL(res.request.responseURL);
+        if (_.startsWith(url.pathname, '/cas/login')) {
+          // Uudelleenohjataan kirjautumiseen jos nykyinen pyyntö on jo mennyt kirjautumissivulle
+          window.location.href = getCasURL();
+        }
+      }
     }
-
+    catch (e) {
+      return res;
+    }
     return res;
   };
 }
 
-ax.interceptors.response.use(redirectHandler(), axiosHandler('Response error'));
 ax.interceptors.request.use(_.identity, axiosHandler('Request error'));
+ax.interceptors.response.use(successfulResponseHandler(), axiosHandler('Response error'));
 
 // https://github.com/Microsoft/TypeScript/issues/20719
 type BaseAPIConstructor<T> = new(configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;
