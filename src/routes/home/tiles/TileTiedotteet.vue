@@ -62,6 +62,7 @@ export default class TileTiedotteet extends Vue {
 <style scoped lang="scss">
 .tiedotteet {
   text-align: left;
+  display: grid;
 
   .tiedote {
     white-space: nowrap;

@@ -103,7 +103,7 @@ export default class EpNavigation extends Vue {
   }
 
   .navbar-style-ops {
-    background-color: $color-ops-header;
+    background-color: $etusivu-header-background;
   }
 
 }

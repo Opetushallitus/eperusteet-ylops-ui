@@ -14,10 +14,9 @@ module.exports = {
       }),
     },
   },
-  configureWebpack: {
-    optimization: {
-      providedExports: process.env.NODE_ENV === 'production',
-    }
+  chainWebpack: config => {
+    // Aiheuttaa varoituksia ilman asetusta
+    config.optimization.providedExports(process.env.NODE_ENV === 'production');
   },
   devServer: {
     overlay: {
