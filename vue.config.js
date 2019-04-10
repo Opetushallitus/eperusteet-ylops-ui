@@ -30,6 +30,10 @@ module.exports = {
         target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:' + servicePort,
         secure: false,
       },
+      '/virkailija-raamit': {
+        target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:' + servicePort,
+        secure: false,
+      },
     },
   },
 };
