@@ -2,7 +2,6 @@ import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import { createLogger } from '@/stores/logger';
 
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -15,29 +14,55 @@ import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
-// import Image from '@ckeditor/ckeditor5-image/src/image';
-// import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-// import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+
+import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/plugin';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
+import { createLogger } from '@/stores/logger';
 
 const logger = createLogger('CkEditor');
+const commonPlugins = [
+  Clipboard,
+  Essentials,
+];
+const imageConfig = {
+  toolbar: [
+    'imageTextAlternative',
+    '|',
+    'imageStyle:alignLeft',
+    'imageStyle:full',
+    'imageStyle:alignRight'
+  ],
+  styles: [
+    'full',
+    'alignLeft',
+    'alignRight',
+  ],
+};
 
 @Component
 export default class CkEditor extends Mixins(EpValidation) {
-  // Editorin dom-elementin ID
-  @Prop({ default: '' }) private id!: string;
-
   // Muokattava tieto (tukee v-model:ia)
-  @Prop() private value!: string;
+  @Prop()
+  private value!: string;
 
   // Editorin layout (määrittää ominaisuudet)
   @Prop({ default: 'simplified' })
   private layout!: EditorLayout;
 
   // Editorin käyttöliittymän kieli
-  @Prop({ default: 'fi' }) private locale!: string;
+  @Prop({ default: 'fi' })
+  private locale!: string;
+
+  // Kuvien tallennuspaikka, jos ID:tä ei ole määritelty, niin
+  // kuvaominaisuuksia ei oteta käyttöön
+  @Prop({ default: 0 })
+  private opsId!: number;
 
   // CKEditorin JS instanssi
   private instance: any = null;
@@ -74,17 +99,23 @@ export default class CkEditor extends Mixins(EpValidation) {
   private async createEditorInstance() {
     // Luodaan asetusobjekti
     let config: object;
+    let enableImageUpload: boolean = false;
+
     switch (this.layout) {
     case 'simplified':
       config = this.getSimplifiedSettings();
+      enableImageUpload = true;
       break;
     case 'normal':
       config = this.getNormalSettings();
+      enableImageUpload = true;
       break;
     default:
       config = this.getMinimalSettings();
       break;
     }
+
+    enableImageUpload = (enableImageUpload && this.opsId > 0);
 
     // Luodaan ckeditor instanssi
     try {
@@ -93,6 +124,12 @@ export default class CkEditor extends Mixins(EpValidation) {
         .create(this.$refs.ckeditor, config);
       this.instance.setData(this.value);
       this.setEditorEvents();
+
+      if (enableImageUpload) {
+        this.instance.plugins.get('FileRepository').createUploadAdapter = loader => {
+          return new CkUploadAdapter(loader, this.opsId);
+        };
+      }
     }
     catch (err) {
       logger.error(err);
@@ -113,8 +150,7 @@ export default class CkEditor extends Mixins(EpValidation) {
     return {
       language: this.locale,
       plugins: [
-        Clipboard,
-        Essentials,
+        ...commonPlugins,
       ],
       toolbar: [
         'undo', 'redo',
@@ -126,20 +162,26 @@ export default class CkEditor extends Mixins(EpValidation) {
     return {
       language: this.locale,
       plugins: [
+        ...commonPlugins,
         Bold,
-        Clipboard,
-        Essentials,
         Italic,
+        Image,
+        ImageStyle,
+        ImageUpload,
+        ImageToolbar,
         ListPlugin,
         ParagraphPlugin,
       ],
       toolbar: [
         'bold', 'italic',
         '|',
+        'imageUpload',
+        '|',
         'numberedList', 'bulletedList',
         '|',
         'undo', 'redo',
       ],
+      image: imageConfig,
     };
   }
 
@@ -147,11 +189,14 @@ export default class CkEditor extends Mixins(EpValidation) {
     return {
       language: this.locale,
       plugins: [
+        ...commonPlugins,
         Alignment,
         Bold,
-        Clipboard,
-        Essentials,
         Italic,
+        Image,
+        ImageStyle,
+        ImageUpload,
+        ImageToolbar,
         ListPlugin,
         LinkPlugin,
         ParagraphPlugin,
@@ -161,12 +206,15 @@ export default class CkEditor extends Mixins(EpValidation) {
       toolbar: [
         'alignment', 'bold', 'italic',
         '|',
+        'imageUpload',
+        '|',
         'numberedList', 'bulletedList',
         '|',
         'link', 'insertTable',
         '|',
         'undo', 'redo',
       ],
+      image: imageConfig,
     };
   }
 }

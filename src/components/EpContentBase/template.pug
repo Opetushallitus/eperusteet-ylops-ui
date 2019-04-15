@@ -1,10 +1,11 @@
 div.ep-content-base
   div(v-if="isEditable")
     div.ckeditor-wrapper(:class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
-      ckeditor(
+      ck-editor(
         :value="value",
-        :editor="editor",
-        :config="config",
+        :layout="layout",
+        :locale="locale",
+        :opsId="opsId",
         @input="$emit('input', $event)")
     .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
     .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
