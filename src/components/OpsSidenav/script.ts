@@ -142,20 +142,19 @@ export default class OpsSidenav extends Vue {
           : this.opintojaksoModuuliLista(oppiaine)));
   }
 
+  private kaannaHelper(value: SideMenuItem) {
+    const locale = Kielet.getSisaltoKieli();
+    const i18key = i18keys[value.type] || 'nimetön';
+    return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
+  }
+
   private kaanna(value: SideMenuItem) {
     if (value.type === 'staticlink') {
       return (value.i18key) ? this.$t(value.i18key) : '';
     }
 
-    const locale = Kielet.getSisaltoKieli();
-    const i18key = i18keys[value.type] || 'nimetön';
-    const compiled = _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
-    if (value.prefix) {
-      return value.prefix + ' ' + compiled;
-    }
-    else {
-      return compiled;
-    }
+    const compiled = this.kaannaHelper(value);
+    return value.prefix ? value.prefix + ' ' + compiled : compiled;
   }
 
   private onkoModTaiOj(item: SideMenuItem) {

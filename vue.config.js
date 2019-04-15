@@ -32,6 +32,7 @@ module.exports = {
   chainWebpack: config => {
     const svgRule = config.module.rule('svg');
     svgRule.include.add(path.join(__dirname, '/public'));
+    svgRule.include.add(path.join(__dirname, '/src'));
 
     config.module
       .rule('cke-svg')

@@ -103,19 +103,17 @@ export default class CkEditor extends Mixins(EpValidation) {
 
     switch (this.layout) {
     case 'simplified':
-      config = this.getSimplifiedSettings();
-      enableImageUpload = true;
+      enableImageUpload = (this.opsId > 0);
+      config = this.getSimplifiedSettings(enableImageUpload);
       break;
     case 'normal':
-      config = this.getNormalSettings();
-      enableImageUpload = true;
+      enableImageUpload = (this.opsId > 0);
+      config = this.getNormalSettings(enableImageUpload);
       break;
     default:
       config = this.getMinimalSettings();
       break;
     }
-
-    enableImageUpload = (enableImageUpload && this.opsId > 0);
 
     // Luodaan ckeditor instanssi
     try {
@@ -158,7 +156,7 @@ export default class CkEditor extends Mixins(EpValidation) {
     };
   }
 
-  private getSimplifiedSettings(): object {
+  private getSimplifiedSettings(uploadEnabled: boolean): object {
     return {
       language: this.locale,
       plugins: [
@@ -167,15 +165,14 @@ export default class CkEditor extends Mixins(EpValidation) {
         Italic,
         Image,
         ImageStyle,
-        ImageUpload,
+        ...uploadEnabled ? [ImageUpload] : [],
         ImageToolbar,
         ListPlugin,
         ParagraphPlugin,
       ],
       toolbar: [
         'bold', 'italic',
-        '|',
-        'imageUpload',
+        ...uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
         'numberedList', 'bulletedList',
         '|',
@@ -185,7 +182,7 @@ export default class CkEditor extends Mixins(EpValidation) {
     };
   }
 
-  private getNormalSettings(): object {
+  private getNormalSettings(uploadEnabled: boolean): object {
     return {
       language: this.locale,
       plugins: [
@@ -195,7 +192,7 @@ export default class CkEditor extends Mixins(EpValidation) {
         Italic,
         Image,
         ImageStyle,
-        ImageUpload,
+        ...uploadEnabled ? [ImageUpload] : [],
         ImageToolbar,
         ListPlugin,
         LinkPlugin,
@@ -205,8 +202,7 @@ export default class CkEditor extends Mixins(EpValidation) {
       ],
       toolbar: [
         'alignment', 'bold', 'italic',
-        '|',
-        'imageUpload',
+        ...uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
         'numberedList', 'bulletedList',
         '|',

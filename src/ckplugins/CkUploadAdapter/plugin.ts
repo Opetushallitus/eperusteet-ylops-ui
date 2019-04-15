@@ -48,33 +48,36 @@ export class CkUploadAdapter {
   }
 
   // Starts the upload process.
-  async upload() {
+  createAxiosConfig(nimi, width, height) {
     this.cancelTokenSource = Axios.CancelToken.source();
+    return {
+      params: {
+        nimi,
+        width,
+        height,
+      },
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      cancelToken: this.cancelTokenSource.token,
+      onUploadProgress: (progressEvent) => {
+        this.loader.uploadTotal = progressEvent.total;
+        this.loader.uploaded = progressEvent.loaded;
+      },
+    };
+  }
 
+  async upload() {
     try {
       const file = await this.loader.file;
-      const nimi = file.name;
       const { width, height } = await this.readSize(file);
 
       var formData = new FormData();
       formData.append('file', file);
 
       const response = await Api.post(`/opetussuunnitelmat/${this.opsId}/kuvat`,
-        formData, {
-          params: {
-            nimi,
-            width,
-            height,
-          },
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          cancelToken: this.cancelTokenSource.token,
-          onUploadProgress: (progressEvent) => {
-            this.loader.uploadTotal = progressEvent.total;
-            this.loader.uploaded = progressEvent.loaded;
-          },
-        }
+        formData,
+        this.createAxiosConfig(file.name, width, height),
       );
 
       return {
