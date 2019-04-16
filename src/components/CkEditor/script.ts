@@ -3,13 +3,13 @@ import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator';
 import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
@@ -19,7 +19,7 @@ import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
-import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/plugin';
+import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/CkUploadAdapter';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
@@ -29,19 +29,11 @@ const logger = createLogger('CkEditor');
 const commonPlugins = [
   Clipboard,
   Essentials,
+  PasteFromOffice,
 ];
 const imageConfig = {
   toolbar: [
     'imageTextAlternative',
-    '|',
-    'imageStyle:alignLeft',
-    'imageStyle:full',
-    'imageStyle:alignRight'
-  ],
-  styles: [
-    'full',
-    'alignLeft',
-    'alignRight',
   ],
 };
 
@@ -174,7 +166,7 @@ export default class CkEditor extends Mixins(EpValidation) {
         'bold', 'italic',
         ...uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
-        'numberedList', 'bulletedList',
+        'bulletedList', 'numberedList',
         '|',
         'undo', 'redo',
       ],
@@ -187,7 +179,6 @@ export default class CkEditor extends Mixins(EpValidation) {
       language: this.locale,
       plugins: [
         ...commonPlugins,
-        Alignment,
         Bold,
         Italic,
         Image,
@@ -201,10 +192,10 @@ export default class CkEditor extends Mixins(EpValidation) {
         TableToolbar,
       ],
       toolbar: [
-        'alignment', 'bold', 'italic',
+        'bold', 'italic',
         ...uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
-        'numberedList', 'bulletedList',
+        'bulletedList', 'numberedList',
         '|',
         'link', 'insertTable',
         '|',

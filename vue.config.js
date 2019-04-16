@@ -24,8 +24,10 @@ module.exports = {
     },
     plugins: [
       new CKEditorWebpackPlugin({
+        // ISO 639-1
         language: 'fi',
         additionalLanguages: ['sv', 'en'],
+        verbose: process.env.NODE_ENV === 'production',
       })
     ]
   },
