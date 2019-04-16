@@ -1,13 +1,15 @@
 import { Mixins, Component, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
 
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
-import EpInput from '@/components/forms/EpInput.vue';
-import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRoot from '@/mixins/EpRoot';
-import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
+import {
+  EpCollapse,
+  EpEditointi,
+  EpContent,
+  EpInput,
+  EpButton,
+} from '@/components';
 
 import {
   Opetussuunnitelma,

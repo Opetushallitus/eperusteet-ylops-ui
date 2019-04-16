@@ -1,10 +1,15 @@
+import _ from 'lodash';
 import { Watch, Component, Mixins, Prop, Vue } from 'vue-property-decorator';
-import { editointi, EditointiKontrolli, EditointiKontrolliConfig } from '@/stores/editointi';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import {
+  editointi,
+  EditointiKontrolli,
+  EditointiKontrolliConfig,
+} from '@/stores/editointi';
 import EpVersioModaali from './EpVersioModaali.vue';
 import '@/stores/kieli';
 import { validationMixin } from 'vuelidate';
-import _ from 'lodash';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpButton from '@/components/EpButton/EpButton.vue';
 
 export { EditointiKontrolliConfig } from '@/stores/editointi';
 
@@ -20,6 +25,7 @@ export { EditointiKontrolliConfig } from '@/stores/editointi';
   },
   components: {
     EpButton,
+    EpSpinner,
     EpVersioModaali,
   },
 })

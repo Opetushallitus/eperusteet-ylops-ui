@@ -1,5 +1,6 @@
 div
-  .editointikontrolli(v-if="isInitialized")
+  ep-spinner(v-if="!isInitialized")
+  .editointikontrolli(v-else)
     slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
     .ylapaneeli.row
       .col-auto.mr-auto.align-self-center

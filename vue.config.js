@@ -14,10 +14,9 @@ module.exports = {
       }),
     },
   },
-  configureWebpack: {
-    optimization: {
-      providedExports: process.env.NODE_ENV === 'production',
-    }
+  chainWebpack: config => {
+    // Aiheuttaa varoituksia ilman asetusta
+    config.optimization.providedExports(process.env.NODE_ENV === 'production');
   },
   devServer: {
     overlay: {
@@ -28,6 +27,10 @@ module.exports = {
     port: 9040,
     proxy: {
       '/eperusteet-ylops-service': {
+        target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:' + servicePort,
+        secure: false,
+      },
+      '/virkailija-raamit': {
         target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:' + servicePort,
         secure: false,
       },

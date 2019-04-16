@@ -1,32 +1,33 @@
 <template lang="pug">
 
 div.content
-  h2 {{ $t('dokumentti') }}
-  div.mb-4(v-if="!isLoading")
-    p {{ tilaFormatted }}…
+  ep-spinner(v-if="isLoading")
+  div(v-else)
+    h2 {{ $t('dokumentti') }}
+    div.mb-4
+      p {{ tilaFormatted }}…
 
-    div.btn-group
-      ep-button(
-        @click="createDocument",
-        :disabled="isPolling",
-        :show-spinner="isPolling")
-        fas.mr-2(icon="cog")
-        span {{ $t('luo-uusi-dokumentti') }}
-      a.btn.btn-secondary(
-        v-if="dto && href",
-        :href="href",
-        target="_blank",
-        rel="noopener noreferrer")
-        fas.mr-2(icon="file-download")
-        span {{ $t('lataa-dokumentti') }}
+      div.btn-group
+        ep-button(
+          @click="createDocument",
+          :disabled="isPolling",
+          :show-spinner="isPolling")
+          fas.mr-2(icon="cog")
+          span {{ $t('luo-uusi-dokumentti') }}
+        a.btn.btn-secondary(
+          v-if="dto && href",
+          :href="href",
+          target="_blank",
+          rel="noopener noreferrer")
+          fas.mr-2(icon="file-download")
+          span {{ $t('lataa-dokumentti') }}
 
-  h2 {{ $t('lisaasetukset') }}
+    h2 {{ $t('lisaasetukset') }}
 
-  div.row
-    div.col-lg-6
-      div.form-group
-        ep-form-content(name="kansikuva")
-          div(v-if="!isLoading")
+    div.row
+      div.col-lg-6
+        div.form-group
+          ep-form-content(name="kansikuva")
             div(v-if="dto && dto.kansikuva")
               img.img-fluid(:src="kansikuva")
               div.row.mt-3
@@ -65,7 +66,7 @@ div.content
 
 import _ from 'lodash';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
-import { EpButton, EpFormContent } from '@/components';
+import { EpButton, EpFormContent, EpSpinner } from '@/components';
 import { Component, Watch } from 'vue-property-decorator';
 import { baseURL, Dokumentit, DokumentitParams } from '@/api';
 import { Kielet } from '@/stores/kieli';
@@ -74,8 +75,9 @@ import TilaEnum = DokumenttiDto.TilaEnum;
 
 @Component({
   components: {
-    EpFormContent,
     EpButton,
+    EpFormContent,
+    EpSpinner,
   },
 })
 export default class RouteDokumentti extends EpOpsRoute {

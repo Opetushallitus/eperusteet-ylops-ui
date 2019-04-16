@@ -33,9 +33,9 @@
     li.separated
       ep-sisalto-modaali(:params="$route", :cache="cache")
 
-    // router-link(tag="li", :to="{ name: 'jarjesta' }")
-      fas(icon="sort")
-      a.btn.btn-link {{ $t('jarjesta') }}
+  //router-link(:to="{ name: 'jarjesta' }")
+    fas.mr-2(icon="cog")
+    span {{ $t('muokkaa-rakennetta') }}
 
 </template>
 

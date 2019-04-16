@@ -1,10 +1,10 @@
 <template lang="pug">
 
 div.content
-  h2 {{ $t('tiedot') }}
   div(v-if="hooks")
     ep-editointi(:hooks="hooks", :validator="validator")
       template(v-slot="{ data, validation, isEditing }")
+        h2 {{ $t('tiedot') }}
         div
           .row
             .col-md-6
