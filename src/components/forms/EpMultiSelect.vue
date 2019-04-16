@@ -8,6 +8,9 @@ div
     :clear-on-select="true",
     :placeholder="''",
     :internalSearch="false",
+    select-label="",
+    selected-label="",
+    deselect-label="",
     @search-change="$emit('search', $event)",
     @input="changed($event)",
     :multiple="true")
@@ -22,6 +25,9 @@ div
 
     template(slot="noResult")
       div {{ $t('ei-hakutuloksia') }}
+
+    template(slot="noOptions")
+      div {{ $t('ei-vaihtoehtoja') }}
 
   .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
   .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
@@ -80,6 +86,7 @@ export default class EpMultiSelect extends Mixins(EpValidation) {
   border: none;
   border-bottom: 1px solid #e8e8e8;
   border-radius: 0;
+  -webkit-appearance: none;
 }
 
 </style>

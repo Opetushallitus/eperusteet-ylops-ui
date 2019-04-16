@@ -89,7 +89,12 @@ export default class OpsSidenav extends Vue {
 
   async created() {
     if (_.get(this.$route, 'params.id', null) !== null) {
-      this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
+      try {
+        this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
+      }
+      catch (e) {
+        // Todo: virheenkäsittely
+      }
       this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
     }
   }
@@ -201,7 +206,12 @@ export default class OpsSidenav extends Vue {
   @Watch('Opetussuunnitelma')
   async onOpsChange() {
     if (this.$route) {
-      this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
+      try {
+        this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
+      }
+      catch (e) {
+        // Todo: virheenkäsittely
+      }
     }
   }
 }
