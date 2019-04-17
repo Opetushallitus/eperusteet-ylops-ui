@@ -8,20 +8,16 @@
     padding: 0px;
 
     li {
-      padding: 6px 8px 6px 8px;
-      border-left: 5px solid rgba(255, 255, 255, 0);
+      padding: 6px 8px 6px 28px;
     }
 
     .item {
       li {
-        a.btn {
+        a {
           text-align: left;
-          color: #152057;
-          font-weight: 500;
-        }
-
-        svg {
-          margin-top: 3px;
+          color: #2b2b2b;
+          font-family: 'Open Sans';
+          font-size: 16px;
         }
       }
     }
@@ -72,22 +68,50 @@
       }
     }
 
+    li.submenu {
+      svg {
+        color: #b2b2b2;
+      }
+    }
+
     li.previous-link {
       padding-left: 5px;
       a.btn {
-        font-size: 120%;
         padding-left: 5px;
+      }
+
+      span.back-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        background-color: #0041DC;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+
+        svg {
+          margin-left: -2px;
+        }
       }
     }
 
     li.router-link-exact-active {
       a {
         font-weight: bold;
+        color: #0041DC;
       }
-
-      border-left: 5px solid $green-lighten-2;
     }
 
+    li.previous-link {
+      span.router-link-exact-active {
+        a {
+          font-weight: bold;
+          color: #0041DC;
+        }
+      }
+    }
   }
 
   // FIXME!!
