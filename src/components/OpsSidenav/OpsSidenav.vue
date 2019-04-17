@@ -8,9 +8,11 @@
   ul.navigation(v-if="valikkoData.length > 0")
     ep-recursive-nav(:value="valikkoData")
       template(v-slot:previousLink="{ itemData, itemRoute, navigate }")
-        ops-sidenav-link.previous-link(:to="itemRoute", :click="navigate")
-          fas(icon="chevron-left")
-          a.btn.btn-link {{ kaanna(itemData.item) }}
+        li.previous-link
+          ops-sidenav-link.back-btn(tag="span", :click="navigate", :clickParams="false")
+            fas(icon="chevron-left")
+          ops-sidenav-link.previous-link(tag="span", :to="itemRoute")
+            a.btn.btn-link {{ kaanna(itemData.item) }}
       template(v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }")
         ops-sidenav-link(:to="itemRoute",
           :class="{ 'module-link': onkoModTaiOj(itemData.item) }",

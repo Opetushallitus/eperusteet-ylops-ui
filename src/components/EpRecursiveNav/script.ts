@@ -19,12 +19,12 @@ export default class EpRecursiveNav extends Vue {
     this.processNewValue();
   }
 
-  public previousSubmenu() {
+  public previousSubmenu(changeRoute: boolean) {
     if (!this.curTopItem) {
       return;
     }
 
-    if (this.curTopItem.route) {
+    if (changeRoute && this.curTopItem.route) {
       this.$router.replace({
         name: this.curTopItem.route.name,
         params: {

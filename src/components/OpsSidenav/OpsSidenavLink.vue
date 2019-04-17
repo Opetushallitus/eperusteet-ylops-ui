@@ -1,11 +1,13 @@
 <template lang="pug">
-li(@click="handleClick", :class="{ 'router-link-exact-active': isExactRoute }")
+component(:is="tag", @click="handleClick", :class="{ 'router-link-exact-active': isExactRoute }")
   slot
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
+import { SideMenuEntry } from '@/tyypit';
 
 @Component
 export default class OpsSidenavLink extends Vue {
@@ -15,8 +17,14 @@ export default class OpsSidenavLink extends Vue {
   @Prop()
   private click: any;
 
+  @Prop({ default: null })
+  private clickParams: any;
+
+  @Prop({ default: 'li' })
+  private tag!: string;
+
   @Prop()
-  private itemData: any;
+  private itemData!: SideMenuEntry;
 
   private linkRoute: any = null;
 
@@ -28,7 +36,7 @@ export default class OpsSidenavLink extends Vue {
 
   private handleClick(e) {
     if (this.click) {
-      this.click(this.itemData);
+      this.click(this.clickParams ? this.clickParams : this.itemData);
       e.preventDefault();
     }
   }
@@ -38,23 +46,23 @@ export default class OpsSidenavLink extends Vue {
       return;
     }
 
-    this.linkRoute = {
+    this.linkRoute = this.$router.resolve({
       name: this.to.name,
       params: {
         ...this.to.params,
         lang: Kielet.getUiKieli(),
         id: this.$route.params.id,
       }
-    };
+    });
 
-    const href = this.$router.resolve(this.linkRoute).href;
     this.$el.querySelectorAll('a').forEach(el => {
-      el.href = href;
+      el.href = this.linkRoute.href;
     });
   }
 
   private get isExactRoute() {
-    return (this.linkRoute && this.$route.fullPath === this.linkRoute.path);
+    const path = _.get(this.linkRoute, 'resolved.path', null);
+    return (path && this.$route.fullPath === path);
   }
 
   @Watch('$route')
