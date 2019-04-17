@@ -4,7 +4,7 @@ div
   ep-navigation(tyyli="ops")
   .opetussuunnitelma(v-if="ops")
     .header
-      .progress
+      .progress-chart
         div
           ep-chart(
             labelColor="white",
@@ -26,11 +26,9 @@ div
 </template>
 
 <script lang="ts">
-import EpRoute from '@/mixins/EpRoot';
-import Tilanvaihto from './Tilanvaihto.vue';
 import _ from 'lodash';
-import { DiagrammiVarit } from '@/tyypit';
 import { Mixins, Component } from 'vue-property-decorator';
+import EpRoute from '@/mixins/EpRoot';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import {
   EpChart,
@@ -49,7 +47,6 @@ import {
     EpSidebar,
     EpSpinner,
     OpsSidenav,
-    Tilanvaihto,
   },
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
@@ -87,17 +84,13 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
   background: white;
 
   .header {
-    background: $color-ops-header;
+    background-color: $etusivu-header-background;
+    background-repeat: no-repeat;
     display: flex;
-    flex: stretch;
     align-items: center;
+    color: $color-ops-header-text;
 
-    * {
-      background: $color-ops-header;
-      color: $color-ops-header-text;
-    }
-
-    .progress {
+    .progress-chart {
       width: $sidebar-width;
       height: 150px;
 
@@ -106,16 +99,12 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
       }
     }
 
-    .progress > div {
-      width: 150px;
+    .progress-chart > div {
+      width: 130px;
       margin: 0 auto;
     }
 
     .info {
-      .secondary {
-        color: #bbb;
-      }
-
       @media only screen and (max-width: 768px) {
         padding-left: 30px;
       }

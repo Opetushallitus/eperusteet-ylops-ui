@@ -1,17 +1,14 @@
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import CKEditor from '@ckeditor/ckeditor5-vue';
-
+import CkEditor from '@/components/CkEditor/CkEditor.vue';
 import EpViewer from '@/components/EpViewer/EpViewer.vue';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
-const Ckeditor = CKEditor.component;
 
 @Component({
   components: {
-    Ckeditor,
+    CkEditor,
     EpViewer,
   },
 })
@@ -22,30 +19,19 @@ export default class EpContentBase extends Mixins(EpValidation) {
   @Prop({ required: true })
   private isEditable!: boolean;
 
-  // CkEditorin layout (määrittää ominaisuudet)
+  // CkEditorin layout (määrittää editorin ominaisuudet)
   @Prop({ default: 'simplified' })
   private layout!: EditorLayout;
+
+  // OPS ID (kuvien tallennus)
+  @Prop({ default: 0 })
+  private opsId!: number;
 
   @Prop({ default: '' })
   private help!: string;
 
   @Prop({ default: 'fi' })
   private locale!: string;
-
-  private editor = InlineEditor;
-
-  public get config() {
-    return {
-      language: this.locale,
-      toolbar: [
-        'bold', 'italic',
-        '|',
-        'numberedList', 'bulletedList',
-        '|',
-        'undo', 'redo',
-      ],
-    };
-  }
 
   // Validointi tapahtuu tämän metodin avulla
   get isEditing() {

@@ -1,8 +1,10 @@
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
-import { Kielet } from '@/stores/kieli';
 import _ from 'lodash';
 import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
 import EpValidation from '@/mixins/EpValidation';
+
+import { Kielet } from '@/stores/kieli';
+import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 @Component({
   components: {
@@ -21,6 +23,10 @@ export default class EpContent extends Mixins(EpValidation) {
 
   @Prop({ default: '' })
   private help!: string;
+
+  get opsId() {
+    return _.get(Opetussuunnitelma, 'opetussuunnitelma.id', 0);
+  }
 
   get locale() {
     return Kielet.getUiKieli();

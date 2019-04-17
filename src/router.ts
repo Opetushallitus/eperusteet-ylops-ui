@@ -108,6 +108,10 @@ export const router = new Router({
         path: 'kasitteet',
         component: UnderConstruction,
         name: 'opsKasitteet',
+      // }, {
+      //   path: 'oppiaineet',
+      //   component: RouteOppiaineet,
+      //   name: 'oppiaineet',
       }, {
         path: 'oppiaineet/:oppiaineId',
         component: RouteOppiaine,

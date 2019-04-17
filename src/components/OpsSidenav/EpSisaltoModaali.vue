@@ -18,7 +18,10 @@ div
         ep-button.mr-2(@click="next()") {{ $t('seuraava') }}
         ep-button(@click="hide()") {{ $t('peruuta') }}
       div(v-if="step >= 1")
-        ep-button.mr-2(:disabled="$v.$invalid", @click="tallenna()") {{ $t('tallenna') }}
+        ep-button.mr-2(
+          :disabled="$v.$invalid",
+          @click="tallenna()",
+          :show-spinner="isSaving") {{ $t('tallenna') }}
         ep-button(@click="hide()") {{ $t('peruuta') }}
 
     .steps
@@ -52,13 +55,12 @@ div
 </template>
 
 <script lang="ts">
-import { Watch, Prop, Component, Mixins } from 'vue-property-decorator';
+import { Prop, Component, Mixins } from 'vue-property-decorator';
 import {
   EpButton,
   EpFormContent,
   EpInput,
   EpSelect,
-  EpSpinner,
   EpOppiaineSelector,
   EpSteps,
 } from '@/components';
@@ -70,6 +72,9 @@ import { opintojaksoLuontiValidator } from '@/validators/opintojakso';
 import { oppiaineLuontiValidator } from '@/validators/oppiaine';
 import { tekstikappaleLuontiValidator } from '@/validators/tekstikappaleet';
 import { PerusteCache } from '@/stores/peruste';
+import { createLogger } from '@/stores/logger';
+
+const logger = createLogger('SisaltoModaali');
 
 @Component({
   components: {
@@ -84,7 +89,7 @@ import { PerusteCache } from '@/stores/peruste';
 export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
   @Prop({ default: null })
   private cache!: PerusteCache;
-
+  private isSaving = false;
   private step = 0;
   private uusi: any = {
     nimi: {},
@@ -134,24 +139,31 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
   }
 
   async tallenna() {
-    switch (this.sisallonTyyppi) {
-    case 'tekstikappale':
-      this.navigateTo('tekstikappale', {
-        osaId: (await this.addTekstikappale()).id,
-      });
-      break;
-    case 'opintojakso':
-      this.navigateTo('opintojakso', {
-        opintojaksoId: (await this.addOpintojakso()).id,
-      });
-      break;
-    case 'oppiaine':
-      this.navigateTo('paikallinenOppiaine', {
-        paikallinenOppiaineId: (await this.addOppiaine()).id,
-      });
-      break;
+    try {
+      this.isSaving = true;
+      switch (this.sisallonTyyppi) {
+      case 'tekstikappale':
+        this.navigateTo('tekstikappale', {
+          osaId: (await this.addTekstikappale()).id,
+        });
+        break;
+      case 'opintojakso':
+        this.navigateTo('opintojakso', {
+          opintojaksoId: (await this.addOpintojakso()).id,
+        });
+        break;
+      case 'oppiaine':
+        this.navigateTo('poppiaine', {
+          paikallinenOppiaineId: (await this.addOppiaine()).id,
+        });
+        break;
+      }
+      this.hide();
     }
-    this.hide();
+    catch (err) {
+      logger.log(err);
+      this.isSaving = false;
+    }
   }
 
   next() {

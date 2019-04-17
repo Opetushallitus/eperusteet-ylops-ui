@@ -1,5 +1,6 @@
 div
-  .editointikontrolli(v-if="isInitialized")
+  ep-spinner(v-if="!isInitialized")
+  .editointikontrolli(v-else)
     .ylapaneeli
       .d-flex.align-items-center
         .p2.flex-fill
