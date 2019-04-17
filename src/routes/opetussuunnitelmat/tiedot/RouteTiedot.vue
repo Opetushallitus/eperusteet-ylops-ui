@@ -1,9 +1,9 @@
 <template lang="pug">
 
 div.content
-  h2 {{ $t('tiedot') }}
   div(v-if="hooks")
     ep-editointi(:hooks="hooks", :validator="validator")
+      h2(slot="header") {{ $t('tiedot') }}
       template(v-slot="{ data, validation, isEditing }")
         div
           .row

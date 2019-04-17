@@ -97,6 +97,10 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
 </script>
 
 <style lang="scss" scoped>
+.content {
+  padding: 20px;
+}
+
 .oj-content {
   border-radius: 30px;
   padding: 10px 20px;

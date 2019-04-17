@@ -117,7 +117,7 @@ export const router = new Router({
         component: RouteModuuli,
         name: 'moduuli',
       }, {
-        path: 'poppiaineet/:poppiaineId',
+        path: 'poppiaineet/:paikallinenOppiaineId',
         component: RoutePaikallinenOppiaine,
         name: 'paikallinenOppiaine',
       }, {

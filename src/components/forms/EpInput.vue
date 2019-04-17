@@ -103,7 +103,6 @@ input.is-valid:focus {
   padding: 6px 0 6px 0;
   font-size: 1rem;
   line-height: 1.5;
-  font-weight: 400;
 }
 
 </style>

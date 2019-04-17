@@ -1,5 +1,5 @@
 <template lang="pug">
-.content
+div
   tekstikappale-teksti(
     :ops-id="$route.params.id",
     :osa-id="$route.params.osaId",

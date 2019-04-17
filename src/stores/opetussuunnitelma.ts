@@ -96,7 +96,20 @@ class OpetussuunnitelmaStore {
 
   // Paikalliset oppiaineet
   public async addOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto = {}) {
-    const result = (await Oppiaineet.addOppiaine(this.opetussuunnitelma!.id!, oppiaine)).data;
+    const result = (await Oppiaineet.addLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine)).data;
+    return result;
+  }
+
+  public async getPaikallinenOppiaine(id: number) {
+    return (await Oppiaineet.getLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id)).data;
+  }
+
+  public async getPaikallisetOppiaineet() {
+    return (await Oppiaineet.getAllLops2019PaikallisetOppiainet(this.opetussuunnitelma!.id!)).data;
+  }
+
+  public async savePaikallinenOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto) {
+    const result = (await Oppiaineet.updateLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine.id!, oppiaine)).data;
     return result;
   }
 

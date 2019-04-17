@@ -34,6 +34,10 @@ export default class EpMainView extends Vue {
 
 @import "@/styles/_variables.scss";
 
+.content {
+  padding: 20px;
+}
+
 .col-fixed {
   flex: 0 0 $main-view-offset;
 }

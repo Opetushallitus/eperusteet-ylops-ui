@@ -133,13 +133,17 @@ export default class OpsSidenav extends Vue {
       return [];
     }
 
-    return this.cache.peruste().oppiaineet.map(oppiaine =>
+    const oppiaineet = this.cache.peruste().oppiaineet.map(oppiaine =>
       this.menuBuilder.OppiaineLinkki(
         'oppiaine',
         oppiaine,
         oppiaine.oppimaarat.length > 0
           ? this.oppiaineOppimaaraLinkit(oppiaine)
           : this.opintojaksoModuuliLista(oppiaine)));
+
+    // const paikallisetOppiaineet = Opetussuunnitelma.paikalliset
+
+    return [...oppiaineet];
   }
 
   private kaanna(value: SideMenuItem) {
@@ -205,4 +209,5 @@ export default class OpsSidenav extends Vue {
       this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
     }
   }
+
 }

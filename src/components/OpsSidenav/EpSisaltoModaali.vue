@@ -146,8 +146,8 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
       });
       break;
     case 'oppiaine':
-      this.navigateTo('poppiaine', {
-        opintojaksoId: (await this.addOppiaine()).id,
+      this.navigateTo('paikallinenOppiaine', {
+        paikallinenOppiaineId: (await this.addOppiaine()).id,
       });
       break;
     }

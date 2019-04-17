@@ -1,48 +1,40 @@
 div
   .editointikontrolli(v-if="isInitialized")
-    slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
-    .ylapaneeli.row
-      .col-auto.mr-auto.align-self-center
-        .row(v-if="ctrls.features.history")
-          .col-auto
-            .d-flex.muokattu
-              .title {{ $t('muokattu') }}:
-              .value.px-2 {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
-              .px-2
-                ep-versio-modaali(:value="current", :versions="historia")
-      .col-auto.align-self-center
-        .d-flex
-          .buttons.p-1
-            .upper-buttons(v-if="ctrls.isEditing")
+    .ylapaneeli
+      .d-flex.align-items-center
+        .p2.flex-fill
+          slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
+        .p2
+          .muokattu(v-if="latest") {{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
+          //- ep-versio-modaali(:value="current", :versions="historia")
+        .p2
+          .upper-buttons(v-if="ctrls.isEditing")
+            .btn-group
+              ep-button(@click="ctrls.save()",
+                :disabled="state.disabled",
+                :show-spinner="state.isSaving")
+                slot(name="tallenna") {{ $t('tallenna') }}
               ep-button(
+                @click="ctrls.cancel()",
+                :disabled="state.disabled",
+                variant="warning")
+                slot(name="peruuta") {{ $t('peruuta') }}
+              // ep-button(
                 v-if="ctrls.features.history",
                 @click="ctrls.remove()",
                 :disabled="state.disabled",
                 variant="danger")
                 slot(name="poista") {{ $t('poista') }}
-            .upper-buttons(v-else)
-              ep-button(
-                @click="ctrls.start()",
-                :disabled="state.disabled")
-                slot(name="muokkaa")
-                  | {{ $t('muokkaa') }}
-                  // fas.faw-fw(icon="pen")
+          .upper-buttons(v-else)
+            ep-button(
+              variant="link",
+              @click="ctrls.start()",
+              icon="pen",
+              :disabled="state.disabled")
+              slot(name="muokkaa")
+                | {{ $t('muokkaa') }}
+                // fas.faw-fw(icon="pen")
 
     .sisalto(v-if="state.data")
       slot(:isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
 
-    .alapaneeli.row
-      .col-auto.mr-auto
-        span
-      .col-auto
-        .btn-toolbar(v-if="ctrls.isEditing")
-          .btn-group
-            ep-button(@click="ctrls.save()",
-              :disabled="state.disabled",
-              :show-spinner="state.isSaving")
-              slot(name="tallenna") {{ $t('tallenna') }}
-            ep-button(
-              @click="ctrls.cancel()",
-              :disabled="state.disabled",
-              variant="warning")
-              slot(name="peruuta") {{ $t('peruuta') }}
