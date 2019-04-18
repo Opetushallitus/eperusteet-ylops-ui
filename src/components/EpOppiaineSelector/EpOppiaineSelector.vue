@@ -1,19 +1,22 @@
 <template lang="pug">
-ep-multi-select(
-  v-if="cache",
-  :value="value || []",
-  @input="handleInput",
-  @search="query = $event",
-  :options="filteredOppiaineet")
-  template(slot="singleLabel", slot-scope="{ option }")
-    span.selected {{ $kaanna(oppiaineetMap[option].nimi) }}
-  template(slot="option", slot-scope="{ option, search }")
-    div {{ $kaanna(oppiaineetMap[option].nimi) }}
-  template(slot="tag", slot-scope="{ option, search, remove }")
-    span.selected
-      span {{ $kaanna(oppiaineetMap[option].nimi) }}
-      button.btn.btn-link(@click="remove(option)")
-        fas(icon="times")
+
+div
+  ep-multi-select(
+    v-if="cache",
+    :value="value || []",
+    @input="handleInput",
+    @search="query = $event",
+    :options="filteredOppiaineet")
+    template(slot="singleLabel", slot-scope="{ option }")
+      span.selected {{ $kaanna(oppiaineetMap[option].nimi) }}
+    template(slot="option", slot-scope="{ option, search }")
+      div {{ $kaanna(oppiaineetMap[option].nimi) }}
+    template(slot="tag", slot-scope="{ option, search, remove }")
+      span.selected
+        span {{ $kaanna(oppiaineetMap[option].nimi) }}
+        button.btn.btn-link(@click="remove(option)")
+          fas(icon="times")
+
 </template>
 
 <script lang="ts">
@@ -23,6 +26,7 @@ import {
 } from '@/components';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
 import { PerusteCache } from '@/stores/peruste';
+import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 
@@ -41,9 +45,26 @@ export default class EpOppiaineSelector extends Vue {
   private cache: PerusteCache | null = null;
   private query = '';
 
+  get paikallisetOppiaineet() {
+    return _(Opetussuunnitelma.paikallisetOppiaineet)
+      .filter('koodi')
+      .map((oa) => {
+        return {
+          ...oa,
+          koodi: {
+            uri: oa.koodi,
+          }
+        };
+      })
+      .value();
+  }
+
   get oppiaineet() {
     if (this.cache) {
-      return this.cache.peruste().oppiaineet;
+      return [
+        ...this.cache.peruste().oppiaineet,
+        ...this.paikallisetOppiaineet,
+      ];
     }
     else {
       return [];
@@ -52,10 +73,13 @@ export default class EpOppiaineSelector extends Vue {
 
   get oppiaineetJaOppimaarat() {
     return _(this.oppiaineet)
-      .map((oa: any) => [oa, ..._.map(oa.oppimaarat, om => ({
-        ...om,
-        parentUri: oa.koodi.uri,
-      }))])
+      .map((oa: any) => [oa, ..._.map(oa.oppimaarat, om => {
+        console.log(oa.koodi.uri);
+        return {
+          ...om,
+          parentUri: oa.koodi.uri,
+        }
+      })])
       .flatten()
       .value();
   }

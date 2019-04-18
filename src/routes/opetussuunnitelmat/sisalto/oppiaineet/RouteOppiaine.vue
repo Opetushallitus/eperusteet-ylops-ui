@@ -30,16 +30,30 @@ div.content
             tag="div",
             :to=`{ name: 'opintojakso', params: { jaksoId: 1 } }` )
             span.nimi {{ $kaanna(oppimaara.nimi) }}
+        ep-button(icon="plus")
+          | {{ $t('lisaa-oppimaara') }}
 
       ep-collapse(v-if="oppiaine.moduulit.length > 0")
         h4(slot="header") {{ $t('moduulit') }}
-        div.block-container(v-for="moduuli in oppiaine.moduulit", :key="moduuli.id")
-          .oj-content(:class="moduuli.pakollinen && 'pakollinen'")
-            span.nimi
-              router-link(:to=`{ name: 'moduuli', params: { moduuliId: moduuli.id } }`)
-               | {{ $kaanna(moduuli.nimi) }}
-            span.pituus {{ moduuli.laajuus }} op
-            span.tyyppi {{ $t(moduuli.pakollinen ? 'pakollinen' : 'valinnainen') }}
+        div.block-container
+          h5 {{ $t('pakolliset-moduulit') }}
+          div(v-for="moduuli in pakollisetModuulit", :key="moduuli.id")
+            .oj-content.pakollinen
+              span.nimi
+                router-link(:to=`{ name: 'moduuli', params: { moduuliId: moduuli.id } }`)
+                  | {{ $kaanna(moduuli.nimi) }}
+              span.pituus {{ moduuli.laajuus }} op
+              span.tyyppi {{ $t('pakollinen') }}
+
+        div.block-container
+          h5 {{ $t('valinnaiset-moduulit') }}
+          div(v-for="moduuli in valinnaisetModuulit", :key="moduuli.id")
+            .oj-content
+              span.nimi
+                router-link(:to=`{ name: 'moduuli', params: { moduuliId: moduuli.id } }`)
+                  | {{ $kaanna(moduuli.nimi) }}
+              span.pituus {{ moduuli.laajuus }} op
+              span.tyyppi {{ $t('valinnainen') }}
 
       ep-spinner(v-if="!opintojaksot")
       ep-collapse(v-else)
@@ -84,15 +98,32 @@ import _ from 'lodash';
 export default class RouteOppiaine extends Mixins(EpRoute) {
   private cache: PerusteCache | null = null;
   private oppiaine: Lops2019OppiaineDto | null = null;
-  private opintojaksot: Lops2019OpintojaksoDto[] = [];
 
   async init() {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
     this.oppiaine = await this.cache.getOppiaine(_.parseInt(this.$route.params.oppiaineId));
-    this.opintojaksot = await Opetussuunnitelma.getOpintojaksot({
-      oppiaineUri: this.oppiaine!.koodi!.uri as string,
-    } as any);
   }
+
+  get opintojaksot() {
+    return _.filter(Opetussuunnitelma.opintojaksot, (oj) => _(oj.oppiaineet)
+      .map('koodi')
+      .includes(this.oppiaine!.koodi!.uri));
+  }
+
+  get pakollisetModuulit() {
+    if (!this.oppiaine) {
+      return null;
+    }
+    return _.filter(this.oppiaine.moduulit, moduuli => moduuli.pakollinen);
+  }
+
+  get valinnaisetModuulit() {
+    if (!this.oppiaine) {
+      return null;
+    }
+    return _.reject(this.oppiaine.moduulit, moduuli => moduuli.pakollinen);
+  }
+
 }
 </script>
 
@@ -127,7 +158,6 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
 }
 
 .block-container {
-  padding-top: 20px;
 }
 
 .collapse-container {

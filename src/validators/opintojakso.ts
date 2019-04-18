@@ -6,7 +6,9 @@ export function opintojaksoLuontiValidator(kielet: Kieli[] = []) {
   return {
     ...nimiValidator(kielet),
     oppiaineet: {
-      required,
+      $each: {
+        ...koodiValidator(),
+      },
     },
   };
 }

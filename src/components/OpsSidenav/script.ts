@@ -18,7 +18,10 @@ import {
 
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
-import { MenuBuilder } from './menuBuilder';
+import {
+  MenuBuilder,
+  paikallinenOppiaineToMenu,
+} from './menuBuilder';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -146,8 +149,6 @@ export default class OpsSidenav extends Vue {
           ? this.oppiaineOppimaaraLinkit(oppiaine)
           : this.opintojaksoModuuliLista(oppiaine)));
 
-    // const paikallisetOppiaineet = Opetussuunnitelma.paikalliset
-
     return [...oppiaineet];
   }
 
@@ -180,22 +181,23 @@ export default class OpsSidenav extends Vue {
       ...this.menuBuilder.OpsLapsiLinkit(this.opsLapset),
     ];
 
+    const paikallisetOppiaineet = Opetussuunnitelma.paikallisetOppiaineet;
+    console.log(paikallisetOppiaineet);
     const oppiaineLinkit = this.OpsOppiaineLinkit();
     if (oppiaineLinkit.length > 0) {
       menuOpsData = [
-        ...menuOpsData,
-        {
+        ...menuOpsData, {
           item: {
             type: 'staticlink',
             i18key: 'oppiaineet',
           },
           children: [
             ...oppiaineLinkit,
+            ..._.map(paikallisetOppiaineet, paikallinenOppiaineToMenu),
           ],
         },
       ];
     }
-
     return menuOpsData;
   }
 

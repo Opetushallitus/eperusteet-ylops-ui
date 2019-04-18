@@ -35,7 +35,7 @@ div.content
                   help="ops-hyvaksyjataho-ohje",
                   v-model="data.hyvaksyjataho",
                   :validation="validation.hyvaksyjataho",
-                  :is-string="true",
+                  type="string",
                   :is-editing="isEditing")
             .col-md-6(v-if="isOps")
               ep-form-content(name="ops-hyvaksymispvm")

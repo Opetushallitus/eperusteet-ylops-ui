@@ -183,10 +183,16 @@ export default class EpPrefixList extends Vue {
     font-style: italic;
   }
 
+  ul.arvot {
+    li.arvo {
+      margin: 0;
+    }
+  }
+
   div.arvot {
     margin: 20px 0 0 40px;
 
-    .arvo {
+    div.arvo {
       margin-bottom: 5px;
       display: flex;
 

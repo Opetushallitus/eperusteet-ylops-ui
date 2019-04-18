@@ -3,7 +3,7 @@ ep-input.form-data(
   :value="value",
   @input="$emit('input', $event)",
   :is-editing="isEditing",
-  :is-string="isString",
+  :type="type",
   :validation="validation",
   :help="help")
 </template>
@@ -28,8 +28,8 @@ export default class EpField extends Mixins(EpValidation) {
   @Prop({ default: false })
   private isEditing!: boolean;
 
-  @Prop({ default: false })
-  private isString!: boolean;
+  @Prop({ default: 'localized' })
+  private type!: 'localized' | 'string' | 'number';
 
   @Prop({ default: '' })
   private help!: string;

@@ -11,6 +11,6 @@ export function oppiaineLuontiValidator(kielet: Kieli[] = []) {
 export function oppiaineValidator(kielet: Kieli[] = []) {
   return {
     ...oppiaineLuontiValidator(kielet),
-    ...koodiValidator(),
+    // ...koodiValidator(),
   };
 }

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import {
   SideMenuEntry,
+  Lops2019PaikallinenOppiaineDto,
 } from '@/tyypit';
 
 interface MenuBuilderInterface {
@@ -80,7 +81,7 @@ export class MenuBuilder implements MenuBuilderInterface {
     const uri = oppimaara.koodi.uri;
     return opintojaksot
       .filter(oj => {
-        return oj.oppiaineet && oj.oppiaineet.indexOf(uri) > -1;
+        return oj.oppiaineet && _.map(oj.oppiaineet, 'koodi').indexOf(uri) > -1;
       })
       .map(oj => {
         return {
@@ -98,3 +99,20 @@ export class MenuBuilder implements MenuBuilderInterface {
       });
   }
 }
+
+export function paikallinenOppiaineToMenu(oppiaine: Lops2019PaikallinenOppiaineDto): SideMenuEntry {
+  return {
+    item: {
+      type: 'oppiaine',
+      objref: oppiaine,
+      hideChevron: true,
+    },
+    route: {
+      name: 'paikallinenOppiaine',
+      params: {
+        paikallinenOppiaineId: oppiaine.id,
+      },
+    },
+  };
+}
+
