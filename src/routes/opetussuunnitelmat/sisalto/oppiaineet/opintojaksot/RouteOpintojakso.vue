@@ -103,52 +103,43 @@ div.content
           hr.valiviiva
           ep-collapse(tyyppi="opintojakson-tavoitteet")
             h4(slot="header") {{ $t('tavoitteet') }}
-            .row
-              .col-lg-6
-                ep-content(v-model="data.tavoitteet" :is-editable="isEditing")
-              .col-lg-6
-                //.perustesisalto(v-for="tavoite in oppiaineidenTavoitteet")
-                  h5 {{ $kaanna(tavoite.nimi) }}
-                  h5(v-if="") {{ $kaanna(tavoite.nimi) }}
-                  ep-prefix-list(
-                    :value="tavoite.tavoitteet",
-                    kohde="kohde",
-                    arvot="tavoitteet")
-                .perustesisalto(v-for="moduuli in data.moduulit")
-                  h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
-                  h5(v-if="") {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
-                  ep-prefix-list(
-                    :value="moduulitMap[moduuli.koodiUri].tavoitteet",
-                    kohde="kohde",
-                    arvot="tavoitteet")
+            //.perustesisalto(v-for="tavoite in oppiaineidenTavoitteet")
+              h5 {{ $kaanna(tavoite.nimi) }}
+              h5(v-if="") {{ $kaanna(tavoite.nimi) }}
+              ep-prefix-list(
+                :value="tavoite.tavoitteet",
+                kohde="kohde",
+                arvot="tavoitteet")
+            .perustesisalto(v-for="moduuli in data.moduulit")
+              h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
+              // h5(v-if="") {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
+              ep-prefix-list(
+                :value="moduulitMap[moduuli.koodiUri].tavoitteet",
+                kohde="kohde",
+                arvot="tavoitteet")
+            ep-content(v-model="data.tavoitteet" :is-editable="isEditing")
 
           hr.valiviiva
           ep-collapse(tyyppi="opintojakson-keskeiset-sisallot")
             h4(slot="header") {{ $t('keskeiset-sisallot') }}
-            .row
-              .col-lg-6
-                ep-content(v-model="data.keskeisetSisallot" :is-editable="isEditing")
-              .col-lg-6
-                .perustesisalto(v-for="moduuli in data.moduulit")
-                  h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
-                  ep-prefix-list(
-                    :value="moduulitMap[moduuli.koodiUri].sisallot",
-                    kohde="kohde",
-                    arvot="sisallot")
+            .perustesisalto(v-for="moduuli in data.moduulit")
+              h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
+              ep-prefix-list(
+                :value="moduulitMap[moduuli.koodiUri].sisallot",
+                kohde="kohde",
+                arvot="sisallot")
+            ep-content(v-model="data.keskeisetSisallot" :is-editable="isEditing")
 
           hr.valiviiva
           ep-collapse(tyyppi="opintojakson-keskeiset-sisallot")
             h4(slot="header") {{ $t('laaja-alaiset-sisallot') }}
-            .row
-              .col-lg-6
-                ep-content(v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing")
-              .col-lg-6
-                .perustesisalto(
-                  v-for="oppiaine in laajaAlaisetOsaamiset",
-                  v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus")
-                  h5(v-html="$kaanna(oppiaine.nimi)")
-                  ep-content(
-                    :value="oppiaine.laajaAlainenOsaaminen.kuvaus")
+            .perustesisalto(
+              v-for="oppiaine in laajaAlaisetOsaamiset",
+              v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus")
+              h5(v-html="$kaanna(oppiaine.nimi)")
+              ep-content(
+                :value="oppiaine.laajaAlainenOsaaminen.kuvaus")
+            ep-content(v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing")
 
 </template>
 
