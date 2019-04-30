@@ -67,6 +67,7 @@ div.content
                 router-link(:to=`{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }`)
                   | {{ $kaanna(opintojakso.nimi) }}
               span.pituus 2 op
+        ep-button(icon="plus", @click="uusiOpintojakso()") {{ $t('uusi-opintojakso') }}
 
 </template>
 
@@ -122,6 +123,16 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
       return null;
     }
     return _.reject(this.oppiaine.moduulit, moduuli => moduuli.pakollinen);
+  }
+
+  public uusiOpintojakso() {
+    this.$router.push({
+      name: 'opintojakso',
+      params: {
+        ...this.$router.currentRoute.params,
+        opintojaksoId: 'uusi',
+      },
+    });
   }
 
 }

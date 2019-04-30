@@ -14,6 +14,7 @@ import RouteOpetussuunnitelmaListaus from '@/routes/opetussuunnitelmat/RouteOpet
 import RouteOpetussuunnitelmaUusi from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaUusi.vue';
 import RouteOpintojakso from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/opintojaksot/RouteOpintojakso.vue';
 import RouteOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaine.vue';
+import RouteOppiaineet from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaineet.vue';
 import RoutePaikallinenOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePaikallinenOppiaine.vue';
 import RouteOrganisaatio from '@/routes/organisaatio/RouteOrganisaatio.vue';
 import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
@@ -109,10 +110,10 @@ export const router = new Router({
         path: 'kasitteet',
         component: UnderConstruction,
         name: 'opsKasitteet',
-      // }, {
-      //   path: 'oppiaineet',
-      //   component: RouteOppiaineet,
-      //   name: 'oppiaineet',
+      }, {
+        path: 'oppiaineet',
+        component: RouteOppiaineet,
+        name: 'oppiaineet',
       }, {
         path: 'oppiaineet/:oppiaineId',
         component: RouteOppiaine,

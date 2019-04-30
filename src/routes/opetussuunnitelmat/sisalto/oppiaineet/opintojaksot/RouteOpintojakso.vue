@@ -178,6 +178,8 @@ import EpOpintojaksonModuuli from './EpOpintojaksonModuuli.vue';
 import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@/stores/kieli';
 import Multiselect from 'vue-multiselect';
+import * as defaults from '@/defaults';
+
 
 @Component({
   components: {
@@ -202,6 +204,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   private editable: Lops2019OpintojaksoDto | null = null;
   private cache!: PerusteCache;
   private hooks: EditointiKontrolliConfig = {
+    editAfterLoad: this.isUusi,
     source: {
       save: this.save,
       load: this.load,
@@ -211,8 +214,17 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     },
   };
 
+  async isUusi() {
+    return this.$route.params.opintojaksoId === 'uusi';
+  }
+
   async revisions() {
-    return Opetussuunnitelma.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+    if (await this.isUusi()) {
+      return [];
+    }
+    else {
+      return Opetussuunnitelma.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+    }
   }
 
   async init() {
@@ -390,12 +402,29 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 
   public async load() {
     const { opintojaksoId } = this.$route.params;
-    const opintojakso = await Opetussuunnitelma.getOpintojakso(_.parseInt(opintojaksoId));
-    return opintojakso;
+    if (opintojaksoId === 'uusi') {
+      return defaults.opintojakso();
+    }
+    else {
+      const opintojakso = await Opetussuunnitelma.getOpintojakso(_.parseInt(opintojaksoId));
+      return opintojakso;
+    }
   }
 
   async save(opintojakso: Lops2019OpintojaksoDto) {
-    await Opetussuunnitelma.saveOpintojakso(opintojakso);
+    if (await this.isUusi()) {
+      const uusi = await Opetussuunnitelma.addOpintojakso(opintojakso);
+      this.$router.push({
+        ...(this.$router.currentRoute as any),
+        params: {
+          ...this.$router.currentRoute.params,
+          opintojaksoId: uusi.id,
+        },
+      });
+    }
+    else {
+      await Opetussuunnitelma.saveOpintojakso(opintojakso);
+    }
   }
 }
 </script>

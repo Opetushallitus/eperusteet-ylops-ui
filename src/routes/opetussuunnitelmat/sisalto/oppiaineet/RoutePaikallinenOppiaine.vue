@@ -85,6 +85,7 @@ import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import Multiselect from 'vue-multiselect';
+import * as defaults from '@/defaults';
 
 
 @Component({
@@ -104,11 +105,16 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   private oppiaineQuery = '';
   private editable: any = null;
   private hooks: EditointiKontrolliConfig = {
+    editAfterLoad: this.isUusi,
     source: {
       save: this.save,
       load: this.load,
     },
   };
+
+  async isUusi() {
+    return this.$route.params.paikallinenOppiaineId === 'uusi';
+  }
 
   get opintojaksot() {
     return _.filter(Opetussuunnitelma.opintojaksot, (oj) => {
@@ -126,8 +132,12 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   }
 
   public async load() {
-    const { paikallinenOppiaineId } = this.$route.params;
-    const paikallinen = await Opetussuunnitelma.getPaikallinenOppiaine(_.parseInt(paikallinenOppiaineId));
+    let paikallinen = defaults.oppiaine();
+    if (!await this.isUusi()) {
+      const { paikallinenOppiaineId } = this.$route.params;
+      paikallinen = await Opetussuunnitelma.getPaikallinenOppiaine(_.parseInt(paikallinenOppiaineId));
+    }
+
     paikallinen.tehtava = paikallinen.tehtava || {};
     paikallinen.arviointi = paikallinen.arviointi || {};
     paikallinen.laajaAlainenOsaaminen = paikallinen.laajaAlainenOsaaminen || {};
@@ -138,7 +148,12 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   }
 
   async save(oppiaine: Lops2019PaikallinenOppiaineDto) {
-    await Opetussuunnitelma.savePaikallinenOppiaine(oppiaine);
+    if (await this.isUusi()) {
+      await Opetussuunnitelma.addOppiaine(oppiaine);
+    }
+    else {
+      await Opetussuunnitelma.savePaikallinenOppiaine(oppiaine);
+    }
   }
 }
 </script>
