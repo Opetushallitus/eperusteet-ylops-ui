@@ -182,7 +182,6 @@ export default class OpsSidenav extends Vue {
     ];
 
     const paikallisetOppiaineet = Opetussuunnitelma.paikallisetOppiaineet;
-    console.log(paikallisetOppiaineet);
     const oppiaineLinkit = this.OpsOppiaineLinkit();
     if (oppiaineLinkit.length > 0) {
       menuOpsData = [

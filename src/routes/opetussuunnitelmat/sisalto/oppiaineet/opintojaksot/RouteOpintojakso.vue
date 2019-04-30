@@ -117,7 +117,10 @@ div.content
                 :value="moduulitMap[moduuli.koodiUri].tavoitteet",
                 kohde="kohde",
                 arvot="tavoitteet")
-            ep-content(v-model="data.tavoitteet" :is-editable="isEditing")
+            ep-content(
+              layout="normal",
+              v-model="data.tavoitteet",
+              :is-editable="isEditing")
 
           hr.valiviiva
           ep-collapse(tyyppi="opintojakson-keskeiset-sisallot")
@@ -128,7 +131,10 @@ div.content
                 :value="moduulitMap[moduuli.koodiUri].sisallot",
                 kohde="kohde",
                 arvot="sisallot")
-            ep-content(v-model="data.keskeisetSisallot" :is-editable="isEditing")
+            ep-content(
+              layout="normal",
+              v-model="data.keskeisetSisallot",
+              :is-editable="isEditing")
 
           hr.valiviiva
           ep-collapse(tyyppi="opintojakson-keskeiset-sisallot")
@@ -137,9 +143,11 @@ div.content
               v-for="oppiaine in laajaAlaisetOsaamiset",
               v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus")
               h5(v-html="$kaanna(oppiaine.nimi)")
-              ep-content(
-                :value="oppiaine.laajaAlainenOsaaminen.kuvaus")
-            ep-content(v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing")
+              ep-content(:value="oppiaine.laajaAlainenOsaaminen.kuvaus")
+            ep-content(
+              layout="normal",
+              v-model="data.laajaAlainenOsaaminen",
+              :is-editable="isEditing")
 
 </template>
 

@@ -27,6 +27,7 @@ import UnderConstruction from '@/routes/UnderConstruction.vue';
 import { Virheet } from '@/stores/virheet';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
+import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 import { createLogger } from '@/stores/logger';
 
@@ -162,6 +163,8 @@ Virheet.onError((virhe: SovellusVirhe) => {
   });
 });
 
+
+
 router.beforeEach((to, from, next) => {
   if (to.params.lang
     && to.params.lang !== from.params.lang
@@ -179,4 +182,14 @@ router.beforeEach((to, from, next) => {
   //     },
   //   });
   // }
+});
+
+// Alustetaan opetussuunnitelma tilan vaihtuessa
+let lastOpsId!: string;
+router.beforeEach(async (to, from, next) => {
+  if (to.params.id && lastOpsId !== to.params.id) {
+    lastOpsId = to.params.id;
+    await Opetussuunnitelma.init(_.parseInt(lastOpsId));
+  }
+  next();
 });

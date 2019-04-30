@@ -11,6 +11,7 @@ import TileLoki from './tiles/TileLoki.vue';
 import TileOrganisaatio from './tiles/TileOrganisaatio.vue';
 import TilePohjat from './tiles/TilePohjat.vue';
 import TileTiedotteet from './tiles/TileTiedotteet.vue';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
 import {
   EpAikaleima,
@@ -34,6 +35,9 @@ import {
     TileUusiOpetussuunnitelma,
     TileUusiPohja,
     TileValtakunnallisetPerusteet,
+  },
+  directives: {
+    oikeustarkastelu,
   },
 })
 export default class Home extends Vue {

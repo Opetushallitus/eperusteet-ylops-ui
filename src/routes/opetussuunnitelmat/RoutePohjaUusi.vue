@@ -9,7 +9,7 @@ ep-main-view
   div
     ep-form-content(name="ops-nimi")
       ep-field(
-        help="ops-nimi-ohje",
+        help="pohja-nimi-ohje",
         v-model="uusi.nimi",
         :validation="$v.uusi.nimi",
         :is-editing="true")

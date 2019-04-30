@@ -74,7 +74,6 @@ export default class EpOppiaineSelector extends Vue {
   get oppiaineetJaOppimaarat() {
     return _(this.oppiaineet)
       .map((oa: any) => [oa, ..._.map(oa.oppimaarat, om => {
-        console.log(oa.koodi.uri);
         return {
           ...om,
           parentUri: oa.koodi.uri,

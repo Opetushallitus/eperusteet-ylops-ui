@@ -15,6 +15,9 @@ export default class EpContent extends Mixins(EpValidation) {
   @Prop({ default: true })
   private lokalisoitu!: boolean;
 
+  @Prop({ default: 'minimal' })
+  private layout!: string;
+
   @Prop({ required: true })
   private value!: string | object;
 
