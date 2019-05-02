@@ -20,7 +20,7 @@ export default class EpContentBase extends Mixins(EpValidation) {
   private isEditable!: boolean;
 
   // CkEditorin layout (määrittää editorin ominaisuudet)
-  @Prop({ default: 'simplified' })
+  @Prop({ default: 'normal' })
   private layout!: EditorLayout;
 
   // OPS ID (kuvien tallennus)
