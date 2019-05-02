@@ -21,7 +21,8 @@ div
           ops-sidenav
         template(slot="view")
           transition(name="fade" mode="out-in")
-            router-view(:key="$route.fullPath")
+            ep-comment-threads
+              router-view(:key="$route.fullPath")
 </template>
 
 <script lang="ts">
@@ -34,6 +35,7 @@ import {
   EpNavigation,
   EpSidebar,
   EpSpinner,
+  EpCommentThreads,
   OpsSidenav,
 } from '@/components';
 
@@ -41,6 +43,7 @@ import {
   components: {
     EpChart,
     EpNavigation,
+    EpCommentThreads,
     EpSidebar,
     EpSpinner,
     OpsSidenav,

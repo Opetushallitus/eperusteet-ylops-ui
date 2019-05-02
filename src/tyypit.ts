@@ -87,6 +87,7 @@ export type Lops2019OppiaineDto = GApi.Lops2019OppiaineDto;
 export type Lops2019OpintojaksonModuuliDto = GApi.Lops2019OpintojaksonModuuliDto;
 export type PerusteTekstiKappaleViiteDto = GApi.PerusteTekstiKappaleViiteDto;
 export type Lops2019PaikallinenOppiaineDto = GApi.Lops2019PaikallinenOppiaineDto;
+export type Lops2019OpintojaksonOppiaineDto = GApi.Lops2019OpintojaksonOppiaineDto;
 
 export default GApi;
 // export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;

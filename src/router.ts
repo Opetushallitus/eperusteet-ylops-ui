@@ -14,6 +14,7 @@ import RouteOpetussuunnitelmaListaus from '@/routes/opetussuunnitelmat/RouteOpet
 import RouteOpetussuunnitelmaUusi from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaUusi.vue';
 import RouteOpintojakso from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/opintojaksot/RouteOpintojakso.vue';
 import RouteOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaine.vue';
+import RouteOppiaineet from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteOppiaineet.vue';
 import RoutePaikallinenOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePaikallinenOppiaine.vue';
 import RouteOrganisaatio from '@/routes/organisaatio/RouteOrganisaatio.vue';
 import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
@@ -27,6 +28,7 @@ import UnderConstruction from '@/routes/UnderConstruction.vue';
 import { Virheet } from '@/stores/virheet';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
+import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 import { createLogger } from '@/stores/logger';
 
@@ -109,6 +111,10 @@ export const router = new Router({
         component: UnderConstruction,
         name: 'opsKasitteet',
       }, {
+        path: 'oppiaineet',
+        component: RouteOppiaineet,
+        name: 'oppiaineet',
+      }, {
         path: 'oppiaineet/:oppiaineId',
         component: RouteOppiaine,
         name: 'oppiaine',
@@ -117,7 +123,7 @@ export const router = new Router({
         component: RouteModuuli,
         name: 'moduuli',
       }, {
-        path: 'poppiaineet/:poppiaineId',
+        path: 'poppiaineet/:paikallinenOppiaineId',
         component: RoutePaikallinenOppiaine,
         name: 'paikallinenOppiaine',
       }, {
@@ -158,6 +164,8 @@ Virheet.onError((virhe: SovellusVirhe) => {
   });
 });
 
+
+
 router.beforeEach((to, from, next) => {
   if (to.params.lang
     && to.params.lang !== from.params.lang
@@ -175,4 +183,14 @@ router.beforeEach((to, from, next) => {
   //     },
   //   });
   // }
+});
+
+// Alustetaan opetussuunnitelma tilan vaihtuessa
+let lastOpsId!: string;
+router.beforeEach(async (to, from, next) => {
+  if (to.params.id && lastOpsId !== to.params.id) {
+    lastOpsId = to.params.id;
+    await Opetussuunnitelma.init(_.parseInt(lastOpsId));
+  }
+  next();
 });

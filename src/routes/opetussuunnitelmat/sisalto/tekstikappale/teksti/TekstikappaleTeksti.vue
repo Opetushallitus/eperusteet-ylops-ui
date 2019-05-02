@@ -12,10 +12,13 @@
           h1(v-else) {{ $kaanna(data.tov.tekstiKappale.nimi) }}
       template(slot-scope="{ isEditing, data }")
         .teksti
+          span(comment-uuid="data.tov.tekstiKappale.tunniste")
           .row
             .col-lg-8
               .spacing
-              ep-collapse(v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa")
+              ep-collapse(
+                tyyppi="perusteteksti",
+                v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa")
                 div(slot="header")
                   h5 {{ $t('perusteen-teksti') }}
                 p.perusteteksti(v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti) ")

@@ -3,8 +3,8 @@
 div.content
   div(v-if="hooks")
     ep-editointi(:hooks="hooks", :validator="validator")
+      h2(slot="header") {{ $t('tiedot') }}
       template(v-slot="{ data, validation, isEditing }")
-        h2 {{ $t('tiedot') }}
         div
           .row
             .col-md-6
@@ -35,7 +35,7 @@ div.content
                   help="ops-hyvaksyjataho-ohje",
                   v-model="data.hyvaksyjataho",
                   :validation="validation.hyvaksyjataho",
-                  :is-string="true",
+                  type="string",
                   :is-editing="isEditing")
             .col-md-6(v-if="isOps")
               ep-form-content(name="ops-hyvaksymispvm")

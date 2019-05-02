@@ -2,6 +2,7 @@
 
 div(v-if="isEditing")
   input.input-style.form-control(
+    :type="type === 'number' ? 'number' : 'text'",
     @input="onInput($event.target.value)",
     :attrs="$attrs",
     :value="val",
@@ -28,8 +29,8 @@ const logger = createLogger('EpInput');
 
 @Component
 export default class EpInput extends Mixins(EpValidation) {
-  @Prop({ default: false })
-  private isString!: boolean;
+  @Prop({ default: 'localized' })
+  private type!: 'localized' | 'string' | 'number';
 
   @Prop({ required: true })
   private value!: string | object;
@@ -41,15 +42,19 @@ export default class EpInput extends Mixins(EpValidation) {
   private help!: string;
 
   public onInput(input: any) {
-    if (this.isString && !_.isString(this.value)) {
+    if (this.type === 'string' && !_.isString(this.value)) {
       logger.warn('Given value is not a string:', this.value);
     }
 
-    if (!this.isString && !_.isPlainObject(this.value)) {
+    if (this.type === 'number' && !_.isNumber(this.value)) {
+      logger.warn('Given value is not a string:', this.value);
+    }
+
+    if (this.type === 'localized' && !_.isPlainObject(this.value)) {
       logger.warn('Given value is not an object:', this.value);
     }
 
-    if (this.isString || _.isString(this.value)) {
+    if (this.type !== 'localized' || _.isString(this.value) || _.isNumber(this.value)) {
       this.$emit('input', input);
     }
     else {
@@ -100,11 +105,10 @@ input.is-valid:focus {
   border-color: #28a745;
 }
 
-.input-content {
+input.input-content {
   padding: 6px 0 6px 0;
   font-size: 1rem;
   line-height: 1.5;
-  font-weight: 400;
 }
 
 </style>

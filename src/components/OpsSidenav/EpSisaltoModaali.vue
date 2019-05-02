@@ -42,14 +42,13 @@ div
         ep-input(
           id="sisalto-nimi",
           v-model="uusi.nimi",
-          type="text",
           help="sisalto-nimi-ohje",
           :validation="$v.uusi.nimi",
           :is-editing="true")
 
       ep-form-content(name="oppiaineet", v-if="sisallonTyyppi === 'opintojakso'")
         ep-oppiaine-selector(
-          v-model="uusi.oppiaineet",
+          v-model="oppiainekoodit",
           :ops-id="$route.params.id")
 
 </template>
@@ -67,6 +66,7 @@ import {
 
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpValidation from '@/mixins/EpValidation';
+import _ from 'lodash';
 import EpParams from '@/mixins/EpParams';
 import { opintojaksoLuontiValidator } from '@/validators/opintojakso';
 import { oppiaineLuontiValidator } from '@/validators/oppiaine';
@@ -95,6 +95,7 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
     nimi: {},
   };
   private sisallonTyyppi: string | null = null;
+  private oppiainekoodit: string[] = [];
 
   get validationConfig() {
     if (this.step === 1) {
@@ -110,6 +111,7 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
   async reset() {
     this.step = 0;
     this.sisallonTyyppi = null;
+    this.oppiainekoodit = [];
     this.uusi = {
       nimi: {},
     };
@@ -117,7 +119,9 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
     if (this.params.oppiaineId) {
       const oppiaine = await this.cache.getOppiaine(this.params.oppiaineId);
       if (oppiaine && oppiaine.koodi) {
-        this.uusi.oppiaineet = [oppiaine.koodi.uri];
+        this.uusi.oppiaineet = [{
+          koodi: oppiaine.koodi.uri,
+        }];
       }
     }
   }
@@ -153,8 +157,8 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
         });
         break;
       case 'oppiaine':
-        this.navigateTo('poppiaine', {
-          opintojaksoId: (await this.addOppiaine()).id,
+        this.navigateTo('paikallinenOppiaine', {
+          paikallinenOppiaineId: (await this.addOppiaine()).id,
         });
         break;
       }
@@ -162,6 +166,8 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
     }
     catch (err) {
       logger.log(err);
+    }
+    finally {
       this.isSaving = false;
     }
   }
@@ -184,15 +190,21 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
     });
   }
 
+  get mappedOppiaineet() {
+    return _.map(this.oppiainekoodit, koodi => ({ koodi }));
+  }
+
   private async addOpintojakso() {
     return Opetussuunnitelma.addOpintojakso({
       ...this.uusi,
+      oppiaineet: this.mappedOppiaineet,
     });
   }
 
   private async addOppiaine() {
     return Opetussuunnitelma.addOppiaine({
       ...this.uusi,
+      oppiaineet: this.mappedOppiaineet,
     });
   }
 }

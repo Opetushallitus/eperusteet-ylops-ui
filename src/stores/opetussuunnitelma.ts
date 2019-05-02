@@ -20,6 +20,12 @@ class OpetussuunnitelmaStore {
   @State()
   public opetussuunnitelma: OpetussuunnitelmaKevytDto | null = null;
 
+  @State()
+  public paikallisetOppiaineet: Lops2019PaikallinenOppiaineDto[] = [];
+
+  @State()
+  public opintojaksot: Lops2019OpintojaksoDto[] = [];
+
   public async getOtsikot() {
     if (this.opetussuunnitelma && this.opetussuunnitelma.id) {
       return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opetussuunnitelma.id)).data;
@@ -37,6 +43,8 @@ class OpetussuunnitelmaStore {
     logger.info('Updating peruste', id);
     this.opetussuunnitelma = await this.get(id);
     await this.updateSisalto();
+    this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
+    this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
     logger.info('Updating peruste', this.sisalto);
   }
 
@@ -93,17 +101,33 @@ class OpetussuunnitelmaStore {
   }
 
   // Lops 2021
+  // Pilko omiin moduuleihin
 
   // Paikalliset oppiaineet
   public async addOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto = {}) {
-    const result = (await Oppiaineet.addOppiaine(this.opetussuunnitelma!.id!, oppiaine)).data;
+    const result = (await Oppiaineet.addLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine)).data;
+    this.paikallisetOppiaineet = [...this.paikallisetOppiaineet, result];
+    return result;
+  }
+
+  public async getPaikallinenOppiaine(id: number) {
+    return (await Oppiaineet.getLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id)).data;
+  }
+
+  public async getPaikallisetOppiaineet() {
+    const paikalliset = (await Oppiaineet.getAllLops2019PaikallisetOppiainet(this.opetussuunnitelma!.id!)).data;
+    return paikalliset;
+  }
+
+  public async savePaikallinenOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto) {
+    const result = (await Oppiaineet.updateLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine.id!, oppiaine)).data;
     return result;
   }
 
   // Opintojaksot
   public async addOpintojakso(opintojakso: Lops2019OpintojaksoDto = {}) {
     const result = (await Opintojaksot.addOpintojakso(this.opetussuunnitelma!.id!, opintojakso)).data;
-    await this.updateSisalto();
+    this.opintojaksot = [...this.opintojaksot, result];
     return result;
   }
 

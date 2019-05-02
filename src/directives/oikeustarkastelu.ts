@@ -4,6 +4,7 @@ import { Kayttajat } from '@/stores/kayttaja';
 
 const DisableTags = ['input', 'button'];
 
+
 export const oikeustarkastelu: Vue.DirectiveOptions = {
   async bind(el, binding) {
     // Hide the element before rights have been resolved

@@ -4,6 +4,8 @@ import { Store, Getter, Mutation, Action, State } from './store';
 import { createLogger } from './logger';
 import * as _ from 'lodash';
 import { RevisionDto } from '@/tyypit';
+import { router } from '@/router';
+
 
 interface EditointiKontrolliFeatures {
   removal: boolean;
@@ -29,6 +31,7 @@ export interface EditointiKontrolliLocks {
 }
 
 export interface EditointiKontrolliConfig {
+  editAfterLoad?: () => Promise<boolean>;
   source: EditointiKontrolliData;
   locks?: EditointiKontrolliLocks;
   history?: EditointiKontrolliHistory;
@@ -47,6 +50,7 @@ export class EditointiKontrolli {
   private logger = createLogger(EditointiKontrolli);
   private isEditingState = false;
   private isRemoved = false;
+  private isNew = false;
 
   private readonly features: EditointiKontrolliFeatures;
   private mstate = Vue.observable({
@@ -88,6 +92,7 @@ export class EditointiKontrolli {
   }
 
   public async init() {
+    this.isNew = this.config.editAfterLoad && await this.config.editAfterLoad();
     const data = await this.fetch();
     if (this.config.history && this.config.history.revisions) {
       this.mstate.revisions = await this.config.history.revisions();
@@ -97,6 +102,9 @@ export class EditointiKontrolli {
     this.mstate.data = data;
     this.mstate.disabled = false;
     // this.config.setData!(data);
+    if (this.isNew) {
+      await this.start();
+    }
   }
 
   public async start() {
@@ -115,7 +123,9 @@ export class EditointiKontrolli {
 
     try {
       this.logger.debug('Aloitetaan editointi');
-      await this.init();
+      if (!this.isNew) {
+        await this.init();
+      }
       if (this.config.start) {
         await this.config.start();
       }
@@ -144,6 +154,10 @@ export class EditointiKontrolli {
     // this.config.setData!(JSON.parse(this.backup));
     this.isEditingState = false;
     this.mstate.disabled = false;
+
+    if (this.isNew) {
+      router.go(-1);
+    }
   }
 
   public async validate() {

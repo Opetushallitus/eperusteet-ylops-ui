@@ -16,7 +16,7 @@ export default class EpColorBall extends Vue {
 @import '@/styles/_variables.scss';
 
 .ball {
-  border-radius: 50%;
+  border-radius: 100%;
   display: inline-block;
   min-height: 10px;
   min-width: 10px;

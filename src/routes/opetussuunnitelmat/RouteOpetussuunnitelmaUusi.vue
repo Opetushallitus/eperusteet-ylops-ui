@@ -49,12 +49,10 @@ ep-main-view
     hr
 
     ep-form-content(name="nimi")
-      ep-input(
-        id="uusi-ops-nimi",
+      ep-field(
+        help="ops-nimi-ohje",
         v-model="uusi.nimi",
         :validation="$v.uusi.nimi",
-        type="text",
-        help="uusi-ops-ohje-nimi",
         :is-editing="true")
 
     hr
@@ -74,6 +72,7 @@ ep-main-view
 import {
   EpButton,
   EpContent,
+  EpField,
   EpFormContent,
   EpIcon,
   EpInput,
@@ -111,6 +110,7 @@ import { opsLuontiValidator } from '@/validators/ops';
   components: {
     EpButton,
     EpContent,
+    EpField,
     EpFormContent,
     EpIcon,
     EpInput,

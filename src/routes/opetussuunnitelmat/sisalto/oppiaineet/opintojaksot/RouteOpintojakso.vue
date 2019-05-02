@@ -21,10 +21,10 @@ div.content
             .col-md-6
               ep-form-content(name="koodi")
                 ep-field(
-                  help="ops-hyvaksyjataho-ohje",
+                  help="opintojakso-koodi-ohje",
                   v-model="data.koodi",
+                  type="string",
                   :validation="validation.koodi",
-                  :is-string="true",
                   :is-editing="isEditing")
             .col-md-6
               ep-form-content(name="tila")
@@ -32,16 +32,19 @@ div.content
 
         div(v-if="isEditing || data.moduulit.length > 0")
           hr.valiviiva
-          ep-collapse
+          ep-collapse(tyyppi="opintojakson-moduulit")
             h4(slot="header")
               | {{ $t('opintojakson-moduulit') }}
             div(v-if="isEditing")
               .row
                 .col-md-6
                   ep-form-content(name="oppiaine")
-                    ep-oppiaine-selector(:ops-id="$route.params.id", v-model="data.oppiaineet")
+                    ep-oppiaine-selector(
+                      :ops-id="$route.params.id",
+                      :value="data.oppiaineet.map(x => x.koodi)",
+                      @input="updateOppiaineet")
                 .col-md-6
-                  ep-form-content(name="liitetyt-moduulit")
+                  // ep-form-content(name="liitetyt-moduulit")
                     .liitetyt-moduulit
                       div.d-flex
                         .p-2.flex-grow-1
@@ -63,10 +66,16 @@ div.content
                           span {{ liitetyt.paikalliset.valittu }} / {{ liitetyt.paikalliset.max }}
 
             .oppiaineet(v-if="isEditing")
-              div(v-for="uri in data.oppiaineet", :key="uri")
-                h5 {{ $kaanna(oppiaineetMap[uri].nimi) }}
+              div(v-for="oa in data.oppiaineet", :key="oa.koodi")
+                h5 {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
+                div(v-if="!oppiaineetMap[oa.koodi].moduulit || oppiaineetMap[oa.koodi].moduulit.length === 0")
+                  ep-input(
+                    type="number",
+                    ohje="opintojakso-oppiaine-laajuus",
+                    v-model="oa.laajuus",
+                    :is-editing="true")
                 .moduulit
-                  .moduuli(v-for="moduuli in oppiaineetMap[uri].moduulit", :key="moduuli.id")
+                  .moduuli(v-for="moduuli in oppiaineetMap[oa.koodi].moduulit", :key="moduuli.id")
                     ep-opintojakson-moduuli(
                       :moduuli="moduuli",
                       :is-editing="true",
@@ -92,46 +101,53 @@ div.content
 
         div
           hr.valiviiva
-          ep-collapse
+          ep-collapse(tyyppi="opintojakson-tavoitteet")
             h4(slot="header") {{ $t('tavoitteet') }}
-            .row
-              .col-lg-6
-                ep-content(v-model="data.tavoitteet" :is-editable="isEditing")
-              .col-lg-6
-                .perustesisalto(v-for="moduuli in data.moduulit")
-                  h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
-                  ep-prefix-list(
-                    :value="moduulitMap[moduuli.koodiUri].tavoitteet",
-                    kohde="kohde",
-                    arvot="tavoitteet")
+            //.perustesisalto(v-for="tavoite in oppiaineidenTavoitteet")
+              h5 {{ $kaanna(tavoite.nimi) }}
+              h5(v-if="") {{ $kaanna(tavoite.nimi) }}
+              ep-prefix-list(
+                :value="tavoite.tavoitteet",
+                kohde="kohde",
+                arvot="tavoitteet")
+            .perustesisalto(v-for="moduuli in data.moduulit")
+              h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
+              // h5(v-if="") {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
+              ep-prefix-list(
+                :value="moduulitMap[moduuli.koodiUri].tavoitteet",
+                kohde="kohde",
+                arvot="tavoitteet")
+            ep-content(
+              layout="normal",
+              v-model="data.tavoitteet",
+              :is-editable="isEditing")
 
           hr.valiviiva
-          ep-collapse
+          ep-collapse(tyyppi="opintojakson-keskeiset-sisallot")
             h4(slot="header") {{ $t('keskeiset-sisallot') }}
-            .row
-              .col-lg-6
-                ep-content(v-model="data.keskeisetSisallot" :is-editable="isEditing")
-              .col-lg-6
-                .perustesisalto(v-for="moduuli in data.moduulit")
-                  h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
-                  ep-prefix-list(
-                    :value="moduulitMap[moduuli.koodiUri].sisallot",
-                    kohde="kohde",
-                    arvot="sisallot")
+            .perustesisalto(v-for="moduuli in data.moduulit")
+              h5 {{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}
+              ep-prefix-list(
+                :value="moduulitMap[moduuli.koodiUri].sisallot",
+                kohde="kohde",
+                arvot="sisallot")
+            ep-content(
+              layout="normal",
+              v-model="data.keskeisetSisallot",
+              :is-editable="isEditing")
 
           hr.valiviiva
-          ep-collapse
+          ep-collapse(tyyppi="opintojakson-keskeiset-sisallot")
             h4(slot="header") {{ $t('laaja-alaiset-sisallot') }}
-            .row
-              .col-lg-6
-                ep-content(v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing")
-              .col-lg-6
-                .perustesisalto(
-                  v-for="oppiaine in laajaAlaisetOsaamiset",
-                  v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus")
-                  h5(v-html="$kaanna(oppiaine.nimi)")
-                  ep-content(
-                    :value="oppiaine.laajaAlainenOsaaminen.kuvaus")
+            .perustesisalto(
+              v-for="oppiaine in laajaAlaisetOsaamiset",
+              v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus")
+              h5(v-html="$kaanna(oppiaine.nimi)")
+              ep-content(:value="oppiaine.laajaAlainenOsaaminen.kuvaus")
+            ep-content(
+              layout="normal",
+              v-model="data.laajaAlainenOsaaminen",
+              :is-editable="isEditing")
 
 </template>
 
@@ -145,6 +161,7 @@ import {
   EpEditointi,
   EpField,
   EpFormContent,
+  EpInput,
   EpMultiSelect,
   EpOppiaineSelector,
   EpPrefixList,
@@ -161,6 +178,8 @@ import EpOpintojaksonModuuli from './EpOpintojaksonModuuli.vue';
 import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@/stores/kieli';
 import Multiselect from 'vue-multiselect';
+import * as defaults from '@/defaults';
+
 
 @Component({
   components: {
@@ -171,6 +190,7 @@ import Multiselect from 'vue-multiselect';
     EpEditointi,
     EpField,
     EpFormContent,
+    EpInput,
     EpMultiSelect,
     EpOpintojaksonModuuli,
     EpOppiaineSelector,
@@ -184,6 +204,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   private editable: Lops2019OpintojaksoDto | null = null;
   private cache!: PerusteCache;
   private hooks: EditointiKontrolliConfig = {
+    editAfterLoad: this.isUusi,
     source: {
       save: this.save,
       load: this.load,
@@ -193,8 +214,17 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     },
   };
 
+  async isUusi() {
+    return this.$route.params.opintojaksoId === 'uusi';
+  }
+
   async revisions() {
-    return Opetussuunnitelma.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+    if (await this.isUusi()) {
+      return [];
+    }
+    else {
+      return Opetussuunnitelma.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+    }
   }
 
   async init() {
@@ -224,19 +254,39 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     ]);
   }
 
+  get paikallisetOppiaineet() {
+    return _(Opetussuunnitelma.paikallisetOppiaineet)
+      .filter('koodi')
+      .map((oa) => {
+        return {
+          ...oa,
+          koodi: {
+            uri: oa.koodi,
+          }
+        };
+      })
+      .value();
+  }
+
   get oppiaineet() {
-    return this.cache.peruste().oppiaineet;
+    return [
+        ...this.cache.peruste().oppiaineet,
+        ...this.paikallisetOppiaineet
+      ];
   }
 
   get laajuus() {
-    if (this.editable && this.editable.moduulit) {
+    if (this.editable && this.editable.moduulit && !_.isEmpty(this.editable.moduulit)) {
       return _(this.editable.moduulit)
         .map('koodiUri')
         .map((uri: string) => this.moduulitMap[uri].laajuus)
         .sum();
     }
     else {
-      return 0;
+      return _(this.editable!.oppiaineet)
+        .filter('laajuus')
+        .map('laajuus')
+        .sum();
     }
   }
 
@@ -277,8 +327,59 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
       .value();
   }
 
+  get opintojaksonOppiaineet() {
+    return _(this.editable!.oppiaineet)
+      .map(({ koodi }) => koodi)
+      .sortBy()
+      .uniq()
+      .map(uri => {
+        if (this.oppiaineetMap[uri].parentUri) {
+          return [this.oppiaineetMap[uri].parentUri, uri];
+        }
+        else {
+          return [uri];
+        }
+      })
+      .flatten()
+      .map((uri: string) => this.oppiaineetMap[uri])
+      .value();
+  }
+
+  get oppiaineidenTavoitteet() {
+    interface Tavoitteet {
+      nimi: any;
+      tavoitteet: any;
+    };
+
+    if (_.isEmpty(this.editable!.moduulit)) {
+      return _(this.opintojaksonOppiaineet)
+        .map(oa => {
+          return {
+            kind: 'oppiaine',
+            nimi: oa.nimi,
+            kuvaus: oa.kuvaus,
+            tavoitteet: oa.tavoitteet,
+          };
+        })
+        .value();
+    }
+    else {
+      return _(this.editable!.moduulit)
+        .map(moduuli => {
+          return {
+            kind: 'moduuli',
+            nimi: moduuli.nimi,
+            kuvaus: null,
+            tavoitteet: moduuli.tavoitteet,
+          };
+        })
+        .value();
+    }
+  }
+
   get laajaAlaisetOsaamiset() {
     return _(this.editable!.oppiaineet)
+      .map(({ koodi }) => koodi)
       .map(uri => {
         if (this.oppiaineetMap[uri].parentUri) {
           return [this.oppiaineetMap[uri].parentUri, uri];
@@ -293,14 +394,37 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
       .value();
   }
 
+  private updateOppiaineet(koodit: string[]) {
+    this.editable!.oppiaineet = _.map(koodit, (koodi) => ({
+      koodi,
+    }));
+  }
+
   public async load() {
     const { opintojaksoId } = this.$route.params;
-    const opintojakso = await Opetussuunnitelma.getOpintojakso(_.parseInt(opintojaksoId));
-    return opintojakso;
+    if (opintojaksoId === 'uusi') {
+      return defaults.opintojakso();
+    }
+    else {
+      const opintojakso = await Opetussuunnitelma.getOpintojakso(_.parseInt(opintojaksoId));
+      return opintojakso;
+    }
   }
 
   async save(opintojakso: Lops2019OpintojaksoDto) {
-    await Opetussuunnitelma.saveOpintojakso(opintojakso);
+    if (await this.isUusi()) {
+      const uusi = await Opetussuunnitelma.addOpintojakso(opintojakso);
+      this.$router.push({
+        ...(this.$router.currentRoute as any),
+        params: {
+          ...this.$router.currentRoute.params,
+          opintojaksoId: uusi.id,
+        },
+      });
+    }
+    else {
+      await Opetussuunnitelma.saveOpintojakso(opintojakso);
+    }
   }
 }
 </script>

@@ -44,7 +44,7 @@ export default class CkEditor extends Mixins(EpValidation) {
   private value!: string;
 
   // Editorin layout (määrittää ominaisuudet)
-  @Prop({ default: 'simplified' })
+  @Prop({ default: 'minimal' })
   private layout!: EditorLayout;
 
   // Editorin käyttöliittymän kieli

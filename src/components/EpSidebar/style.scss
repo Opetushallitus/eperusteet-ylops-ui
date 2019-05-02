@@ -21,13 +21,13 @@
 
     .bar {
       height: 100%;
-      border-right: 1px solid #eee;
       min-width: $sidebar-width;
       max-width: $sidebar-width;
       min-height: 100vh;
     }
 
     .view {
+      border-left: 1px solid #eee;
       width: 100%;
     }
   }

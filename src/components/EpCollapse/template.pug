@@ -2,12 +2,13 @@
   // Button tagia ei voida käyttää, sillä ml-auto ei toimi.
   // Käytetään button rolea saavutettavuuden takaamiseksi.
   .collapse-button.d-flex(
-      @click="toggled = !toggled",
-      @keyup.enter="toggled = !toggled",
+      @click="toggle()",
+      @keyup.enter="toggle()",
       role="button",
       tabindex="0")
     .align-self-start
-      slot(name="header")
+      .header
+        slot(name="header")
     .ml-auto.align-self-start
       fas(icon="chevron-up", v-if="toggled")
       fas(icon="chevron-down", v-else)

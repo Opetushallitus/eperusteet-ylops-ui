@@ -5,7 +5,7 @@ div.content
   div(v-if="!isLoading")
     h2 {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
 
-    p(v-html="$kaanna(moduuli.kuvaus)")
+    p.kuvaus(v-html="$kaanna(moduuli.kuvaus)")
 
     div.collapse-container
       ep-collapse
@@ -79,6 +79,10 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
 </script>
 
 <style lang="scss" scoped>
+.content {
+  padding: 20px;
+}
+
 .oj-content {
   border-radius: 30px;
   padding: 10px 20px;
@@ -102,6 +106,10 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
   span.tyyppi {
     min-width: 6em;
   }
+}
+
+p.kuvaus {
+  margin-top: 40px;
 }
 
 .block-container {

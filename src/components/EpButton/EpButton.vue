@@ -4,6 +4,7 @@ button.btn(
     v-bind="$attrs",
     :disabled="disabled || showSpinner",
     @click="$emit('click')")
+  fas.mr-2(v-if="icon", :icon="icon")
   slot
   ep-spinner-inline(v-if="showSpinner")
 </template>
@@ -19,6 +20,9 @@ import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
   },
 })
 export default class EpButton extends Vue {
+  @Prop({ default: "" })
+  private icon!: string;
+
   @Prop({ default: false })
   private disabled!: boolean;
 
@@ -27,5 +31,6 @@ export default class EpButton extends Vue {
 
   @Prop({ default: 'primary' })
   private variant!: boolean;
+
 }
 </script>
