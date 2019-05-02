@@ -37,18 +37,8 @@ export default class KasiteFormView extends View {
       }
     });
 
-    // Create save & cancel buttons
-    this.saveBtn = this.createButton('Lisää', checkIcon, 'ck-button-save', null);
-    this.saveBtn.type = 'submit';
-    this.saveBtn.isEnabled = false;
-    this.cancelBtn = this.createButton('Peruuta', cancelIcon, 'ck-button-cancel', 'cancel');
-
-    // Create select element
-    this.kasiteSelect = new KasiteFormSelect(locale);
-    this.kasiteSelect.on('kasitevalittu', (e, data) => {
-      this.saveBtn.isEnabled = data !== '';
-      this.kasiteKey = data;
-    });
+    // Create buttons & select element
+    const children = this.createUiElements(locale);
 
     // Add buttons to
     this.setTemplate({
@@ -61,11 +51,7 @@ export default class KasiteFormView extends View {
         ],
       },
 
-      children: [
-        this.kasiteSelect,
-        this.saveBtn,
-        this.cancelBtn,
-      ],
+      children,
     });
   }
 
@@ -94,6 +80,27 @@ export default class KasiteFormView extends View {
 
   focus() {
     this.focusCycler.focusFirst();
+  }
+
+  createUiElements(locale) {
+    // Create save & cancel buttons
+    this.saveBtn = this.createButton('Lisää', checkIcon, 'ck-button-save', null);
+    this.saveBtn.type = 'submit';
+    this.saveBtn.isEnabled = false;
+    this.cancelBtn = this.createButton('Peruuta', cancelIcon, 'ck-button-cancel', 'cancel');
+
+    // Create select element
+    this.kasiteSelect = new KasiteFormSelect(locale);
+    this.kasiteSelect.on('kasitevalittu', (e, data) => {
+      this.saveBtn.isEnabled = data !== '';
+      this.kasiteKey = data;
+    });
+
+    return [
+      this.kasiteSelect,
+      this.saveBtn,
+      this.cancelBtn,
+    ];
   }
 
   createButton(label, icon, className, eventName) {

@@ -21,26 +21,42 @@ export default class CkKasitePlugin extends Plugin {
   init() {
     const editor = this.editor;
 
+    // Register schema changes & abbr command
+    this.registerSchema();
+    editor.commands.add('abbr', new AbbrCommand(editor));
+
+    // Create button for toolbar
+    this.createButton();
+
+    //
+    this.formView = this.createPluginUiForm(editor);
+    this.balloon = editor.plugins.get(ContextualBalloon);
+
+    this.registerEventHandlers(editor);
+  }
+
+  createAbbrElement(data, writer) {
+    const abbrElement = writer.createAttributeElement('abbr', { data }, { priority: 5 });
+    // writer.setCustomProperty( 'abbr', true, abbrElement );
+    return abbrElement;
+  }
+
+  registerSchema() {
+    const editor = this.editor;
+
+    const downCaster = {
+      model: 'abbrData',
+      view: (data, writer) => this.createAbbrElement(data, writer),
+    };
+
     // Allow abbrData attribute to text nodes
     editor.model.schema.extend('$text', { allowAttributes: 'abbrData' });
 
     // Model -> view conversion ; called from getdata
-    editor.conversion.for('dataDowncast')
-      .attributeToElement({ model: 'abbrData',
-        view: (data, writer) => {
-          const abbrElement = writer.createAttributeElement('abbr', { data }, { priority: 5 });
-          // writer.setCustomProperty( 'abbr', true, abbrElement );
-          return abbrElement;
-        } });
+    editor.conversion.for('dataDowncast').attributeToElement(downCaster);
 
     // Model -> view conversion ; editing view
-    editor.conversion.for('editingDowncast')
-      .attributeToElement({ model: 'abbrData',
-        view: (data, writer) => {
-          const abbrElement = writer.createAttributeElement('abbr', { data }, { priority: 5 });
-          // writer.setCustomProperty( 'abbr', true, abbrElement );
-          return abbrElement;
-        } });
+    editor.conversion.for('editingDowncast').attributeToElement(downCaster);
 
     // View -> Model conversion ; called from setdata
     editor.conversion.for('upcast')
@@ -56,18 +72,11 @@ export default class CkKasitePlugin extends Plugin {
           value: viewElement => viewElement.getAttribute('data')
         },
       });
+  }
 
-    editor.commands.add('abbr', new AbbrCommand(editor));
-
-    // Create button for toolbar
-    this.createButton();
-
-    //
-    this.formView = this.createPluginUiForm(editor);
-    this.balloon = editor.plugins.get(ContextualBalloon);
-
+  registerEventHandlers(editor) {
     // Remove UI panel (if esc pressed and ui doesn't have focus)
-    this.editor.keystrokes.set('esc', (data, cancel) => {
+    editor.keystrokes.set('esc', (data, cancel) => {
       if (this.isPluginUiFormInPanel) {
         this.removePluginUiForm();
         cancel();
@@ -83,7 +92,7 @@ export default class CkKasitePlugin extends Plugin {
     });
 
     //
-    this.editor.keystrokes.set('Tab', (data, cancel) => {
+    editor.keystrokes.set('Tab', (data, cancel) => {
       if (this.isPluginUiFormInPanel) {
         this.formView.focus();
         cancel();
