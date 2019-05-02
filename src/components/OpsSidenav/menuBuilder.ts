@@ -115,4 +115,3 @@ export function paikallinenOppiaineToMenu(oppiaine: Lops2019PaikallinenOppiaineD
     },
   };
 }
-

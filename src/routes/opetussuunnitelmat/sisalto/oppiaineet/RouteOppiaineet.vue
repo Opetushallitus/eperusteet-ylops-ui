@@ -51,7 +51,6 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
       },
     });
   }
-
 }
 </script>
 
@@ -102,4 +101,3 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
   }
 }
 </style>
-

@@ -1,5 +1,4 @@
-import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019PaikallinenOppiaineDto  } from '@/tyypit';
-
+import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019PaikallinenOppiaineDto } from '@/tyypit';
 
 export function oppiaine(): Lops2019PaikallinenOppiaineDto {
   const oa = {
@@ -13,7 +12,6 @@ export function oppiaine(): Lops2019PaikallinenOppiaineDto {
   };
   return oa;
 }
-
 
 export function opintojakso(oppiaineUri?: string): Lops2019OpintojaksoDto {
   const oj = {

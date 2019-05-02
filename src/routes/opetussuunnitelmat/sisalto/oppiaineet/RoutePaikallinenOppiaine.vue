@@ -87,7 +87,6 @@ import { oppiaineValidator } from '@/validators/oppiaineet';
 import Multiselect from 'vue-multiselect';
 import * as defaults from '@/defaults';
 
-
 @Component({
   components: {
     EpButton,

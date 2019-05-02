@@ -180,7 +180,6 @@ import { Kielet } from '@/stores/kieli';
 import Multiselect from 'vue-multiselect';
 import * as defaults from '@/defaults';
 
-
 @Component({
   components: {
     EpButton,
@@ -270,9 +269,9 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 
   get oppiaineet() {
     return [
-        ...this.cache.peruste().oppiaineet,
-        ...this.paikallisetOppiaineet
-      ];
+      ...this.cache.peruste().oppiaineet,
+      ...this.paikallisetOppiaineet
+    ];
   }
 
   get laajuus() {
@@ -349,7 +348,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     interface Tavoitteet {
       nimi: any;
       tavoitteet: any;
-    };
+    }
 
     if (_.isEmpty(this.editable!.moduulit)) {
       return _(this.opintojaksonOppiaineet)

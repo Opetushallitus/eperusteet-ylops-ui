@@ -219,5 +219,4 @@ export default class OpsSidenav extends Vue {
       }
     }
   }
-
 }

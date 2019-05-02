@@ -134,7 +134,6 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
       },
     });
   }
-
 }
 </script>
 

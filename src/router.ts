@@ -164,8 +164,6 @@ Virheet.onError((virhe: SovellusVirhe) => {
   });
 });
 
-
-
 router.beforeEach((to, from, next) => {
   if (to.params.lang
     && to.params.lang !== from.params.lang

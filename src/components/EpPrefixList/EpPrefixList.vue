@@ -76,7 +76,6 @@ div(v-else)
           icon="times",
           @click="poistaArvo(alueIdx)")
 
-
 </template>
 
 <script lang="ts">
@@ -112,7 +111,7 @@ export default class EpPrefixList extends Vue {
   get hasMultiple() {
     return _.isArray(this.sanitized);
   }
-  
+
   get sanitized() {
     if (_.isArray(this.value)) {
       return this.value;
@@ -152,16 +151,14 @@ export default class EpPrefixList extends Vue {
 
   private lisaaArvo(alue: any) {
     alue[this.arvot].push(this.arvot
-      ? { [this.arvo]: {}, }
+      ? { [this.arvo]: {} }
       : {});
   }
-
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/_variables.scss';
-
 
 .alue-editing {
   background: $color-light-background;
