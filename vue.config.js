@@ -34,11 +34,13 @@ module.exports = {
   chainWebpack: config => {
     const svgRule = config.module.rule('svg');
     svgRule.include.add(path.join(__dirname, '/public'));
-    svgRule.include.add(path.join(__dirname, '/src'));
+    svgRule.include.add(path.join(__dirname, '/src/components'));
 
-    config.module
-      .rule('cke-svg')
-      .test(/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/)
+    const ckeRule = config.module.rule('cke-svg');
+    ckeRule.include.add(path.join(__dirname, '/node_modules'));
+    ckeRule.include.add(path.join(__dirname, '/src/ckplugins'));
+    ckeRule
+      .test(/(ckeditor5-[^/\\]+[/\\]theme|Ck[a-zA-Z]+Plugin)[/\\]icons[/\\][^/\\]+\.svg$/)
       .use('raw-loader')
       .loader('raw-loader');
   },
