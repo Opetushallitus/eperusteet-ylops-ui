@@ -1,5 +1,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { setItem, getItem } from '@/utils/localstorage';
+import _ from 'lodash';
+
 
 @Component
 export default class EpCollapse extends Vue {
@@ -14,18 +16,19 @@ export default class EpCollapse extends Vue {
     try {
       if (this.tyyppi) {
         const item = getItem('toggle-' + this.tyyppi);
-        if (item) {
+        if (_.isObject(item)) {
           return (item as any).toggled;
         }
       }
     }
     finally {
     }
-    return true;
+    return this.defaultState;
   }
 
   mounted() {
     this.toggled = this.isToggled();
+    console.log(this.toggled);
   }
 
   toggle() {
