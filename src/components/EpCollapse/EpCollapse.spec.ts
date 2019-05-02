@@ -15,7 +15,7 @@ describe('EpCollapse component', () => {
     const wrapper = mount(EpCollapse, options);
     expect(wrapper.html()).toContain(options.slots.header);
     // Todo: Korjaa testi komponentin mukaiseksi
-    //expect(wrapper.html()).toContain(options.slots.default);
+    // expect(wrapper.html()).toContain(options.slots.default);
   });
 
   it('Renders header only when collapsed', () => {
