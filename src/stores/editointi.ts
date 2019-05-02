@@ -92,7 +92,7 @@ export class EditointiKontrolli {
   }
 
   public async init() {
-    this.isNew = this.config.editAfterLoad && await this.config.editAfterLoad();
+    this.isNew = !!(this.config.editAfterLoad && await this.config.editAfterLoad());
     const data = await this.fetch();
     if (this.config.history && this.config.history.revisions) {
       this.mstate.revisions = await this.config.history.revisions();
