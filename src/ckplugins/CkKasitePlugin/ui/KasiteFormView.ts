@@ -22,35 +22,21 @@ export default class KasiteFormView extends View {
       kasiteKey: '',
     });
 
-    //
-    this.focusTracker = new FocusTracker();
-    this.keystrokes = new KeystrokeHandler();
-    this.focusables = new ViewCollection();
-
-    this.focusCycler = new FocusCycler({
-      focusables: this.focusables,
-      focusTracker: this.focusTracker,
-      keystrokeHandler: this.keystrokes,
-      actions: {
-        focusPrevious: 'shift + tab',
-        focusNext: 'tab'
-      }
-    });
+    // Create key event & focus trackers
+    this.createKeyAndFocusTrackers();
 
     // Create buttons & select element
     const children = this.createUiElements(locale);
 
-    // Add buttons to
+    // Add ui elements to template
     this.setTemplate({
       tag: 'form',
-
       attributes: {
         class: [
           'ck',
           'ck-link-form',
         ],
       },
-
       children,
     });
   }
@@ -80,6 +66,22 @@ export default class KasiteFormView extends View {
 
   focus() {
     this.focusCycler.focusFirst();
+  }
+
+  createKeyAndFocusTrackers() {
+    this.focusTracker = new FocusTracker();
+    this.keystrokes = new KeystrokeHandler();
+    this.focusables = new ViewCollection();
+
+    this.focusCycler = new FocusCycler({
+      focusables: this.focusables,
+      focusTracker: this.focusTracker,
+      keystrokeHandler: this.keystrokes,
+      actions: {
+        focusPrevious: 'shift + tab',
+        focusNext: 'tab'
+      }
+    });
   }
 
   createUiElements(locale) {
