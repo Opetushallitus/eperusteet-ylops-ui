@@ -58,9 +58,14 @@ export default class CkEditor extends Mixins(EpValidation) {
   @Prop({ default: 0 })
   private opsId!: number;
 
+  // OPS:n käsitteet (käsitemodulia varten)
+  @Prop({ default: [] })
+  private opsKasitteet!: any[];
+
   // CKEditorin JS instanssi
   private instance: any = null;
   private lastEmittedValue: string = '';
+  private CkKasite: any = {};
 
   public async mounted() {
     this.createEditorInstance();
@@ -203,6 +208,11 @@ export default class CkEditor extends Mixins(EpValidation) {
         'undo', 'redo',
       ],
       image: imageConfig,
+      ckkasite: {
+        kasitteet: [
+          ...this.opsKasitteet
+        ],
+      },
     };
   }
 }

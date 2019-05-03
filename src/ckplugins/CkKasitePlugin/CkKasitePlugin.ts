@@ -6,6 +6,7 @@ import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsid
 
 import KasiteFormView from './ui/KasiteFormView';
 import AbbrCommand from './abbrCommand';
+import './CkKasitePlugin.css';
 
 const pluginIcon = require('./icons/icon.svg');
 
@@ -120,8 +121,16 @@ export default class CkKasitePlugin extends Plugin {
     });
   }
 
+  readConfiguration() {
+    return [
+      { name: 'Valitse käsite', key: '' },
+      ...this.editor.config.get('ckkasite.kasitteet'),
+    ];
+  }
+
   createPluginUiForm(editor) {
-    const formView = new KasiteFormView(editor.locale);
+    const kasitteet = this.readConfiguration();
+    const formView = new KasiteFormView(editor.locale, kasitteet);
 
     // Listen to 'submit' button click
     this.listenTo(formView, 'submit', () => {

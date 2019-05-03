@@ -33,6 +33,11 @@ export default class EpContent extends Mixins(EpValidation) {
     return _.get(Opetussuunnitelma, 'opetussuunnitelma.id', 0);
   }
 
+  get opsKasitteet() {
+    // TODO: implement me
+    return [];
+  }
+
   get locale() {
     return Kielet.getUiKieli();
   }

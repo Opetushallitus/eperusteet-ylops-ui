@@ -1,3 +1,4 @@
-<template lang="pug" src="./template.pug"></template>
+<template lang="pug">
+div(v-html="value")
+</template>
 <script lang="ts" src="./script.ts"></script>
-<style scoped lang="scss" src="./style.scss"></style>

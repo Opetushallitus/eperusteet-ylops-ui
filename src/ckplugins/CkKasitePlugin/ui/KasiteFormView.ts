@@ -15,7 +15,7 @@ import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import KasiteFormSelect from './KasiteFormSelect';
 
 export default class KasiteFormView extends View {
-  constructor(locale) {
+  constructor(locale, kasitteet) {
     super(locale);
 
     this.set({
@@ -26,7 +26,7 @@ export default class KasiteFormView extends View {
     this.createKeyAndFocusTrackers();
 
     // Create buttons & select element
-    const children = this.createUiElements(locale);
+    const children = this.createUiElements(locale, kasitteet);
 
     // Add ui elements to template
     this.setTemplate({
@@ -51,6 +51,7 @@ export default class KasiteFormView extends View {
 
     // Register form elements to focusable elements
     const childViews = [
+      this.kasiteSelect,
       this.saveBtn,
       this.cancelBtn,
     ];
@@ -84,7 +85,7 @@ export default class KasiteFormView extends View {
     });
   }
 
-  createUiElements(locale) {
+  createUiElements(locale, kasitteet) {
     // Create save & cancel buttons
     this.saveBtn = this.createButton('Lisää', checkIcon, 'ck-button-save', null);
     this.saveBtn.type = 'submit';
@@ -92,7 +93,7 @@ export default class KasiteFormView extends View {
     this.cancelBtn = this.createButton('Peruuta', cancelIcon, 'ck-button-cancel', 'cancel');
 
     // Create select element
-    this.kasiteSelect = new KasiteFormSelect(locale);
+    this.kasiteSelect = new KasiteFormSelect(locale, kasitteet);
     this.kasiteSelect.on('kasitevalittu', (e, data) => {
       this.saveBtn.isEnabled = data !== '';
       this.kasiteKey = data;

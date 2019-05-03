@@ -1,4 +1,4 @@
-import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import CkEditor from '@/components/CkEditor/CkEditor.vue';
 import EpViewer from '@/components/EpViewer/EpViewer.vue';
@@ -26,6 +26,10 @@ export default class EpContentBase extends Mixins(EpValidation) {
   // OPS ID (kuvien tallennus)
   @Prop({ default: 0 })
   private opsId!: number;
+
+  // OPS:n käsitteet
+  @Prop({ default: [] })
+  private opsKasitteet!: any[];
 
   @Prop({ default: '' })
   private help!: string;

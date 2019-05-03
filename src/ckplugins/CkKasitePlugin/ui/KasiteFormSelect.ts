@@ -3,15 +3,10 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import KasiteFormOption from './KasiteFormOption';
 
 export default class KasiteFormSelect extends View {
-  constructor(locale) {
+  constructor(locale, kasitteet: any[]) {
     super(locale);
 
     const bind = this.bindTemplate;
-
-    const kasitteet = [
-      { name: 'Valitse käsite', key: '', isValid: false },
-      { name: 'Testikäsite', key: 'key123', isValid: true },
-    ];
 
     let children: KasiteFormOption[] = [];
 
@@ -23,11 +18,19 @@ export default class KasiteFormSelect extends View {
     this.set({
       isValid: false,
       kasiteData: '',
+      tabindex: -1,
     });
 
     this.setTemplate({
       tag: 'select',
+      attributes: {
+        class: [
+          'ck',
+          'ck-kasite-select',
+        ],
+      },
       children,
+      tabindex: bind.to('tabindex'),
       on: {
         change: bind.to('change'),
       }
@@ -36,6 +39,10 @@ export default class KasiteFormSelect extends View {
     this.on('change', e => {
       this.onChangeEvent(e.source.element);
     });
+  }
+
+  focus() {
+    this.element.focus();
   }
 
   onChangeEvent(el) {
