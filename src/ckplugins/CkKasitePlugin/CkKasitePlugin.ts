@@ -23,7 +23,7 @@ export default class CkKasitePlugin extends Plugin {
     const editor = this.editor;
 
     // Register schema changes & abbr command
-    this.registerSchema();
+    this.registerSchema(editor);
     editor.commands.add('abbr', new AbbrCommand(editor));
 
     // Create button for toolbar
@@ -36,28 +36,10 @@ export default class CkKasitePlugin extends Plugin {
     this.registerEventHandlers(editor);
   }
 
-  createAbbrElement(data, writer) {
-    const abbrElement = writer.createAttributeElement('abbr', { data }, { priority: 5 });
-    // writer.setCustomProperty( 'abbr', true, abbrElement );
-    return abbrElement;
-  }
-
-  registerSchema() {
-    const editor = this.editor;
-
-    const downCaster = {
-      model: 'abbrData',
-      view: (data, writer) => this.createAbbrElement(data, writer),
-    };
-
+  registerSchema(editor) {
     // Allow abbrData attribute to text nodes
-    editor.model.schema.extend('$text', { allowAttributes: 'abbrData' });
-
-    // Model -> view conversion ; called from getdata
-    editor.conversion.for('dataDowncast').attributeToElement(downCaster);
-
-    // Model -> view conversion ; editing view
-    editor.conversion.for('editingDowncast').attributeToElement(downCaster);
+    editor.model.schema
+      .extend('$text', { allowAttributes: 'abbrData' });
 
     // View -> Model conversion ; called from setdata
     editor.conversion.for('upcast')
@@ -65,13 +47,20 @@ export default class CkKasitePlugin extends Plugin {
         view: {
           name: 'abbr',
           attributes: {
-            data: true,
+            'data-viite': true,
           }
         },
         model: {
           key: 'abbrData',
-          value: viewElement => viewElement.getAttribute('data')
+          value: viewElement => viewElement.getAttribute('data-viite'),
         },
+      });
+
+    // Model -> view conversion ; called from getdata
+    editor.conversion.for('downcast')
+      .attributeToElement({
+        model: 'abbrData',
+        view: (data, writer) => writer.createAttributeElement('abbr', { 'data-viite': data }),
       });
   }
 
