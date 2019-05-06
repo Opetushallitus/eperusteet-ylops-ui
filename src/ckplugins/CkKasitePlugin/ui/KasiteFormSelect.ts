@@ -8,16 +8,7 @@ export default class KasiteFormSelect extends View {
 
     const bind = this.bindTemplate;
 
-    let children: KasiteFormOption[] = [];
-
-    kasitteet.forEach(kasite => {
-      const option = new KasiteFormOption(locale, kasite);
-      children.push(option);
-    });
-
     this.set({
-      isValid: false,
-      kasiteData: '',
       tabindex: -1,
     });
 
@@ -29,7 +20,7 @@ export default class KasiteFormSelect extends View {
           'ck-kasite-select',
         ],
       },
-      children,
+      children: kasitteet.map(kasite => new KasiteFormOption(locale, kasite)),
       tabindex: bind.to('tabindex'),
       on: {
         change: bind.to('change'),
