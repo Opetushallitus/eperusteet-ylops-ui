@@ -44,7 +44,7 @@ div.content
                       :value="data.oppiaineet.map(x => x.koodi)",
                       @input="updateOppiaineet")
                 .col-md-6
-                  // ep-form-content(name="liitetyt-moduulit")
+                  ep-form-content(name="liitetyt-moduulit")
                     .liitetyt-moduulit
                       div.d-flex
                         .p-2.flex-grow-1
@@ -54,16 +54,10 @@ div.content
                           span {{ liitetyt.pakolliset.valittu }} / {{ liitetyt.pakolliset.max }}
                       div.d-flex
                         .p-2.flex-grow-1
-                          ep-color-ball(kind="syventava")
-                          span.taso {{ $t('syventavat') }}
+                          ep-color-ball(kind="valinnainen")
+                          span.taso {{ $t('valinnaiset') }}
                         .p-2
-                          span {{ liitetyt.syventavat.valittu }} / {{ liitetyt.syventavat.max }}
-                      div.d-flex
-                        .p-2.flex-grow-1
-                          ep-color-ball(kind="paikallinen")
-                          span.taso {{ $t('paikalliset') }}
-                        .p-2
-                          span {{ liitetyt.paikalliset.valittu }} / {{ liitetyt.paikalliset.max }}
+                          span {{ liitetyt.valinnaiset.valittu }} / {{ liitetyt.valinnaiset.max }}
 
             .oppiaineet(v-if="isEditing")
               div(v-for="oa in data.oppiaineet", :key="oa.koodi")
@@ -237,7 +231,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
         valittu: 3,
         max: 8,
       },
-      syventavat: {
+      valinnaiset: {
         valittu: 0,
         max: 1,
       },
@@ -270,7 +264,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 
   get oppiaineet() {
     return [
-        ...this.cache.peruste().oppiaineet,
+        ...this.cache.peruste.oppiaineet,
         ...this.paikallisetOppiaineet
       ];
   }

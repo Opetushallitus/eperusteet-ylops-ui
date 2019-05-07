@@ -62,7 +62,7 @@ export default class EpOppiaineSelector extends Vue {
   get oppiaineet() {
     if (this.cache) {
       return [
-        ...this.cache.peruste().oppiaineet,
+        ...this.cache.peruste.oppiaineet,
         ...this.paikallisetOppiaineet,
       ];
     }

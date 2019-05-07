@@ -19,7 +19,6 @@ export default class EpCommentThreads extends Vue {
         // const el = this.$slots.default[0].elm;
         // console.log(this.$slots.default);
         const comments = document.querySelectorAll("[comment-uuid]");
-        console.log(comments);
       }, 1000);
     }
   }

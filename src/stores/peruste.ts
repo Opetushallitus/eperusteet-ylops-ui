@@ -15,7 +15,7 @@ export class PerusteCache {
   ) {
   }
 
-  public peruste() {
+  get peruste(): any {
     return PerusteCache.cache[this.opsId];
   }
 

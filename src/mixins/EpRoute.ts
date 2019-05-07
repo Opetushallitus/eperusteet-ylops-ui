@@ -11,16 +11,4 @@ Component.registerHooks([
 
 @Component
 export default class EpRoute extends EpRoot {
-  public async beforeRouteEnter(to: any, from: any, next: any) {
-    next();
-  }
-
-  public async beforeRouteUpdate(to: any, from: any, next: any) {
-    await next();
-    this.init();
-  }
-
-  public async beforeRouteLeave(to: any, from: any, next: any) {
-    next();
-  }
 }
