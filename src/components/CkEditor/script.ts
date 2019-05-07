@@ -21,6 +21,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
 import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/CkUploadAdapter';
 import CkKasitePlugin from '@/ckplugins/CkKasitePlugin/CkKasitePlugin';
+import CkMathPlugin from '@/ckplugins/CkMathPlugin/CkMathPlugin';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
@@ -65,7 +66,6 @@ export default class CkEditor extends Mixins(EpValidation) {
   // CKEditorin JS instanssi
   private instance: any = null;
   private lastEmittedValue: string = '';
-  private CkKasite: any = {};
 
   public async mounted() {
     this.createEditorInstance();
@@ -161,6 +161,8 @@ export default class CkEditor extends Mixins(EpValidation) {
       plugins: [
         ...commonPlugins,
         Bold,
+        CkKasitePlugin,
+        CkMathPlugin,
         Italic,
         Image,
         ImageStyle,
@@ -187,6 +189,7 @@ export default class CkEditor extends Mixins(EpValidation) {
         ...commonPlugins,
         Bold,
         CkKasitePlugin,
+        CkMathPlugin,
         Italic,
         Image,
         ImageStyle,
@@ -203,7 +206,7 @@ export default class CkEditor extends Mixins(EpValidation) {
         '|',
         'bulletedList', 'numberedList',
         '|',
-        'link', 'insertTable', 'insertKasite',
+        'link', 'insertTable', 'insertKasite', 'insertMath',
         '|',
         'undo', 'redo',
       ],
