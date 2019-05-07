@@ -1,4 +1,4 @@
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
@@ -182,7 +182,7 @@ export default class OpsSidenav extends Vue {
     const paikallisetOppiaineet = Opetussuunnitelma.paikallisetOppiaineet;
     const oppiaineLinkit = this.opsOppiaineLinkit();
 
-    if (oppiaineLinkit.length > 0 || paikallisetOppiaineet.length>0) {
+    if (oppiaineLinkit.length > 0 || paikallisetOppiaineet.length > 0) {
       menuOpsData = [
         ...menuOpsData, {
           item: {
