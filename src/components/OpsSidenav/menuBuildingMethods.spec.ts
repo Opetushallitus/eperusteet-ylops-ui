@@ -1,10 +1,14 @@
-import { MenuBuilder } from './menuBuilder';
+import {
+  oppiaineLinkki,
+  oppimaaraModuuliLinkit,
+  oppimaaraOpintojaksoLinkit,
+  opsLapsiLinkit,
+  paikallinenOppiaineToMenu,
+} from './menuBuildingMethods';
 
 describe('OpsSidenav menubuilder helper', () => {
   it('runs methods without errors', () => {
-    let mb = new MenuBuilder();
-
-    const res1 = mb.OpsLapsiLinkit([{
+    const res1 = opsLapsiLinkit([{
       tekstikappale: null,
       id: 1,
       lapset: [{
@@ -14,7 +18,7 @@ describe('OpsSidenav menubuilder helper', () => {
     }]);
     expect(res1.length).toBe(1);
 
-    const res2 = mb.OppimaaraModuuliLinkit({
+    const res2 = oppimaaraModuuliLinkit({
       id: 1,
       moduulit: [{
         id: 2,
