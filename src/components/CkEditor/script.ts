@@ -20,6 +20,8 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
 import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/CkUploadAdapter';
+import CkKasitePlugin from '@/ckplugins/CkKasitePlugin/CkKasitePlugin';
+import CkMathPlugin from '@/ckplugins/CkMathPlugin/CkMathPlugin';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
@@ -29,6 +31,7 @@ const logger = createLogger('CkEditor');
 const commonPlugins = [
   Clipboard,
   Essentials,
+  ParagraphPlugin,
   PasteFromOffice,
 ];
 const imageConfig = {
@@ -44,7 +47,7 @@ export default class CkEditor extends Mixins(EpValidation) {
   private value!: string;
 
   // Editorin layout (määrittää ominaisuudet)
-  @Prop({ default: 'minimal' })
+  @Prop({ default: 'normal' })
   private layout!: EditorLayout;
 
   // Editorin käyttöliittymän kieli
@@ -55,6 +58,10 @@ export default class CkEditor extends Mixins(EpValidation) {
   // kuvaominaisuuksia ei oteta käyttöön
   @Prop({ default: 0 })
   private opsId!: number;
+
+  // OPS:n käsitteet (käsitemodulia varten)
+  @Prop({ default: [] })
+  private opsKasitteet!: any[];
 
   // CKEditorin JS instanssi
   private instance: any = null;
@@ -154,13 +161,14 @@ export default class CkEditor extends Mixins(EpValidation) {
       plugins: [
         ...commonPlugins,
         Bold,
+        CkKasitePlugin,
+        CkMathPlugin,
         Italic,
         Image,
         ImageStyle,
         ...uploadEnabled ? [ImageUpload] : [],
         ImageToolbar,
         ListPlugin,
-        ParagraphPlugin,
       ],
       toolbar: [
         'bold', 'italic',
@@ -180,6 +188,8 @@ export default class CkEditor extends Mixins(EpValidation) {
       plugins: [
         ...commonPlugins,
         Bold,
+        CkKasitePlugin,
+        CkMathPlugin,
         Italic,
         Image,
         ImageStyle,
@@ -187,7 +197,6 @@ export default class CkEditor extends Mixins(EpValidation) {
         ImageToolbar,
         ListPlugin,
         LinkPlugin,
-        ParagraphPlugin,
         Table,
         TableToolbar,
       ],
@@ -197,11 +206,16 @@ export default class CkEditor extends Mixins(EpValidation) {
         '|',
         'bulletedList', 'numberedList',
         '|',
-        'link', 'insertTable',
+        'link', 'insertTable', 'insertKasite', 'insertMath',
         '|',
         'undo', 'redo',
       ],
       image: imageConfig,
+      ckkasite: {
+        kasitteet: [
+          ...this.opsKasitteet
+        ],
+      },
     };
   }
 }
