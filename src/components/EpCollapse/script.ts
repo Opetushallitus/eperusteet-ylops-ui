@@ -2,10 +2,11 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { setItem, getItem } from '@/utils/localstorage';
 import _ from 'lodash';
 
+
 @Component
 export default class EpCollapse extends Vue {
-  @Prop({ default: true })
-  private defaultState!: boolean;
+  @Prop({ default: null })
+  private defaultState!: boolean | null;
 
   @Prop({ default: '' })
   private tyyppi!: string;
@@ -21,12 +22,14 @@ export default class EpCollapse extends Vue {
       }
     }
     catch (err) {
-      return this.defaultState;
+      return true;
     }
   }
 
   mounted() {
-    this.toggled = this.isToggled();
+    this.toggled = this.defaultState === null
+      ? this.isToggled()
+      : this.defaultState;
   }
 
   toggle() {

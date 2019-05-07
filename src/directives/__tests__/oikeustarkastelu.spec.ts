@@ -45,7 +45,7 @@ describe('Directive oikeustarkastelu', () => {
   });
 
   test('piilottaa elementin kun oikeudet eivät riitä', async () => {
-    Kayttajat.oikeudet = eiOikeuksia;
+    // Kayttajat.oikeudet = eiOikeuksia;
 
     const wrapper = mount({
       template: '<div v-oikeustarkastelu>Hello</div>',
