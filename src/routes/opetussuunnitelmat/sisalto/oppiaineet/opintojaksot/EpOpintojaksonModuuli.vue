@@ -9,7 +9,7 @@
           fas(v-else, icon="plus")
       .p-2.info
         span.op {{ moduuli.laajuus }} op
-        ep-color-ball(:kind="moduuli.pakollinen ? 'pakollinen' : 'syventava'")
+        ep-color-ball(:kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'")
 
 </template>
 

@@ -141,7 +141,7 @@ export default class OpsSidenav extends Vue {
       return [];
     }
 
-    const oppiaineet = this.cache.peruste().oppiaineet.map(oppiaine =>
+    const oppiaineet = this.cache.peruste.oppiaineet.map(oppiaine =>
       this.menuBuilder.OppiaineLinkki(
         'oppiaine',
         oppiaine,
@@ -190,6 +190,10 @@ export default class OpsSidenav extends Vue {
             type: 'staticlink',
             i18key: 'oppiaineet',
           },
+          route: {
+            name: 'oppiaineet',
+            params: {},
+          },
           children: [
             ...oppiaineLinkit,
             ..._.map(paikallisetOppiaineet, paikallinenOppiaineToMenu),
@@ -206,17 +210,5 @@ export default class OpsSidenav extends Vue {
 
   private get opsSisalto() {
     return Opetussuunnitelma.sisalto;
-  }
-
-  @Watch('Opetussuunnitelma')
-  async onOpsChange() {
-    if (this.$route) {
-      try {
-        this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
-      }
-      catch (e) {
-        // Todo: virheenkäsittely
-      }
-    }
   }
 }

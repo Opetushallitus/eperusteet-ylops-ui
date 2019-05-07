@@ -26,6 +26,9 @@ class OpetussuunnitelmaStore {
   @State()
   public opintojaksot: Lops2019OpintojaksoDto[] = [];
 
+  private opsId: number | null = null;
+  private initcv: Promise<void> | null = null;
+
   public async getOtsikot() {
     if (this.opetussuunnitelma && this.opetussuunnitelma.id) {
       return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opetussuunnitelma.id)).data;
@@ -40,12 +43,25 @@ class OpetussuunnitelmaStore {
   }
 
   public async init(id: number) {
-    logger.info('Updating peruste', id);
-    this.opetussuunnitelma = await this.get(id);
-    await this.updateSisalto();
-    this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
-    this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
-    logger.info('Updating peruste', this.sisalto);
+    if (this.opsId === id) {
+      if (this.initcv) {
+        await this.initcv;
+      }
+    }
+    else {
+      this.opsId = id;
+      this.initcv = new Promise(async (resolve) => {
+        logger.info('Initing peruste rakenne', id);
+        this.opetussuunnitelma = await this.get(id);
+        await this.updateSisalto();
+        this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
+        this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
+        logger.info('Inited peruste rakenne');
+        this.initcv = null;
+        resolve();
+      });
+      await this.initcv;
+    }
   }
 
   public async get(id: number) {
