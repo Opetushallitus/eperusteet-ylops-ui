@@ -20,7 +20,7 @@ import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
   },
 })
 export default class EpButton extends Vue {
-  @Prop({ default: "" })
+  @Prop({ default: '' })
   private icon!: string;
 
   @Prop({ default: false })
@@ -31,6 +31,5 @@ export default class EpButton extends Vue {
 
   @Prop({ default: 'primary' })
   private variant!: boolean;
-
 }
 </script>

@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import { RevisionDto } from '@/tyypit';
 import { router } from '@/router';
 
-
 interface EditointiKontrolliFeatures {
   removal: boolean;
   validation: boolean;

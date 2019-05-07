@@ -211,5 +211,4 @@ export default class OpsSidenav extends Vue {
   private get opsSisalto() {
     return Opetussuunnitelma.sisalto;
   }
-
 }

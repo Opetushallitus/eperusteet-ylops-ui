@@ -14,4 +14,3 @@ export function oppiaineValidator(kielet: Kieli[] = []) {
     ...koodiValidator(),
   };
 }
-

@@ -48,7 +48,7 @@ div.content
                 @mouseleave="unhoverOpintojakso(oj)")
                 tr.item
                   // td.op {{ oj.laajuus || 0 }}{{ $t('op') }}
-                  td.nimi 
+                  td.nimi
                     router-link(:to=`{ name: 'opintojakso', params: { opintojaksoId: oj.id } }`)
                       | {{ $kaanna(oj.nimi) }} ({{ oj.koodi }})
           td
@@ -93,13 +93,13 @@ import {
   EpContent,
   EpEditointi,
   EpSpinner,
-} from '@/components';
+  EpColorBall } from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import { PerusteCache } from '@/stores/peruste';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import { EpColorBall } from '@/components';
+
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 
@@ -127,6 +127,9 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
     if (this.cache) {
       return this.cache!.peruste;
     }
+    else {
+      return null;
+    }
   }
 
   get total() {
@@ -136,7 +139,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
         return {
           opintojaksot: acc.opintojaksot + next.opintojaksot,
           kaytetytModuulit: acc.kaytetytModuulit + next.kaytetytModuulit,
-          kaikkiModuulit : acc.kaikkiModuulit + next.kaikkiModuulit,
+          kaikkiModuulit: acc.kaikkiModuulit + next.kaikkiModuulit,
         };
       }, {
         opintojaksot: 0,
@@ -221,7 +224,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
           .flatten()
           .sortBy('koodiUri')
           .map(moduuli => {
-            return this.moduulitByKoodi[moduuli.koodiUri]
+            return this.moduulitByKoodi[moduuli.koodiUri];
           })
           .reject(moduuli => _.startsWith(moduuli.koodi.arvo, oa.koodi.arvo))
           .map(moduuli => this.moduuliPresentation(moduuli, opintojaksojenModuulit))
@@ -279,7 +282,6 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
       },
     });
   }
-
 }
 </script>
 
@@ -407,4 +409,3 @@ table.oppiaineet {
 }
 
 </style>
-

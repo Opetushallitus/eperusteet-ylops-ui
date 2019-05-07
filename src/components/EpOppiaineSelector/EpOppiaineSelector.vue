@@ -77,7 +77,7 @@ export default class EpOppiaineSelector extends Vue {
         return {
           ...om,
           parentUri: oa.koodi.uri,
-        }
+        };
       })])
       .flatten()
       .value();

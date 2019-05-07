@@ -2,7 +2,6 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { setItem, getItem } from '@/utils/localstorage';
 import _ from 'lodash';
 
-
 @Component
 export default class EpCollapse extends Vue {
   @Prop({ default: true })
@@ -21,9 +20,9 @@ export default class EpCollapse extends Vue {
         }
       }
     }
-    finally {
+    catch (err) {
+      return this.defaultState;
     }
-    return this.defaultState;
   }
 
   mounted() {
@@ -31,7 +30,7 @@ export default class EpCollapse extends Vue {
   }
 
   toggle() {
-    this.toggled = !this.toggled
+    this.toggled = !this.toggled;
     if (this.tyyppi) {
       setItem('toggle-' + this.tyyppi, {
         toggled: this.toggled,
