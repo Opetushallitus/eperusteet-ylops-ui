@@ -8,6 +8,7 @@ import VirheRoute from '@/routes/virhe/VirheRoute.vue';
 import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
 import RouteDokumentti from '@/routes/opetussuunnitelmat/dokumentti/RouteDokumentti.vue';
+import RouteKasite from '@/routes/opetussuunnitelmat/kasite/RouteKasite.vue';
 import RouteModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteModuuli.vue';
 import RouteOpetussuunnitelma from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelma.vue';
 import RouteOpetussuunnitelmaListaus from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaListaus.vue';
@@ -108,7 +109,7 @@ export const router = new Router({
         name: 'opsPoistetut',
       }, {
         path: 'kasitteet',
-        component: UnderConstruction,
+        component: RouteKasite,
         name: 'opsKasitteet',
       }, {
         path: 'oppiaineet',

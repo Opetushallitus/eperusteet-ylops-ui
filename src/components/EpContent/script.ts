@@ -3,6 +3,7 @@ import _ from 'lodash';
 import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
 import EpValidation from '@/mixins/EpValidation';
 
+import { EditorLayout } from '@/tyypit';
 import { Kielet } from '@/stores/kieli';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
@@ -15,11 +16,12 @@ export default class EpContent extends Mixins(EpValidation) {
   @Prop({ default: true })
   private lokalisoitu!: boolean;
 
-  @Prop({ default: 'minimal' })
-  private layout!: string;
-
   @Prop({ required: true })
   private value!: string | object;
+
+  // CkEditorin layout (määrittää editorin ominaisuudet)
+  @Prop({ default: 'normal' })
+  private layout!: EditorLayout;
 
   @Prop({ default: false })
   private isEditable!: boolean;
@@ -29,6 +31,11 @@ export default class EpContent extends Mixins(EpValidation) {
 
   get opsId() {
     return _.get(Opetussuunnitelma, 'opetussuunnitelma.id', 0);
+  }
+
+  get opsKasitteet() {
+    // TODO: implement me
+    return [];
   }
 
   get locale() {
