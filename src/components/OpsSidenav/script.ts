@@ -1,4 +1,4 @@
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
@@ -19,9 +19,12 @@ import {
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
 import {
-  MenuBuilder,
+  oppiaineLinkki,
+  oppimaaraModuuliLinkit,
+  oppimaaraOpintojaksoLinkit,
+  opsLapsiLinkit,
   paikallinenOppiaineToMenu,
-} from './menuBuilder';
+} from './menuBuildingMethods';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -88,7 +91,6 @@ const i18keys = {
 export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
   private opintojaksot: Lops2019OpintojaksoDto[] = [];
-  private menuBuilder: MenuBuilder = new MenuBuilder();
 
   async created() {
     if (_.get(this.$route, 'params.id', null) !== null) {
@@ -104,7 +106,7 @@ export default class OpsSidenav extends Vue {
 
   private opintojaksoModuuliLista(source) {
     const result: SideMenuEntry[] = [];
-    const oppiaineenOpintojaksot = this.menuBuilder.OppimaaraOpintojaksoLinkit(this.opintojaksot, source);
+    const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(this.opintojaksot, source);
     if (!_.isEmpty(oppiaineenOpintojaksot)) {
       result.push({
         item: {
@@ -122,7 +124,7 @@ export default class OpsSidenav extends Vue {
       },
       flatten: true,
       children: [
-        ...this.menuBuilder.OppimaaraModuuliLinkit(source),
+        ...oppimaaraModuuliLinkit(source),
       ],
     });
     return result;
@@ -130,26 +132,20 @@ export default class OpsSidenav extends Vue {
 
   private oppiaineOppimaaraLinkit(oppiaine) {
     return oppiaine.oppimaarat.map(oppimaara =>
-      this.menuBuilder.OppiaineLinkki(
+      oppiaineLinkki(
         'oppimaara',
         oppimaara,
         this.opintojaksoModuuliLista(oppimaara)));
   }
 
-  private OpsOppiaineLinkit() {
-    if (!this.cache) {
-      return [];
-    }
-
-    const oppiaineet = this.cache.peruste.oppiaineet.map(oppiaine =>
-      this.menuBuilder.OppiaineLinkki(
+  private opsOppiaineLinkit() {
+    return !this.cache ? [] : this.cache.peruste.oppiaineet.map(oppiaine =>
+      oppiaineLinkki(
         'oppiaine',
         oppiaine,
         oppiaine.oppimaarat.length > 0
           ? this.oppiaineOppimaaraLinkit(oppiaine)
           : this.opintojaksoModuuliLista(oppiaine)));
-
-    return [...oppiaineet];
   }
 
   private kaannaHelper(value: SideMenuItem) {
@@ -176,14 +172,17 @@ export default class OpsSidenav extends Vue {
   }
 
   private get valikkoData() {
+    // Valikon rakennus alkaa staattisella sisällöllä ja tekstikappaleiden linkeillä
     let menuOpsData: SideMenuEntry[] = [
       ...menuBaseData,
-      ...this.menuBuilder.OpsLapsiLinkit(this.opsLapset),
+      ...opsLapsiLinkit(this.opsLapset),
     ];
 
+    // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
     const paikallisetOppiaineet = Opetussuunnitelma.paikallisetOppiaineet;
-    const oppiaineLinkit = this.OpsOppiaineLinkit();
-    if (oppiaineLinkit.length > 0) {
+    const oppiaineLinkit = this.opsOppiaineLinkit();
+
+    if (oppiaineLinkit.length > 0 || paikallisetOppiaineet.length > 0) {
       menuOpsData = [
         ...menuOpsData, {
           item: {
@@ -201,6 +200,7 @@ export default class OpsSidenav extends Vue {
         },
       ];
     }
+
     return menuOpsData;
   }
 

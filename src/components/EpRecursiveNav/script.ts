@@ -102,7 +102,9 @@ export default class EpRecursiveNav extends Vue {
 
   private matchRouteParams(route: SideMenuRoute): boolean {
     return this.splitRouteParams().every(param => {
-      return (this.$route.params[param] && route.params[param] && this.$route.params[param] === String(route.params[param]));
+      const p1 = _.get(this.$route.params, param, null);
+      const p2 = _.get(route.params, param, null);
+      return (p1 && p2 && String(p1) === String(p2));
     });
   }
 
