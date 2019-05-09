@@ -13,4 +13,5 @@ div.ep-content-base
     small.form-text.text-muted(v-if="help && isEditing") {{ $t(help) }}
   ep-viewer(
     v-else,
-    :value="value")
+    :value="value",
+    :opsKasitteet="opsKasitteet")

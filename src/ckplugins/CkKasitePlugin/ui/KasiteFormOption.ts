@@ -10,7 +10,7 @@ export default class KasiteFormOption extends View {
         'data-key': kasite.key,
       },
       children: [
-        kasite.name,
+        kasite.title,
       ]
     });
   }

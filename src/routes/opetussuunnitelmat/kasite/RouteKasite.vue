@@ -71,10 +71,8 @@ import EpInput from '@/components/forms/EpInput.vue';
 import { Termisto } from '@/api';
 
 import { Kielet, UiKielet } from '@/stores/kieli';
-import { Kieli } from '@/tyypit';
+import { Kieli, TermiDto } from '@/tyypit';
 import { kasiteValidator } from '@/validators/kasite';
-
-import { TermiDto } from '../../../generated';
 
 @Component({
   components: {

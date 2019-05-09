@@ -88,7 +88,7 @@ export default class CkKasitePlugin extends Plugin {
         cancel();
       }
     }, {
-      priority: 'high'
+      priority: 'high',
     });
   }
 
@@ -111,9 +111,14 @@ export default class CkKasitePlugin extends Plugin {
   }
 
   readConfiguration() {
+    const kasiteObj = this.editor.config.get('ckkasite.kasitteet');
+    const kasiteArr = !kasiteObj ? [] : Object.keys(kasiteObj).map(key => {
+      return { title: kasiteObj[key].title, key };
+    });
+
     return [
-      { name: 'Valitse käsite', key: '' },
-      ...this.editor.config.get('ckkasite.kasitteet'),
+      { title: 'Valitse käsite', key: '' },
+      ...kasiteArr,
     ];
   }
 
