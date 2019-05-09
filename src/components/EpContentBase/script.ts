@@ -28,8 +28,8 @@ export default class EpContentBase extends Mixins(EpValidation) {
   private opsId!: number;
 
   // OPS:n käsitteet
-  @Prop({ default: [] })
-  private opsKasitteet!: any[];
+  @Prop({ default: {} })
+  private opsKasitteet!: object;
 
   @Prop({ default: '' })
   private help!: string;

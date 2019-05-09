@@ -80,6 +80,7 @@ export type PerusteInfoDto = GApi.PerusteInfoDto;
 export type Puu = GApi.Puu;
 export type RevisionDto = GApi.RevisionDto;
 export type TekstiKappaleViiteKevytDto = GApi.TekstiKappaleViiteKevytDto;
+export type TermiDto = GApi.TermiDto;
 export type OhjeDto = GApi.OhjeDto;
 export type Lops2019OpintojaksoDto = GApi.Lops2019OpintojaksoDto;
 export type Lops2019ModuuliDto = GApi.Lops2019ModuuliDto;

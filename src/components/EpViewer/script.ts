@@ -1,4 +1,6 @@
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
+import _ from 'lodash';
+
 import Popover from 'bootstrap-vue/es/components/popover/popover.js';
 import katex from 'katex';
 
@@ -6,53 +8,91 @@ import katex from 'katex';
   name: 'EpViewer',
 })
 export default class EpViewer extends Vue {
-    @Prop() private value!: string;
+  @Prop() private value!: string;
 
-    private timeoutId: number | undefined = undefined;
+  // OPS:n käsitteet (käsitemodulia varten)
+  @Prop({ default: {} })
+  private opsKasitteet!: object;
 
-    public mounted() {
+  private timeoutId: number | undefined = undefined;
+
+  public mounted() {
+    this.reRenderKatex();
+    this.reRenderAbbr();
+  }
+
+  public updated() {
+    // Debounce render katex/abbr methods, as they are quite time consuming
+    clearTimeout(this.timeoutId);
+    this.timeoutId = setTimeout(() => {
       this.reRenderKatex();
       this.reRenderAbbr();
-    }
+    }, 150);
+  }
 
-    public updated() {
-      // Debounce render katex/abbr methods, as they are quite time consuming
-      clearTimeout(this.timeoutId);
-      this.timeoutId = setTimeout(() => {
-        this.reRenderKatex();
-        this.reRenderAbbr();
-      }, 150);
-    }
+  private haeKasiteData(el: HTMLElement) {
+    const avain = el.getAttribute('data-viite');
+    return {
+      title: _.get(this.opsKasitteet, `${avain}.title`, ''),
+      content: _.get(this.opsKasitteet, `${avain}.content`, ''),
+    };
+  }
 
-    private reRenderAbbr() {
-      let refCnt = 1;
-      this.$el.querySelectorAll('abbr').forEach(el => {
-        if (!el.id) {
-          el.id = `abbr-ref-${refCnt}`;
-          refCnt++;
-        }
-
-        // Todo: Lisää tähän kyseisen käsitteen otsikko ja sisältö
-        const CoClass = Vue.extend(Popover);
-        const instance = new CoClass({
-          propsData: {
-            title: 'TODO: title',
-            content: 'TODO: content',
-            target: el.id,
-            placement: 'bottomright',
+  private luoSisaltoSlot(content: string) {
+    const SlotBuilder = Vue.component('popover-slot', {
+      render: (createElement) => {
+        return createElement('div', {
+          domProps: {
+            innerHTML: content,
           },
         });
-        instance.$mount();
-        (this.$refs.tooltipContainer as HTMLElement).appendChild(instance.$el);
-      });
-    }
+      },
+    });
+    const slotInstance = new SlotBuilder();
+    slotInstance.$mount();
+    return (slotInstance as any)._vnode;
+  }
 
-    private reRenderKatex() {
-      this.$el.querySelectorAll('span.math-tex').forEach(el => {
-        if (el.textContent) {
-          const text: string = el.textContent;
-          katex.render(text, el as HTMLElement);
-        }
+  private reRenderAbbr() {
+    let refCnt = 1;
+    this.$el.querySelectorAll('abbr').forEach(el => {
+      // Annetaan abbr elementille ID, johon popover tarraa kiinni
+      if (!el.id) {
+        el.id = `abbr-ref-${refCnt}`;
+        refCnt++;
+      }
+
+      // Haetaan käsitteen otsikko ja sisältö
+      const { title, content } = this.haeKasiteData(el);
+
+      // Luodaan itse popover
+      const CoClass = Vue.extend(Popover);
+      const instance = new CoClass({
+        propsData: {
+          title,
+          target: el.id,
+          placement: 'bottomright',
+        },
       });
-    }
+      instance.$slots.default = [this.luoSisaltoSlot(content)];
+      instance.$mount();
+
+      // Liitetään popover komponenttiin
+      (this.$refs.tooltipContainer as HTMLElement).appendChild(instance.$el);
+    });
+  }
+
+  private reRenderKatex() {
+    this.$el.querySelectorAll('span.math-tex').forEach(el => {
+      if (el.textContent) {
+        const text: string = el.textContent;
+        katex.render(text, el as HTMLElement);
+      }
+    });
+  }
+
+  @Watch('opsKasitteet')
+  private onKasiteChange(dst, src) {
+    this.reRenderAbbr();
+  }
 }

@@ -60,8 +60,8 @@ export default class CkEditor extends Mixins(EpValidation) {
   private opsId!: number;
 
   // OPS:n käsitteet (käsitemodulia varten)
-  @Prop({ default: [] })
-  private opsKasitteet!: any[];
+  @Prop({ default: {} })
+  private opsKasitteet!: object;
 
   // CKEditorin JS instanssi
   private instance: any = null;
@@ -212,9 +212,7 @@ export default class CkEditor extends Mixins(EpValidation) {
       ],
       image: imageConfig,
       ckkasite: {
-        kasitteet: [
-          ...this.opsKasitteet
-        ],
+        kasitteet: this.opsKasitteet,
       },
     };
   }

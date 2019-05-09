@@ -1,9 +1,10 @@
-import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
 import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
 import EpValidation from '@/mixins/EpValidation';
 
-import { EditorLayout } from '@/tyypit';
+import { Termisto } from '@/api';
+import { EditorLayout, TermiDto } from '@/tyypit';
 import { Kielet } from '@/stores/kieli';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
@@ -29,13 +30,35 @@ export default class EpContent extends Mixins(EpValidation) {
   @Prop({ default: '' })
   private help!: string;
 
+  private termisto: TermiDto[] = [];
+
+  async created() {
+    try {
+      // Ladataan kaikki käsitteet
+      const resp = await Termisto.getAllTermit(this.opsId);
+      this.termisto = resp.data;
+    }
+    catch (err) {
+      // Todo: Termien lataus epäonnistui
+    }
+  }
+
   get opsId() {
     return _.get(Opetussuunnitelma, 'opetussuunnitelma.id', 0);
   }
 
   get opsKasitteet() {
-    // TODO: implement me
-    return [];
+    const kieli = Kielet.getSisaltoKieli();
+
+    // Muodostetaan käsitteistä map nykyisen sisältökielen tiedoilla
+    return this.termisto.reduce((o, kasite) => {
+      const title = _.get(kasite, `termi.${kieli}`, '');
+      const content = _.get(kasite, `selitys.${kieli}`, '');
+      const avain = _.get(kasite, 'avain', null);
+      return avain === null ? {} : Object.assign(o, {
+        [avain]: { title, content }
+      });
+    }, {});
   }
 
   get locale() {
