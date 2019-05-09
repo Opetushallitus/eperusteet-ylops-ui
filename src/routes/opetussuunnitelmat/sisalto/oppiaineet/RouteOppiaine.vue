@@ -26,11 +26,9 @@ div.content
       ep-collapse(v-if="oppiaine.oppimaarat.length > 0")
         h4(slot="header") {{ $t('oppimaarat') }}
         div.block-container(v-for="oppimaara in oppiaine.oppimaarat", :key="oppimaara.id")
-          router-link.oj-content(
-            tag="div",
-            :to=`{ name: 'opintojakso', params: { jaksoId: 1 } }` )
+          router-link.oj-content(:to=`{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }` )
             span.nimi {{ $kaanna(oppimaara.nimi) }}
-        ep-button(icon="plus")
+        // ep-button(icon="plus")
           | {{ $t('lisaa-oppimaara') }}
 
       ep-collapse(v-if="oppiaine.moduulit.length > 0")
