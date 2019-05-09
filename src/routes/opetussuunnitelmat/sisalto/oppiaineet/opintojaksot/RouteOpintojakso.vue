@@ -41,6 +41,7 @@ div.content
                   ep-form-content(name="oppiaine")
                     ep-oppiaine-selector(
                       :ops-id="$route.params.id",
+                      :validation="validation.oppiaineet",
                       :value="data.oppiaineet.map(x => x.koodi)",
                       @input="updateOppiaineet")
                 .col-md-6

@@ -27,6 +27,7 @@ import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 import UnderConstruction from '@/routes/UnderConstruction.vue';
 
 import { Virheet } from '@/stores/virheet';
+import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
@@ -165,31 +166,45 @@ Virheet.onError((virhe: SovellusVirhe) => {
   });
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.params.lang
-    && to.params.lang !== from.params.lang
-    && _.includes(UiKielet, to.params.lang)) {
-    Kielet.setUiKieli(to.params.lang as Kieli);
-  }
-  logger.debug(`Route change ${from.name} -> ${to.name}`, from, to);
-  next();
-  // else {
-  //   router.push({
-  //     ...to,
-  //     params: {
-  //       ...to.params,
-  //       lang: i18n.fallbackLocale || 'fi',
-  //     },
-  //   });
-  // }
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.params.lang
+//     && to.params.lang !== from.params.lang
+//     && _.includes(UiKielet, to.params.lang)) {
+//     Kielet.setUiKieli(to.params.lang as Kieli);
+//   }
+//   next();
+//   // else {
+//   //   router.push({
+//   //     ...to,
+//   //     params: {
+//   //       ...to.params,
+//   //       lang: i18n.fallbackLocale || 'fi',
+//   //     },
+//   //   });
+//   // }
+// });
 
-// Alustetaan opetussuunnitelma tilan vaihtuessa
 let lastOpsId!: string;
+
+window.onbeforeunload = () => {
+  if (EditointiKontrolli.anyEditing()) {
+    return 'Oletko varma?';
+  }
+};
+
 router.beforeEach(async (to, from, next) => {
+  // Estetään siirtyminen jos editointi on käynnissä
+  if (EditointiKontrolli.anyEditing()) {
+    // TODO: Lisää notifikaatio
+    logger.warn(`Route change denied: Still in editing state`, from, to);
+    return;
+  }
+
+  // Alustetaan opetussuunnitelma tilan vaihtuessa
   if (to.params.id && lastOpsId !== to.params.id) {
     lastOpsId = to.params.id;
     await Opetussuunnitelma.init(_.parseInt(lastOpsId));
   }
+  logger.debug(`Route change ${from.name} -> ${to.name}`, from, to);
   next();
 });

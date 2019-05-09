@@ -12,7 +12,7 @@ div
           .upper-buttons(v-if="ctrls.isEditing")
             .btn-group
               ep-button(@click="ctrls.save()",
-                :disabled="state.disabled",
+                :disabled="state.disabled || $v.state.data.$invalid",
                 :show-spinner="state.isSaving")
                 slot(name="tallenna") {{ $t('tallenna') }}
               ep-button(
@@ -32,10 +32,7 @@ div
               @click="ctrls.start()",
               icon="pen",
               :disabled="state.disabled")
-              slot(name="muokkaa")
-                | {{ $t('muokkaa') }}
-                // fas.faw-fw(icon="pen")
+              slot(name="muokkaa") {{ $t('muokkaa') }}
 
     .sisalto(v-if="state.data")
       slot(:isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
-

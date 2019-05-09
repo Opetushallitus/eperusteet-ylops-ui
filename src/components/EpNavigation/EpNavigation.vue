@@ -1,13 +1,21 @@
 <template lang="pug">
 div.topbar(v-sticky="sticky")
+
   b-navbar(
     type="dark",
     toggleable="md",
     :class="'navbar-style-' + tyyli")
 
     b-navbar-nav
-      b-nav-item(id="nav-admin" :to="{ name: 'root' }")
+      nav(aria-label="breadcrumb")
+        ol.breadcrumb
+          li.breadcrumb-item
+            router-link(id="nav-admin" :to="{ name: 'root' }")
+              fas.fa-fw(icon="home")
+          li.breadcrumb-item(v-for="route in routePath") {{ $t('route-' + route.name) }}
+      // b-nav-item(id="nav-admin" :to="{ name: 'root' }")
         fas.fa-fw(icon="home")
+
 
     b-navbar-nav.ml-auto
       // Sisällön kieli
@@ -39,6 +47,7 @@ import { Kielet, UiKielet } from '@/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Loading from 'vue-loading-overlay';
 import Sticky from 'vue-sticky-directive';
+import _ from 'lodash';
 
 @Component({
   directives: {
@@ -56,11 +65,17 @@ export default class EpNavigation extends Vue {
   get uiKieli() {
     return Kielet.getUiKieli();
   }
+
   get sisaltoKieli() {
     return Kielet.getSisaltoKieli();
   }
+
   get sovelluksenKielet() {
     return UiKielet;
+  }
+
+  get routePath() {
+    return _.filter(this.$route.matched, 'name');
   }
 
   private valitseUiKieli(kieli: Kieli) {
@@ -92,6 +107,19 @@ export default class EpNavigation extends Vue {
 
     .kielivalitsin {
       color: white;
+    }
+
+    .breadcrumb {
+      background: rgba(0, 0, 0, 0);
+
+      .breadcrumb-item {
+        color: rgba(255, 255, 255, 255);
+        cursor: pointer;
+
+        a {
+          color: rgba(255, 255, 255, 255);
+        }
+      }
     }
   }
 
