@@ -19,12 +19,13 @@ div.content
       ep-content.termi(:value="termi.termi")
       ep-content.selitys(:value="termi.selitys")
 
-  // Kysymyksen luomisen ja muokkaamisen modaali
+  // Käsitteen luomisen ja muokkaamisen modaali
   b-modal.backdrop(
     id="terminLuontiModal",
     ref="terminLuontiModal",
     @ok="tallennaKasite",
     :no-close-on-backdrop="true",
+    :no-enforce-focus="true",
     :lazy="true",
     :ok-disabled="validation.$invalid",
     size="lg")
