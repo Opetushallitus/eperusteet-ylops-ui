@@ -21,8 +21,8 @@ div
           ops-sidenav
         template(slot="view")
           transition(name="fade" mode="out-in")
-            ep-comment-threads
-              router-view(:key="$route.fullPath")
+            // ep-comment-threads
+            router-view(:key="$route.fullPath")
 </template>
 
 <script lang="ts">
@@ -61,6 +61,10 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
     return Opetussuunnitelma.opetussuunnitelma;
   }
 
+  private get breadcrumb() {
+    return this.ops!.nimi;
+  }
+
   protected async init() {
     const id = this.$route.params.id;
     await Opetussuunnitelma.init(_.parseInt(id));
@@ -84,8 +88,10 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
   background: white;
 
   .header {
-    background-color: $etusivu-header-background;
+    background-image: url('../../../public/img/banners/header.svg');
+    background-position: 100% -80px;
     background-repeat: no-repeat;
+
     display: flex;
     align-items: center;
     color: $color-ops-header-text;

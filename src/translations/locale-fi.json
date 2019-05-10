@@ -3,6 +3,8 @@
   "arviointi": "Arviointi",
   "arvo-tavoite": "Tavoite",
   "dokumentit": "Dokumentit",
+  "ohje-tekstikapale": "Tässä näkymässä voit kirjoittaa paikallisen tarkennuksen liittyen perusteessa kirjoitettuun tekstiin.",
+  "ohje-tekstikapale-perusteteksti": "Voit halutessasi ottaa perusteen tekstin osaksi omaa sisältöäsi sellaisenaan tai jättää sen pois ja kirjoittaa sisällön oman opetussuunnitelmasi näkökulmasta.",
   "dokumentti": "Dokumentti",
   "dokumentti-ei-ole": "Dokumenttia ei ole",
   "dokumentti-epaonnistui": "Dokumentin luominen epäonnistui",

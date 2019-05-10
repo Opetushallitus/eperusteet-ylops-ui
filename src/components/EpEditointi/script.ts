@@ -10,6 +10,7 @@ import '@/stores/kieli';
 import { validationMixin } from 'vuelidate';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
+import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
 
 export { EditointiKontrolliConfig } from '@/stores/editointi';
 
@@ -25,6 +26,7 @@ export { EditointiKontrolliConfig } from '@/stores/editointi';
   },
   components: {
     EpButton,
+    EpRoundButton,
     EpSpinner,
     EpVersioModaali,
   },
@@ -36,9 +38,33 @@ export default class EpEditointi extends Mixins(validationMixin) {
   @Prop({ default: null })
   private validator!: any | null;
 
+  @Prop({ default: 0 })
+  private sidebarState!: number;
+
   private ctrls: EditointiKontrolli | null = null;
   private state: any = null;
   private isInitialized = false;
+
+  get hasKeskusteluSlot() {
+    return this.$scopedSlots.keskustelu;
+  }
+
+  get hasPerusteSlot() {
+    return this.$scopedSlots.peruste;
+  }
+
+  get hasOhjeSlot() {
+    return this.$scopedSlots.ohje;
+  }
+
+  toggleSidebarState(val: number) {
+    if (val === this.sidebarState) {
+      this.sidebarState = 0;
+    }
+    else {
+      this.sidebarState = val;
+    }
+  }
 
   @Watch('state.data')
   private changed(newValue: any, oldValue: any) {

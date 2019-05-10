@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2503px" height="300px" viewBox="0 0 2503 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>Header XL Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="1046" y="0" width="1454" height="300"></rect>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#2E6AFF" offset="0%"></stop>
+            <stop stop-color="#0041DC" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-3" x="0" y="0" width="2503" height="300"></rect>
+    </defs>
+    <g id="Header-XL-Copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="header/sinine---XL">
+            <g id="Rectangle">
+                <use fill="#0041DC" xlink:href="#path-1"></use>
+                <use fill-opacity="0.3" fill="#000000" xlink:href="#path-1"></use>
+            </g>
+            <g id="Rectangle">
+                <use fill="url(#linearGradient-2)" xlink:href="#path-3"></use>
+                <use fill-opacity="0.3" fill="#000000" xlink:href="#path-3"></use>
+            </g>
+            <g id="aallot/siniset" opacity="0.4" transform="translate(1432.000000, 0.000000)" fill="#000000">
+                <path d="M0,0 C181.626518,8.87003535 350.822617,39.6145224 507.588296,92.2334611 C742.736816,171.161869 811.18808,290.996688 1068,300 C1068,300 1068,200 1068,0 L0,0 Z" id="Path" fill-opacity="0.3"></path>
+                <path d="M491,0 C589.125937,8.5743675 680.536189,38.2940383 765.230756,89.1590124 C892.272605,165.456473 929.254234,281.296798 1068,290 C1068,290 1068,193.333333 1068,0 L491,0 Z" id="Path-Copy" fill-opacity="0.35"></path>
+            </g>
+        </g>
+    </g>
+</svg>

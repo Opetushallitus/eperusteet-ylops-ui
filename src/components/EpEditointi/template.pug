@@ -33,6 +33,40 @@ div
               icon="pen",
               :disabled="state.disabled")
               slot(name="muokkaa") {{ $t('muokkaa') }}
+            // TODO: replace with chat icon
+            ep-round-button.mr-2(
+              v-if="hasKeskusteluSlot",
+              @click="toggleSidebarState(1)",
+              icon="ukk",
+              variant="lightblue")
+            ep-round-button.mr-2(
+              v-if="hasOhjeSlot",
+              @click="toggleSidebarState(2)",
+              icon="question",
+              variant="green")
+            ep-round-button.mr-2(
+              v-if="hasPerusteSlot",
+              @click="toggleSidebarState(3)",
+              icon="valtakunnalliset-perusteet",
+              variant="pink")
 
-    .sisalto(v-if="state.data")
-      slot(:isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
+    div(v-if="state.data")
+      .threads
+        .actual-content
+          .sisalto
+            slot(:isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
+        .rightbar.rb-keskustelu(v-if="hasKeskusteluSlot && sidebarState === 1")
+          .rbheader
+            b Keskustelu
+          .rbcontent
+            slot(name="keskustelu")
+        .rightbar.rb-ohje(v-if="hasOhjeSlot && sidebarState === 2")
+          .rbheader
+            b Ohje
+          .rbcontent
+            slot(name="ohje")
+        .rightbar.rb-peruste(v-if="hasPerusteSlot && sidebarState === 3")
+          .rbheader
+            b Perusteen teksti
+          .rbcontent
+            slot(name="peruste")

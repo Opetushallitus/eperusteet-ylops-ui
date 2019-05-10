@@ -14,4 +14,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
   get isPohja() {
     return Opetussuunnitelma.opetussuunnitelma!.tyyppi as string === 'pohja';
   }
+
+  private get breadcrumb() {
+    return this.ops!.nimi;
+  }
+
 }

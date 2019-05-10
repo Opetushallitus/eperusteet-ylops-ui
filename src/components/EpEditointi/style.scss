@@ -9,6 +9,7 @@
     padding: 5px;
 
     .upper-buttons {
+      min-width: 240px;
     }
 
     .muokattu, .muokkaaja {
@@ -25,6 +26,49 @@
   .alapaneeli {
 
     .lower-buttons {
+    }
+  }
+
+  .threads {
+    height: 100%;
+    display: flex;
+    flex: stretch;
+
+    .rightbar {
+      border-left: 1px solid #eee;
+      min-width: 460px;
+      max-width: 460px;
+      min-height: 100vh;
+      height: 100%;
+
+      .rbheader {
+        padding: 20px;
+      }
+
+      .rbcontent {
+        min-height: 100vh;
+        height: 100%;
+        font-size: 80%;
+      }
+    }
+
+    .rb-ohje {
+      .rbheader { background: #fcddf9; }
+      .rbcontent { background: #fbf1fa; }
+    }
+
+    .rb-keskustelu {
+      .rbheader { background: #ccd9f8; }
+      .rbcontent { background: #f2f5fd; }
+    }
+
+    .rb-peruste {
+      .rbheader { background: #d4ebdc; }
+      .rbcontent { background: #f4faf6; }
+    }
+
+    .actual-content {
+      width: 100%;
     }
   }
 }

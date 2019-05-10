@@ -2,7 +2,19 @@
 .tekstiviite(v-if="hooks")
   .kappale
     ep-editointi(:hooks="hooks")
-      template(slot="header" slot-scope="{ isEditing, data }")
+      template(slot="ohje", slot-scope="{ isEditing, data }")
+        .sidepad
+          p {{ $t('ohje-tekstikapale') }} 
+          p {{ $t('ohje-tekstikapale-perusteteksti') }} 
+
+      template(slot="keskustelu", slot-scope="{ isEditing, data }")
+        span
+
+      template(slot="peruste", slot-scope="{ isEditing, data }")
+        .sidepad
+          p(v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)")
+
+      template(slot="header", slot-scope="{ isEditing, data }")
         .otsikko
           ep-input(
             v-if="isEditing",
@@ -10,26 +22,24 @@
             v-model="data.tov.tekstiKappale.nimi",
             :is-editing="true")
           h1(v-else) {{ $kaanna(data.tov.tekstiKappale.nimi) }}
+
       template(slot-scope="{ isEditing, data }")
         .teksti
           span(comment-uuid="data.tov.tekstiKappale.tunniste")
-          .row
-            .col-lg-8
-              .spacing
-              ep-collapse(
-                tyyppi="perusteteksti",
-                v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa")
-                div(slot="header")
-                  h5 {{ $t('perusteen-teksti') }}
-                p.perusteteksti(v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti) ")
-                div(v-if="isEditing")
-                  b-form-checkbox(v-model="data.tov.naytaPerusteenTeksti") {{ $t('nayta-perusteen-teksti') }}
-              .spacing
-              ep-collapse
-                div(slot="header")
-                  h5 {{ $t('paikallinen-teksti') }}
-                ep-content(v-model="data.tov.tekstiKappale.teksti", :is-editable="isEditing")
-            .col-lg-4
+            .spacing
+            ep-collapse(
+              tyyppi="perusteteksti",
+              v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa")
+              h5(slot="header") {{ $t('perusteen-teksti') }}
+              p.perusteteksti(v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti) ")
+              div(v-if="isEditing")
+                b-form-checkbox(v-model="data.tov.naytaPerusteenTeksti") {{ $t('nayta-perusteen-teksti') }}
+            .spacing
+            ep-collapse
+              div(slot="header")
+                h5 {{ $t('paikallinen-teksti') }}
+              ep-content(v-model="data.tov.tekstiKappale.teksti", :is-editable="isEditing")
+            // .col-lg-4
               .ohjeet(v-if="data.ohjeet.length > 0")
                 .ohje(v-for="ohje in data.ohjeet", :key="ohje.id", :class="'ohje-' + ohje.tyyppi")
                   ep-content(
@@ -94,6 +104,10 @@
       }
     }
 
+  }
+
+  .sidepad {
+    padding: 8px;
   }
 
   .alikappale {

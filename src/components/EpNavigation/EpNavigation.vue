@@ -1,7 +1,7 @@
 <template lang="pug">
 div.topbar(v-sticky="sticky")
 
-  b-navbar(
+  b-navbar.ep-navbar(
     type="dark",
     toggleable="md",
     :class="'navbar-style-' + tyyli")
@@ -12,9 +12,9 @@ div.topbar(v-sticky="sticky")
           li.breadcrumb-item
             router-link(id="nav-admin" :to="{ name: 'root' }")
               fas.fa-fw(icon="home")
-          li.breadcrumb-item(v-for="route in routePath") {{ $t('route-' + route.name) }}
-      // b-nav-item(id="nav-admin" :to="{ name: 'root' }")
-        fas.fa-fw(icon="home")
+          li.breadcrumb-item(v-for="route in routePath")
+            span(v-if="route.breadname") {{ $kaanna(route.breadname) }}
+            span(v-else) {{ $t('route-' + route.name) }}
 
 
     b-navbar-nav.ml-auto
@@ -75,7 +75,16 @@ export default class EpNavigation extends Vue {
   }
 
   get routePath() {
-    return _.filter(this.$route.matched, 'name');
+    return _(this.$route.matched)
+      .filter('name')
+      .map(route => {
+        const computeds = _.get(route, 'instances.default');
+        return {
+          ...route,
+          breadname: computeds && computeds.breadcrumb,
+        };
+      })
+      .value();
   }
 
   private valitseUiKieli(kieli: Kieli) {
@@ -123,15 +132,12 @@ export default class EpNavigation extends Vue {
     }
   }
 
-  .navbar-style-normaali {
+  .ep-navbar {
+    background-attachment: fixed;
     background-color: $etusivu-header-background;
-    background-image: url('../../../public/img/banners/etusivu_tausta.svg');
+    background-image: url('../../../public/img/banners/header.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
-  }
-
-  .navbar-style-ops {
-    background-color: $etusivu-header-background;
   }
 
 }
