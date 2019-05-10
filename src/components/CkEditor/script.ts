@@ -10,6 +10,7 @@ import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
@@ -169,9 +170,10 @@ export default class CkEditor extends Mixins(EpValidation) {
         ...uploadEnabled ? [ImageUpload] : [],
         ImageToolbar,
         ListPlugin,
+        Strikethrough,
       ],
       toolbar: [
-        'bold', 'italic',
+        'bold', 'italic', 'strikethrough',
         ...uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
         'bulletedList', 'numberedList',
@@ -197,11 +199,12 @@ export default class CkEditor extends Mixins(EpValidation) {
         ImageToolbar,
         ListPlugin,
         LinkPlugin,
+        Strikethrough,
         Table,
         TableToolbar,
       ],
       toolbar: [
-        'bold', 'italic',
+        'bold', 'italic', 'strikethrough',
         ...uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
         'bulletedList', 'numberedList',
