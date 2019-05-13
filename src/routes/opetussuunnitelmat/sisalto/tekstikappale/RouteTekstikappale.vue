@@ -1,11 +1,16 @@
 <template lang="pug">
 .tekstiviite(v-if="hooks")
   .kappale
-    ep-editointi(:hooks="hooks", v-model="editable")
+    ep-editointi(:hooks="hooks")
       template(slot="ohje", slot-scope="{ isEditing, data }")
         .sidepad
           p {{ $t('ohje-tekstikapale') }} 
           p {{ $t('ohje-tekstikapale-perusteteksti') }} 
+          .ohjeet(v-if="data.ohjeet.length > 0")
+            .ohje(v-for="ohje in data.ohjeet", :key="ohje.id")
+              ep-content(
+                v-model="ohje.teksti",
+                :is-editable="allowOhjeEdit && isEditing")
 
       template(slot="keskustelu", slot-scope="{ isEditing, data }")
         span
@@ -104,8 +109,7 @@
       .ohje {
         padding: 10px;
         margin-bottom: 10px;
-        font-size: 80%;
-        color: #777;
+        color: #555;
       }
 
       .ohje-perusteteksti {

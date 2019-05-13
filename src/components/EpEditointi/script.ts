@@ -11,6 +11,7 @@ import { validationMixin } from 'vuelidate';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
+import { setItem, getItem } from '@/utils/localstorage';
 
 export { EditointiKontrolliConfig } from '@/stores/editointi';
 
@@ -63,6 +64,9 @@ export default class EpEditointi extends Mixins(validationMixin) {
     else {
       this.sidebarState = val;
     }
+    setItem('ep-editointi-sidebar-state', {
+      value: this.sidebarState,
+    });
   }
 
   @Watch('state.data')
@@ -75,6 +79,11 @@ export default class EpEditointi extends Mixins(validationMixin) {
     await this.ctrls.init();
     this.state = this.ctrls.state;
     this.isInitialized = true;
+
+    const sidebarState = await getItem('ep-editointi-sidebar-state') as any;
+    if (sidebarState) {
+      this.sidebarState = sidebarState!.value;
+    }
   }
 
   get current() {

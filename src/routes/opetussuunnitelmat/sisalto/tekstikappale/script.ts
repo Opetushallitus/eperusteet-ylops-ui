@@ -40,7 +40,6 @@ import {
   },
 })
 export default class RouteTekstikappale extends Mixins(EpRoute) {
-  private editable: any = {};
   private ohjeet: OhjeDto[] = [];
   private perusteenTeksti: PerusteTekstiKappaleViiteDto | null = null;
   private nimi: any = {};
@@ -89,6 +88,11 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
         tov: _.omit(_.cloneDeep(teksti), 'lapset'),
         ohjeet: ohjeet.data || [],
       } as any;
+
+      if (_.isEmpty(result.ohjeet)) {
+        result.ohjeet.push({});
+      }
+
       if (teksti.perusteTekstikappaleId) {
         this.perusteenTeksti = (await Lops2019Perusteet.getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId)).data;
       }
@@ -98,12 +102,15 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
   }
 
   private async save({ tov, ohjeet }) {
-    if (this.isUusi) {
+    if (await this.isUusi()) {
       await Opetussuunnitelma.addTeksti(tov, _.parseInt(this.$route.params.parentId));
     }
     else {
       await Opetussuunnitelma.saveTeksti(tov);
-      await Promise.all(_.map(ohjeet, Opetussuunnitelma.saveOhje));
+      await Promise.all(_.map(ohjeet, (ohje) => Opetussuunnitelma.saveOhje({
+        ...ohje,
+        kohde: tov.tekstiKappale.tunniste,
+      })));
     }
   }
 

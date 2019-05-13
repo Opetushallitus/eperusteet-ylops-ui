@@ -4,7 +4,11 @@ div
     .ylapaneeli
       .d-flex.align-items-center
         .p2.flex-fill
-          slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
+          slot(
+            name="header",
+            :isEditing="ctrls.isEditing",
+            :data="state.data",
+            :validation="$v.state.data")
         .p2(v-if="!ctrls.isEditing")
           .muokattu(v-if="latest") {{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
           //- ep-versio-modaali(:value="current", :versions="historia")
@@ -54,19 +58,34 @@ div
       .threads
         .actual-content
           .sisalto
-            slot(:isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
+            slot(
+              :isEditing="ctrls.isEditing",
+              :data="state.data",
+              :validation="$v.state.data")
         .rightbar.rb-keskustelu(v-if="hasKeskusteluSlot && sidebarState === 1")
           .rbheader
             b {{ $t('keskustelu') }}
           .rbcontent
-            slot(name="keskustelu")
+            slot(
+              name="keskustelu",
+              :isEditing="ctrls.isEditing",
+              :data="state.data",
+              :validation="$v.state.data")
         .rightbar.rb-ohje(v-if="hasOhjeSlot && sidebarState === 2")
           .rbheader
             b {{ $t('ohje') }}
           .rbcontent
-            slot(name="ohje")
+            slot(
+              name="ohje",
+              :isEditing="ctrls.isEditing",
+              :validation="$v.state.data",
+              :data="state.data")
         .rightbar.rb-peruste(v-if="hasPerusteSlot && sidebarState === 3")
           .rbheader
             b {{ $t('perusteen-teksti') }}
           .rbcontent
-            slot(name="peruste")
+            slot(
+              name="peruste",
+              :isEditing="ctrls.isEditing",
+              :validation="$v.state.data",
+              :data="state.data")
