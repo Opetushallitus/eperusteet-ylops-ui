@@ -3,6 +3,7 @@ ep-input.form-data(
   :value="value",
   @input="$emit('input', $event)",
   :is-editing="isEditing",
+  :is-header="isHeader",
   :type="type",
   :validation="validation",
   :help="help")
@@ -24,6 +25,9 @@ import EpValidation from '@/mixins/EpValidation';
 export default class EpField extends Mixins(EpValidation) {
   @Prop({ required: true })
   private value!: string | object;
+
+  @Prop({ default: false })
+  private isHeader!: boolean;
 
   @Prop({ default: false })
   private isEditing!: boolean;

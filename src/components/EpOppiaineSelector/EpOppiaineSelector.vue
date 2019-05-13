@@ -16,14 +16,17 @@ div
         span {{ $kaanna(oppiaineetMap[option].nimi) }}
         button.btn.btn-link(@click="remove(option)")
           fas(icon="times")
+  .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
+  .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
+  .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
+  small.form-text.text-muted {{ $t('oppiaine-valitsin-ohje') }}
 
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import {
-  EpMultiSelect,
-} from '@/components';
+import { Mixins, Component, Prop } from 'vue-property-decorator';
+import EpValidation from '@/mixins/EpValidation';
+import { EpMultiSelect } from '@/components';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
 import { PerusteCache } from '@/stores/peruste';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
@@ -35,7 +38,7 @@ import { Kielet } from '@/stores/kieli';
     EpMultiSelect,
   },
 })
-export default class EpOppiaineSelector extends Vue {
+export default class EpOppiaineSelector extends Mixins(EpValidation) {
   @Prop({ required: true })
   private opsId!: number;
 

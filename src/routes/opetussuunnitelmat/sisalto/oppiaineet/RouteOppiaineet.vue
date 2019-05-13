@@ -3,16 +3,23 @@
 div.content
   h1
     span {{ $t('oppiaineet') }}
-    .float-right
-      ep-button(icon="plus", @click="uusiOppiaine()") {{ $t('lisaa-paikallinen-oppiaine') }}
   p {{ $t('route-oppiaineet-kuvaus') }}
-  .search
-    .inlay
-      input.form-control.search(
-        type="text",
-        :placeholder="$t('rajaa')",
-        v-model="query")
-      fas.inner-icon(icon="search")
+  .d-flex.align-items-center
+    .flex-sm-fill
+      .d-flex.align-items-center
+        .p-2
+          .search
+            .inlay
+              input.form-control.search(
+                type="text",
+                :placeholder="$t('rajaa')",
+                v-model="query")
+              // fas.inner-icon(icon="search")
+        .p-2.checkbox
+          b-form-checkbox(v-model="vainPuuttuvat") {{ $t('vain-puuttuvat-moduulit') }}
+    .flex-sm-fill
+      .float-right
+        ep-button(icon="plus", @click="uusiOppiaine()") {{ $t('lisaa-paikallinen-oppiaine') }}
 
   table.table.table-borderless.oppiaineet
     thead.head
@@ -117,6 +124,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
   private cache: PerusteCache | null = null;
   private valitutModuuliUrit: { [uri: string]: string } | null = null;
   private query = '';
+  private vainPuuttuvat = false;
   private opened: { [id: number]: any } = {};
 
   get isHovering() {
@@ -173,8 +181,14 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
       .map(oa => {
         return {
           ...oa,
-          moduulit: _.filter(oa.moduulit, (moduuli) => Kielet.search(this.query, moduuli.nimi)),
-          opintojaksot: _.filter(oa.opintojaksot, (oj) => Kielet.search(this.query, oj.nimi)),
+          vieraatModuulit: this.vainPuuttuvat ? [] : oa.vieraatModuulit,
+          moduulit: _(oa.moduulit)
+            .reject((moduuli) => this.vainPuuttuvat && moduuli.used)
+            .filter((moduuli) => Kielet.search(this.query, moduuli.nimi))
+            .value(),
+          opintojaksot: _(oa.opintojaksot)
+            .filter((oj) => Kielet.search(this.query, oj.nimi))
+            .value(),
         };
       })
       .filter(oa => Kielet.search(this.query, oa.nimi)
@@ -229,6 +243,8 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
           .reject(moduuli => _.startsWith(moduuli.koodi.arvo, oa.koodi.arvo))
           .map(moduuli => this.moduuliPresentation(moduuli, opintojaksojenModuulit))
           .value();
+
+        const kaytetytModuulit = _.size(opintojaksojenModuulit) - _.size(vieraatModuulit);
         return {
           ...oa,
           isOpen: this.opened[oa.id] || !_.isEmpty(this.query),
@@ -237,9 +253,9 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
           opintojaksot,
           stats: {
             opintojaksot: _.size(opintojaksot),
-            kaytetytModuulit: _.size(opintojaksojenModuulit),
+            kaytetytModuulit,
             kaikkiModuulit: _.size(oa.moduulit),
-            valid: _.size(opintojaksojenModuulit) === _.size(oa.moduulit),
+            valid: kaytetytModuulit === _.size(oa.moduulit),
           },
         };
       })
@@ -387,25 +403,29 @@ table.oppiaineet {
 }
 
 .search {
-  margin-bottom: 0px;
-  max-width: 300px;
+  /* margin-bottom: 0px; */
+  /* max-width: 300px; */
 
-  input.search {
-    background: #F3F3F3;
-    border: none;
-    border-radius: 20px;
-    padding-left: 34px;
-  }
+  /* input.search { */
+  /*   background: #F3F3F3; */
+  /*   border: none; */
+  /*   border-radius: 20px; */
+  /*   padding-left: 34px; */
+  /* } */
 
-  .inlay {
-    .inner-icon {
-      color: #888;
-      position: relative;
-      /* float: right; */
-      top: -30px;
-      left: 10px;
-    }
-  }
+  // .inlay {
+  //   .inner-icon {
+  //     color: #888;
+  //     position: relative;
+  //     /* float: right; */
+  //     top: -30px;
+  //     left: 10px;
+  //   }
+  // }
+
+}
+
+.toolbar {
 }
 
 </style>

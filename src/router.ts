@@ -22,11 +22,13 @@ import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
 import RouteJarjestys from '@/routes/opetussuunnitelmat/RouteJarjestys.vue';
+import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 import UnderConstruction from '@/routes/UnderConstruction.vue';
 
 import { Virheet } from '@/stores/virheet';
+import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
@@ -95,6 +97,10 @@ export const router = new Router({
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
+      }, {
+        path: 'julkaisu',
+        component: RouteJulkaisu,
+        name: 'opsJulkaisu',
       }, {
         path: 'jarjesta',
         component: RouteJarjestys,
@@ -165,31 +171,45 @@ Virheet.onError((virhe: SovellusVirhe) => {
   });
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.params.lang
-    && to.params.lang !== from.params.lang
-    && _.includes(UiKielet, to.params.lang)) {
-    Kielet.setUiKieli(to.params.lang as Kieli);
-  }
-  logger.debug(`Route change ${from.name} -> ${to.name}`, from, to);
-  next();
-  // else {
-  //   router.push({
-  //     ...to,
-  //     params: {
-  //       ...to.params,
-  //       lang: i18n.fallbackLocale || 'fi',
-  //     },
-  //   });
-  // }
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.params.lang
+//     && to.params.lang !== from.params.lang
+//     && _.includes(UiKielet, to.params.lang)) {
+//     Kielet.setUiKieli(to.params.lang as Kieli);
+//   }
+//   next();
+//   // else {
+//   //   router.push({
+//   //     ...to,
+//   //     params: {
+//   //       ...to.params,
+//   //       lang: i18n.fallbackLocale || 'fi',
+//   //     },
+//   //   });
+//   // }
+// });
 
-// Alustetaan opetussuunnitelma tilan vaihtuessa
 let lastOpsId!: string;
+
+window.onbeforeunload = () => {
+  if (EditointiKontrolli.anyEditing()) {
+    return 'Oletko varma?';
+  }
+};
+
 router.beforeEach(async (to, from, next) => {
+  // Estetään siirtyminen jos editointi on käynnissä
+  if (EditointiKontrolli.anyEditing()) {
+    // TODO: Lisää notifikaatio
+    logger.warn('Route change denied: Still in editing state', from, to);
+    return;
+  }
+
+  // Alustetaan opetussuunnitelma tilan vaihtuessa
   if (to.params.id && lastOpsId !== to.params.id) {
     lastOpsId = to.params.id;
     await Opetussuunnitelma.init(_.parseInt(lastOpsId));
   }
+  logger.debug(`Route change ${from.name} -> ${to.name}`, from, to);
   next();
 });

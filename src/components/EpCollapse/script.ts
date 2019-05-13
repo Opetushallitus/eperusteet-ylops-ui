@@ -19,6 +19,7 @@ export default class EpCollapse extends Vue {
           return (item as any).toggled;
         }
       }
+      return true;
     }
     catch (err) {
       return true;

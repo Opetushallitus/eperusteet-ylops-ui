@@ -4,15 +4,19 @@ div
     .ylapaneeli
       .d-flex.align-items-center
         .p2.flex-fill
-          slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
-        .p2
+          slot(
+            name="header",
+            :isEditing="ctrls.isEditing",
+            :data="state.data",
+            :validation="$v.state.data")
+        .p2(v-if="!ctrls.isEditing")
           .muokattu(v-if="latest") {{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
           //- ep-versio-modaali(:value="current", :versions="historia")
         .p2
           .upper-buttons(v-if="ctrls.isEditing")
             .btn-group
               ep-button(@click="ctrls.save()",
-                :disabled="state.disabled",
+                :disabled="state.disabled || $v.state.data.$invalid",
                 :show-spinner="state.isSaving")
                 slot(name="tallenna") {{ $t('tallenna') }}
               ep-button(
@@ -20,8 +24,8 @@ div
                 :disabled="state.disabled",
                 variant="warning")
                 slot(name="peruuta") {{ $t('peruuta') }}
-              // ep-button(
-                v-if="ctrls.features.history",
+              ep-button(
+                v-if="hooks.remove",
                 @click="ctrls.remove()",
                 :disabled="state.disabled",
                 variant="danger")
@@ -32,10 +36,56 @@ div
               @click="ctrls.start()",
               icon="pen",
               :disabled="state.disabled")
-              slot(name="muokkaa")
-                | {{ $t('muokkaa') }}
-                // fas.faw-fw(icon="pen")
+              slot(name="muokkaa") {{ $t('muokkaa') }}
+            // TODO: replace with chat icon
+            ep-round-button.mr-2(
+              v-if="hasKeskusteluSlot",
+              @click="toggleSidebarState(1)",
+              icon="ukk",
+              variant="lightblue")
+            ep-round-button.mr-2(
+              v-if="hasOhjeSlot",
+              @click="toggleSidebarState(2)",
+              icon="question",
+              variant="green")
+            ep-round-button.mr-2(
+              v-if="hasPerusteSlot",
+              @click="toggleSidebarState(3)",
+              icon="valtakunnalliset-perusteet",
+              variant="pink")
 
-    .sisalto(v-if="state.data")
-      slot(:isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
-
+    div(v-if="state.data")
+      .threads
+        .actual-content
+          .sisalto
+            slot(
+              :isEditing="ctrls.isEditing",
+              :data="state.data",
+              :validation="$v.state.data")
+        .rightbar.rb-keskustelu(v-if="hasKeskusteluSlot && sidebarState === 1")
+          .rbheader
+            b {{ $t('keskustelu') }}
+          .rbcontent
+            slot(
+              name="keskustelu",
+              :isEditing="ctrls.isEditing",
+              :data="state.data",
+              :validation="$v.state.data")
+        .rightbar.rb-ohje(v-if="hasOhjeSlot && sidebarState === 2")
+          .rbheader
+            b {{ $t('ohje') }}
+          .rbcontent
+            slot(
+              name="ohje",
+              :isEditing="ctrls.isEditing",
+              :validation="$v.state.data",
+              :data="state.data")
+        .rightbar.rb-peruste(v-if="hasPerusteSlot && sidebarState === 3")
+          .rbheader
+            b {{ $t('perusteen-teksti') }}
+          .rbcontent
+            slot(
+              name="peruste",
+              :isEditing="ctrls.isEditing",
+              :validation="$v.state.data",
+              :data="state.data")

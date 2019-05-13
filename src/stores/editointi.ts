@@ -35,7 +35,7 @@ export interface EditointiKontrolliConfig {
   locks?: EditointiKontrolliLocks;
   history?: EditointiKontrolliHistory;
   start?: () => Promise<void>;
-  remove?: () => Promise<void>;
+  remove?: (data: any) => Promise<void>;
   validate?: () => Promise<boolean>;
 }
 
@@ -46,6 +46,7 @@ const DefaultConfig = {
 };
 
 export class EditointiKontrolli {
+  private static totalEditingEditors = 0;
   private logger = createLogger(EditointiKontrolli);
   private isEditingState = false;
   private isRemoved = false;
@@ -60,6 +61,10 @@ export class EditointiKontrolli {
     isSaving: false,
   });
   private backup: any = null;
+
+  public static anyEditing() {
+    return EditointiKontrolli.totalEditingEditors > 0;
+  }
 
   public constructor(
     private config: EditointiKontrolliConfig
@@ -129,6 +134,7 @@ export class EditointiKontrolli {
         await this.config.start();
       }
       this.isEditingState = true;
+      EditointiKontrolli.totalEditingEditors += 1;
     }
     catch (err) {
       this.logger.error('Editoinnin aloitus epäonnistui:', err);
@@ -152,6 +158,7 @@ export class EditointiKontrolli {
     this.mstate.data = JSON.parse(this.backup);
     // this.config.setData!(JSON.parse(this.backup));
     this.isEditingState = false;
+    EditointiKontrolli.totalEditingEditors -= 1;
     this.mstate.disabled = false;
 
     if (this.isNew) {
@@ -167,9 +174,10 @@ export class EditointiKontrolli {
 
   public async remove() {
     this.mstate.disabled = true;
-    await this.config.remove!();
+    await this.config.remove!(this.mstate.data);
     this.isRemoved = true;
     this.isEditingState = false;
+    EditointiKontrolli.totalEditingEditors -= 1;
     this.logger.debug('Poistettu');
   }
 
@@ -183,6 +191,7 @@ export class EditointiKontrolli {
     else if (await this.validate()) {
       await this.config.source.save(this.mstate.data);
       this.isEditingState = false;
+      EditointiKontrolli.totalEditingEditors -= 1;
       this.logger.success('Tallennettu');
     }
     else {

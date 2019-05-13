@@ -2,22 +2,25 @@
 div.content
   div(v-if="hooks && !isLoading")
     ep-editointi(:hooks="hooks", v-model="editable", :validator="validator")
+      template(slot="ohje", slot-scope="{ isEditing, data }")
+        .sidepad
+          p(v-html="$t('ohje-opintojakso')")
+          p(v-html="$t('ohje-opintojakso-saannot')")
+
+      template(slot="keskustelu", slot-scope="{ isEditing, data }")
+        span
+
       template(slot="header", slot-scope="{ data, validation, isEditing }")
-        h2 {{ $kaanna(data.nimi) }}
+        ep-field(
+          help="opintojakso-nimi-ohje",
+          v-model="data.nimi",
+          :validation="validation.nimi",
+          :is-header="true",
+          :is-editing="isEditing")
 
       template(v-slot="{ data, validation, isEditing }")
         div
           .row
-            .col-md-6
-              ep-form-content(name="opintojakso-nimi")
-                ep-field(
-                  help="opintojakso-nimi-ohje",
-                  v-model="data.nimi",
-                  :validation="validation.nimi",
-                  :is-editing="isEditing")
-            .col-md-6
-              ep-form-content(name="opintopisteet")
-                span {{ laajuus }} op
             .col-md-6
               ep-form-content(name="koodi")
                 ep-field(
@@ -26,6 +29,9 @@ div.content
                   type="string",
                   :validation="validation.koodi",
                   :is-editing="isEditing")
+            .col-md-6
+              ep-form-content(name="opintopisteet")
+                span {{ laajuus }} op
             .col-md-6
               ep-form-content(name="tila")
                 span Luonnos
@@ -41,6 +47,7 @@ div.content
                   ep-form-content(name="oppiaine")
                     ep-oppiaine-selector(
                       :ops-id="$route.params.id",
+                      :validation="validation.oppiaineet",
                       :value="data.oppiaineet.map(x => x.koodi)",
                       @input="updateOppiaineet")
                 .col-md-6
@@ -396,10 +403,12 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   public async load() {
     const { opintojaksoId } = this.$route.params;
     if (opintojaksoId === 'uusi') {
+      // this.breadcrumb('oppiaine', 'uusi');
       return defaults.opintojakso();
     }
     else {
       const opintojakso = await Opetussuunnitelma.getOpintojakso(_.parseInt(opintojaksoId));
+      this.breadcrumb('opintojakso', opintojakso.nimi);
       return opintojakso;
     }
   }
@@ -481,6 +490,10 @@ hr.valiviiva {
   span.laajuus {
     padding: 5px;
   }
+}
+
+.sidepad {
+  padding: 8px;
 }
 
 </style>

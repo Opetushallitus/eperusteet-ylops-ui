@@ -27,49 +27,45 @@ import {
 } from './menuBuildingMethods';
 
 // Static content for menu
-const menuBaseData: SideMenuEntry[] = [
-  {
+const menuBaseData: SideMenuEntry[] = [{
+  item: {
+    type: 'staticlink',
+    i18key: 'tiedot',
+  },
+  route: {
+    name: 'opsTiedot',
+    params: {},
+  },
+  flatten: true,
+  children: [{
     item: {
       type: 'staticlink',
-      i18key: 'tiedot',
+      i18key: 'dokumentit',
     },
     route: {
-      name: 'opsTiedot',
+      name: 'opsDokumentti',
       params: {},
     },
-    flatten: true,
-    children: [
-      {
-        item: {
-          type: 'staticlink',
-          i18key: 'dokumentit',
-        },
-        route: {
-          name: 'opsDokumentti',
-          params: {},
-        },
-      }, {
-        item: {
-          type: 'staticlink',
-          i18key: 'poistetut',
-        },
-        route: {
-          name: 'opsPoistetut',
-          params: {},
-        },
-      }, {
-        item: {
-          type: 'staticlink',
-          i18key: 'kasitteet',
-        },
-        route: {
-          name: 'opsKasitteet',
-          params: {},
-        },
-      },
-    ],
-  },
-];
+  }, {
+    item: {
+      type: 'staticlink',
+      i18key: 'poistetut',
+    },
+    route: {
+      name: 'opsPoistetut',
+      params: {},
+    },
+  }, {
+    item: {
+      type: 'staticlink',
+      i18key: 'kasitteet',
+    },
+    route: {
+      name: 'opsKasitteet',
+      params: {},
+    },
+  }],
+}];
 
 const i18keys = {
   moduuli: 'nimetön-moduuli',
@@ -90,18 +86,14 @@ const i18keys = {
 })
 export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
-  private opintojaksot: Lops2019OpintojaksoDto[] = [];
+  private showHallintatyokalut = false;
+
+  get opintojaksot() {
+    return Opetussuunnitelma.opintojaksot;
+  }
 
   async created() {
-    if (_.get(this.$route, 'params.id', null) !== null) {
-      try {
-        this.opintojaksot = await Opetussuunnitelma.getOpintojaksot();
-      }
-      catch (e) {
-        // Todo: virheenkäsittely
-      }
-      this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
-    }
+    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
   }
 
   private opintojaksoModuuliLista(source) {
@@ -138,7 +130,7 @@ export default class OpsSidenav extends Vue {
         this.opintojaksoModuuliLista(oppimaara)));
   }
 
-  private opsOppiaineLinkit() {
+  get opsOppiaineLinkit() {
     return !this.cache ? [] : this.cache.peruste.oppiaineet.map(oppiaine =>
       oppiaineLinkki(
         'oppiaine',
@@ -152,6 +144,10 @@ export default class OpsSidenav extends Vue {
     const locale = Kielet.getSisaltoKieli();
     const i18key = i18keys[value.type] || 'nimetön';
     return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
+  }
+
+  toggleHallinta() {
+    this.showHallintatyokalut = !this.showHallintatyokalut;
   }
 
   private kaanna(value: SideMenuItem) {
@@ -171,16 +167,19 @@ export default class OpsSidenav extends Vue {
     return _.get(item, 'objref.koodi.arvo', '');
   }
 
-  private get valikkoData() {
+  get valikkoDataBasics() {
+    return menuBaseData;
+  }
+
+  get valikkoData() {
     // Valikon rakennus alkaa staattisella sisällöllä ja tekstikappaleiden linkeillä
     let menuOpsData: SideMenuEntry[] = [
-      ...menuBaseData,
       ...opsLapsiLinkit(this.opsLapset),
     ];
 
     // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
     const paikallisetOppiaineet = Opetussuunnitelma.paikallisetOppiaineet;
-    const oppiaineLinkit = this.opsOppiaineLinkit();
+    const oppiaineLinkit = this.opsOppiaineLinkit;
 
     if (oppiaineLinkit.length > 0 || paikallisetOppiaineet.length > 0) {
       menuOpsData = [

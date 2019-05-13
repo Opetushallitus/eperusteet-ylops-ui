@@ -19,6 +19,12 @@
         :isSubmenu="isSubmenu(subitem)",
         :itemRoute="subitem.route",
         :navigate="enterSubmenu")
+  slot(
+    name="after",
+    v-if="curTopItem",
+    :itemData="curTopItem",
+    :itemRoute="curTopItem.route",
+    :navigate="previousSubmenu")
 </template>
 
 <script lang="ts" src="./script.ts"/>

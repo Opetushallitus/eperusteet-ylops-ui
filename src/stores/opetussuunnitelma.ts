@@ -3,9 +3,14 @@ import { Matala, Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto, Lops2019Mo
 import { AxiosResponse } from 'axios';
 import { createLogger } from './logger';
 import { State, Store } from './store';
+import Vue from 'vue';
 import _ from 'lodash';
 
 const logger = createLogger('Opetussuunnitelma');
+
+interface Referencable {
+  id?: number;
+}
 
 interface OpintojaksoQuery {
   oppiaineUri?: string;
@@ -78,6 +83,10 @@ class OpetussuunnitelmaStore {
     }
   }
 
+  public async removeTeksti(tov: Puu) {
+    await OpetussuunnitelmanSisalto.removeTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!);
+  }
+
   public async addTeksti(tov: Puu, parentId?: number) {
     let osa: AxiosResponse<Matala>;
     if (parentId) {
@@ -137,6 +146,12 @@ class OpetussuunnitelmaStore {
 
   public async savePaikallinenOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto) {
     const result = (await Oppiaineet.updateLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine.id!, oppiaine)).data;
+    const idx = _.findIndex(this.paikallisetOppiaineet, { id: result.id });
+    this.paikallisetOppiaineet = [
+      ..._.slice(this.paikallisetOppiaineet, 0, idx),
+      result,
+      ..._.slice(this.paikallisetOppiaineet, idx + 1),
+    ];
     return result;
   }
 
@@ -171,6 +186,12 @@ class OpetussuunnitelmaStore {
 
   public async saveOpintojakso(opintojakso: Lops2019OpintojaksoDto) {
     const result = (await Opintojaksot.updateOpintojakso(this.opetussuunnitelma!.id!, opintojakso.id!, opintojakso)).data;
+    const idx = _.findIndex(this.opintojaksot, { id: result.id });
+    this.opintojaksot = [
+      ..._.slice(this.opintojaksot, 0, idx),
+      result,
+      ..._.slice(this.opintojaksot, idx + 1),
+    ];
     return result;
   }
 }

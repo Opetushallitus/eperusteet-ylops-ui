@@ -10,6 +10,8 @@ import '@/stores/kieli';
 import { validationMixin } from 'vuelidate';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
+import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
+import { setItem, getItem } from '@/utils/localstorage';
 
 export { EditointiKontrolliConfig } from '@/stores/editointi';
 
@@ -25,6 +27,7 @@ export { EditointiKontrolliConfig } from '@/stores/editointi';
   },
   components: {
     EpButton,
+    EpRoundButton,
     EpSpinner,
     EpVersioModaali,
   },
@@ -36,9 +39,35 @@ export default class EpEditointi extends Mixins(validationMixin) {
   @Prop({ default: null })
   private validator!: any | null;
 
+  private sidebarState = 0;
+
   private ctrls: EditointiKontrolli | null = null;
   private state: any = null;
   private isInitialized = false;
+
+  get hasKeskusteluSlot() {
+    return this.$scopedSlots.keskustelu;
+  }
+
+  get hasPerusteSlot() {
+    return this.$scopedSlots.peruste;
+  }
+
+  get hasOhjeSlot() {
+    return this.$scopedSlots.ohje;
+  }
+
+  toggleSidebarState(val: number) {
+    if (val === this.sidebarState) {
+      this.sidebarState = 0;
+    }
+    else {
+      this.sidebarState = val;
+    }
+    setItem('ep-editointi-sidebar-state', {
+      value: this.sidebarState,
+    });
+  }
 
   @Watch('state.data')
   private changed(newValue: any, oldValue: any) {
@@ -50,6 +79,11 @@ export default class EpEditointi extends Mixins(validationMixin) {
     await this.ctrls.init();
     this.state = this.ctrls.state;
     this.isInitialized = true;
+
+    const sidebarState = await getItem('ep-editointi-sidebar-state') as any;
+    if (sidebarState) {
+      this.sidebarState = sidebarState!.value;
+    }
   }
 
   get current() {
