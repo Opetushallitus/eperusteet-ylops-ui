@@ -38,8 +38,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
   @Prop({ default: null })
   private validator!: any | null;
 
-  @Prop({ default: 0 })
-  private sidebarState!: number;
+  private sidebarState = 0;
 
   private ctrls: EditointiKontrolli | null = null;
   private state: any = null;

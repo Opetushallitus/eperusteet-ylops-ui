@@ -62,7 +62,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
   }
 
   private get breadcrumb() {
-    return this.ops!.nimi;
+    return this.ops && this.ops!.nimi;
   }
 
   protected async init() {

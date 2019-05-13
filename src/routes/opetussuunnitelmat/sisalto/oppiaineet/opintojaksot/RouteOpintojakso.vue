@@ -5,6 +5,14 @@ div.content
       template(slot="header", slot-scope="{ data, validation, isEditing }")
         h2 {{ $kaanna(data.nimi) }}
 
+      template(slot="ohje", slot-scope="{ isEditing, data }")
+        .sidepad
+          p(v-html="$t('ohje-opintojakso')")
+          p(v-html="$t('ohje-opintojakso-saannot')")
+
+      template(slot="keskustelu", slot-scope="{ isEditing, data }")
+        span
+
       template(v-slot="{ data, validation, isEditing }")
         div
           .row
@@ -269,6 +277,10 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     ];
   }
 
+  get breadcrumb() {
+    return this.editable && this.editable!.nimi;
+  }
+
   get laajuus() {
     if (this.editable && this.editable.moduulit && !_.isEmpty(this.editable.moduulit)) {
       return _(this.editable.moduulit)
@@ -482,6 +494,10 @@ hr.valiviiva {
   span.laajuus {
     padding: 5px;
   }
+}
+
+.sidepad {
+  padding: 8px;
 }
 
 </style>

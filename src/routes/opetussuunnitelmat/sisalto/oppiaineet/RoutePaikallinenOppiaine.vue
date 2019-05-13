@@ -4,6 +4,13 @@ div(v-if="hooks && !isLoading")
     template(slot="header", slot-scope="{ data, validation, isEditing }")
       h2 {{ $kaanna(data.nimi) }}
 
+    template(slot="ohje", slot-scope="{ isEditing, data }")
+      .sidepad
+        p {{ $t('ohje-paikallinen-oppiaine') }} 
+
+    template(slot="keskustelu", slot-scope="{ isEditing, data }")
+      span
+
     template(v-slot="{ data, validation, isEditing }")
       div.content
         .row

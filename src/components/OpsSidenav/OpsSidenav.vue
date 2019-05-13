@@ -13,6 +13,7 @@
             fas(icon="chevron-left")
           ops-sidenav-link.previous-link(tag="span", :to="itemRoute")
             a.btn.btn-link {{ kaanna(itemData.item) }}
+
       template(v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }")
         ops-sidenav-link(:to="itemRoute",
           :class="{ 'module-link': onkoModTaiOj(itemData.item) }",
@@ -32,7 +33,39 @@
           :click="navigate")
           a.btn.btn-link {{ kaanna(itemData.item) }}
           fas(icon="chevron-right", v-if="!itemData.item.hideChevron")
-    li.separated
+
+      template(v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }")
+        li
+          router-link.btn.btn-link(:to=`{ name: 'tekstikappale' }`, :params=`{ }`)
+            fas.mr-2(icon="plus")
+            span {{ $t('uusi-tekstikappale') }}
+
+  .bottom-navigation
+    .hallintalinkit
+      a.btn.btn-link(@click="toggleHallinta") {{ $t('hallintatyokalut') }}
+      ul.navigation(v-if="showHallintatyokalut")
+        li
+          router-link.btn.btn-link(:to=`{ name: 'opsTiedot' }`)
+            fas.mr-2(icon="info-circle")
+            span {{ $t('tiedot') }}
+        li
+          router-link.btn.btn-link(:to=`{ name: 'opsDokumentti' }`)
+            fas.mr-2(icon="file-pdf")
+            span {{ $t('dokumentti') }}
+        li
+          router-link.btn.btn-link(:to=`{ name: 'opsPoistetut' }`)
+            fas.mr-2(icon="recycle")
+            span {{ $t('poistetut') }}
+        li
+          router-link.btn.btn-link(:to=`{ name: 'opsKasitteet' }`)
+            fas.mr-2(icon="bookmark")
+            span {{ $t('kasitteet') }}
+        li
+          router-link.btn.btn-link(:to=`{ name: 'opsRakenne' }`)
+            fas.mr-2(icon="cog")
+            span {{ $t('rakenne') }}
+
+    // li.separated
       ep-sisalto-modaali(:params="$route", :cache="cache")
 
   //router-link(:to="{ name: 'jarjesta' }")

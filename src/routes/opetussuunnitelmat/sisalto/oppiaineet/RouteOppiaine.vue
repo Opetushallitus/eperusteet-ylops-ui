@@ -103,6 +103,10 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
     this.oppiaine = await this.cache.getOppiaine(_.parseInt(this.$route.params.oppiaineId));
   }
 
+  get breadcrumb() {
+    return this.oppiaine!.nimi;
+  }
+
   get opintojaksot() {
     return _.filter(Opetussuunnitelma.opintojaksot, (oj) => _(oj.oppiaineet)
       .map('koodi')

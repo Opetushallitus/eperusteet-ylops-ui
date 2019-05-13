@@ -11,4 +11,7 @@ Component.registerHooks([
 
 @Component
 export default class EpRoute extends EpRoot {
+  get breadcrumb() {
+    return undefined;
+  }
 }

@@ -27,49 +27,45 @@ import {
 } from './menuBuildingMethods';
 
 // Static content for menu
-const menuBaseData: SideMenuEntry[] = [
-  {
+const menuBaseData: SideMenuEntry[] = [{
+  item: {
+    type: 'staticlink',
+    i18key: 'tiedot',
+  },
+  route: {
+    name: 'opsTiedot',
+    params: {},
+  },
+  flatten: true,
+  children: [{
     item: {
       type: 'staticlink',
-      i18key: 'tiedot',
+      i18key: 'dokumentit',
     },
     route: {
-      name: 'opsTiedot',
+      name: 'opsDokumentti',
       params: {},
     },
-    flatten: true,
-    children: [
-      {
-        item: {
-          type: 'staticlink',
-          i18key: 'dokumentit',
-        },
-        route: {
-          name: 'opsDokumentti',
-          params: {},
-        },
-      }, {
-        item: {
-          type: 'staticlink',
-          i18key: 'poistetut',
-        },
-        route: {
-          name: 'opsPoistetut',
-          params: {},
-        },
-      }, {
-        item: {
-          type: 'staticlink',
-          i18key: 'kasitteet',
-        },
-        route: {
-          name: 'opsKasitteet',
-          params: {},
-        },
-      },
-    ],
-  },
-];
+  }, {
+    item: {
+      type: 'staticlink',
+      i18key: 'poistetut',
+    },
+    route: {
+      name: 'opsPoistetut',
+      params: {},
+    },
+  }, {
+    item: {
+      type: 'staticlink',
+      i18key: 'kasitteet',
+    },
+    route: {
+      name: 'opsKasitteet',
+      params: {},
+    },
+  }],
+}];
 
 const i18keys = {
   moduuli: 'nimetön-moduuli',
@@ -90,6 +86,7 @@ const i18keys = {
 })
 export default class OpsSidenav extends Vue {
   private cache: PerusteCache = null as any;
+  private showHallintatyokalut = false;
 
   get opintojaksot() {
     return Opetussuunnitelma.opintojaksot;
@@ -149,6 +146,10 @@ export default class OpsSidenav extends Vue {
     return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
   }
 
+  toggleHallinta() {
+    this.showHallintatyokalut = !this.showHallintatyokalut;
+  }
+
   private kaanna(value: SideMenuItem) {
     if (value.type === 'staticlink') {
       return (value.i18key) ? this.$t(value.i18key) : '';
@@ -166,10 +167,13 @@ export default class OpsSidenav extends Vue {
     return _.get(item, 'objref.koodi.arvo', '');
   }
 
+  get valikkoDataBasics() {
+      return menuBaseData;
+  }
+
   get valikkoData() {
     // Valikon rakennus alkaa staattisella sisällöllä ja tekstikappaleiden linkeillä
     let menuOpsData: SideMenuEntry[] = [
-      ...menuBaseData,
       ...opsLapsiLinkit(this.opsLapset),
     ];
 

@@ -79,10 +79,11 @@ export default class EpNavigation extends Vue {
       .filter('name')
       .map(route => {
         const computeds = _.get(route, 'instances.default');
-        return {
+        const result = {
           ...route,
           breadname: computeds && computeds.breadcrumb,
         };
+        return result;
       })
       .value();
   }
