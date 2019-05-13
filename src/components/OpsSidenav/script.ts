@@ -168,7 +168,7 @@ export default class OpsSidenav extends Vue {
   }
 
   get valikkoDataBasics() {
-      return menuBaseData;
+    return menuBaseData;
   }
 
   get valikkoData() {

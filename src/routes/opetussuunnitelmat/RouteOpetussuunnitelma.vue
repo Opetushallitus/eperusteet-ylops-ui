@@ -64,7 +64,6 @@ export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
   protected async init() {
     const id = this.$route.params.id;
     await Opetussuunnitelma.init(_.parseInt(id));
-    this.breadcrumb('opetussuunnitelma', this.ops!.nimi);
   }
 }
 </script>

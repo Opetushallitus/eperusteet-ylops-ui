@@ -2,8 +2,8 @@ import { notNull, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@/tyypit';
 import { minLength, required } from 'vuelidate/lib/validators';
 
-export function opsTiedotValidator(kielet: Kieli[] = []) {
-  return {
+export function opsTiedotValidator(kielet: Kieli[] = [], isOps = true) {
+  const common = {
     nimi: {
       ...requiredLokalisoituTeksti(kielet),
     },
@@ -11,16 +11,24 @@ export function opsTiedotValidator(kielet: Kieli[] = []) {
       required,
       'min-length': minLength(2),
     },
-    hyvaksyjataho: {
-      required,
-    },
-    paatospaivamaara: {
-      required,
-    },
-    kuvaus: {
-      ...requiredLokalisoituTeksti(kielet),
-    },
   };
+
+  if (isOps) {
+    return {
+      ...common,
+      hyvaksyjataho: {
+        required,
+      },
+      paatospaivamaara: {
+        required,
+      },
+    };
+  }
+  else {
+    return {
+      ...common,
+    };
+  }
 }
 
 export function pohjaLuontiValidator(kielet: Kieli[] = []) {

@@ -44,12 +44,23 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
   private perusteenTeksti: PerusteTekstiKappaleViiteDto | null = null;
   private nimi: any = {};
   private hooks: EditointiKontrolliConfig = {
-    editAfterLoad: async () => await this.isUusi(),
+    editAfterLoad: async () => this.isUusi(),
     source: {
       load: this.load,
       save: this.save,
     },
+    remove: this.remove,
   };
+
+  async remove(data: any) {
+    await Opetussuunnitelma.removeTeksti(data.tov);
+    this.$router.push({
+      name: 'opsTiedot',
+      // params: {
+      //   ...this.$route.params,
+      // },
+    });
+  }
 
   get isPohja() {
     return Opetussuunnitelma.opetussuunnitelma!.tyyppi as string === 'pohja';
@@ -124,5 +135,4 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
       },
     });
   }
-
 }

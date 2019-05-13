@@ -3,10 +3,8 @@ import Vue from 'vue';
 import _ from 'lodash';
 import { Opetussuunnitelma } from './opetussuunnitelma';
 
-
 @Store
 class MurupolkuStore {
-
   @State()
   public polku: { [avain: string]: any } = {};
 
@@ -14,7 +12,7 @@ class MurupolkuStore {
   murut() {
     return {
       ...this.polku,
-      opetussuunnitelma: Opetussuunnitelma.opetussuunnitelma.nimi,
+      opetussuunnitelma: Opetussuunnitelma.opetussuunnitelma && Opetussuunnitelma.opetussuunnitelma.nimi,
     };
   }
 
@@ -24,7 +22,6 @@ class MurupolkuStore {
       [key]: value,
     };
   }
-
 }
 
 export const Murupolku = new MurupolkuStore();

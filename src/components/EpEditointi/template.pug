@@ -24,8 +24,8 @@ div
                 :disabled="state.disabled",
                 variant="warning")
                 slot(name="peruuta") {{ $t('peruuta') }}
-              // ep-button(
-                v-if="ctrls.features.history",
+              ep-button(
+                v-if="hooks.remove",
                 @click="ctrls.remove()",
                 :disabled="state.disabled",
                 variant="danger")

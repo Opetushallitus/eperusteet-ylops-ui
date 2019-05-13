@@ -83,6 +83,10 @@ class OpetussuunnitelmaStore {
     }
   }
 
+  public async removeTeksti(tov: Puu) {
+    await OpetussuunnitelmanSisalto.removeTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!);
+  }
+
   public async addTeksti(tov: Puu, parentId?: number) {
     let osa: AxiosResponse<Matala>;
     if (parentId) {

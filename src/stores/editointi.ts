@@ -35,7 +35,7 @@ export interface EditointiKontrolliConfig {
   locks?: EditointiKontrolliLocks;
   history?: EditointiKontrolliHistory;
   start?: () => Promise<void>;
-  remove?: () => Promise<void>;
+  remove?: (data: any) => Promise<void>;
   validate?: () => Promise<boolean>;
 }
 
@@ -174,7 +174,7 @@ export class EditointiKontrolli {
 
   public async remove() {
     this.mstate.disabled = true;
-    await this.config.remove!();
+    await this.config.remove!(this.mstate.data);
     this.isRemoved = true;
     this.isEditingState = false;
     EditointiKontrolli.totalEditingEditors -= 1;
@@ -191,7 +191,7 @@ export class EditointiKontrolli {
     else if (await this.validate()) {
       await this.config.source.save(this.mstate.data);
       this.isEditingState = false;
-    EditointiKontrolli.totalEditingEditors -= 1;
+      EditointiKontrolli.totalEditingEditors -= 1;
       this.logger.success('Tallennettu');
     }
     else {

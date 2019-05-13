@@ -22,6 +22,7 @@ import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
 import RouteJarjestys from '@/routes/opetussuunnitelmat/RouteJarjestys.vue';
+import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 import UnderConstruction from '@/routes/UnderConstruction.vue';
@@ -96,6 +97,10 @@ export const router = new Router({
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
+      }, {
+        path: 'julkaisu',
+        component: RouteJulkaisu,
+        name: 'opsJulkaisu',
       }, {
         path: 'jarjesta',
         component: RouteJarjestys,
@@ -196,7 +201,7 @@ router.beforeEach(async (to, from, next) => {
   // Estetään siirtyminen jos editointi on käynnissä
   if (EditointiKontrolli.anyEditing()) {
     // TODO: Lisää notifikaatio
-    logger.warn(`Route change denied: Still in editing state`, from, to);
+    logger.warn('Route change denied: Still in editing state', from, to);
     return;
   }
 

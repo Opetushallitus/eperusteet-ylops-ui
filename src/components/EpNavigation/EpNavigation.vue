@@ -16,7 +16,6 @@ div.topbar(v-sticky="sticky")
             span(v-if="murut[route.name]") {{ $kaanna(murut[route.name]) }}
             span(v-else) {{ $t('route-' + route.name) }}
 
-
     b-navbar-nav.ml-auto
       // Sisällön kieli
       b-nav-item-dropdown(id="content-lang-selector")

@@ -106,7 +106,7 @@ export default class RouteTiedot extends EpOpsRoute {
   get validator() {
     return opsTiedotValidator([
       Kielet.getSisaltoKieli(), // Validoidaan kentät sisältökielen mukaan
-    ]);
+    ], !this.isPohja);
   }
 
   public async tryTilanvaihto(tila: string) {

@@ -4,8 +4,8 @@
     ep-editointi(:hooks="hooks")
       template(slot="ohje", slot-scope="{ isEditing, data }")
         .sidepad
-          p {{ $t('ohje-tekstikapale') }} 
-          p {{ $t('ohje-tekstikapale-perusteteksti') }} 
+          p {{ $t('ohje-tekstikapale') }}
+          p {{ $t('ohje-tekstikapale-perusteteksti') }}
           .ohjeet(v-if="data.ohjeet.length > 0")
             .ohje(v-for="ohje in data.ohjeet", :key="ohje.id")
               ep-content(
@@ -38,6 +38,8 @@
               v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa")
               h5(slot="header") {{ $t('perusteen-teksti') }}
               p.perusteteksti(v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti) ")
+              .alert.alert-info(v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)")
+                | {{ $t('perusteen-sisaltoa-ei-maaritetty') }}
               div(v-if="isEditing")
                 b-form-checkbox(v-model="data.tov.naytaPerusteenTeksti") {{ $t('nayta-perusteen-teksti') }}
             .spacing
@@ -45,6 +47,8 @@
               div(slot="header")
                 h5 {{ $t('paikallinen-teksti') }}
               ep-content(v-model="data.tov.tekstiKappale.teksti", :is-editable="isEditing")
+              .alert.alert-info(v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)")
+                | {{ $t('paikallista-sisaltoa-ei-maaritetty') }}
             // .col-lg-4
               .ohjeet(v-if="data.ohjeet.length > 0")
                 .ohje(v-for="ohje in data.ohjeet", :key="ohje.id", :class="'ohje-' + ohje.tyyppi")

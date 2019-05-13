@@ -35,11 +35,10 @@
           fas(icon="chevron-right", v-if="!itemData.item.hideChevron")
 
       template(v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }")
-        li
+        li(v-if="itemData.item.type === 'tekstikappale'")
           router-link.btn.btn-link(:to=`{ name: 'tekstikappale', params: { osaId: 'uusi', parentId: itemRoute.params.osaId } }`)
             fas.mr-2(icon="plus")
             span {{ $t('uusi-tekstikappale') }}
-
 
   .bottom-navigation
     .hallintalinkit
@@ -61,10 +60,14 @@
           router-link.btn.btn-link(:to=`{ name: 'opsKasitteet' }`)
             fas.mr-2(icon="bookmark")
             span {{ $t('kasitteet') }}
-        li
+        // li
           router-link.btn.btn-link(:to=`{ name: 'opsRakenne' }`)
             fas.mr-2(icon="cog")
             span {{ $t('rakenne') }}
+        li
+          router-link.btn.btn-link(:to=`{ name: 'opsJulkaisu' }`)
+            fas.mr-2(icon="upload")
+            span {{ $t('julkaise') }}
 
     // li.separated
       ep-sisalto-modaali(:params="$route", :cache="cache")

@@ -6,7 +6,7 @@ div(v-if="hooks && !isLoading")
 
     template(slot="ohje", slot-scope="{ isEditing, data }")
       .sidepad
-        p {{ $t('ohje-paikallinen-oppiaine') }} 
+        p {{ $t('ohje-paikallinen-oppiaine') }}
 
     template(slot="keskustelu", slot-scope="{ isEditing, data }")
       span

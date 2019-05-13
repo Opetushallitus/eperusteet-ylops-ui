@@ -37,6 +37,7 @@ library.add(solid.faSearch);
 library.add(solid.faSort);
 library.add(solid.faThumbsUp);
 library.add(solid.faTimes);
+library.add(solid.faUpload);
 library.add(solid.faUsers);
 
 // OPH icons

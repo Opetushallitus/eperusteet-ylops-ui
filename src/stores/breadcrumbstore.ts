@@ -1,8 +1,6 @@
 import Vue from 'vue';
 
-
 import { Store, State } from './store';
-
 
 @Store
 class BreadcrumbStore {
@@ -12,6 +10,5 @@ class BreadcrumbStore {
   // setKey(avain: string, arvo: object) {
   // }
 }
-
 
 export const Breadcrumbs = new BreadcrumbStore();
