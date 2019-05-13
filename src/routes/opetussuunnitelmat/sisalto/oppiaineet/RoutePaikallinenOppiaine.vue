@@ -11,24 +11,23 @@ div(v-if="hooks && !isLoading")
     template(slot="keskustelu", slot-scope="{ isEditing, data }")
       span
 
+    template(v-slot:header="{ data, validation, isEditing }")
+      ep-field(
+        help="oppiaine-nimi-ohje",
+        v-model="data.nimi",
+        :is-header="true",
+        :validation="validation.nimi",
+        :is-editing="isEditing")
+
     template(v-slot="{ data, validation, isEditing }")
       div.content
-        .row
-          .col-md-6
-            ep-form-content(name="oppiaine-nimi")
-              ep-field(
-                help="oppiaine-nimi-ohje",
-                v-model="data.nimi",
-                :validation="validation.nimi",
-                :is-editing="isEditing")
-          .col-md-6
-            ep-form-content(name="koodi")
-              ep-field(
-                help="oppiaine-koodi-ohje",
-                v-model="data.koodi",
-                :validation="validation.koodi",
-                type="string",
-                :is-editing="isEditing")
+        ep-form-content(name="koodi")
+          ep-field(
+            help="oppiaine-koodi-ohje",
+            v-model="data.koodi",
+            :validation="validation.koodi",
+            type="string",
+            :is-editing="isEditing")
 
         div
           hr.valiviiva
@@ -57,15 +56,16 @@ div(v-if="hooks && !isLoading")
             h4.header(slot="header") {{ $t('laaja-alaiset-sisallot') }}
             ep-content(v-model="data.laajaAlainenOsaaminen.kuvaus" :is-editable="isEditing")
 
-          hr.valiviiva
-          ep-collapse(tyyppi="laajaAlainenOsaaminen")
-            h4.header(slot="header") {{ $t('opintojaksot') }}
-            div.block-container(v-for="opintojakso in opintojaksot", :key="opintojakso.id")
-              .oj-content.pakollinen
-                span.nimi
-                  router-link(:to=`{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }`)
-                    | {{ $kaanna(opintojakso.nimi) }}
-                span.pituus 2 op
+          div(v-if="!isEditing")
+            hr.valiviiva
+            ep-collapse(tyyppi="laajaAlainenOsaaminen")
+              h4.header(slot="header") {{ $t('opintojaksot') }}
+              div.block-container(v-for="opintojakso in opintojaksot", :key="opintojakso.id")
+                .oj-content.pakollinen
+                  span.nimi
+                    router-link(:to=`{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }`)
+                      | {{ $kaanna(opintojakso.nimi) }}
+                  span.pituus 2 op
 
 </template>
 

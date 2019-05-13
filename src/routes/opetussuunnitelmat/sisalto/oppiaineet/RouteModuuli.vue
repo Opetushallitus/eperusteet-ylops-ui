@@ -74,6 +74,7 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
     this.opintojaksot = await Opetussuunnitelma.getOpintojaksot({
       moduuliUri: this.moduuli!.koodi!.uri as string,
     } as any);
+    this.breadcrumb('moduuli', this.moduuli.nimi);
   }
 }
 </script>

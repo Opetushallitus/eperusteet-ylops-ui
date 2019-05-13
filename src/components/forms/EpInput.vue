@@ -12,6 +12,7 @@ div(v-if="isEditing")
   .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
   small.form-text.text-muted(v-if="help && isEditing") {{ $t(help) }}
 .input-content(
+    :class="isHeader && 'headerfield'",
     v-else,
     :attrs="$attrs")
     | {{ val }}
@@ -34,6 +35,9 @@ export default class EpInput extends Mixins(EpValidation) {
 
   @Prop({ required: true })
   private value!: string | object;
+
+  @Prop({ default: false })
+  private isHeader!: boolean;
 
   @Prop({ default: false })
   private isEditing!: boolean;
@@ -109,6 +113,11 @@ input.input-content {
   padding: 6px 0 6px 0;
   font-size: 1rem;
   line-height: 1.5;
+}
+
+.headerfield {
+  font-size: 150%;
+  font-weight: 600;
 }
 
 </style>

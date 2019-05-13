@@ -2,9 +2,6 @@
 div.content
   div(v-if="hooks && !isLoading")
     ep-editointi(:hooks="hooks", v-model="editable", :validator="validator")
-      template(slot="header", slot-scope="{ data, validation, isEditing }")
-        h2 {{ $kaanna(data.nimi) }}
-
       template(slot="ohje", slot-scope="{ isEditing, data }")
         .sidepad
           p(v-html="$t('ohje-opintojakso')")
@@ -13,19 +10,17 @@ div.content
       template(slot="keskustelu", slot-scope="{ isEditing, data }")
         span
 
+      template(slot="header", slot-scope="{ data, validation, isEditing }")
+        ep-field(
+          help="opintojakso-nimi-ohje",
+          v-model="data.nimi",
+          :validation="validation.nimi",
+          :is-header="true",
+          :is-editing="isEditing")
+
       template(v-slot="{ data, validation, isEditing }")
         div
           .row
-            .col-md-6
-              ep-form-content(name="opintojakso-nimi")
-                ep-field(
-                  help="opintojakso-nimi-ohje",
-                  v-model="data.nimi",
-                  :validation="validation.nimi",
-                  :is-editing="isEditing")
-            .col-md-6
-              ep-form-content(name="opintopisteet")
-                span {{ laajuus }} op
             .col-md-6
               ep-form-content(name="koodi")
                 ep-field(
@@ -34,6 +29,9 @@ div.content
                   type="string",
                   :validation="validation.koodi",
                   :is-editing="isEditing")
+            .col-md-6
+              ep-form-content(name="opintopisteet")
+                span {{ laajuus }} op
             .col-md-6
               ep-form-content(name="tila")
                 span Luonnos
@@ -277,10 +275,6 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     ];
   }
 
-  get breadcrumb() {
-    return this.editable && this.editable!.nimi;
-  }
-
   get laajuus() {
     if (this.editable && this.editable.moduulit && !_.isEmpty(this.editable.moduulit)) {
       return _(this.editable.moduulit)
@@ -409,10 +403,12 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   public async load() {
     const { opintojaksoId } = this.$route.params;
     if (opintojaksoId === 'uusi') {
+      // this.breadcrumb('oppiaine', 'uusi');
       return defaults.opintojakso();
     }
     else {
       const opintojakso = await Opetussuunnitelma.getOpintojakso(_.parseInt(opintojaksoId));
+      this.breadcrumb('opintojakso', opintojakso.nimi);
       return opintojakso;
     }
   }

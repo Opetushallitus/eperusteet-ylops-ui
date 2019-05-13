@@ -13,7 +13,7 @@ div.topbar(v-sticky="sticky")
             router-link(id="nav-admin" :to="{ name: 'root' }")
               fas.fa-fw(icon="home")
           li.breadcrumb-item(v-for="route in routePath")
-            span(v-if="route.breadname") {{ $kaanna(route.breadname) }}
+            span(v-if="murut[route.name]") {{ $kaanna(murut[route.name]) }}
             span(v-else) {{ $t('route-' + route.name) }}
 
 
@@ -44,6 +44,7 @@ div.topbar(v-sticky="sticky")
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Kieli } from '@/tyypit';
 import { Kielet, UiKielet } from '@/stores/kieli';
+import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Loading from 'vue-loading-overlay';
 import Sticky from 'vue-sticky-directive';
@@ -61,6 +62,10 @@ export default class EpNavigation extends Vue {
 
   @Prop({ default: 'normaali' })
   private tyyli!: string;
+
+  get murut() {
+    return Murupolku.murut();
+  }
 
   get uiKieli() {
     return Kielet.getUiKieli();

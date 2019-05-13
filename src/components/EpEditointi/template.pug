@@ -5,7 +5,7 @@ div
       .d-flex.align-items-center
         .p2.flex-fill
           slot(name="header", :isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
-        .p2
+        .p2(v-if="!ctrls.isEditing")
           .muokattu(v-if="latest") {{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
           //- ep-versio-modaali(:value="current", :versions="historia")
         .p2
@@ -57,16 +57,16 @@ div
             slot(:isEditing="ctrls.isEditing", :data="state.data", :validation="$v.state.data")
         .rightbar.rb-keskustelu(v-if="hasKeskusteluSlot && sidebarState === 1")
           .rbheader
-            b Keskustelu
+            b {{ $t('keskustelu') }}
           .rbcontent
             slot(name="keskustelu")
         .rightbar.rb-ohje(v-if="hasOhjeSlot && sidebarState === 2")
           .rbheader
-            b Ohje
+            b {{ $t('ohje') }}
           .rbcontent
             slot(name="ohje")
         .rightbar.rb-peruste(v-if="hasPerusteSlot && sidebarState === 3")
           .rbheader
-            b Perusteen teksti
+            b {{ $t('perusteen-teksti') }}
           .rbcontent
             slot(name="peruste")

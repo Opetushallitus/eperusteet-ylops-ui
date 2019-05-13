@@ -36,9 +36,10 @@
 
       template(v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }")
         li
-          router-link.btn.btn-link(:to=`{ name: 'tekstikappale' }`, :params=`{ }`)
+          router-link.btn.btn-link(:to=`{ name: 'tekstikappale', params: { osaId: 'uusi', parentId: itemRoute.params.osaId } }`)
             fas.mr-2(icon="plus")
             span {{ $t('uusi-tekstikappale') }}
+
 
   .bottom-navigation
     .hallintalinkit
