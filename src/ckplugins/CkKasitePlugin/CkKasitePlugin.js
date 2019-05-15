@@ -4,8 +4,8 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 
-import KasiteFormView from './ui/KasiteFormView';
-import AbbrCommand from './abbrCommand';
+import KasiteFormView from './ui/KasiteFormView.js';
+import AbbrCommand from './abbrCommand.js';
 import './CkKasitePlugin.css';
 
 const pluginIcon = require('./icons/icon.svg');
