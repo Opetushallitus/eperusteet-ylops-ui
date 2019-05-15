@@ -1,5 +1,4 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 export default class abbrCommand extends Command {
   constructor(editor) {
@@ -20,11 +19,9 @@ export default class abbrCommand extends Command {
     const selection = model.document.selection;
 
     model.change(writer => {
-      if (selection.isCollapsed) {
-        // TODO: Päädytäänköhän tänne ikinä?
-      }
-      else {
-        const ranges = model.schema.getValidRanges(selection.getRanges(), 'abbrData');
+      // selection.isCollapsed = true, if nothing is selected
+      if (!selection.isCollapsed) {
+        const ranges = selection.getRanges();
         for (const range of ranges) {
           writer.setAttribute('abbrData', data, range);
         }

@@ -12,7 +12,7 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 
-import KasiteFormSelect from './KasiteFormSelect';
+import KasiteFormSelect from './KasiteFormSelect.js';
 
 export default class KasiteFormView extends View {
   constructor(locale, kasitteet) {

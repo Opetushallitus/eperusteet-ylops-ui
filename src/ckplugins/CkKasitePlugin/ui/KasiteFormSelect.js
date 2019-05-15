@@ -1,9 +1,9 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-import KasiteFormOption from './KasiteFormOption';
+import KasiteFormOption from './KasiteFormOption.js';
 
 export default class KasiteFormSelect extends View {
-  constructor(locale, kasitteet: any[]) {
+  constructor(locale, kasitteet) {
     super(locale);
 
     const bind = this.bindTemplate;
