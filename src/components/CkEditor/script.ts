@@ -4,7 +4,6 @@ import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
@@ -21,8 +20,8 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
 import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/CkUploadAdapter';
-import CkKasitePlugin from '@/ckplugins/CkKasitePlugin/CkKasitePlugin';
-import CkMathPlugin from '@/ckplugins/CkMathPlugin/CkMathPlugin';
+import CkKasitePlugin from '@/ckplugins/CkKasitePlugin/CkKasitePlugin.js';
+import CkMathPlugin from '@/ckplugins/CkMathPlugin/CkMathPlugin.js';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
@@ -30,7 +29,6 @@ import { createLogger } from '@/stores/logger';
 
 const logger = createLogger('CkEditor');
 const commonPlugins = [
-  Clipboard,
   Essentials,
   ParagraphPlugin,
   PasteFromOffice,
