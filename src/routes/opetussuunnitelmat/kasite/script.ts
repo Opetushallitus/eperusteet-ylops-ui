@@ -70,33 +70,41 @@ export default class RouteKasite extends EpOpsRoute {
     return termi.replace(/[^a-zA-Z0-9]/g, '') + new Date().getTime();
   }
 
+  async tallennaMuuttunut(kasiteId: number) {
+    // Tallennetaan muokattu käsite
+    const res = await Termisto.updateTermi(
+      this.opsId,
+      kasiteId,
+      this.kasite
+    );
+    _.remove(this.termisto, termi => termi.id === res.data.id);
+    this.termisto.push({
+      closed: true,
+      kasite: res.data,
+    });
+  }
+
+  async tallennaUusi() {
+    // Luodaan uusi käsite + lisätään sille avain
+    if (!this.kasite.avain) {
+      this.kasite.avain = this.makeKey(this.kasite);
+    }
+    const res = await Termisto.addTermi(this.opsId, this.kasite);
+    this.termisto.push({
+      closed: true,
+      kasite: res.data,
+    });
+  }
+
   async tallennaKasite(e) {
     e.preventDefault();
 
     try {
       if (this.kasite.id) {
-        // Tallennetaan muokattu käsite
-        const res = await Termisto.updateTermi(
-          this.opsId,
-          this.kasite.id,
-          this.kasite
-        );
-        _.remove(this.termisto, termi => termi.id === res.data.id);
-        this.termisto.push({
-          closed: true,
-          kasite: res.data,
-        });
+        await this.tallennaMuuttunut(this.kasite.id);
       }
       else {
-        // Luodaan uusi käsite + lisätään sille avain
-        if (!this.kasite.avain) {
-          this.kasite.avain = this.makeKey(this.kasite);
-        }
-        const res = await Termisto.addTermi(this.opsId, this.kasite);
-        this.termisto.push({
-          closed: true,
-          kasite: res.data,
-        });
+        await this.tallennaUusi();
       }
       (this as any).$refs.terminLuontiModal.hide();
     }
