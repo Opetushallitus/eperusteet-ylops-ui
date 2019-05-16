@@ -126,17 +126,15 @@ export default class RouteKasite extends EpOpsRoute {
   }
 
   get suodatettuTermisto() {
-    return this.termisto.filter(
-      termi =>
-        _.includes(
-          _.toLower(_.get(termi, 'kasite.termi.' + Kielet.getSisaltoKieli())),
-          _.toLower(this.hakusana)
-        )
-        || _.includes(
-          _.toLower(_.get(termi, 'kasite.selitys.' + Kielet.getSisaltoKieli())),
-          _.toLower(this.hakusana)
-        )
-    );
+    const hakutermi = _.toLower(this.hakusana);
+    const kieli = Kielet.getSisaltoKieli();
+
+    return this.termisto.filter(termi => _.includes(
+      _.toLower(
+        _.get(termi, 'kasite.termi.' + kieli) + ' ' + _.get(termi, 'kasite.selitys.' + kieli)
+      ),
+      hakutermi
+    ));
   }
 
   private get validator() {
