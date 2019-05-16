@@ -1,23 +1,29 @@
 <template lang="pug">
-
-div.content
-  h2 {{ $t('kasitteet') }}
+.kasitteet
+  .ylapaneeli
+    div.otsikko {{ $t('kasitteet') }}
 
   ep-spinner(v-if="isLoading")
-  div(v-else)
-    ep-search(v-model="hakusana")
-    div.text-right
-      b-button(variant="link", @click="avaaLuontiModal")
-        fas.mr-2(icon="plus-circle")
-        span {{ $t('lisaa-uusi-kasite') }}
-    div(v-for="termi in suodatettuTermisto")
-      div.float-right
-        button.btn.btn-link(@click="avaaMuokkausModal(termi)")
-          fas(icon="pen")
-        button.btn.btn-link(@click="poistaKasite(termi)")
-          fas(icon="times")
-      ep-content.termi(:value="termi.termi")
-      ep-content.selitys(:value="termi.selitys")
+  div.sisalto(v-else)
+    .otsikko-toiminnot
+      ep-search(v-model="hakusana")
+      .lisaysnappi
+        button(@click="avaaLuontiModal")
+          fas.mr-2(icon="plus-circle")
+          span {{ $t('lisaa-kasite') }}
+
+    .kasitelista
+      .kasite(v-for="k in suodatettuTermisto")
+        ep-content.termi(:value="k.kasite.termi")
+        ep-content.selitys(:class="{ closed: k.closed, open: !k.closed }", :value="k.kasite.selitys")
+        .toiminnot
+          button.btn.btn-link(@click="k.closed = !k.closed")
+            fas(icon="chevron-down", v-if="k.closed")
+            fas(icon="chevron-up", v-else)
+          button.btn.btn-link(@click="avaaMuokkausModal(k.kasite)")
+            fas(icon="pen")
+          button.btn.btn-link(@click="poistaKasite(k.kasite)")
+            fas(icon="times")
 
   // Käsitteen luomisen ja muokkaamisen modaali
   b-modal.backdrop(
@@ -60,149 +66,117 @@ div.content
 
 </template>
 
-<script lang="ts">
-import _ from 'lodash';
-
-import { Component } from 'vue-property-decorator';
-import { validationMixin } from 'vuelidate';
-
-import EpOpsRoute from '@/mixins/EpOpsRoute';
-import { EpContent, EpFormContent, EpSearch, EpSpinner } from '@/components';
-import EpInput from '@/components/forms/EpInput.vue';
-import { Termisto } from '@/api';
-
-import { Kielet, UiKielet } from '@/stores/kieli';
-import { Kieli, TermiDto } from '@/tyypit';
-import { kasiteValidator } from '@/validators/kasite';
-
-@Component({
-  components: {
-    EpContent,
-    EpFormContent,
-    EpInput,
-    EpSearch,
-    EpSpinner,
-  },
-  mixins: [
-    validationMixin,
-  ],
-  validations() {
-    return {
-      kasite: {
-        ...(this as any).validator
-      }
-    };
-  }
-})
-export default class RouteKasite extends EpOpsRoute {
-  private termisto: TermiDto[] = [];
-  private kasite: TermiDto = {};
-  private hakusana: string = '';
-
-  avaaLuontiModal(e) {
-    this.kasite = {};
-    (this as any).$refs.terminLuontiModal.show();
-  }
-
-  avaaMuokkausModal(kasite) {
-    this.kasite = _.cloneDeep(kasite);
-    (this as any).$refs.terminLuontiModal.show();
-  }
-
-  async poistaKasite(kasite) {
-    try {
-      await Termisto.deleteTermi(this.opsId, kasite.id);
-      _.remove(this.termisto, k => k.id === kasite.id);
-      this.termisto = [...this.termisto];
-    }
-    catch (err) {
-      // Todo: Termin poisto epäonnistui
-    }
-  }
-
-  makeKey(item) {
-    var termi = _.first(_.compact(_.values(item.termi))) || '';
-    return termi.replace(/[^a-zA-Z0-9]/g, '') + new Date().getTime();
-  }
-
-  async tallennaKasite(e) {
-    e.preventDefault();
-
-    try {
-      if (this.kasite.id) {
-        // Tallennetaan muokattu käsite
-        const res = await Termisto.updateTermi(
-          this.opsId,
-          this.kasite.id,
-          this.kasite
-        );
-        _.remove(this.termisto, termi => termi.id === res.data.id);
-        this.termisto.push(res.data);
-      }
-      else {
-        // Luodaan uusi käsite + lisätään sille avain
-        if (!this.kasite.avain) {
-          this.kasite.avain = this.makeKey(this.kasite);
-        }
-        const res = await Termisto.addTermi(this.opsId, this.kasite);
-        this.termisto.push(res.data);
-      }
-      (this as any).$refs.terminLuontiModal.hide();
-    }
-    catch (err) {
-      // Todo: Tallennus epäonnistui
-    }
-  }
-
-  async init() {
-    try {
-      const resp = await Termisto.getAllTermit(this.opsId);
-      this.termisto = resp.data;
-    }
-    catch (err) {
-      // Todo: Termien lataus epäonnistui
-    }
-  }
-
-  get suodatettuTermisto() {
-    return this.termisto.filter(
-      termi =>
-        _.includes(
-          _.toLower(_.get(termi, 'termi.' + Kielet.getSisaltoKieli())),
-          _.toLower(this.hakusana)
-        )
-        || _.includes(
-          _.toLower(_.get(termi, 'selitys.' + Kielet.getSisaltoKieli())),
-          _.toLower(this.hakusana)
-        )
-    );
-  }
-
-  private get validator() {
-    return kasiteValidator([
-      Kielet.getSisaltoKieli() // Validoidaan kentät sisältökielen mukaan
-    ]);
-  }
-
-  private get validation() {
-    return (this as any).$v.kasite;
-  }
-
-  get sisaltoKieli() {
-    return Kielet.getSisaltoKieli();
-  }
-  get sovelluksenKielet() {
-    return UiKielet;
-  }
-  private valitseSisaltoKieli(kieli: Kieli) {
-    Kielet.setSisaltoKieli(kieli);
-  }
-}
-</script>
+<script lang="ts" src="./script.ts"></script>
 
 <style lang="scss" scoped>
-.selitys {
-  margin-left: 5px;
-  margin-top: 5px;
+.kasitteet {
+  margin-top: 4px;
+
+  .ylapaneeli {
+    border-bottom: 1px solid #eee;
+    font-size: 90%;
+    font-weight: 600;
+    padding: 8px 5px;
+
+    .otsikko {
+      font-size: 150%;
+    }
+  }
+
+  .sisalto {
+    padding: 10px;
+  }
 }
+
+.otsikko-toiminnot {
+  display: flex;
+
+  .has-search {
+    flex: 1 1 0%;
+  }
+
+  .lisaysnappi {
+    flex: 1 1 20%;
+    text-align: right;
+
+    button {
+      border: 0;
+      outline: 0;
+      background-color: transparent;
+
+      span {
+        vertical-align: text-top;
+      }
+
+      svg {
+        width: 25px;
+        height: 25px;
+        vertical-align: middle;
+        color: #0041dc;
+      }
+    }
+  }
+}
+
+.kasitelista {
+  display:flex;
+  flex-wrap: wrap;
+}
+
+.kasite:nth-child(odd) {
+  background-color: #f3f3f3;
+}
+
+.kasite {
+  padding: 5px 15px;
+  display: flex;
+  align-items: top;
+  width: 100%;
+  line-height: 2.5em;
+
+  .termi {
+    flex-grow: 2;
+    font-weight: 600;
+    width: 6em;
+    min-width: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .selitys {
+    margin-left: 10px;
+    flex-grow: 6;
+    width: 10em;
+    min-width: auto;
+    overflow: hidden;
+    line-height: 1.5em;
+
+    /deep/ img {
+      max-width: 100%;
+    }
+  }
+
+  .selitys.open {
+    margin-top: 0.5em;
+  }
+
+  .selitys.closed {
+    height: 2.5em;
+    line-height: 2.5em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    /deep/ p {
+      margin: 0;
+    }
+  }
+
+  .toiminnot {
+    flex-grow: 1;
+    text-align: right;
+    width: 3em;
+  }
+}
+
 </style>
