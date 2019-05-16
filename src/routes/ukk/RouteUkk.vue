@@ -54,6 +54,7 @@ ep-main-view
       ref="createUpdateKysymys"
       @ok="createUpdateKysymys",
       :no-close-on-backdrop="true",
+      :no-enforce-focus="true",
       :lazy="true",
       :ok-disabled="validation.$invalid",
       size="lg")
@@ -72,12 +73,14 @@ ep-main-view
         ep-content(
           v-model="kysymys.kysymys",
           help="kysymys-nimi-ohje",
+          layout="simplified",
           :validation="validation.kysymys",
           :is-editable="true")
       ep-form-content(name="kysymys-vastaus")
         ep-content(
           v-model="kysymys.vastaus",
           help="kysymys-vastaus-ohje",
+          layout="simplified",
           :validation="validation.vastaus",
           :is-editable="true")
       ep-form-content(name="nayta-organisaatioissa")

@@ -1,3 +1,5 @@
+import Katex from 'katex';
+
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
@@ -12,21 +14,33 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 
-import KasiteFormSelect from './KasiteFormSelect';
+import TextareaView from './TextareaView.js';
+import HelpTextView from './HelpTextView.js';
 
-export default class KasiteFormView extends View {
-  constructor(locale, kasitteet) {
+export default class MainFormView extends View {
+  constructor(locale) {
     super(locale);
-
-    this.set({
-      kasiteKey: '',
-    });
 
     // Create key event & focus trackers
     this.createKeyAndFocusTrackers();
 
+    // Create help texts
+    const textView1 = new HelpTextView(locale, 'Insert tex equation:');
+    const textView2 = new HelpTextView(locale, 'Equation preview:');
+    this.renderView = new HelpTextView(locale, '');
+
+    //
+    this.set({
+      texEq: ''
+    });
+
     // Create buttons & select element
-    const children = this.createUiElements(locale, kasitteet);
+    const children = [
+      textView1,
+      ...this.createUiElements(locale),
+      textView2,
+      this.renderView
+    ];
 
     // Add ui elements to template
     this.setTemplate({
@@ -34,11 +48,12 @@ export default class KasiteFormView extends View {
       attributes: {
         class: [
           'ck',
-          'ck-link-form',
+          'ck-kmath-form',
         ],
       },
       children,
     });
+
   }
 
   render() {
@@ -51,7 +66,7 @@ export default class KasiteFormView extends View {
 
     // Register form elements to focusable elements
     const childViews = [
-      this.kasiteSelect,
+      this.mathTextarea,
       this.saveBtn,
       this.cancelBtn,
     ];
@@ -85,22 +100,25 @@ export default class KasiteFormView extends View {
     });
   }
 
-  createUiElements(locale, kasitteet) {
+  createUiElements(locale) {
     // Create save & cancel buttons
-    this.saveBtn = this.createButton('Lisää', checkIcon, 'ck-button-save', null);
+    this.saveBtn = this.createButton('Add', checkIcon, 'ck-button-save', null);
     this.saveBtn.type = 'submit';
     this.saveBtn.isEnabled = false;
-    this.cancelBtn = this.createButton('Peruuta', cancelIcon, 'ck-button-cancel', 'cancel');
+    this.cancelBtn = this.createButton('Cancel', cancelIcon, 'ck-button-cancel', 'cancel');
 
-    // Create select element
-    this.kasiteSelect = new KasiteFormSelect(locale, kasitteet);
-    this.kasiteSelect.on('kasitevalittu', (e, data) => {
+    // Create textarea for equation
+    this.mathTextarea = new TextareaView(locale);
+    this.mathTextarea.on('texchanged', (e, data) => {
       this.saveBtn.isEnabled = data !== '';
-      this.kasiteKey = data;
+      this.texEq = data;
+      Katex.render(data, this.renderView.element);
     });
 
+
+    // Return created elements
     return [
-      this.kasiteSelect,
+      this.mathTextarea,
       this.saveBtn,
       this.cancelBtn,
     ];

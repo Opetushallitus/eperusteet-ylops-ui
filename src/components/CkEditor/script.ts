@@ -4,12 +4,12 @@ import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
@@ -20,8 +20,8 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
 import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/CkUploadAdapter';
-import CkKasitePlugin from '@/ckplugins/CkKasitePlugin/CkKasitePlugin';
-import CkMathPlugin from '@/ckplugins/CkMathPlugin/CkMathPlugin';
+import CkKasitePlugin from '@/ckplugins/CkKasitePlugin/CkKasitePlugin.js';
+import CkMathPlugin from '@/ckplugins/CkMathPlugin/CkMathPlugin.js';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
@@ -29,7 +29,6 @@ import { createLogger } from '@/stores/logger';
 
 const logger = createLogger('CkEditor');
 const commonPlugins = [
-  Clipboard,
   Essentials,
   ParagraphPlugin,
   PasteFromOffice,
@@ -169,9 +168,10 @@ export default class CkEditor extends Mixins(EpValidation) {
         ...uploadEnabled ? [ImageUpload] : [],
         ImageToolbar,
         ListPlugin,
+        Strikethrough,
       ],
       toolbar: [
-        'bold', 'italic',
+        'bold', 'italic', 'strikethrough',
         ...uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
         'bulletedList', 'numberedList',
@@ -197,11 +197,12 @@ export default class CkEditor extends Mixins(EpValidation) {
         ImageToolbar,
         ListPlugin,
         LinkPlugin,
+        Strikethrough,
         Table,
         TableToolbar,
       ],
       toolbar: [
-        'bold', 'italic',
+        'bold', 'italic', 'strikethrough',
         ...uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
         'bulletedList', 'numberedList',
