@@ -84,7 +84,7 @@ div.content
 
 <script lang="ts">
 
-import { EpButton, EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle } from '@/components';
+import { EpButton, EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle, EpChart } from '@/components';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 
@@ -94,7 +94,7 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
-import { EpChart } from '@/components';
+
 import { Kielet } from '@/stores/kieli';
 import { Lops2019ValidointiDto } from '@/tyypit';
 

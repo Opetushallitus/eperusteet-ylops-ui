@@ -15,9 +15,8 @@
         td {{ $kaanna(poistettu.nimi) }}
         td {{ $ago(poistettu.luotu) }}
         td {{ poistettu.luoja }}
-        td 
+        td
           ep-button.btn-sm(@click="palauta(poistettu)") {{ $t('palauta') }}
-
 
 </template>
 
@@ -106,6 +105,5 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     padding: 10px;
   }
 }
-
 
 </style>

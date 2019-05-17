@@ -78,8 +78,6 @@ class OpetussuunnitelmaStore {
   //   success: "tallennus-onnistui-opetussuunnitelma",
   // })
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
-    console.log('called with ', opetussuunnitelma);
-    console.log('having this ', this);
     const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma);
     success('tallennus-onnistui-opetussuunnitelma');
     this.opetussuunnitelma = res.data;
