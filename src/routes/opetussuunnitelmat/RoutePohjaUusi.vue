@@ -7,7 +7,7 @@ ep-main-view
     h1 {{ $t('uusi-pohja') }}
 
   div
-    ep-form-content(name="ops-nimi")
+    ep-form-content(name="pohja-nimi")
       ep-field(
         help="pohja-nimi-ohje",
         v-model="uusi.nimi",
@@ -65,6 +65,7 @@ import {
 import { createLogger } from '@/stores/logger';
 import EpRoute from '@/mixins/EpRoute';
 import EpValidation from '@/mixins/EpValidation';
+import { success } from '@/utils/notifications';
 
 const logger = createLogger('RoutePohjaUusi');
 
@@ -131,6 +132,7 @@ export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
       };
 
       const data = (await Opetussuunnitelmat.addOpetussuunnitelma(pohja)).data;
+      success('lisays-pohja-onnistui');
       if (_.isNumber(data.id)) {
         this.$router.replace({
           name: 'opsTiedot',

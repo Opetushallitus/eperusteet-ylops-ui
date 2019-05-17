@@ -3,8 +3,8 @@ import { Doughnut } from 'vue-chartjs';
 import 'chartjs-plugin-doughnutlabel';
 
 export default {
+  name: 'EpChart',
   extends: Doughnut,
-
   props: {
     value: {
       type: Number,

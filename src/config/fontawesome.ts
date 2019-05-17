@@ -17,6 +17,7 @@ library.add(solid.faChevronRight);
 library.add(solid.faChevronUp);
 library.add(solid.faClock);
 library.add(solid.faCog);
+library.add(solid.faExclamation);
 library.add(solid.faFileArchive);
 library.add(solid.faFileDownload);
 library.add(solid.faFilePdf);

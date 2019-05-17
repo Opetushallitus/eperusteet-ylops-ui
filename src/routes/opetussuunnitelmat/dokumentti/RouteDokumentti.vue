@@ -1,9 +1,9 @@
 <template lang="pug">
 
-div.content
-  ep-spinner(v-if="isLoading")
-  div(v-else)
-    h2 {{ $t('dokumentti') }}
+.dokumentit
+  .ylapaneeli
+    .otsikko {{ $t('dokumentti') }}
+  .sisalto
     div.mb-4
       p {{ tilaFormatted }}…
 
@@ -226,3 +226,26 @@ export default class RouteDokumentti extends EpOpsRoute {
 }
 
 </script>
+
+
+<style lang="scss" scoped>
+.dokumentit {
+  margin-top: 4px;
+
+  .ylapaneeli {
+    border-bottom: 1px solid #eee;
+    font-size: 90%;
+    font-weight: 600;
+    padding: 8px 5px;
+
+    .otsikko {
+      font-size: 150%;
+    }
+  }
+
+  .sisalto {
+    padding: 10px;
+  }
+}
+
+</style>

@@ -1,6 +1,7 @@
 <template lang="pug">
 div(v-if="!isInitializing")
   router-view
+  notifications(position="bottom right")
 </template>
 
 <script lang="ts">
@@ -8,6 +9,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Kielet, i18n } from '@/stores/kieli';
 import { Kayttajat } from '@/stores/kayttaja';
 import { delay } from '@/utils/delay';
+import { notify } from '@/utils/notifications';
 
 @Component
 export default class App extends Vue {

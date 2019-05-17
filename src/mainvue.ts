@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
+import Notifications from 'vue-notification';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
@@ -12,6 +13,8 @@ import { createLogger } from '@/stores/logger';
 
 import App from '@/App.vue';
 const logger = createLogger('main');
+
+Vue.use(Notifications);
 
 Vue.use(Loading, {
   fullPage: true,

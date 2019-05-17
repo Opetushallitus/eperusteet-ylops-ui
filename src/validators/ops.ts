@@ -9,19 +9,19 @@ export function opsTiedotValidator(kielet: Kieli[] = [], isOps = true) {
     },
     julkaisukielet: {
       required,
-      'min-length': minLength(2),
+      'min-length': minLength(1),
     },
   };
 
   if (isOps) {
     return {
       ...common,
-      hyvaksyjataho: {
-        required,
-      },
-      paatospaivamaara: {
-        required,
-      },
+      // hyvaksyjataho: {
+      //   required,
+      // },
+      // paatospaivamaara: {
+      //   required,
+      // },
     };
   }
   else {
