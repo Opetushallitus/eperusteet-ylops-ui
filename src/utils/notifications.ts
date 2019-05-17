@@ -24,6 +24,13 @@ export function success(title: string) {
   });
 }
 
+export function info(title: string) {
+  (Vue as any).notify({
+    title: i18n.t(title),
+    type: 'info',
+  });
+}
+
 export function fail(title: string, reason: string | undefined) {
   (Vue as any).notify({
     title: i18n.t(title),

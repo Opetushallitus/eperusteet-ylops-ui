@@ -32,6 +32,7 @@ import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { info } from '@/utils/notifications';
 
 import { createLogger } from '@/stores/logger';
 
@@ -202,6 +203,7 @@ router.beforeEach(async (to, from, next) => {
   if (EditointiKontrolli.anyEditing()) {
     // TODO: Lisää notifikaatio
     logger.warn('Route change denied: Still in editing state', from, to);
+    info('tallenna-tai-peruuta-muutoksesi-ensin');
     return;
   }
 
