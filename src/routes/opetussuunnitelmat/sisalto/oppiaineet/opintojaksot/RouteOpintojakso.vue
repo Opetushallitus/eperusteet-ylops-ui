@@ -42,14 +42,14 @@ div.content
             h4(slot="header")
               | {{ $t('opintojakson-moduulit') }}
             div(v-if="isEditing")
-              .row
-                .col-md-6
-                  ep-form-content(name="oppiaine")
-                    ep-oppiaine-selector(
-                      :ops-id="$route.params.id",
-                      :validation="validation.oppiaineet",
+              ep-form-content(name="oppiaine")
+                ep-oppiaine-selector(
+                  :ops-id="$route.params.id",
+                    :validation="validation.oppiaineet",
                       :value="data.oppiaineet.map(x => x.koodi)",
                       @input="updateOppiaineet")
+              //.row
+                .col-md-6
                 .col-md-6
                   ep-form-content(name="liitetyt-moduulit")
                     .liitetyt-moduulit
@@ -205,6 +205,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   private cache!: PerusteCache;
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: this.isUusi,
+    remove: this.remove,
     source: {
       save: this.save,
       load: this.load,
@@ -213,6 +214,13 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
       revisions: this.revisions,
     },
   };
+
+  async remove(data: any) {
+    await Opetussuunnitelma.removeOpintojakso(data.id);
+    this.$router.push({
+      name: 'opsPoistetut',
+    });
+  }
 
   async isUusi() {
     return this.$route.params.opintojaksoId === 'uusi';

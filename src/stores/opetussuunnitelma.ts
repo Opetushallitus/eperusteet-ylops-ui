@@ -1,8 +1,9 @@
-import { Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
-import { Matala, Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
+import { Lops2019ValidointiDto, Matala, Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import { AxiosResponse } from 'axios';
 import { createLogger } from './logger';
 import { State, Store } from './store';
+import { success, fail } from '@/utils/notifications';
 import Vue from 'vue';
 import _ from 'lodash';
 
@@ -73,14 +74,17 @@ class OpetussuunnitelmaStore {
     return (await Opetussuunnitelmat.getOpetussuunnitelma(id)).data;
   }
 
+  // @Checked({
+  //   success: "tallennus-onnistui-opetussuunnitelma",
+  // })
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
-    try {
-      const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma);
-      this.opetussuunnitelma = res.data;
-    }
-    catch (err) {
-      logger.error(err);
-    }
+    const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma);
+    success('tallennus-onnistui-opetussuunnitelma');
+    this.opetussuunnitelma = res.data;
+  }
+
+  public async validate() {
+    return (await Lops2019.getValidointi(this.opetussuunnitelma!.id!)).data;
   }
 
   public async removeTeksti(tov: Puu) {
@@ -95,6 +99,7 @@ class OpetussuunnitelmaStore {
     else {
       osa = await OpetussuunnitelmanSisalto.addTekstiKappale(this.opetussuunnitelma!.id!, tov);
     }
+    success('lisays-onnistui-tekstikappale');
     await this.updateSisalto();
     return osa.data;
   }
@@ -111,6 +116,7 @@ class OpetussuunnitelmaStore {
 
   public async saveTeksti(tov: Puu) {
     await OpetussuunnitelmanSisalto.updateTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!, tov);
+    success('tallennus-onnistui-tekstikappale');
     await this.updateSisalto();
   }
 
@@ -131,6 +137,7 @@ class OpetussuunnitelmaStore {
   // Paikalliset oppiaineet
   public async addOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto = {}) {
     const result = (await Oppiaineet.addLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine)).data;
+    success('lisays-onnistui-oppiaine');
     this.paikallisetOppiaineet = [...this.paikallisetOppiaineet, result];
     return result;
   }
@@ -146,6 +153,7 @@ class OpetussuunnitelmaStore {
 
   public async savePaikallinenOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto) {
     const result = (await Oppiaineet.updateLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine.id!, oppiaine)).data;
+    success('tallennus-onnistui-oppiaine');
     const idx = _.findIndex(this.paikallisetOppiaineet, { id: result.id });
     this.paikallisetOppiaineet = [
       ..._.slice(this.paikallisetOppiaineet, 0, idx),
@@ -155,9 +163,14 @@ class OpetussuunnitelmaStore {
     return result;
   }
 
+  public async getJulkaisut() {
+    return (await Opetussuunnitelmat.getJulkaisut(this.opetussuunnitelma!.id!)).data;
+  }
+
   // Opintojaksot
   public async addOpintojakso(opintojakso: Lops2019OpintojaksoDto = {}) {
     const result = (await Opintojaksot.addOpintojakso(this.opetussuunnitelma!.id!, opintojakso)).data;
+    success('lisays-onnistui-opintojakson');
     this.opintojaksot = [...this.opintojaksot, result];
     return result;
   }
@@ -184,8 +197,25 @@ class OpetussuunnitelmaStore {
     return result;
   }
 
+  public async getPoistetutOpintojaksot() {
+    return (await Opintojaksot.getRemoved(this.opetussuunnitelma!.id!)).data;
+  }
+
+  public async palautaOpintojakso(poistettuId: number) {
+    const result = (await Opintojaksot.palauta(this.opetussuunnitelma!.id!, poistettuId)).data;
+    success('palautus-opintojakso-onnistui');
+    this.opintojaksot = [...this.opintojaksot, result];
+    return result;
+  }
+
+  public async removeOpintojakso(opintojaksoId: number) {
+    await Opintojaksot.removeOpintojakso(this.opetussuunnitelma!.id!, opintojaksoId);
+    success('poisto-onnistui-opintojakson');
+  }
+
   public async saveOpintojakso(opintojakso: Lops2019OpintojaksoDto) {
     const result = (await Opintojaksot.updateOpintojakso(this.opetussuunnitelma!.id!, opintojakso.id!, opintojakso)).data;
+    success('tallennus-onnistui-opintojakson');
     const idx = _.findIndex(this.opintojaksot, { id: result.id });
     this.opintojaksot = [
       ..._.slice(this.opintojaksot, 0, idx),

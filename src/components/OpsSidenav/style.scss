@@ -115,19 +115,28 @@
   }
 
   .bottom-navigation {
-    margin: 10px;
     margin-top: 40px;
-    border-top: 1px solid #aaa;
-    color: #aaa;
-    padding: 20px;
+    border-top: 1px solid #ddd;
+    color: #333;
+    padding: 20px 10px 0 40px;
+
+    .hallintatoggle {
+      cursor: pointer;
+      user-select: none;
+
+      .hallintachevron {
+        color: #ccc;
+      }
+    }
 
     ul {
       margin: 0px;
+      margin-top: 5px;
       padding: 0px;
 
       li {
         margin: 0px;
-        padding: 10px;
+        padding: 2px;
       }
     }
 

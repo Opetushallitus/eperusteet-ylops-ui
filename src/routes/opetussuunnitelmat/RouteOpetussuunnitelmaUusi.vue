@@ -89,6 +89,7 @@ import _ from 'lodash';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import { Kielet } from '@/stores/kieli';
 import { YlopsKoulutustyypit } from '@/utils/perusteet';
+import { success } from '@/utils/notifications';
 import { required } from 'vuelidate/lib/validators';
 import { validationMixin } from 'vuelidate';
 
@@ -170,6 +171,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       // FIXME: #swagger
       (ops as any)._pohja = '' + this.uusi.pohja!.id;
       const luotu = await Opetussuunnitelmat.addOpetussuunnitelma(ops);
+      success('lisays-opetussuunnitelma-onnistui');
       this.$router.replace({
         name: 'opsTiedot',
         params: {

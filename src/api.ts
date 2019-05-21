@@ -9,6 +9,7 @@ import {
   KommentitApi,
   KysymyksetApi,
   LiitetiedostotApi,
+  Lops2019Api,
   Lops2019OpintojaksotApi,
   Lops2019OppiaineetApi,
   Lops2019PerusteControllerApi,
@@ -82,12 +83,13 @@ export const Kayttajat = initApi(KayttajatApi);
 export const Kommentit = initApi(KommentitApi);
 export const Kysymykset = initApi(KysymyksetApi);
 export const Liitetiedostot = initApi(LiitetiedostotApi);
+export const Lops2019 = initApi(Lops2019Api);
+export const Lops2019Perusteet = initApi(Lops2019PerusteControllerApi);
 export const Ohjeet = initApi(OhjeetApi);
 export const OpetussuunnitelmanSisalto = initApi(OpetussuunnitelmanSisaltoApi);
-export const Opintojaksot = initApi(Lops2019OpintojaksotApi);
-export const Lops2019Perusteet = initApi(Lops2019PerusteControllerApi);
 export const Opetussuunnitelmat = initApi(OpetussuunnitelmatApi);
 export const OpetussuunnitelmatJulkiset = initApi(OpetussuunnitelmatJulkisetApi);
+export const Opintojaksot = initApi(Lops2019OpintojaksotApi);
 export const Oppiaineet = initApi(Lops2019OppiaineetApi);
 export const Termisto = initApi(TermistoApi);
 export const Ulkopuoliset = initApi(UlkopuolisetApi);

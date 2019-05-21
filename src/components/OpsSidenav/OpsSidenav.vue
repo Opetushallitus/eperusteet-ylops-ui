@@ -42,7 +42,11 @@
 
   .bottom-navigation
     .hallintalinkit
-      a.btn.btn-link(@click="toggleHallinta") {{ $t('hallintatyokalut') }}
+      .hallintatoggle(@click="toggleHallinta", role="button")
+        span {{ $t('hallintatyokalut') }}
+        .float-right
+          fas.hallintachevron(v-if="showHallintatyokalut", icon="chevron-down")
+          fas.hallintachevron(v-else, icon="chevron-up")
       ul.navigation(v-if="showHallintatyokalut")
         li
           router-link.btn.btn-link(:to=`{ name: 'opsTiedot' }`)

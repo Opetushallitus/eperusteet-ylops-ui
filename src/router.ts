@@ -19,19 +19,20 @@ import RouteOppiaineet from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/Rout
 import RoutePaikallinenOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePaikallinenOppiaine.vue';
 import RouteOrganisaatio from '@/routes/organisaatio/RouteOrganisaatio.vue';
 import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
+import RoutePoistetut from '@/routes/opetussuunnitelmat/RoutePoistetut.vue';
 import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
 import RouteJarjestys from '@/routes/opetussuunnitelmat/RouteJarjestys.vue';
 import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
-import UnderConstruction from '@/routes/UnderConstruction.vue';
 
 import { Virheet } from '@/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { info } from '@/utils/notifications';
 
 import { createLogger } from '@/stores/logger';
 
@@ -111,7 +112,7 @@ export const router = new Router({
         name: 'opsDokumentti',
       }, {
         path: 'poistetut',
-        component: UnderConstruction,
+        component: RoutePoistetut,
         name: 'opsPoistetut',
       }, {
         path: 'kasitteet',
@@ -202,6 +203,7 @@ router.beforeEach(async (to, from, next) => {
   if (EditointiKontrolli.anyEditing()) {
     // TODO: Lisää notifikaatio
     logger.warn('Route change denied: Still in editing state', from, to);
+    info('tallenna-tai-peruuta-muutoksesi-ensin');
     return;
   }
 

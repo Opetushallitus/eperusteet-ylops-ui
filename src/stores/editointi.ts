@@ -174,10 +174,10 @@ export class EditointiKontrolli {
 
   public async remove() {
     this.mstate.disabled = true;
-    await this.config.remove!(this.mstate.data);
     this.isRemoved = true;
     this.isEditingState = false;
     EditointiKontrolli.totalEditingEditors -= 1;
+    await this.config.remove!(this.mstate.data);
     this.logger.debug('Poistettu');
   }
 
@@ -189,9 +189,15 @@ export class EditointiKontrolli {
       this.logger.warn('Ei voi tallentaa ilman editointia');
     }
     else if (await this.validate()) {
-      await this.config.source.save(this.mstate.data);
       this.isEditingState = false;
       EditointiKontrolli.totalEditingEditors -= 1;
+      try {
+        await this.config.source.save(this.mstate.data);
+      }
+      catch (err) {
+        EditointiKontrolli.totalEditingEditors += 1;
+        this.isEditingState = true;
+      }
       this.logger.success('Tallennettu');
     }
     else {
