@@ -46,18 +46,27 @@ export default class RouteKasite extends EpOpsRoute {
     this.kasite = {
       termi: {},
     };
-    (this as any).$refs.terminLuontiModal.show();
+    (this as any).$refs.kasitteenLuontiModal.show();
   }
 
   avaaMuokkausModal(kasite) {
     this.kasite = _.cloneDeep(kasite);
-    (this as any).$refs.terminLuontiModal.show();
+    (this as any).$refs.kasitteenLuontiModal.show();
   }
 
-  async poistaKasite(kasite) {
+  avaaPoistoModal(kasite) {
+    this.kasite = _.cloneDeep(kasite);
+    (this as any).$refs.kasitteenPoistoModal.show();
+  }
+
+  async poistaKasite() {
+    if (!this.kasite || !this.kasite.id) {
+      return;
+    }
+
     try {
-      await Termisto.deleteTermi(this.opsId, kasite.id);
-      _.remove(this.termisto, k => k.kasite.id === kasite.id);
+      await Termisto.deleteTermi(this.opsId, this.kasite.id);
+      _.remove(this.termisto, k => k.kasite.id === this.kasite.id);
       this.termisto = [...this.termisto];
     }
     catch (err) {
@@ -106,7 +115,7 @@ export default class RouteKasite extends EpOpsRoute {
       else {
         await this.tallennaUusi();
       }
-      (this as any).$refs.terminLuontiModal.hide();
+      (this as any).$refs.kasitteenLuontiModal.hide();
     }
     catch (err) {
       // Todo: Tallennus epäonnistui

@@ -22,6 +22,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/CkUploadAdapter';
 import CkKasitePlugin from '@/ckplugins/CkKasitePlugin/CkKasitePlugin.js';
 import CkMathPlugin from '@/ckplugins/CkMathPlugin/CkMathPlugin.js';
+import CkCommentPlugin from '@/ckplugins/CkCommentPlugin/CkCommentPlugin.js';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
@@ -188,6 +189,7 @@ export default class CkEditor extends Mixins(EpValidation) {
       plugins: [
         ...commonPlugins,
         Bold,
+        CkCommentPlugin,
         CkKasitePlugin,
         CkMathPlugin,
         Italic,
