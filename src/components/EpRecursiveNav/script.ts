@@ -33,8 +33,8 @@ export default class EpRecursiveNav extends Vue {
       });
     }
 
-    this.current = (this.curTopItem.parent && this.curTopItem.parent.children) ? this.curTopItem.parent.children : this.valueCopy;
-    this.curTopItem = this.curTopItem.parent ? this.curTopItem.parent : null;
+    this.current = _.get(this.curTopItem, 'parent.children', this.valueCopy);
+    this.curTopItem = _.get(this.curTopItem, 'parent', null);
   }
 
   public enterSubmenu(item: SideMenuEntry) {

@@ -169,21 +169,20 @@ export default class RouteUkk extends Mixins(EpRoute) {
     }
   }
 
-  // Aloitetaan kysymyksen lisäämisen modaali
-  private startCreateKysymys() {
-    this.kysymys = {
-      organisaatiot: [],
-      $uusi: true
-    };
-    (this as any).$refs.createUpdateKysymys.show();
-  }
-
   // Aloitetaan kysymyksen muokkaamisen modaali
-  private startUpdateKysymys(kysymys: KysymysDto) {
-    this.kysymys = {
-      $uusi: false,
-      ..._.cloneDeep(kysymys)
-    };
+  private startKysymysModal(kysymys: KysymysDto) {
+    if (kysymys) {
+      this.kysymys = {
+        $uusi: false,
+        ..._.cloneDeep(kysymys)
+      };
+    }
+    else {
+      this.kysymys = {
+        organisaatiot: [],
+        $uusi: true
+      };
+    }
     (this as any).$refs.createUpdateKysymys.show();
   }
 

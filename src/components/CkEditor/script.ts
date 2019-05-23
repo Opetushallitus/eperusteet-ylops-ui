@@ -29,16 +29,32 @@ import EpValidation from '@/mixins/EpValidation';
 import { createLogger } from '@/stores/logger';
 
 const logger = createLogger('CkEditor');
-const commonPlugins = [
-  Essentials,
-  ParagraphPlugin,
-  PasteFromOffice,
-];
 const imageConfig = {
   toolbar: [
     'imageTextAlternative',
   ],
 };
+
+// Kaikkien editoritasojen yhteiset pluginit
+const commonPlugins = [
+  Essentials,
+  ParagraphPlugin,
+  PasteFromOffice,
+];
+
+// Pluginit jotka ladataan minimal tasoa ylemmillä yhteisesti
+const advancedCommonPlugins = [
+  Bold,
+  CkCommentPlugin,
+  CkKasitePlugin,
+  CkMathPlugin,
+  Italic,
+  Image,
+  ImageStyle,
+  ImageToolbar,
+  ListPlugin,
+  Strikethrough,
+];
 
 @Component
 export default class CkEditor extends Mixins(EpValidation) {
@@ -95,11 +111,11 @@ export default class CkEditor extends Mixins(EpValidation) {
     this.instance.setData(val || '');
   }
 
-  private async createEditorInstance() {
-    // Luodaan asetusobjekti
+  private getConfig() {
     let config: object;
     let enableImageUpload: boolean = false;
 
+    // Luodaan asetusobjekti
     switch (this.layout) {
     case 'simplified':
       enableImageUpload = (this.opsId > 0);
@@ -114,9 +130,13 @@ export default class CkEditor extends Mixins(EpValidation) {
       break;
     }
 
-    // Luodaan ckeditor instanssi
+    return { config, enableImageUpload };
+  }
+
+  private async createEditorInstance() {
     try {
-      // Instanssin luonti
+      // Luodaan ckeditor instanssi
+      const { config, enableImageUpload } = this.getConfig();
       this.instance = await InlineEditor
         .create(this.$refs.ckeditor, config);
       this.instance.setData(this.value);
@@ -160,16 +180,8 @@ export default class CkEditor extends Mixins(EpValidation) {
       language: this.locale,
       plugins: [
         ...commonPlugins,
-        Bold,
-        CkKasitePlugin,
-        CkMathPlugin,
-        Italic,
-        Image,
-        ImageStyle,
+        ...advancedCommonPlugins,
         ...uploadEnabled ? [ImageUpload] : [],
-        ImageToolbar,
-        ListPlugin,
-        Strikethrough,
       ],
       toolbar: [
         'bold', 'italic', 'strikethrough',
@@ -188,18 +200,9 @@ export default class CkEditor extends Mixins(EpValidation) {
       language: this.locale,
       plugins: [
         ...commonPlugins,
-        Bold,
-        CkCommentPlugin,
-        CkKasitePlugin,
-        CkMathPlugin,
-        Italic,
-        Image,
-        ImageStyle,
+        ...advancedCommonPlugins,
         ...uploadEnabled ? [ImageUpload] : [],
-        ImageToolbar,
-        ListPlugin,
         LinkPlugin,
-        Strikethrough,
         Table,
         TableToolbar,
       ],

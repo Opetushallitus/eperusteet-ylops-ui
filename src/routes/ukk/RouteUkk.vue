@@ -16,7 +16,7 @@ ep-main-view
         input.form-check-input(:id="org.oid", type="checkbox", v-model="org.$checked")
         label.form-check-label(:for="org.oid") {{ $kaanna(org.nimi) }}
       p
-        b-button.float-right(variant="link", @click="startCreateKysymys")
+        b-button.float-right(variant="link", @click="startKysymysModal")
           fas.mr-2(icon="plus-circle")
           span {{ $t('lisaa-uusi-kysymys') }}
 
@@ -29,7 +29,7 @@ ep-main-view
         //p.float-right(v-if="(new Date().getTime() - kysymys.luotu) / 1000 / 60 / 60 / 24 < 30") {{ $t('uusi') }}
       div.col
         .float-right
-          button.btn.btn-link(@click="startUpdateKysymys(kysymys)")
+          button.btn.btn-link(@click="startKysymysModal(kysymys)")
             fas(icon="pen")
           button.btn.btn-link(@click="startRemoveKysymys(kysymys)")
             fas(icon="times")

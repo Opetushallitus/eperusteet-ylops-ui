@@ -42,15 +42,15 @@ export default class RouteKasite extends EpOpsRoute {
   private kasite: TermiDto = {};
   private hakusana: string = '';
 
-  avaaLuontiModal(e) {
-    this.kasite = {
-      termi: {},
-    };
-    (this as any).$refs.kasitteenLuontiModal.show();
-  }
-
   avaaMuokkausModal(kasite) {
-    this.kasite = _.cloneDeep(kasite);
+    if (!kasite) {
+      this.kasite = {
+        termi: {},
+      };
+    }
+    else {
+      this.kasite = _.cloneDeep(kasite);
+    }
     (this as any).$refs.kasitteenLuontiModal.show();
   }
 

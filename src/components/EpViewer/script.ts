@@ -65,33 +65,29 @@ export default class EpViewer extends Vue {
     let refCnt = 1;
     this.$el.querySelectorAll('abbr').forEach(el => {
       // Annetaan abbr elementille ID, johon popover tarraa kiinni
-      if (!el.id) {
-        el.id = `abbr-ref-${refCnt}`;
-        refCnt++;
-      }
+      refCnt++;
+      el.id = el.id ? el.id : `abbr-ref-${refCnt}`;
 
       // Haetaan käsitteen otsikko ja sisältö
       const { title, content } = this.haeKasiteData(el);
-      if (title === '' && content === '') {
-        return;
+      if (title !== '' || content !== '') {
+        // Luodaan itse popover
+        const CoClass = Vue.extend(Popover);
+        const instance = new CoClass({
+          propsData: {
+            title,
+            target: el.id,
+            placement: 'bottomright',
+          },
+        });
+        instance.$slots.default = [this.luoSisaltoSlot(content)];
+        instance.$mount();
+
+        this.toolTipInstances.push(instance);
+
+        // Liitetään popover komponenttiin
+        (this.$refs.tooltipContainer as HTMLElement).appendChild(instance.$el);
       }
-
-      // Luodaan itse popover
-      const CoClass = Vue.extend(Popover);
-      const instance = new CoClass({
-        propsData: {
-          title,
-          target: el.id,
-          placement: 'bottomright',
-        },
-      });
-      instance.$slots.default = [this.luoSisaltoSlot(content)];
-      instance.$mount();
-
-      this.toolTipInstances.push(instance);
-
-      // Liitetään popover komponenttiin
-      (this.$refs.tooltipContainer as HTMLElement).appendChild(instance.$el);
     });
   }
 
