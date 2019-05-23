@@ -42,22 +42,31 @@ export default class RouteKasite extends EpOpsRoute {
   private kasite: TermiDto = {};
   private hakusana: string = '';
 
-  avaaLuontiModal(e) {
-    this.kasite = {
-      termi: {},
-    };
-    (this as any).$refs.terminLuontiModal.show();
+  avaaMuokkausModal(kasite: TermiDto | null) {
+    if (!kasite) {
+      this.kasite = {
+        termi: {},
+      };
+    }
+    else {
+      this.kasite = _.cloneDeep(kasite);
+    }
+    (this as any).$refs.kasitteenLuontiModal.show();
   }
 
-  avaaMuokkausModal(kasite) {
+  avaaPoistoModal(kasite) {
     this.kasite = _.cloneDeep(kasite);
-    (this as any).$refs.terminLuontiModal.show();
+    (this as any).$refs.kasitteenPoistoModal.show();
   }
 
-  async poistaKasite(kasite) {
+  async poistaKasite() {
+    if (!this.kasite || !this.kasite.id) {
+      return;
+    }
+
     try {
-      await Termisto.deleteTermi(this.opsId, kasite.id);
-      _.remove(this.termisto, k => k.kasite.id === kasite.id);
+      await Termisto.deleteTermi(this.opsId, this.kasite.id);
+      _.remove(this.termisto, k => k.kasite.id === this.kasite.id);
       this.termisto = [...this.termisto];
     }
     catch (err) {
@@ -77,7 +86,7 @@ export default class RouteKasite extends EpOpsRoute {
       kasiteId,
       this.kasite
     );
-    _.remove(this.termisto, termi => termi.id === res.data.id);
+    _.remove(this.termisto, termi => termi.kasite.id === kasiteId);
     this.termisto.push({
       closed: true,
       kasite: res.data,
@@ -106,7 +115,7 @@ export default class RouteKasite extends EpOpsRoute {
       else {
         await this.tallennaUusi();
       }
-      (this as any).$refs.terminLuontiModal.hide();
+      (this as any).$refs.kasitteenLuontiModal.hide();
     }
     catch (err) {
       // Todo: Tallennus epäonnistui

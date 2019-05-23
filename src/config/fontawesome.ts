@@ -6,6 +6,7 @@ import * as regular from '@fortawesome/free-regular-svg-icons';
 import * as oph from './icons';
 
 library.add(regular.faComment);
+library.add(regular.faTrashAlt);
 library.add(solid.faBars);
 library.add(solid.faBell);
 library.add(solid.faBookmark);

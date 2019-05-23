@@ -1,0 +1,121 @@
+.kasitteet {
+  margin-top: 4px;
+
+  .ylapaneeli {
+    border-bottom: 1px solid #eee;
+    font-size: 90%;
+    font-weight: 600;
+    padding: 8px 5px;
+
+    .otsikko {
+      font-size: 150%;
+    }
+  }
+
+  .sisalto {
+    padding: 10px;
+  }
+}
+
+.otsikko-toiminnot {
+  display: flex;
+
+  .has-search {
+    flex: 1 1 0%;
+  }
+
+  .lisaysnappi {
+    flex: 1 1 20%;
+    text-align: right;
+
+    button {
+      border: 0;
+      outline: 0;
+      background-color: transparent;
+
+      span {
+        vertical-align: text-top;
+      }
+
+      svg {
+        width: 25px;
+        height: 25px;
+        vertical-align: middle;
+        color: #0041dc;
+      }
+    }
+  }
+}
+
+.kasitelista {
+  display:flex;
+  flex-wrap: wrap;
+}
+
+.kasite:nth-child(odd) {
+  background-color: #f3f3f3;
+}
+
+.kasite {
+  padding: 5px 15px;
+  display: flex;
+  align-items: top;
+  width: 100%;
+  line-height: 2.5em;
+
+  .termi {
+    flex-grow: 2;
+    font-weight: 600;
+    width: 6em;
+    min-width: auto;
+  }
+
+  .termi.closed {
+    white-space: nowrap;
+
+    /deep/ div {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .selitys {
+    margin-left: 10px;
+    flex-grow: 6;
+    width: 10em;
+    min-width: auto;
+    overflow: hidden;
+    line-height: 1.5em;
+
+    /deep/ img {
+      max-width: 100%;
+    }
+
+  }
+
+  .selitys.open {
+    margin-top: 0.5em;
+  }
+
+  .selitys.closed {
+    height: 2.5em;
+    line-height: 2.5em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    /deep/ p {
+      margin: 0;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .toiminnot {
+    flex-grow: 1;
+    text-align: right;
+    width: 7em;
+  }
+  .toiminnot svg {
+    color: #222;
+  }
+}

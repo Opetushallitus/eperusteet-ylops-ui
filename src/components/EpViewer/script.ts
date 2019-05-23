@@ -11,10 +11,11 @@ export default class EpViewer extends Vue {
   @Prop() private value!: string;
 
   // OPS:n käsitteet (käsitemodulia varten)
-  @Prop({ default: {} })
+  @Prop({ default: () => {} })
   private opsKasitteet!: object;
 
   private timeoutId: number | undefined = undefined;
+  private toolTipInstances:any = [];
 
   public mounted() {
     this.reRenderKatex();
@@ -54,31 +55,39 @@ export default class EpViewer extends Vue {
   }
 
   private reRenderAbbr() {
+    // Poistetaan edelliset tooltip:t
+    this.toolTipInstances.forEach(instance => {
+      instance.$destroy();
+    });
+    (this.$refs.tooltipContainer as HTMLElement).innerHTML = '';
+
+    // Luodaan tooltip:t abbr elementeille
     let refCnt = 1;
     this.$el.querySelectorAll('abbr').forEach(el => {
       // Annetaan abbr elementille ID, johon popover tarraa kiinni
-      if (!el.id) {
-        el.id = `abbr-ref-${refCnt}`;
-        refCnt++;
-      }
+      refCnt++;
+      el.id = el.id ? el.id : `abbr-ref-${refCnt}`;
 
       // Haetaan käsitteen otsikko ja sisältö
       const { title, content } = this.haeKasiteData(el);
+      if (title !== '' || content !== '') {
+        // Luodaan itse popover
+        const CoClass = Vue.extend(Popover);
+        const instance = new CoClass({
+          propsData: {
+            title,
+            target: el.id,
+            placement: 'bottomright',
+          },
+        });
+        instance.$slots.default = [this.luoSisaltoSlot(content)];
+        instance.$mount();
 
-      // Luodaan itse popover
-      const CoClass = Vue.extend(Popover);
-      const instance = new CoClass({
-        propsData: {
-          title,
-          target: el.id,
-          placement: 'bottomright',
-        },
-      });
-      instance.$slots.default = [this.luoSisaltoSlot(content)];
-      instance.$mount();
+        this.toolTipInstances.push(instance);
 
-      // Liitetään popover komponenttiin
-      (this.$refs.tooltipContainer as HTMLElement).appendChild(instance.$el);
+        // Liitetään popover komponenttiin
+        (this.$refs.tooltipContainer as HTMLElement).appendChild(instance.$el);
+      }
     });
   }
 
