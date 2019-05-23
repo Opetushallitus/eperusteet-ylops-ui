@@ -42,7 +42,7 @@ export default class RouteKasite extends EpOpsRoute {
   private kasite: TermiDto = {};
   private hakusana: string = '';
 
-  avaaMuokkausModal(kasite) {
+  avaaMuokkausModal(kasite: TermiDto | null) {
     if (!kasite) {
       this.kasite = {
         termi: {},
@@ -86,7 +86,7 @@ export default class RouteKasite extends EpOpsRoute {
       kasiteId,
       this.kasite
     );
-    _.remove(this.termisto, termi => termi.id === res.data.id);
+    _.remove(this.termisto, termi => termi.kasite.id === kasiteId);
     this.termisto.push({
       closed: true,
       kasite: res.data,

@@ -16,7 +16,7 @@ ep-main-view
         input.form-check-input(:id="org.oid", type="checkbox", v-model="org.$checked")
         label.form-check-label(:for="org.oid") {{ $kaanna(org.nimi) }}
       p
-        b-button.float-right(variant="link", @click="startKysymysModal")
+        b-button.float-right(variant="link", @click="startKysymysModal(null)")
           fas.mr-2(icon="plus-circle")
           span {{ $t('lisaa-uusi-kysymys') }}
 

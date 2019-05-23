@@ -170,7 +170,7 @@ export default class RouteUkk extends Mixins(EpRoute) {
   }
 
   // Aloitetaan kysymyksen muokkaamisen modaali
-  private startKysymysModal(kysymys: KysymysDto) {
+  private startKysymysModal(kysymys: KysymysDto | null) {
     if (kysymys) {
       this.kysymys = {
         $uusi: false,

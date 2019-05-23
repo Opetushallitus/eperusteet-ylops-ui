@@ -8,7 +8,7 @@
     .otsikko-toiminnot
       ep-search(v-model="hakusana")
       .lisaysnappi
-        button(@click="avaaMuokkausModal")
+        button(@click="avaaMuokkausModal(null)")
           fas.mr-2(icon="plus-circle")
           span {{ $t('lisaa-kasite') }}
 
