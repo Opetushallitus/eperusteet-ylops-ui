@@ -6,6 +6,8 @@ import EpViewer from '@/components/EpViewer/EpViewer.vue';
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
 
+import 'katex/dist/katex.css';
+
 @Component({
   components: {
     CkEditor,

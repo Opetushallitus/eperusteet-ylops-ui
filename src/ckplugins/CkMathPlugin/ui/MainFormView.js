@@ -18,16 +18,16 @@ import TextareaView from './TextareaView.js';
 import HelpTextView from './HelpTextView.js';
 
 export default class MainFormView extends View {
-  constructor(locale) {
+  constructor(locale, vueRef) {
     super(locale);
 
     // Create key event & focus trackers
     this.createKeyAndFocusTrackers();
 
     // Create help texts
-    const textView1 = new HelpTextView(locale, 'Insert tex equation:');
-    const textView2 = new HelpTextView(locale, 'Equation preview:');
-    this.renderView = new HelpTextView(locale, '');
+    const textView1 = new HelpTextView(locale, vueRef.translateString('lisaa-tex-kaava')+':');
+    const textView2 = new HelpTextView(locale, vueRef.translateString('kaavan-esikatselu')+':');
+    this.renderView = new HelpTextView(locale, '', 'ck-kmath-preview');
 
     //
     this.set({

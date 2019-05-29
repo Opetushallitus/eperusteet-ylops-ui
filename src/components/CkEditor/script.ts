@@ -192,6 +192,10 @@ export default class CkEditor extends Mixins(EpValidation) {
         'undo', 'redo',
       ],
       image: imageConfig,
+      ckeperusteet: {
+        kasitteet: this.opsKasitteet,
+        vue: this,
+      },
     };
   }
 
@@ -217,9 +221,15 @@ export default class CkEditor extends Mixins(EpValidation) {
         'undo', 'redo',
       ],
       image: imageConfig,
-      ckkasite: {
+      ckeperusteet: {
         kasitteet: this.opsKasitteet,
+        vue: this,
       },
     };
+  }
+
+  // Tämä hoitaa tekstin kääntämisen plugineissa
+  private translateString(text: string) {
+    return this.$t(text);
   }
 }

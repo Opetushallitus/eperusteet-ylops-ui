@@ -22,6 +22,9 @@ export default class CkKasitePlugin extends Plugin {
   init() {
     const editor = this.editor;
 
+    // Read ckeditor component instance from from config
+    this.vue = this.readVueRefFromConfig();
+
     // Register schema changes & abbr command
     this.registerSchema(editor);
     editor.commands.add('abbr', new AbbrCommand(editor));
@@ -97,7 +100,7 @@ export default class CkKasitePlugin extends Plugin {
       const view = new ButtonView(locale);
 
       view.set({
-        label: 'Viittaus käsitteeseen',
+        label: this.vue.translateString( 'viittaus-kasitteeseen' ),
         icon: pluginIcon,
         tooltip: true
       });
@@ -110,20 +113,25 @@ export default class CkKasitePlugin extends Plugin {
     });
   }
 
-  readConfiguration() {
-    const kasiteObj = this.editor.config.get('ckkasite.kasitteet');
-    const kasiteArr = !kasiteObj ? [] : Object.keys(kasiteObj).map(key => {
-      return { title: kasiteObj[key].title, key };
-    });
+  readVueRefFromConfig() {
+    // config.get doesn't work, because it tries to cast obj reference to string
+    const config=this.editor.config._config;
+    return config.ckeperusteet && config.ckeperusteet.vue ? config.ckeperusteet.vue : null;
+  }
+
+  readTermListFromConfig() {
+    const kasiteObj = this.editor.config.get('ckeperusteet.kasitteet');
+    const kasiteArr = !kasiteObj ? [] : Object.keys(kasiteObj)
+      .map(key => ({ title: kasiteObj[key].title, key }) );
 
     return [
-      { title: 'Valitse käsite', key: '' },
+      { title: this.vue.translateString( 'valitse-kasite' ), key: '' },
       ...kasiteArr,
     ];
   }
 
   createPluginUiForm(editor) {
-    const kasitteet = this.readConfiguration();
+    const kasitteet = this.readTermListFromConfig();
     const formView = new KasiteFormView(editor.locale, kasitteet);
 
     // Listen to 'submit' button click

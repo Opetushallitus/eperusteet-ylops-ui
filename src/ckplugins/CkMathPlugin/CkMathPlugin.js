@@ -22,6 +22,9 @@ export default class CkMathPlugin extends Plugin {
   init() {
     const editor = this.editor;
 
+    // Read ckeditor component instance from from config
+    this.vue = this.readVueRefFromConfig();
+
     // Create button for toolbar & register schema
     this.createButton();
     this.registerSchema(editor);
@@ -88,6 +91,10 @@ export default class CkMathPlugin extends Plugin {
       return;
     }
 
+    // Remove CK editor reset styles (they interfere with katex)
+    const balloonHolder = this.balloon.view.element.parentNode;
+    balloonHolder.classList.remove('ck-reset_all');
+
     // Create contextual balloon (ui for plugin)
     this.balloon.add({
       view: this.formView,
@@ -95,8 +102,19 @@ export default class CkMathPlugin extends Plugin {
     });
   }
 
+  readVueRefFromConfig() {
+    // config.get doesn't work, because it tries to cast obj reference to string
+    const config=this.editor.config._config;
+    return config.ckeperusteet && config.ckeperusteet.vue ? config.ckeperusteet.vue : null;
+  }
+
   removePluginUiForm() {
     this.balloon.remove(this.formView);
+
+    // Restore ckeditor reset style
+    const balloonHolder = this.balloon.view.element.parentNode;
+    balloonHolder.classList.add('ck-reset_all');
+
     this.editor.editing.view.focus();
   }
 
@@ -112,7 +130,7 @@ export default class CkMathPlugin extends Plugin {
   }
 
   createPluginUiForm(editor) {
-    const formView = new MainFormView(editor.locale);
+    const formView = new MainFormView(editor.locale, this.vue);
 
     // Listen to 'submit' button click
     this.listenTo(formView, 'submit', () => {
@@ -139,7 +157,7 @@ export default class CkMathPlugin extends Plugin {
       const view = new ButtonView(locale);
 
       view.set({
-        label: 'Insert math',
+        label: this.vue.translateString( 'lisaa-kaava' ),
         icon: pluginIcon,
         tooltip: true
       });
