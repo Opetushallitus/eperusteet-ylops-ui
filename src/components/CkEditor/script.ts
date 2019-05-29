@@ -42,20 +42,6 @@ const commonPlugins = [
   PasteFromOffice,
 ];
 
-// Pluginit jotka ladataan minimal tasoa ylemmillä yhteisesti
-const advancedCommonPlugins = [
-  Bold,
-  CkCommentPlugin,
-  CkKasitePlugin,
-  CkMathPlugin,
-  Italic,
-  Image,
-  ImageStyle,
-  ImageToolbar,
-  ListPlugin,
-  Strikethrough,
-];
-
 @Component
 export default class CkEditor extends Mixins(EpValidation) {
   // Muokattava tieto (tukee v-model:ia)
@@ -82,6 +68,7 @@ export default class CkEditor extends Mixins(EpValidation) {
   // CKEditorin JS instanssi
   private instance: any = null;
   private lastEmittedValue: string = '';
+  private uploadEnabled: boolean = false;
 
   public async mounted() {
     this.createEditorInstance();
@@ -113,36 +100,36 @@ export default class CkEditor extends Mixins(EpValidation) {
 
   private getConfig() {
     let config: object;
-    let enableImageUpload: boolean = false;
+    this.uploadEnabled = false;
 
     // Luodaan asetusobjekti
     switch (this.layout) {
     case 'simplified':
-      enableImageUpload = (this.opsId > 0);
-      config = this.getSimplifiedSettings(enableImageUpload);
+      this.uploadEnabled = (this.opsId > 0);
+      config = this.getSimplifiedSettings();
       break;
     case 'normal':
-      enableImageUpload = (this.opsId > 0);
-      config = this.getNormalSettings(enableImageUpload);
+      this.uploadEnabled = (this.opsId > 0);
+      config = this.getNormalSettings();
       break;
     default:
       config = this.getMinimalSettings();
       break;
     }
 
-    return { config, enableImageUpload };
+    return config;
   }
 
   private async createEditorInstance() {
     try {
       // Luodaan ckeditor instanssi
-      const { config, enableImageUpload } = this.getConfig();
+      const config = this.getConfig();
       this.instance = await InlineEditor
         .create(this.$refs.ckeditor, config);
       this.instance.setData(this.value);
       this.setEditorEvents();
 
-      if (enableImageUpload) {
+      if (this.uploadEnabled) {
         this.instance.plugins.get('FileRepository').createUploadAdapter = loader => {
           return new CkUploadAdapter(loader, this.opsId);
         };
@@ -175,17 +162,30 @@ export default class CkEditor extends Mixins(EpValidation) {
     };
   }
 
-  private getSimplifiedSettings(uploadEnabled: boolean): object {
+  private get advancedCommonPlugins() {
+    return [
+      ...commonPlugins,
+      Bold,
+      CkCommentPlugin,
+      CkKasitePlugin,
+      CkMathPlugin,
+      Italic,
+      Image,
+      ImageStyle,
+      ImageToolbar,
+      ListPlugin,
+      Strikethrough,
+      ...this.uploadEnabled ? [ImageUpload] : [],
+    ];
+  }
+
+  private getSimplifiedSettings(): object {
     return {
       language: this.locale,
-      plugins: [
-        ...commonPlugins,
-        ...advancedCommonPlugins,
-        ...uploadEnabled ? [ImageUpload] : [],
-      ],
+      plugins: this.advancedCommonPlugins,
       toolbar: [
         'bold', 'italic', 'strikethrough',
-        ...uploadEnabled ? ['|', 'imageUpload'] : [],
+        ...this.uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
         'bulletedList', 'numberedList',
         '|',
@@ -199,20 +199,18 @@ export default class CkEditor extends Mixins(EpValidation) {
     };
   }
 
-  private getNormalSettings(uploadEnabled: boolean): object {
+  private getNormalSettings(): object {
     return {
       language: this.locale,
       plugins: [
-        ...commonPlugins,
-        ...advancedCommonPlugins,
-        ...uploadEnabled ? [ImageUpload] : [],
+        ...this.advancedCommonPlugins,
         LinkPlugin,
         Table,
         TableToolbar,
       ],
       toolbar: [
         'bold', 'italic', 'strikethrough',
-        ...uploadEnabled ? ['|', 'imageUpload'] : [],
+        ...this.uploadEnabled ? ['|', 'imageUpload'] : [],
         '|',
         'bulletedList', 'numberedList',
         '|',
