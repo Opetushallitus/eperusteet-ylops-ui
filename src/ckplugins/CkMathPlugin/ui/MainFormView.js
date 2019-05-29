@@ -20,6 +20,7 @@ import HelpTextView from './HelpTextView.js';
 export default class MainFormView extends View {
   constructor(locale, vueRef) {
     super(locale);
+    this.vueRef = vueRef;
 
     // Create key event & focus trackers
     this.createKeyAndFocusTrackers();
@@ -102,10 +103,10 @@ export default class MainFormView extends View {
 
   createUiElements(locale) {
     // Create save & cancel buttons
-    this.saveBtn = this.createButton('Add', checkIcon, 'ck-button-save', null);
+    this.saveBtn = this.createButton('lisaa', checkIcon, 'ck-button-save', null);
     this.saveBtn.type = 'submit';
     this.saveBtn.isEnabled = false;
-    this.cancelBtn = this.createButton('Cancel', cancelIcon, 'ck-button-cancel', 'cancel');
+    this.cancelBtn = this.createButton('peruuta', cancelIcon, 'ck-button-cancel', 'cancel');
 
     // Create textarea for equation
     this.mathTextarea = new TextareaView(locale);
@@ -124,8 +125,10 @@ export default class MainFormView extends View {
     ];
   }
 
-  createButton(label, icon, className, eventName) {
+  createButton(labelKey, icon, className, eventName) {
     const button = new ButtonView(this.locale);
+    const label = this.vueRef.translateString(labelKey);
+
     button.set({ label, icon, tooltip: true });
     button.extendTemplate({ attributes: { class: className } });
     if (eventName) {

@@ -15,8 +15,9 @@ import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import KasiteFormSelect from './KasiteFormSelect.js';
 
 export default class KasiteFormView extends View {
-  constructor(locale, kasitteet) {
+  constructor(locale, kasitteet, vueRef) {
     super(locale);
+    this.vueRef = vueRef;
 
     this.set({
       kasiteKey: '',
@@ -87,10 +88,10 @@ export default class KasiteFormView extends View {
 
   createUiElements(locale, kasitteet) {
     // Create save & cancel buttons
-    this.saveBtn = this.createButton('Lisää', checkIcon, 'ck-button-save', null);
+    this.saveBtn = this.createButton('lisaa', checkIcon, 'ck-button-save', null);
     this.saveBtn.type = 'submit';
     this.saveBtn.isEnabled = false;
-    this.cancelBtn = this.createButton('Peruuta', cancelIcon, 'ck-button-cancel', 'cancel');
+    this.cancelBtn = this.createButton('peruuta', cancelIcon, 'ck-button-cancel', 'cancel');
 
     // Create select element
     this.kasiteSelect = new KasiteFormSelect(locale, kasitteet);
@@ -106,8 +107,10 @@ export default class KasiteFormView extends View {
     ];
   }
 
-  createButton(label, icon, className, eventName) {
+  createButton(labelKey, icon, className, eventName) {
     const button = new ButtonView(this.locale);
+    const label = this.vueRef.translateString(labelKey);
+
     button.set({ label, icon, tooltip: true });
     button.extendTemplate({ attributes: { class: className } });
     if (eventName) {

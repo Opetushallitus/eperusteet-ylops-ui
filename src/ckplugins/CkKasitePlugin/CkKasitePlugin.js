@@ -23,7 +23,7 @@ export default class CkKasitePlugin extends Plugin {
     const editor = this.editor;
 
     // Read ckeditor component instance from from config
-    this.vue = this.readVueRefFromConfig();
+    this.vueRef = this.readVueRefFromConfig();
 
     // Register schema changes & abbr command
     this.registerSchema(editor);
@@ -100,7 +100,7 @@ export default class CkKasitePlugin extends Plugin {
       const view = new ButtonView(locale);
 
       view.set({
-        label: this.vue.translateString( 'viittaus-kasitteeseen' ),
+        label: this.vueRef.translateString( 'viittaus-kasitteeseen' ),
         icon: pluginIcon,
         tooltip: true
       });
@@ -125,14 +125,14 @@ export default class CkKasitePlugin extends Plugin {
       .map(key => ({ title: kasiteObj[key].title, key }) );
 
     return [
-      { title: this.vue.translateString( 'valitse-kasite' ), key: '' },
+      { title: this.vueRef.translateString( 'valitse-kasite' ), key: '' },
       ...kasiteArr,
     ];
   }
 
   createPluginUiForm(editor) {
     const kasitteet = this.readTermListFromConfig();
-    const formView = new KasiteFormView(editor.locale, kasitteet);
+    const formView = new KasiteFormView(editor.locale, kasitteet, this.vueRef);
 
     // Listen to 'submit' button click
     this.listenTo(formView, 'submit', () => {
