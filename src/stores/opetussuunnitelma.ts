@@ -55,17 +55,13 @@ class OpetussuunnitelmaStore {
   private initcv: Promise<void> | null = null;
 
   public async getOtsikot() {
-    if (this.opetussuunnitelma && this.opetussuunnitelma.id) {
-      return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opetussuunnitelma.id)).data;
-    }
-    return null;
+    const opsId = _.get(this.opetussuunnitelma, 'id', null);
+    return opsId ? (await OpetussuunnitelmanSisalto.getTekstiOtsikot(opsId)).data : null;
   }
 
   public async getKasitteet() {
-    if (this.opetussuunnitelma && this.opetussuunnitelma.id) {
-      return (await Termisto.getAllTermit(this.opetussuunnitelma.id)).data;
-    }
-    return [];
+    const opsId = _.get(this.opetussuunnitelma, 'id', null);
+    return opsId ? (await Termisto.getAllTermit(opsId)).data : [];
   }
 
   public async updateSisalto() {
