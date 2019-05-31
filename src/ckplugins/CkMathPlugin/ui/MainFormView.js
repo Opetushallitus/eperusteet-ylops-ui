@@ -18,16 +18,17 @@ import TextareaView from './TextareaView.js';
 import HelpTextView from './HelpTextView.js';
 
 export default class MainFormView extends View {
-  constructor(locale) {
+  constructor(locale, vueRef) {
     super(locale);
+    this.vueRef = vueRef;
 
     // Create key event & focus trackers
     this.createKeyAndFocusTrackers();
 
     // Create help texts
-    const textView1 = new HelpTextView(locale, 'Insert tex equation:');
-    const textView2 = new HelpTextView(locale, 'Equation preview:');
-    this.renderView = new HelpTextView(locale, '');
+    const textView1 = new HelpTextView(locale, vueRef.translateString('lisaa-tex-kaava')+':');
+    const textView2 = new HelpTextView(locale, vueRef.translateString('kaavan-esikatselu')+':');
+    this.renderView = new HelpTextView(locale, '', 'ck-kmath-preview');
 
     //
     this.set({
@@ -102,10 +103,10 @@ export default class MainFormView extends View {
 
   createUiElements(locale) {
     // Create save & cancel buttons
-    this.saveBtn = this.createButton('Add', checkIcon, 'ck-button-save', null);
+    this.saveBtn = this.createButton('lisaa', checkIcon, 'ck-button-save', null);
     this.saveBtn.type = 'submit';
     this.saveBtn.isEnabled = false;
-    this.cancelBtn = this.createButton('Cancel', cancelIcon, 'ck-button-cancel', 'cancel');
+    this.cancelBtn = this.createButton('peruuta', cancelIcon, 'ck-button-cancel', 'cancel');
 
     // Create textarea for equation
     this.mathTextarea = new TextareaView(locale);
@@ -124,8 +125,10 @@ export default class MainFormView extends View {
     ];
   }
 
-  createButton(label, icon, className, eventName) {
+  createButton(labelKey, icon, className, eventName) {
     const button = new ButtonView(this.locale);
+    const label = this.vueRef.translateString(labelKey);
+
     button.set({ label, icon, tooltip: true });
     button.extendTemplate({ attributes: { class: className } });
     if (eventName) {

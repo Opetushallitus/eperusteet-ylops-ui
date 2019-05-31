@@ -1,10 +1,26 @@
-import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
-import { Lops2019ValidointiDto, Matala, Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import {
+  Lops2019,
+  Ohjeet,
+  OpetussuunnitelmanSisalto,
+  Opintojaksot,
+  Oppiaineet,
+  Opetussuunnitelmat,
+  Termisto,
+} from '@/api';
+import {
+  Matala,
+  Lops2019PaikallinenOppiaineDto,
+  Lops2019OpintojaksoDto,
+  OhjeDto,
+  OpetussuunnitelmaKevytDto,
+  Puu,
+  TekstiKappaleViiteKevytDto,
+  TermiDto,
+} from '@/tyypit';
 import { AxiosResponse } from 'axios';
 import { createLogger } from './logger';
 import { State, Store } from './store';
 import { success, fail } from '@/utils/notifications';
-import Vue from 'vue';
 import _ from 'lodash';
 
 const logger = createLogger('Opetussuunnitelma');
@@ -32,20 +48,25 @@ class OpetussuunnitelmaStore {
   @State()
   public opintojaksot: Lops2019OpintojaksoDto[] = [];
 
+  @State()
+  public kasitteet: TermiDto[] = [];
+
   private opsId: number | null = null;
   private initcv: Promise<void> | null = null;
 
   public async getOtsikot() {
-    if (this.opetussuunnitelma && this.opetussuunnitelma.id) {
-      return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opetussuunnitelma.id)).data;
-    }
-    else {
-      return null;
-    }
+    const opsId = _.get(this.opetussuunnitelma, 'id', null);
+    return opsId ? (await OpetussuunnitelmanSisalto.getTekstiOtsikot(opsId)).data : null;
+  }
+
+  public async getKasitteet() {
+    const opsId = _.get(this.opetussuunnitelma, 'id', null);
+    return opsId ? (await Termisto.getAllTermit(opsId)).data : [];
   }
 
   public async updateSisalto() {
     this.sisalto = await this.getOtsikot();
+    this.kasitteet = await this.getKasitteet();
   }
 
   public async init(id: number) {

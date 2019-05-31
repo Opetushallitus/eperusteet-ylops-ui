@@ -3,7 +3,6 @@ import _ from 'lodash';
 import EpContentBase from '@/components/EpContentBase/EpContentBase.vue';
 import EpValidation from '@/mixins/EpValidation';
 
-import { Termisto } from '@/api';
 import { EditorLayout, TermiDto } from '@/tyypit';
 import { Kielet } from '@/stores/kieli';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
@@ -30,28 +29,20 @@ export default class EpContent extends Mixins(EpValidation) {
   @Prop({ default: '' })
   private help!: string;
 
-  private termisto: TermiDto[] = [];
-
-  async created() {
-    try {
-      // Ladataan kaikki käsitteet
-      const resp = await Termisto.getAllTermit(this.opsId);
-      this.termisto = resp.data;
-    }
-    catch (err) {
-      // Todo: Termien lataus epäonnistui
-    }
+  get opsId() {
+    return this.isOpsRoute ? _.get(Opetussuunnitelma, 'opetussuunnitelma.id', 0) : 0;
   }
 
-  get opsId() {
-    return _.get(Opetussuunnitelma, 'opetussuunnitelma.id', 0);
+  get isOpsRoute() {
+    return this.$route && this.$route.matched.filter(r => r.name === 'opetussuunnitelma').length > 0;
   }
 
   get opsKasitteet() {
     const kieli = Kielet.getSisaltoKieli();
+    const termisto = Opetussuunnitelma.kasitteet;
 
     // Muodostetaan käsitteistä map nykyisen sisältökielen tiedoilla
-    return this.termisto.reduce((o, kasite) => {
+    return termisto.reduce((o, kasite) => {
       const title = _.get(kasite, `termi.${kieli}`, '');
       const content = _.get(kasite, `selitys.${kieli}`, '');
       const avain = _.get(kasite, 'avain', null);
