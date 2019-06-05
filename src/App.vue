@@ -1,7 +1,7 @@
 <template lang="pug">
 div(v-if="!isInitializing")
   router-view
-  notifications(position="bottom right")
+  notifications(style="margin-right: 6px; margin-top: 90px" position="top right" :max="3")
 </template>
 
 <script lang="ts">

@@ -90,6 +90,7 @@ export type Puu = GApi.Puu;
 export type RevisionDto = GApi.RevisionDto;
 export type TekstiKappaleViiteKevytDto = GApi.TekstiKappaleViiteKevytDto;
 export type TermiDto = GApi.TermiDto;
+export type UusiJulkaisuDto = GApi.UusiJulkaisuDto;
 
 export default GApi;
 // export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;

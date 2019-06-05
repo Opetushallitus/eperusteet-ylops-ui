@@ -11,7 +11,10 @@ div
             :chartColor="graph.colorScheme",
             :value="graph.value")
       .info
-        h1 {{ $kaanna(ops.nimi) }}
+        h1
+          span {{ $kaanna(ops.nimi) }}
+          span.ml-2(v-if="isPohja") ({{ $kaanna('pohja') }})
+          b-badge(variant="success").ml-2(v-if="isValmisPohja") {{ $t('julkinen') }}
         h4.secondary {{ $t(ops.koulutustyyppi) }}
         h6.secondary {{ ops.perusteenDiaarinumero }}
 
@@ -28,7 +31,7 @@ div
 <script lang="ts">
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoot';
+import EpOpsRoute from '@/mixins/EpOpsRoute';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import {
   EpChart,
@@ -49,16 +52,13 @@ import {
     OpsSidenav,
   },
 })
-export default class RouteOpetussuunnitelma extends Mixins(EpRoute) {
+export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   get graph() {
+    console.log(Opetussuunnitelma.progress);
     return {
       colorScheme: 'vihrea_sininen',
-      value: 80,
+      value: Opetussuunnitelma.progress,
     };
-  }
-
-  private get ops() {
-    return Opetussuunnitelma.opetussuunnitelma;
   }
 
   protected async init() {

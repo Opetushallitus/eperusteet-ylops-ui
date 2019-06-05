@@ -67,24 +67,40 @@ div.content
               help="ops-kuvaus-ohje")
 
   .vaihe
-    h3 {{ $t('uusi-julkaisu') }}
-    div(v-if="isValid")
-      ep-content(
-        v-model="uusiJulkaisu.tiedote",
-        help="uuden-julkaisun-tiedote",
-        :is-editable="true")
-      button.btn.btn-primary() {{ $t('julkaise') }}
-    .alert.alert-warning(v-else) {{ $t('opetussuunnitelman-tarkistukset-julkaisu') }}
+    ep-collapse(tyyppi="uusi-julkaisu")
+      h3(slot="header")  {{ $t('uusi-julkaisu') }}
+      div(v-if="true || isValid")
+        ep-content(
+          v-model="uusiJulkaisu.julkaisutiedote",
+          help="uuden-julkaisun-tiedote",
+          layout="simplified",
+          :is-editable="true")
+        button.btn.btn-primary(@click="julkaise()") {{ $t('julkaise') }}
+      .alert.alert-warning(v-else) {{ $t('opetussuunnitelman-tarkistukset-julkaisu') }}
 
   .vaihe
-    h3 {{ $t('julkaisuhistoria') }}
-    .alert.alert-info(v-if="julkaisuhistoria.length === 0") {{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}
+    ep-collapse(tyyppi="julkaisuhistoria")
+      h3(slot="header") {{ $t('julkaisuhistoria') }}
+      .alert.alert-info(v-if="julkaisuhistoria.length === 0") {{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}
+      div(v-else)
+        table.table.table-striped
+          thead
+            tr
+              th {{ $t('versio') }}
+              th {{ $t('luontihetki') }}
+              th {{ $t('tiedote') }}
+          tbody
+            tr(v-for="julkaisu in julkaisuhistoria")
+              td {{ julkaisu.revision }}
+              td {{ $ago(julkaisu.luotu) }}
+              td(v-html="$kaanna(julkaisu.tiedote)")
+
 
 </template>
 
 <script lang="ts">
 
-import { EpButton, EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle, EpChart } from '@/components';
+import { EpCollapse, EpButton, EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle, EpChart } from '@/components';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 
@@ -96,11 +112,13 @@ import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 
 import { Kielet } from '@/stores/kieli';
-import { Lops2019ValidointiDto } from '@/tyypit';
+import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@/tyypit';
+
 
 @Component({
   components: {
     EpButton,
+    EpCollapse,
     EpChart,
     EpContent,
     EpDatepicker,
@@ -118,7 +136,7 @@ export default class RouteTiedot extends EpOpsRoute {
   private isOpen: { [key: string]: boolean } = {};
   private showKooste = false;
   private julkaisut: any[] = [];
-  private uusiJulkaisu: any = {};
+  private uusiJulkaisu: UusiJulkaisuDto = {};
 
   get graph() {
     return {
@@ -132,7 +150,7 @@ export default class RouteTiedot extends EpOpsRoute {
   }
 
   get julkaisuhistoria() {
-    return [];
+    return _.reverse(_.sortBy(this.julkaisut, 'revision'));
   }
 
   get isValid() {
@@ -167,6 +185,12 @@ export default class RouteTiedot extends EpOpsRoute {
     this.validointi = await Opetussuunnitelma.validate();
     this.julkaisut = await Opetussuunnitelma.getJulkaisut();
   }
+
+  async julkaise() {
+    const julkaisu = await Opetussuunnitelma.julkaise(this.uusiJulkaisu);
+    this.julkaisut.unshift(julkaisu);
+  }
+
 }
 </script>
 
