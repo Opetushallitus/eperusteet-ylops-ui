@@ -58,8 +58,11 @@ div.content
                   :validation="validation.kuvaus",
                   :is-editable="isEditing")
 
-        div(v-if="!isEditing")
-          tilanvaihto(v-model="data.tila", :onSave="tryTilanvaihto")
+        div(v-if="!isEditing && !isOps && !isValmisPohja")
+          tilanvaihto(
+            v-model="data.tila",
+            :onSave="tryTilanvaihto",
+            :is-pohja="true")
 
 </template>
 

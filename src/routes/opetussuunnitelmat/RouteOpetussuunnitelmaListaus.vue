@@ -15,8 +15,9 @@ div
       .opswrapper(v-for="ops in opslista")
         .opsbox
           div.chart
-            ep-chart(:value="80"
-              labelColor="white"
+            ep-chart(
+              :value="80",
+              labelColor="white",
               chartColor="vihrea_sininen")
           router-link.nimi(
             :to=`{ name: "opsTiedot", params: { id: ops.id } }`,

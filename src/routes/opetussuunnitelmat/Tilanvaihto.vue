@@ -24,7 +24,7 @@ div(v-if="mahdollisetTilat")
           .ikoni(:class="'ikoni-' + tila")
             .kuvake
               fas(v-if="tila === 'julkaistu'" icon="glass-cheers")
-              fas(v-else-if="tila === 'poistettu'" icon="file-archive")
+              fas(v-if="tila === 'poistettu'" icon="file-archive")
               fas(v-else-if="tila === 'valmis'" icon="thumbs-up")
               fas(v-else icon="pencil-ruler")
             .nimi {{ $t('tilanimi-' + tila) }}
@@ -74,11 +74,14 @@ export default class Tilanvaihto extends Vue {
   @Prop({ required: true })
   private value!: string;
 
+  @Prop({ required: false })
+  private isPohja!: boolean;
+
   private isUpdating: boolean = false;
   private selected: string | null = null;
 
   get mahdollisetTilat() {
-    return sallittuSiirtyma(this.value);
+    return sallittuSiirtyma(this.value, this.isPohja);
   }
 
   private async tallenna() {
@@ -86,7 +89,10 @@ export default class Tilanvaihto extends Vue {
     try {
       if (this.selected && await this.onSave(this.selected)) {
         // this.$emit('input', tila);
-        (this.$refs.modal as any).hide();
+        const modal = (this.$refs.modal as any);
+        if (modal) {
+          (this.$refs.modal as any).hide();
+        }
       }
     }
     finally {
