@@ -124,6 +124,7 @@ export default class EpNavigation extends Vue {
     }
 
     .breadcrumb {
+      margin-bottom: 0;
       background: rgba(0, 0, 0, 0);
 
       .breadcrumb-item {

@@ -3,7 +3,7 @@
 div.content
   div(v-if="hooks")
     ep-editointi(:hooks="hooks", :validator="validator")
-      h2(slot="header") {{ $t('tiedot') }}
+      h2.otsikko(slot="header") {{ $t('tiedot') }}
       template(v-slot="{ data, validation, isEditing }")
         div
           .row

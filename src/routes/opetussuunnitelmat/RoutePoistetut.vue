@@ -1,7 +1,7 @@
 <template lang="pug">
 .poistetut
   .ylapaneeli
-    div.otsikko {{ $t('poistetut') }}
+    h2.otsikko {{ $t('poistetut') }}
 
   table.table.table-striped
     thead
@@ -97,12 +97,12 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     padding: 8px 5px;
 
     .otsikko {
-      font-size: 150%;
+      margin-left: 10px;
     }
   }
 
   .sisalto {
-    padding: 10px;
+    padding: 15px;
   }
 }
 

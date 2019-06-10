@@ -31,7 +31,6 @@ export default class EpCommentThreads extends Vue {
 .threads {
   height: 100%;
   display: flex;
-  flex: stretch;
 
   .comment-threads {
     border-left: 1px solid #eee;
