@@ -3,15 +3,15 @@
 
 
 .content {
-  margin: 0px;
+  margin: 0;
 
   @media only screen and (min-width: 768px) {
-    margin: 0px;
+    margin: 0;
   }
 }
 
 .form-content {
-  padding: 0px !important;
+  padding: 0 !important;
 }
 
 :root {
@@ -39,10 +39,13 @@
       text-decoration: none;
       color: $link-color-hover;
     }
+
   }
 
   // https://getbootstrap.com/docs/4.3/layout/overview/#z-index
   --ck-z-default: 1080;
+
+  overflow-y: scroll;
 }
 
 .dev1 {

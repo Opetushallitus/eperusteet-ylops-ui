@@ -2,7 +2,7 @@
 
 .dokumentit
   .ylapaneeli
-    .otsikko {{ $t('dokumentti') }}
+    h2.otsikko {{ $t('dokumentti') }}
   .sisalto
     div.mb-4
       p {{ tilaFormatted }}…
@@ -238,12 +238,12 @@ export default class RouteDokumentti extends EpOpsRoute {
     padding: 8px 5px;
 
     .otsikko {
-      font-size: 150%;
+      margin-left: 10px;
     }
   }
 
   .sisalto {
-    padding: 10px;
+    padding: 15px;
   }
 }
 

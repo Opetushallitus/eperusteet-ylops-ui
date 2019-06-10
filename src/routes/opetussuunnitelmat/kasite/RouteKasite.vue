@@ -1,7 +1,7 @@
 <template lang="pug">
 .kasitteet
   .ylapaneeli
-    div.otsikko {{ $t('kasitteet') }}
+    h2.otsikko {{ $t('kasitteet') }}
 
   ep-spinner(v-if="isLoading")
   div.sisalto(v-else)
