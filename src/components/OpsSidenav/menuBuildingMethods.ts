@@ -2,6 +2,8 @@ import _ from 'lodash';
 import {
   SideMenuEntry,
   Lops2019PaikallinenOppiaineDto,
+  Lops2019OpintojaksoDto,
+  Lops2019OppiaineDto,
 } from '@/tyypit';
 
 export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
@@ -69,12 +71,9 @@ export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
   });
 }
 
-export function oppimaaraOpintojaksoLinkit(opintojaksot: any, oppimaara: any): SideMenuEntry[] {
-  const uri = oppimaara.koodi.uri;
+export function oppimaaraOpintojaksoLinkit(opintojaksot: Lops2019OpintojaksoDto[], oppimaara: Lops2019OppiaineDto): SideMenuEntry[] {
   return opintojaksot
-    .filter(oj => {
-      return oj.oppiaineet && _.map(oj.oppiaineet, 'koodi').indexOf(uri) > -1;
-    })
+    .filter((oj) => oj.oppiaineet && oppimaara.koodi && _.map(oj.oppiaineet, 'koodi').indexOf(oppimaara.koodi.uri) > -1)
     .map(oj => {
       return {
         item: {

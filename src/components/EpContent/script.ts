@@ -39,17 +39,23 @@ export default class EpContent extends Mixins(EpValidation) {
 
   get opsKasitteet() {
     const kieli = Kielet.getSisaltoKieli();
-    const termisto = Opetussuunnitelma.kasitteet;
+    const termisto = Opetussuunnitelma.kasitteet || [];
 
     // Muodostetaan käsitteistä map nykyisen sisältökielen tiedoilla
-    return termisto.reduce((o, kasite) => {
+    return _.reduce((o, kasite) => {
       const title = _.get(kasite, `termi.${kieli}`, '');
       const content = _.get(kasite, `selitys.${kieli}`, '');
       const avain = _.get(kasite, 'avain', null);
-      return avain === null ? {} : Object.assign(o, {
-        [avain]: { title, content }
-      });
-    }, {});
+      if (avain) {
+        return {
+          ...o,
+          [avain]: { title, content },
+        };
+      }
+      else {
+        return {};
+      }
+    }, {} as any);
   }
 
   get locale() {

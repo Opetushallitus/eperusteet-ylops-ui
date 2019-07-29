@@ -93,7 +93,13 @@ export default class OpsSidenav extends Vue {
   }
 
   async created() {
-    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+    try {
+      const cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+      this.cache = cache;
+    }
+    catch (err) {
+      console.log("err", err);
+    }
   }
 
   private opintojaksoModuuliLista(source) {
@@ -180,6 +186,7 @@ export default class OpsSidenav extends Vue {
     // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
     const paikallisetOppiaineet = Opetussuunnitelma.paikallisetOppiaineet;
     const oppiaineLinkit = this.opsOppiaineLinkit;
+    // debugger;
 
     if (oppiaineLinkit.length > 0 || paikallisetOppiaineet.length > 0) {
       menuOpsData = [

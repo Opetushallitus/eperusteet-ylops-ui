@@ -39,7 +39,7 @@ const imageConfig = {
 const commonPlugins = [
   Essentials,
   ParagraphPlugin,
-  PasteFromOffice,
+  // PasteFromOffice,
 ];
 
 @Component
@@ -62,7 +62,7 @@ export default class CkEditor extends Mixins(EpValidation) {
   private opsId!: number;
 
   // OPS:n käsitteet (käsitemodulia varten)
-  @Prop({ default: {} })
+  @Prop({ default: () => ({}) })
   private opsKasitteet!: object;
 
   // CKEditorin JS instanssi
@@ -117,6 +117,7 @@ export default class CkEditor extends Mixins(EpValidation) {
       break;
     }
 
+    // return this.getMinimalSettings();
     return config;
   }
 
@@ -150,7 +151,7 @@ export default class CkEditor extends Mixins(EpValidation) {
     });
   }
 
-  private getMinimalSettings(): object {
+  private getMinimalSettings() {
     return {
       language: this.locale,
       plugins: [
@@ -179,7 +180,7 @@ export default class CkEditor extends Mixins(EpValidation) {
     ];
   }
 
-  private getSimplifiedSettings(): object {
+  private getSimplifiedSettings() {
     return {
       language: this.locale,
       plugins: this.advancedCommonPlugins,
@@ -199,7 +200,7 @@ export default class CkEditor extends Mixins(EpValidation) {
     };
   }
 
-  private getNormalSettings(): object {
+  private getNormalSettings() {
     return {
       language: this.locale,
       plugins: [
