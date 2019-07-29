@@ -1,5 +1,7 @@
 // FIXME: vue-loader issue 1281
+import Vue, { ComponentOptions } from 'vue';
 import * as GApi from '@/generated/api';
+import { Validation } from 'vuelidate';
 
 export enum Kieli {
   fi = 'fi',

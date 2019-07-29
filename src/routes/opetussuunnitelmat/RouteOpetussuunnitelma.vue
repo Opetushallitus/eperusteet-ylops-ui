@@ -14,7 +14,7 @@ div
         h1
           span {{ $kaanna(ops.nimi) }}
           span.ml-2(v-if="isPohja") ({{ $t('pohja') }})
-          b-badge(variant="success").ml-2(v-if="isValmisPohja") {{ $t('julkinen') }}
+          b-badge.ml-2(variant="success", v-if="isValmisPohja") {{ $t('julkinen') }}
         h4.secondary {{ $t(ops.koulutustyyppi) }}
         h6.secondary {{ ops.perusteenDiaarinumero }}
 

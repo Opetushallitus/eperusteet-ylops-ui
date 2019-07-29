@@ -340,7 +340,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
       .map(({ koodi }) => koodi)
       .sortBy()
       .uniq()
-      .map(uri => {
+      .map((uri: string) => {
         if (this.oppiaineetMap[uri].parentUri) {
           return [this.oppiaineetMap[uri].parentUri, uri];
         }

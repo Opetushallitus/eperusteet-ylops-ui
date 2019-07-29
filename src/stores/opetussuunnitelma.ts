@@ -101,7 +101,11 @@ class OpetussuunnitelmaStore {
   public async validate() {
     const result = (await Lops2019.getValidointi(this.opetussuunnitelma!.id!)).data;
     if (result) {
-      this.progress = Math.floor(result.onnistuneetValidoinnit / result.kaikkiValidoinnit * 100);
+      const onnistuneet = result.onnistuneetValidoinnit;
+      const kaikki = result.kaikkiValidoinnit;
+      if (onnistuneet && kaikki) {
+        this.progress = Math.floor(onnistuneet / kaikki * 100);
+      }
     }
     return result;
   }

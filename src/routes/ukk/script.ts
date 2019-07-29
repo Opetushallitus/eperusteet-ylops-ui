@@ -44,7 +44,7 @@ import { organizations } from '@/utils/organisaatiot';
       },
     };
   },
-})
+} as any)
 export default class RouteUkk extends Mixins(EpRoute) {
   private rajain = '';
 

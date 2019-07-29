@@ -98,7 +98,7 @@ export default class OpsSidenav extends Vue {
       this.cache = cache;
     }
     catch (err) {
-      console.log("err", err);
+      console.log('err', err);
     }
   }
 

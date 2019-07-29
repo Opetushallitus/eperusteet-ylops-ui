@@ -1,4 +1,3 @@
-
 import _ from 'lodash';
 
 import { Component } from 'vue-property-decorator';
@@ -37,7 +36,7 @@ interface Kasite {
       }
     };
   }
-})
+} as any)
 export default class RouteKasite extends EpOpsRoute {
   private termisto: Kasite[] = [];
   private kasite: TermiDto = {};

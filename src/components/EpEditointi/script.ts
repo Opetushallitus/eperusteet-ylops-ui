@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Watch, Component, Mixins, Prop, Vue } from 'vue-property-decorator';
+import { Watch, Component, Mixins, Prop } from 'vue-property-decorator';
 import {
   editointi,
   EditointiKontrolli,
@@ -31,7 +31,7 @@ export { EditointiKontrolliConfig } from '@/stores/editointi';
     EpSpinner,
     EpVersioModaali,
   },
-})
+} as any)
 export default class EpEditointi extends Mixins(validationMixin) {
   @Prop({ required: true })
   private hooks!: EditointiKontrolliConfig;

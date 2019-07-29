@@ -1,12 +1,12 @@
-import { Component, Prop, Mixins } from 'vue-property-decorator';
+import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
-import { validationMixin } from 'vuelidate';
+import { Validation, validationMixin } from 'vuelidate';
 
 @Component({
   validations() {
     return (this as any).validationConfig || {};
   },
-})
+} as any)
 export default class EpValidation extends Mixins(validationMixin) {
   @Prop({ default: '' })
   private validMessage!: string;

@@ -4,10 +4,9 @@ module.exports = {
     "es6": true
   },
   "extends": [
-    "eslint:recommended",
+    // "eslint:recommended",
     "plugin:vue/essential",
-    "plugin:vue/strongly-recommended",
-    "@vue/standard",
+    // "plugin:vue/strongly-recommended",
     "@vue/typescript"
   ],
   "globals": {
