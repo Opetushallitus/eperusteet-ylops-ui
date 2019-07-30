@@ -280,7 +280,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     return [
       ...this.cache.peruste.oppiaineet,
       ...this.paikallisetOppiaineet
-    ];
+    ] as Lops2019OppiaineDto[];
   }
 
   get laajuus() {
@@ -306,7 +306,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     return _(this.oppiaineetJaOppimaarat)
       .map((oa) => _.map(oa.moduulit, (moduuli) => ({
         ...moduuli,
-        oppiaineUri: oa.koodi.uri,
+        oppiaineUri: oa.koodi!.uri,
       })))
       .flatten()
       .value() as (Lops2019ModuuliDto & { oppiaineUri: string })[];
@@ -325,7 +325,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
         parentUri: oa.koodi.uri,
       }))])
       .flatten()
-      .value();
+      .value() as (Lops2019OppiaineDto & { parentUri?: string })[];
   }
 
   get filteredOppiaineet() {
@@ -350,7 +350,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
       })
       .flatten()
       .map((uri: string) => this.oppiaineetMap[uri])
-      .value();
+      .value() as Lops2019OppiaineDto[];
   }
 
   get oppiaineidenTavoitteet() {
@@ -373,7 +373,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     }
     else {
       return _(this.editable!.moduulit)
-        .map(moduuli => {
+        .map((moduuli: Lops2019ModuuliDto) => {
           return {
             kind: 'moduuli',
             nimi: moduuli.nimi,
@@ -388,7 +388,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   get laajaAlaisetOsaamiset() {
     return _(this.editable!.oppiaineet)
       .map(({ koodi }) => koodi)
-      .map(uri => {
+      .map((uri: string) => {
         if (this.oppiaineetMap[uri].parentUri) {
           return [this.oppiaineetMap[uri].parentUri, uri];
         }

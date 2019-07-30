@@ -102,7 +102,7 @@ import {
   EpSpinner,
   EpColorBall } from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019OppiaineDto } from '@/tyypit';
+import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import { PerusteCache } from '@/stores/peruste';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
@@ -157,8 +157,8 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
   }
 
   get oppiaineetJaOppimaarat() {
-    return _(this.peruste.oppiaineet)
-      .map(oa => [oa, ...oa.oppimaarat])
+    return _(this.peruste.oppiaineet as Lops2019OppiaineDto[])
+      .map(oa => [oa, ...(oa.oppimaarat || [])])
       .flatten()
       .value();
   }
@@ -173,7 +173,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
   get moduulitByKoodi() {
     return _(this.moduulit)
       .keyBy('koodi.uri')
-      .value();
+      .value() as { [uri: string]: Lops2019ModuuliDto };
   }
 
   get suodatettuOppiaineRakenne() {
@@ -191,7 +191,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
             .value(),
         };
       })
-      .filter(oa => Kielet.search(this.query, oa.nimi)
+      .filter((oa) => Kielet.search(this.query, oa.nimi)
           || !_.isEmpty(oa.moduulit)
           || !_.isEmpty(oa.opintojaksot))
       .value();
@@ -218,14 +218,14 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
       return [];
     }
 
-    return _(this.peruste.oppiaineet)
-      .map(oa => [oa, ...oa.oppimaarat])
+    return _(this.peruste.oppiaineet as Lops2019OppiaineDto[])
+      .map(oa => [oa, ...(oa.oppimaarat || [])])
       .flatten()
       .map(oa => {
         const opintojaksot = _(Opetussuunnitelma.opintojaksot)
           .filter(oj => _.includes(
             _.map(oj.oppiaineet, 'koodi'),
-            oa.koodi.uri))
+            oa.koodi!.uri))
           .sortBy('koodi')
           .value();
         const opintojaksojenModuulit = _(opintojaksot)
@@ -240,14 +240,14 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
           .map(moduuli => {
             return this.moduulitByKoodi[moduuli.koodiUri];
           })
-          .reject(moduuli => _.startsWith(moduuli.koodi.arvo, oa.koodi.arvo))
+          .reject((moduuli: any) => _.startsWith(moduuli.koodi!.arvo, oa.koodi!.arvo))
           .map(moduuli => this.moduuliPresentation(moduuli, opintojaksojenModuulit))
           .value();
 
         const kaytetytModuulit = _.size(opintojaksojenModuulit) - _.size(vieraatModuulit);
         return {
           ...oa,
-          isOpen: this.opened[oa.id] || !_.isEmpty(this.query),
+          isOpen: this.opened[oa.id!] || !_.isEmpty(this.query),
           moduulit: _.map(oa.moduulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
           vieraatModuulit,
           opintojaksot,
@@ -423,9 +423,6 @@ table.oppiaineet {
   //   }
   // }
 
-}
-
-.toolbar {
 }
 
 </style>

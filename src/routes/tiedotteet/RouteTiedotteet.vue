@@ -116,7 +116,7 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
         true, // perusteeton
         true, // julkinen
         true // yleinen
-      )).data;
+      )).data as any;
 
       this.kokonaismaara = res.kokonaismäärä;
 
