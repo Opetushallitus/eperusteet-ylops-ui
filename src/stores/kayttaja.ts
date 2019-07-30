@@ -76,7 +76,7 @@ class KayttajaStore {
 
   public async updateOrganisaatioVirkailijat() {
     const orgIds = _.filter(this.organisaatiot, oid => oid !== organizations.oph.oid);
-    this.virkailijat = (await Ulkopuoliset.getOrganisaatioVirkailijat(orgIds)).data;
+    this.virkailijat = (await Ulkopuoliset.getOrganisaatioVirkailijat(orgIds)).data as any[];
   }
 
   public async hasOikeus(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {

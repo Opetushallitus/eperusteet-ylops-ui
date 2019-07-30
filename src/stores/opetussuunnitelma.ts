@@ -4,7 +4,7 @@ import {
 import {
   TermiDto,
 } from '@/tyypit';
-import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Lops2019ValidointiDto, Matala, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Lops2019ValidointiDto, Matala, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
 import { AxiosResponse } from 'axios';
 import { createLogger } from './logger';
@@ -93,9 +93,9 @@ class OpetussuunnitelmaStore {
   //   success: "tallennus-onnistui-opetussuunnitelma",
   // })
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
-    const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma);
+    const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma as OpetussuunnitelmaDto);
     success('tallennus-onnistui-opetussuunnitelma');
-    this.opetussuunnitelma = res.data;
+    this.opetussuunnitelma = res.data as OpetussuunnitelmaKevytDto;
   }
 
   public async validate() {
@@ -117,10 +117,10 @@ class OpetussuunnitelmaStore {
   public async addTeksti(tov: Puu, parentId?: number) {
     let osa: AxiosResponse<Matala>;
     if (parentId) {
-      osa = await OpetussuunnitelmanSisalto.addTekstiKappaleLapsi(this.opetussuunnitelma!.id!, parentId, tov);
+      osa = await OpetussuunnitelmanSisalto.addTekstiKappaleLapsi(this.opetussuunnitelma!.id!, parentId, tov as Matala);
     }
     else {
-      osa = await OpetussuunnitelmanSisalto.addTekstiKappale(this.opetussuunnitelma!.id!, tov);
+      osa = await OpetussuunnitelmanSisalto.addTekstiKappale(this.opetussuunnitelma!.id!, tov as Matala);
     }
     success('lisays-onnistui-tekstikappale');
     await this.updateSisalto();
@@ -211,7 +211,7 @@ class OpetussuunnitelmaStore {
   public async getOpintojaksot(query: OpintojaksoQuery = {}) {
     let chain = _((await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data);
     if (query.oppiaineUri) {
-      chain = chain.filter(oj => _.includes(oj.oppiaineet, query.oppiaineUri));
+      chain = chain.filter(oj => _.includes(_.map(oj.oppiaineet, 'koodi'), query.oppiaineUri));
     }
     if (query.moduuliUri) {
       chain = chain.filter(oj => _.includes(

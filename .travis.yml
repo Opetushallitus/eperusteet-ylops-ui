@@ -10,7 +10,7 @@ node_js:
 install:
   - git clone --branch uusi_lukio https://github.com/Opetushallitus/eperusteet-ylops
   - cd eperusteet-ylops && mvn dependency:resolve --quiet && cd ..
-  - npm ci
+  - yarn install --frozen-lockfile
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -19,12 +19,12 @@ before_script:
 
 script:
   - echo 'Generate API...' && echo -en 'travis_fold:start:script.1\\r'
-  - npm run gen:api
+  - yarn run gen:api
   - echo -en 'travis_fold:end:script.1\\r'
   - rm -rf eperusteet-ylops
-  - npm run lint
-  - npm run build
-  - npm run test
+  - yarn run lint
+  - yarn run build
+  - yarn run test
 
 after_script:
   - ./cc-test-reporter format-coverage -t lcov ./coverage/lcov.info
@@ -32,8 +32,9 @@ after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 cache:
-  npm: true
+  yarn: true
   directories:
+    - node_modules
     - $HOME/.npm
     - $HOME/.m2
     - $HOME/.cache

@@ -35,7 +35,7 @@ export default class TileTiedotteet extends Vue {
 
   async mounted() {
     try {
-      this.tiedotteet = _((await Ulkopuoliset.getTiedotteetHaku(
+      const tiedoteHaku = (await Ulkopuoliset.getTiedotteetHaku(
         this.sivu - 1,
         this.sivukoko,
         undefined, // kieli
@@ -44,7 +44,8 @@ export default class TileTiedotteet extends Vue {
         true, // perusteeton
         true, // julkinen
         true // yleinen
-      )).data.data)
+      )).data as any;
+      this.tiedotteet = _(tiedoteHaku.data)
         .sortBy('luotu')
         .reverse()
         .value();

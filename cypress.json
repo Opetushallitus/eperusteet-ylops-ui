@@ -1,7 +1,8 @@
 {
-  "reporter": "mocha-multi-reporters",
+  "video": false,
+  "reporter": "junit",
   "reporterOptions": {
-    "configFile": "reporters.e2e.json"
+    "toConsole": false
   },
   "pluginsFile": "tests/e2e/plugins/index.js"
 }
