@@ -18,21 +18,21 @@ export default class CkComment extends Plugin {
     });
 
     editor.conversion.for('upcast')
-    .elementToElement({
-      model: ( viewElement, modelWriter ) => modelWriter.createElement( modelKey, {
-        uid: viewElement.getAttribute( 'uid' ),
-      } ),
-      view: {
-        name: viewKey,
-      }
-    });
+      .elementToElement({
+        model: ( viewElement, modelWriter ) => modelWriter.createElement( modelKey, {
+          uid: viewElement.getAttribute( 'uid' ),
+        } ),
+        view: {
+          name: viewKey,
+        }
+      });
 
     editor.conversion.for('downcast')
-    .elementToElement({
-      model: modelKey,
-      view: (data, writer) => writer.createAttributeElement(viewKey, {
-        uid: data.getAttribute('uid'),
-      }),
-    });
+      .elementToElement({
+        model: modelKey,
+        view: (data, writer) => writer.createAttributeElement(viewKey, {
+          uid: data.getAttribute('uid'),
+        }),
+      });
   }
 }
