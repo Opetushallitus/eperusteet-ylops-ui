@@ -54,7 +54,6 @@ import {
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   get graph() {
-    console.log(Opetussuunnitelma.progress);
     return {
       colorScheme: 'vihrea_sininen',
       value: Opetussuunnitelma.progress,

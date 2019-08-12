@@ -1,6 +1,7 @@
 import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -22,7 +23,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/CkUploadAdapter';
 import CkKasitePlugin from '@/ckplugins/CkKasitePlugin/CkKasitePlugin.js';
 import CkMathPlugin from '@/ckplugins/CkMathPlugin/CkMathPlugin.js';
-import CkCommentPlugin from '@/ckplugins/CkCommentPlugin/CkCommentPlugin.js';
+import CkCommentPlugin from '@/ckplugins/CkCommentPlugin/CkCommentPlugin';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
@@ -39,7 +40,7 @@ const imageConfig = {
 const commonPlugins = [
   Essentials,
   ParagraphPlugin,
-  // PasteFromOffice,
+  PasteFromOffice,
 ];
 
 @Component
@@ -125,8 +126,10 @@ export default class CkEditor extends Mixins(EpValidation) {
     try {
       // Luodaan ckeditor instanssi
       const config = this.getConfig();
-      this.instance = await InlineEditor
+
+      this.instance = await ClassicEditor
         .create(this.$refs.ckeditor, config);
+
       this.instance.setData(this.value);
       this.setEditorEvents();
 

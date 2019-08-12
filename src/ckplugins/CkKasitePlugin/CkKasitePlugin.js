@@ -8,7 +8,7 @@ import KasiteFormView from './ui/KasiteFormView.js';
 import AbbrCommand from './abbrCommand.js';
 import './CkKasitePlugin.css';
 
-const pluginIcon = require('./icons/icon.svg');
+import pluginIcon from './icons/icon.svg';
 
 export default class CkKasitePlugin extends Plugin {
   static get requires() {
