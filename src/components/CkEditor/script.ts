@@ -3,8 +3,8 @@ import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import '@ckeditor/ckeditor5-build-inline/build/translations/fi'
-import '@ckeditor/ckeditor5-build-inline/build/translations/sv'
+import '@ckeditor/ckeditor5-build-inline/build/translations/fi';
+import '@ckeditor/ckeditor5-build-inline/build/translations/sv';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
@@ -72,14 +72,14 @@ export default class CkEditor extends Mixins(EpValidation) {
     let config: object;
 
     switch (this.layout) {
-      case 'normal':
-        config = this.getNormalSettings();
-        break;
-      case 'simplified':
-        config = this.getSimplifiedSettings();
-        break;
-      default:
-        throw new Error(`${this.layout} is not valid layout`);
+    case 'normal':
+      config = this.getNormalSettings();
+      break;
+    case 'simplified':
+      config = this.getSimplifiedSettings();
+      break;
+    default:
+      throw new Error(`${this.layout} is not valid layout`);
     }
 
     return config;
