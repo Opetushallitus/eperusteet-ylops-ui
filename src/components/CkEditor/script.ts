@@ -1,47 +1,18 @@
 import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import _ from 'lodash';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-
-import { CkUploadAdapter } from '@/ckplugins/CkUploadAdapter/CkUploadAdapter';
-import CkKasitePlugin from '@/ckplugins/CkKasitePlugin/CkKasitePlugin.js';
-import CkMathPlugin from '@/ckplugins/CkMathPlugin/CkMathPlugin.js';
-import CkCommentPlugin from '@/ckplugins/CkCommentPlugin/CkCommentPlugin';
+import InlineEditor from '@ckeditor/ckeditor5-build-inline';
+import '@ckeditor/ckeditor5-build-inline/build/translations/fi'
+import '@ckeditor/ckeditor5-build-inline/build/translations/sv'
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
 import { createLogger } from '@/stores/logger';
 
 const logger = createLogger('CkEditor');
-const imageConfig = {
-  toolbar: [
-    'imageTextAlternative',
-  ],
-};
 
-// Kaikkien editoritasojen yhteiset pluginit
-const commonPlugins = [
-  Essentials,
-  ParagraphPlugin,
-  PasteFromOffice,
-];
+const INPUT_EVENT_DEBOUNCE_WAIT = 300;
 
 @Component
 export default class CkEditor extends Mixins(EpValidation) {
@@ -50,7 +21,7 @@ export default class CkEditor extends Mixins(EpValidation) {
   private value!: string;
 
   // Editorin layout (määrittää ominaisuudet)
-  @Prop({ default: 'normal' })
+  @Prop({ default: 'simplified' })
   private layout!: EditorLayout;
 
   // Editorin käyttöliittymän kieli
@@ -69,7 +40,6 @@ export default class CkEditor extends Mixins(EpValidation) {
   // CKEditorin JS instanssi
   private instance: any = null;
   private lastEmittedValue: string = '';
-  private uploadEnabled: boolean = false;
 
   public async mounted() {
     this.createEditorInstance();
@@ -89,55 +59,40 @@ export default class CkEditor extends Mixins(EpValidation) {
   }
 
   @Watch('value')
-  private onValueChanged(val: string, oldval: string) {
-    // Ei reagoida itse aiheutettuihin muutoksiin
-    if (val === this.lastEmittedValue) {
+  private onValueChanged(newValue: string, oldValue: string) {
+    if (newValue === this.lastEmittedValue) {
       return;
     }
 
     // Päivitetään editoriin uusi arvo
-    this.instance.setData(val || '');
+    this.instance.setData(newValue || '');
   }
 
-  private getConfig() {
+  private get config() {
     let config: object;
-    this.uploadEnabled = false;
 
-    // Luodaan asetusobjekti
     switch (this.layout) {
-    case 'simplified':
-      this.uploadEnabled = (this.opsId > 0);
-      config = this.getSimplifiedSettings();
-      break;
-    case 'normal':
-      this.uploadEnabled = (this.opsId > 0);
-      config = this.getNormalSettings();
-      break;
-    default:
-      config = this.getMinimalSettings();
-      break;
+      case 'normal':
+        config = this.getNormalSettings();
+        break;
+      case 'simplified':
+        config = this.getSimplifiedSettings();
+        break;
+      default:
+        throw new Error(`${this.layout} is not valid layout`);
     }
 
-    // return this.getMinimalSettings();
     return config;
   }
 
   private async createEditorInstance() {
     try {
-      // Luodaan ckeditor instanssi
-      const config = this.getConfig();
-
-      this.instance = await ClassicEditor
-        .create(this.$refs.ckeditor, config);
+      this.instance = await InlineEditor.create(this.$refs.ckeditor, this.config);
 
       this.instance.setData(this.value);
       this.setEditorEvents();
 
-      if (this.uploadEnabled) {
-        this.instance.plugins.get('FileRepository').createUploadAdapter = loader => {
-          return new CkUploadAdapter(loader, this.opsId);
-        };
-      }
+      this.$emit('ready', this.instance);
     }
     catch (err) {
       logger.error(err);
@@ -147,55 +102,25 @@ export default class CkEditor extends Mixins(EpValidation) {
   private setEditorEvents() {
     const editor = this.instance;
 
-    editor.model.document.on('change:data', (event: any) => {
+    editor.model.document.on('change:data', _.debounce(event => {
       const data = editor.getData();
       this.lastEmittedValue = data;
       this.$emit('input', data, event, editor);
-    });
-  }
-
-  private getMinimalSettings() {
-    return {
-      language: this.locale,
-      plugins: [
-        ...commonPlugins,
-      ],
-      toolbar: [
-        'undo', 'redo',
-      ],
-    };
-  }
-
-  private get advancedCommonPlugins() {
-    return [
-      ...commonPlugins,
-      Bold,
-      CkCommentPlugin,
-      CkKasitePlugin,
-      CkMathPlugin,
-      Italic,
-      Image,
-      ImageStyle,
-      ImageToolbar,
-      ListPlugin,
-      Strikethrough,
-      ...this.uploadEnabled ? [ImageUpload] : [],
-    ];
+    }, INPUT_EVENT_DEBOUNCE_WAIT));
   }
 
   private getSimplifiedSettings() {
     return {
       language: this.locale,
-      plugins: this.advancedCommonPlugins,
-      toolbar: [
-        'bold', 'italic', 'strikethrough',
-        ...this.uploadEnabled ? ['|', 'imageUpload'] : [],
-        '|',
-        'bulletedList', 'numberedList',
-        '|',
-        'undo', 'redo',
-      ],
-      image: imageConfig,
+      toolbar: {
+        items: [
+          'bold', 'italic', //'strikethrough',
+          '|',
+          'bulletedList', 'numberedList',
+          '|',
+          'undo', 'redo',
+        ],
+      },
       ckeperusteet: {
         kasitteet: this.opsKasitteet,
         vue: this,
@@ -206,32 +131,16 @@ export default class CkEditor extends Mixins(EpValidation) {
   private getNormalSettings() {
     return {
       language: this.locale,
-      plugins: [
-        ...this.advancedCommonPlugins,
-        LinkPlugin,
-        Table,
-        TableToolbar,
-      ],
       toolbar: [
-        'bold', 'italic', 'strikethrough',
-        ...this.uploadEnabled ? ['|', 'imageUpload'] : [],
+        'bold', 'italic', //'strikethrough',
         '|',
-        'bulletedList', 'numberedList',
+        'bulletedList', 'numberedList', 'blockQuote',
         '|',
-        'link', 'insertTable', 'insertKasite', 'insertMath',
+        'insertTable',
+        'link',
         '|',
         'undo', 'redo',
       ],
-      image: imageConfig,
-      ckeperusteet: {
-        kasitteet: this.opsKasitteet,
-        vue: this,
-      },
     };
-  }
-
-  // Tämä hoitaa tekstin kääntämisen plugineissa
-  private translateString(text: string) {
-    return this.$t(text);
   }
 }
