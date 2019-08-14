@@ -28,7 +28,6 @@
     "test:unit:report": "$BROWSER coverage/lcov-report/index.html"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-inline": "^12.3.1",
     "@fortawesome/fontawesome-free": "^5.9.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.19",
     "@fortawesome/free-brands-svg-icons": "^5.9.0",
@@ -60,6 +59,7 @@
     "canvas": "^2.5.0",
     "chart.js": "^2.8.0",
     "chartjs-plugin-doughnutlabel": "^2.0.3",
+    "eperusteet-frontend-utils": "github:Opetushallitus/eperusteet-frontend-utils",
     "eslint": "^5.13.0",
     "eslint-plugin-vue": "^5.0.0",
     "he": "^1.2.0",

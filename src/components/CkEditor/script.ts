@@ -2,9 +2,9 @@ import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import _ from 'lodash';
 
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import '@ckeditor/ckeditor5-build-inline/build/translations/fi';
-import '@ckeditor/ckeditor5-build-inline/build/translations/sv';
+import InlineEditor from 'eperusteet-frontend-utils/ckeditor5-build-inline';
+import 'eperusteet-frontend-utils/ckeditor5-build-inline/build/translations/sv';
+import 'eperusteet-frontend-utils/ckeditor5-build-inline/build/translations/en';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
@@ -114,7 +114,7 @@ export default class CkEditor extends Mixins(EpValidation) {
       language: this.locale,
       toolbar: {
         items: [
-          'bold', 'italic', //'strikethrough',
+          'bold', 'italic', 'strikethrough',
           '|',
           'bulletedList', 'numberedList',
           '|',
@@ -132,7 +132,7 @@ export default class CkEditor extends Mixins(EpValidation) {
     return {
       language: this.locale,
       toolbar: [
-        'bold', 'italic', //'strikethrough',
+        'bold', 'italic', 'strikethrough',
         '|',
         'bulletedList', 'numberedList', 'blockQuote',
         '|',

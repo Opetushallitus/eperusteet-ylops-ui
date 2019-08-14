@@ -1,1 +1,2 @@
-declare module '@ckeditor/ckeditor5-*';
+declare module 'eperusteet-frontend-utils/ckeditor5-*';
+
