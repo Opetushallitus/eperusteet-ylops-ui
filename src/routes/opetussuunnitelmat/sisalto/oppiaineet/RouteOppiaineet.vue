@@ -36,7 +36,8 @@ div.content
         tr.headerline
           td
             router-link(:to=`{ name: 'oppiaine', params: { oppiaineId: oa.id } }`)
-              | {{ $kaanna(oa.nimi) }} ({{ oa.koodi.arvo }})
+              span {{ $kaanna(oa.nimi) }}
+              span(v-if="oa.koodi") ({{ oa.koodi.arvo }})
           td
             span(v-if="oa.oppimaarat.length === 0") {{ oa.stats.opintojaksot }}
           td(:class="oa.stats.valid ? 'valid' : 'invalid'")
@@ -65,7 +66,8 @@ div.content
                   tr.item
                     td
                       ep-color-ball.mr-2(:kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'")
-                      span {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
+                      span {{ $kaanna(moduuli.nimi) }}
+                      span(v-if="moduuli.koodi") ({{ moduuli.koodi.arvo }})
                     // td.op {{ moduuli.laajuus }}{{ $t('op') }}
                     // td.nimi
                       span {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
@@ -172,6 +174,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
 
   get moduulitByKoodi() {
     return _(this.moduulit)
+      .filter('koodi.uri')
       .keyBy('koodi.uri')
       .value() as { [uri: string]: Lops2019ModuuliDto };
   }
@@ -198,9 +201,8 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
   }
 
   private moduuliPresentation(moduuli: any, opintojaksojenModuulit: any) {
-    const active = this.valitutModuuliUrit !== null
-      && !!this.valitutModuuliUrit[moduuli.koodi.uri];
-    const used = !!opintojaksojenModuulit[moduuli.koodi.uri];
+    const active = moduuli.koodi && this.valitutModuuliUrit !== null && !!this.valitutModuuliUrit[moduuli.koodi.uri];
+    const used = moduuli.koodi && !!opintojaksojenModuulit[moduuli.koodi.uri];
     return {
       ...moduuli,
       active,
@@ -224,7 +226,10 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
       .map(oa => {
         const opintojaksot = _(Opetussuunnitelma.opintojaksot)
           .filter(oj => _.includes(
-            _.map(oj.oppiaineet, 'koodi'),
+            _(oj.oppiaineet)
+              .map('koodi')
+              .filter(_.identity)
+              .value(),
             oa.koodi!.uri))
           .sortBy('koodi')
           .value();
@@ -240,7 +245,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
           .map(moduuli => {
             return this.moduulitByKoodi[moduuli.koodiUri];
           })
-          .reject((moduuli: any) => _.startsWith(moduuli.koodi!.arvo, oa.koodi!.arvo))
+          .reject((moduuli: any) => !moduuli.koodi || _.startsWith(moduuli.koodi!.arvo, oa.koodi!.arvo))
           .map(moduuli => this.moduuliPresentation(moduuli, opintojaksojenModuulit))
           .value();
 

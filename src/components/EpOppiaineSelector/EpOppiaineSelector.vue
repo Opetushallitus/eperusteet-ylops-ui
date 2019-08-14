@@ -92,7 +92,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation) {
 
   get filteredOppiaineet() {
     return _(this.oppiaineetJaOppimaarat)
-      .filter((org) => Kielet.search(this.query, org.nimi))
+      .filter((org: any) => Kielet.search(this.query, org.nimi))
       .map('koodi.uri')
       .value();
   }

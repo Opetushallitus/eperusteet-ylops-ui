@@ -70,7 +70,7 @@ import { EpButton, EpFormContent, EpSpinner } from '@/components';
 import { Component, Watch } from 'vue-property-decorator';
 import { baseURL, Dokumentit, DokumentitParams } from '@/api';
 import { Kielet } from '@/stores/kieli';
-import { DokumenttiDto, DokumenttiDtoTilaEnum } from '@/generated';
+import { DokumenttiDto } from '@/generated';
 
 @Component({
   components: {
@@ -103,7 +103,7 @@ export default class RouteDokumentti extends EpOpsRoute {
       });
     }
     else {
-      return this.$t('dokumentti-' + _.kebabCase(DokumenttiDtoTilaEnum.EIOLE));
+      return this.$t('dokumentti-' + _.kebabCase(DokumenttiDto.TilaEnum.EIOLE));
     }
   }
 
@@ -171,12 +171,12 @@ export default class RouteDokumentti extends EpOpsRoute {
     this.dto = (await Dokumentit.getDokumentti(this.opsId, this.kieli)).data;
 
     // Lopetetaan pollaaminen kun dokumentin luominen on päättynyt
-    if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)
-      || _.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
+    if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDto.TilaEnum.EPAONNISTUI)
+      || _.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDto.TilaEnum.VALMIS)) {
       clearInterval(this.polling);
       this.polling = null;
 
-      if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS) && this.dto.id) {
+      if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDto.TilaEnum.VALMIS) && this.dto.id) {
         this.href = baseURL + DokumentitParams.get(this.dto.id).url;
       }
     }
