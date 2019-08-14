@@ -10,7 +10,7 @@ node_js:
 install:
   - git clone --branch uusi_lukio https://github.com/Opetushallitus/eperusteet-ylops
   - cd eperusteet-ylops && mvn dependency:resolve --quiet && cd ..
-  - yarn install --frozen-lockfile
+  - yarn install
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
