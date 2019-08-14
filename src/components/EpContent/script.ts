@@ -20,7 +20,7 @@ export default class EpContent extends Mixins(EpValidation) {
   private value!: string | object;
 
   // CkEditorin layout (määrittää editorin ominaisuudet)
-  @Prop({ default: 'normal' })
+  @Prop({ default: 'simplified' })
   private layout!: EditorLayout;
 
   @Prop({ default: false })

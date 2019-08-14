@@ -24,7 +24,6 @@ typings
 wwwroot/*.js
 yarn-debug.log*
 yarn-error.log*
-yarn.lock
 
 !./.eslintrc.js
 !src/ckplugins/**/*.js

@@ -6,7 +6,7 @@
       h6 {{ $t('jarjestajat') }}
       ep-multi-select(
         v-model="jarjestajat",
-        track-by="oid"
+        track-by="oid",
         :validation="jarjestajatValidation",
         :is-editing="true",
         :options="filteredJarjestajat")
