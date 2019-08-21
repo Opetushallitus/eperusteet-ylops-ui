@@ -9,6 +9,7 @@ import 'eperusteet-frontend-utils/ckeditor5-build-inline/build/translations/en';
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
 import { createLogger } from '@/stores/logger';
+import { EpUploadAdapter } from './adapter'
 
 const logger = createLogger('CkEditor');
 
@@ -30,8 +31,8 @@ export default class CkEditor extends Mixins(EpValidation) {
 
   // Kuvien tallennuspaikka, jos ID:tä ei ole määritelty, niin
   // kuvaominaisuuksia ei oteta käyttöön
-  @Prop({ default: 0 })
-  private opsId!: number;
+  @Prop({ default: null })
+  private opsId!: number | null;
 
   // OPS:n käsitteet (käsitemodulia varten)
   @Prop({ default: () => ({}) })
@@ -50,6 +51,12 @@ export default class CkEditor extends Mixins(EpValidation) {
       this.instance.destroy();
       this.instance = null;
     }
+  }
+
+  @Watch('opsId')
+  private onOpsIdChanged(val: number, oldval: number) {
+    this.instance.destroy();
+    this.createEditorInstance();
   }
 
   @Watch('layout')
@@ -73,10 +80,14 @@ export default class CkEditor extends Mixins(EpValidation) {
 
     switch (this.layout) {
     case 'normal':
-      config = this.getNormalSettings();
+      if (this.opsId) {
+        config = this.normalWithImagesSettings;
+      } else {
+        config = this.normalSettings;
+      }
       break;
     case 'simplified':
-      config = this.getSimplifiedSettings();
+      config = this.simplifiedSettings;
       break;
     default:
       throw new Error(`${this.layout} is not valid layout`);
@@ -88,6 +99,15 @@ export default class CkEditor extends Mixins(EpValidation) {
   private async createEditorInstance() {
     try {
       this.instance = await InlineEditor.create(this.$refs.ckeditor, this.config);
+
+      if (this.opsId) {
+        this.instance.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+          return new EpUploadAdapter(loader, {
+            opsId: this.opsId,
+            //name: custom input
+          });
+        };
+      }
 
       this.instance.setData(this.value);
       this.setEditorEvents();
@@ -109,7 +129,7 @@ export default class CkEditor extends Mixins(EpValidation) {
     }, INPUT_EVENT_DEBOUNCE_WAIT));
   }
 
-  private getSimplifiedSettings() {
+  private get simplifiedSettings() {
     return {
       language: this.locale,
       toolbar: {
@@ -121,14 +141,10 @@ export default class CkEditor extends Mixins(EpValidation) {
           'undo', 'redo',
         ],
       },
-      ckeperusteet: {
-        kasitteet: this.opsKasitteet,
-        vue: this,
-      },
     };
   }
 
-  private getNormalSettings() {
+  private get normalSettings() {
     return {
       language: this.locale,
       toolbar: [
@@ -141,6 +157,31 @@ export default class CkEditor extends Mixins(EpValidation) {
         '|',
         'undo', 'redo',
       ],
+    };
+  }
+
+  private get normalWithImagesSettings() {
+    return {
+      language: this.locale,
+      toolbar: [
+        'bold', 'italic', 'strikethrough',
+        '|',
+        'bulletedList', 'numberedList', 'blockQuote',
+        '|',
+        'insertTable',
+        'link',
+        'imageUpload',
+        '|',
+        'undo', 'redo',
+      ],
+      image: {
+        toolbar: [
+          'imageTextAlternative'
+        ],
+        styles: [
+          'full'
+        ]
+      },
     };
   }
 }
