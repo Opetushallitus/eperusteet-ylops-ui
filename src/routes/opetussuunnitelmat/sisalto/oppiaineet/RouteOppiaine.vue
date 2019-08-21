@@ -10,9 +10,9 @@ div.content
         h4(slot="header") {{ $t('oppiaineet-tehtava') }}
         ep-content(v-model="oppiaine.tehtava.kuvaus")
 
-      ep-collapse(v-if="oppiaine.laajaAlainenOsaaminen")
-        h4(slot="header") {{ $t('laaja-alainen-osaaminen') }}
-        ep-content(v-model="oppiaine.laajaAlainenOsaaminen.kuvaus")
+      ep-collapse(v-if="oppiaine.laajaAlaisetOsaamiset")
+        h4(slot="header") {{ $t('laaja-alaiset-osaamiset') }}
+        ep-content(v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus")
 
       // FIXME: ei välttämättä ole
       // ep-collapse
