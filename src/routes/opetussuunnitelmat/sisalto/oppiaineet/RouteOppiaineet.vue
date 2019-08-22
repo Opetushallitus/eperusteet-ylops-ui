@@ -3,8 +3,37 @@
 div.content
   h1
     span {{ $t('oppiaineet') }}
-  p {{ $t('route-oppiaineet-kuvaus') }}
-  .d-flex.align-items-center
+
+  .row
+    .col-md-9
+      div
+        p {{ $t('route-oppiaineet-kuvaus') }}
+      div
+        .d-flex.align-items-center
+          .p-2
+            ep-filter(v-model="query")
+            // .search
+              .inlay
+                input.form-control.search(
+                  type="text",
+                  :placeholder="$t('rajaa')",
+                  v-model="query")
+                // fas.inner-icon(icon="search")
+          .p-2.checkbox
+            b-form-checkbox(v-model="vainPuuttuvat") {{ $t('vain-puuttuvat-moduulit') }}
+    .col-md-3
+      div
+        ep-button(
+          variant="outline-primary",
+          icon="plus",
+          @click="uusiOppiaine()") {{ $t('paikallinen-oppiaine') }}
+      div
+        ep-button(
+          variant="outline-primary",
+          icon="plus",
+          @click="uusiOppiaine()") {{ $t('opintojakso') }}
+
+  // .d-flex.align-items-center
     .flex-sm-fill
       .d-flex.align-items-center
         .p-2
@@ -19,7 +48,10 @@ div.content
           b-form-checkbox(v-model="vainPuuttuvat") {{ $t('vain-puuttuvat-moduulit') }}
     .flex-sm-fill
       .float-right
-        ep-button(icon="plus", @click="uusiOppiaine()") {{ $t('lisaa-paikallinen-oppiaine') }}
+        div
+          ep-button(icon="plus", @click="uusiOppiaine()") {{ $t('lisaa-paikallinen-oppiaine') }}
+        div
+          ep-button(icon="plus", @click="uusiOppiaine()") {{ $t('lisaa-paikallinen-oppiaine') }}
 
   table.table.table-borderless.oppiaineet
     thead.head
@@ -97,10 +129,12 @@ import { Mixins, Component, Prop } from 'vue-property-decorator';
 import {
   EpButton,
   EpCollapse,
+  EpColorBall,
   EpContent,
   EpEditointi,
+  EpFilter,
   EpSpinner,
-  EpColorBall } from '@/components';
+} from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
@@ -117,6 +151,7 @@ import { Kielet } from '@/stores/kieli';
     EpColorBall,
     EpContent,
     EpEditointi,
+    EpFilter,
     EpSpinner,
   },
 })

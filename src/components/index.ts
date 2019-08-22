@@ -7,6 +7,7 @@ export { default as EpColorBall } from './EpColorBall/EpColorBall.vue';
 export { default as EpContent } from './EpContent/EpContent.vue';
 export { default as EpDatepicker } from './forms/EpDatepicker.vue';
 export { default as EpEditointi } from './EpEditointi/EpEditointi.vue';
+export { default as EpFilter } from './forms/EpFilter.vue';
 export { default as EpField } from './forms/EpField.vue';
 export { default as EpFooter } from './EpFooter/EpFooter.vue';
 export { default as EpFormContent } from './forms/EpFormContent.vue';
