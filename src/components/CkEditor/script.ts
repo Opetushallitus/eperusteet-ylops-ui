@@ -171,6 +171,7 @@ export default class CkEditor extends Mixins(EpValidation) {
         'insertTable',
         'link',
         'imageUpload',
+        'insertMath',
         '|',
         'undo', 'redo',
       ],
