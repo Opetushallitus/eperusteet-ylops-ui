@@ -48,7 +48,7 @@ export default class EpButton extends Vue {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 button.no-outline {
   border: none;
   color: #2B2B2B;

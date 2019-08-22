@@ -14,7 +14,37 @@ div
         h1
           span {{ $kaanna(ops.nimi) }}
           span.ml-2(v-if="isPohja") ({{ $t('pohja') }})
-          b-badge.ml-2(variant="success", v-if="isValmisPohja") {{ $t('julkinen') }}
+          b-dropdown.text-decoration-none(variant="link", no-caret)
+            template(slot="button-content")
+              fas.hallinta(icon="cog")
+                span(class="sr-only") {{ $t('hallinta') }}
+            b-dropdown-item
+              router-link.btn.btn-link(:to=`{ name: 'opsTiedot' }`)
+                fas.mr-2(icon="info-circle")
+                span {{ $t('tiedot') }}
+            b-dropdown-item
+              router-link.btn.btn-link(:to=`{ name: 'opsDokumentti' }`)
+                fas.mr-2(icon="file-pdf")
+                span {{ $t('dokumentti') }}
+            b-dropdown-item
+              router-link.btn.btn-link(:to=`{ name: 'opsPoistetut' }`)
+                fas.mr-2(icon="recycle")
+                span {{ $t('poistetut') }}
+            b-dropdown-item
+              router-link.btn.btn-link(:to=`{ name: 'opsKasitteet' }`)
+                fas.mr-2(icon="bookmark")
+                span {{ $t('kasitteet') }}
+            b-dropdown-item
+              router-link.btn.btn-link(:to=`{ name: 'opsRakenne' }`)
+                fas.mr-2(icon="cog")
+                span {{ $t('rakenne') }}
+            b-dropdown-item
+              router-link.btn.btn-link(:to=`{ name: 'opsJulkaisu' }`)
+                fas.mr-2(icon="upload")
+                span {{ $t('julkaise') }}
+          // b-badgeOpetushallitus.ml-2(style="font-size: 14px", variant="success", v-if="isValmisPohja")
+            | {{ $t('julkinen') }}
+
         h4.secondary {{ $t(ops.koulutustyyppi) }}
         h6.secondary {{ ops.perusteenDiaarinumero }}
 
@@ -41,6 +71,7 @@ import {
   EpCommentThreads,
   OpsSidenav,
 } from '@/components';
+
 
 @Component({
   components: {
@@ -84,7 +115,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
   .header {
     background-image: url('../../../public/img/banners/header.svg');
-    background-position: 100% -80px;
+    background-position: 100% -64px;
     background-repeat: no-repeat;
 
     display: flex;

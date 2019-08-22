@@ -31,7 +31,7 @@ div.content
         ep-button(
           variant="outline-primary",
           icon="plus",
-          @click="uusiOppiaine()") {{ $t('opintojakso') }}
+          @click="uusiOpintojakso()") {{ $t('opintojakso') }}
 
   // .d-flex.align-items-center
     .flex-sm-fill
@@ -60,12 +60,12 @@ div.content
         th(width="25%") {{ $t('luodut-opintojaksot') }}
         th(width="25%") {{ $t('liitetyt-moduulit') }}
         th(width="25%") {{ $t('vieraat-moduulit') }}
-        th(width="5%")
+        th.actions(width="5%")
           button.btn.btn-link(@click="toggleAll()")
             fas(icon="chevron-down")
     tbody
       template(v-for="oa in suodatettuOppiaineRakenne")
-        tr.headerline
+        tr.headerline(:class="oa.isOpen && 'opened'")
           td
             router-link(:to=`{ name: 'oppiaine', params: { oppiaineId: oa.id } }`)
               | {{ $kaanna(oa.nimi) }} ({{ oa.koodi.arvo }})
@@ -74,7 +74,7 @@ div.content
           td(:class="oa.stats.valid ? 'valid' : 'invalid'")
             span(v-if="oa.oppimaarat.length === 0") {{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}
           td
-          td
+          td.actions
             button.btn.btn-link(@click="toggleOppiaine(oa)", v-if="oa.oppimaarat.length === 0")
               fas(v-if="oa.isOpen", icon="chevron-down")
               fas(v-else, icon="chevron-up")
@@ -125,7 +125,7 @@ div.content
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
+import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import {
   EpButton,
   EpCollapse,
@@ -299,6 +299,9 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
 
   async mounted() {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+    this.$nextTick(() => {
+      this.toggleAll();
+    });
   }
 
   private toggleOppiaine(oa: any) {
@@ -333,6 +336,17 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
       },
     });
   }
+
+  public uusiOpintojakso() {
+    this.$router.push({
+      name: 'opintojakso',
+      params: {
+        ...this.$router.currentRoute.params,
+        opintojaksoId: 'uusi',
+      },
+    });
+  }
+
 }
 </script>
 
@@ -355,8 +369,18 @@ table.oppiaineet {
   }
 
   tr.headerline {
-    background: $paletti-background-light-2;
-    border-bottom: 1px solid #ddd;
+
+    &:nth-child(2n - 1) {
+      background-color: #F9F9F9;
+    }
+
+    &.opened {
+      background: $paletti-background-light-2;
+    }
+
+    td.actions {
+      padding: 5px;
+    }
 
     .invalid {
       color: $red;
@@ -373,13 +397,13 @@ table.oppiaineet {
     font-size: 80%;
 
     td {
-      padding: 16px;
+      padding: 14px;
     }
   }
 
   tr.dataline {
     background: $paletti-background-light;
-    border: 1px solid $paletti-background-light-2;
+    border: 1px solid #DFEFFF;
     font-size: 80%;
 
     td.chevron {

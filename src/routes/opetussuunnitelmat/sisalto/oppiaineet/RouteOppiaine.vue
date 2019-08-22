@@ -131,8 +131,12 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
         ...this.$router.currentRoute.params,
         opintojaksoId: 'uusi',
       },
+      query: {
+        oppiaineet: _.get(this.oppiaine, 'koodi.uri'),
+      },
     });
   }
+
 }
 </script>
 

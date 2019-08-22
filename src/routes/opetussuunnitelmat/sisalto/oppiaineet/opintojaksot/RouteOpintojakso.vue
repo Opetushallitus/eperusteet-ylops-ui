@@ -31,10 +31,7 @@ div.content
                   :is-editing="isEditing")
             .col-md-6
               ep-form-content(name="opintopisteet")
-                span {{ laajuus }} op
-            .col-md-6
-              ep-form-content(name="tila")
-                span Luonnos
+                span {{ laajuus }} {{ $t('opintopiste') }}
 
         div(v-if="isEditing || data.moduulit.length > 0")
           hr.valiviiva
@@ -45,9 +42,10 @@ div.content
               ep-form-content(name="oppiaine")
                 ep-oppiaine-selector(
                   :ops-id="$route.params.id",
-                    :validation="validation.oppiaineet",
-                      :value="data.oppiaineet.map(x => x.koodi)",
-                      @input="updateOppiaineet")
+                  :validation="validation.oppiaineet",
+                  :value="data.oppiaineet.map(x => x.koodi)",
+                  @input="updateOppiaineet")
+
               //.row
                 .col-md-6
                 .col-md-6
@@ -181,6 +179,7 @@ import { Kielet } from '@/stores/kieli';
 import Multiselect from 'vue-multiselect';
 import * as defaults from '@/defaults';
 
+
 @Component({
   components: {
     EpButton,
@@ -200,6 +199,11 @@ import * as defaults from '@/defaults';
   },
 })
 export default class RouteOpintojakso extends Mixins(EpRoute) {
+  @Prop({
+    required: false,
+  })
+  private oppiaineUri!: string;
+
   private oppiaineQuery = '';
   private editable: Lops2019OpintojaksoDto | null = null;
   private cache!: PerusteCache;
@@ -410,13 +414,22 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 
   public async load() {
     const { opintojaksoId } = this.$route.params;
-    if (opintojaksoId === 'uusi') {
-      // this.breadcrumb('oppiaine', 'uusi');
-      return defaults.opintojakso();
+    if (await this.isUusi()) {
+      const result = defaults.opintojakso();
+      const oaUri = _.get(this.$route, 'query.oppiaineet');
+      if (oaUri) {
+        result.oppiaineet!.push({
+          koodi: oaUri,
+        });
+        this.$route.query.oppiaineet = undefined;
+      }
+      return result;
     }
     else {
       const opintojakso = await Opetussuunnitelma.getOpintojakso(_.parseInt(opintojaksoId));
-      this.breadcrumb('opintojakso', opintojakso.nimi);
+      if (opintojakso) {
+        this.breadcrumb('opintojakso', opintojakso.nimi);
+      }
       return opintojakso;
     }
   }
@@ -433,7 +446,12 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
       });
     }
     else {
-      await Opetussuunnitelma.saveOpintojakso(opintojakso);
+      try {
+        await Opetussuunnitelma.saveOpintojakso(opintojakso);
+      }
+      catch (err) {
+        console.error(err);
+      }
     }
   }
 }

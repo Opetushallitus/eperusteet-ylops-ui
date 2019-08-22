@@ -14,10 +14,9 @@ export function oppiaine(): Lops2019PaikallinenOppiaineDto {
 }
 
 export function opintojakso(oppiaineUri?: string): Lops2019OpintojaksoDto {
-  const oj = {
+  return {
     nimi: {},
     oppiaineet: [],
     moduulit: [],
   };
-  return oj;
 }
