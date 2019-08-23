@@ -23,19 +23,17 @@ Vue.use(Loading, {
   loader: 'dots',
 });
 
-const isDevelopmentMode = _.memoize(() => _.get(process.env.NODE_ENV, '') === 'development');
+const isDevelopmentMode = () => _.get(process.env.NODE_ENV, '') === 'development';
 
 function errorCaptured(err: Error, vm: Vue, info: string) {
-  if (isDevelopmentMode()) {
-    logger.error(err, info);
-  }
-  else {
-    Virheet.lisaaVirhe({
-      path: vm.$route.path,
-      state: _.cloneDeep(vm.$data),
-      err: err.message,
-      info,
-    });
+  logger.error(err, info);
+  if (!isDevelopmentMode()) {
+    // Virheet.lisaaVirhe({
+    //   path: vm.$route.path,
+    //   state: _.cloneDeep(vm.$data),
+    //   err: err.message,
+    //   info,
+    // });
   }
 }
 

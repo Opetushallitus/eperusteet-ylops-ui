@@ -1,36 +1,31 @@
-<template lang="pug">
-ep-main-view
-  template(slot="icon")
-    ep-icon.float-right(icon="luo-uusi")
-
-  template(slot="header")
-    h1 {{ $t('uusi-pohja') }}
-
-  div
-    ep-form-content(name="pohja-nimi")
-      ep-field(
-        help="pohja-nimi-ohje",
-        v-model="uusi.nimi",
-        :validation="$v.uusi.nimi",
-        :is-editing="true")
-
-  div(v-if="valittavat.length > 0")
-    ep-form-content(name="peruste")
-      ep-select(
-        help="ops-peruste-ohje",
-        v-model="uusi.valittuPeruste",
-        :items="valittavat",
-        :validation="$v.uusi.valittuPeruste",
-        :is-editing="true")
-        template(slot-scope="{ item }")
-          span {{ $kaanna(item.nimi) }} ({{ item.diaarinumero }})
-  ep-spinner(v-else)
-
-  ep-button(
-    :disabled="$v.uusi.$invalid",
-    @click="luoUusiPeruste",
-    :show-spinner="isSaving") {{ $t('luo-pohja') }}
-
+<template>
+  <ep-main-view>
+    <template slot="icon">
+      <ep-icon class="float-right" icon="luo-uusi">
+      </ep-icon>
+    </template>
+    <template slot="header">
+      <h1>{{ $t('uusi-pohja') }}</h1>
+    </template>
+    <div>
+      <ep-form-content name="pohja-nimi">
+        <ep-field help="pohja-nimi-ohje" v-model="uusi.nimi" :validation="$v.uusi.nimi" :is-editing="true" />
+      </ep-form-content>
+    </div>
+    <div v-if="valittavat.length > 0">
+      <ep-form-content name="peruste">
+        <ep-select help="ops-peruste-ohje" v-model="uusi.valittuPeruste" :items="valittavat" :validation="$v.uusi.valittuPeruste" :is-editing="true">
+          <template slot-scope="{ item }">
+            <span>{{ $kaanna(item.nimi) }} ({{ item.diaarinumero }})</span>
+          </template>
+        </ep-select>
+      </ep-form-content>
+    </div>
+    <ep-spinner v-else />
+    <ep-button :disabled="$v.uusi.$invalid" @click="luoUusiPeruste" :show-spinner="isSaving">
+      {{ $t('luo-pohja') }}
+    </ep-button>
+  </ep-main-view>
 </template>
 
 <script lang="ts">
@@ -55,7 +50,7 @@ import { Ulkopuoliset, Opetussuunnitelmat } from '@/api';
 import { required } from 'vuelidate/lib/validators';
 import { validationMixin } from 'vuelidate';
 import { pohjaLuontiValidator } from '@/validators/ops';
-import { YlopsKoulutustyypit } from '@/utils/perusteet';
+import { isPerusteSupported, YlopsKoulutustyypit } from '@/utils/perusteet';
 import {
   PerusteInfoDto,
   OpetussuunnitelmaLuontiDto,
@@ -111,7 +106,7 @@ export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
 
   private get valittavat() {
     return _(this.perusteet)
-      .filter((peruste) => _.includes(YlopsKoulutustyypit, peruste.koulutustyyppi))
+      .filter((peruste) => isPerusteSupported(peruste))
       .sortBy((peruste) => (this as any).$kaanna(peruste.nimi))
       .value();
   }

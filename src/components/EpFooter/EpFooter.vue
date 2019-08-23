@@ -32,20 +32,20 @@ export default class EpFooter extends Vue {
   get linkit() {
     return {
       oph: {
-        fi: "https://www.oph.fi/fi",
-        sv: "https://www.oph.fi/sv",
+        fi: 'https://www.oph.fi/fi',
+        sv: 'https://www.oph.fi/sv',
       },
       opintopolku: {
-        fi: "https://opintopolku.fi/wp/fi",
-        sv: "https://studieinfo.fi/wp/sv/",
+        fi: 'https://opintopolku.fi/wp/fi',
+        sv: 'https://studieinfo.fi/wp/sv/',
       },
       eperusteet: {
-        fi: "https://eperusteet.opintopolku.fi/#/fi",
-        sv: "https://eperusteet.opintopolku.fi/#/sv",
+        fi: 'https://eperusteet.opintopolku.fi/#/fi',
+        sv: 'https://eperusteet.opintopolku.fi/#/sv',
       },
       seloste: {
-        fi: "https://opintopolku.fi/wp/tietosuojaseloste",
-        sv: "https://studieinfo.fi/wp/dataskyddsbeskrivning/",
+        fi: 'https://opintopolku.fi/wp/tietosuojaseloste',
+        sv: 'https://studieinfo.fi/wp/dataskyddsbeskrivning/',
       }
     };
   }

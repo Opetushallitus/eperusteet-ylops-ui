@@ -79,6 +79,8 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@/stores/kieli';
+import EpProgress from '@/components/EpProgress.vue';
+
 
 @Component({
   components: {
@@ -87,6 +89,7 @@ import { Kielet } from '@/stores/kieli';
     EpEditointi,
     EpField,
     EpFormContent,
+    EpProgress,
     EpSelect,
     EpToggle,
     Tilanvaihto,

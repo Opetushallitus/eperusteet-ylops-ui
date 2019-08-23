@@ -91,6 +91,11 @@ class KayttajaStore {
     }
   }
 
+  public async getEtusivu() {
+    const result = (await KayttajatApi.getKayttajanEtusivu()).data;
+    return result;
+  }
+
   private vertaa(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {
     const haettu = getOikeusArvo(oikeus);
     if (haettu === 0) {

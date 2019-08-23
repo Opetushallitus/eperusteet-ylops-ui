@@ -12,13 +12,6 @@ div.content
         .d-flex.align-items-center
           .p-2
             ep-filter(v-model="query")
-            // .search
-              .inlay
-                input.form-control.search(
-                  type="text",
-                  :placeholder="$t('rajaa')",
-                  v-model="query")
-                // fas.inner-icon(icon="search")
           .p-2.checkbox
             b-form-checkbox(v-model="vainPuuttuvat") {{ $t('vain-puuttuvat-moduulit') }}
     .col-md-3
@@ -32,26 +25,6 @@ div.content
           variant="outline-primary",
           icon="plus",
           @click="uusiOpintojakso()") {{ $t('opintojakso') }}
-
-  // .d-flex.align-items-center
-    .flex-sm-fill
-      .d-flex.align-items-center
-        .p-2
-          .search
-            .inlay
-              input.form-control.search(
-                type="text",
-                :placeholder="$t('rajaa')",
-                v-model="query")
-              // fas.inner-icon(icon="search")
-        .p-2.checkbox
-          b-form-checkbox(v-model="vainPuuttuvat") {{ $t('vain-puuttuvat-moduulit') }}
-    .flex-sm-fill
-      .float-right
-        div
-          ep-button(icon="plus", @click="uusiOppiaine()") {{ $t('lisaa-paikallinen-oppiaine') }}
-        div
-          ep-button(icon="plus", @click="uusiOppiaine()") {{ $t('lisaa-paikallinen-oppiaine') }}
 
   table.table.table-borderless.oppiaineet
     thead.head

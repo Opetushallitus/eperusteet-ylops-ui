@@ -5,7 +5,7 @@ div.linkki
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator';
-import _ from "lodash";
+import _ from 'lodash';
 
 @Component
 export default class EpLinkki extends Vue {
