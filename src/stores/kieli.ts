@@ -1,6 +1,6 @@
 import { Ulkopuoliset } from '@/api';
-import Aikaleima from '@/plugins/aikaleima';
-import Kaannos from '@/plugins/kaannos';
+import { Aikaleima } from '@/plugins/aikaleima';
+import { Kaannos } from '@/plugins/kaannos';
 import { createLogger } from '@/stores/logger';
 import { Kieli } from '@/tyypit';
 import * as _ from 'lodash';
@@ -15,8 +15,8 @@ import VueI18n from 'vue-i18n';
 import { Getter, Mutation, State, Store } from './store';
 
 Vue.use(VueI18n);
-Vue.use(Aikaleima);
-Vue.use(Kaannos);
+Vue.use(new Aikaleima());
+Vue.use(new Kaannos());
 
 const logger = createLogger('Kieli');
 

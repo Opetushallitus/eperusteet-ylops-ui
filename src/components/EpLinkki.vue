@@ -1,6 +1,7 @@
-<template lang="pug">
-div.linkki
-  a(:href="url") {{ cleanUrl }}
+<template>
+<div class="linkki">
+  <a :href="url">{{ cleanUrl }}</a>
+</div>
 </template>
 
 <script lang="ts">

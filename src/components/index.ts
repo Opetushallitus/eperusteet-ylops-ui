@@ -12,6 +12,7 @@ export { default as EpField } from './forms/EpField.vue';
 export { default as EpProgress } from './EpProgress.vue';
 export { default as EpFooter } from './EpFooter/EpFooter.vue';
 export { default as EpFormContent } from './forms/EpFormContent.vue';
+export { default as EpList } from './forms/EpList.vue';
 export { default as EpIcon } from './EpIcon/EpIcon.vue';
 export { default as EpInput } from './forms/EpInput.vue';
 export { default as EpKaanna } from './EpKaanna/EpKaanna.vue';

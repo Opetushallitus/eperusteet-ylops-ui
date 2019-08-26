@@ -1,8 +1,6 @@
 import Vue from 'vue';
 
-import Aikaleima from '../src/plugins/aikaleima';
-
-import '../src/mainvue';
-import '../src/config/styles';
-
-Vue.use(Aikaleima);
+import '@/config/bootstrap';
+import '@/config/fontawesome';
+import '@/config/styles';
+import '@/styles/app.scss';

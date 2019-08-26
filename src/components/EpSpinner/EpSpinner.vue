@@ -1,10 +1,11 @@
-<template lang="pug">
-div
-  .spinner
-    .oph-spinner(aria-label="Ladataan")
-      .oph-bounce.oph-bounce1
-      .oph-bounce.oph-bounce2
-      .oph-bounce.oph-bounce3
+<template>
+<div class="spinner">
+  <div class="oph-spinner" aria-label="Ladataan">
+    <div class="oph-bounce oph-bounce1" />
+    <div class="oph-bounce oph-bounce2" />
+    <div class="oph-bounce oph-bounce3" />
+  </div>
+</div>
 </template>
 
 <script lang="ts">

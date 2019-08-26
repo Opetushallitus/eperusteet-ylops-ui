@@ -2,7 +2,7 @@
 <div class="content">
   <div v-if="hooks && !isLoading">
     <ep-editointi :hooks="hooks" v-model="editable" :validator="validator">
-      <template slot="ohje" slot-scope="{ isEditing, data }">
+      <template slot="ohje" slot-scope="{ data }">
         <div class="sidepad">
           <p v-html="$t('ohje-pintojakso')">
           </p>
@@ -10,9 +10,7 @@
           </p>
         </div>
       </template>
-      <template slot="keskustelu" slot-scope="{ isEditing, data }">
-        <span>
-        </span>
+      <template slot="keskustelu" slot-scope="{ }">
       </template>
       <template slot="header" slot-scope="{ data, validation, isEditing }">
         <ep-field help="opintojakso-nimi-ohje" v-model="data.nimi" :validation="validation.nimi" :is-header="true" :is-editing="isEditing"></ep-field>
@@ -73,7 +71,7 @@
             </div>
             <div class="oppiaineet" v-if="!isEditing">
               <div class="moduulit">
-                <div class="moduuli" v-for="moduuli in editable.moduulit" :key="moduuli.id">
+                <div class="moduuli" v-for="(moduuli, idx) in editable.moduulit" :key="idx">
                   <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit">
                   </ep-opintojakson-moduuli>
                 </div>
@@ -101,44 +99,64 @@
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-tavoitteet">
             <div class="alueotsikko" slot="header">{{ $t('tavoitteet') }}</div>
-            <div class="perustesisalto" v-for="moduuli in data.moduulit">
+            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx">
               <div class="moduuliotsikko">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</div>
-              <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].tavoitteet" kohde="kohde" arvot="tavoitteet">
-              </ep-prefix-list>
+              <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].tavoitteet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
             </div>
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
-            <div class="alert alert-info" v-if="!isEditing && data.tavoitteet.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
-            <ep-button v-if="isEditing" variant="outline-primary" icon="plus" @click="lisaaTavoite()">{{ $t('lisaa-tavoite') }}</ep-button>
+            <div class="alert alert-info" v-if="!isEditing && data.tavoitteet && data.tavoitteet.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
+            <ep-list
+              :is-editable="isEditing"
+              lisays="lisaa-tavoite"
+              kentta="kuvaus"
+              v-model="data.tavoitteet" />
           </ep-collapse>
         </div>
+
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-keskeiset-sisallot">
             <div class="alueotsikko" slot="header">{{ $t('keskeiset-sisallot') }}</div>
-            <div class="perustesisalto" v-for="moduuli in data.moduulit">
+            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx">
               <div class="moduuliotsikko">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</div>
               <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].sisallot" kohde="kohde" arvot="sisallot">
               </ep-prefix-list>
             </div>
+
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
-            <div class="alert alert-info" v-if="!isEditing && data.keskeisetSisallot.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
-            <ep-button v-if="isEditing" variant="outline-primary" icon="plus" @click="lisaaTavoite()">{{ $t('lisaa-keskeinen-sisalto') }}</ep-button>
+            <div class="alert alert-info" v-if="!isEditing && data.keskeisetSisallot && data.keskeisetSisallot.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
+            <ep-list
+              :is-editable="isEditing"
+              lisays="lisaa-keskeinen-sisalto"
+              kentta="kuvaus"
+              v-model="data.keskeisetSisallot" /></ep-collapse>
           </ep-collapse>
         </div>
+
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header">{{ $t('laaja-alaiset-sisallot') }}</div>
-            <div class="perustesisalto" v-for="oppiaine in laajaAlaisetOsaamiset" v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in laajaAlaisetOsaamiset" v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus" :key="idx">
               <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)">
               </div>
-              <ep-content :value="oppiaine.laajaAlainenOsaaminen.kuvaus">
-              </ep-content>
+              <ep-content :value="oppiaine.laajaAlainenOsaaminen.kuvaus" />
             </div>
+
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
             <ep-content layout="normal" v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing">
             </ep-content>
             <div class="alert alert-info" v-if="!isEditing && !data.laajaAlainenOsaaminen">{{ $t('ei-paikallista-tarkennusta') }}</div>
           </ep-collapse>
         </div>
+
+        <div class="osio">
+          <ep-collapse tyyppi="opintojakson-arviointi">
+            <div class="alueotsikko" slot="header">{{ $t('opintojakson-arviointi') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+            <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
+            <ep-content layout="normal" v-model="data.arviointi" :is-editable="isEditing" />
+          </ep-collapse>
+        </div>
+
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-vapaa-kuvaus">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-vapaa-kuvaus') }}</div>
@@ -164,6 +182,7 @@ import {
   EpField,
   EpFormContent,
   EpInput,
+  EpList,
   EpMultiSelect,
   EpOppiaineSelector,
   EpPrefixList,
@@ -193,6 +212,7 @@ import * as defaults from '@/defaults';
     EpField,
     EpFormContent,
     EpInput,
+    EpList,
     EpMultiSelect,
     EpOpintojaksonModuuli,
     EpOppiaineSelector,

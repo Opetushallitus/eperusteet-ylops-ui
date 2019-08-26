@@ -1,22 +1,20 @@
 <template lang="pug">
-
-div(v-if="isEditing")
-  input.input-style.form-control(
-    :type="type === 'number' ? 'number' : 'text'",
-    @input="onInput($event.target.value)",
-    :attrs="$attrs",
-    :value="val",
-    :class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
-  .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
-  .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
-  .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
-  small.form-text.text-muted(v-if="help && isEditing") {{ $t(help) }}
-.input-content(
-    :class="isHeader && 'headerfield'",
-    v-else,
-    :attrs="$attrs")
-    | {{ val }}
-
+<div v-if="isEditing">
+  <div class="leftright">
+    <input class="input-style form-control" :class="inputClass" @input="onInput($event.target.value)" :type="type === 'number' ? 'number' : 'text'" :attrs="$attrs" :value="val"></input>
+    <div v-if="hasLeftSlot" class="addon addon-left">
+      <slot name="left" />
+    </div>
+    <div v-if="hasRightSlot" class="addon addon-right">
+      <slot name="right" />
+    </div>
+  </div>
+  <div class="valid-feedback" v-if="!validationError && validMessage">{{ $t(validMessage) }}</div>
+  <div class="invalid-feedback" v-else-if="validationError && invalidMessage ">{{ $t(invalidMessage) }}</div>
+  <div class="invalid-feedback" v-else-if="validationError && !invalidMessage">{{ $t('validation-error-' + validationError, validation.$params[validationError]) }}</div>
+  <small class="form-text text-muted" v-if="help && isEditing">{{ $t(help) }}</small>
+</div>
+<div class="input-content" :class="isHeader && 'headerfield'" v-else="v-else" :attrs="$attrs">{{ val }}</div>
 </template>
 
 <script lang="ts">
@@ -28,7 +26,9 @@ import EpValidation from '@/mixins/EpValidation';
 
 const logger = createLogger('EpInput');
 
-@Component
+@Component({
+  name: 'EpInput',
+})
 export default class EpInput extends Mixins(EpValidation) {
   @Prop({ default: 'localized' })
   private type!: 'localized' | 'string' | 'number';
@@ -44,6 +44,23 @@ export default class EpInput extends Mixins(EpValidation) {
 
   @Prop({ default: '' })
   private help!: string;
+
+  get hasLeftSlot() {
+    return !!this.$slots.left;
+  }
+
+  get hasRightSlot() {
+    return !!this.$slots.right;
+  }
+
+  get inputClass() {
+    return {
+      'left-padded': this.hasLeftSlot,
+      'right-padded': this.hasRightSlot,
+      'is-invalid': this.isInvalid,
+      'is-valid': this.isValid,
+    }
+  }
 
   public onInput(input: any) {
     if (this.type === 'string' && !_.isString(this.value)) {
@@ -84,6 +101,33 @@ export default class EpInput extends Mixins(EpValidation) {
 </script>
 
 <style scoped lang="scss">
+.leftright {
+  position: relative;
+
+  .addon {
+    position: absolute;
+  }
+
+  input.left-padded {
+    padding-left: 32px;
+  }
+
+  input.right-padded {
+    padding-right: 18px;
+  }
+
+  .addon-left {
+    top: 0;
+    left: 0;
+  }
+
+  .addon-right {
+    top: 0;
+    right: 0;
+  }
+
+}
+
 input.input-style {
   border-top: 0;
   border-left: 0;

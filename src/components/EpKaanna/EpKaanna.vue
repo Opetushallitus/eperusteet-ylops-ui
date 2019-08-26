@@ -1,23 +1,20 @@
 <template lang="pug">
-
-div(v-if="hasContent")
-  // Lokalisoitu teksti
-  div(v-html="$kaanna(value)")
-
-div(v-else)
-  slot
-    div.btn-group.btn-group-sm.float-right(ref="buttons", role="group")
-      button.btn.btn-link(
-        v-for="l in availableLocales",
-        :key="l",
-        @click="selectedLocale = l") {{ l }}
-    b-tooltip(
-      :target="() => $refs.buttons",
-      :title="$t('sisalto-naytetaan-kielella', { kieli: availableLocale })")
-
-  // Lokalisoitu teksti
-  div(v-if="availableLocale", v-html="value[availableLocale]")
-
+<div v-if="hasContent">
+  <!-- Lokalisoitu teksti-->
+  <div v-html="$kaanna(value)">
+  </div>
+</div>
+<div v-else="v-else">
+  <slot>
+    <div class="btn-group btn-group-sm float-right" ref="buttons" role="group">
+      <button class="btn btn-link" v-for="l in availableLocales" :key="l" @click="selectedLocale = l">{{ l }}</button>
+    </div>
+    <b-tooltip :target="() => $refs.buttons" :title="$t('sisalto-naytetaan-kielella', { kieli: availableLocale })">
+    </b-tooltip>
+  </slot>
+  <!-- Lokalisoitu teksti-->
+  <div v-if="availableLocale" v-html="value[availableLocale]" />
+</div>
 </template>
 
 <script lang="ts">
@@ -28,9 +25,8 @@ import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { Kieli } from '@/tyypit';
 
-@Component({
-  name: 'EpKaanna',
-})
+
+@Component
 export default class EpKaanna extends Vue {
   @Prop()
   private value!: object;

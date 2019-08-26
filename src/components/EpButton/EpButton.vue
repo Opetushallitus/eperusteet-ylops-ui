@@ -1,13 +1,11 @@
-<template lang="pug">
-button.btn(
-    :class="variantClass",
-    v-bind="$attrs",
-    :disabled="disabled || showSpinner",
-    @click="$emit('click')")
-  .float-left.mr-2(v-if="icon", :class="isOutline && 'icon'")
-    fas(:icon="icon")
-  slot
-  ep-spinner-inline(v-if="showSpinner")
+<template>
+<button class="btn" :class="variantClass" v-bind="$attrs" :disabled="disabled || showSpinner" @click="$emit('click')">
+  <div class="float-left mr-2" v-if="icon" :class="isOutline && 'icon'">
+    <fas :icon="icon" />
+  </div>
+  <slot />
+  <ep-spinner-inline v-if="showSpinner" />
+</button>
 </template>
 
 <script lang="ts">
