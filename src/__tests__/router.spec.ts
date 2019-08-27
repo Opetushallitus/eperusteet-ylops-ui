@@ -36,6 +36,14 @@ describe('Router', () => {
     jest.spyOn(Opetussuunnitelmat, 'getOikeudet')
       .mockImplementation(async () => makeAxiosResponse(oikeudet));
 
+    jest.spyOn(KayttajatApi, 'getKayttajanEtusivu')
+      .mockImplementation(async () => makeAxiosResponse({
+        opetussuunnitelmatJulkaistut: 42,
+        opetussuunnitelmatKeskeneraiset: 43,
+        pohjatJulkaistut: 44,
+        pohjatKeskeneraiset: 45,
+      }));
+
     jest.spyOn(KayttajatApi, 'getOrganisaatioOikeudet')
       .mockImplementation(async () => makeAxiosResponse([
         '1234',
@@ -120,8 +128,9 @@ describe('Router', () => {
 
     await expectEventually(() =>
       expect(app.html()).toContain('Hei Keke Käyttäjä, tervetuloa ePerusteet OPS-työkaluun!'));
-    await expectEventually(() => expect(app.html()).toContain('Jokin opetussuunnitelman pohja'));
     await expectEventually(() => expect(app.html()).toContain('Tämä on tiedote'));
+    await expectEventually(() => expect(app.find('.tile-content').html()).toContain('42'));
+    await expectEventually(() => expect(app.find('.tile-content').html()).toContain('43'));
   });
 
   // test('Navigation - ', async () => {

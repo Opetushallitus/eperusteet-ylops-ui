@@ -146,14 +146,14 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         failed,
         total: _.size(categories),
         ok: _.size(categories) - failed,
-      }
+      };
     }
     else {
       return {
         categories: [],
         failed: 0,
         ok: 0,
-      }
+      };
     }
   }
 }

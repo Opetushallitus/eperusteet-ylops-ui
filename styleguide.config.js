@@ -27,4 +27,4 @@ module.exports = {
   require: [
     path.join(__dirname, 'config/styleguide.plugins.ts'),
   ],
-}
+};

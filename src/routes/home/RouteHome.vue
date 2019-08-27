@@ -79,10 +79,10 @@ import {
 export default class Home extends Mixins(EpRoute) {
   private rajain: string = '';
   private etusivu: EtusivuDto = {
-      opetussuunnitelmatKeskeneraiset: 0,
-      opetussuunnitelmatJulkaistut: 0,
-      pohjatKeskeneraiset: 0,
-      pohjatJulkaistut: 0,
+    opetussuunnitelmatKeskeneraiset: 0,
+    opetussuunnitelmatJulkaistut: 0,
+    pohjatKeskeneraiset: 0,
+    pohjatJulkaistut: 0,
   };
 
   async init() {

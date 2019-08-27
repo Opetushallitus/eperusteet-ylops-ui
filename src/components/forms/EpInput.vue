@@ -59,7 +59,7 @@ export default class EpInput extends Mixins(EpValidation) {
       'right-padded': this.hasRightSlot,
       'is-invalid': this.isInvalid,
       'is-valid': this.isValid,
-    }
+    };
   }
 
   public onInput(input: any) {

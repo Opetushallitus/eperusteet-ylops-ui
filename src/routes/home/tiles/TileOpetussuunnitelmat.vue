@@ -70,7 +70,7 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
         route: {
           name: 'opetussuunnitelmaListaus',
         },
-      }
+      };
     }
     else {
       return {
@@ -79,7 +79,7 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
         route: {
           name: 'pohjaListaus',
         },
-      }
+      };
     }
   }
 }

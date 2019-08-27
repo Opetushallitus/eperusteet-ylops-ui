@@ -2,7 +2,7 @@
 <div class="content">
   <div v-if="hooks && !isLoading">
     <ep-editointi :hooks="hooks" v-model="editable" :validator="validator">
-      <template slot="ohje" slot-scope="{ data }">
+      <template slot="ohje" slot-scope="{ }">
         <div class="sidepad">
           <p v-html="$t('ohje-pintojakso')">
           </p>
@@ -79,7 +79,7 @@
             </div>
             <div class="moduulilista" v-if="isEditing && editable.moduulit.length > 0">
               <h5>{{ $t('valitut-moduulit') }}</h5>
-              <div v-for="moduuli in editable.moduulit">
+              <div v-for="(moduuli, idx) in editable.moduulit" :key="idx">
                 <div class="d-flex">
                   <div class="p-2 flex-grow-1">
                     <fas class="checked" icon="check">
@@ -128,14 +128,14 @@
               :is-editable="isEditing"
               lisays="lisaa-keskeinen-sisalto"
               kentta="kuvaus"
-              v-model="data.keskeisetSisallot" /></ep-collapse>
+              v-model="data.keskeisetSisallot" />
           </ep-collapse>
         </div>
 
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header">{{ $t('laaja-alaiset-sisallot') }}</div>
-            <div class="perustesisalto" v-for="(oppiaine, idx) in laajaAlaisetOsaamiset" v-if="oppiaine.laajaAlainenOsaaminen && oppiaine.laajaAlainenOsaaminen.kuvaus" :key="idx">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in laajaAlaisetOsaamiset" :key="idx">
               <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)">
               </div>
               <ep-content :value="oppiaine.laajaAlainenOsaaminen.kuvaus" />
@@ -409,6 +409,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
       .flatten()
       .uniq()
       .map((uri: string) => this.oppiaineetMap[uri])
+      .filter((oa: any) => oa.laajaAlainenOsaaminen && oa.laajaAlainenOsaaminen.kuvaus)
       .value();
   }
 
