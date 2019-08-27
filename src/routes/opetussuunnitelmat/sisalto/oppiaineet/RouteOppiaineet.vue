@@ -3,23 +3,28 @@
 div.content
   h1
     span {{ $t('oppiaineet') }}
-  p {{ $t('route-oppiaineet-kuvaus') }}
-  .d-flex.align-items-center
-    .flex-sm-fill
-      .d-flex.align-items-center
-        .p-2
-          .search
-            .inlay
-              input.form-control.search(
-                type="text",
-                :placeholder="$t('rajaa')",
-                v-model="query")
-              // fas.inner-icon(icon="search")
-        .p-2.checkbox
-          b-form-checkbox(v-model="vainPuuttuvat") {{ $t('vain-puuttuvat-moduulit') }}
-    .flex-sm-fill
-      .float-right
-        ep-button(icon="plus", @click="uusiOppiaine()") {{ $t('lisaa-paikallinen-oppiaine') }}
+
+  .row
+    .col-md-9
+      div
+        p {{ $t('route-oppiaineet-kuvaus') }}
+      div
+        .d-flex.align-items-center
+          .p-2
+            ep-filter(v-model="query")
+          .p-2.checkbox
+            b-form-checkbox(v-model="vainPuuttuvat") {{ $t('vain-puuttuvat-moduulit') }}
+    .col-md-3
+      div
+        ep-button(
+          variant="outline-primary",
+          icon="plus",
+          @click="uusiOppiaine()") {{ $t('paikallinen-oppiaine') }}
+      div
+        ep-button(
+          variant="outline-primary",
+          icon="plus",
+          @click="uusiOpintojakso()") {{ $t('opintojakso') }}
 
   table.table.table-borderless.oppiaineet
     thead.head
@@ -28,12 +33,12 @@ div.content
         th(width="25%") {{ $t('luodut-opintojaksot') }}
         th(width="25%") {{ $t('liitetyt-moduulit') }}
         th(width="25%") {{ $t('vieraat-moduulit') }}
-        th(width="5%")
+        th.actions(width="5%")
           button.btn.btn-link(@click="toggleAll()")
             fas(icon="chevron-down")
     tbody
       template(v-for="oa in suodatettuOppiaineRakenne")
-        tr.headerline
+        tr.headerline(:class="oa.isOpen && 'opened'")
           td
             router-link(:to=`{ name: 'oppiaine', params: { oppiaineId: oa.id } }`)
               span {{ $kaanna(oa.nimi) }}
@@ -43,7 +48,7 @@ div.content
           td(:class="oa.stats.valid ? 'valid' : 'invalid'")
             span(v-if="oa.oppimaarat.length === 0") {{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}
           td
-          td
+          td.actions
             button.btn.btn-link(@click="toggleOppiaine(oa)", v-if="oa.oppimaarat.length === 0")
               fas(v-if="oa.isOpen", icon="chevron-down")
               fas(v-else, icon="chevron-up")
@@ -95,14 +100,16 @@ div.content
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
+import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import {
   EpButton,
   EpCollapse,
+  EpColorBall,
   EpContent,
   EpEditointi,
+  EpFilter,
   EpSpinner,
-  EpColorBall } from '@/components';
+} from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
@@ -119,6 +126,7 @@ import { Kielet } from '@/stores/kieli';
     EpColorBall,
     EpContent,
     EpEditointi,
+    EpFilter,
     EpSpinner,
   },
 })
@@ -269,6 +277,9 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
 
   async mounted() {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+    this.$nextTick(() => {
+      this.toggleAll();
+    });
   }
 
   private toggleOppiaine(oa: any) {
@@ -303,6 +314,17 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
       },
     });
   }
+
+  public uusiOpintojakso() {
+    this.$router.push({
+      name: 'opintojakso',
+      params: {
+        ...this.$router.currentRoute.params,
+        opintojaksoId: 'uusi',
+      },
+    });
+  }
+
 }
 </script>
 
@@ -325,8 +347,18 @@ table.oppiaineet {
   }
 
   tr.headerline {
-    background: $paletti-background-light-2;
-    border-bottom: 1px solid #ddd;
+
+    &:nth-child(2n - 1) {
+      background-color: #F9F9F9;
+    }
+
+    &.opened {
+      background: $paletti-background-light-2;
+    }
+
+    td.actions {
+      padding: 5px;
+    }
 
     .invalid {
       color: $red;
@@ -343,13 +375,13 @@ table.oppiaineet {
     font-size: 80%;
 
     td {
-      padding: 16px;
+      padding: 14px;
     }
   }
 
   tr.dataline {
     background: $paletti-background-light;
-    border: 1px solid $paletti-background-light-2;
+    border: 1px solid #DFEFFF;
     font-size: 80%;
 
     td.chevron {

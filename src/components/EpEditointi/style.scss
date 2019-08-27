@@ -1,5 +1,15 @@
 @import '../../styles/variables';
 
+.floating-editing-buttons {
+  background: rgba(30, 73, 207, 0.8);
+  bottom: 0px;
+  left: 0px;
+  padding: 10px;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
 .editointikontrolli {
   margin-top: 4px;
 

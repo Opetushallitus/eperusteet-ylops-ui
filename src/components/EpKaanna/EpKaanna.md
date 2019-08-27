@@ -1,9 +1,16 @@
-EpKaanna komponentti:
-
 ```vue
+<template>
+  <div>
+    <ep-kaanna :value="value" />
+  </div>
+</template>
 
-new Vue({
-  data(){
+<script>
+import { i18n } from '@/stores/kieli';
+
+export default {
+  i18n,
+  data() {
     return {
       value: {
         _id: 1,
@@ -11,11 +18,7 @@ new Vue({
       },
     }
   },
-  template: `
-    <div>
-        <ep-kaanna :value="value" />
-    </div>
-  `
-})
+}
+</script>
 
 ```

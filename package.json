@@ -5,19 +5,19 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "dcci": "docker-compose build && docker-compose up --abort-on-container-exit",
-    "dctests": "npm run install_cypress && npm run test:e2e",
-    "dcci:serve": "docker-compose build && docker-compose up db app",
-    "dcci:dev": "docker-compose build && docker-compose up db",
-    "install_cypress": "npx cypress install && npx cypress verify",
     "test": "npm run test:unit && npm run test:e2e",
     "lint": "vue-cli-service lint --no-fix",
-    "lint:fix": "vue-cli-service lint",
-    "eslint": "eslint src/**/*.vue",
     "ci:start": "npm run lint && npm run gen:api && npm run build && npm run test",
     "clean": "npx jest --clearCache",
+    "dcci": "docker-compose build && docker-compose up --abort-on-container-exit",
+    "dcci:dev": "docker-compose build && docker-compose up db",
+    "dcci:serve": "docker-compose build && docker-compose up db app",
+    "dctests": "npm run install_cypress && npm run test:e2e",
+    "eslint": "eslint src/**/*.vue",
     "format": "vue-cli-service lint",
     "gen:api": "./scripts/buildapi.sh",
+    "install_cypress": "npx cypress install && npx cypress verify",
+    "lint:fix": "vue-cli-service lint",
     "stats": "npm test && $BROWSER mochawesome-report/mochawesome.html coverage/lcov-report/index.html",
     "styleguide": "vue-cli-service styleguidist",
     "styleguide:build": "vue-cli-service styleguidist:build",
@@ -81,12 +81,11 @@
     "pug-plain-loader": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "register-service-worker": "^1.5.2",
-    "sass-loader": "^7.0.1",
+    "sass-loader": "^7.3.1",
     "ts-jest": "^24.0.2",
     "typescript": "3.3.3",
     "vue": "^2.6.10",
     "vue-chartjs": "^3.4.2",
-    "vue-cli-plugin-styleguidist": "^3.18.0",
     "vue-docgen-api": "^3.17.0",
     "vue-i18n": "^8.12.0",
     "vue-loading-overlay": "^3.1.1",
@@ -103,7 +102,11 @@
     "vuedraggable": "^2.23.0",
     "vuelidate": "^0.7.4",
     "vuex": "^3.1.1",
-    "vuex-class": "^0.3.2"
+    "vuex-class": "^0.3.2",
+    "webpack": "^4.39.2"
+  },
+  "devDependencies": {
+    "vue-cli-plugin-styleguidist": "^3.22.2"
   },
   "engines": {
     "node": "10.x.x"

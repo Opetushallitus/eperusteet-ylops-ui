@@ -1,5 +1,5 @@
 <template lang="pug">
-div(v-if="isEditing")
+.ep-date-picker(v-if="isEditing")
   date-picker(
     @input="onInput",
     :format="format",
@@ -18,8 +18,7 @@ div(v-if="isEditing")
   .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
   .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
   small.form-text.text-muted(v-if="help && isEditing") {{ $t(help) }}
-div(v-else)
-  | {{ locdate }}
+.ep-date-picker(v-else) {{ locdate }}
 </template>
 
 <script lang="ts">
@@ -101,18 +100,24 @@ export default class EpDatepicker extends Mixins(EpValidation) {
 }
 </script>
 
-<style lang="scss">
-.mx-input-append {
-  font-size: 1rem;
-}
-.ep-datepicker-validation {
-  padding-right: calc(3em + .75rem) !important;
-}
-.ep-datepicker-validation ~ .mx-input-append {
-  right: 30px;
-}
-.invalid-feedback, .valid-feedback {
-  display: block;
+<style scoped lang="scss">
+
+.ep-date-picker {
+  & /deep/ .mx-input-append {
+    font-size: 1rem;
+  }
+
+  & /deep/ .ep-datepicker-validation {
+    padding-right: calc(3em + .75rem) !important;
+  }
+
+  & /deep/ .ep-datepicker-validation ~ .mx-input-append {
+    right: 30px;
+  }
+
+  & /deep/ .invalid-feedback, .valid-feedback {
+    display: block;
+  }
 }
 
 </style>

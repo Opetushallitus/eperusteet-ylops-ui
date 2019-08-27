@@ -1,26 +1,31 @@
-<template lang="pug">
-
-div
-  ep-multi-select(
-    v-if="cache",
-    :value="value || []",
-    @input="handleInput",
-    @search="query = $event",
-    :options="filteredOppiaineet")
-    template(slot="singleLabel", slot-scope="{ option }")
-      span.selected {{ $kaanna(oppiaineetMap[option].nimi) }}
-    template(slot="option", slot-scope="{ option, search }")
-      div {{ $kaanna(oppiaineetMap[option].nimi) }}
-    template(slot="tag", slot-scope="{ option, search, remove }")
-      span.selected
-        span {{ $kaanna(oppiaineetMap[option].nimi) }}
-        button.btn.btn-link(@click="remove(option)")
-          fas(icon="times")
-  .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
-  .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
-  .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
-  small.form-text.text-muted {{ $t('oppiaine-valitsin-ohje') }}
-
+<template>
+<div>
+  <ep-multi-select
+      v-if="cache"
+      :value="sortedValue"
+      @input="handleInput"
+      @search="query = $event"
+      :options="filteredOppiaineet">
+    <template slot="singleLabel" slot-scope="{ option }">
+      <span class="selected">{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
+    </template>
+    <template slot="option" slot-scope="{ option }">
+      <div>{{ $kaanna(oppiaineetMap[option].nimi) }}</div>
+    </template>
+    <template slot="tag" slot-scope="{ option, search, remove }">
+      <span class="selected">
+        <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
+        <button class="btn btn-link" @click="remove(option)">
+          <fas icon="times" />
+        </button>
+      </span>
+    </template>
+  </ep-multi-select>
+  <div class="valid-feedback" v-if="!validationError && validMessage">{{ $t(validMessage) }}</div>
+  <div class="invalid-feedback" v-else-if="validationError && invalidMessage ">{{ $t(invalidMessage) }}</div>
+  <div class="invalid-feedback" v-else-if="validationError && !invalidMessage">{{ $t('validation-error-' + validationError, validation.$params[validationError]) }}</div>
+  <small class="form-text text-muted">{{ $t('oppiaine-valitsin-ohje') }}</small>
+</div>
 </template>
 
 <script lang="ts">
@@ -47,6 +52,10 @@ export default class EpOppiaineSelector extends Mixins(EpValidation) {
 
   private cache: PerusteCache | null = null;
   private query = '';
+
+  get sortedValue() {
+    return _.sortBy(this.value || [], _.identity);
+  }
 
   get paikallisetOppiaineet() {
     return _(Opetussuunnitelma.paikallisetOppiaineet)
@@ -94,6 +103,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation) {
     return _(this.oppiaineetJaOppimaarat)
       .filter((org: any) => Kielet.search(this.query, org.nimi))
       .map('koodi.uri')
+      .sort()
       .value();
   }
 

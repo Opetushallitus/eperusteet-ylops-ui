@@ -23,7 +23,6 @@ base-tile(icon="opetussuunnitelmasi", color="#5bca13", :route="{ name: 'pohjaLis
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { Opetussuunnitelmat } from '@/api';
 import { delay } from '@/utils/delay';
@@ -33,7 +32,6 @@ import _ from 'lodash';
 @Component({
   components: {
     BaseTile,
-    EpContent,
     EpSpinner,
   },
 })

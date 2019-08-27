@@ -1,14 +1,12 @@
-<template lang="pug">
-  span {{ formatted }}
+<template>
+<span>{{ formatted }}</span>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import moment from 'moment';
 
-@Component({
-  name: 'EpAikaleima',
-})
+@Component
 export default class EpAikaleima extends Vue {
   private static Formats: { [key: string]: string } = {
     ldt: 'LLL',

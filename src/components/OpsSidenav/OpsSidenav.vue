@@ -40,39 +40,6 @@
             fas.mr-2(icon="plus")
             span {{ $t('uusi-tekstikappale') }}
 
-  .bottom-navigation
-    .hallintalinkit
-      .hallintatoggle(@click="toggleHallinta", role="button")
-        span {{ $t('hallintatyokalut') }}
-        .float-right
-          fas.hallintachevron(v-if="showHallintatyokalut", icon="chevron-down")
-          fas.hallintachevron(v-else, icon="chevron-up")
-      ul.navigation(v-if="showHallintatyokalut")
-        li
-          router-link.btn.btn-link(:to=`{ name: 'opsTiedot' }`)
-            fas.mr-2(icon="info-circle")
-            span {{ $t('tiedot') }}
-        li
-          router-link.btn.btn-link(:to=`{ name: 'opsDokumentti' }`)
-            fas.mr-2(icon="file-pdf")
-            span {{ $t('dokumentti') }}
-        li
-          router-link.btn.btn-link(:to=`{ name: 'opsPoistetut' }`)
-            fas.mr-2(icon="recycle")
-            span {{ $t('poistetut') }}
-        li
-          router-link.btn.btn-link(:to=`{ name: 'opsKasitteet' }`)
-            fas.mr-2(icon="bookmark")
-            span {{ $t('kasitteet') }}
-        // li
-          router-link.btn.btn-link(:to=`{ name: 'opsRakenne' }`)
-            fas.mr-2(icon="cog")
-            span {{ $t('rakenne') }}
-        li
-          router-link.btn.btn-link(:to=`{ name: 'opsJulkaisu' }`)
-            fas.mr-2(icon="upload")
-            span {{ $t('julkaise') }}
-
     // li.separated
       ep-sisalto-modaali(:params="$route", :cache="cache")
 

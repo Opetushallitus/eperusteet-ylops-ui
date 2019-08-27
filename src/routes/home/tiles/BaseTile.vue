@@ -1,26 +1,26 @@
-<template lang="pug">
-
-mixin innertile-content
-  .iconline
-    ep-icon(:icon="icon", :background-color="color")
-  .tile-header
-    h3.oph-h3.tileheader
-      slot(name="header")
-  .tile-content
-    slot(name="content")
-
-.tile
-  router-link(v-if="route", :to="route")
-    .innertile.route-tila
-      +innertile-content
-
-  a(v-else-if="href", :href="href")
-    .innertile.route-tila
-      +innertile-content
-
-  .innertile(v-else)
-    +innertile-content
-
+<template>
+  <div class="tile">
+    <component
+      tag="div"
+      role="button"
+      :is="route ? 'router-link' : 'a'"
+      :href="href && href"
+      :to="route && route">
+      <div class="innertile route-tila">
+        <div class="tile-header">
+          <h3 class="oph-h3 tileheader">
+            <slot name="header"></slot>
+          </h3>
+        </div>
+        <div class="iconline">
+          <ep-icon :icon="icon" color="black" background-color="white"></ep-icon>
+        </div>
+        <div class="tile-content">
+          <slot name="content"></slot>
+        </div>
+      </div>
+    </component>
+  </div>
 </template>
 
 <script lang="ts">
@@ -61,22 +61,34 @@ $tile-width: 540px;
   text-align: center;
 
   .innertile {
-    padding: 20px 40px;
+    cursor: pointer;
+    width: 502px;
     min-height: $tile-height;
     background: $etusivu-tile-background;
     border: 1px solid #eee;
     border-radius: 10px;
-    box-shadow: 2px 2px 3px #eee;
+    box-shadow: 5px 5px 20px 1px rgba(0,45,153,0.08);
+
+    .tile-header {
+      height: 120px;
+      width: 500px;
+      border-radius: 10px 10px 0 0;
+      background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
+      color: white;
+      padding-top: 30px;
+    }
 
     .tile-content {
       overflow: hidden;
       color: $dark-blue;
+      margin-top: -20px;
     }
 
     .iconline {
+      position: relative;
+      top: -37px;
       display: flex;
       justify-content: center;
-      padding: 10px;
     }
   }
 

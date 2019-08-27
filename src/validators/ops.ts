@@ -16,12 +16,6 @@ export function opsTiedotValidator(kielet: Kieli[] = [], isOps = true) {
   if (isOps) {
     return {
       ...common,
-      // hyvaksyjataho: {
-      //   required,
-      // },
-      // paatospaivamaara: {
-      //   required,
-      // },
     };
   }
   else {

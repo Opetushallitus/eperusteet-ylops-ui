@@ -37,17 +37,17 @@ export default class EpIcon extends Vue {
 
 <style lang="scss" scoped>
 .icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
+  width: 74px;
+  height: 74px;
+  border-radius: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
   vertical-align: middle;
 
   svg {
-    width: 30px;
-    height: 30px;
-    margin-top: 10px;
+    width: 40px;
+    height: 40px;
+    margin-top: 15px;
   }
 }
 </style>

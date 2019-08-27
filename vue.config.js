@@ -1,4 +1,4 @@
-const servicePort = process.env.YLOPS_SERVICE_PORT || 8080;
+const servicePort = process.env.YLOPS_SERVICE_PORT || 8081;
 
 module.exports = {
   lintOnSave: false,

@@ -6,7 +6,7 @@ import { Kielet } from '@/stores/kieli';
 const logger = createLogger('Kaannos');
 const Varoitus = '"$kaanna" on tekstiolioiden kääntämiseen. Käytä vue-i18n vastaavaa funktiota. Esimerkiksi "$t()".';
 
-class Kaannos {
+export class Kaannos {
   public install(vue: typeof Vue) {
     // Sisällön kääntäminen
     vue.prototype.$kaanna = (value: object) => {

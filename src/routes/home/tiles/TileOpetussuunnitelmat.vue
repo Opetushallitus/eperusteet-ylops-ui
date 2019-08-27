@@ -1,38 +1,30 @@
-<template lang="pug">
-base-tile(icon="opetussuunnitelmasi", color="#5bca13", :route="{ name: 'opetussuunnitelmaListaus' }")
-  template(slot="header")
-    span {{ $t('tile-opetussuunnitelmasi') }}
-  template(slot="content")
-    ep-spinner(v-if="isLoading")
-    div(v-else)
-      .alert.alert-light(v-if="ladatut.length === 0")
-        span {{ $t('opetussuunnitelmia-ei-loytynyt') }}
-      div(v-else)
-        p {{ $t('tile-opetussuunnitelmasi-kuvaus') }}
-        .ops(v-for="ops in opetussuunnitelmat")
-          .d-flex.ops-container
-            .stats.p-2.flex-shrink-1
-              div
-                ep-chart(:value="ops.valmiusaste",
-                  :labelSize="12",
-                  :width="60",
-                  :height="60")
-            .data.p-2
-              .name(v-if="ops.nimi")
-                router-link(:to=`{ name: 'opsTiedot', params: { id: ops.id } }`)
-                  ep-content(:value="ops.nimi")
-              // .tiedot
-                .description
-                  span(v-if="ops.kuvaus")
-                    ep-content(:value="ops.kuvaus")
-                  span(v-else) {{ ops.perusteenDiaarinumero }}
-                .muokattu {{ $t('muokattu-viimeksi') }} {{ $ago(ops.muokattu) }}
-        button.btn.btn-link(v-if="opetussuunnitelmat.length > Maara" @click="naytaKaikki = !naytaKaikki")
-          | {{ naytaKaikki ? $t('nayta-vahemman') : $t('nayta-lisaa') }}
+<template>
+  <base-tile icon="opetussuunnitelmasi" color="#5bca13" :route="vars.route">
+    <template slot="header">
+      <span>{{ $t(vars.header) }}</span>
+    </template>
+    <template slot="content">
+      <ep-spinner v-if="isLoading"></ep-spinner>
+      <div v-else>
+        <table class="count-table">
+          <tr>
+            <td width="50%">
+              <div class="bignumber">{{ keskeneraiset }}</div>
+              <div class="description">{{ $t('keskeneraista') }}</div>
+            </td>
+            <td class="spacer" width="50%">
+              <div class="bignumber">{{ julkaistut }}</div>
+              <div class="description">{{ $t(vars.julkaistua) }}</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </template>
+  </base-tile>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator';
+import { Prop, Component, Mixins } from 'vue-property-decorator';
 import EpRoot from '@/mixins/EpRoot';
 import BaseTile from './BaseTile.vue';
 import {
@@ -55,30 +47,40 @@ import _ from 'lodash';
   mixins: [EpRoot],
 })
 export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
-  private readonly Maara = 3;
-  private naytaKaikki = false;
-  private ladatut: OpetussuunnitelmaInfoDto[] = [];
+  @Prop({
+    default: () => 0,
+  })
+  private keskeneraiset!: number;
 
-  protected async init() {
-    await delay(500);
-    const res = await Opetussuunnitelmat.getAll();
-    this.ladatut = res.data;
-  }
+  @Prop({
+    default: () => 0,
+  })
+  private julkaistut!: number;
 
-  private get nakyvat() {
-    return this.naytaKaikki
-      ? this.ladatut
-      : _.take(this.ladatut, this.Maara);
-  }
+  @Prop({
+    default: () => true,
+  })
+  private isOps!: boolean;
 
-  private get opetussuunnitelmat() {
-    const result = _(this.nakyvat)
-      .map((ops: any) => ({
-        ...ops,
-        valmiusaste: 50,
-      }))
-      .value();
-    return result;
+  get vars() {
+    if (this.isOps) {
+      return {
+        header: 'tile-opetussuunnitelmasi',
+        julkaistua: 'julkaistua',
+        route: {
+          name: 'opetussuunnitelmaListaus',
+        },
+      };
+    }
+    else {
+      return {
+        header: 'tile-pohjasi',
+        julkaistua: 'valmista',
+        route: {
+          name: 'pohjaListaus',
+        },
+      };
+    }
   }
 }
 </script>
@@ -108,4 +110,25 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
     }
   }
 }
+
+.count-table {
+  width: 100%;
+
+  .spacer {
+    border-left: 1px solid #DADADA;;
+  }
+
+  td {
+    padding: 8px;
+
+    .bignumber {
+      color: #28344F;
+      font-size: 32px;
+    }
+
+    .description {
+    }
+  }
+}
+
 </style>

@@ -2,7 +2,7 @@ div
   ep-spinner(v-if="!isInitialized")
   .editointikontrolli(v-else)
     .ylapaneeli
-      .d-flex
+      .d-flex.align-items-center
         .p2.flex-fill
           slot(
             name="header",
@@ -13,24 +13,7 @@ div
           .muokattu(v-if="latest") {{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
           //- ep-versio-modaali(:value="current", :versions="historia")
         .p2
-          .upper-buttons(v-if="ctrls.isEditing")
-            .btn-group
-              ep-button(@click="ctrls.save()",
-                :disabled="state.disabled || $v.state.data.$invalid",
-                :show-spinner="state.isSaving")
-                slot(name="tallenna") {{ $t('tallenna') }}
-              ep-button(
-                @click="ctrls.cancel()",
-                :disabled="state.disabled",
-                variant="warning")
-                slot(name="peruuta") {{ $t('peruuta') }}
-              ep-button(
-                v-if="hooks.remove",
-                @click="ctrls.remove()",
-                :disabled="state.disabled",
-                variant="danger")
-                slot(name="poista") {{ $t('poista') }}
-          .upper-buttons(v-else)
+          .upper-buttons(v-if="!ctrls.isEditing")
             ep-button(
               variant="link",
               @click="ctrls.start()",
@@ -53,6 +36,24 @@ div
               @click="toggleSidebarState(3)",
               icon="valtakunnalliset-perusteet",
               variant="pink")
+    .floating-editing-buttons(v-if="ctrls.isEditing")
+      .btn-group
+        ep-button(
+          @click="ctrls.cancel()",
+          :disabled="state.disabled",
+          variant="warning")
+          slot(name="peruuta") {{ $t('peruuta') }}
+        ep-button(@click="ctrls.save()",
+          :disabled="state.disabled || $v.state.data.$invalid",
+          :show-spinner="state.isSaving")
+          slot(name="tallenna") {{ $t('tallenna') }}
+      .float-right
+        ep-button(
+          v-if="hooks.remove",
+          @click="ctrls.remove()",
+          :disabled="state.disabled",
+          variant="danger")
+          slot(name="poista") {{ $t('poista') }}
 
     div(v-if="state.data")
       .threads
