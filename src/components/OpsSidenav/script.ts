@@ -145,7 +145,7 @@ export default class OpsSidenav extends Vue {
           oppiaine,
           oppiaine.oppimaarat.length > 0
             ? this.oppiaineOppimaaraLinkit(oppiaine)
-          : this.opintojaksoModuuliLista(oppiaine)))
+            : this.opintojaksoModuuliLista(oppiaine)))
       .value();
   }
 

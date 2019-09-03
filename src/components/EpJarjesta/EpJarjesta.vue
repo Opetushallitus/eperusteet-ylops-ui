@@ -90,7 +90,7 @@ export default class EpJarjesta extends Vue {
   }
 
   emitter(value) {
-    this.$emit("input", value);
+    this.$emit('input', value);
   }
 
 }

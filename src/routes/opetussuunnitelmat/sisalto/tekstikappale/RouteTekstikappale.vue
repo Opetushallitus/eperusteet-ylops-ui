@@ -18,9 +18,9 @@
         <span>
         </span>
       </template>
-      <template slot="peruste" slot-scope="{ data }">
+      <template slot="peruste" slot-scope="{ }">
         <div class="sidepad">
-          <p v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)" />
+          <p v-if="perusteenTeksti && perusteenTeksti.perusteenOsa" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)" />
         </div>
       </template>
       <template slot="header" slot-scope="{ isEditing, data }">
@@ -125,9 +125,6 @@
 
   .sidepad {
     padding: 8px;
-  }
-
-  .alikappale {
   }
 
 }

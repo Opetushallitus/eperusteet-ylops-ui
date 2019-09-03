@@ -30,7 +30,6 @@
         {{ $t('lisaa-tekstikappale') }}
       </ep-button>
     </template>
-
   </ep-editointi>
 </div>
 </template>

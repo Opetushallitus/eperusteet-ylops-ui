@@ -45,7 +45,7 @@
       </tr>
     </thead>
     <tbody>
-      <template v-for="oa in suodatettuOppiaineRakenne">
+      <div v-for="(oa, idx) in suodatettuOppiaineRakenne" :key="idx">
         <tr class="headerline" :class="oa.isOpen && 'opened'">
           <td>
             <router-link :to="{ name: 'oppiaine', params: { oppiaineId: oa.id } }">
@@ -54,15 +54,15 @@
             </router-link>
           </td>
           <td>
-            <span v-if="oa.oppimaarat.length === 0">{{ oa.stats.opintojaksot }}</span>
+            <span v-if="oa.oppimaarat && oa.oppimaarat.length === 0">{{ oa.stats.opintojaksot }}</span>
           </td>
           <td :class="oa.stats.valid ? 'valid' : 'invalid'">
-            <span v-if="oa.oppimaarat.length === 0">{{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}</span>
+            <span v-if="oa.oppimaarat && oa.oppimaarat.length === 0">{{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}</span>
           </td>
           <td>
           </td>
           <td class="actions">
-            <button class="btn btn-link" @click="toggleOppiaine(oa)" v-if="oa.oppimaarat.length === 0">
+            <button class="btn btn-link" @click="toggleOppiaine(oa)" v-if="oa.oppimaarat && oa.oppimaarat.length === 0">
               <fas v-if="oa.isOpen" icon="chevron-down">
               </fas>
               <fas v-else icon="chevron-up">
@@ -70,7 +70,7 @@
             </button>
           </td>
         </tr>
-        <tr class="dataline" v-if="oa.oppimaarat.length === 0 && oa.isOpen">
+        <tr class="dataline" v-if="(!oa.oppimaarat || oa.oppimaarat.length === 0) && oa.isOpen">
           <td>
           </td>
           <td>
@@ -105,7 +105,7 @@
           </td>
           <td>
             <div>
-              <div class="boxcontainer" v-for="moduuli in oa.vieraatModuulit">
+              <div class="boxcontainer" v-for="(moduuli, idx) in oa.vieraatModuulit" :key="idx">
                 <div class="moduuli" :class="moduuli.classes">
                   <td>
                     <ep-color-ball class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'"> </ep-color-ball>
@@ -119,7 +119,7 @@
           <td>
           </td>
         </tr>
-      </template>
+      </div>
       <tr class="total">
         <td>{{ $t('yhteensa') }}</td>
         <td>{{ total.opintojaksot }}</td>

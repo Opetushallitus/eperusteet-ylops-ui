@@ -149,7 +149,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation) {
       .filter((org: any) => Kielet.search(this.query, org.nimi))
       .map('koodi.uri');
     if (_.isArray(this.allowed) && !_.isEmpty(this.allowed)) {
-      pipe = pipe.filter(uri => _.includes(this.allowed, uri))
+      pipe = pipe.filter(uri => _.includes(this.allowed, uri));
     }
     return pipe.sort()
       .value();

@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { EpButton, } from '@/components';
+import { EpButton } from '@/components';
 
 import _ from 'lodash';
 import { Lops2019PoistettuDto } from '@/tyypit';
