@@ -15,6 +15,9 @@ const logger = createLogger('CkEditor');
 
 const INPUT_EVENT_DEBOUNCE_WAIT = 300;
 
+(<any>window).katex = require("katex"); // Lisätään globaalisti
+require("katex/contrib/mhchem/mhchem"); // Lisätään tuki kemian kaavoille
+
 @Component
 export default class CkEditor extends Mixins(EpValidation) {
   // Muokattava tieto (tukee v-model:ia)
