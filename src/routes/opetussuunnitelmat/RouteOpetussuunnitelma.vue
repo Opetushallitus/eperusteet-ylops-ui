@@ -35,7 +35,7 @@
             </b-dropdown-item>
             <b-dropdown-item>
               <router-link class="btn btn-link" :to="{ name: 'opsDokumentti' }">
-                <fas class="mr-2" icon="file-pdf"></fas><span>{{ $t('dokumentti') }}</span>
+                <fas class="mr-2" icon="file-pdf"></fas><span>{{ $t('luo-pdf') }}</span>
               </router-link>
             </b-dropdown-item>
             <b-dropdown-item>

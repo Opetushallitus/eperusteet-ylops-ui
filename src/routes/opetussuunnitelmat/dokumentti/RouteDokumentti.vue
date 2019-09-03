@@ -2,7 +2,7 @@
 
 .dokumentit
   .ylapaneeli
-    h2.otsikko {{ $t('dokumentti') }}
+    h2.otsikko {{ $t('luo-pdf') }}
   .sisalto
     div.mb-4
       p {{ tilaFormatted }}…
@@ -13,14 +13,14 @@
           :disabled="isPolling",
           :show-spinner="isPolling")
           fas.mr-2(icon="cog")
-          span {{ $t('luo-uusi-dokumentti') }}
+          span {{ $t('luo-uusi-pdf') }}
         a.btn.btn-secondary(
           v-if="dto && href",
           :href="href",
           target="_blank",
           rel="noopener noreferrer")
           fas.mr-2(icon="file-download")
-          span {{ $t('lataa-dokumentti') }}
+          span {{ $t('lataa-pdf') }}
 
     h2 {{ $t('lisaasetukset') }}
 
