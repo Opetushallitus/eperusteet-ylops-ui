@@ -71,7 +71,7 @@
               </div>
             </div>
             <div class="oppiaineet" v-if="!isEditing">
-              <div class="moduulit">
+              <div class="moduulit" v-if="editable && editable.moduulit">
                 <div class="moduuli" v-for="(moduuli, idx) in editable.moduulit" :key="idx">
                   <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit">
                   </ep-opintojakson-moduuli>
@@ -88,7 +88,7 @@
                     <span class="nimi">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</span>
                   </div>
                   <div class="p-2">
-                    <span class="laajuus">{{ moduulitMap[moduuli.koodiUri].laajuus }} op</span>
+                    <span class="laajuus">{{ moduulitMap[moduuli.koodiUri].laajuus }} {{ $t('opintopiste') }}</span>
                     <ep-color-ball>
                     </ep-color-ball>
                   </div>

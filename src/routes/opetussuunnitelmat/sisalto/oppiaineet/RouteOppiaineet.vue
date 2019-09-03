@@ -45,8 +45,8 @@
       </tr>
     </thead>
     <tbody>
-      <div v-for="(oa, idx) in suodatettuOppiaineRakenne" :key="idx">
-        <tr class="headerline" :class="oa.isOpen && 'opened'">
+      <template v-for="(oa, idx) in suodatettuOppiaineRakenne">
+        <tr class="headerline" :class="oa.isOpen && 'opened'" :key="idx">
           <td>
             <router-link :to="{ name: 'oppiaine', params: { oppiaineId: oa.id } }">
               <span>{{ $kaanna(oa.nimi) }}</span>
@@ -70,7 +70,7 @@
             </button>
           </td>
         </tr>
-        <tr class="dataline" v-if="(!oa.oppimaarat || oa.oppimaarat.length === 0) && oa.isOpen">
+        <tr class="dataline" v-if="(!oa.oppimaarat || oa.oppimaarat.length === 0) && oa.isOpen" :key="-idx - 1">
           <td>
           </td>
           <td>
@@ -119,7 +119,7 @@
           <td>
           </td>
         </tr>
-      </div>
+      </template>
       <tr class="total">
         <td>{{ $t('yhteensa') }}</td>
         <td>{{ total.opintojaksot }}</td>

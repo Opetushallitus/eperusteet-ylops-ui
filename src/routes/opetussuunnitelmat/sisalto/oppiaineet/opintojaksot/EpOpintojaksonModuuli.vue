@@ -2,7 +2,7 @@
 .moduulibox(:class="valittu && 'moduulibox-valittu'")
   .name
     span {{ $kaanna(moduuli.nimi) }}
-    span.ml-1 ({{ $kaanna(moduuli.koodi.arvo) }})
+    span.ml-1 ({{ moduuli.koodi.arvo }})
   .low
     .d-flex.bd-highlight
       .p-2.flex-grow-1
