@@ -95,7 +95,7 @@
     "vue-property-decorator": "^8.2.1",
     "vue-router": "^3.0.7",
     "vue-spinner": "^1.0.3",
-    "vue-sticky-directive": "0.0.9",
+    "vue-sticky-directive": "0.0.10",
     "vue-styleguidist": "^3.18.0",
     "vue-template-compiler": "^2.6.10",
     "vue2-datepicker": "^2.12.0",

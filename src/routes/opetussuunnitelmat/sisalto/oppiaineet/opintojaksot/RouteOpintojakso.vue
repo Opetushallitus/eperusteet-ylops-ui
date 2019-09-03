@@ -4,7 +4,7 @@
     <ep-editointi :hooks="hooks" v-model="editable" :validator="validator">
       <template slot="ohje" slot-scope="{ }">
         <div class="sidepad">
-          <p v-html="$t('ohje-pintojakso')">
+          <p v-html="$t('ohje-opintojakso')">
           </p>
           <p v-html="$t('ohje-opintojakso-saannot')">
           </p>

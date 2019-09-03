@@ -8,6 +8,7 @@ import {
 import EpVersioModaali from './EpVersioModaali.vue';
 import '@/stores/kieli';
 import { validationMixin } from 'vuelidate';
+import Sticky from 'vue-sticky-directive';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
@@ -24,6 +25,9 @@ export { EditointiKontrolliConfig } from '@/stores/editointi';
         },
       },
     };
+  },
+  directives: {
+    Sticky,
   },
   components: {
     EpButton,

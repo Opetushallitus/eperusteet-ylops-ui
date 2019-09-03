@@ -27,6 +27,8 @@ export function metadataToTeksti(field: string, metadata: any[]) {
   return result;
 }
 
+export const OphOid = '1.2.246.562.10.00000000001';
+
 export const organizations = Object.freeze({
   oph: {
     nimi: {
@@ -34,6 +36,6 @@ export const organizations = Object.freeze({
       sv: 'Utbildningsstyrelsen',
       en: 'Finnish National Agency for Education'
     },
-    oid: '1.2.246.562.10.00000000001'
+    oid: OphOid,
   }
 });

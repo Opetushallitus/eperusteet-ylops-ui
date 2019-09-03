@@ -1,22 +1,27 @@
 @import '../../styles/variables';
 
 .floating-editing-buttons {
-  background: rgba(30, 73, 207, 0.8);
-  bottom: 0px;
-  left: 0px;
-  padding: 10px;
-  position: fixed;
-  width: 100%;
-  z-index: 1000;
+  // background: rgba(30, 73, 207, 0.8);
+  // bottom: 0px;
+  // left: 0px;
+  // padding: 10px;
+  // position: fixed;
+  // width: 100%;
+  // z-index: 1000;
 }
 
 .editointikontrolli {
   margin-top: 4px;
 
   .ylapaneeli {
+    background: #fff;
     font-size: 90%;
     border-bottom: 1px solid #eee;
     padding: 5px;
+
+    .headerline {
+      padding-right: 50px;
+    }
 
     .upper-buttons {
       min-width: 240px;

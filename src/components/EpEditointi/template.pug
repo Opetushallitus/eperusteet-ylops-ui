@@ -1,9 +1,9 @@
 div
   ep-spinner(v-if="!isInitialized")
   .editointikontrolli(v-else)
-    .ylapaneeli
+    .ylapaneeli(v-sticky, sticky-offset="{ top: 51 }")
       .d-flex.align-items-center
-        .p2.flex-fill
+        .p2.flex-fill.headerline
           slot(
             name="header",
             :isEditing="ctrls.isEditing",
@@ -13,10 +13,38 @@ div
           .muokattu(v-if="latest") {{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
           //- ep-versio-modaali(:value="current", :versions="historia")
         .p2
-          .upper-buttons(v-if="!ctrls.isEditing")
+          .floating-editing-buttons
+            ep-button.ml-4(
+              v-if="ctrls.isEditing",
+              @click="ctrls.cancel()",
+              :disabled="state.disabled",
+              variant="link")
+              slot(name="peruuta") {{ $t('peruuta') }}
+            ep-button.ml-4(
+              @click="ctrls.save()",
+              v-if="ctrls.isEditing",
+              :disabled="state.disabled || $v.state.data.$invalid",
+              variant="primary",
+              :show-spinner="state.isSaving")
+              slot(name="tallenna") {{ $t('tallenna') }}
+            b-dropdown.ml-4.mr-4(
+              v-if="ctrls.isEditing",
+              size="md",
+              variant="link",
+              toggle-class="text-decoration-none",
+              no-caret)
+              template(slot="button-content")
+                fas(icon="ellipsis-h")
+              b-dropdown-item(
+                v-if="hooks.remove",
+                @click="ctrls.remove()",
+                key="poista",
+                :disabled="state.disabled")
+                slot(name="poista") {{ $t('poista') }}
             ep-button(
               variant="link",
               @click="ctrls.start()",
+              v-if="!ctrls.isEditing",
               icon="pen",
               :disabled="state.disabled")
               slot(name="muokkaa") {{ $t('muokkaa') }}
@@ -36,24 +64,6 @@ div
               @click="toggleSidebarState(3)",
               icon="valtakunnalliset-perusteet",
               variant="pink")
-    .floating-editing-buttons(v-if="ctrls.isEditing")
-      .btn-group
-        ep-button(
-          @click="ctrls.cancel()",
-          :disabled="state.disabled",
-          variant="warning")
-          slot(name="peruuta") {{ $t('peruuta') }}
-        ep-button(@click="ctrls.save()",
-          :disabled="state.disabled || $v.state.data.$invalid",
-          :show-spinner="state.isSaving")
-          slot(name="tallenna") {{ $t('tallenna') }}
-      .float-right
-        ep-button(
-          v-if="hooks.remove",
-          @click="ctrls.remove()",
-          :disabled="state.disabled",
-          variant="danger")
-          slot(name="poista") {{ $t('poista') }}
 
     div(v-if="state.data")
       .threads
