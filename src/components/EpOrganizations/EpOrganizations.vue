@@ -7,10 +7,10 @@
         <template slot="singleLabel" slot-scope="{ option }">
           <span class="selected">{{ $kaanna(option.nimi) }}</span>
         </template>
-        <template slot="option" slot-scope="{ option, search }">
+        <template slot="option" slot-scope="{ option }">
           <div>{{ $kaanna(option.nimi) }}</div>
         </template>
-        <template slot="tag" slot-scope="{ option, search, remove }">
+        <template slot="tag" slot-scope="{ option }">
           <span class="selected">
             <span>{{ $kaanna(option.nimi) }}</span>
             <button class="btn btn-link">
@@ -27,10 +27,10 @@
         <template slot="singleLabel" slot-scope="{ option }">
           <span class="selected">{{ $kaanna(option.nimi) }}</span>
         </template>
-        <template slot="option" slot-scope="{ option, search }">
+        <template slot="option" slot-scope="{ option }">
           <div>{{ $kaanna(option.nimi) }}</div>
         </template>
-        <template slot="tag" slot-scope="{ option, search, remove }">
+        <template slot="tag" slot-scope="{ option, remove }">
           <span class="selected">
             <span>{{ $kaanna(option.nimi) }}</span>
             <button class="btn btn-link" @click="remove(option)">
