@@ -1,40 +1,38 @@
-<template lang="pug">
-div(v-if="value")
-  .tree
-    draggable.drag-area(
-      :class="(!value[childField] || value[childField].length === 0) && 'drag-area-empty'",
-      :value="value[childField]",
-      v-bind="options",
-      @input="update",
-      handle=".handle",
-      @start="drag = true",
-      @stop="drag = false")
-      .level(
-        v-if="value[childField]",
-        v-for="sub in value[childField]",
-        :key="sub.id")
-        .item
-          .box
-            span.icon.mr-2
-              fas.handle(icon="sort")
-            slot(name="default", :item="sub")
-            span.ml-2
-              | {{ value.id }} <- {{ sub.id }}
-          .subitems
-            route-jarjestys(
-              :value="sub",
-              :group="group",
-              :child-field="childField",
-              @input="changed($event)")
-              template(
-                slot="default",
-                slot-scope="scope")
-                slot(name="default", v-bind="scope")
-
+<template>
+<draggable v-bind="options" tag="div" class="tree-container" :value="value" @input="emitter" :key="value.length">
+  <div v-for="(node, idx) in value" :key="idx">
+    <div class="box" :class="node.$uusi && 'new-box'">
+      <span class="chapter">
+        {{ prefix }}{{ idx + 1 }}
+      </span>
+      <span class="name">
+        <slot :node="node"></slot>
+      </span>
+      <div v-if="node[childField] && node[childField].length > 0" class="actions" role="button" @click="toggle(idx)">
+        <fas v-if="node.$closed" icon="chevron-down"></fas>
+        <fas v-else icon="chevron-up"></fas>
+      </div>
+    </div>
+    <div class="children" v-if="!node.$closed">
+      <ep-jarjesta
+          v-model="node[childField]"
+          :is-editable="isEditable"
+          :prefix="prefix + (idx + 1) + '.'"
+          :child-field="childField"
+          :group="group">
+        <slot v-for="(_, name) in $slots" :name="name" :slot="name"></slot>
+        <template v-for="(_, name) in $scopedSlots" :slot="name" slot-scope="data">
+          <slot :name="name" v-bind="data" />
+        </template>
+      </ep-jarjesta>
+    </div>
+  </div>
+</draggable>
 </template>
 
 <script lang="ts">
-import { Mixins, Prop, Component } from 'vue-property-decorator';
+
+import { Vue, Mixins, Prop, Component } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoute';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import draggable from 'vuedraggable';
@@ -42,50 +40,59 @@ import { RecursiveTreeItem } from '@/tyypit';
 import _ from 'lodash';
 
 @Component({
-  name: 'route-jarjestys',
   components: {
     draggable,
   },
 })
-export default class RouteJarjestys extends Mixins(EpRoute) {
-  @Prop({ required: true })
-  private value!: RecursiveTreeItem;
+export default class EpJarjesta extends Vue {
+  @Prop({
+    required: false,
+    type: String,
+    default: '',
+  })
+  private prefix!: string;
 
-  @Prop({ required: true })
+  @Prop({
+    required: false,
+    type: Boolean,
+    default: false,
+  })
+  private isEditable!: boolean;
+
+  @Prop({
+    required: false,
+    type: Array,
+    default: null,
+  })
+  private value!: any[];
+
+  @Prop({
+    required: false,
+    default: 'lista',
+  })
   private childField!: string;
 
   @Prop({ default: null })
   private group!: string | null;
 
-  private drag = false;
-
-  changed(data: any, wat: any) {
-    const idx = _.findIndex(this.value[this.childField], { id: data.id });
-    if (idx > -1) {
-      const lapset = [...this.value[this.childField]];
-      lapset[idx] = data;
-      this.$emit('input', {
-        ...this.value,
-        lapset,
-      });
-    }
-  }
-
-  update(data: any) {
-    this.$emit('input', {
-      ...this.value,
-      [this.childField]: data,
-    });
-  }
-
   get options() {
     return {
       animation: 300,
       group: this.group,
-      disabled: false,
+      disabled: !this.isEditable,
       ghostClass: 'placeholder',
     };
   }
+
+  toggle(idx) {
+    Vue.set(this.value[idx], '$closed', !this.value[idx].$closed);
+    this.emitter(this.value);
+  }
+
+  emitter(value) {
+    this.$emit("input", value);
+  }
+
 }
 </script>
 
@@ -104,34 +111,39 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
   min-height: 7px;
 }
 
-.tree {
-  .level {
-    &:first-child {
-      margin-top: 7px;
-    }
+.children {
+  margin-left: 26px;
+}
 
-    .item {
-      .box {
-        background: $blue-lighten-4;
-        margin: 0px 7px 0px 7px;
-        padding: 10px;
-        border: 1px dashed $blue-lighten-3;
+.box {
+  min-height: 40px;
+  max-width: 512px;
+  min-width: 312px;
+  border: 1px solid #CCD9F8;
+  border-radius: 4px;
+  background-color: rgba(230,246,255,0.6);
+  padding: 7px 20px 7px 20px;
+  margin-bottom: 10px;
+  cursor: grab;
 
-        .icon {
-          color: $blue-lighten-3;
-          cursor: pointer;
-        }
+  .actions {
+    float: right;
+    cursor: pointer;
+  }
 
-        .text {
-          color: $blue-lighten-1;
-        }
-      }
+  .chapter {
+    color: #668DEA;
+    font-size: 16px;
+    margin-right: 8px;
+  }
 
-      .subitems {
-        margin-left: 40px;
-      }
-
-    }
+  &.new-box {
+    background-color: rgba(210,226,255,1.0);
+    border: 1px solid #ACB9F8;
   }
 }
+
+
+
+
 </style>

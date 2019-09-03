@@ -9,6 +9,7 @@ export default class EpCollapse extends Vue {
 
   @Prop({ default: '' })
   private tyyppi!: string;
+
   private toggled = false;
 
   isToggled() {

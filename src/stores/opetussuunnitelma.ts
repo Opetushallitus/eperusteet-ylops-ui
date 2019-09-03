@@ -3,6 +3,7 @@ import {
 } from '@/api';
 import {
   TermiDto,
+  Lops2019PoistettuDto,
 } from '@/tyypit';
 import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Lops2019ValidointiDto, Matala, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
@@ -235,15 +236,24 @@ class OpetussuunnitelmaStore {
     }
   }
 
-  public async getPoistetutOpintojaksot() {
-    return (await Opintojaksot.getRemoved(this.opetussuunnitelma!.id!)).data;
+  public async getPoistetut() {
+    return (await Lops2019.getRemoved(this.opetussuunnitelma!.id!)).data;
   }
 
-  public async palautaOpintojakso(poistettuId: number) {
-    const result = (await Opintojaksot.palauta(this.opetussuunnitelma!.id!, poistettuId)).data;
-    success('palautus-opintojakso-onnistui');
-    this.opintojaksot = [...this.opintojaksot, result];
-    return result;
+  public async palauta(poistettu: Lops2019PoistettuDto) {
+    await Lops2019.palauta(this.opetussuunnitelma!.id!, poistettu.id!);
+    success('palautus-onnistui');
+    // this.opintojaksot = [...this.opintojaksot, result];
+  }
+
+  public async removeOppiaine(id: number) {
+    await Oppiaineet.removeLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id);
+    success('poisto-onnistui-oppiaineen');
+    const idx = _.findIndex(this.opintojaksot, { id });
+    this.opintojaksot = [
+      ..._.slice(this.opintojaksot, 0, idx),
+      ..._.slice(this.opintojaksot, idx + 1),
+    ];
   }
 
   public async removeOpintojakso(id: number) {

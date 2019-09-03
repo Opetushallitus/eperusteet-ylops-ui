@@ -72,6 +72,7 @@ export interface RecursiveTreeItem {
   id: number;
 }
 
+export type EtusivuDto = GApi.EtusivuDto;
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
 export type Lops2019ModuuliDto = GApi.Lops2019ModuuliDto;
 export type Lops2019OpintojaksoDto = GApi.Lops2019OpintojaksoDto;
@@ -79,13 +80,12 @@ export type Lops2019OpintojaksonModuuliDto = GApi.Lops2019OpintojaksonModuuliDto
 export type Lops2019OpintojaksonOppiaineDto = GApi.Lops2019OpintojaksonOppiaineDto;
 export type Lops2019OppiaineDto = GApi.Lops2019OppiaineDto;
 export type Lops2019PaikallinenOppiaineDto = GApi.Lops2019PaikallinenOppiaineDto;
+export type Lops2019PoistettuDto = GApi.Lops2019PoistettuDto;
 export type Lops2019ValidointiDto = GApi.Lops2019ValidointiDto;
-export type EtusivuDto = GApi.EtusivuDto;
 export type Matala = GApi.Matala;
 export type OhjeDto = GApi.OhjeDto;
 export type OpetussuunnitelmaDto = GApi.OpetussuunnitelmaDto;
 export type OpetussuunnitelmaInfoDto = GApi.OpetussuunnitelmaInfoDto;
-export type TilaEnum = GApi.OpetussuunnitelmaInfoDto.TilaEnum;
 export type OpetussuunnitelmaKevytDto = GApi.OpetussuunnitelmaKevytDto;
 export type OpetussuunnitelmaLuontiDto = GApi.OpetussuunnitelmaLuontiDto;
 export type PerusteInfoDto = GApi.PerusteInfoDto;
@@ -94,6 +94,7 @@ export type Puu = GApi.Puu;
 export type RevisionDto = GApi.RevisionDto;
 export type TekstiKappaleViiteKevytDto = GApi.TekstiKappaleViiteKevytDto;
 export type TermiDto = GApi.TermiDto;
+export type TilaEnum = GApi.OpetussuunnitelmaInfoDto.TilaEnum;
 export type UusiJulkaisuDto = GApi.UusiJulkaisuDto;
 
 export default GApi;

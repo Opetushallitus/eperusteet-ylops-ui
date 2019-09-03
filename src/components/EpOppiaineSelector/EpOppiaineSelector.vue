@@ -1,20 +1,24 @@
 <template>
-<div>
+<div v-if="isEditable">
   <ep-multi-select
       v-if="cache"
       :value="sortedValue"
+      :multiple="multiple"
       @input="handleInput"
       @search="query = $event"
       :options="filteredOppiaineet">
     <template slot="singleLabel" slot-scope="{ option }">
       <span class="selected">{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
+      <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
     </template>
     <template slot="option" slot-scope="{ option }">
-      <div>{{ $kaanna(oppiaineetMap[option].nimi) }}</div>
+      <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
+      <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
     </template>
     <template slot="tag" slot-scope="{ option, search, remove }">
       <span class="selected">
         <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
+        <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
         <button class="btn btn-link" @click="remove(option)">
           <fas icon="times" />
         </button>
@@ -25,6 +29,20 @@
   <div class="invalid-feedback" v-else-if="validationError && invalidMessage ">{{ $t(invalidMessage) }}</div>
   <div class="invalid-feedback" v-else-if="validationError && !invalidMessage">{{ $t('validation-error-' + validationError, validation.$params[validationError]) }}</div>
   <small class="form-text text-muted">{{ $t('oppiaine-valitsin-ohje') }}</small>
+</div>
+<div v-else-if="value">
+  <div v-if="isArray">
+    <ul>
+      <li v-for="uri in value" :key="uri">
+        <span>{{ $kaanna(oppiaineetMap[uri].nimi) }}</span>
+        <span class="ml-1">({{ oppiaineetMap[uri].koodi.arvo }})</span>
+      </li>
+    </ul>
+  </div>
+  <div v-else-if="oppiaineetMap[value]">
+    <span>{{ $kaanna(oppiaineetMap[value].nimi) }}</span>
+    <span class="ml-1">({{ oppiaineetMap[value].koodi.arvo }})</span>
+  </div>
 </div>
 </template>
 
@@ -48,13 +66,40 @@ export default class EpOppiaineSelector extends Mixins(EpValidation) {
   private opsId!: number;
 
   @Prop()
-  private value!: string[];
+  private value!: string | string[];
+
+  @Prop({
+    default: true,
+  })
+  private isEditable!: boolean;
+
+  @Prop({
+    default: true,
+  })
+  private multiple!: boolean;
+
+  @Prop({
+    required: false,
+  })
+  private allowed!: string[];
 
   private cache: PerusteCache | null = null;
   private query = '';
 
+  get isArray() {
+    return _.isArray(this.value);
+  }
+
   get sortedValue() {
-    return _.sortBy(this.value || [], _.identity);
+    if (_.isArray(this.value)) {
+      return _.sortBy(this.value || [], _.identity);
+    }
+    else if (_.isString(this.value)) {
+      return this.value;
+    }
+    else {
+      return null;
+    }
   }
 
   get paikallisetOppiaineet() {
@@ -100,10 +145,13 @@ export default class EpOppiaineSelector extends Mixins(EpValidation) {
   }
 
   get filteredOppiaineet() {
-    return _(this.oppiaineetJaOppimaarat)
+    let pipe = _(this.oppiaineetJaOppimaarat)
       .filter((org: any) => Kielet.search(this.query, org.nimi))
-      .map('koodi.uri')
-      .sort()
+      .map('koodi.uri');
+    if (_.isArray(this.allowed) && !_.isEmpty(this.allowed)) {
+      pipe = pipe.filter(uri => _.includes(this.allowed, uri))
+    }
+    return pipe.sort()
       .value();
   }
 

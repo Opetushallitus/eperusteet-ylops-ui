@@ -18,5 +18,7 @@ export function opintojakso(oppiaineUri?: string): Lops2019OpintojaksoDto {
     nimi: {},
     oppiaineet: [],
     moduulit: [],
+    tavoitteet: [],
+    keskeisetSisallot: [],
   };
 }

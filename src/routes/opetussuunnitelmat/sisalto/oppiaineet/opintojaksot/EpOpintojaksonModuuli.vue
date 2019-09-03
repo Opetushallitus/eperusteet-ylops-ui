@@ -1,6 +1,8 @@
 <template lang="pug">
 .moduulibox(:class="valittu && 'moduulibox-valittu'")
-  .name {{ $kaanna(moduuli.nimi) }}
+  .name
+    span {{ $kaanna(moduuli.nimi) }}
+    span.ml-1 ({{ $kaanna(moduuli.koodi.arvo) }})
   .low
     .d-flex.bd-highlight
       .p-2.flex-grow-1
@@ -8,7 +10,7 @@
           fas(v-if="valittu", icon="check")
           fas(v-else, icon="plus")
       .p-2.info
-        span.op {{ moduuli.laajuus }} op
+        span.op {{ moduuli.laajuus }} {{ $t('opintopiste') }}
         ep-color-ball(:kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'")
 
 </template>

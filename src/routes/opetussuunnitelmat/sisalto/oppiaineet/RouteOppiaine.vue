@@ -1,72 +1,87 @@
-<template lang="pug">
-
-div.content
-  ep-spinner(v-if="isLoading")
-  div(v-if="!isLoading")
-    h2 {{ $kaanna(oppiaine.nimi) }} ({{ oppiaine.koodi.arvo }})
-
-    div.collapse-container
-      ep-collapse(v-if="oppiaine.tehtava")
-        h4(slot="header") {{ $t('oppiaineet-tehtava') }}
-        ep-content(v-model="oppiaine.tehtava.kuvaus")
-
-      ep-collapse(v-if="oppiaine.laajaAlainenOsaaminen")
-        h4(slot="header") {{ $t('laaja-alainen-osaaminen') }}
-        ep-content(v-model="oppiaine.laajaAlainenOsaaminen.kuvaus")
-
-      // FIXME: ei välttämättä ole
-      // ep-collapse
-        h4(slot="header") {{ $t('yleiset-tavoitteet') }}
-        span tänne tulee sisältöä
-
-      ep-collapse(v-if="oppiaine.arviointi")
-        h4(slot="header") {{ $t('arviointi') }}
-        ep-content(v-model="oppiaine.arviointi.kuvaus")
-
-      ep-collapse(v-if="oppiaine.oppimaarat.length > 0")
-        h4(slot="header") {{ $t('oppimaarat') }}
-        div.block-container(v-for="oppimaara in oppiaine.oppimaarat", :key="oppimaara.id")
-          router-link.oj-content(:to=`{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }` )
-            span.nimi {{ $kaanna(oppimaara.nimi) }}
-        // ep-button(icon="plus")
-          | {{ $t('lisaa-oppimaara') }}
-
-      ep-collapse(v-if="oppiaine.moduulit.length > 0")
-        h4(slot="header") {{ $t('moduulit') }}
-        div.block-container
-          h5 {{ $t('pakolliset-moduulit') }}
-          div(v-for="moduuli in pakollisetModuulit", :key="moduuli.id")
-            .oj-content.pakollinen
-              span.nimi
-                router-link(:to=`{ name: 'moduuli', params: { moduuliId: moduuli.id } }`)
-                  | {{ $kaanna(moduuli.nimi) }}
-              span.pituus {{ moduuli.laajuus }} op
-              span.tyyppi {{ $t('pakollinen') }}
-
-        div.block-container
-          h5 {{ $t('valinnaiset-moduulit') }}
-          div(v-for="moduuli in valinnaisetModuulit", :key="moduuli.id")
-            .oj-content
-              span.nimi
-                router-link(:to=`{ name: 'moduuli', params: { moduuliId: moduuli.id } }`)
-                  | {{ $kaanna(moduuli.nimi) }}
-              span.pituus {{ moduuli.laajuus }} op
-              span.tyyppi {{ $t('valinnainen') }}
-
-      ep-spinner(v-if="!opintojaksot")
-      ep-collapse(v-else)
-        h4(slot="header") {{ $t('opintojaksot') }}
-        div(v-if="opintojaksot.length === 0")
-          .alert.alert-info {{ $t('opintojaksoja-ei-lisatty') }}
-        div(v-else)
-          div.block-container(v-for="opintojakso in opintojaksot", :key="opintojakso.id")
-            .oj-content.pakollinen
-              span.nimi
-                router-link(:to=`{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }`)
-                  | {{ $kaanna(opintojakso.nimi) }}
-              span.pituus 2 op
-        ep-button(icon="plus", @click="uusiOpintojakso()") {{ $t('uusi-opintojakso') }}
-
+<template>
+<div class="content">
+  <ep-spinner v-if="isLoading">
+  </ep-spinner>
+  <div v-if="!isLoading && oppiaine">
+    <h2>
+      <span>{{ $kaanna(oppiaine.nimi) }}</span>
+      <span class="ml-1" v-if="oppiaine.koodi">({{ oppiaine.koodi.arvo }})</span>
+    </h2>
+    <div class="collapse-container">
+      <ep-collapse v-if="oppiaine.tehtava">
+        <h4 slot="header">{{ $t('oppiaineet-tehtava') }}</h4>
+        <ep-content v-model="oppiaine.tehtava.kuvaus">
+        </ep-content>
+      </ep-collapse>
+      <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset">
+        <h4 slot="header">{{ $t('laaja-alainen-osaaminen') }}</h4>
+        <ep-content v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus">
+        </ep-content>
+      </ep-collapse>
+      <ep-collapse v-if="oppiaine.arviointi">
+        <h4 slot="header">{{ $t('arviointi') }}</h4>
+        <ep-content v-model="oppiaine.arviointi.kuvaus">
+        </ep-content>
+      </ep-collapse>
+      <ep-collapse v-if="oppiaine.oppimaarat && oppiaine.oppimaarat.length > 0">
+        <h4 slot="header">{{ $t('oppimaarat') }}</h4>
+        <div class="block-container" v-for="oppimaara in oppiaine.oppimaarat" :key="oppimaara.id">
+          <router-link class="oj-content" :to="{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }">
+            <span class="nimi">{{ $kaanna(oppimaara.nimi) }}</span>
+          </router-link>
+        </div>
+      </ep-collapse>
+      <ep-collapse v-if="oppiaine.moduulit && oppiaine.moduulit.length > 0">
+        <h4 slot="header">{{ $t('moduulit') }}</h4>
+        <div class="block-container">
+          <h5>{{ $t('pakolliset-moduulit') }}</h5>
+          <div v-for="moduuli in pakollisetModuulit" :key="moduuli.id">
+            <div class="oj-content pakollinen">
+              <span class="nimi">
+                <router-link :to="{ name: 'moduuli', params: { moduuliId: moduuli.id } }">{{ $kaanna(moduuli.nimi) }}</router-link>
+              </span>
+              <span class="pituus">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
+              <span class="tyyppi">{{ $t('pakollinen') }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="block-container">
+          <h5>{{ $t('valinnaiset-moduulit') }}</h5>
+          <div v-for="moduuli in valinnaisetModuulit" :key="moduuli.id">
+            <div class="oj-content">
+              <span class="nimi">
+                <router-link :to="{ name: 'moduuli', params: { moduuliId: moduuli.id } }">{{ $kaanna(moduuli.nimi) }}</router-link>
+              </span>
+              <span class="pituus">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
+              <span class="tyyppi">{{ $t('valinnainen') }}</span>
+            </div>
+          </div>
+        </div>
+      </ep-collapse>
+      <ep-spinner v-if="!opintojaksot">
+      </ep-spinner>
+      <ep-collapse v-else>
+        <h4 slot="header">{{ $t('opintojaksot') }}</h4>
+        <div v-if="opintojaksot.length === 0">
+          <div class="alert alert-info">{{ $t('opintojaksoja-ei-lisatty') }}</div>
+        </div>
+        <div v-else>
+          <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
+            <div class="oj-content pakollinen">
+              <span class="nimi">
+                <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
+                  {{ $kaanna(opintojakso.nimi) }}
+                </router-link>
+              </span>
+              <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
+            </div>
+          </div>
+        </div>
+        <ep-button icon="plus" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
+      </ep-collapse>
+    </div>
+  </div>
+</div>
 </template>
 
 <script lang="ts">

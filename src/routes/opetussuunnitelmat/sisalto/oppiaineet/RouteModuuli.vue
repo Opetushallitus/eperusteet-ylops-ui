@@ -30,7 +30,7 @@ div.content
             span.nimi
               router-link(:to=`{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }`)
                 | {{ $kaanna(opintojakso.nimi) }}
-            span.pituus 2 op
+            span.pituus {{ opintojakso.laajuus }} {{ $t('opintopiste') }}
 
 </template>
 

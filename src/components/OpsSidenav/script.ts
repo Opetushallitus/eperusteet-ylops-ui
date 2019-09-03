@@ -137,13 +137,16 @@ export default class OpsSidenav extends Vue {
   }
 
   get opsOppiaineLinkit() {
-    return !this.cache ? [] : this.cache.peruste.oppiaineet.map(oppiaine =>
-      oppiaineLinkki(
-        'oppiaine',
-        oppiaine,
-        oppiaine.oppimaarat.length > 0
-          ? this.oppiaineOppimaaraLinkit(oppiaine)
-          : this.opintojaksoModuuliLista(oppiaine)));
+    return _.chain(!this.cache ? [] : this.cache.peruste.oppiaineet)
+      .sortBy('koodi.arvo')
+      .map(oppiaine =>
+        oppiaineLinkki(
+          'oppiaine',
+          oppiaine,
+          oppiaine.oppimaarat.length > 0
+            ? this.oppiaineOppimaaraLinkit(oppiaine)
+          : this.opintojaksoModuuliLista(oppiaine)))
+      .value();
   }
 
   private kaannaHelper(value: SideMenuItem) {

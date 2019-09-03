@@ -77,6 +77,15 @@ class KieliStore {
     }
   }
 
+  public haeLokalisoituOlio(avain: string) {
+    const result = {
+      fi: i18n.t(avain, 'fi'),
+      sv: i18n.t(avain, 'sv'),
+      en: i18n.t(avain, 'en'),
+    };
+    return result;
+  }
+
   public search(query: string, text: any) {
     if (text && query) {
       const target = _.isString(text) ? text : text[this.sisaltoKieli];

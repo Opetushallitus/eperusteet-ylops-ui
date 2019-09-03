@@ -1,24 +1,53 @@
-<template lang="pug">
-div(v-if="editable")
-  h2 {{ $t('jarjesta-sisaltoa') }}
-  .tree
-    ep-jarjesta(
-      :value="editable",
-      @input="onUpdate",
-      child-field="lapset",
-      group="sisalto")
-      template(slot="default", slot-scope="{ item }")
-        span.text {{ $kaanna(item.tekstiKappale.nimi) }}
-  pre {{ editable }}
+<template>
+<div v-if="hooks && !isLoading">
+  <ep-editointi :hooks="hooks">
+    
+    <template #header="{ data }">
+      <h2>{{ $t('opetussuunnitelman-rakenne') }}</h2>
+    </template>
+
+    <template #default="{ isEditing, data }">
+      <div class="tree">
+        <ep-jarjesta
+            :isEditable="isEditing"
+            v-model="data.lapset"
+            child-field="lapset"
+            group="sisalto">
+          <template #default="{ isEditing, node }">
+            <span v-if="isEditing">
+              {{ $kaanna(node.tekstiKappale.nimi) }}
+            </span>
+            <router-link :to="{ name: 'tekstikappale', params: { osaId: node.id } }">
+              {{ $kaanna(node.tekstiKappale.nimi) }}
+            </router-link>
+          </template>
+        </ep-jarjesta>
+      </div>
+      <ep-button
+        variant="outline-primary"
+        @click="lisaaTekstikappale(data.lapset)"
+        icon="plus">
+        {{ $t('lisaa-tekstikappale') }}
+      </ep-button>
+    </template>
+
+  </ep-editointi>
+</div>
 </template>
 
 <script lang="ts">
 import { Mixins, Prop, Component } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoute';
-import { TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpJarjesta from '@/components/EpJarjesta/EpJarjesta.vue';
+import { Kielet } from '@/stores/kieli';
+import {
+  EpButton,
+  EpEditointi,
+} from '@/components';
 import _ from 'lodash';
+import { EditointiKontrolliConfig } from '@/stores/editointi';
 
 function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKappaleViiteKevytDto | null {
   if (!root) {
@@ -35,20 +64,39 @@ function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKapp
 
 @Component({
   components: {
+    EpButton,
+    EpEditointi,
     EpJarjesta,
   },
 })
 export default class RouteJarjestys extends Mixins(EpRoute) {
-  private editable: any = null;
+  private hooks: EditointiKontrolliConfig = {
+    // remove: this.remove,
+    source: {
+      save: this.save,
+      load: this.load,
+    },
+  };
 
-  async mounted() {
-    const otsikot = await Opetussuunnitelma.getOtsikot();
-    this.editable = mapTekstikappaleet(otsikot);
+  lisaaTekstikappale(data) {
+    const uusiViite = {
+      $uusi: true,
+      tekstiKappale: {
+        nimi: Kielet.haeLokalisoituOlio('uusi-tekstikappale'),
+      },
+      lapset: [],
+    };
+    data.push(uusiViite);
   }
 
-  onUpdate(value: any) {
-    this.editable = value;
+  async load() {
+    return await Opetussuunnitelma.getOtsikot();
   }
+
+  async save(data: Puu) {
+    await Opetussuunnitelma.saveTeksti(data);
+  }
+
 }
 </script>
 
@@ -56,6 +104,7 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
 @import '@/styles/_variables.scss';
 
 .tree {
+  margin: 20px;
   .item {
     background: $blue-lighten-4;
     margin: 5px;

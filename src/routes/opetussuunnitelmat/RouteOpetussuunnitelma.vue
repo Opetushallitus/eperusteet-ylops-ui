@@ -49,7 +49,7 @@
               </router-link>
             </b-dropdown-item>
             <b-dropdown-item>
-              <router-link class="btn btn-link" :to="{ name: 'opsRakenne' }">
+              <router-link class="btn btn-link" :to="{ name: 'jarjesta' }">
                 <fas class="mr-2" icon="cog"></fas><span>{{ $t('rakenne') }}</span>
               </router-link>
             </b-dropdown-item>

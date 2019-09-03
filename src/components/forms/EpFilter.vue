@@ -5,6 +5,7 @@
   .search
     input.form-control(
       type="text",
+      :placeholder="$t('etsi')"
       @input="onInput($event.target.value)",
       :attrs="$attrs",
       :value="val")

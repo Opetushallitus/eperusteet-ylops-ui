@@ -1,56 +1,46 @@
-<template lang="pug">
-div
-  ep-button(v-b-modal.epsisaltomodal)
-    fas.mr-2(icon="plus")
-    span {{ $t('lisaa-sisalto') }}
-
-  b-modal(
-    ref="modal",
-    id="epsisaltomodal",
-    size="lg"
-    title="testi",
-    @show="reset()")
-    template(slot="modal-header")
-      h2 {{ $t('lisaa-sisalto') }}
-
-    template(slot="modal-footer")
-      div(v-if="step === 0")
-        ep-button.mr-2(@click="next()") {{ $t('seuraava') }}
-        ep-button(@click="hide()") {{ $t('peruuta') }}
-      div(v-if="step >= 1")
-        ep-button.mr-2(
-          :disabled="$v.$invalid",
-          @click="tallenna()",
-          :show-spinner="isSaving") {{ $t('tallenna') }}
-        ep-button(@click="hide()") {{ $t('peruuta') }}
-
-    .steps
-      ep-steps(:value="steps", :step="step")
-
-    .vaihe(v-if="step === 0")
-      ep-form-content(name="valitse-sisallon-tyyppi")
-        ep-select(
-          help="valitse-sisallon-tyyppi",
-          v-model="sisallonTyyppi",
-          :is-editing="true",
-          :items="sisallonTyypit")
-          template(slot-scope="{ item }")
-            span {{ $t('sisalto-' + item) }}
-
-    .vaihe(v-if="step === 1")
-      ep-form-content(name="sisalto-nimi")
-        ep-input(
-          id="sisalto-nimi",
-          v-model="uusi.nimi",
-          help="sisalto-nimi-ohje",
-          :validation="$v.uusi.nimi",
-          :is-editing="true")
-
-      ep-form-content(name="oppiaineet", v-if="sisallonTyyppi === 'opintojakso'")
-        ep-oppiaine-selector(
-          v-model="oppiainekoodit",
-          :ops-id="$route.params.id")
-
+<template>
+<div>
+  <ep-button v-b-modal.epsisaltomodal>
+    <fas class="mr-2" icon="plus">
+    </fas>
+    <span>{{ $t('lisaa-sisalto') }}</span>
+  </ep-button>
+  <b-modal ref="modal" id="epsisaltomodal" size="lg" title="testi" @show="reset()">
+    <template slot="modal-header">
+      <h2>{{ $t('lisaa-sisalto') }}</h2>
+    </template>
+    <template slot="modal-footer">
+      <div v-if="step === 0">
+        <ep-button class="mr-2" @click="next()">{{ $t('seuraava') }}</ep-button>
+        <ep-button @click="hide()">{{ $t('peruuta') }}</ep-button>
+      </div>
+      <div v-if="step >= 1">
+        <ep-button class="mr-2" :disabled="$v.$invalid" @click="tallenna()" :show-spinner="isSaving">{{ $t('tallenna') }}</ep-button>
+        <ep-button @click="hide()">{{ $t('peruuta') }}</ep-button>
+      </div>
+    </template>
+    <div class="steps">
+      <ep-steps :value="steps" :step="step" />
+    </div>
+    <div class="vaihe" v-if="step === 0">
+      <ep-form-content name="valitse-sisallon-tyyppi">
+        <ep-select help="valitse-sisallon-tyyppi" v-model="sisallonTyyppi" :is-editing="true" :items="sisallonTyypit">
+          <template #default="{ item }">
+            <span>{{ $t('sisalto-' + item) }}</span>
+          </template>
+        </ep-select>
+      </ep-form-content>
+    </div>
+    <div class="vaihe" v-if="step === 1">
+      <ep-form-content name="sisalto-nimi">
+        <ep-input id="sisalto-nimi" v-model="uusi.nimi" help="sisalto-nimi-ohje" :validation="$v.uusi.nimi" :is-editing="true" />
+      </ep-form-content>
+      <ep-form-content name="oppiaineet" v-if="sisallonTyyppi === 'opintojakso'">
+        <ep-oppiaine-selector v-model="oppiainekoodit" :ops-id="$route.params.id" />
+      </ep-form-content>
+    </div>
+  </b-modal>
+</div>
 </template>
 
 <script lang="ts">
@@ -87,14 +77,21 @@ const logger = createLogger('SisaltoModaali');
   },
 })
 export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
-  @Prop({ default: null })
+  @Prop({
+    default: null,
+  })
   private cache!: PerusteCache;
+
   private isSaving = false;
+
   private step = 0;
+
   private uusi: any = {
     nimi: {},
   };
+
   private sisallonTyyppi: string | null = null;
+
   private oppiainekoodit: string[] = [];
 
   get validationConfig() {

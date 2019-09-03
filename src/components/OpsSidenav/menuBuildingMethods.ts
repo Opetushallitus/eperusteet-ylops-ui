@@ -54,21 +54,24 @@ export function oppiaineLinkki(type: string, objref: any, children: SideMenuEntr
 }
 
 export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
-  return oppimaara.moduulit.map(moduuli => {
-    return {
-      item: {
-        type: 'moduuli',
-        objref: moduuli,
-      },
-      route: {
-        name: 'moduuli',
-        params: {
-          moduuliId: moduuli.id,
-          oppiaineId: oppimaara.id,
+  return _.chain(oppimaara.moduulit)
+    .sortBy('koodi.arvo')
+    .map(moduuli => {
+      return {
+        item: {
+          type: 'moduuli',
+          objref: moduuli,
         },
-      },
-    };
-  });
+        route: {
+          name: 'moduuli',
+          params: {
+            moduuliId: moduuli.id,
+            oppiaineId: oppimaara.id,
+          },
+        },
+      };
+    })
+    .value();
 }
 
 export function oppimaaraOpintojaksoLinkit(opintojaksot: Lops2019OpintojaksoDto[], oppimaara: Lops2019OppiaineDto): SideMenuEntry[] {

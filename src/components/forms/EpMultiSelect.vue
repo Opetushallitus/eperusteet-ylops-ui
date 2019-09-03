@@ -13,7 +13,7 @@ div
     deselect-label="",
     @search-change="$emit('search', $event)",
     @input="changed($event)",
-    :multiple="true")
+    :multiple="multiple")
     template(slot="singleLabel", slot-scope="{ option }")
       slot(name="singleLabel", :option="option")
 
@@ -56,9 +56,14 @@ import _ from 'lodash';
 export default class EpMultiSelect extends Mixins(EpValidation) {
   @Prop({
     required: true,
-    type: Array
+    // type: Array
   })
-  private value!: any[];
+  private value!: any[] | any;
+
+  @Prop({
+    default: false,
+  })
+  private multiple!: boolean;
 
   @Prop()
   private trackBy!: string;

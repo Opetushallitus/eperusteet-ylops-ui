@@ -1,10 +1,11 @@
-<template lang="pug">
-button.round-button(
-  :class="'round-button-' + variant",
-  v-bind="$attrs",
-  :disabled="disabled",
-  @click="$emit('click')")
-  fas(:icon="icon")
+<template>
+<button class="round-button"
+  :class="'round-button-' + variant"
+  v-bind="$attrs"
+  :disabled="disabled"
+  @click="$emit('click')">
+  <fas :icon="icon" />
+</button>
 </template>
 
 <script lang="ts">
@@ -18,10 +19,16 @@ import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
   },
 })
 export default class EpButton extends Vue {
-  @Prop({ required: true })
+  @Prop({
+    required: true,
+    type: String,
+  })
   private icon!: string;
 
-  @Prop({ default: false })
+  @Prop({
+    default: false,
+    type: Boolean,
+  })
   private disabled!: boolean;
 
   @Prop({ default: 'primary' })

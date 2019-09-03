@@ -16,9 +16,9 @@
         <ep-field help="opintojakso-nimi-ohje" v-model="data.nimi" :validation="validation.nimi" :is-header="true" :is-editing="isEditing"></ep-field>
       </template>
       <template v-slot="{ data, validation, isEditing }">
-        <div>
+        <div class="osio">
           <ep-collapse tyyppi="opintojakson-tiedot">
-            <h4 slot="header">{{ $t('opintojakson-tiedot') }}</h4>
+            <div class="alueotsikko" slot="header">{{ $t('opintojakson-tiedot') }}</div>
             <div class="row">
               <div class="col-md-6">
                 <ep-form-content name="oppiaineet">
@@ -51,20 +51,21 @@
             </div>
           </ep-collapse>
         </div>
-        <div v-if="isEditing || data.moduulit.length > 0">
+        <div class="osio" v-if="isEditing || data.moduulit.length > 0">
           <ep-collapse tyyppi="opintojakson-moduulit">
-            <h4 slot="header">{{ $t('opintojakson-moduulit') }}</h4>
+            <div class="alueotsikko" slot="header">{{ $t('opintojakson-moduulit') }}</div>
             <div class="oppiaineet" v-if="isEditing">
               <div v-for="oa in data.oppiaineet" :key="oa.koodi">
                 <div class="moduuliotsikko">{{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}</div>
                 <div v-if="!oppiaineetMap[oa.koodi].moduulit || oppiaineetMap[oa.koodi].moduulit.length === 0">
-                  <ep-input type="number" ohje="opintojakso-oppiaine-laajuus" v-model="oa.laajuus" :is-editing="true">
-                  </ep-input>
+                  <ep-input type="number" ohje="opintojakso-oppiaine-laajuus" v-model="oa.laajuus" :is-editing="true" />
                 </div>
                 <div class="moduulit">
                   <div class="moduuli" v-for="moduuli in oppiaineetMap[oa.koodi].moduulit" :key="moduuli.id">
-                    <ep-opintojakson-moduuli :moduuli="moduuli" :is-editing="true" v-model="data.moduulit">
-                    </ep-opintojakson-moduuli>
+                    <ep-opintojakson-moduuli
+                      :moduuli="moduuli"
+                      :is-editing="true"
+                      v-model="data.moduulit" />
                   </div>
                 </div>
               </div>
@@ -319,6 +320,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
         oppiaineUri: oa.koodi!.uri,
       })))
       .flatten()
+      .sortBy('koodi.arvo')
       .value() as (Lops2019ModuuliDto & { oppiaineUri: string })[];
   }
 
@@ -335,6 +337,12 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
         parentUri: oa.koodi.uri,
       }))])
       .flatten()
+      .map((oa: Lops2019OppiaineDto) => {
+        return {
+          ...oa,
+          moduulit: _.sortBy(oa.moduulit, 'koodi.arvo'),
+        };
+      })
       .value() as (Lops2019OppiaineDto & { parentUri?: string })[];
   }
 
@@ -506,9 +514,12 @@ hr.valiviiva {
 
 
 .osio {
-  margin: 27px 0 27px 0;
   padding: 27px 0 0 0px;
-  border-top: 1px solid #DADADA;
+
+  &:not(:first-child) {
+    margin: 27px 0 27px 0;
+    border-top: 1px solid #DADADA;
+  }
 
   .alueotsikko {
     color: #010013;
