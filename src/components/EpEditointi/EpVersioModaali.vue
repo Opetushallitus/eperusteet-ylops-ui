@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  ep-button.btn-versiohistoria(v-b-modal.epversiomodaali, variant="link")
+  ep-button.btn-versiohistoria(v-b-modal.epversiomodaali, variant="link", v-if="!hidden")
     span {{ $t('versiohistoria') }}
 
   b-modal(
@@ -18,7 +18,7 @@ div
       .revision
         b-table(
           striped,
-          :items="wat",
+          :items="revitems",
           :fields="fields")
 
 </template>
@@ -50,6 +50,11 @@ export default class EpSisaltoModaali extends Mixins(EpValidation) {
   @Prop({ required: true })
   private value!: number;
 
+  @Prop({
+    default: false,
+  })
+  private hidden!: boolean;
+
   get fields() {
     return [{
       key: 'ajankohta',
@@ -66,7 +71,7 @@ export default class EpSisaltoModaali extends Mixins(EpValidation) {
     }];
   }
 
-  get wat() {
+  get revitems() {
     return _.map(this.versions, (rev) => ({
       ...rev,
       muokkaaja: rev.nimi,

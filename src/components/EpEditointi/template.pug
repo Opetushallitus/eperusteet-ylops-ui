@@ -11,36 +11,8 @@ div
             :validation="$v.state.data")
         .p2(v-if="!ctrls.isEditing")
           .muokattu(v-if="latest") {{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
-          //- ep-versio-modaali(:value="current", :versions="historia")
         .p2
           .floating-editing-buttons
-            ep-button.ml-4(
-              v-if="ctrls.isEditing",
-              @click="ctrls.cancel()",
-              :disabled="state.disabled",
-              variant="link")
-              slot(name="peruuta") {{ $t('peruuta') }}
-            ep-button.ml-4(
-              @click="ctrls.save()",
-              v-if="ctrls.isEditing",
-              :disabled="state.disabled || $v.state.data.$invalid",
-              variant="primary",
-              :show-spinner="state.isSaving")
-              slot(name="tallenna") {{ $t('tallenna') }}
-            b-dropdown.ml-4.mr-4(
-              v-if="ctrls.isEditing",
-              size="md",
-              variant="link",
-              toggle-class="text-decoration-none",
-              no-caret)
-              template(slot="button-content")
-                fas(icon="ellipsis-h")
-              b-dropdown-item(
-                v-if="hooks.remove",
-                @click="ctrls.remove()",
-                key="poista",
-                :disabled="state.disabled")
-                slot(name="poista") {{ $t('poista') }}
             ep-button(
               variant="link",
               @click="ctrls.start()",
@@ -48,7 +20,34 @@ div
               icon="pen",
               :disabled="state.disabled")
               slot(name="muokkaa") {{ $t('muokkaa') }}
-            // TODO: replace with chat icon
+            ep-button.ml-2(
+              v-if="ctrls.isEditing",
+              @click="ctrls.cancel()",
+              :disabled="state.disabled",
+              variant="link")
+              slot(name="peruuta") {{ $t('peruuta') }}
+            ep-button.ml-2(
+              @click="ctrls.save()",
+              v-if="ctrls.isEditing",
+              :disabled="state.disabled || $v.state.data.$invalid",
+              variant="primary",
+              :show-spinner="state.isSaving")
+              slot(name="tallenna") {{ $t('tallenna') }}
+            b-dropdown.mr-2(
+              size="md",
+              variant="link",
+              toggle-class="text-decoration-none",
+              no-caret)
+              template(slot="button-content")
+                fas(icon="ellipsis-h")
+              b-dropdown-item(
+                v-if="ctrls.isEditing && hooks.remove",
+                @click="ctrls.remove()",
+                key="poista",
+                :disabled="state.disabled")
+                slot(name="poista") {{ $t('poista') }}
+              b-dropdown-item(v-b-modal.epversiomodaali)
+                span {{ $t('versiohistoria') }}
             ep-round-button.mr-2(
               v-if="hasKeskusteluSlot",
               @click="toggleSidebarState(1)",
@@ -64,6 +63,8 @@ div
               @click="toggleSidebarState(3)",
               icon="valtakunnalliset-perusteet",
               variant="pink")
+
+    ep-versio-modaali(:value="current", :versions="historia", :hidden="true")
 
     div(v-if="state.data")
       .threads

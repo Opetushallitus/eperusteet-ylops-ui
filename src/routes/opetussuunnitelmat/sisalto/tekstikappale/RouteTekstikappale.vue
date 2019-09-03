@@ -49,8 +49,7 @@
               <template #header>
                 <h5>{{ $t('paikallinen-teksti') }}</h5>
               </template>
-              <ep-content v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing">
-              </ep-content>
+              <ep-content v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing" layout="normal" />
               <div class="alert alert-info" v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)">{{ $t('paikallista-sisaltoa-ei-maaritetty') }}</div>
             </ep-collapse>
           </span>
@@ -112,6 +111,16 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
     source: {
       load: this.load,
       save: this.save,
+    },
+    history: {
+      async revisions(data) {
+        console.log(data);
+        const id = _.get(data, 'tov.tekstiKappale.id');
+        if (id) {
+          return Opetussuunnitelma.getTekstikappaleVersionHistory(id);
+        }
+        return [];
+      },
     },
     remove: this.remove,
   };

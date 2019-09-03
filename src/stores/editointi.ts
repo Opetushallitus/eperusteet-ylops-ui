@@ -14,7 +14,7 @@ interface EditointiKontrolliFeatures {
 }
 
 export interface EditointiKontrolliHistory {
-  revisions: () => Promise<RevisionDto[]>;
+  revisions: (data: any) => Promise<RevisionDto[]>;
   restore?: (rev: RevisionDto) => Promise<void>;
 }
 
@@ -99,7 +99,7 @@ export class EditointiKontrolli {
     this.isNew = !!(this.config.editAfterLoad && await this.config.editAfterLoad());
     const data = await this.fetch();
     if (this.config.history && this.config.history.revisions) {
-      this.mstate.revisions = await this.config.history.revisions();
+      this.mstate.revisions = await this.config.history.revisions(data);
     }
     this.logger.debug('Haetaan data', data);
     this.backup = JSON.stringify(data);

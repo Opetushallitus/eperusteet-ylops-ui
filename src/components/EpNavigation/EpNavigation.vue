@@ -115,6 +115,8 @@ export default class EpNavigation extends Vue {
 @import '@/styles/_variables.scss';
 
 .topbar {
+  z-index: 2000;
+
   .navbar {
     top: 0;
     font-weight: 600;

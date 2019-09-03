@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 const servicePort = process.env.YLOPS_SERVICE_PORT || 8081;
 
 module.exports = {
@@ -7,6 +9,15 @@ module.exports = {
     optimization: {
       providedExports: process.env.NODE_ENV === 'production',
     },
+    plugins: [
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new webpack.ProvidePlugin({
+        Vue: ['vue/dist/vue.esm.js', 'default'],
+        jQuery: 'jquery',
+        $: 'jquery',
+        'window.jQuery': 'jquery',
+      }),
+    ],
   },
   devServer: {
     overlay: {

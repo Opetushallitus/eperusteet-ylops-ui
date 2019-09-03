@@ -1,12 +1,6 @@
 <template lang="pug">
 
 div.content
-  // .progress
-    ep-chart(
-      labelColor="white",
-      :labelSize="32",
-      :chartColor="graph.colorScheme",
-      :value="graph.value")
   h2.opsnimi {{ $kaanna(nimi) }}
   p.julkaisuohje {{ $t('julkaisuohje') }}
 
@@ -100,7 +94,7 @@ div.content
 
 <script lang="ts">
 
-import { EpCollapse, EpButton, EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle, EpChart } from '@/components';
+import { EpCollapse, EpButton, EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle } from '@/components';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 
@@ -119,7 +113,6 @@ import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@/tyypit';
   components: {
     EpButton,
     EpCollapse,
-    EpChart,
     EpContent,
     EpDatepicker,
     EpEditointi,

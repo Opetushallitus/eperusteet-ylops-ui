@@ -28,7 +28,6 @@ import { Prop, Component, Mixins } from 'vue-property-decorator';
 import EpRoot from '@/mixins/EpRoot';
 import BaseTile from './BaseTile.vue';
 import {
-  EpChart,
   EpContent,
   EpSpinner,
 } from '@/components';
@@ -42,7 +41,6 @@ import _ from 'lodash';
     BaseTile,
     EpContent,
     EpSpinner,
-    EpChart,
   },
   mixins: [EpRoot],
 })

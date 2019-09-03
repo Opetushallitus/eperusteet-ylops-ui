@@ -33,7 +33,7 @@
                 <fas class="mr-2" icon="info-circle"></fas><span>{{ $t('tiedot') }}</span>
               </router-link>
             </b-dropdown-item>
-            <b-dropdown-item>
+            <b-dropdown-item v-if="isOps">
               <router-link class="btn btn-link" :to="{ name: 'opsDokumentti' }">
                 <fas class="mr-2" icon="file-pdf"></fas><span>{{ $t('luo-pdf') }}</span>
               </router-link>
@@ -53,7 +53,7 @@
                 <fas class="mr-2" icon="cog"></fas><span>{{ $t('rakenne') }}</span>
               </router-link>
             </b-dropdown-item>
-            <b-dropdown-item>
+            <b-dropdown-item v-if="isOps">
               <router-link class="btn btn-link" :to="{ name: 'opsJulkaisu' }">
                 <fas class="mr-2" icon="upload"></fas><span>{{ $t('julkaise') }}</span>
               </router-link>
@@ -89,7 +89,6 @@ import { Mixins, Component } from 'vue-property-decorator';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import {
-  EpChart,
   EpNavigation,
   EpSidebar,
   EpSpinner,
@@ -102,7 +101,6 @@ import { Lops2019ValidointiDto } from '@/tyypit';
 
 @Component({
   components: {
-    EpChart,
     EpCommentThreads,
     EpNavigation,
     EpProgress,

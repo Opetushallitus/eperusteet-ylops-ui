@@ -226,6 +226,10 @@ class OpetussuunnitelmaStore {
     return (await Opintojaksot.getVersionHistory(this.opetussuunnitelma!.id!, opintojaksoId)).data;
   }
 
+  public async getTekstikappaleVersionHistory(tovId: number) {
+    return (await OpetussuunnitelmanSisalto.getVersionsForTekstiKappaleViite(this.opetussuunnitelma!.id!, tovId)).data;
+  }
+
   public async getOpintojakso(id: number) {
     try {
       const result = (await Opintojaksot.getOpintojakso(this.opetussuunnitelma!.id!, id)).data;
