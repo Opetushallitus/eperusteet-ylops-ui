@@ -16,15 +16,16 @@ div.content
       .kategoria(v-for="category in kooste")
         .otsikko(role="button", aria-pressed="false")
           span.iconspan.mr-2
-            fas.warning(v-if="category.hasFatal", icon="exclamation")
+            fas.warning(v-if="category.hasFatal", icon="exclamation", fixed-width)
             fas(
               v-else,
               :class="category.hasWarning ? 'warning' : 'success'",
-              icon="check")
+              icon="check",
+              fixed-width)
           span.saanto(@click="toggleCategory(category)") {{ $t(category.key) }}
           .float-right
-            fas(v-if="isOpen[category.key]", icon="chevron-down")
-            fas(v-else, icon="chevron-up")
+            fas(v-if="isOpen[category.key]", icon="chevron-down", fixed-width)
+            fas(v-else, icon="chevron-up", fixed-width)
         div(v-if="isOpen[category.key]")
           .validointi(v-for="validation in category.value")
             span {{ $t(validation.kuvaus) }} ({{ $kaanna(validation.nimi) }})

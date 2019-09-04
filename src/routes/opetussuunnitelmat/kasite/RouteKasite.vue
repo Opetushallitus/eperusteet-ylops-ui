@@ -18,12 +18,12 @@
         ep-content.selitys(:class="{ closed: k.closed, open: !k.closed }", :value="k.kasite.selitys")
         .toiminnot
           button.btn.btn-link(@click="avaaPoistoModal(k.kasite)")
-            fas(:icon="['far','trash-alt']")
+            fas(:icon="['far','trash-alt']", fixed-width)
           button.btn.btn-link(@click="avaaMuokkausModal(k.kasite)")
-            fas(icon="pen")
+            fas(icon="pen" fixed-width)
           button.btn.btn-link(@click="k.closed = !k.closed")
-            fas(icon="chevron-down", v-if="k.closed")
-            fas(icon="chevron-up", v-else)
+            fas(icon="chevron-down", v-if="k.closed", fixed-width)
+            fas(icon="chevron-up", v-else, fixed-width)
 
   // Käsitteen poisto modal
   b-modal.backdrop(

@@ -31,26 +31,26 @@
             </template>
             <!-- https://bootstrap-vue.js.org/docs/reference/router-links/ -->
             <b-dropdown-item :to="{ name: 'opsTiedot' }">
-              <fas class="mr-2" icon="info-circle"></fas><span>{{ $t('tiedot') }}</span>
+              <fas class="mr-2" icon="info-circle" fixed-width /><span>{{ $t('tiedot') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'jarjesta' }">
-              <fas class="mr-2" icon="cog"></fas><span>{{ $t('rakenne') }}</span>
+              <fas class="mr-2" icon="cog" fixed-width /><span>{{ $t('rakenne') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsKasitteet' }">
-              <fas class="mr-2" icon="bookmark"></fas><span>{{ $t('kasitteet') }}</span>
+              <fas class="mr-2" icon="bookmark" fixed-width /><span>{{ $t('kasitteet') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsPoistetut' }">
-              <fas class="mr-2" icon="recycle"></fas><span>{{ $t('poistetut') }}</span>
+              <fas class="mr-2" icon="recycle" fixed-width /><span>{{ $t('poistetut') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsDokumentti' }">
-              <fas class="mr-2" icon="file-pdf"></fas><span>{{ $t('luo-pdf') }}</span>
+              <fas class="mr-2" icon="file-pdf" fixed-width /><span>{{ $t('luo-pdf') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsJulkaisu' }">
-              <fas class="mr-2" icon="upload"></fas><span>{{ $t('julkaise') }}</span>
+              <fas class="mr-2" icon="upload" fixed-width /><span>{{ $t('julkaise') }}</span>
             </b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item>
-              <fas class="mr-2" icon="folder"></fas><span>{{ $t('arkistoi-ops') }}</span>
+              <fas class="mr-2" icon="folder" fixed-width /><span>{{ $t('arkistoi-ops') }}</span>
             </b-dropdown-item>
           </b-dropdown>
           <!-- b-badgeOpetushallitus.ml-2(style="font-size: 14px", variant="success", v-if="isValmisPohja")| {{ $t('julkinen') }}
