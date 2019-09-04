@@ -1,6 +1,9 @@
 <template>
 <div class="linkki">
-  <a :href="url">{{ cleanUrl }}</a>
+  <a :href="url">
+    <fas :icon="icon" fixed-width class="mr-1" v-if="icon"></fas>
+    <span>{{ cleanUrl }}</span>
+  </a>
 </div>
 </template>
 
@@ -17,6 +20,9 @@ export default class EpLinkki extends Vue {
     required: false,
   })
   private label!: string;
+
+  @Prop({ default: '' })
+  private icon!: string;
 
   @Prop({
     default: true,
@@ -44,7 +50,9 @@ export default class EpLinkki extends Vue {
   font-size: small;
 
   a {
-    color: black;
+    display: inline;
+    white-space: nowrap;
+
   }
 }
 </style>

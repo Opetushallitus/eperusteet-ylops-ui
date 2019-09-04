@@ -43,6 +43,7 @@ library.add(solid.faUpload);
 library.add(solid.faUsers);
 library.add(solid.faEllipsisH);
 library.add(solid.faFolder);
+library.add(solid.faExternalLinkAlt);
 
 // OPH icons
 library.add(oph.arkisto);
