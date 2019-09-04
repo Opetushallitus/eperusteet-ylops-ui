@@ -4,8 +4,8 @@ import _ from 'lodash';
 
 @Component
 export default class EpCollapse extends Vue {
-  @Prop({ default: null })
-  private defaultState!: boolean | null;
+  @Prop({ default: true })
+  private expandedByDefault!: boolean;
 
   @Prop({ default: '' })
   private tyyppi!: string;
@@ -28,9 +28,9 @@ export default class EpCollapse extends Vue {
   }
 
   mounted() {
-    this.toggled = this.defaultState === null
+    this.toggled = this.tyyppi
       ? this.isToggled()
-      : this.defaultState;
+      : this.expandedByDefault;
   }
 
   toggle() {

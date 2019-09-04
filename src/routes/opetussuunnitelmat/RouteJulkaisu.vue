@@ -14,22 +14,18 @@ div.content
     h3 {{ $t('validointi') }}
     .kategoriat
       .kategoria(v-for="category in kooste")
-        .otsikko(role="button", aria-pressed="false")
-          span.iconspan.mr-2
-            fas.warning(v-if="category.hasFatal", icon="exclamation", fixed-width)
-            fas(
-              v-else,
-              :class="category.hasWarning ? 'warning' : 'success'",
-              icon="check",
-              fixed-width)
-          span.saanto(@click="toggleCategory(category)") {{ $t(category.key) }}
-          .float-right
-            fas(v-if="isOpen[category.key]", icon="chevron-down", fixed-width)
-            fas(v-else, icon="chevron-up", fixed-width)
-        div(v-if="isOpen[category.key]")
+        ep-collapse(:expanded-by-default="false")
+          h4(slot="header")
+            span.iconspan.mr-2
+              fas.warning(v-if="category.hasFatal", icon="exclamation", fixed-width)
+              fas(
+                v-else,
+                :class="category.hasWarning ? 'warning' : 'success'",
+                icon="check",
+                fixed-width)
+            span.saanto {{ $t(category.key) }}
           .validointi(v-for="validation in category.value")
             span {{ $t(validation.kuvaus) }} ({{ $kaanna(validation.nimi) }})
-        div(v-else)
 
   // .vaihe
     h3 {{ $t('tiedot') }}
@@ -176,10 +172,6 @@ export default class RouteTiedot extends EpOpsRoute {
 
   avaaKooste() {
     this.showKooste = true;
-  }
-
-  toggleCategory(category) {
-    this.$set(this.isOpen, category.key, !this.isOpen[category.key]);
   }
 
   async init() {
