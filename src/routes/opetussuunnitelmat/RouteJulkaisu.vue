@@ -8,7 +8,7 @@ div.content
       :chartColor="graph.colorScheme",
       :value="graph.value")
   h2.opsnimi {{ $kaanna(nimi) }}
-  p.julkaisuohje {{ $t('julkaisuohje') }}
+  div(v-html="$t('julkaisuohje')")
 
   .vaihe
     h3 {{ $t('validointi') }}

@@ -42,6 +42,7 @@ library.add(solid.faTimes);
 library.add(solid.faUpload);
 library.add(solid.faUsers);
 library.add(solid.faEllipsisH);
+library.add(solid.faFolder);
 
 // OPH icons
 library.add(oph.arkisto);

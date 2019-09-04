@@ -25,38 +25,32 @@
       <div class="info">
         <h1>
           <span>{{ $kaanna(ops.nimi) }}</span><span class="ml-2" v-if="isPohja">({{ $t('pohja') }})</span>
-          <b-dropdown class="text-decoration-none" variant="link" no-caret="no-caret"><template slot="button-content">
+          <b-dropdown size="lg" variant="link" toggle-class="text-decoration-none" no-caret>
+            <template slot="button-content">
               <fas class="hallinta" icon="cog"><span class="sr-only">{{ $t('hallinta') }}</span></fas>
             </template>
-            <b-dropdown-item>
-              <router-link class="btn btn-link" :to="{ name: 'opsTiedot' }">
-                <fas class="mr-2" icon="info-circle"></fas><span>{{ $t('tiedot') }}</span>
-              </router-link>
+            <!-- https://bootstrap-vue.js.org/docs/reference/router-links/ -->
+            <b-dropdown-item :to="{ name: 'opsTiedot' }">
+              <fas class="mr-2" icon="info-circle"></fas><span>{{ $t('tiedot') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item>
-              <router-link class="btn btn-link" :to="{ name: 'opsDokumentti' }">
-                <fas class="mr-2" icon="file-pdf"></fas><span>{{ $t('luo-pdf') }}</span>
-              </router-link>
+            <b-dropdown-item :to="{ name: 'jarjesta' }">
+              <fas class="mr-2" icon="cog"></fas><span>{{ $t('rakenne') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item>
-              <router-link class="btn btn-link" :to="{ name: 'opsPoistetut' }">
-                <fas class="mr-2" icon="recycle"></fas><span>{{ $t('poistetut') }}</span>
-              </router-link>
+            <b-dropdown-item :to="{ name: 'opsKasitteet' }">
+              <fas class="mr-2" icon="bookmark"></fas><span>{{ $t('kasitteet') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item>
-              <router-link class="btn btn-link" :to="{ name: 'opsKasitteet' }">
-                <fas class="mr-2" icon="bookmark"></fas><span>{{ $t('kasitteet') }}</span>
-              </router-link>
+            <b-dropdown-item :to="{ name: 'opsPoistetut' }">
+              <fas class="mr-2" icon="recycle"></fas><span>{{ $t('poistetut') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item>
-              <router-link class="btn btn-link" :to="{ name: 'jarjesta' }">
-                <fas class="mr-2" icon="cog"></fas><span>{{ $t('rakenne') }}</span>
-              </router-link>
+            <b-dropdown-item :to="{ name: 'opsDokumentti' }">
+              <fas class="mr-2" icon="file-pdf"></fas><span>{{ $t('luo-pdf') }}</span>
             </b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'opsJulkaisu' }">
+              <fas class="mr-2" icon="upload"></fas><span>{{ $t('julkaise') }}</span>
+            </b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item>
-              <router-link class="btn btn-link" :to="{ name: 'opsJulkaisu' }">
-                <fas class="mr-2" icon="upload"></fas><span>{{ $t('julkaise') }}</span>
-              </router-link>
+              <fas class="mr-2" icon="folder"></fas><span>{{ $t('arkistoi-ops') }}</span>
             </b-dropdown-item>
           </b-dropdown>
           <!-- b-badgeOpetushallitus.ml-2(style="font-size: 14px", variant="success", v-if="isValmisPohja")| {{ $t('julkinen') }}
