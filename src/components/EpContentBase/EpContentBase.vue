@@ -1,51 +1,74 @@
-<template lang="pug">
-div.ep-content-base
-  div(v-if="isEditable")
-    pre(ng-bind="value | json")
-    trumbowyg(:value="value", :config="config", @input="$emit('input', $event)")
-    //- ck-editor(
-      :value="value",
-      :layout="layout",
-      :locale="locale",
-      :opsId="opsId",
-      :opsKasitteet="opsKasitteet",
-      @input="$emit('input', $event)")
-    //- .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
-    //- .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
-    //- .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
-    //- small.form-text.text-muted(v-if="help && isEditing") {{ $t(help) }}
-  ep-viewer(
-    v-else,
-    :value="value",
-    :opsKasitteet="opsKasitteet")
+<template>
+<div class="ep-content-base editor">
+  <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+    <div class="menubar">
+      <button
+        class="menubar__button"
+        :class="{ 'is-active': isActive.bold() }"
+        @click="commands.bold">
+        BOLD
+      </button>
+    </div>
+  </editor-menu-bar>
+  <editor-content :editor="editor" />
+</div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator';
+  // <pre ng-bind="value | json"></pre>
+  // <div v-if="isEditable">
+  //   <hr />
+  //   <ck-editor :value="value" :layout="layout" :locale="locale" :opsId="opsId" :opsKasitteet="opsKasitteet" @input="$emit('input', $event)">
+  //   </ck-editor>
+  //   <div class="valid-feedback" v-if="!validationError && validMessage">{{ $t(validMessage) }}</div>
+  //   <div class="invalid-feedback" v-else-if="validationError && invalidMessage ">{{ $t(invalidMessage) }}</div>
+  //   <div class="invalid-feedback" v-else-if="validationError && !invalidMessage">{{ $t('validation-error-' + validationError, validation.$params[validationError]) }}</div>
+  //   <small class="form-text text-muted" v-if="help && isEditing">{{ $t(help) }}</small>
+  // </div>
+
+import { Watch, Component, Mixins, Prop } from 'vue-property-decorator';
 
 // import CkEditor from '@/components/CkEditor/CkEditor.vue';
 import EpViewer from '@/components/EpViewer/EpViewer.vue';
-import Trumbowyg from 'vue-trumbowyg';
 
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
 
 import 'katex/dist/katex.css';
-// import 'mathjax/latest.js';
 
-import 'trumbowyg/dist/ui/trumbowyg.css';
+import {
+  Editor,
+  EditorContent,
+  EditorFloatingMenu,
+  EditorMenuBar,
+  EditorMenuBubble,
+} from 'tiptap';
 
-import 'trumbowyg/plugins/table/trumbowyg.table.js';
-import 'trumbowyg/plugins/table/ui/sass/trumbowyg.table.scss';
+import {
+  Blockquote,
+  Bold,
+  BulletList,
+  Code,
+  CodeBlock,
+  HardBreak,
+  Heading,
+  History,
+  Italic,
+  Link,
+  ListItem,
+  OrderedList,
+  Strike,
+  Underline,
+} from 'tiptap-extensions';
 
-import 'trumbowyg/plugins/mathml/trumbowyg.mathml.js';
-import 'trumbowyg/plugins/mathml/ui/sass/trumbowyg.mathml.scss';
 
 @Component({
   components: {
-    // CkEditor,
-    EpViewer,
-    Trumbowyg,
+    Editor,
+    EditorContent,
+    EditorFloatingMenu,
+    EditorMenuBar,
+    EditorMenuBubble,
   },
 })
 export default class EpContentBase extends Mixins(EpValidation) {
@@ -72,6 +95,53 @@ export default class EpContentBase extends Mixins(EpValidation) {
 
   @Prop({ default: 'fi' })
   private locale!: string;
+
+  onUpdate($event) {
+    this.$emit('input', $event);
+  }
+
+  private editor: Editor = null;
+
+  mounted() {
+    this.editor = new Editor({
+      content: this.value,
+      editable: false,
+      onUpdate: () => {
+        this.onUpdate(this.editor.getHTML());
+      },
+      extensions: [
+        new Blockquote(),
+        new CodeBlock(),
+        new HardBreak(),
+        new Heading({ levels: [1, 2, 3] }),
+        new BulletList(),
+        new OrderedList(),
+        new ListItem(),
+        new Bold(),
+        new Code(),
+        new Italic(),
+        new Link(),
+        new Strike(),
+        new Underline(),
+        new History(),
+      ],
+    });
+  }
+
+  @Watch('isEditable')
+  onEditableChange(val) {
+    this.editor.setOptions({
+      ...this.editor.options,
+      editable: this.isEditable,
+    });
+  }
+
+  @Watch('value')
+  onValueChange(val) {
+    if (this.editor && val !== this.value) {
+      this.editor.setContent(val);
+    }
+  }
 
   // Validointi tapahtuu tämän metodin avulla
   get isEditing() {
@@ -115,14 +185,24 @@ export default class EpContentBase extends Mixins(EpValidation) {
       },
     };
   }
+
+  beforeDestroy() {
+    this.editor.destroy()
+  }
+
 }
 </script>
 
 <style scoped lang="scss">
 .ep-content-base {
+  width: 512px;
   /deep/ abbr {
     border-bottom: 1px dotted #999;
     cursor: help;
   }
+}
+
+.is-active {
+  font-weight: 600;
 }
 </style>
