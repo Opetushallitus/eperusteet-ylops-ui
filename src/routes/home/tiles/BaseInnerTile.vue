@@ -1,12 +1,12 @@
 <template>
-  <div class="innertile route-button">
+  <div :class="{ 'innertile': true, 'route-button': effectEnabled}">
     <div class="tile-header">
       <h3 class="oph-h3 tileheader">
         <slot name="header"></slot>
       </h3>
     </div>
     <div class="iconline">
-      <ep-icon :icon="icon" :color="color" background-color="white"></ep-icon>
+      <ep-icon :icon="icon" :color="correctColor" background-color="white"></ep-icon>
     </div>
     <div class="tile-content">
       <slot name="content"></slot>
@@ -29,6 +29,23 @@ export default class BaseInnerTile extends Vue {
 
   @Prop({ default: '#071A58' })
   private color!: string;
+
+  @Prop({ default: { hover: false, focus: false } })
+  private effects!: any;
+
+  get effectEnabled() {
+    if (this.effects.hover || this.effects.focus) {
+      return true;
+    }
+    return false;
+  }
+
+  get correctColor() {
+    if (this.effectEnabled) {
+      return '#3467e3';
+    }
+    return this.color;
+  }
 }
 </script>
 
@@ -66,13 +83,15 @@ $tile-width: 540px;
     top: -37px;
     display: flex;
     justify-content: center;
+
+    &.hover {
+      color: red;
+    }
   }
 }
 
 .route-button {
-  &:hover {
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  }
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
 </style>

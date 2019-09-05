@@ -5,8 +5,13 @@
     <router-link
       v-if="route"
       :to="route && route"
-      tag="a">
-      <base-inner-tile :icon="icon" :color="color">
+      tag="a"
+      @mouseover.native="effects.hover = true"
+      @mouseleave.native="effects.hover = false"
+      @focus.native="effects.focus = true"
+      @blur.native="effects.focus = false"
+      style="outline: none;">
+      <base-inner-tile :icon="icon" :color="color" :effects="effects">
         <template slot="header">
           <slot name="header"></slot>
         </template>
@@ -17,8 +22,13 @@
     </router-link>
     <a
       v-else
-      :href="href && href">
-      <base-inner-tile :icon="icon" :color="color">
+      :href="href && href"
+      @mouseover="effects.hover = true"
+      @mouseleave="effects.hover = false"
+      @focus="effects.focus = true"
+      @blur="effects.focus = false"
+      style="outline: none;">
+      <base-inner-tile :icon="icon" :color="color" :effects="effects">
         <template slot="header">
           <slot name="header"></slot>
         </template>
@@ -53,6 +63,11 @@ export default class BaseTile extends Vue {
 
   @Prop()
   private href!: string;
+
+  private effects = {
+    hover: false,
+    focus: false
+  };
 }
 </script>
 
@@ -61,7 +76,6 @@ export default class BaseTile extends Vue {
 $tile-width: 540px;
 
 .tile {
-  background: inherit;
   width: $tile-width;
   margin: 15px 15px;
   text-align: center;

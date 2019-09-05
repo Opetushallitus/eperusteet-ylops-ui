@@ -22,10 +22,10 @@
               :julkaistut="etusivu.pohjatJulkaistut"
               :is-ops="false"
               v-oikeustarkastelu="'hallinta'" />
-            <tile-valtakunnalliset-perusteet />
-            <tile-ukk />
-            <tile-tiedotteet />
             <tile-organisaatio />
+            <tile-valtakunnalliset-perusteet />
+            <tile-tiedotteet />
+            <tile-ukk />
         </div>
     </div>
 </div>
