@@ -3,7 +3,7 @@ footer
   .footer-content
     .row
       .col-lg.col-slot
-        img(src="../../../public/img/banners/oph_logo.png", slot="footer-logo")
+        img(src="../../../public/img/banners/oph_logo.svg", slot="footer-logo")
       .col-md.col-slot
         b {{ $t('opetushallitus') }}
         ep-linkki(:url="$kaanna(linkit.oph)", icon="external-link-alt")
@@ -57,8 +57,11 @@ export default class EpFooter extends Vue {
 footer {
   border-top: 1px solid #ccc;
   padding: 20px 0 0 0;
-
   hyphens: none;
+
+  img {
+    width: 200px;
+  }
 
   .footer-content {
     max-width: 90%;
