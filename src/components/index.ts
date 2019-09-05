@@ -1,7 +1,6 @@
 export { default as EpAikaleima } from './EpAikaleima/EpAikaleima.vue';
 export { default as EpCommentThreads } from './EpCommentThreads/EpCommentThreads.vue';
 export { default as EpButton } from './EpButton/EpButton.vue';
-export { default as EpChart } from './EpChart/EpChart';
 export { default as EpCollapse } from './EpCollapse/EpCollapse.vue';
 export { default as EpColorBall } from './EpColorBall/EpColorBall.vue';
 export { default as EpContent } from './EpContent/EpContent.vue';

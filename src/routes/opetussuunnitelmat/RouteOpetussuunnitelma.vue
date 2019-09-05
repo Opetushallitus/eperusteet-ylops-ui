@@ -83,7 +83,6 @@ import { Mixins, Component } from 'vue-property-decorator';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import {
-  EpChart,
   EpNavigation,
   EpSidebar,
   EpSpinner,
@@ -96,7 +95,6 @@ import { Lops2019ValidointiDto } from '@/tyypit';
 
 @Component({
   components: {
-    EpChart,
     EpCommentThreads,
     EpNavigation,
     EpProgress,
