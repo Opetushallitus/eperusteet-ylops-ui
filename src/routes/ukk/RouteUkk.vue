@@ -23,7 +23,7 @@ ep-main-view
   // Kysymykset
   template(slot="custom-content")
     div.row(v-if="!isLoading", v-for="kysymys in kysymyksetFormatted", :key="kysymys.id")
-      div.col.col-fixed
+      //div.col.col-fixed
         // Todo: Toteuta profiililla uusi
         // Kysymys on uusi jos alle 30 päivää vanha
         //p.float-right(v-if="(new Date().getTime() - kysymys.luotu) / 1000 / 60 / 60 / 24 < 30") {{ $t('uusi') }}

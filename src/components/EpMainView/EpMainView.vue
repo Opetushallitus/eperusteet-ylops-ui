@@ -2,15 +2,15 @@
 div
   ep-navigation
   .content
-    .container-fluid
+    .container
       .row
-        .col.col-fixed
+        //.col.col-fixed
           slot(name="icon")
         .col
           slot(name="header")
       .view-content(v-if="$slots['default']")
         .row
-          .col.col-fixed.col-new
+          //.col.col-fixed.col-new
           .col
             slot(name="default")
       slot(name="custom-content")

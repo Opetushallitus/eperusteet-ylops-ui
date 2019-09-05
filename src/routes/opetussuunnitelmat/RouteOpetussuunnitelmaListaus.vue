@@ -15,7 +15,7 @@
 
       <div class="opscontainer">
         <div class="opswrapper">
-          <router-link tag="div" role="button" class="opsbox" :to="{ name: vars.uusiRoute }">
+          <router-link tag="a" class="opsbox" :to="{ name: vars.uusiRoute }">
             <div class="uusi">
               <div class="plus">
                 <fas icon="plus"></fas>
@@ -29,8 +29,7 @@
 
         <div class="opswrapper" v-for="ops in keskeneraiset" :key="ops.id">
           <router-link
-            tag="div"
-            role="button"
+            tag="a"
             class="opsbox"
             :to="{ name: 'opsTiedot', params: { id: ops.id } }"
             :key="ops.id">
@@ -187,7 +186,7 @@ $box-size: 350px;
         background-size: contain;
         background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
         border-radius: 10px;
-        height: 230px; 
+        height: 230px;
         margin: 0 auto;
         padding-top: 48px;
         text-align: center;
@@ -213,7 +212,7 @@ $box-size: 350px;
       .chart {
         width: 192px;
         border-radius: 10px 10px 0 0;
-        height: 138px; 
+        height: 138px;
         background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
         background-size: contain;
         margin: 0 auto;
@@ -230,7 +229,7 @@ $box-size: 350px;
       .info {
         border-radius: 0 0 10px 10px;
         text-align: center;
-        height: 92px; 
+        height: 92px;
         width: 192px;
         padding: 10px 10px;
         margin: 0 auto;

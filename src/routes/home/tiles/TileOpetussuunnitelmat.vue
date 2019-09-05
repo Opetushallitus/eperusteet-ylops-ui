@@ -1,5 +1,5 @@
 <template>
-  <base-tile icon="opetussuunnitelmasi" color="#5bca13" :route="vars.route">
+  <base-tile icon="opetussuunnitelmasi" :route="vars.route">
     <template slot="header">
       <span>{{ $t(vars.header) }}</span>
     </template>

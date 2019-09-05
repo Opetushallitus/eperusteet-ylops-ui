@@ -5,7 +5,8 @@
       @click="toggle()",
       @keyup.enter="toggle()",
       role="button",
-      tabindex="0")
+      tabindex="0"
+      :aria-expanded="toggled")
     .align-self-start
       .header
         slot(name="header")

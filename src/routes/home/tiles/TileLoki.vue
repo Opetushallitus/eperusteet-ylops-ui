@@ -1,5 +1,5 @@
 <template lang="pug">
-base-tile(icon="arkisto", color="#5BCA13")
+base-tile(icon="arkisto")
   template(slot="header")
     span {{ $t('tile-loki') }}
   template(slot="content")

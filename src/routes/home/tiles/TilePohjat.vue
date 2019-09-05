@@ -1,5 +1,5 @@
 <template lang="pug">
-base-tile(icon="opetussuunnitelmasi", color="#5bca13", :route="{ name: 'pohjaListaus' }")
+base-tile(icon="opetussuunnitelmasi", :route="{ name: 'pohjaListaus' }")
   template(slot="header")
     span {{ $t('tile-pohjasi') }}
   template(slot="content")

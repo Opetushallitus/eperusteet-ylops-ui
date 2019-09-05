@@ -8,7 +8,14 @@
       <span class="name">
         <slot :node="node"></slot>
       </span>
-      <div v-if="node[childField] && node[childField].length > 0" class="actions" role="button" @click="toggle(idx)">
+      <div
+        v-if="node[childField] && node[childField].length > 0"
+        class="actions"
+        role="button"
+        tabindex="0"
+        @click="toggle(idx)"
+        @keyup.enter="toggle(idx)"
+        :aria-expanded="!node.$closed">
         <fas v-if="node.$closed" icon="chevron-down"></fas>
         <fas v-else icon="chevron-up"></fas>
       </div>

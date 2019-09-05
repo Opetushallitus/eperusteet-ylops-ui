@@ -1,5 +1,5 @@
 <template lang="pug">
-base-tile(icon="ukk", color="#CE52C6", :route="{ name: 'useinkysytyt' }")
+base-tile(icon="ukk", :route="{ name: 'useinkysytyt' }")
   template(slot="header")
     span {{ $t('ukk') }}
   template(slot="content")

@@ -13,16 +13,16 @@ ep-main-view
     div(v-else)
       // Rajaimet
       div.row
-        div.col.col-fixed
+        //div.col.col-fixed
         div.col
           ep-search(v-model="rajain", @input="updateSearch")
       // Tiedotteet
       div.row(v-if="!hasTiedotteet")
-        div.col.col-fixed.col-new
+        //div.col.col-fixed.col-new
         div.col
           p {{ $t('ei-hakutuloksia') }}
       div.row(v-for="tiedote in tiedotteet", :key="tiedote.id")
-        div.col.col-fixed
+        //div.col.col-fixed
           // Todo: Toteuta profiililla uusi
         div.col
           div
@@ -37,7 +37,7 @@ ep-main-view
             hr
       // Paginaatio
       div.row(v-if="hasTiedotteet")
-        div.col.col-fixed
+        //div.col.col-fixed
         div.col
           b-pagination.justify-content-center(
             v-model="sivu",

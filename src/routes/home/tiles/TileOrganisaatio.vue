@@ -1,6 +1,5 @@
 <template lang="pug">
 base-tile(icon="tyoryhma",
-    color="#82D4FF",
     :route="{ name: 'organisaatio' }")
   template(slot="header")
     span {{ $t('tile-organisaatio') }}
