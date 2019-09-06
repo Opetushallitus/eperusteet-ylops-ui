@@ -1,16 +1,18 @@
 <template>
-  <div>
-    <ep-content-base
-      :value="contentValue"
-      :help="help"
-      :layout="layout"
-      :locale="locale"
-      :opsId="opsId"
-      :opsKasitteet="opsKasitteet"
-      :isEditable="isEditable"
-      :validation="validation"
-      @input="handleContentChange" />
-  </div>
+
+<div>
+  <ep-content-base
+    :value="contentValue"
+    :help="help"
+    :layout="layout"
+    :locale="locale"
+    :opsId="opsId"
+    :opsKasitteet="opsKasitteet"
+    :isEditable="isEditable"
+    :validation="validation"
+    :sticky="sticky"
+    @input="handleContentChange" />
+</div>
 
 </template>
 
@@ -46,6 +48,9 @@ export default class EpContent extends Mixins(EpValidation) {
 
   @Prop({ default: '' })
   private help!: string;
+
+  @Prop({ default: false })
+  private sticky!: boolean;
 
   get opsId() {
     return this.isOpsRoute ? _.get(Opetussuunnitelma, 'opetussuunnitelma.id', 0) : 0;

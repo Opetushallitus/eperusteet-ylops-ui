@@ -137,14 +137,12 @@
           <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header">{{ $t('laaja-alaiset-sisallot') }}</div>
             <div class="perustesisalto" v-for="(oppiaine, idx) in laajaAlaisetOsaamiset" :key="idx">
-              <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)">
-              </div>
+              <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
               <ep-content :value="oppiaine.laajaAlainenOsaaminen.kuvaus" />
             </div>
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
-            <ep-content layout="normal" v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing">
-            </ep-content>
+            <ep-content layout="normal" v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing" :sticky="true" />
             <div class="alert alert-info" v-if="!isEditing && !data.laajaAlainenOsaaminen">{{ $t('ei-paikallista-tarkennusta') }}</div>
           </ep-collapse>
         </div>
@@ -154,7 +152,7 @@
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-arviointi') }}</div>
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
-            <ep-content layout="normal" v-model="data.arviointi" :is-editable="isEditing" />
+            <ep-content layout="normal" v-model="data.arviointi" :is-editable="isEditing" :sticky="true" />
           </ep-collapse>
         </div>
 
@@ -162,13 +160,14 @@
           <ep-collapse tyyppi="opintojakson-vapaa-kuvaus">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-vapaa-kuvaus') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.kuvaus">{{ $t('ei-kuvausta') }}</div>
-            <ep-content layout="normal" v-model="data.kuvaus" :is-editable="isEditing">
+            <ep-content layout="normal" v-model="data.kuvaus" :is-editable="isEditing" :sticky="true">
             </ep-content>
           </ep-collapse>
         </div>
       </template>
     </ep-editointi>
   </div>
+  <ep-spinner v-else />
 </div>
 </template>
 

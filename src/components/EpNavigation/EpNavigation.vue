@@ -1,5 +1,5 @@
 <template lang="pug">
-div.topbar(v-sticky="sticky")
+div.topbar(v-sticky="sticky" sticky-z-index="600")
 
   b-navbar.ep-navbar(
     type="dark",
@@ -139,7 +139,7 @@ export default class EpNavigation extends Vue {
   }
 
   .ep-navbar {
-    height: 51px;
+    height: 50px;
     background-attachment: fixed;
     background-color: $etusivu-header-background;
     background-image: url('../../../public/img/banners/header.svg');

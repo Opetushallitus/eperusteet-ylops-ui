@@ -212,7 +212,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 @import "@/styles/_variables.scss";
 
 .content {
-  margin: 10px;
+  padding: 10px;
 }
 
 .tavoitealueet {

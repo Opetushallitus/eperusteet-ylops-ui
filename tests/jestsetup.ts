@@ -1,7 +1,6 @@
 import axios from "axios";
 import Adapter from "axios-mock-adapter";
 import "mutationobserver-shim";
-import "jest-canvas-mock";
 
 declare var global: any;
 global.MutationObserver = (window as any).MutationObserver;

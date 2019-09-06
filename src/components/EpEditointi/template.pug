@@ -1,7 +1,7 @@
 div
   ep-spinner(v-if="!isInitialized")
   .editointikontrolli(v-else)
-    .ylapaneeli(v-sticky, sticky-offset="{ top: 51 }")
+    .ylapaneeli(v-sticky sticky-offset="{ top: 50 }" sticky-z-index="500")
       .d-flex.align-items-center
         .p2.flex-fill.headerline
           slot(

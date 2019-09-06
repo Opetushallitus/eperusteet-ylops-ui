@@ -14,8 +14,8 @@
       <h2>{{ $t(vars.keskeneraiset) }}</h2>
 
       <div class="opscontainer">
-        <div class="opswrapper">
-          <router-link tag="a" class="opsbox" :to="{ name: vars.uusiRoute }">
+        <div class="opsbox">
+          <router-link tag="a" :to="{ name: vars.uusiRoute }">
             <div class="uusi">
               <div class="plus">
                 <fas icon="plus"></fas>
@@ -27,10 +27,9 @@
           </router-link>
         </div>
 
-        <div class="opswrapper" v-for="ops in keskeneraiset" :key="ops.id">
+        <div class="opsbox" v-for="ops in keskeneraiset" :key="ops.id">
           <router-link
             tag="a"
-            class="opsbox"
             :to="{ name: 'opsTiedot', params: { id: ops.id } }"
             :key="ops.id">
             <div class="chart">
@@ -57,21 +56,19 @@
       </div>
 
       <div class="opscontainer">
-        <div class="opswrapper" v-for="ops in julkaistut" :key="ops.id">
-          <div class="opsbox">
-            <div class="chart">
-              <div class="progress-clamper">
-                <ep-progress :slices="[0.2, 0.5, 1]" />
-              </div>
+        <div class="opsbox" v-for="ops in julkaistut" :key="ops.id">
+          <div class="chart">
+            <div class="progress-clamper">
+              <ep-progress :slices="[0.2, 0.5, 1]" />
             </div>
-            <div class="info">
-              <router-link
-                class="nimi"
-                :to="{ name: 'opsTiedot', params: { id: ops.id } }"
-                :key="ops.id">
-                {{ $kaanna(ops.nimi) }}
-              </router-link>
-            </div>
+          </div>
+          <div class="info">
+            <router-link
+              class="nimi"
+              :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+              :key="ops.id">
+              {{ $kaanna(ops.nimi) }}
+            </router-link>
           </div>
         </div>
       </div>
@@ -176,73 +173,68 @@ $box-size: 350px;
   display: flex;
   flex-wrap: wrap;
 
-  .opswrapper {
+  .opsbox {
+    margin: 10px;
+    .uusi {
+      background-size: contain;
+      background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
+      border-radius: 10px;
+      height: 230px;
+      margin: 0 auto;
+      padding-top: 48px;
+      text-align: center;
+      width: 192px;
 
-    .opsbox {
-      margin: 22px;
-      cursor: pointer;
-
-      .uusi {
-        background-size: contain;
-        background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
-        border-radius: 10px;
-        height: 230px;
+      .plus {
+        color: white;
+        font-size: 50px;
         margin: 0 auto;
-        padding-top: 48px;
         text-align: center;
-        width: 192px;
-
-        .plus {
-          color: white;
-          font-size: 50px;
-          margin: 0 auto;
-          text-align: center;
-          width: 80px;
-        }
-
-        .text {
-          color: white;
-          font-weight: 600;
-          margin: 0 auto;
-          text-align: center;
-          width: 80px;
-        }
+        width: 80px;
       }
 
-      .chart {
-        width: 192px;
-        border-radius: 10px 10px 0 0;
-        height: 138px;
-        background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
-        background-size: contain;
+      .text {
+        color: white;
+        font-weight: 600;
         margin: 0 auto;
         text-align: center;
-        padding-top: 28px;
-
-        .progress-clamper {
-          width: 80px;
-          text-align: center;
-          margin: 0 auto;
-        }
+        width: 80px;
       }
+    }
 
-      .info {
-        border-radius: 0 0 10px 10px;
+    .chart {
+      width: 192px;
+      border-radius: 10px 10px 0 0;
+      height: 138px;
+      background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
+      background-size: contain;
+      margin: 0 auto;
+      text-align: center;
+      padding-top: 28px;
+
+      .progress-clamper {
+        width: 80px;
         text-align: center;
-        height: 92px;
-        width: 192px;
-        padding: 10px 10px;
         margin: 0 auto;
-        border: 1px solid #E7E7E7;
-        box-shadow: 5px 5px 10px 1px rgba(27,61,142,0.08);
+      }
+    }
 
-        .nimi {
-          color: #2B2B2B;
-          text-align: center;
-          hyphens: none;
-          font-size: 16px;
-          font-weight: 600;
-        }
+    .info {
+      border-radius: 0 0 10px 10px;
+      text-align: center;
+      height: 92px;
+      width: 192px;
+      padding: 10px 10px;
+      margin: 0 auto;
+      border: 1px solid #E7E7E7;
+      box-shadow: 5px 5px 10px 1px rgba(27,61,142,0.08);
+
+      .nimi {
+        color: #2B2B2B;
+        text-align: center;
+        hyphens: none;
+        font-size: 16px;
+        font-weight: 600;
       }
     }
   }

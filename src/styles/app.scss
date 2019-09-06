@@ -42,10 +42,8 @@
 
   }
 
-  // https://getbootstrap.com/docs/4.3/layout/overview/#z-index
-  --ck-z-default: 1080;
-
-  overflow-y: scroll;
+  // Modaalin aukaiseminen siirtää elementtejä
+  //overflow-y: scroll;
 }
 
 .dev1 {
@@ -70,4 +68,8 @@ button:disabled {
 
 .custom-control-label {
   user-select: none;
+}
+
+li p {
+  margin-bottom: 0;
 }

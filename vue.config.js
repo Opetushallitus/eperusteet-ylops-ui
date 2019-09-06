@@ -1,12 +1,17 @@
 const servicePort = process.env.YLOPS_SERVICE_PORT || 8081;
+const webpack = require('webpack');
 
 module.exports = {
   lintOnSave: false,
   publicPath: process.env.NODE_ENV === 'production' ? '/eperusteet-ylops-app/uusi/' : '/',
+  runtimeCompiler: process.env.NODE_ENV !== 'production',
   configureWebpack: {
     optimization: {
       providedExports: process.env.NODE_ENV === 'production',
     },
+    plugins: [
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    ]
   },
   devServer: {
     overlay: {

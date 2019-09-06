@@ -69,11 +69,11 @@ export default class EpProgress extends Vue {
 <style lang="scss" scoped>
 .ep-progress {
 
-  &:hover {
+  /*&:hover {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     cursor: pointer;
-  }
+  }*/
 
   svg.vaiheet {
     margin: 5px;
