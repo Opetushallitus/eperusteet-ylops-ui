@@ -25,9 +25,11 @@
     "test:e2e:dev": "vue-cli-service test:e2e",
     "test:unit": "TZ=Europe/Helsinki vue-cli-service test:unit --ci --coverage --no-cache",
     "test:unit:dev": "TZ=Europe/Helsinki vue-cli-service test:unit --watch --no-cache",
-    "test:unit:report": "$BROWSER coverage/lcov-report/index.html"
+    "test:unit:report": "$BROWSER coverage/lcov-report/index.html",
+    "postinstall": "cd ./node_modules/@ckeditor/ckeditor4-vue && npm install && npm run build"
   },
   "dependencies": {
+    "@ckeditor/ckeditor4-vue": "github:ckeditor/ckeditor4-vue#develop",
     "@ckeditor/ckeditor5-build-inline": "^12.3.1",
     "@fortawesome/fontawesome-free": "^5.9.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.19",

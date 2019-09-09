@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
 import Notifications from 'vue-notification';
+import CKEditor from '@ckeditor/ckeditor4-vue';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
@@ -22,6 +23,8 @@ Vue.use(Loading, {
   color: '#159ecb',
   loader: 'dots',
 });
+
+Vue.use(CKEditor);
 
 const isDevelopmentMode = () => _.get(process.env.NODE_ENV, '') === 'development';
 

@@ -1,6 +1,10 @@
 <template lang="pug">
 div.ckeditor-wrapper(:class="{ 'is-invalid': isInvalid, 'is-valid': isValid }")
-  div(ref="ckeditor")
+  ckeditor(
+    v-model="editorValue"
+    :config="config"
+    type="inline"
+    @input="$emit('input', $event)")
 </template>
 
 <script lang="ts" src="./script.ts"></script>

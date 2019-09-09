@@ -1,18 +1,10 @@
 import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import _ from 'lodash';
-
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import '@ckeditor/ckeditor5-build-inline/build/translations/fi';
-import '@ckeditor/ckeditor5-build-inline/build/translations/sv';
-
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
 import { createLogger } from '@/stores/logger';
 
 const logger = createLogger('CkEditor');
-
-const INPUT_EVENT_DEBOUNCE_WAIT = 300;
 
 @Component
 export default class CkEditor extends Mixins(EpValidation) {
@@ -37,110 +29,64 @@ export default class CkEditor extends Mixins(EpValidation) {
   @Prop({ default: () => ({}) })
   private opsKasitteet!: object;
 
-  // CKEditorin JS instanssi
-  private instance: any = null;
   private lastEmittedValue: string = '';
-
-  public async mounted() {
-    this.createEditorInstance();
-  }
-
-  public beforeDestroy() {
-    if (this.instance) {
-      this.instance.destroy();
-      this.instance = null;
-    }
-  }
-
-  @Watch('layout')
-  private onLayoutChanged(val: EditorLayout, oldval: EditorLayout) {
-    this.instance.destroy();
-    this.createEditorInstance();
-  }
+  private editorValue: string = '';
 
   @Watch('value')
-  private onValueChanged(newValue: string, oldValue: string) {
+  private onValueChanged(newValue: string) {
     if (newValue === this.lastEmittedValue) {
       return;
     }
 
     // Päivitetään editoriin uusi arvo
-    this.instance.setData(newValue || '');
+    this.editorValue = newValue || '';
   }
 
   private get config() {
-    let config: object;
+    let toolbarLayout: object;
 
     switch (this.layout) {
     case 'normal':
-      config = this.getNormalSettings();
+      toolbarLayout = this.getNormalToolbar();
       break;
     case 'simplified':
-      config = this.getSimplifiedSettings();
+      toolbarLayout = this.getSimplifiedToolbar();
       break;
     default:
       throw new Error(`${this.layout} is not valid layout`);
     }
 
-    return config;
-  }
-
-  private async createEditorInstance() {
-    try {
-      this.instance = await InlineEditor.create(this.$refs.ckeditor, this.config);
-
-      this.instance.setData(this.value);
-      this.setEditorEvents();
-
-      this.$emit('ready', this.instance);
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  }
-
-  private setEditorEvents() {
-    const editor = this.instance;
-
-    editor.model.document.on('change:data', _.debounce(event => {
-      const data = editor.getData();
-      this.lastEmittedValue = data;
-      this.$emit('input', data, event, editor);
-    }, INPUT_EVENT_DEBOUNCE_WAIT));
-  }
-
-  private getSimplifiedSettings() {
     return {
+      toolbar: toolbarLayout,
+      removePlugins: 'resize,elementspath,scayt,wsc,image',
+      //extraPlugins: "divarea,quicktable,mathjax",
+      disallowedContent: 'br; tr td{width,height}',
+      extraAllowedContent: 'img[!data-uid,src]; abbr[data-viite]',
+      disableObjectResizing: true,
       language: this.locale,
-      toolbar: {
-        items: [
-          'bold', 'italic', //'strikethrough',
-          '|',
-          'bulletedList', 'numberedList',
-          '|',
-          'undo', 'redo',
-        ],
-      },
-      ckeperusteet: {
-        kasitteet: this.opsKasitteet,
-        vue: this,
-      },
+      entities: false,
+      entities_latin: false,
+      title: false,
+      //mathJaxLib: "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS_HTML",
     };
   }
 
-  private getNormalSettings() {
-    return {
-      language: this.locale,
-      toolbar: [
-        'bold', 'italic', //'strikethrough',
-        '|',
-        'bulletedList', 'numberedList', 'blockQuote',
-        '|',
-        'insertTable',
-        'link',
-        '|',
-        'undo', 'redo',
-      ],
-    };
+  private getSimplifiedToolbar() {
+    return [
+      { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo'] },
+      { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'] },
+      { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-'] },
+      { name: 'tools', items: ['About'] }
+    ];
+  }
+
+  private getNormalToolbar() {
+    return [
+      { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+      { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'] },
+      { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Blockquote'] },
+      { name: 'insert', items: ['Table', 'HorizontalRule', 'SpecialChar', 'Link', 'Termi', 'epimage'] },
+      { name: 'tools', items: ['About'] }
+    ];
   }
 }
