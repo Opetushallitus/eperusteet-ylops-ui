@@ -1,7 +1,7 @@
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
 
-import Popover from 'bootstrap-vue/es/components/popover/popover.js';
+import Popover from 'bootstrap-vue/esm/components/popover';
 import katex from 'katex';
 
 @Component({
