@@ -19,7 +19,7 @@
       placement="bottom"
       :show.sync="tilaPopupVisible"
       ref="popover"
-      @hover="onHover()">
+      v-if="$slots.default">
       <slot></slot>
     </b-popover>
   </div>
@@ -57,10 +57,6 @@ export default class EpProgress extends Vue {
 
   get size() {
     return 1 / this.total;
-  }
-
-  onHover() {
-    console.log('on hover');
   }
 
 }
