@@ -18,6 +18,11 @@
         <ep-content v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus">
         </ep-content>
       </ep-collapse>
+      <ep-collapse v-if="oppiaine.tavoitteet">
+        <h4 slot="header">{{ $t('tavoitteet') }}</h4>
+        <ep-content v-model="oppiaine.tavoitteet.kuvaus"></ep-content>
+        <ep-prefix-list :value="oppiaine.tavoitteet.tavoitealueet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
+      </ep-collapse>
       <ep-collapse v-if="oppiaine.arviointi">
         <h4 slot="header">{{ $t('arviointi') }}</h4>
         <ep-content v-model="oppiaine.arviointi.kuvaus">
@@ -92,6 +97,7 @@ import {
   EpContent,
   EpEditointi,
   EpSpinner,
+  EpPrefixList,
 } from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019OppiaineDto, Lops2019OpintojaksoDto } from '@/tyypit';
@@ -107,6 +113,7 @@ import _ from 'lodash';
     EpContent,
     EpEditointi,
     EpSpinner,
+    EpPrefixList,
   },
 })
 export default class RouteOppiaine extends Mixins(EpRoute) {
