@@ -232,7 +232,7 @@ export default class RouteDokumentti extends EpOpsRoute {
 
   .ylapaneeli {
     border-bottom: 1px solid #eee;
-    font-size: 90%;
+    //font-size: 90%;
     font-weight: 600;
     padding: 8px 5px;
 
