@@ -1,5 +1,5 @@
 <template lang="pug">
-div.topbar(v-sticky="sticky")
+div.topbar(v-sticky="sticky" sticky-z-index="600")
 
   b-navbar.ep-navbar(
     type="dark",

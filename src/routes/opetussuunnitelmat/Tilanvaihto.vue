@@ -112,4 +112,4 @@ export default class Tilanvaihto extends Vue {
 
 </script>
 
-<style lang="scss" src="./tilanvaihto.scss" />
+<style lang="scss" scoped src="./tilanvaihto.scss" />
