@@ -57,19 +57,12 @@
     "babel-eslint": "^10.0.2",
     "babel-jest": "^24.8.0",
     "bootstrap-vue": "^2.0.0-rc.27",
-    "canvas": "^2.5.0",
-    "chart.js": "^2.8.0",
-    "chartjs-plugin-doughnutlabel": "^2.0.3",
     "eslint": "^5.13.0",
     "eslint-plugin-vue": "^5.0.0",
     "he": "^1.2.0",
     "html-loader": "^0.5.5",
-    "jest-canvas-mock": "^2.1.0",
-    "jquery": "^3.4.1",
     "katex": "^0.10.2",
     "lodash": "^4.17.15",
-    "lodash-es": "^4.17.15",
-    "luxon": "^1.17.2",
     "mocha": "^6.2.0",
     "mocha-multi-reporters": "^1.1.7",
     "moment": "^2.24.0",
@@ -96,7 +89,6 @@
     "vue-router": "^3.0.7",
     "vue-spinner": "^1.0.3",
     "vue-sticky-directive": "0.0.10",
-    "vue-styleguidist": "^3.18.0",
     "vue-template-compiler": "^2.6.10",
     "vue2-datepicker": "^2.12.0",
     "vuedraggable": "^2.23.0",
@@ -106,7 +98,8 @@
     "webpack": "^4.39.2"
   },
   "devDependencies": {
-    "vue-cli-plugin-styleguidist": "^3.22.2"
+    "vue-cli-plugin-styleguidist": "^3.22.2",
+    "vue-styleguidist": "^3.22.2"
   },
   "engines": {
     "node": "10.x.x"
