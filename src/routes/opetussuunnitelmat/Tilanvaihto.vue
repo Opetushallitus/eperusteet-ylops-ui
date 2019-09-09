@@ -19,7 +19,12 @@ div(v-if="mahdollisetTilat")
         | {{ $t('peruuta') }}
 
     .tilat
-      button(v-for="tila in mahdollisetTilat", @click="vaihdaTila(tila)")
+      button.btn(
+        type="button"
+        v-for="tila in mahdollisetTilat"
+        @click="vaihdaTila(tila)"
+        @dblclick="vaihdaTila(tila) && tallenna()"
+        tabindex="0")
         .tila(:class="{ 'tila-selected': selected === tila }")
           .ikoni(:class="'ikoni-' + tila")
             .kuvake
