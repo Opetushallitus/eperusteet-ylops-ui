@@ -1,4 +1,5 @@
 const servicePort = process.env.YLOPS_SERVICE_PORT || 8081;
+const webpack = require('webpack');
 
 module.exports = {
   lintOnSave: false,
@@ -7,6 +8,9 @@ module.exports = {
     optimization: {
       providedExports: process.env.NODE_ENV === 'production',
     },
+    plugins: [
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    ],
   },
   devServer: {
     overlay: {
