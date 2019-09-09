@@ -139,7 +139,7 @@ export default class EpNavigation extends Vue {
   }
 
   .ep-navbar {
-    height: 51px;
+    height: 50px;
     background-attachment: fixed;
     background-color: $etusivu-header-background;
     background-image: url('../../../public/img/banners/header.svg');

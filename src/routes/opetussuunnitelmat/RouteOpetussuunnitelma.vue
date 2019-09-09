@@ -168,7 +168,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
   .header {
     background-image: url('../../../public/img/banners/header.svg');
-    background-position: 100% -51px;
+    background-position: 100% -50px;
     background-repeat: no-repeat;
     height: 190px;
 
