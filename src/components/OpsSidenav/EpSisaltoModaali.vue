@@ -6,8 +6,8 @@
     <span>{{ $t('lisaa-sisalto') }}</span>
   </ep-button>
   <b-modal ref="modal" id="epsisaltomodal" size="lg" title="testi" @show="reset()">
-    <template slot="modal-header">
-      <h2>{{ $t('lisaa-sisalto') }}</h2>
+    <template slot="modal-title">
+      {{ $t('lisaa-sisalto') }}
     </template>
     <template slot="modal-footer">
       <div v-if="step === 0">

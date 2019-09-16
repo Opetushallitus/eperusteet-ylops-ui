@@ -227,13 +227,7 @@ class OpetussuunnitelmaStore {
   }
 
   public async getOpintojakso(id: number) {
-    try {
-      const result = (await Opintojaksot.getOpintojakso(this.opetussuunnitelma!.id!, id)).data;
-      return result;
-    }
-    catch (err) {
-      console.error(err);
-    }
+    return (await Opintojaksot.getOpintojakso(this.opetussuunnitelma!.id!, id)).data;
   }
 
   public async getPoistetut() {

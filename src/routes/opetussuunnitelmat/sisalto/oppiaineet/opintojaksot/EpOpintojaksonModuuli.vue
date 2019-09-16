@@ -1,8 +1,7 @@
 <template lang="pug">
 .moduulibox(:class="valittu && 'moduulibox-valittu'")
   .name
-    span {{ $kaanna(moduuli.nimi) }}
-    span.ml-1 ({{ moduuli.koodi.arvo }})
+    span {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
   .low
     .d-flex.bd-highlight
       .p-2.flex-grow-1

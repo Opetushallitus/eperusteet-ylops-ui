@@ -431,7 +431,7 @@ table.oppiaineet {
       padding: 2px;
 
       .boxcontainer {
-        margin-top: 4px;
+        //margin-top: 4px;
 
         &:hover {
           cursor: pointer;

@@ -8,8 +8,8 @@ div
     id="epversiomodaali",
     size="lg",
     title="testi")
-    template(slot="modal-header")
-      h2 {{ $t('historia') }}
+    template(slot="modal-title")
+      | {{ $t('historia') }}
 
     template(slot="modal-footer")
       ep-button(@click="hide()") {{ $t('sulje') }}

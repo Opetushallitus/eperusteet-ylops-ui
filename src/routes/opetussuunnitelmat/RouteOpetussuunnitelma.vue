@@ -31,7 +31,7 @@
             </template>
             <!-- https://bootstrap-vue.js.org/docs/reference/router-links/ -->
             <b-dropdown-item :to="{ name: 'opsTiedot' }">
-              <fas class="mr-2" icon="info-circle" fixed-width /><span>{{ $t('tiedot') }}</span>
+              <fas class="mr-2" icon="info-circle" fixed-width /><span>{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'jarjesta' }">
               <fas class="mr-2" icon="cog" fixed-width /><span>{{ $t('rakenne') }}</span>
@@ -45,11 +45,11 @@
             <b-dropdown-item :to="{ name: 'opsDokumentti' }">
               <fas class="mr-2" icon="file-pdf" fixed-width /><span>{{ $t('luo-pdf') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'opsJulkaisu' }">
+            <b-dropdown-item :to="{ name: 'opsJulkaisu' }" v-if="!isPohja">
               <fas class="mr-2" icon="upload" fixed-width /><span>{{ $t('julkaise') }}</span>
             </b-dropdown-item>
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item>
+            <b-dropdown-divider v-if="!isPohja" />
+            <b-dropdown-item v-b-modal="'arkistoi-ops-modal'" v-if="!isPohja">
               <fas class="mr-2" icon="folder" fixed-width /><span>{{ $t('arkistoi-ops') }}</span>
             </b-dropdown-item>
           </b-dropdown>
@@ -58,6 +58,22 @@
         </h1>
         <h4 v-if="ops.koulutustyyppi" class="secondary">{{ $t(ops.koulutustyyppi) }}</h4>
         <h6 class="secondary">{{ ops.perusteenDiaarinumero }}</h6>
+        <b-modal id="arkistoi-ops-modal"
+                 @ok="arkistoiOps">
+          <template slot="modal-title">
+            {{ $t('arkistoi-ops') }}
+          </template>
+          <!--<template slot="modal-footer">
+            <ep-button @click="hide()"> {{ $t('sulje') }}</ep-button>
+          </template>-->
+          <template slot="modal-ok">
+            <span>{{ $t('arkistoi') }}</span>
+          </template>
+          <template slot="modal-cancel">
+            <span>{{ $t('peruuta') }}</span>
+          </template>
+          <p>{{ $t('arkistoi-kuvaus')}}</p>
+        </b-modal>
       </div>
     </div>
     <div class="lower">
@@ -88,6 +104,7 @@ import {
   EpSpinner,
   EpCommentThreads,
   OpsSidenav,
+  EpButton,
 } from '@/components';
 import EpProgress from '@/components/EpProgress.vue';
 import { Lops2019ValidointiDto } from '@/tyypit';
@@ -101,6 +118,7 @@ import { Lops2019ValidointiDto } from '@/tyypit';
     EpSidebar,
     EpSpinner,
     OpsSidenav,
+    EpButton,
   },
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
@@ -147,6 +165,10 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         ok: 0,
       };
     }
+  }
+
+  async arkistoiOps() {
+    await Opetussuunnitelma.updateTila('poistettu');
   }
 }
 </script>

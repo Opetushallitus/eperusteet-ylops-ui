@@ -36,7 +36,7 @@
             </div>
             <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
-              <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti) ">
+              <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)">
               </p>
               <div class="alert alert-info" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
               <div v-if="isEditing">
@@ -49,7 +49,7 @@
               <template #header>
                 <h5>{{ $t('paikallinen-teksti') }}</h5>
               </template>
-              <ep-content v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing">
+              <ep-content layout="normal" v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing">
               </ep-content>
               <div class="alert alert-info" v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)">{{ $t('paikallista-sisaltoa-ei-maaritetty') }}</div>
             </ep-collapse>

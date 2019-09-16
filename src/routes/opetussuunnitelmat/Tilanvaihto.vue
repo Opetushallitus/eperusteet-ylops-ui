@@ -9,7 +9,7 @@ div(v-if="mahdollisetTilat")
     id="tilanvaihtomodal",
     size="lg"
     title="testi")
-    template(slot="modal-header")
+    template(slot="modal-title")
       | {{ $t('vaihda-tilaa') }}
 
     template(slot="modal-footer")

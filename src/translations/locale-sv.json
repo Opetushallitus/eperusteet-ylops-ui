@@ -1,5 +1,7 @@
 {
   "ajankohta": "Muokkauksen ajankohta",
+  "arkistoi": "Arkistoi",
+  "arkistoi-kuvaus": "Olet arkistoimassa opetussuunnitelman. Oletko varma, että haluat arkistoida opetussuunnitelman?",
   "arkistoi-ops": "Arkistoi opetussuunnitelma",
   "arviointi": "Arviointi",
   "arvo-tavoite": "Tavoite",
@@ -226,6 +228,7 @@
   "peruuta": "Peruuta",
   "pohja-nimi": "Pohjan nimi",
   "pohja-nimi-ohje": "Uuden pohjan nimi",
+  "pohja-tiedot": "Pohjan tiedot",
   "pohjaa-ei-voi-julkaista": "Pohjaa ei voi julkaista",
   "pohjat-kuvaus": "Listaus opetussuunnitelmien pohjista ja niiden tilat.",
   "poista": "Poista",

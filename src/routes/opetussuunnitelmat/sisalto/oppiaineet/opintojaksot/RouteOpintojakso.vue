@@ -72,7 +72,7 @@
             </div>
             <div class="oppiaineet" v-if="!isEditing">
               <div class="moduulit" v-if="editable && editable.moduulit">
-                <div class="moduuli" v-for="(moduuli, idx) in editable.moduulit" :key="idx">
+                <div class="moduuli" v-for="moduuli in editable.moduulit" :key="moduuli.koodiUri">
                   <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit">
                   </ep-opintojakson-moduuli>
                 </div>
@@ -461,12 +461,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
       });
     }
     else {
-      try {
-        await Opetussuunnitelma.saveOpintojakso(opintojakso);
-      }
-      catch (err) {
-        console.error(err);
-      }
+      await Opetussuunnitelma.saveOpintojakso(opintojakso);
     }
   }
 }

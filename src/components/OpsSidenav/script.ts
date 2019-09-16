@@ -93,13 +93,7 @@ export default class OpsSidenav extends Vue {
   }
 
   async created() {
-    try {
-      const cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
-      this.cache = cache;
-    }
-    catch (err) {
-      console.log('err', err);
-    }
+    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
   }
 
   private opintojaksoModuuliLista(source) {
