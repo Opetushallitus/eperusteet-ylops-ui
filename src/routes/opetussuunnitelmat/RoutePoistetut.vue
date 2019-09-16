@@ -1,7 +1,7 @@
-<template lang="pug">
+<template>
   <div class="poistetut">
     <div class="ylapaneeli">
-      <div class="otsikko">{{ $t('poistetut') }}</div>
+      <h2 class="otsikko">{{ $t('poistetut') }}</h2>
     </div>
     <div class="sisalto">
       <div class="haku">
@@ -86,7 +86,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   get rajaus() {
     return _.chain(this.poistetut)
-      .filter((p) => 
+      .filter((p) =>
         Kielet.search(this.query, p.nimi)
         || Kielet.search(this.query, p.parent))
       .sortBy('luotu')
@@ -126,19 +126,19 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   .ylapaneeli {
     font-weight: 600;
-    padding: 16px 0 16px 23px;
+    padding: 5px 15px 5px 15px;
     border-bottom: 1px solid #eee;
 
     .otsikko {
-      font-size: 20px;
+      margin-bottom: 0;
     }
   }
 
   .sisalto {
-    padding: 21px 0 21px 13px;
+    padding: 15px;
 
     .haku {
-      padding: 0 0 21px 0;
+      padding: 0 0 15px 0;
     }
   }
 }

@@ -1,3 +1,3 @@
 <template lang="pug" src="./template.pug"></template>
 <script lang="ts" src="./script.ts"></script>
-<style scoped style="scss"></style>
+<style scoped lang="scss"></style>

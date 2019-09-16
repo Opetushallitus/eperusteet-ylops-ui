@@ -183,7 +183,7 @@ export default class RouteTiedot extends EpOpsRoute {
 <style scoped lang="scss">
 
 .content {
-  padding: 50px;
+  padding: 15px 50px 50px 50px;
 
   .vaihe {
     margin-top: 60px;

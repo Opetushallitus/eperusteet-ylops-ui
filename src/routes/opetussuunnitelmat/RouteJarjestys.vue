@@ -1,9 +1,9 @@
 <template>
 <div v-if="hooks && !isLoading">
   <ep-editointi :hooks="hooks">
-    
+
     <template #header="{ data }">
-      <h2>{{ $t('opetussuunnitelman-rakenne') }}</h2>
+      <h2 class="otsikko">{{ $t('opetussuunnitelman-rakenne') }}</h2>
     </template>
 
     <template #default="{ isEditing, data }">
@@ -101,6 +101,10 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
 
 <style scoped lang="scss">
 @import '@/styles/_variables.scss';
+
+.otsikko {
+  margin-bottom: 0;
+}
 
 .tree {
   margin: 20px;

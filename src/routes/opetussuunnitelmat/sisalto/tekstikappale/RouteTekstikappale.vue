@@ -214,10 +214,11 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
 .tekstiviite {
   .kappale {
     .otsikko {
+      margin-bottom: 0;
     }
 
     .teksti {
-      margin-left: 0px;
+      margin-left: 0;
     }
 
     .infos {

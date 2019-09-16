@@ -49,17 +49,17 @@ div
               :disabled="state.disabled")
               slot(name="muokkaa") {{ $t('muokkaa') }}
             // TODO: replace with chat icon
-            ep-round-button.mr-2(
+            ep-round-button.ml-2(
               v-if="hasKeskusteluSlot",
               @click="toggleSidebarState(1)",
               icon="ukk",
               variant="lightblue")
-            ep-round-button.mr-2(
+            ep-round-button.ml-2(
               v-if="hasOhjeSlot",
               @click="toggleSidebarState(2)",
               icon="question",
               variant="green")
-            ep-round-button.mr-2(
+            ep-round-button.ml-2(
               v-if="hasPerusteSlot",
               @click="toggleSidebarState(3)",
               icon="valtakunnalliset-perusteet",

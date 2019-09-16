@@ -174,7 +174,6 @@
 <script lang="ts">
 import { Mixins, Component, Prop } from 'vue-property-decorator';
 import {
-  EpButton,
   EpCollapse,
   EpColorBall,
   EpContent,
@@ -183,14 +182,11 @@ import {
   EpFormContent,
   EpInput,
   EpList,
-  EpMultiSelect,
   EpOppiaineSelector,
   EpPrefixList,
-  EpSpinner,
 } from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
-import { Opintojaksot } from '@/api';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { PerusteCache } from '@/stores/peruste';
 import EpRoute from '@/mixins/EpRoute';
@@ -198,13 +194,11 @@ import _ from 'lodash';
 import EpOpintojaksonModuuli from './EpOpintojaksonModuuli.vue';
 import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@/stores/kieli';
-import Multiselect from 'vue-multiselect';
 import * as defaults from '@/defaults';
 
 
 @Component({
   components: {
-    EpButton,
     EpCollapse,
     EpColorBall,
     EpContent,
@@ -213,12 +207,9 @@ import * as defaults from '@/defaults';
     EpFormContent,
     EpInput,
     EpList,
-    EpMultiSelect,
     EpOpintojaksonModuuli,
     EpOppiaineSelector,
     EpPrefixList,
-    EpSpinner,
-    Multiselect,
   },
 })
 export default class RouteOpintojakso extends Mixins(EpRoute) {

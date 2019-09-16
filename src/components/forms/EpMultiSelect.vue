@@ -13,7 +13,8 @@ div
     deselect-label="",
     @search-change="$emit('search', $event)",
     @input="changed($event)",
-    :multiple="multiple")
+    :multiple="multiple"
+    :class="inputClass")
     template(slot="singleLabel", slot-scope="{ option }")
       slot(name="singleLabel", :option="option")
 
@@ -43,7 +44,6 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 import EpInput from '@/components/forms/EpInput.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpValidation from '@/mixins/EpValidation';
-import _ from 'lodash';
 
 @Component({
   components: {
@@ -82,16 +82,38 @@ export default class EpMultiSelect extends Mixins(EpValidation) {
   private changed(value: any) {
     this.$emit('input', value);
   }
+
+  get inputClass() {
+    return {
+      'is-invalid': this.isInvalid,
+      'is-valid': this.isValid,
+    };
+  }
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 
-.multiselect__tags {
+/deep/ .multiselect__tags {
   border: none;
   border-bottom: 1px solid #e8e8e8;
   border-radius: 0;
   -webkit-appearance: none;
+}
+
+
+/deep/ .is-invalid .multiselect__tags {
+  border-color: #dc3545;
+}
+
+/deep/ .is-valid .multiselect__tags {
+  border-color: #28a745;
+}
+
+// Piilotettu Bootstrapissa oletuksena
+/deep/ .invalid-feedback,
+/deep/ .valid-feedback {
+  display: block;
 }
 
 </style>

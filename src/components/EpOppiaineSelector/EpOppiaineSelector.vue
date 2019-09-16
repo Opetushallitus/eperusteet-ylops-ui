@@ -6,6 +6,7 @@
       :multiple="multiple"
       @input="handleInput"
       @search="query = $event"
+      :validation="validation"
       :options="filteredOppiaineet">
     <template slot="singleLabel" slot-scope="{ option }">
       <span class="selected">{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
@@ -15,7 +16,7 @@
       <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
       <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
     </template>
-    <template slot="tag" slot-scope="{ option, search, remove }">
+    <template slot="tag" slot-scope="{ option, remove }">
       <span class="selected">
         <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
         <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
@@ -25,9 +26,6 @@
       </span>
     </template>
   </ep-multi-select>
-  <div class="valid-feedback" v-if="!validationError && validMessage">{{ $t(validMessage) }}</div>
-  <div class="invalid-feedback" v-else-if="validationError && invalidMessage ">{{ $t(invalidMessage) }}</div>
-  <div class="invalid-feedback" v-else-if="validationError && !invalidMessage">{{ $t('validation-error-' + validationError, validation.$params[validationError]) }}</div>
   <small class="form-text text-muted">{{ $t('oppiaine-valitsin-ohje') }}</small>
 </div>
 <div v-else-if="value">
@@ -47,13 +45,13 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Mixins, Component, Prop } from 'vue-property-decorator';
+
 import EpValidation from '@/mixins/EpValidation';
 import { EpMultiSelect } from '@/components';
-import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
 import { PerusteCache } from '@/stores/peruste';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 
 @Component({

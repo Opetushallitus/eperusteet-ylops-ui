@@ -43,4 +43,11 @@ export default class EpContentBase extends Mixins(EpValidation) {
   get isEditing() {
     return this.isEditable;
   }
+
+  get inputClass() {
+    return {
+      'is-invalid': this.isInvalid,
+      'is-valid': this.isValid,
+    };
+  }
 }

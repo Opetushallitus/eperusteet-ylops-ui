@@ -1,7 +1,12 @@
-<template lang="pug">
+<template>
 <div v-if="isEditing">
-  <div class="leftright">
-    <input class="input-style form-control" :class="inputClass" @input="onInput($event.target.value)" :type="type === 'number' ? 'number' : 'text'" :attrs="$attrs" :value="val"></input>
+  <div class="input-container">
+    <input class="input-style form-control"
+           :class="inputClass"
+           @input="onInput($event.target.value)"
+           :type="type === 'number' ? 'number' : 'text'"
+           :attrs="$attrs"
+           :value="val">
     <div v-if="hasLeftSlot" class="addon addon-left">
       <slot name="left" />
     </div>
@@ -14,7 +19,7 @@
   <div class="invalid-feedback" v-else-if="validationError && !invalidMessage">{{ $t('validation-error-' + validationError, validation.$params[validationError]) }}</div>
   <small class="form-text text-muted" v-if="help && isEditing">{{ $t(help) }}</small>
 </div>
-<div class="input-content" :class="isHeader && 'headerfield'" v-else="v-else" :attrs="$attrs">{{ val }}</div>
+<div :class="isHeader && 'headerfield'" v-else :attrs="$attrs">{{ val }}</div>
 </template>
 
 <script lang="ts">
@@ -63,15 +68,15 @@ export default class EpInput extends Mixins(EpValidation) {
   }
 
   public onInput(input: any) {
-    if (this.type === 'string' && !_.isString(this.value)) {
+    if (this.type === 'string' && !_.isString(this.value) && typeof this.value !== 'undefined') {
       logger.warn('Given value is not a string:', this.value);
     }
 
-    if (this.type === 'number' && !_.isNumber(this.value)) {
-      logger.warn('Given value is not a string:', this.value);
+    if (this.type === 'number' && !_.isNumber(this.value) && typeof this.value !== 'undefined') {
+      logger.warn('Given value is not a number:', this.value);
     }
 
-    if (this.type === 'localized' && !_.isPlainObject(this.value)) {
+    if (this.type === 'localized' && !_.isPlainObject(this.value) && typeof this.value !== 'undefined') {
       logger.warn('Given value is not an object:', this.value);
     }
 
@@ -101,7 +106,7 @@ export default class EpInput extends Mixins(EpValidation) {
 </script>
 
 <style scoped lang="scss">
-.leftright {
+.input-container {
   position: relative;
 
   .addon {
@@ -145,6 +150,7 @@ input.input-style {
   }
 }
 
+// Oletuksena vaihtaa värin siniseksi focus tilassa
 input.is-invalid:focus {
   border-color: #dc3545;
 }
@@ -153,15 +159,15 @@ input.is-valid:focus {
   border-color: #28a745;
 }
 
-input.input-content {
-  padding: 6px 0 6px 0;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
 .headerfield {
   font-size: 150%;
   font-weight: 600;
+}
+
+// Piilotettu Bootstrapissa oletuksena
+/deep/ .invalid-feedback,
+/deep/ .valid-feedback {
+  display: block;
 }
 
 </style>
