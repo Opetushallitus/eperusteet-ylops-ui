@@ -89,8 +89,7 @@
                   </div>
                   <div class="p-2">
                     <span class="laajuus">{{ moduulitMap[moduuli.koodiUri].laajuus }} {{ $t('opintopiste') }}</span>
-                    <ep-color-ball>
-                    </ep-color-ball>
+                    <ep-color-ball :kind="moduulitMap[moduuli.koodiUri].pakollinen ? 'pakollinen' : 'valinnainen'" />
                   </div>
                 </div>
               </div>
