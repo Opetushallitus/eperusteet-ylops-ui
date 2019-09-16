@@ -1,14 +1,13 @@
 <template lang="pug">
 .moduulibox(:class="valittu && 'moduulibox-valittu'")
-  .name
-    span {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
-  .low
+  .name {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
+  .bottom
     .d-flex.bd-highlight
-      .p-2.flex-grow-1
+      .px-2.flex-grow-1
         .icon(v-if="isEditing", :class="isEditing && 'icon-editing'", @click="toggle")
           fas(v-if="valittu", icon="check")
           fas(v-else, icon="plus")
-      .p-2.info
+      .px-2.info
         span.op {{ moduuli.laajuus }} {{ $t('opintopiste') }}
         ep-color-ball(:kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'")
 
@@ -81,11 +80,12 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
 
 .moduulibox {
   background-image: url('../../../../../../public/img/banners/moduuli_ei_valittu.svg');
+  background-position: center;
   border-radius: 8px;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.05);
-  height: 162px;
+  height: 160px;
   margin: 0;
-  padding: 30px 18px 0px 18px;
+  padding: 40px 10px 44px 20px;
   position: relative;
   width: 160px;
   color: $blue-darken-1;
@@ -93,14 +93,31 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
 
   .name {
     font-weight: bold;
+    max-height: 76px;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      width: 0.5em;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: $blue-lighten-4;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: $blue-lighten-3;
+      border-radius: 0.5em;
+    }
   }
 
-  .low {
+  .bottom {
     width: 100%;
     padding: 10px;
     position: absolute;
     left: 0;
     bottom: 0;
+
+    .icon {
+      display: inline-block;
+    }
 
     .icon-editing {
       cursor: pointer;
@@ -118,6 +135,15 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
   background-image: url('../../../../../../public/img/banners/moduuli_valittu.svg');
   color: white;
   animation: fade 0.1s linear;
+
+  .name {
+    &::-webkit-scrollbar-track {
+      background-color: $light-blue;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: $dark-blue;
+    }
+  }
 }
 
 @keyframes fade {
