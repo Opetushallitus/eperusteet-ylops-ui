@@ -135,22 +135,55 @@
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header">{{ $t('laaja-alaiset-sisallot') }}</div>
-            <div class="perustesisalto" v-for="(oppiaine, idx) in laajaAlaisetOsaamiset" :key="idx">
-              <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)">
+
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
+              <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
+                <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
+                <ep-content :value="oppiaine.laajaAlaisetOsaamiset.kuvaus" />
               </div>
-              <ep-content :value="oppiaine.laajaAlainenOsaaminen.kuvaus" />
             </div>
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
-            <ep-content layout="normal" v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing">
-            </ep-content>
-            <div class="alert alert-info" v-if="!isEditing && !data.laajaAlainenOsaaminen">{{ $t('ei-paikallista-tarkennusta') }}</div>
+            <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
+              <ep-collapse>
+                <div slot="header" class="moduuliotsikko">
+                  <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
+                    {{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}
+                  </span>
+                  <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
+                    <fas icon="times" />
+                  </b-button>
+                </div>
+                <ep-content
+                  layout="normal"
+                  v-model="lo.kuvaus"
+                  :is-editable="isEditing"></ep-content>
+              </ep-collapse>
+            </div>
+            <div class="alert alert-info" v-if="!isEditing && data.laajaAlainenOsaaminen.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
+            <b-dropdown :text="$t('lisaa-laaja-alainen-osaaminen')" variant="primary">
+              <b-dropdown-item-button
+                @click="addLaaja(laaja)"
+                v-for="laaja in laajaAlaistenKoodit"
+                :key="laaja.koodi"
+                :disabled="laaja.hasPaikallinenKuvaus">
+                {{ $kaanna(laaja.nimi) }}
+              </b-dropdown-item-button>
+            </b-dropdown>
           </ep-collapse>
         </div>
 
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-arviointi">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-arviointi') }}</div>
+
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
+              <div v-if="oppiaine.arviointi && oppiaine.arviointi.kuvaus">
+                <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
+                <ep-content :value="oppiaine.arviointi.kuvaus" />
+              </div>
+            </div>
+
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-content layout="normal" v-model="data.arviointi" :is-editable="isEditing" />
@@ -172,7 +205,7 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
+import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import {
   EpCollapse,
   EpColorBall,
@@ -189,12 +222,13 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { PerusteCache } from '@/stores/peruste';
-import EpRoute from '@/mixins/EpRoute';
+import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';
 import EpOpintojaksonModuuli from './EpOpintojaksonModuuli.vue';
 import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@/stores/kieli';
 import * as defaults from '@/defaults';
+import { getLaajaAlaisetKoodit } from '@/utils/perusteet';
 
 
 @Component({
@@ -212,7 +246,7 @@ import * as defaults from '@/defaults';
     EpPrefixList,
   },
 })
-export default class RouteOpintojakso extends Mixins(EpRoute) {
+export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   @Prop({
     required: false,
   })
@@ -234,10 +268,12 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   };
 
   async remove(data: any) {
-    await Opetussuunnitelma.removeOpintojakso(data.id);
-    this.$router.push({
-      name: 'opsPoistetut',
-    });
+    if (await this.vahvista()) {
+      await Opetussuunnitelma.removeOpintojakso(data.id);
+      this.$router.push({
+        name: 'opsPoistetut',
+      });
+    }
   }
 
   async isUusi() {
@@ -261,6 +297,18 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     return opintojaksoValidator([
       Kielet.getSisaltoKieli(), // Validoidaan kentät sisältökielen mukaan
     ]);
+  }
+
+  get laajaAlaistenKoodit() {
+    const lisatyt = _.map(this.editable!.laajaAlainenOsaaminen!, 'koodi');
+    return _.map(getLaajaAlaisetKoodit(), lo => ({
+      ...lo,
+      hasPaikallinenKuvaus: _.includes(lisatyt, lo.koodi),
+    }));
+  }
+
+  get laajaAlaisetKooditByUri() {
+    return _.keyBy(this.laajaAlaistenKoodit, 'koodi');
   }
 
   get paikallisetOppiaineet() {
@@ -394,21 +442,24 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   }
 
   get laajaAlaisetOsaamiset() {
-    return _(this.editable!.oppiaineet)
-      .map(({ koodi }) => koodi)
-      .map((uri: string) => {
-        if (this.oppiaineetMap[uri].parentUri) {
-          return [this.oppiaineetMap[uri].parentUri, uri];
-        }
-        else {
-          return [uri];
-        }
-      })
-      .flatten()
-      .uniq()
-      .map((uri: string) => this.oppiaineetMap[uri])
-      .filter((oa: any) => oa.laajaAlainenOsaaminen && oa.laajaAlainenOsaaminen.kuvaus)
+    return _(this.opintojaksonOppiaineet)
+      .filter((oa: any) => oa.laajaAlaisetOsaamiset && oa.laajaAlaisetOsaamiset.kuvaus)
       .value();
+  }
+
+  private async poistaLaaja(laaja) {
+    if (await this.vahvista('vahvista-poisto')) {
+      const filtered = _.reject(this.editable!.laajaAlainenOsaaminen!,
+        (lo) => laaja.koodi === lo.koodi);
+      Vue.set(this.editable!, 'laajaAlainenOsaaminen', filtered);
+    }
+  }
+
+  private addLaaja({ koodi }) {
+    this.editable!.laajaAlainenOsaaminen!.push({
+      koodi,
+      kuvaus: {},
+    });
   }
 
   private updateOppiaineet(koodit: string[]) {
@@ -506,6 +557,10 @@ hr.valiviiva {
     border-top: 1px solid #DADADA;
   }
 
+  .paikallinen-laaja-alainen {
+    margin-bottom: 20px;
+  }
+
   .alueotsikko {
     color: #010013;
     font-size: 20px;
@@ -523,7 +578,7 @@ hr.valiviiva {
     color: #2B2B2B;
     font-size: 16px;
     margin-bottom: 10px;
-    padding: 5px;
+    padding-bottom: 5px;
   }
 }
 
