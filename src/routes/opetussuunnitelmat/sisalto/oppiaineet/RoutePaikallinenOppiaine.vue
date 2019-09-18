@@ -40,13 +40,13 @@
           <hr class="valiviiva" />
           <ep-collapse tyyppi="tehtava">
             <h4 class="header" slot="header">{{ $t('tehtava') }}</h4>
-            <ep-content v-model="data.tehtava.kuvaus" :is-editable="isEditing">
+            <ep-content v-model="data.tehtava.kuvaus" :is-editable="isEditing" layout="normal">
             </ep-content>
           </ep-collapse>
           <hr class="valiviiva" />
           <ep-collapse tyyppi="tavoitteet">
             <h4 class="header" slot="header">{{ $t('tavoitteet') }}</h4>
-            <ep-content v-model="data.tavoitteet.kuvaus" :is-editable="isEditing">
+            <ep-content v-model="data.tavoitteet.kuvaus" :is-editable="isEditing" layout="normal">
             </ep-content>
             <div class="tavoitealueet">
               <ep-prefix-list v-model="data.tavoitteet.tavoitealueet" arvot="tavoitteet" arvo="tavoite" :is-editable="isEditing">
@@ -56,7 +56,7 @@
           <hr class="valiviiva" />
           <ep-collapse tyyppi="laajaAlainenOsaaminen">
             <h4 class="header" slot="header">{{ $t('laaja-alaiset-sisallot') }}</h4>
-            <ep-content v-model="data.laajaAlainenOsaaminen.kuvaus" :is-editable="isEditing">
+            <ep-content v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing" layout="normal">
             </ep-content>
           </ep-collapse>
           <div v-if="!isEditing">
@@ -184,7 +184,6 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 
     paikallinen.tehtava = paikallinen.tehtava || {};
     paikallinen.arviointi = paikallinen.arviointi || {};
-    paikallinen.laajaAlainenOsaaminen = paikallinen.laajaAlainenOsaaminen || {};
     paikallinen.tavoitteet = paikallinen.tavoitteet || {
       tavoitealueet: [],
     };
