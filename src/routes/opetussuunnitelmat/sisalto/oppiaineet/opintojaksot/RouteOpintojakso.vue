@@ -161,7 +161,7 @@
               </ep-collapse>
             </div>
             <div class="alert alert-info" v-if="!isEditing && data.laajaAlainenOsaaminen.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
-            <b-dropdown :text="$t('lisaa-laaja-alainen-osaaminen')" variant="primary">
+            <b-dropdown v-if="isEditing" :text="$t('lisaa-laaja-alainen-osaaminen')" variant="primary">
               <b-dropdown-item-button
                 @click="addLaaja(laaja)"
                 v-for="laaja in laajaAlaistenKoodit"
