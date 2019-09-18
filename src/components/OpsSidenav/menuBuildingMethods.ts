@@ -74,7 +74,7 @@ export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
     .value();
 }
 
-export function oppimaaraOpintojaksoLinkit(opintojaksot: Lops2019OpintojaksoDto[], oppimaara: Lops2019OppiaineDto): SideMenuEntry[] {
+export function oppimaaraOpintojaksoLinkit(opintojaksot: any, oppimaara: Lops2019OppiaineDto): SideMenuEntry[] {
   return _.chain(opintojaksot)
     .filter((oj) => oj.oppiaineet && oppimaara.koodi && _.map(oj.oppiaineet, 'koodi').indexOf(oppimaara.koodi.uri) > -1)
     .sortBy('koodi.arvo')

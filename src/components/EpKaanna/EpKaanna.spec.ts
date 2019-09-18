@@ -1,4 +1,4 @@
-import { createLocalVue, mount } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import EpKaanna from './EpKaanna.vue';
 import { i18n, Kielet } from '@/stores/kieli';
 import { Kieli } from '@/tyypit';
@@ -13,7 +13,7 @@ describe('EpKaanna component', () => {
   });
 
   it('Renders content', () => {
-    let wrapper = mount(EpKaanna, {
+    let wrapper = shallowMount(EpKaanna, {
       propsData: {
         value: {
           _id: 1,
@@ -28,7 +28,7 @@ describe('EpKaanna component', () => {
   });
 
   it('Renders available content', () => {
-    let wrapper = mount(EpKaanna, {
+    let wrapper = shallowMount(EpKaanna, {
       propsData: {
         value: {
           _id: 2,

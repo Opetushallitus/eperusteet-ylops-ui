@@ -1,7 +1,7 @@
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
 
-import Popover from 'bootstrap-vue/esm/components/popover';
+//import Popover from 'bootstrap-vue/esm/components/popover';
 import katex from 'katex';
 
 @Component({
@@ -55,6 +55,7 @@ export default class EpViewer extends Vue {
   }
 
   private reRenderAbbr() {
+    /* Todo
     // Poistetaan edelliset tooltip:t
     this.toolTipInstances.forEach(instance => {
       instance.$destroy();
@@ -80,6 +81,7 @@ export default class EpViewer extends Vue {
             placement: 'bottomright',
           },
         });
+
         instance.$slots.default = [this.luoSisaltoSlot(content)];
         instance.$mount();
 
@@ -87,8 +89,9 @@ export default class EpViewer extends Vue {
 
         // Liitetään popover komponenttiin
         (this.$refs.tooltipContainer as HTMLElement).appendChild(instance.$el);
+
       }
-    });
+    });*/
   }
 
   private reRenderKatex() {
