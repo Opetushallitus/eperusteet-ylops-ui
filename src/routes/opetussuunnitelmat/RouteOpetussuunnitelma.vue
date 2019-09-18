@@ -49,7 +49,7 @@
               <fas class="mr-2" icon="upload" fixed-width /><span>{{ $t('julkaise') }}</span>
             </b-dropdown-item>
             <b-dropdown-divider v-if="!isPohja" />
-            <b-dropdown-item v-b-modal="'arkistoi-ops-modal'" v-if="!isPohja">
+            <b-dropdown-item @click="arkistoiOps" v-if="!isPohja">
               <fas class="mr-2" icon="folder" fixed-width /><span>{{ $t('arkistoi-ops') }}</span>
             </b-dropdown-item>
           </b-dropdown>
@@ -58,22 +58,6 @@
         </h1>
         <h4 v-if="ops.koulutustyyppi" class="secondary">{{ $t(ops.koulutustyyppi) }}</h4>
         <h6 class="secondary">{{ ops.perusteenDiaarinumero }}</h6>
-        <b-modal id="arkistoi-ops-modal"
-                 @ok="arkistoiOps">
-          <template slot="modal-title">
-            {{ $t('arkistoi-ops') }}
-          </template>
-          <!--<template slot="modal-footer">
-            <ep-button @click="hide()"> {{ $t('sulje') }}</ep-button>
-          </template>-->
-          <template slot="modal-ok">
-            <span>{{ $t('arkistoi') }}</span>
-          </template>
-          <template slot="modal-cancel">
-            <span>{{ $t('peruuta') }}</span>
-          </template>
-          <p>{{ $t('arkistoi-kuvaus')}}</p>
-        </b-modal>
       </div>
     </div>
     <div class="lower">
@@ -168,7 +152,12 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   }
 
   async arkistoiOps() {
-    await Opetussuunnitelma.updateTila('poistettu');
+    if (await this.vahvista('arkistoi-ops', 'arkistoi-kuvaus')) {
+      await Opetussuunnitelma.updateTila('poistettu');
+      this.$router.push({
+        name: 'opetussuunnitelmaListaus',
+      });
+    }
   }
 }
 </script>
