@@ -61,7 +61,7 @@
           </ep-collapse>
           <div v-if="!isEditing">
             <hr class="valiviiva" />
-            <ep-collapse tyyppi="laajaAlainenOsaaminen">
+            <ep-collapse tyyppi="opintojaksot">
               <h4 class="header" slot="header">{{ $t('opintojaksot') }}</h4>
               <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
                 <div class="oj-content pakollinen">
