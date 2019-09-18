@@ -421,7 +421,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
           return {
             kind: 'oppiaine',
             nimi: oa.nimi,
-            kuvaus: oa.kuvaus,
             tavoitteet: oa.tavoitteet,
           };
         })

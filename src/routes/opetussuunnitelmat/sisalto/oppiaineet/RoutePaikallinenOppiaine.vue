@@ -38,12 +38,6 @@
         </b-row>
         <div>
           <hr class="valiviiva" />
-          <ep-collapse tyyppi="kuvaus">
-            <h4 class="header" slot="header">{{ $t('oppiaineen-kuvaus') }}</h4>
-            <ep-content v-model="data.kuvaus" :is-editable="isEditing">
-            </ep-content>
-          </ep-collapse>
-          <hr class="valiviiva" />
           <ep-collapse tyyppi="tehtava">
             <h4 class="header" slot="header">{{ $t('tehtava') }}</h4>
             <ep-content v-model="data.tehtava.kuvaus" :is-editable="isEditing">
