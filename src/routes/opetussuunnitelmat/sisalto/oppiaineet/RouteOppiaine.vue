@@ -137,7 +137,7 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
     if (!this.oppiaine) {
       return null;
     }
-    return _.chain(this.oppiaine.moduulit)
+    return _.chain(this.oppiaine.moduulit as any)
       .filter(moduuli => moduuli.pakollinen)
       .sortBy('koodi.arvo')
       .value();
