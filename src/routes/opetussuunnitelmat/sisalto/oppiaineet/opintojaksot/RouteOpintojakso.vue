@@ -457,7 +457,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private addLaaja({ koodi }) {
     this.editable!.laajaAlainenOsaaminen!.push({
       koodi,
-      kuvaus: {},
     });
   }
 
