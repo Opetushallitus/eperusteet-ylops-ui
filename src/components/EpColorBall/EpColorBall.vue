@@ -1,5 +1,14 @@
-<template lang="pug">
-span.ball(:class="'ball-' + kind")
+<template>
+<span ref="ball"
+      :title="$t(kind)"
+      :class="spanClass">
+  <b-tooltip v-if="tooltip"
+             :target="() => $refs['ball']"
+             placement="top"
+             triggers="hover">
+    {{ $t(kind) }}
+  </b-tooltip>
+</span>
 </template>
 
 <script lang="ts">
@@ -9,6 +18,14 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 export default class EpColorBall extends Vue {
   @Prop({ default: 'normaali' })
   private kind!: 'normaali' | 'pakollinen' | 'valinnainen' | 'paikallinen' | 'offline' | 'online';
+
+  @Prop({ default: true})
+  private tooltip!: boolean;
+
+
+  private get spanClass() {
+    return `ball ball-${this.kind}${this.tooltip ? ' ball-tooltip' : ''}`;
+  }
 }
 </script>
 
@@ -23,11 +40,11 @@ export default class EpColorBall extends Vue {
 }
 
 .ball-normaali {
-  background: $green-lighten-2;
+  background: black;
 }
 
 .ball-pakollinen {
-  background: #09aee4;
+  background: #bddb8a;
 }
 
 .ball-valinnainen {
@@ -44,6 +61,10 @@ export default class EpColorBall extends Vue {
 
 .ball-online {
   background: #7CD443;
+}
+
+.ball-tooltip {
+  cursor: help;
 }
 
 </style>
