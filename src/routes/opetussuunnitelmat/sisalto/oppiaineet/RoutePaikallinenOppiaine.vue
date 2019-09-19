@@ -145,12 +145,15 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   }
 
   get opintojaksot() {
-    return _.filter(Opetussuunnitelma.opintojaksot, (oj) => {
-      return !!_(oj.oppiaineet)
-        .map('koodi')
-        .filter(koodi => koodi === this.editable.koodi)
-        .first();
-    });
+    return _.chain(Opetussuunnitelma.opintojaksot as any)
+      .filter(oj => {
+        return !!_(oj.oppiaineet)
+          .map('koodi')
+          .filter(koodi => koodi === this.editable.koodi)
+          .first();
+      })
+      .sortBy('koodi')
+      .value();
   }
 
   get validator() {
