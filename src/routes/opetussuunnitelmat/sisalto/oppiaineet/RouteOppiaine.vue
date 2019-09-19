@@ -128,6 +128,7 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
 
   get opintojaksot() {
     return _.filter(Opetussuunnitelma.opintojaksot, (oj) => _(oj.oppiaineet)
+      .sortBy('koodi')
       .map('koodi')
       .includes(this.oppiaine!.koodi!.uri));
   }
@@ -136,14 +137,20 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
     if (!this.oppiaine) {
       return null;
     }
-    return _.filter(this.oppiaine.moduulit, moduuli => moduuli.pakollinen);
+    return _.chain(this.oppiaine.moduulit)
+      .filter(moduuli => moduuli.pakollinen)
+      .sortBy('koodi.arvo')
+      .value();
   }
 
   get valinnaisetModuulit() {
     if (!this.oppiaine) {
       return null;
     }
-    return _.reject(this.oppiaine.moduulit, moduuli => moduuli.pakollinen);
+    return _.chain(this.oppiaine.moduulit)
+      .filter(moduuli => !moduuli.pakollinen)
+      .sortBy('koodi.arvo')
+      .value();
   }
 
   public uusiOpintojakso() {
