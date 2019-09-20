@@ -141,6 +141,11 @@
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
                 <ep-content :value="oppiaine.laajaAlaisetOsaamiset.kuvaus" />
               </div>
+              <!-- Todo: Tee parempi ratkaisu tähän -->
+              <div v-else-if="oppiaine.laajaAlainenOsaaminen">
+                <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
+                <ep-content :value="oppiaine.laajaAlainenOsaaminen" />
+              </div>
             </div>
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
@@ -457,7 +462,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private addLaaja({ koodi }) {
     this.editable!.laajaAlainenOsaaminen!.push({
       koodi,
-      kuvaus: {},
     });
   }
 
@@ -582,6 +586,7 @@ hr.valiviiva {
 }
 
 .moduulilista {
+  margin-top: 27px;
   .checked {
     color: $blue-lighten-1;
   }

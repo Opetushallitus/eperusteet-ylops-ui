@@ -76,12 +76,14 @@
           <td>
             <div class="boxcontainer" v-for="oj in oa.opintojaksot" :key="oj.id">
               <div class="opintojakso" @mouseover="hoverOpintojakso(oj)" @mouseleave="unhoverOpintojakso(oj)">
-                <tr class="item">
-                  <!-- td.op {{ oj.laajuus || 0 }}{{ $t('op') }}-->
-                  <td class="nimi">
-                    <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: oj.id } }">{{ $kaanna(oj.nimi) }} ({{ oj.koodi }})</router-link>
-                  </td>
-                </tr>
+                <table>
+                  <tr class="item">
+                    <!-- td.op {{ oj.laajuus || 0 }}{{ $t('op') }}-->
+                    <td class="nimi">
+                      <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: oj.id } }">{{ $kaanna(oj.nimi) }} ({{ oj.koodi }})</router-link>
+                    </td>
+                  </tr>
+                </table>
               </div>
             </div>
           </td>
@@ -89,16 +91,18 @@
             <div>
               <div class="boxcontainer" v-for="(moduuli, idx) in oa.moduulit" :key="idx">
                 <div class="moduuli" :class="moduuli.classes">
-                  <tr class="item">
-                    <td>
-                      <ep-color-ball class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
-                      </ep-color-ball>
-                      <span>{{ $kaanna(moduuli.nimi) }}</span>
-                      <span class="ml-1" v-if="moduuli.koodi">({{ moduuli.koodi.arvo }})</span>
-                    </td>
-                    <!-- td.op {{ moduuli.laajuus }}{{ $t('op') }}-->
-                    <!-- td.nimispan {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})-->
-                  </tr>
+                  <table>
+                    <tr class="item">
+                      <td>
+                        <ep-color-ball class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
+                        </ep-color-ball>
+                        <span>{{ $kaanna(moduuli.nimi) }}</span>
+                        <span class="ml-1" v-if="moduuli.koodi">({{ moduuli.koodi.arvo }})</span>
+                      </td>
+                      <!-- td.op {{ moduuli.laajuus }}{{ $t('op') }}-->
+                      <!-- td.nimispan {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})-->
+                    </tr>
+                  </table>
                 </div>
               </div>
             </div>
@@ -107,11 +111,13 @@
             <div>
               <div class="boxcontainer" v-for="(moduuli, idx) in oa.vieraatModuulit" :key="idx">
                 <div class="moduuli" :class="moduuli.classes">
-                  <td>
-                    <ep-color-ball class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'"> </ep-color-ball>
-                    <span>{{ $kaanna(moduuli.nimi) }}</span>
-                    <span class="ml-1">({{ moduuli.koodi.arvo }})</span>
-                  </td>
+                  <table>
+                    <td>
+                      <ep-color-ball class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'"> </ep-color-ball>
+                      <span>{{ $kaanna(moduuli.nimi) }}</span>
+                      <span class="ml-1">({{ moduuli.koodi.arvo }})</span>
+                    </td>
+                  </table>
                 </div>
               </div>
             </div>
@@ -433,10 +439,11 @@ table.oppiaineet {
       .boxcontainer {
         //margin-top: 4px;
 
-        &:hover {
+        // Käytä routeria tai linkkiä
+        /*&:hover {
           cursor: pointer;
           color: $color-links;
-        }
+        }*/
       }
 
       tr.item {

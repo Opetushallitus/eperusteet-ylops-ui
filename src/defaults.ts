@@ -5,7 +5,6 @@ export function oppiaine(): Lops2019PaikallinenOppiaineDto {
     nimi: {},
     tehtava: {},
     arviointi: {},
-    laajaAlainenOsaaminen: {},
     tavoitteet: {
       tavoitealueet: [],
     },
