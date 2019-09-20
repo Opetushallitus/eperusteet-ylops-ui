@@ -3,17 +3,22 @@
   <ep-form-content name="organisaatiot">
     <div class="selectors">
       <h6>{{ $t('jarjestajat') }}</h6>
-      <ep-multi-select :multiple="true" v-model="jarjestajat" track-by="oid" :validation="jarjestajatValidation" :is-editing="true" :options="filteredJarjestajat">
+      <ep-multi-select :multiple="true"
+                       v-model="jarjestajat"
+                       track-by="oid"
+                       :validation="jarjestajatValidation"
+                       :is-editing="true"
+                       :options="filteredJarjestajat">
         <template slot="singleLabel" slot-scope="{ option }">
           <span class="selected">{{ $kaanna(option.nimi) }}</span>
         </template>
         <template slot="option" slot-scope="{ option }">
           <div>{{ $kaanna(option.nimi) }}</div>
         </template>
-        <template slot="tag" slot-scope="{ option }">
+        <template slot="tag" slot-scope="{ option, remove }">
           <span class="selected">
             <span>{{ $kaanna(option.nimi) }}</span>
-            <button class="btn btn-link">
+            <button class="btn btn-link" @click="remove(option)">
               <fas icon="times">
               </fas>
             </button>
@@ -23,7 +28,12 @@
     </div>
     <div class="selectors">
       <h6>{{ $t('oppilaitokset') }}</h6>
-      <ep-multi-select :multiple="true" v-model="oppilaitokset" :validation="oppilaitosValidation" :is-editing="true" track-by="oid" :options="filteredOppilaitokset">
+      <ep-multi-select :multiple="true"
+                       v-model="oppilaitokset"
+                       :validation="oppilaitosValidation"
+                       :is-editing="true"
+                       track-by="oid"
+                       :options="filteredOppilaitokset">
         <template slot="singleLabel" slot-scope="{ option }">
           <span class="selected">{{ $kaanna(option.nimi) }}</span>
         </template>
@@ -180,21 +190,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
-
 .selectors {
-  margin-top: 16px;
+  margin-top: 15px;
 }
-
-.selected {
-  background: $color-ops-header;
-  margin-right: 5px;
-  position: relative;
-  top: -3px;
-  padding: 4px;
-  border-radius: 5px;
-  color: #fff;
-  font-weight: 700;
-}
-
 </style>

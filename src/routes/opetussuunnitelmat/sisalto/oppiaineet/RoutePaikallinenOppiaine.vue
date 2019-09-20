@@ -38,21 +38,15 @@
         </b-row>
         <div>
           <hr class="valiviiva" />
-          <ep-collapse tyyppi="kuvaus">
-            <h4 class="header" slot="header">{{ $t('oppiaineen-kuvaus') }}</h4>
-            <ep-content v-model="data.kuvaus" :is-editable="isEditing">
-            </ep-content>
-          </ep-collapse>
-          <hr class="valiviiva" />
           <ep-collapse tyyppi="tehtava">
             <h4 class="header" slot="header">{{ $t('tehtava') }}</h4>
-            <ep-content v-model="data.tehtava.kuvaus" :is-editable="isEditing">
+            <ep-content v-model="data.tehtava.kuvaus" :is-editable="isEditing" layout="normal">
             </ep-content>
           </ep-collapse>
           <hr class="valiviiva" />
           <ep-collapse tyyppi="tavoitteet">
             <h4 class="header" slot="header">{{ $t('tavoitteet') }}</h4>
-            <ep-content v-model="data.tavoitteet.kuvaus" :is-editable="isEditing">
+            <ep-content v-model="data.tavoitteet.kuvaus" :is-editable="isEditing" layout="normal">
             </ep-content>
             <div class="tavoitealueet">
               <ep-prefix-list v-model="data.tavoitteet.tavoitealueet" arvot="tavoitteet" arvo="tavoite" :is-editable="isEditing">
@@ -62,12 +56,12 @@
           <hr class="valiviiva" />
           <ep-collapse tyyppi="laajaAlainenOsaaminen">
             <h4 class="header" slot="header">{{ $t('laaja-alaiset-sisallot') }}</h4>
-            <ep-content v-model="data.laajaAlainenOsaaminen.kuvaus" :is-editable="isEditing">
+            <ep-content v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing" layout="normal">
             </ep-content>
           </ep-collapse>
           <div v-if="!isEditing">
             <hr class="valiviiva" />
-            <ep-collapse tyyppi="laajaAlainenOsaaminen">
+            <ep-collapse tyyppi="opintojaksot">
               <h4 class="header" slot="header">{{ $t('opintojaksot') }}</h4>
               <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
                 <div class="oj-content pakollinen">
@@ -151,12 +145,15 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   }
 
   get opintojaksot() {
-    return _.filter(Opetussuunnitelma.opintojaksot, (oj) => {
-      return !!_(oj.oppiaineet)
-        .map('koodi')
-        .filter(koodi => koodi === this.editable.koodi)
-        .first();
-    });
+    return _.chain(Opetussuunnitelma.opintojaksot as any)
+      .filter(oj => {
+        return !!_(oj.oppiaineet)
+          .map('koodi')
+          .filter(koodi => koodi === this.editable.koodi)
+          .first();
+      })
+      .sortBy('koodi')
+      .value();
   }
 
   get validator() {
@@ -190,7 +187,6 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 
     paikallinen.tehtava = paikallinen.tehtava || {};
     paikallinen.arviointi = paikallinen.arviointi || {};
-    paikallinen.laajaAlainenOsaaminen = paikallinen.laajaAlainenOsaaminen || {};
     paikallinen.tavoitteet = paikallinen.tavoitteet || {
       tavoitealueet: [],
     };

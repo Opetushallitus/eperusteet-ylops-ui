@@ -1,6 +1,7 @@
 <template lang="pug">
 div
   div(v-html="value")
-  div(ref="tooltipContainer")
+  //div(ref="tooltipContainer")
 </template>
+
 <script lang="ts" src="./script.ts"></script>

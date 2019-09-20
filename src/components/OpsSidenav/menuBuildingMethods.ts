@@ -74,9 +74,10 @@ export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
     .value();
 }
 
-export function oppimaaraOpintojaksoLinkit(opintojaksot: Lops2019OpintojaksoDto[], oppimaara: Lops2019OppiaineDto): SideMenuEntry[] {
-  return opintojaksot
+export function oppimaaraOpintojaksoLinkit(opintojaksot: any, oppimaara: Lops2019OppiaineDto): SideMenuEntry[] {
+  return _.chain(opintojaksot)
     .filter((oj) => oj.oppiaineet && oppimaara.koodi && _.map(oj.oppiaineet, 'koodi').indexOf(oppimaara.koodi.uri) > -1)
+    .sortBy('koodi.arvo')
     .map(oj => {
       return {
         item: {
@@ -90,7 +91,8 @@ export function oppimaaraOpintojaksoLinkit(opintojaksot: Lops2019OpintojaksoDto[
           },
         },
       };
-    });
+    })
+    .value();
 }
 
 export function paikallinenOppiaineToMenu(oppiaine: Lops2019PaikallinenOppiaineDto): SideMenuEntry {

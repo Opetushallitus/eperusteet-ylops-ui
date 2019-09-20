@@ -1,7 +1,7 @@
 <template>
 <button class="btn" :class="variantClass" v-bind="$attrs" :disabled="disabled || showSpinner" @click="$emit('click')">
   <div class="float-left mr-2" v-if="icon" :class="isOutline && 'icon'">
-    <fas :icon="icon" />
+    <fas :icon="icon" fixed-width />
   </div>
   <slot />
   <ep-spinner-inline v-if="showSpinner" />

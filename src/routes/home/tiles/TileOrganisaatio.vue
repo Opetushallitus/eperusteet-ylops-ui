@@ -9,7 +9,7 @@ base-tile(icon="tyoryhma",
       b-row.mx-5.virkailijat
         b-col.virkailija.text-left(sm="6", v-for="virkailija in virkailijatPrewview", :key="virkailija.oid")
           // TODO: offline / online toiminnallisuus
-          ep-color-ball.mr-2(kind="offline")
+          ep-color-ball.mr-2(kind="offline", :tooltip="false")
           span {{ virkailija.esitysnimi }}
       p.mt-3(v-if="virkailijat && virkailijat.length > previewSize") {{ $t('nayta-lisaa') }}
 

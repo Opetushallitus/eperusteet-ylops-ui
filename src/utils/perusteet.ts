@@ -20,3 +20,37 @@ export function isPerusteSupported(peruste: any) {
   }
   return _.includes(YlopsKoulutustyypit, koulutustyyppi);
 }
+
+export function getLaajaAlaisetKoodit() {
+  return [{
+    koodi: 'lops2019laajaalainenosaaminen_1',
+    nimi: {
+      fi: 'Globaali- ja kulttuuriosaaminen',
+    },
+  }, {
+    koodi: 'lops2019laajaalainenosaaminen_2',
+    nimi: {
+      fi: 'Hyvinvointiosaaminen',
+    },
+  }, {
+    koodi: 'lops2019laajaalainenosaaminen_3',
+    nimi: {
+      fi: 'Vuorovaikutusosaaminen',
+    },
+  }, {
+    koodi: 'lops2019laajaalainenosaaminen_4',
+    nimi: {
+      fi: 'Eettisyys ja ympäristöosaaminen',
+    },
+  }, {
+    koodi: 'lops2019laajaalainenosaaminen_5',
+    nimi: {
+      fi: 'Yhteiskunnallinen osaaminen',
+    },
+  }, {
+    koodi: 'lops2019laajaalainenosaaminen_6',
+    nimi: {
+      fi: 'Monitieteinen ja luova osaaminen',
+    },
+  }];
+}

@@ -1,15 +1,15 @@
-<template lang="pug">
+<template>
 <div v-if="hasContent">
   <!-- Lokalisoitu teksti-->
   <div v-html="$kaanna(value)">
   </div>
 </div>
-<div v-else="v-else">
+<div v-else>
   <slot>
     <div class="btn-group btn-group-sm float-right" ref="buttons" role="group">
       <button class="btn btn-link" v-for="l in availableLocales" :key="l" @click="selectedLocale = l">{{ l }}</button>
     </div>
-    <b-tooltip :target="() => $refs.buttons" :title="$t('sisalto-naytetaan-kielella', { kieli: availableLocale })">
+    <b-tooltip :target="() => $refs['buttons']" :title="$t('sisalto-naytetaan-kielella', { kieli: availableLocale })">
     </b-tooltip>
   </slot>
   <!-- Lokalisoitu teksti-->

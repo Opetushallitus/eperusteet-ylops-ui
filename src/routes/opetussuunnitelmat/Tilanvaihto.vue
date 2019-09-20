@@ -9,7 +9,7 @@ div(v-if="mahdollisetTilat")
     id="tilanvaihtomodal",
     size="lg"
     title="testi")
-    template(slot="modal-header")
+    template(slot="modal-title")
       | {{ $t('vaihda-tilaa') }}
 
     template(slot="modal-footer")
@@ -19,7 +19,12 @@ div(v-if="mahdollisetTilat")
         | {{ $t('peruuta') }}
 
     .tilat
-      button(v-for="tila in mahdollisetTilat", @click="vaihdaTila(tila)")
+      button.btn(
+        type="button"
+        v-for="tila in mahdollisetTilat"
+        @click="vaihdaTila(tila)"
+        @dblclick="vaihdaTila(tila) && tallenna()"
+        tabindex="0")
         .tila(:class="{ 'tila-selected': selected === tila }")
           .ikoni(:class="'ikoni-' + tila")
             .kuvake
@@ -112,4 +117,4 @@ export default class Tilanvaihto extends Vue {
 
 </script>
 
-<style lang="scss" src="./tilanvaihto.scss" />
+<style scoped lang="scss" src="./tilanvaihto.scss" />

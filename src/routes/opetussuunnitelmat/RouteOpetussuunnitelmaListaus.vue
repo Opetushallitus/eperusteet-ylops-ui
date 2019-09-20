@@ -57,19 +57,21 @@
 
       <div class="opscontainer">
         <div class="opsbox" v-for="ops in julkaistut" :key="ops.id">
-          <div class="chart">
-            <div class="progress-clamper">
-              <ep-progress :slices="[0.2, 0.5, 1]" />
+          <router-link
+            tag="a"
+            :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+            :key="ops.id">
+            <div class="chart">
+              <div class="progress-clamper">
+                <ep-progress :slices="[0.2, 0.5, 1]" />
+              </div>
             </div>
-          </div>
-          <div class="info">
-            <router-link
-              class="nimi"
-              :to="{ name: 'opsTiedot', params: { id: ops.id } }"
-              :key="ops.id">
-              {{ $kaanna(ops.nimi) }}
-            </router-link>
-          </div>
+            <div class="info">
+              <div class="nimi">
+                {{ $kaanna(ops.nimi) }}
+              </div>
+            </div>
+          </router-link>
         </div>
       </div>
     </div>

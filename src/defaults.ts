@@ -5,7 +5,6 @@ export function oppiaine(): Lops2019PaikallinenOppiaineDto {
     nimi: {},
     tehtava: {},
     arviointi: {},
-    laajaAlainenOsaaminen: {},
     tavoitteet: {
       tavoitealueet: [],
     },
@@ -15,10 +14,13 @@ export function oppiaine(): Lops2019PaikallinenOppiaineDto {
 
 export function opintojakso(oppiaineUri?: string): Lops2019OpintojaksoDto {
   return {
+    arviointi: {},
+    keskeisetSisallot: [],
+    kuvaus: {},
+    laajaAlainenOsaaminen: [],
+    moduulit: [],
     nimi: {},
     oppiaineet: [],
-    moduulit: [],
     tavoitteet: [],
-    keskeisetSisallot: [],
   };
 }

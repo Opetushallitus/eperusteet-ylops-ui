@@ -19,7 +19,7 @@
       placement="bottom"
       :show.sync="tilaPopupVisible"
       ref="popover"
-      @hover="onHover()">
+      v-if="$slots.default">
       <slot></slot>
     </b-popover>
   </div>
@@ -59,21 +59,31 @@ export default class EpProgress extends Vue {
     return 1 / this.total;
   }
 
-  onHover() {
-    console.log('on hover');
-  }
-
 }
 </script>
 
 <style lang="scss" scoped>
 .ep-progress {
 
+<<<<<<< HEAD
   /*&:hover {
+||||||| merged common ancestors
+  &:hover {
+=======
+  /*
+  &:hover {
+>>>>>>> master
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     cursor: pointer;
+<<<<<<< HEAD
   }*/
+||||||| merged common ancestors
+  }
+=======
+  }
+  */
+>>>>>>> master
 
   svg.vaiheet {
     margin: 5px;

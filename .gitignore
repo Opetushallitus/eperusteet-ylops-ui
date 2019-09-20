@@ -22,6 +22,7 @@ tests/e2e/screenshots
 tests/e2e/videos
 typings
 wwwroot/*.js
+package-lock.json
 yarn-debug.log*
 yarn-error.log*
 

@@ -102,22 +102,21 @@ export default class EpDatepicker extends Mixins(EpValidation) {
 
 <style scoped lang="scss">
 
-.ep-date-picker {
-  & /deep/ .mx-input-append {
-    font-size: 1rem;
-  }
+/deep/ .mx-input-append {
+  font-size: 1rem;
+}
+/deep/ .ep-datepicker-validation {
+  padding-right: calc(3em + .75rem) !important;
+}
 
-  & /deep/ .ep-datepicker-validation {
-    padding-right: calc(3em + .75rem) !important;
-  }
+/deep/ .ep-datepicker-validation ~ .mx-input-append {
+  right: 30px;
+}
 
-  & /deep/ .ep-datepicker-validation ~ .mx-input-append {
-    right: 30px;
-  }
-
-  & /deep/ .invalid-feedback, .valid-feedback {
-    display: block;
-  }
+// Piilotettu Bootstrapissa oletuksena
+/deep/ .invalid-feedback,
+/deep/ .valid-feedback {
+  display: block;
 }
 
 </style>

@@ -80,9 +80,6 @@ export default class EpSelect extends Mixins(EpValidation) {
 </script>
 
 <style scoped lang="scss">
-
-@import './style.scss';
-
 .form-content {
   padding: 20px;
 
@@ -115,14 +112,6 @@ select {
     outline: none !important;
     box-shadow: none !important;
   }
-}
-
-select.is-invalid:focus {
-  border-color: #dc3545;
-}
-
-select.is-valid:focus {
-  border-color: #28a745;
 }
 
 </style>

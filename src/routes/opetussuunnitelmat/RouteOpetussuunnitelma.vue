@@ -31,7 +31,7 @@
             </template>
             <!-- https://bootstrap-vue.js.org/docs/reference/router-links/ -->
             <b-dropdown-item :to="{ name: 'opsTiedot' }">
-              <fas class="mr-2" icon="info-circle" fixed-width /><span>{{ $t('tiedot') }}</span>
+              <fas class="mr-2" icon="info-circle" fixed-width /><span>{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'jarjesta' }">
               <fas class="mr-2" icon="cog" fixed-width /><span>{{ $t('rakenne') }}</span>
@@ -45,11 +45,11 @@
             <b-dropdown-item :to="{ name: 'opsDokumentti' }">
               <fas class="mr-2" icon="file-pdf" fixed-width /><span>{{ $t('luo-pdf') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'opsJulkaisu' }">
+            <b-dropdown-item :to="{ name: 'opsJulkaisu' }" v-if="!isPohja">
               <fas class="mr-2" icon="upload" fixed-width /><span>{{ $t('julkaise') }}</span>
             </b-dropdown-item>
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item>
+            <b-dropdown-divider v-if="!isPohja" />
+            <b-dropdown-item @click="arkistoiOps" v-if="!isPohja">
               <fas class="mr-2" icon="folder" fixed-width /><span>{{ $t('arkistoi-ops') }}</span>
             </b-dropdown-item>
           </b-dropdown>
@@ -88,6 +88,7 @@ import {
   EpSpinner,
   EpCommentThreads,
   OpsSidenav,
+  EpButton,
 } from '@/components';
 import EpProgress from '@/components/EpProgress.vue';
 import { Lops2019ValidointiDto } from '@/tyypit';
@@ -101,6 +102,7 @@ import { Lops2019ValidointiDto } from '@/tyypit';
     EpSidebar,
     EpSpinner,
     OpsSidenav,
+    EpButton,
   },
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
@@ -146,6 +148,15 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         failed: 0,
         ok: 0,
       };
+    }
+  }
+
+  async arkistoiOps() {
+    if (await this.vahvista('arkistoi-ops', 'arkistoi-kuvaus')) {
+      await Opetussuunnitelma.updateTila('poistettu');
+      this.$router.push({
+        name: 'opetussuunnitelmaListaus',
+      });
     }
   }
 }
