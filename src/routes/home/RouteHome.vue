@@ -1,5 +1,7 @@
 <template>
 <div class="home-container">
+    <ep-content v-model="jotain"></ep-content>
+
     <div class="header">
         <ep-navigation :sticky="false"></ep-navigation>
         <div class="container">
@@ -56,18 +58,19 @@ import {
   EpSearch,
 } from '@/components';
 
+
 @Component({
   components: {
     EpAikaleima,
     EpContent,
     EpNavigation,
     EpSearch,
-    TileUkk,
     TileLoki,
     TileOpetussuunnitelmat,
     TileOrganisaatio,
     TilePohjat,
     TileTiedotteet,
+    TileUkk,
     TileUusiOpetussuunnitelma,
     TileUusiPohja,
     TileValtakunnallisetPerusteet,
@@ -77,6 +80,10 @@ import {
   },
 })
 export default class Home extends Mixins(EpRoute) {
+  private jotain = {
+    fi: 'Jokin jonnekkin',
+  };
+
   private rajain: string = '';
   private etusivu: EtusivuDto = {
     opetussuunnitelmatKeskeneraiset: 0,

@@ -19,6 +19,7 @@ module.exports = {
       errors: true,
     },
     clientLogLevel: 'none',
+    host: '0.0.0.0',
     port: 9040,
     proxy: {
       '/eperusteet-ylops-service': {

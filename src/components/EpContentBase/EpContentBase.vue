@@ -54,6 +54,7 @@
       </div>
     </editor-menu-bar>
     <editor-content :editor="editor" :editor-class="'form-control'" style="margin-top: 10px" />
+    <pre>{{ value }}</pre>
     <div class="valid-feedback"
          v-if="!validationError && validMessage">{{ $t(validMessage) }}</div>
     <div class="invalid-feedback"
@@ -79,11 +80,16 @@ import {
   History,
   Italic,
   Link,
+  Table,
+  TableHeader,
+  TableCell,
+  TableRow,
   ListItem,
   OrderedList,
   Strike,
   Underline,
 } from 'tiptap-extensions';
+
 import Sticky from 'vue-sticky-directive';
 
 import EpViewer from '@/components/EpViewer/EpViewer.vue';
@@ -133,36 +139,49 @@ export default class EpContentBase extends Mixins(EpValidation) {
   @Prop({ default: false })
   private sticky!: boolean;
 
+  private editor: any = null;
+
   // Validointi tapahtuu tämän metodin avulla
   get isEditing() {
     return this.isEditable;
   }
 
-  private editorChange = false;
-
-  // menubarin slotit eivät toimi jos luodaan mounted funktiossa
-  private editor = new Editor({
-    content: this.value,
-    editable: false,
-    onUpdate: () => {
-      this.setUpEditorEvents();
-    },
-    extensions: [
-      new Blockquote(),
-      new CodeBlock(),
-      new HardBreak(),
-      new BulletList(),
-      new OrderedList(),
-      new ListItem(),
-      new Bold(),
-      new Code(),
-      new Italic(),
-      new Link(),
-      new Strike(),
-      new Underline(),
-      new History(),
-    ],
-  });
+  mounted() {
+    console.log(this.value);
+    this.editor = new Editor({
+      // content: this.value,
+      content: '',
+      editable: true,
+      // editorProps: {
+      //   transformPastedHTML(html: string) {
+      //     console.log(html);
+      //     return html;
+      //   },
+      // },
+      onUpdate: () => {
+        this.setUpEditorEvents();
+      },
+      extensions: [
+        new Blockquote(),
+        new CodeBlock(),
+        new HardBreak(),
+        new BulletList(),
+        new OrderedList(),
+        new ListItem(),
+        new Bold(),
+        new Code(),
+        new Italic(),
+        new Link(),
+        new Strike(),
+        new Underline(),
+        new History(),
+        new Table({ resizable: true, }),
+        new TableHeader(),
+        new TableCell(),
+        new TableRow(),
+      ],
+    });
+  }
 
   public beforeDestroy() {
     if (this.editor) {
@@ -173,8 +192,6 @@ export default class EpContentBase extends Mixins(EpValidation) {
   private setUpEditorEvents() {
     if (this.editor) {
       const data = this.editor.getHTML();
-      this.editorChange = true;
-
       this.$emit('input', data);
     }
   }
@@ -191,15 +208,15 @@ export default class EpContentBase extends Mixins(EpValidation) {
 
   @Watch('value')
   private onValueChange(newVal) {
-    if (this.editor && !this.editorChange) {
-      if (newVal === undefined) {
-        this.editor.clearContent(true);
-      }
-      else {
-        this.editor.setContent(newVal, true);
-      }
-    }
-    this.editorChange = false;
+    // if (this.editor && !this.editorChange) {
+    //   if (newVal === undefined) {
+    //     this.editor.clearContent(true);
+    //   }
+    //   else {
+    //     this.editor.setContent(newVal, true);
+    //   }
+    // }
+    // this.editorChange = false;
   }
 
 }
