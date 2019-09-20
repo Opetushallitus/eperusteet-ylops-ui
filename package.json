@@ -25,7 +25,9 @@
     "test:e2e:dev": "vue-cli-service test:e2e",
     "test:unit": "TZ=Europe/Helsinki vue-cli-service test:unit --ci --coverage --no-cache",
     "test:unit:dev": "TZ=Europe/Helsinki vue-cli-service test:unit --watch --no-cache",
-    "test:unit:report": "$BROWSER coverage/lcov-report/index.html"
+    "test:unit:report": "$BROWSER coverage/lcov-report/index.html",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-inline": "^12.3.1",
@@ -97,7 +99,8 @@
     "vuelidate": "^0.7.4",
     "vuex": "^3.1.1",
     "vuex-class": "^0.3.2",
-    "webpack": "^4.39.2"
+    "webpack": "^4.39.2",
+    "snyk": "^1.228.2"
   },
   "devDependencies": {
     "vue-cli-plugin-styleguidist": "^3.22.2",
@@ -105,5 +108,6 @@
   },
   "engines": {
     "node": "10.x.x"
-  }
+  },
+  "snyk": true
 }
