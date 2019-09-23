@@ -73,6 +73,19 @@ export default class EpEditointi extends Mixins(validationMixin) {
     });
   }
 
+  get saveHelpText() {
+    const vuelidate = this.$v as any;
+    if (this.state.disabled) {
+      return 'tallenna-tila-virhe-ohje';
+    }
+    else if (vuelidate.state.data.$invalid) {
+      return 'tallenna-validointi-virhe-ohje';
+    }
+    else {
+      return '';
+    }
+  }
+
   @Watch('state.data')
   private changed(newValue: any, oldValue: any) {
     this.$emit('input', newValue);

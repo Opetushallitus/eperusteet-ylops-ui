@@ -7,7 +7,8 @@
       @input="handleInput"
       @search="query = $event"
       :validation="validation"
-      :options="filteredOppiaineet">
+      :options="filteredOppiaineet"
+      help="oppiaine-valitsin-ohje">
     <template slot="singleLabel" slot-scope="{ option }">
       <span class="selected">{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
       <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
@@ -26,7 +27,6 @@
       </span>
     </template>
   </ep-multi-select>
-  <small class="form-text text-muted">{{ $t('oppiaine-valitsin-ohje') }}</small>
 </div>
 <div v-else-if="value">
   <div v-if="isArray">
