@@ -4,7 +4,8 @@ div.topbar(v-sticky="sticky" sticky-z-index="600")
   b-navbar.ep-navbar(
     type="dark",
     toggleable="md",
-    :class="'navbar-style-' + tyyli")
+    :class="'navbar-style-' + tyyli",
+    :style="{ 'background-attachment': sticky ? 'fixed' : '' }")
 
     b-navbar-nav
       nav(aria-label="breadcrumb")
@@ -140,13 +141,11 @@ export default class EpNavigation extends Vue {
 
   .ep-navbar {
     height: 50px;
-    background-attachment: fixed;
     background-color: $etusivu-header-background;
     background-image: url('../../../public/img/banners/header.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
   }
-
 }
 
 </style>
