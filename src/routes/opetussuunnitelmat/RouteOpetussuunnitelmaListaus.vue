@@ -169,7 +169,12 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
 </script>
 
 <style lang="scss" scoped>
+
+@import '@/styles/_mixins.scss';
+
 $box-size: 350px;
+
+$box-radius: 10px;
 
 .opscontainer {
   display: flex;
@@ -177,10 +182,13 @@ $box-size: 350px;
 
   .opsbox {
     margin: 10px;
+    border-radius: $box-radius;
+    @include tile-background-shadow;
+
     .uusi {
       background-size: contain;
       background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
-      border-radius: 10px;
+      border-radius: $box-radius;
       height: 230px;
       margin: 0 auto;
       padding-top: 48px;
@@ -206,7 +214,7 @@ $box-size: 350px;
 
     .chart {
       width: 192px;
-      border-radius: 10px 10px 0 0;
+      border-radius: $box-radius $box-radius 0 0;
       height: 138px;
       background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
       background-size: contain;
@@ -222,14 +230,13 @@ $box-size: 350px;
     }
 
     .info {
-      border-radius: 0 0 10px 10px;
+      border-radius: 0 0 $box-radius $box-radius;
       text-align: center;
       height: 92px;
       width: 192px;
       padding: 10px 10px;
       margin: 0 auto;
       border: 1px solid #E7E7E7;
-      box-shadow: 5px 5px 10px 1px rgba(27,61,142,0.08);
 
       .nimi {
         color: #2B2B2B;
@@ -238,6 +245,10 @@ $box-size: 350px;
         font-size: 16px;
         font-weight: 600;
       }
+    }
+
+    &:hover {
+      @include tile-background-shadow-selected;
     }
   }
 }
