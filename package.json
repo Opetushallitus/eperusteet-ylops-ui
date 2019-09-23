@@ -60,8 +60,8 @@
     "eslint-plugin-vue": "^5.0.0",
     "he": "^1.2.0",
     "html-loader": "^0.5.5",
-    "jquery": "^3.4.1",
     "jest": "^24.9.0",
+    "jquery": "^3.4.1",
     "katex": "^0.10.2",
     "lodash": "^4.17.15",
     "mocha": "^6.2.0",
@@ -90,9 +90,11 @@
     "vue-progressbar": "^0.7.5",
     "vue-property-decorator": "^8.2.1",
     "vue-router": "^3.0.7",
+    "vue-select": "^3.2.0",
     "vue-spinner": "^1.0.3",
     "vue-sticky-directive": "0.0.10",
     "vue-template-compiler": "^2.6.10",
+    "vue-upload-component": "^2.8.20",
     "vue2-datepicker": "^2.12.0",
     "vuedraggable": "^2.23.0",
     "vuelidate": "^0.7.4",
@@ -101,6 +103,7 @@
     "webpack": "^4.39.2"
   },
   "devDependencies": {
+    "mutation-observer": "^1.0.3",
     "vue-cli-plugin-styleguidist": "^3.22.2",
     "vue-styleguidist": "^3.22.2"
   },

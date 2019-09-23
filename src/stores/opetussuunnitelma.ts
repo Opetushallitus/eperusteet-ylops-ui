@@ -25,7 +25,7 @@ interface OpintojaksoQuery {
 }
 
 @Store
-class OpetussuunnitelmaStore {
+export class OpetussuunnitelmaStore {
   @State()
   public sisalto: TekstiKappaleViiteKevytDto | null = null;
 
@@ -46,6 +46,10 @@ class OpetussuunnitelmaStore {
 
   private opsId: number | null = null;
   private initcv: Promise<void> | null = null;
+
+  public getId() {
+    return this.opsId;
+  }
 
   // Tekstikappaleet
 
@@ -90,9 +94,6 @@ class OpetussuunnitelmaStore {
     return (await Opetussuunnitelmat.getOpetussuunnitelma(id)).data;
   }
 
-  // @Checked({
-  //   success: "tallennus-onnistui-opetussuunnitelma",
-  // })
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
     const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma as OpetussuunnitelmaDto);
     success('tallennus-onnistui-opetussuunnitelma');

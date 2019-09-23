@@ -50,11 +50,10 @@ ep-main-view
 </template>
 
 <script lang="ts">
-import { Vue, Component, Mixins } from 'vue-property-decorator';
+import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoot';
-import { Kielet } from '@/stores/kieli';
 
 import {
   EpAikaleima,

@@ -98,6 +98,9 @@ export const router = new Router({
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
+        props: {
+          opetussuunnitelmaStore: Opetussuunnitelma,
+        },
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,

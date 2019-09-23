@@ -74,6 +74,7 @@ export interface RecursiveTreeItem {
 
 export type EtusivuDto = GApi.EtusivuDto;
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
+export type LiiteDto = GApi.LiiteDto;
 export type Lops2019ModuuliDto = GApi.Lops2019ModuuliDto;
 export type Lops2019OpintojaksoDto = GApi.Lops2019OpintojaksoDto;
 export type Lops2019OpintojaksonModuuliDto = GApi.Lops2019OpintojaksonModuuliDto;

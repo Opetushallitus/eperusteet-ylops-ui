@@ -2,7 +2,10 @@
 
 <div class="ep-content">
   <ep-editor-menu-bar
-    :sticky="true"
+    :layout="layout"
+    :help="help"
+    :is-editable="isEditable"
+    :sticky="sticky"
     :editor="editor" />
   <editor-content
     ref="content"
@@ -14,7 +17,8 @@
 
 <script lang="ts">
 
-import Image from '@/components/TiptapExtensions/Image';
+import ImageExtension from '@/components/TiptapExtensions/ImageExtension';
+import Termi from '@/components/TiptapExtensions/Termi';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import { Editor, EditorContent } from 'tiptap';
 import { Kielet } from '@/stores/kieli';
@@ -24,27 +28,24 @@ import {
   Underline,
   Strike,
   Italic,
-
   Code,
   CodeBlock,
   HardBreak,
   History,
-
   BulletList,
   ListItem,
   OrderedList,
-
   Table,
   TableCell,
   TableHeader,
   TableRow,
-
 } from 'tiptap-extensions';
 
-import EpEditorMenuBar from '@/components/EpContentBase/EpEditorMenuBar.vue';
+import EpEditorMenuBar from './EpEditorMenuBar.vue';
 import Sticky from 'vue-sticky-directive';
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
+import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 
 @Component({
@@ -73,29 +74,24 @@ export default class EpContent extends Mixins(EpValidation) {
   @Prop({ default: false })
   private isPlainString!: boolean;
   
-  // // OPS ID (kuvien tallennus)
-  // @Prop({ default: 0 })
-  // private opsId!: number;
-
+  @Prop({ default: null })
+  private opsId!: number | null;
+  
   // // OPS:n käsitteet
   // @Prop({ default: () => {} })
   // private opsKasitteet!: object;
 
-  // @Prop({ default: '' })
-  // private help!: string;
+  @Prop({ default: '' })
+  private help!: string;
 
-  // @Prop({ default: 'fi' })
-  // private locale!: string;
-
-  // @Prop({ default: false })
-  // private sticky!: boolean;
+  @Prop({ default: false })
+  private sticky!: boolean;
 
   private editor: any = null;
 
-  // Validointi tapahtuu tämän metodin avulla
-  // get isEditing() {
-  //   return this.isEditable;
-  // }
+  get opsIdVal() {
+    return this.opsId || Opetussuunnitelma.getId();
+  }
 
   get lang() {
     return this.locale || Kielet.getSisaltoKieli() || 'fi';
@@ -114,9 +110,32 @@ export default class EpContent extends Mixins(EpValidation) {
   }
 
   mounted() {
+    const extensions = [
+      new HardBreak(),
+      new History(),
+      new Blockquote(),
+      new Bold(),
+      new Italic(),
+      new Strike(),
+      new Underline(),
+      new BulletList(),
+      new OrderedList(),
+      new ListItem(),
+      new Table({ resizable: true, }),
+      new TableHeader(),
+      new TableCell(),
+      new TableRow(),
+    ];
+
+    if (this.opsIdVal !== null) {
+      console.log('setting', this.opsIdVal);
+      extensions.push(new ImageExtension(this.opsIdVal));
+      extensions.push(new Termi(this.opsIdVal));
+    }
+
     this.editor = new Editor({
       content: this.localizedValue,
-      editable: true,
+      editable: this.isEditable,
       // editorProps: {
       //   transformPastedHTML(html: string) {
       //     console.log(html);
@@ -126,33 +145,31 @@ export default class EpContent extends Mixins(EpValidation) {
       onUpdate: () => {
         this.setUpEditorEvents();
       },
-      extensions: [
-        new HardBreak(),
-
-        new History(),
-
-        new Blockquote(),
-        new Bold(),
-        new Italic(),
-        new Strike(),
-        new Underline(),
-
-        new BulletList(),
-        new OrderedList(),
-        new ListItem(),
-
-        new Image(),
-
-        new Table({ resizable: true, }),
-        new TableHeader(),
-        new TableCell(),
-        new TableRow(),
-      ],
+      extensions,
     });
 
+  }
+
+  @Watch('isEditable', { immediate: true })
+  private onChange(val) {
+    if (val) {
+      this.setClass('form-control');
+    }
+    else {
+      this.setClass('');
+    }
+
+    this.$nextTick(() => {
+      this.editor.setOptions({
+        editable: !!val,
+      });
+    });
+  }
+
+  setClass(c: string) {
     setTimeout(() => {
-      (this.$refs.content as any).$el.firstChild.className = 'ProseMirror form-control';
-    }, 300);
+      (this.$refs.content as any).$el.firstChild.className = 'ProseMirror ' + c;
+    }, 100);
   }
 
   public beforeDestroy() {

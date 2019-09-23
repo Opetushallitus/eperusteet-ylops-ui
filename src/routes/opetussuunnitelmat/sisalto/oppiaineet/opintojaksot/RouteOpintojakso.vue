@@ -12,13 +12,31 @@
       </template>
       <template slot="keskustelu" slot-scope="{ }">
       </template>
-      <template slot="header" slot-scope="{ data, validation, isEditing }">
-        <ep-field help="opintojakso-nimi-ohje" v-model="data.nimi" :validation="validation.nimi" :is-header="true" :is-editing="isEditing"></ep-field>
+      <template slot="header" slot-scope="{ data }">
+        <div class="nimi">{{ $kaanna(data.nimi) || $t('opintojakso') }}</div>
       </template>
       <template v-slot="{ data, validation, isEditing }">
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-tiedot">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-tiedot') }}</div>
+            <div class="row">
+              <div class="col-md-6">
+                <ep-form-content name="nimi">
+                  <ep-field
+                    help="opintojakso-nimi-ohje"
+                    v-model="data.nimi"
+                    :validation="validation.nimi"
+                    :is-header="false"
+                    :is-editing="isEditing"></ep-field>
+                </ep-form-content>
+              </div>
+              <div class="col-md-6">
+                <ep-form-content name="koodi">
+                  <ep-field help="opintojakso-koodi-ohje" v-model="data.koodi" type="string" :validation="validation.koodi" :is-editing="isEditing">
+                  </ep-field>
+                </ep-form-content>
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-6">
                 <ep-form-content name="oppiaineet">
@@ -35,12 +53,6 @@
                       </li>
                     </ul>
                   </div>
-                </ep-form-content>
-              </div>
-              <div class="col-md-6">
-                <ep-form-content name="koodi">
-                  <ep-field help="opintojakso-koodi-ohje" v-model="data.koodi" type="string" :validation="validation.koodi" :is-editing="isEditing">
-                  </ep-field>
                 </ep-form-content>
               </div>
               <div class="col-md-6">
@@ -135,13 +147,11 @@
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header">{{ $t('laaja-alaiset-sisallot') }}</div>
-            <div class="perustesisalto" v-for="(oppiaine, idx) in laajaAlaisetOsaamiset" :key="idx">
-              <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
-              <ep-content :value="oppiaine.laajaAlainenOsaaminen.kuvaus" />
+
             <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
               <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
-                <ep-content :value="oppiaine.laajaAlaisetOsaamiset.kuvaus" />
+                <ep-content :value="oppiaine.laajaAlaisetOsaamiset.kuvaus" help="ohje-lyhyt-laaja-alainen" />
               </div>
               <!-- Todo: Tee parempi ratkaisu tähän -->
               <div v-else-if="oppiaine.laajaAlainenOsaaminen">
@@ -151,8 +161,6 @@
             </div>
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
-            <ep-content layout="normal" v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing" :sticky="true" />
-            <div class="alert alert-info" v-if="!isEditing && !data.laajaAlainenOsaaminen">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
               <ep-collapse>
                 <div slot="header" class="moduuliotsikko">
@@ -195,7 +203,7 @@
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
-            <ep-content layout="normal" v-model="data.arviointi" :is-editable="isEditing" :sticky="true" />
+            <ep-content layout="normal" v-model="data.arviointi" :is-editable="isEditing" />
           </ep-collapse>
         </div>
 
@@ -203,14 +211,13 @@
           <ep-collapse tyyppi="opintojakson-vapaa-kuvaus">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-vapaa-kuvaus') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.kuvaus">{{ $t('ei-kuvausta') }}</div>
-            <ep-content layout="normal" v-model="data.kuvaus" :is-editable="isEditing" :sticky="true">
+            <ep-content layout="normal" v-model="data.kuvaus" :is-editable="isEditing" help="ohje-lyhyt-vapaa-kuvaus" >
             </ep-content>
           </ep-collapse>
         </div>
       </template>
     </ep-editointi>
   </div>
-  <ep-spinner v-else />
 </div>
 </template>
 
@@ -518,6 +525,11 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
 <style lang="scss" scoped>
 @import "@/styles/_variables.scss";
+
+/deep/ .nimi {
+  font-size: 150%;
+  font-weight: 600;
+}
 
 .moduulit {
   display: flex;

@@ -1,7 +1,5 @@
 <template>
 <div class="home-container">
-    <ep-content v-model="jotain"></ep-content>
-
     <div class="header">
         <ep-navigation :sticky="false"></ep-navigation>
         <div class="container">
@@ -50,6 +48,9 @@ import TileTiedotteet from './tiles/TileTiedotteet.vue';
 import EpRoute from '@/mixins/EpRoute';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EtusivuDto } from '@/tyypit';
+import ImageModal from '@/components/TiptapExtensions/ImageModal.vue';
+import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
+
 
 import {
   EpAikaleima,
@@ -80,10 +81,6 @@ import {
   },
 })
 export default class Home extends Mixins(EpRoute) {
-  private jotain = {
-    fi: 'Jokin jonnekkin',
-  };
-
   private rajain: string = '';
   private etusivu: EtusivuDto = {
     opetussuunnitelmatKeskeneraiset: 0,
