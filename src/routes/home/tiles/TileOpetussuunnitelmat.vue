@@ -4,7 +4,7 @@
       <span>{{ $t(vars.header) }}</span>
     </template>
     <template slot="content">
-      <ep-spinner v-if="isLoading"></ep-spinner>
+      <ep-spinner v-if="countIsLoading"></ep-spinner>
       <div v-else>
         <table class="count-table">
           <tr>
@@ -59,6 +59,12 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
     default: () => true,
   })
   private isOps!: boolean;
+
+  @Prop({
+    default: true,
+    type: Boolean
+  })
+  private countIsLoading: boolean = true;
 
   get vars() {
     if (this.isOps) {

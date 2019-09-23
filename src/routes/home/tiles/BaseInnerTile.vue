@@ -63,6 +63,7 @@ $tile-width: 540px;
   background: $etusivu-tile-background;
   border: 1px solid #eee;
   border-radius: 10px;
+  user-select: none;
   @include tile-background-shadow;
 
   .tile-header {

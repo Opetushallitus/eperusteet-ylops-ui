@@ -1,7 +1,7 @@
 <template lang="pug">
 .sidebar
-  // Todo: filter navi
   .search
+    // Todo: filter navi
     ep-search()
 
   ul.navigation(v-if="valikkoData.length > 0")
@@ -38,13 +38,6 @@
           router-link.btn.btn-link(:to=`{ name: 'tekstikappale', params: { osaId: 'uusi', parentId: itemRoute.params.osaId } }`)
             fas.mr-2(icon="plus")
             span {{ $t('uusi-tekstikappale') }}
-
-    // li.separated
-      ep-sisalto-modaali(:params="$route", :cache="cache")
-
-  //router-link(:to="{ name: 'jarjesta' }")
-    fas.mr-2(icon="cog")
-    span {{ $t('muokkaa-rakennetta') }}
 
 </template>
 

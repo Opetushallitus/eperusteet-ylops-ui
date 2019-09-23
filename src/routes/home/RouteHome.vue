@@ -16,12 +16,14 @@
         <div class="d-flex flex-row flex-wrap justify-content-center">
             <tile-opetussuunnitelmat
               :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
-              :julkaistut="etusivu.opetussuunnitelmatJulkaistut" />
+              :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
+              :count-is-loading="isLoading" />
             <tile-opetussuunnitelmat
               :keskeneraiset="etusivu.pohjatKeskeneraiset"
               :julkaistut="etusivu.pohjatJulkaistut"
               :is-ops="false"
-              v-oikeustarkastelu="'hallinta'" />
+              v-oikeustarkastelu="'hallinta'"
+              :count-is-loading="isLoading" />
             <tile-organisaatio />
             <tile-valtakunnalliset-perusteet />
             <tile-tiedotteet />
@@ -54,6 +56,7 @@ import {
   EpNavigation,
   EpContent,
   EpSearch,
+  EpSpinner,
 } from '@/components';
 
 @Component({
@@ -62,6 +65,7 @@ import {
     EpContent,
     EpNavigation,
     EpSearch,
+    EpSpinner,
     TileUkk,
     TileLoki,
     TileOpetussuunnitelmat,
