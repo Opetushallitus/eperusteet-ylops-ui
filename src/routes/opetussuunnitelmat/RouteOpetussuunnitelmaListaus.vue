@@ -10,72 +10,74 @@
       <p>{{ $t(vars.kuvaus) }}</p>
     </template>
 
-    <div>
-      <h2>{{ $t(vars.keskeneraiset) }}</h2>
+    <ep-spinner v-if="isLoading"></ep-spinner>
+    <div v-else>
+      <div>
+        <h2>{{ $t(vars.keskeneraiset) }}</h2>
 
-      <div class="opscontainer">
-        <div class="opsbox">
-          <router-link tag="a" :to="{ name: vars.uusiRoute }">
-            <div class="uusi">
-              <div class="plus">
-                <fas icon="plus"></fas>
+        <div class="opscontainer">
+          <div class="opsbox">
+            <router-link tag="a" :to="{ name: vars.uusiRoute }">
+              <div class="uusi">
+                <div class="plus">
+                  <fas icon="plus"></fas>
+                </div>
+                <div class="text">
+                  {{ $t('luo-uusi') }}
+                </div>
               </div>
-              <div class="text">
-                {{ $t('luo-uusi') }}
+            </router-link>
+          </div>
+
+          <div class="opsbox" v-for="ops in keskeneraiset" :key="ops.id">
+            <router-link
+              tag="a"
+              :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+              :key="ops.id">
+              <div class="chart">
+                <div class="progress-clamper">
+                  <ep-progress :slices="[0.2, 0.5, 1]" />
+                </div>
               </div>
-            </div>
-          </router-link>
+
+              <div class="info">
+                <div class="nimi">
+                  {{ $kaanna(ops.nimi) }}
+                </div>
+              </div>
+            </router-link>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2>{{ $t(vars.julkaistut) }}</h2>
+
+        <div class="info" v-if="julkaistut.length === 0">
+          <div class="alert alert-info">{{ $t(vars.eivalmiita) }}</div>
         </div>
 
-        <div class="opsbox" v-for="ops in keskeneraiset" :key="ops.id">
-          <router-link
-            tag="a"
-            :to="{ name: 'opsTiedot', params: { id: ops.id } }"
-            :key="ops.id">
-            <div class="chart">
-              <div class="progress-clamper">
-                <ep-progress :slices="[0.2, 0.5, 1]" />
+        <div class="opscontainer">
+          <div class="opsbox" v-for="ops in julkaistut" :key="ops.id">
+            <router-link
+              tag="a"
+              :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+              :key="ops.id">
+              <div class="chart">
+                <div class="progress-clamper">
+                  <ep-progress :slices="[0.2, 0.5, 1]" />
+                </div>
               </div>
-            </div>
-
-            <div class="info">
-              <div class="nimi">
-                {{ $kaanna(ops.nimi) }}
+              <div class="info">
+                <div class="nimi">
+                  {{ $kaanna(ops.nimi) }}
+                </div>
               </div>
-            </div>
-          </router-link>
+            </router-link>
+          </div>
         </div>
       </div>
     </div>
-
-    <div>
-      <h2>{{ $t(vars.julkaistut) }}</h2>
-
-      <div class="info" v-if="julkaistut.length === 0">
-        <div class="alert alert-info">{{ $t(vars.eivalmiita) }}</div>
-      </div>
-
-      <div class="opscontainer">
-        <div class="opsbox" v-for="ops in julkaistut" :key="ops.id">
-          <router-link
-            tag="a"
-            :to="{ name: 'opsTiedot', params: { id: ops.id } }"
-            :key="ops.id">
-            <div class="chart">
-              <div class="progress-clamper">
-                <ep-progress :slices="[0.2, 0.5, 1]" />
-              </div>
-            </div>
-            <div class="info">
-              <div class="nimi">
-                {{ $kaanna(ops.nimi) }}
-              </div>
-            </div>
-          </router-link>
-        </div>
-      </div>
-    </div>
-
   </ep-main-view>
 </div>
 </template>
@@ -124,6 +126,11 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
     return _.reject(this.jarjestetyt, ops => (ops.tila as any) === 'poistettu');
   }
 
+  // Todo: Toteutetaan muiden toteutuksien toteutukset
+  get lops2019Opsit() {
+    return _.reject(this.arkistoimattomat, ops => (ops.toteutus as any) !== 'lops2019');
+  }
+
   get valmisTila() {
     return this.tyyppi === 'pohjat'
       ? 'valmis'
@@ -131,11 +138,11 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   }
 
   get keskeneraiset() {
-    return _.reject(this.arkistoimattomat, ops => (ops.tila as any) === this.valmisTila);
+    return _.reject(this.lops2019Opsit, ops => (ops.tila as any) === this.valmisTila);
   }
 
   get julkaistut() {
-    return _.filter(this.arkistoimattomat, ops => (ops.tila as any) === this.valmisTila);
+    return _.filter(this.lops2019Opsit, ops => (ops.tila as any) === this.valmisTila);
   }
 
   get vars() {
