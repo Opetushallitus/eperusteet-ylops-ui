@@ -4,7 +4,12 @@
   .bottom
     .d-flex.bd-highlight
       .px-2.flex-grow-1
-        .icon(v-if="isEditing", :class="isEditing && 'icon-editing'", @click="toggle")
+        .icon(v-if="isEditing",
+          :class="isEditing && 'icon-editing'",
+          @click="toggle()",
+          @keyup.enter="toggle()",
+          role="button",
+          tabindex="0")
           fas(v-if="valittu", icon="check")
           fas(v-else, icon="plus")
       .px-2.info
@@ -79,15 +84,12 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
 @import "@/styles/_variables.scss";
 
 .moduulibox {
-  background-image: url('../../../../../../public/img/banners/moduuli_ei_valittu.svg');
-  background-position: center;
-  border-radius: 8px;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.05);
-  height: 160px;
+  background-image: url('../../../../../../public/img/banners/moduuli.svg');
+  height: 161px;
   margin: 0;
   padding: 40px 10px 44px 20px;
   position: relative;
-  width: 160px;
+  width: 158px;
   color: $blue-darken-1;
   user-select: none;
 
@@ -117,6 +119,7 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
 
     .icon {
       display: inline-block;
+      outline: none;
     }
 
     .icon-editing {
