@@ -1,9 +1,8 @@
 <template lang="pug">
 .sidebar
+  // Todo: filter navi
   .search
-    .inlay
-      input.form-control.megasearch(type="text" placeholder="Etsi")
-      fas.inner-icon(icon="search")
+    ep-search()
 
   ul.navigation(v-if="valikkoData.length > 0")
     ep-recursive-nav(:value="valikkoData")

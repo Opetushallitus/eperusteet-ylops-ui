@@ -11,8 +11,8 @@
       <div>
         <div class="d-flex align-items-center">
           <div class="p-2">
-            <ep-filter v-model="query">
-            </ep-filter>
+            <ep-search v-model="query">
+            </ep-search>
           </div>
           <div class="p-2 checkbox">
             <b-form-checkbox v-model="vainPuuttuvat">{{ $t('vain-puuttuvat-moduulit') }}</b-form-checkbox>
@@ -143,17 +143,16 @@
 </template>
 
 <script lang="ts">
-import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
+import { Mixins, Component } from 'vue-property-decorator';
 import {
   EpButton,
   EpCollapse,
   EpColorBall,
   EpContent,
   EpEditointi,
-  EpFilter,
   EpSpinner,
+  EpSearch,
 } from '@/components';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import { PerusteCache } from '@/stores/peruste';
@@ -169,7 +168,7 @@ import { Kielet } from '@/stores/kieli';
     EpColorBall,
     EpContent,
     EpEditointi,
-    EpFilter,
+    EpSearch,
     EpSpinner,
   },
 })
@@ -436,18 +435,8 @@ table.oppiaineet {
     td {
       padding: 2px;
 
-      .boxcontainer {
-        //margin-top: 4px;
-
-        // Käytä routeria tai linkkiä
-        /*&:hover {
-          cursor: pointer;
-          color: $color-links;
-        }*/
-      }
-
       tr.item {
-        padding: 0px;
+        padding: 0;
 
         td.op {
           padding: 4px;
@@ -459,12 +448,11 @@ table.oppiaineet {
 
       .opintojakso {
         padding: 4px;
-        padding-left: 0px;
+        padding-left: 0;
       }
 
       .moduuli {
         padding: 4px;
-        padding-left: 4px;
         color: #000;
       }
 
@@ -484,28 +472,4 @@ table.oppiaineet {
     }
   }
 }
-
-.search {
-  /* margin-bottom: 0px; */
-  /* max-width: 300px; */
-
-  /* input.search { */
-  /*   background: #F3F3F3; */
-  /*   border: none; */
-  /*   border-radius: 20px; */
-  /*   padding-left: 34px; */
-  /* } */
-
-  // .inlay {
-  //   .inner-icon {
-  //     color: #888;
-  //     position: relative;
-  //     /* float: right; */
-  //     top: -30px;
-  //     left: 10px;
-  //   }
-  // }
-
-}
-
 </style>

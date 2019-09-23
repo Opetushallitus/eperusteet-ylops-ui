@@ -6,7 +6,6 @@ export { default as EpColorBall } from './EpColorBall/EpColorBall.vue';
 export { default as EpContent } from './EpContent/EpContent.vue';
 export { default as EpDatepicker } from './forms/EpDatepicker.vue';
 export { default as EpEditointi } from './EpEditointi/EpEditointi.vue';
-export { default as EpFilter } from './forms/EpFilter.vue';
 export { default as EpField } from './forms/EpField.vue';
 export { default as EpProgress } from './EpProgress.vue';
 export { default as EpFooter } from './EpFooter/EpFooter.vue';
@@ -22,7 +21,7 @@ export { default as EpOppiaineSelector } from './EpOppiaineSelector/EpOppiaineSe
 export { default as EpOrganizations } from './EpOrganizations/EpOrganizations.vue';
 export { default as EpPrefixList } from './EpPrefixList/EpPrefixList.vue';
 export { default as EpRecursiveNav } from './EpRecursiveNav/EpRecursiveNav.vue';
-export { default as EpSearch } from './EpSearch/EpSearch.vue';
+export { default as EpSearch } from './forms/EpSearch.vue';
 export { default as EpSelect } from './forms/EpSelect.vue';
 export { default as EpSidebar } from './EpSidebar/EpSidebar.vue';
 export { default as EpSpinner } from './EpSpinner/EpSpinner.vue';
