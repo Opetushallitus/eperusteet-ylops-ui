@@ -24,6 +24,7 @@ ep-main-view
       div.row(v-for="tiedote in tiedotteet", :key="tiedote.id")
         //div.col.col-fixed
           // Todo: Toteuta profiililla uusi
+        // Todo: Toteuta paikalliset tiedotteet!
         div.col
           div
             p

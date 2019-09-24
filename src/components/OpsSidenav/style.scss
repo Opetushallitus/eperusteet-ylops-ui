@@ -30,25 +30,6 @@
         //font-size: 90%;
         padding-left: 1rem;
         user-select: none;
-        -moz-user-select: none;
-      }
-    }
-
-    .subitem {
-      li {
-        a.btn {
-          font-weight: normal;
-        }
-      }
-
-      li.module-link {
-        padding: 0 4px 0 40px;
-        display: flex;
-        align-items: center;
-
-        a:active {
-          color: red;
-        }
       }
     }
 
@@ -110,37 +91,6 @@
           color: #0041DC;
         }
       }
-    }
-  }
-
-  .bottom-navigation {
-    margin-top: 40px;
-    border-top: 1px solid #ddd;
-    color: #333;
-    padding: 20px 10px 0 40px;
-
-    .hallintatoggle {
-      cursor: pointer;
-      user-select: none;
-
-      .hallintachevron {
-        color: #ccc;
-      }
-    }
-
-    ul {
-      margin: 0;
-      margin-top: 5px;
-      padding: 0;
-
-      li {
-        margin: 0;
-        padding: 2px;
-      }
-    }
-
-    a {
-      color: #333;
     }
   }
 

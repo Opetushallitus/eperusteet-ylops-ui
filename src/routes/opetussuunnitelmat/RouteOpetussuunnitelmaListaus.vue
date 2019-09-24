@@ -29,23 +29,37 @@
             </router-link>
           </div>
 
-          <div class="opsbox" v-for="ops in keskeneraiset" :key="ops.id">
-            <router-link
-              tag="a"
-              :to="{ name: 'opsTiedot', params: { id: ops.id } }"
-              :key="ops.id">
-              <div class="chart">
-                <div class="progress-clamper">
-                  <ep-progress :slices="[0.2, 0.5, 1]" />
+          <div v-for="ops in keskeneraiset" :key="ops.id">
+            <div v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'"
+                 class="opsbox">
+              <router-link
+                tag="a"
+                :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+                :key="ops.id">
+                <div class="chart">
+                  <div class="progress-clamper">
+                    <ep-progress :slices="[0.2, 0.5, 1]" />
+                  </div>
                 </div>
+                <div class="info">
+                  <div class="nimi">
+                    {{ $kaanna(ops.nimi) }}
+                  </div>
+                </div>
+              </router-link>
+            </div>
+            <div v-else
+                 ref="disabled"
+                 class="opsbox disabled">
+              <div class="info-top">
+                <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
               </div>
-
               <div class="info">
                 <div class="nimi">
                   {{ $kaanna(ops.nimi) }}
                 </div>
               </div>
-            </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -58,22 +72,37 @@
         </div>
 
         <div class="opscontainer">
-          <div class="opsbox" v-for="ops in julkaistut" :key="ops.id">
-            <router-link
-              tag="a"
-              :to="{ name: 'opsTiedot', params: { id: ops.id } }"
-              :key="ops.id">
-              <div class="chart">
-                <div class="progress-clamper">
-                  <ep-progress :slices="[0.2, 0.5, 1]" />
+          <div v-for="ops in julkaistut" :key="ops.id">
+            <div class="opsbox"
+                 v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'">
+              <router-link
+                tag="a"
+                :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+                :key="ops.id">
+                <div class="chart">
+                  <div class="progress-clamper">
+                    <ep-progress :slices="[0.2, 0.5, 1]" />
+                  </div>
                 </div>
+                <div class="info">
+                  <div class="nimi">
+                    {{ $kaanna(ops.nimi) }}
+                  </div>
+                </div>
+              </router-link>
+            </div>
+            <div v-else
+                 ref="disabled"
+                 class="opsbox disabled">
+              <div class="info-top">
+                <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
               </div>
               <div class="info">
                 <div class="nimi">
                   {{ $kaanna(ops.nimi) }}
                 </div>
               </div>
-            </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -83,12 +112,11 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component, Mixins } from 'vue-property-decorator';
-
+import _ from 'lodash';
+import { Prop, Component, Mixins } from 'vue-property-decorator';
+import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoot';
 import { Opetussuunnitelmat } from '@/api';
-import { TilaEnum, OpetussuunnitelmaInfoDto } from '@/tyypit';
-import _ from 'lodash';
 
 import {
   EpContent,
@@ -126,11 +154,6 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
     return _.reject(this.jarjestetyt, ops => (ops.tila as any) === 'poistettu');
   }
 
-  // Todo: Toteutetaan muiden toteutuksien toteutukset
-  get lops2019Opsit() {
-    return _.reject(this.arkistoimattomat, ops => (ops.toteutus as any) !== 'lops2019');
-  }
-
   get valmisTila() {
     return this.tyyppi === 'pohjat'
       ? 'valmis'
@@ -138,11 +161,11 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   }
 
   get keskeneraiset() {
-    return _.reject(this.lops2019Opsit, ops => (ops.tila as any) === this.valmisTila);
+    return _.reject(this.arkistoimattomat, ops => (ops.tila as any) === this.valmisTila);
   }
 
   get julkaistut() {
-    return _.filter(this.lops2019Opsit, ops => (ops.tila as any) === this.valmisTila);
+    return _.filter(this.arkistoimattomat, ops => (ops.tila as any) === this.valmisTila);
   }
 
   get vars() {
@@ -188,6 +211,7 @@ $box-radius: 10px;
   flex-wrap: wrap;
 
   .opsbox {
+    user-select: none;
     margin: 10px;
     border-radius: $box-radius;
     @include tile-background-shadow;
@@ -244,6 +268,7 @@ $box-radius: 10px;
       padding: 10px 10px;
       margin: 0 auto;
       border: 1px solid #E7E7E7;
+      border-top-width: 0;
 
       .nimi {
         color: #2B2B2B;
@@ -254,8 +279,24 @@ $box-radius: 10px;
       }
     }
 
-    &:hover {
+    &:hover:not(.disabled) {
       @include tile-background-shadow-selected;
+    }
+  }
+
+  .disabled {
+    cursor: not-allowed;
+
+    .info-top {
+      width: 192px;
+      height: 138px;
+      border-radius: $box-radius $box-radius 0 0;
+      background-color: lightgray;
+      margin: 0 auto;
+      text-align: center;
+      padding-top: 28px;
+      padding-left: 10px;
+      padding-right: 10px;
     }
   }
 }

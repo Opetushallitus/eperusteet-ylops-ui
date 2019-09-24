@@ -24,6 +24,7 @@
         </ep-jarjesta>
       </div>
       <ep-button
+        v-if="isEditing"
         variant="outline-primary"
         @click="lisaaTekstikappale(data.lapset)"
         icon="plus">
