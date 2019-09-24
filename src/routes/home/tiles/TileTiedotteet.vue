@@ -5,10 +5,11 @@ base-tile(icon="tiedotteet", :route="{ name: 'tiedotteet' }")
   template(slot="content")
     ep-spinner(v-if="isLoading")
     div(v-else)
-      div.tiedotteet
+      div.tiedotteet(v-if="tiedotteet && tiedotteet.length > 0")
         div.tiedote(v-for="tiedote in tiedotteet")
           small.mr-4 {{ $cdt(tiedote.luotu, 'L') }}
           span {{ $kaanna(tiedote.otsikko) }}
+      p(v-else) {{ $t('tile-tiedotteet-kuvaus') }}
 </template>
 
 <script lang="ts">

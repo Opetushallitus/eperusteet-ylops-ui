@@ -128,7 +128,6 @@ export default class EpContent extends Mixins(EpValidation) {
     ];
 
     if (this.opsIdVal !== null) {
-      console.log('setting', this.opsIdVal);
       extensions.push(new ImageExtension(this.opsIdVal));
       extensions.push(new Termi(this.opsIdVal));
     }
@@ -231,6 +230,10 @@ export default class EpContent extends Mixins(EpValidation) {
       border: 1px solid #ddd;
       padding: 4px;
     }
+  }
+
+  /deep/ abbr.virheellinen {
+    color: #e44e4e;
   }
 
 }

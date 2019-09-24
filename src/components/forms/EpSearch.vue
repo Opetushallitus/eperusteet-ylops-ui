@@ -3,18 +3,19 @@ div.form-group.has-search
   span.form-control-feedback
     fas(icon="search")
   input.form-control.mb-3(
-    ref="search",
     type="search",
-    :placeholder="placeholder || $t('etsi')",
-    :value="value",
-    @input="updateSearch()")
+    :placeholder="placeholderText",
+    @input="onInput($event.target.value)",
+    :value="val")
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Kielet } from '@/stores/kieli';
 
 @Component({
-  name: 'EpAikaleima',
+  name: 'EpSearch',
 })
 export default class EpSearch extends Vue {
   @Prop()
@@ -23,8 +24,21 @@ export default class EpSearch extends Vue {
   @Prop()
   private placeholder!: string;
 
-  private updateSearch() {
-    this.$emit('input', (this as any).$refs.search.value);
+  get placeholderText() {
+    return this.placeholder || this.$t('etsi');
+  }
+
+  public onInput(input: any) {
+    this.$emit('input', input);
+  }
+
+  get val() {
+    if (_.isObject(this.value)) {
+      return (this.value as any)[Kielet.getSisaltoKieli()];
+    }
+    else {
+      return this.value;
+    }
   }
 }
 </script>

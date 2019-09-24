@@ -127,6 +127,9 @@ export default class EpEditorMenuBar extends Vue {
 
   get linking() {
     return [{
+      icon: 'paperclip',
+      command: 'termi',
+    }, {
       icon: 'file-image',
       command: 'image',
     }];

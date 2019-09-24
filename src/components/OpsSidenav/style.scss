@@ -5,7 +5,7 @@
 
   ul.navigation {
     list-style: none;
-    padding: 0px;
+    padding: 0;
 
     li {
       padding: 6px 8px 6px 28px;
@@ -16,7 +16,6 @@
         a {
           text-align: left;
           color: #2b2b2b;
-          font-family: 'Open Sans';
           font-size: 14px;
         }
       }
@@ -31,25 +30,6 @@
         //font-size: 90%;
         padding-left: 1rem;
         user-select: none;
-        -moz-user-select: none;
-      }
-    }
-
-    .subitem {
-      li {
-        a.btn {
-          font-weight: normal;
-        }
-      }
-
-      li.module-link {
-        padding: 0px 4px 0px 40px;
-        display: flex;
-        align-items: center;
-
-        a:active {
-          color: red;
-        }
       }
     }
 
@@ -114,60 +94,8 @@
     }
   }
 
-  .bottom-navigation {
-    margin-top: 40px;
-    border-top: 1px solid #ddd;
-    color: #333;
-    padding: 20px 10px 0 40px;
-
-    .hallintatoggle {
-      cursor: pointer;
-      user-select: none;
-
-      .hallintachevron {
-        color: #ccc;
-      }
-    }
-
-    ul {
-      margin: 0px;
-      margin-top: 5px;
-      padding: 0px;
-
-      li {
-        margin: 0px;
-        padding: 2px;
-      }
-    }
-
-    a {
-      color: #333;
-    }
-  //   position: absolute;
-  //   bottom: -220px;
-  //   width: 100%;
-  }
-
-  // FIXME!!
-  .inlay {
-    .inner-icon {
-      color: $color-ops-header;
-      position: relative;
-      float: right;
-      top: -27px;
-      right: 10px;
-    }
-  }
-
   .search {
-    margin-bottom: 10px;
     padding: 10px 20px 10px 30px;
-
-    input.megasearch {
-      background: #F3F3F3;
-      border: none;
-      border-radius: 15px;
-    }
   }
 
 }

@@ -3,7 +3,6 @@
 @import './editorstyle';
 @import 'vue-select/src/scss/vue-select.scss';
 
-
 img.content-image {
   max-width: 100%;
 }
@@ -50,6 +49,10 @@ img.content-image {
 
   // Modaalin aukaiseminen siirtää elementtejä
   //overflow-y: scroll;
+}
+
+.body {
+  font-family: "Open Sans", "Helvetica", sans-serif;
 }
 
 .dev1 {

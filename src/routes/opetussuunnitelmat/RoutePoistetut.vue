@@ -7,7 +7,7 @@
       <div class="haku">
         <b-row>
           <b-col>
-            <ep-filter v-model="query" />
+            <ep-search v-model="query" />
           </b-col>
           <b-col></b-col>
           <b-col></b-col>
@@ -29,14 +29,14 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
+import { Mixins, Component } from 'vue-property-decorator';
 import {
   EpButton,
   EpCollapse,
   EpColorBall,
   EpContent,
   EpEditointi,
-  EpFilter,
+  EpSearch,
   EpFormContent,
   EpInput,
   EpMultiSelect,
@@ -44,17 +44,12 @@ import {
   EpPrefixList,
   EpSpinner,
 } from '@/components';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019PoistettuDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
-import { Opintojaksot } from '@/api';
+import { Lops2019PoistettuDto } from '@/tyypit';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';
-import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@/stores/kieli';
 import Multiselect from 'vue-multiselect';
-import * as defaults from '@/defaults';
 import PoistetutTable from './PoistetutTable.vue';
 
 
@@ -65,7 +60,7 @@ import PoistetutTable from './PoistetutTable.vue';
     EpColorBall,
     EpContent,
     EpEditointi,
-    EpFilter,
+    EpSearch,
     EpFormContent,
     EpInput,
     EpMultiSelect,

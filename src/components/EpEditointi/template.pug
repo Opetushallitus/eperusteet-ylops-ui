@@ -25,7 +25,8 @@ div
               v-if="ctrls.isEditing",
               :disabled="state.disabled || $v.state.data.$invalid",
               variant="primary",
-              :show-spinner="state.isSaving")
+              :show-spinner="state.isSaving"
+              :help="saveHelpText")
               slot(name="tallenna") {{ $t('tallenna') }}
             b-dropdown.ml-4.mr-4(
               v-if="ctrls.isEditing",

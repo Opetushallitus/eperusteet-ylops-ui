@@ -8,7 +8,8 @@
                        track-by="oid"
                        :validation="jarjestajatValidation"
                        :is-editing="true"
-                       :options="filteredJarjestajat">
+                       :options="filteredJarjestajat"
+                       help="ops-koulutuksen-jarjestaja-ohje">
         <template slot="singleLabel" slot-scope="{ option }">
           <span class="selected">{{ $kaanna(option.nimi) }}</span>
         </template>
@@ -33,7 +34,8 @@
                        :validation="oppilaitosValidation"
                        :is-editing="true"
                        track-by="oid"
-                       :options="filteredOppilaitokset">
+                       :options="filteredOppilaitokset"
+                       help="ops-oppilaitokset-ohje">
         <template slot="singleLabel" slot-scope="{ option }">
           <span class="selected">{{ $kaanna(option.nimi) }}</span>
         </template>

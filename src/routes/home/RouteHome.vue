@@ -1,33 +1,36 @@
 <template>
 <div class="home-container">
-    <div class="header">
-        <ep-navigation :sticky="false"></ep-navigation>
-        <div class="container">
-            <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
-            <p>{{ $t('tervetuloa-kuvaus') }}</p>
-            <div class="row">
-                <div class="col-md-4">
-                    <ep-search v-model="rajain"></ep-search>
-                </div>
-            </div>
+  <ep-content layout="normal" :ops-id="90" v-model="jotain" :is-editable="true"></ep-content>
+  <div class="header">
+    <ep-navigation :sticky="false"></ep-navigation>
+    <div class="container">
+      <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
+      <p>{{ $t('tervetuloa-kuvaus') }}</p>
+      <div class="row">
+        <div class="col-md-4">
+          <ep-search v-model="rajain"></ep-search>
         </div>
+      </div>
     </div>
-    <div class="container tile-container">
-        <div class="d-flex flex-row flex-wrap justify-content-center">
-            <tile-opetussuunnitelmat
-              :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
-              :julkaistut="etusivu.opetussuunnitelmatJulkaistut" />
-            <tile-opetussuunnitelmat
-              :keskeneraiset="etusivu.pohjatKeskeneraiset"
-              :julkaistut="etusivu.pohjatJulkaistut"
-              :is-ops="false"
-              v-oikeustarkastelu="'hallinta'" />
-            <tile-organisaatio />
+  </div>
+  <div class="container tile-container">
+    <div class="d-flex flex-row flex-wrap justify-content-center">
+      <tile-opetussuunnitelmat
+        :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
+        :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
+        :count-is-loading="isLoading" />
+        <tile-opetussuunnitelmat
+          :keskeneraiset="etusivu.pohjatKeskeneraiset"
+          :julkaistut="etusivu.pohjatJulkaistut"
+          :is-ops="false"
+          v-oikeustarkastelu="'hallinta'"
+          :count-is-loading="isLoading" />
+          <tile-organisaatio />
             <tile-valtakunnalliset-perusteet />
-            <tile-tiedotteet />
-            <tile-ukk />
-        </div>
+              <tile-tiedotteet />
+                <tile-ukk />
     </div>
+  </div>
 </div>
 </template>
 
@@ -57,6 +60,7 @@ import {
   EpNavigation,
   EpContent,
   EpSearch,
+  EpSpinner,
 } from '@/components';
 
 
@@ -66,6 +70,7 @@ import {
     EpContent,
     EpNavigation,
     EpSearch,
+    EpSpinner,
     TileLoki,
     TileOpetussuunnitelmat,
     TileOrganisaatio,
@@ -81,6 +86,10 @@ import {
   },
 })
 export default class Home extends Mixins(EpRoute) {
+  private jotain = {
+    fi: 'teksti <abbr data-viite="2aca6708-f502-47e1-81ce-55e63115f7ba">teksti</abbr> loppu',
+  };
+
   private rajain: string = '';
   private etusivu: EtusivuDto = {
     opetussuunnitelmatKeskeneraiset: 0,

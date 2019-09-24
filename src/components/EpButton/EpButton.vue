@@ -1,11 +1,20 @@
 <template>
-<button class="btn" :class="variantClass" v-bind="$attrs" :disabled="disabled || showSpinner" @click="$emit('click')">
-  <div class="float-left mr-2" v-if="icon" :class="isOutline && 'icon'">
-    <fas :icon="icon" fixed-width />
-  </div>
-  <slot />
-  <ep-spinner-inline v-if="showSpinner" />
-</button>
+<div class="ep-button" ref="button-container">
+  <button class="btn"
+          :class="variantClass"
+          v-bind="$attrs"
+          :disabled="disabled || showSpinner"
+          @click="$emit('click')">
+    <div v-if="icon"
+         class="float-left mr-2"
+         :class="isOutline && 'icon'">
+      <fas :icon="icon" fixed-width />
+    </div>
+    <slot />
+    <ep-spinner-inline v-if="showSpinner" />
+  </button>
+  <b-tooltip v-if="help" :target="() => $refs['button-container']">{{ $t(help) }}</b-tooltip>
+</div>
 </template>
 
 <script lang="ts">
@@ -43,24 +52,30 @@ export default class EpButton extends Vue {
 
   @Prop({ default: 'primary' })
   private variant!: string;
+
+  @Prop({ default: '' })
+  private help!: string;
 }
 </script>
 
 <style lang="scss" scoped>
-button.no-outline {
-  border: none;
-  color: #2B2B2B;
+.ep-button {
+  display: inline-block;
 
+  button.no-outline {
+    border: none;
+    color: #2B2B2B;
+
+  }
+
+  .icon {
+    height: 24px;
+    width: 24px;
+    border-radius: 100%;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    background-color: #3367E3;
+  }
 }
-
-.icon {
-  height: 24px;
-  width: 24px;
-  border-radius: 100%;
-  margin: 0;
-  padding: 0;
-  color: #fff;
-  background-color: #3367E3;
-}
-
 </style>

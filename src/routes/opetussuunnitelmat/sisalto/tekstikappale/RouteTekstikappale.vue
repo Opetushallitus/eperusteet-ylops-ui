@@ -18,11 +18,12 @@
         <span>
         </span>
       </template>
-      <template slot="peruste" slot-scope="{ }">
-        <div class="sidepad">
-          <p v-if="perusteenTeksti && perusteenTeksti.perusteenOsa" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)" />
-        </div>
-      </template>
+      <!-- Ei käytössä toistaiseksi -->
+      <!-- <template slot="peruste" slot-scope="{ }">                                                                -->
+      <!--   <div class="sidepad">                                                                                                -->
+      <!--     <p v-if="perusteenTeksti && perusteenTeksti.perusteenOsa" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)" /> -->
+      <!--   </div>                                                                                                               -->
+      <!-- </template>                                                                                                            -->
       <template slot="header" slot-scope="{ isEditing, data }">
         <div class="otsikko">
           <ep-field v-if="data.tov.tekstiKappale" help="tekstikappale-nimi-ohje" v-model="data.tov.tekstiKappale.nimi" :is-header="true" :is-editing="isEditing">

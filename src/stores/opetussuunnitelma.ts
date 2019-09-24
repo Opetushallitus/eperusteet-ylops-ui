@@ -80,8 +80,12 @@ export class OpetussuunnitelmaStore {
         logger.info('Initing peruste rakenne', id);
         this.opetussuunnitelma = await this.get(id);
         await this.updateSisalto();
-        this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
-        this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
+
+        if ((this.opetussuunnitelma.toteutus as any) === 'lops2019') {
+          this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
+          this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
+        }
+
         logger.info('Inited peruste rakenne');
         this.initcv = null;
         resolve();
@@ -101,15 +105,19 @@ export class OpetussuunnitelmaStore {
   }
 
   public async validate() {
-    const result = (await Lops2019.getValidointi(this.opetussuunnitelma!.id!)).data;
-    if (result) {
-      const onnistuneet = result.onnistuneetValidoinnit;
-      const kaikki = result.kaikkiValidoinnit;
-      if (onnistuneet && kaikki) {
-        this.progress = Math.floor(onnistuneet / kaikki * 100);
+    if ((this.opetussuunnitelma!.toteutus as any) === 'lops2019') {
+      const result = (await Lops2019.getValidointi(this.opetussuunnitelma!.id!)).data;
+      if (result) {
+        const onnistuneet = result.onnistuneetValidoinnit;
+        const kaikki = result.kaikkiValidoinnit;
+        if (onnistuneet && kaikki) {
+          this.progress = Math.floor(onnistuneet / kaikki * 100);
+        }
       }
+      return result;
     }
-    return result;
+
+    return null;
   }
 
   public async removeTeksti(tov: Puu) {

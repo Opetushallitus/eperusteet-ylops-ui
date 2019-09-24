@@ -33,6 +33,7 @@ div
   .valid-feedback(v-if="!validationError && validMessage") {{ $t(validMessage) }}
   .invalid-feedback(v-else-if="validationError && invalidMessage ") {{ $t(invalidMessage) }}
   .invalid-feedback(v-else-if="validationError && !invalidMessage") {{ $t('validation-error-' + validationError, validation.$params[validationError]) }}
+  small.form-text.text-muted(v-if="help") {{ $t(help) }}
 
 </template>
 
@@ -70,6 +71,9 @@ export default class EpMultiSelect extends Mixins(EpValidation) {
 
   @Prop({ required: true })
   private options!: any[];
+
+  @Prop({ default: '' })
+  private help!: string;
 
   get model() {
     return this.value;

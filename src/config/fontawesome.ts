@@ -59,6 +59,7 @@ library.add(solid.faUnderline);
 library.add(solid.faUndo);
 library.add(solid.faUpload);
 library.add(solid.faUsers);
+library.add(solid.faPaperclip);
 
 // OPH icons
 library.add(oph.arkisto);

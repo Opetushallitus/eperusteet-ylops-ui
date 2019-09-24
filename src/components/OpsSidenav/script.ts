@@ -14,6 +14,7 @@ import {
   EpButton,
   EpRecursiveNav,
   EpColorBall,
+  EpSearch,
 } from '@/components';
 
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
@@ -82,6 +83,7 @@ const i18keys = {
     EpRecursiveNav,
     EpSisaltoModaali,
     OpsSidenavLink,
+    EpSearch,
   },
 })
 export default class OpsSidenav extends Vue {

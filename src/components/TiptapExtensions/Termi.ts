@@ -1,24 +1,26 @@
-import { Node, Mark, Plugin } from 'tiptap';
+import { Node, Mark } from 'tiptap';
 import Vue from 'vue';
-import VueSelect from 'vue-select'
 
-import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
-import { domAttrsGetter, mapNodeAttrs } from './helpers';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { createKasiteHandler } from '@/stores/kuvat';
+import { domAttrsGetter } from './helpers';
+import { i18n } from '@/stores/kieli';
+import { TermiDto } from '@/tyypit';
+import KasiteEditor from './KasiteEditor.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
 
 
-export default class Termi extends Node {
+export default class Termi extends Mark {
   public constructor(private opsId: number) {
     super();
   }
 
   get name() {
-    return 'termi'
+    return 'termi';
   }
 
-  // get extensions() {
-  //   return [];
-  // }
+  get extensions() {
+    return [];
+  }
 
   get schema() {
     return {
@@ -27,40 +29,106 @@ export default class Termi extends Node {
           default: '',
         },
       },
-      // content: 'inline*',
-      // group: 'block',
-      // inline: true,
       inclusive: false,
       parseDOM: [{
-        tag: 'abbr',
+        tag: 'abbr[data-viite]',
         getAttrs: domAttrsGetter('data-viite'),
       }],
       toDOM: (node: any) => ['abbr', node.attrs, 0],
     }
   }
 
-  // commands({ type }) {
-  //   return (attrs: any) => {
-  //     return (state, dispatch) => {
-  //       const { selection } = state;
-  //       const position = selection.$cursor ? selection.$cursor.pos : selection.$to.pos;
-  //       const node = type.create(attrs);
-  //       const tx = state.tr.insert(position, node);
-  //       dispatch(tx);
-  //     };
-  //   }
-  // }
+  commands(params) {
+    const { type } = params;
+    return (attrs) => (state, dispatch) => {
+      const { from, to } = state.selection;
+      return dispatch(state.tr.addMark(from, to, type.create(attrs)));
+    }
+  }
 
-  // get view() {
-  //   return Vue.extend({
-  //     components: {
-  //       VueSelect,
-  //     },
-  //     props: ['node', 'updateAttrs', 'view'],
-  //     template: `
-  //       <abbr title="jotain">teksti</abbr>
-  //     `,
-  //   });
-  // }
+  get view() {
+    const opsId = this.opsId;
+    const handler = createKasiteHandler(opsId);
+
+    return Vue.extend({
+      components: {
+        KasiteEditor,
+        EpContent,
+      },
+      props: ['node', 'updateAttrs', 'view'],
+      data() {
+        return {
+          abbrdata: null as TermiDto | null,
+        };
+      },
+      methods: {
+        async showTermiSelector() {
+          const self = this;
+          const h = this.$createElement;
+          const t = (v: string): string => i18n.t(v) as string;
+          const kasiteTitle = h('div', {}, t('valitse-kasite'));
+          const editor = h(KasiteEditor, {
+            props: {
+              opsId,
+              value: self.dataViite,
+              handler,
+            },
+            on: {
+              input(avain: string) {
+                self.dataViite = avain;
+              },
+            },
+          });
+          this.$bvModal.msgBoxOk([editor], {
+            buttonSize: 'sm',
+            centered: true,
+            size: 'lg',
+            title: [kasiteTitle],
+          })
+        }
+      },
+      watch: {
+        dataViite: {
+          async handler(value: string) {
+            if (!value) {
+              return;
+            }
+
+            try {
+              this.abbrdata = await handler.getOne(value);
+            }
+            catch (err) {
+              this.abbrdata = null;
+              throw err;
+            }
+          },
+          immediate: true,
+        },
+      },
+      computed: {
+        dataViite: {
+          get() {
+            return (this as any).node.attrs['data-viite'];
+          },
+          set(value: any) {
+            (this as any).updateAttrs({
+              'data-viite': value,
+            });
+          },
+        },
+        title() {
+          if (this.abbrdata) {
+            return (this as any).$kaanna(this.abbrdata.selitys);
+          }
+          else {
+            return (this as any).$t('termia-ei-kuvattu');
+          }
+        },
+      },
+      template: `
+        <abbr :class="{ 'virheellinen': !dataViite }" :data-viite="dataViite" @click="showTermiSelector" :title="title"></abbr>
+      `,
+    });
+  }
 
 }

@@ -52,6 +52,7 @@ export default class BaseInnerTile extends Vue {
 <style scoped lang="scss">
 
 @import '@/styles/_variables.scss';
+@import '@/styles/_mixins.scss';
 
 $tile-height: 300px;
 $tile-width: 540px;
@@ -62,7 +63,8 @@ $tile-width: 540px;
   background: $etusivu-tile-background;
   border: 1px solid #eee;
   border-radius: 10px;
-  box-shadow: 5px 5px 20px 1px rgba(0,45,153,0.08);
+  user-select: none;
+  @include tile-background-shadow;
 
   .tile-header {
     height: 120px;
@@ -83,15 +85,11 @@ $tile-width: 540px;
     top: -37px;
     display: flex;
     justify-content: center;
-
-    &.hover {
-      color: red;
-    }
   }
 }
 
 .route-button {
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  @include tile-background-shadow-selected;
 }
 
 </style>

@@ -4,7 +4,12 @@ import { Validation, validationMixin } from 'vuelidate';
 
 @Component({
   validations() {
-    return (this as any).validationConfig || {};
+    const vc = (this as any).validationConfig;
+    if (vc === undefined) {
+      console.error('Validation configuration missing:', this);
+      return {};
+    }
+    return vc;
   },
 } as any)
 export default class EpValidation extends Mixins(validationMixin) {

@@ -10,83 +10,113 @@
       <p>{{ $t(vars.kuvaus) }}</p>
     </template>
 
-    <div>
-      <h2>{{ $t(vars.keskeneraiset) }}</h2>
+    <ep-spinner v-if="isLoading"></ep-spinner>
+    <div v-else>
+      <div>
+        <h2>{{ $t(vars.keskeneraiset) }}</h2>
 
-      <div class="opscontainer">
-        <div class="opsbox">
-          <router-link tag="a" :to="{ name: vars.uusiRoute }">
-            <div class="uusi">
-              <div class="plus">
-                <fas icon="plus"></fas>
+        <div class="opscontainer">
+          <div class="opsbox">
+            <router-link tag="a" :to="{ name: vars.uusiRoute }">
+              <div class="uusi">
+                <div class="plus">
+                  <fas icon="plus"></fas>
+                </div>
+                <div class="text">
+                  {{ $t('luo-uusi') }}
+                </div>
               </div>
-              <div class="text">
-                {{ $t('luo-uusi') }}
+            </router-link>
+          </div>
+
+          <div v-for="ops in keskeneraiset" :key="ops.id">
+            <div v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'"
+                 class="opsbox">
+              <router-link
+                tag="a"
+                :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+                :key="ops.id">
+                <div class="chart">
+                  <div class="progress-clamper">
+                    <ep-progress :slices="[0.2, 0.5, 1]" />
+                  </div>
+                </div>
+                <div class="info">
+                  <div class="nimi">
+                    {{ $kaanna(ops.nimi) }}
+                  </div>
+                </div>
+              </router-link>
+            </div>
+            <div v-else
+                 ref="disabled"
+                 class="opsbox disabled">
+              <div class="info-top">
+                <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
+              </div>
+              <div class="info">
+                <div class="nimi">
+                  {{ $kaanna(ops.nimi) }}
+                </div>
               </div>
             </div>
-          </router-link>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2>{{ $t(vars.julkaistut) }}</h2>
+
+        <div class="info" v-if="julkaistut.length === 0">
+          <div class="alert alert-info">{{ $t(vars.eivalmiita) }}</div>
         </div>
 
-        <div class="opsbox" v-for="ops in keskeneraiset" :key="ops.id">
-          <router-link
-            tag="a"
-            :to="{ name: 'opsTiedot', params: { id: ops.id } }"
-            :key="ops.id">
-            <div class="chart">
-              <div class="progress-clamper">
-                <ep-progress :slices="[0.2, 0.5, 1]" />
+        <div class="opscontainer">
+          <div v-for="ops in julkaistut" :key="ops.id">
+            <div class="opsbox"
+                 v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'">
+              <router-link
+                tag="a"
+                :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+                :key="ops.id">
+                <div class="chart">
+                  <div class="progress-clamper">
+                    <ep-progress :slices="[0.2, 0.5, 1]" />
+                  </div>
+                </div>
+                <div class="info">
+                  <div class="nimi">
+                    {{ $kaanna(ops.nimi) }}
+                  </div>
+                </div>
+              </router-link>
+            </div>
+            <div v-else
+                 ref="disabled"
+                 class="opsbox disabled">
+              <div class="info-top">
+                <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
+              </div>
+              <div class="info">
+                <div class="nimi">
+                  {{ $kaanna(ops.nimi) }}
+                </div>
               </div>
             </div>
-
-            <div class="info">
-              <div class="nimi">
-                {{ $kaanna(ops.nimi) }}
-              </div>
-            </div>
-          </router-link>
+          </div>
         </div>
       </div>
     </div>
-
-    <div>
-      <h2>{{ $t(vars.julkaistut) }}</h2>
-
-      <div class="info" v-if="julkaistut.length === 0">
-        <div class="alert alert-info">{{ $t(vars.eivalmiita) }}</div>
-      </div>
-
-      <div class="opscontainer">
-        <div class="opsbox" v-for="ops in julkaistut" :key="ops.id">
-          <router-link
-            tag="a"
-            :to="{ name: 'opsTiedot', params: { id: ops.id } }"
-            :key="ops.id">
-            <div class="chart">
-              <div class="progress-clamper">
-                <ep-progress :slices="[0.2, 0.5, 1]" />
-              </div>
-            </div>
-            <div class="info">
-              <div class="nimi">
-                {{ $kaanna(ops.nimi) }}
-              </div>
-            </div>
-          </router-link>
-        </div>
-      </div>
-    </div>
-
   </ep-main-view>
 </div>
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component, Mixins } from 'vue-property-decorator';
-
+import _ from 'lodash';
+import { Prop, Component, Mixins } from 'vue-property-decorator';
+import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoot';
 import { Opetussuunnitelmat } from '@/api';
-import { TilaEnum, OpetussuunnitelmaInfoDto } from '@/tyypit';
-import _ from 'lodash';
 
 import {
   EpContent,
@@ -169,18 +199,27 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
 </script>
 
 <style lang="scss" scoped>
+
+@import '@/styles/_mixins.scss';
+
 $box-size: 350px;
+
+$box-radius: 10px;
 
 .opscontainer {
   display: flex;
   flex-wrap: wrap;
 
   .opsbox {
+    user-select: none;
     margin: 10px;
+    border-radius: $box-radius;
+    @include tile-background-shadow;
+
     .uusi {
       background-size: contain;
       background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
-      border-radius: 10px;
+      border-radius: $box-radius;
       height: 230px;
       margin: 0 auto;
       padding-top: 48px;
@@ -206,7 +245,7 @@ $box-size: 350px;
 
     .chart {
       width: 192px;
-      border-radius: 10px 10px 0 0;
+      border-radius: $box-radius $box-radius 0 0;
       height: 138px;
       background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
       background-size: contain;
@@ -222,14 +261,14 @@ $box-size: 350px;
     }
 
     .info {
-      border-radius: 0 0 10px 10px;
+      border-radius: 0 0 $box-radius $box-radius;
       text-align: center;
       height: 92px;
       width: 192px;
       padding: 10px 10px;
       margin: 0 auto;
       border: 1px solid #E7E7E7;
-      box-shadow: 5px 5px 10px 1px rgba(27,61,142,0.08);
+      border-top-width: 0;
 
       .nimi {
         color: #2B2B2B;
@@ -238,6 +277,26 @@ $box-size: 350px;
         font-size: 16px;
         font-weight: 600;
       }
+    }
+
+    &:hover:not(.disabled) {
+      @include tile-background-shadow-selected;
+    }
+  }
+
+  .disabled {
+    cursor: not-allowed;
+
+    .info-top {
+      width: 192px;
+      height: 138px;
+      border-radius: $box-radius $box-radius 0 0;
+      background-color: lightgray;
+      margin: 0 auto;
+      text-align: center;
+      padding-top: 28px;
+      padding-left: 10px;
+      padding-right: 10px;
     }
   }
 }

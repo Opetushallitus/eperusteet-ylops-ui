@@ -1,5 +1,5 @@
-import { Liitetiedostot } from '@/api';
-import { LiiteDto } from '@/tyypit';
+import { Termisto, Liitetiedostot } from '@/api';
+import { TermiDto, LiiteDto } from '@/tyypit';
 import { Api } from '@/api';
 import _ from 'lodash';
 
@@ -13,6 +13,12 @@ export interface IAttachmentWrapper {
   hae: () => Promise<LiiteWithSrc[]>,
   url: (id: string) => string,
 }
+
+export interface IKasiteHandler {
+  getOne: (avain: string) => Promise<TermiDto>,
+  getAll: () => Promise<TermiDto[]>,
+  addOrUpdate: (termi: TermiDto) => Promise<TermiDto>,
+};
 
 export function createLiitetiedostoHandler(opsId: number): IAttachmentWrapper {
   const Endpoint = Api.defaults.baseURL + '/opetussuunnitelmat/' + opsId + '/kuvat/';
@@ -35,3 +41,27 @@ export function createLiitetiedostoHandler(opsId: number): IAttachmentWrapper {
     },
   };
 }
+
+
+export function createKasiteHandler(opsId): IKasiteHandler {
+  return {
+    async getOne(avain: string) {
+      const res = await Termisto.getTermi(opsId, avain);
+      return res.data;
+    },
+    async getAll() {
+      const res = await Termisto.getAllTermit(opsId);
+      return res.data;
+    },
+    async addOrUpdate(termi: TermiDto) {
+      if (termi.avain && termi.id) {
+        return (await Termisto.updateTermi(opsId, termi.id, termi)).data;
+      }
+      else {
+        return (await Termisto.addTermi(opsId, termi)).data;
+      }
+    },
+  };
+};
+
+

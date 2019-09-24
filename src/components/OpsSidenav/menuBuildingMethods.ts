@@ -2,7 +2,6 @@ import _ from 'lodash';
 import {
   SideMenuEntry,
   Lops2019PaikallinenOppiaineDto,
-  Lops2019OpintojaksoDto,
   Lops2019OppiaineDto,
 } from '@/tyypit';
 
