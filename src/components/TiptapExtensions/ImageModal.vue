@@ -50,7 +50,7 @@ import { updateMark, removeMark, pasteRule } from 'tiptap-commands';
 import { getMarkAttrs } from 'tiptap-utils';
 import { domAttrsGetter, mapNodeAttrs } from './helpers';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import VueSelect from 'vue-select'
+import VueSelect from 'vue-select';
 import { Vue, Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import EpValidation from '@/mixins/EpValidation';
 import { IAttachmentWrapper } from '@/stores/kuvat';
@@ -76,7 +76,7 @@ export default class ImageModal extends Vue {
   private isAdding = true;
   private hasImage: any = false;
   private image: any = null;
-  private nimi: string = "";
+  private nimi: string = '';
   private isLoading = true;
   private data: LiiteDto[] = [];
   private files: LiiteDto[] = [];

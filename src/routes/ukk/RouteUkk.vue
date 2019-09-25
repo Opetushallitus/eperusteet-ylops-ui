@@ -8,13 +8,12 @@
   <template slot="header">
     <h2>{{ $t('ukk') }}</h2>
     <p>{{ $t('ukk-kuvaus-nakyma') }}</p>
-    <ep-spinner v-if="isLoading">
-    </ep-spinner>
-    <div v-else="v-else">
+    <ep-spinner v-if="isLoading"></ep-spinner>
+    <div v-else>
       <ep-search v-model="rajain">
       </ep-search>
       <p>{{ $t('ukk-luoja-rajaus') }}:</p>
-      <div class="form-check form-check-inline" v-for="org in organisaatiot">
+      <div class="form-check form-check-inline" v-for="(org, idx) in organisaatiot" :key="idx">
         <input class="form-check-input" :id="org.oid" type="checkbox" v-model="org.$checked" />
         <label class="form-check-label" :for="org.oid">{{ $kaanna(org.nimi) }}</label>
       </div>
@@ -30,7 +29,8 @@
 
 <!-- Kysymykset-->
 <template slot="custom-content">
-  <div class="row" v-if="!isLoading" v-for="kysymys in kysymyksetFormatted" :key="kysymys.id">
+<div v-if="!isLoading">
+  <div class="row" v-for="kysymys in kysymyksetFormatted" :key="kysymys.id">
     <div class="col">
       <div class="float-right">
         <button class="btn btn-link" @click="startKysymysModal(kysymys)">
@@ -46,16 +46,17 @@
         <p>
         <ep-aikaleima class="text-secondary" :value="kysymys.luotu" type="ago">
         </ep-aikaleima>
-      </p>
-      <h5>
-        <ep-kaanna :value="kysymys.kysymys">
-        </ep-kaanna>
-      </h5>
-      <p class="text-secondary">
+        </p>
+        <h5>
+          <ep-kaanna :value="kysymys.kysymys">
+          </ep-kaanna>
+        </h5>
+        <p class="text-secondary">
         <ep-kaanna :value="kysymys.vastaus">
         </ep-kaanna>
-      </p>
-      <hr />
+        </p>
+        <hr />
+      </div>
     </div>
   </div>
 </div>

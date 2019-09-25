@@ -104,7 +104,7 @@ export default class RouteTiedot extends EpOpsRoute {
   async mounted() {
     this.hooks = {
       source: {
-        save: async(ops) => {
+        save: async (ops) => {
           return this.opetussuunnitelmaStore.save(ops);
         },
         load: this.load,

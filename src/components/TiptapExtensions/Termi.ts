@@ -35,7 +35,7 @@ export default class Termi extends Mark {
         getAttrs: domAttrsGetter('data-viite'),
       }],
       toDOM: (node: any) => ['abbr', node.attrs, 0],
-    }
+    };
   }
 
   commands(params) {
@@ -43,7 +43,7 @@ export default class Termi extends Mark {
     return (attrs) => (state, dispatch) => {
       const { from, to } = state.selection;
       return dispatch(state.tr.addMark(from, to, type.create(attrs)));
-    }
+    };
   }
 
   get view() {
@@ -63,6 +63,10 @@ export default class Termi extends Mark {
       },
       methods: {
         async showTermiSelector() {
+          if (!this.view.editable) {
+            return;
+          }
+
           const self = this;
           const h = this.$createElement;
           const t = (v: string): string => i18n.t(v) as string;
@@ -84,7 +88,7 @@ export default class Termi extends Mark {
             centered: true,
             size: 'lg',
             title: [kasiteTitle],
-          })
+          });
         }
       },
       watch: {

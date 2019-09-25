@@ -1,6 +1,5 @@
 <template>
 <div class="home-container">
-  <ep-content layout="normal" :ops-id="90" v-model="jotain" :is-editable="true"></ep-content>
   <div class="header">
     <ep-navigation :sticky="false"></ep-navigation>
     <div class="container">
@@ -86,10 +85,6 @@ import {
   },
 })
 export default class Home extends Mixins(EpRoute) {
-  private jotain = {
-    fi: 'teksti <abbr data-viite="2aca6708-f502-47e1-81ce-55e63115f7ba">teksti</abbr> loppu',
-  };
-
   private rajain: string = '';
   private etusivu: EtusivuDto = {
     opetussuunnitelmatKeskeneraiset: 0,

@@ -42,7 +42,7 @@ function createWrapper(localVue, config: any = {}) {
       new OrderedList(),
       new ListItem(),
       // new Image(),
-      new Table({ resizable: true, }),
+      new Table({ resizable: true }),
       new TableHeader(),
       new TableCell(),
       new TableRow(),

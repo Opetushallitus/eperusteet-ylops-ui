@@ -58,7 +58,7 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
   },
 })
 export default class EpContent extends Mixins(EpValidation) {
-  @Prop({ required: true, })
+  @Prop({ required: true })
   private value!: Object;
 
   @Prop({ default: false })
@@ -121,7 +121,7 @@ export default class EpContent extends Mixins(EpValidation) {
       new BulletList(),
       new OrderedList(),
       new ListItem(),
-      new Table({ resizable: true, }),
+      new Table({ resizable: true }),
       new TableHeader(),
       new TableCell(),
       new TableRow(),

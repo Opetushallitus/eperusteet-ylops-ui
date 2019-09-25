@@ -60,9 +60,9 @@ import EpValidation from '@/mixins/EpValidation';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { kasiteValidator } from '@/validators/kasite';
 import { Termisto } from '@/api';
-import VueSelect from 'vue-select'
+import VueSelect from 'vue-select';
 import { IKasiteHandler } from '@/stores/kuvat';
-import _ from 'lodash'
+import _ from 'lodash';
 
 
 @Component({
@@ -112,7 +112,7 @@ export default class KasiteEditor extends Mixins(EpValidation) {
   async mounted() {
     try {
       this.isLoading = true;
-      this.kasitteet = await this.handler.getAll(this.opsId);
+      this.kasitteet = await this.handler.getAll();
       if (this.value) {
         this.valittu = _.find(this.kasitteet, (k) => k.avain === this.value) || null;
       }
