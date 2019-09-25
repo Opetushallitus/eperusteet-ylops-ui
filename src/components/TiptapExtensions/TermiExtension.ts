@@ -5,11 +5,11 @@ import { createKasiteHandler } from '@/stores/kuvat';
 import { domAttrsGetter } from './helpers';
 import { i18n } from '@/stores/kieli';
 import { TermiDto } from '@/tyypit';
-import KasiteEditor from './KasiteEditor.vue';
+import TermiEditor from './TermiEditor.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 
 
-export default class Termi extends Mark {
+export default class TermiExtion extends Mark {
   public constructor(private opsId: number) {
     super();
   }
@@ -52,7 +52,7 @@ export default class Termi extends Mark {
 
     return Vue.extend({
       components: {
-        KasiteEditor,
+        TermiEditor,
         EpContent,
       },
       props: ['node', 'updateAttrs', 'view'],
@@ -71,7 +71,7 @@ export default class Termi extends Mark {
           const h = this.$createElement;
           const t = (v: string): string => i18n.t(v) as string;
           const kasiteTitle = h('div', {}, t('valitse-kasite'));
-          const editor = h(KasiteEditor, {
+          const editor = h(TermiEditor, {
             props: {
               opsId,
               value: self.dataViite,

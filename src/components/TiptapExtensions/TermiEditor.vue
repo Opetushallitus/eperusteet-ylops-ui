@@ -76,7 +76,7 @@ import _ from 'lodash';
     VueSelect,
   },
 })
-export default class KasiteEditor extends Mixins(EpValidation) {
+export default class TermitEditor extends Mixins(EpValidation) {
   @Prop({ required: true })
   private opsId!: number;
 

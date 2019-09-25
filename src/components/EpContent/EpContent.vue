@@ -18,7 +18,7 @@
 <script lang="ts">
 
 import ImageExtension from '@/components/TiptapExtensions/ImageExtension';
-import Termi from '@/components/TiptapExtensions/Termi';
+import TermiExtension from '@/components/TiptapExtensions/TermiExtension';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import { Editor, EditorContent } from 'tiptap';
 import { Kielet } from '@/stores/kieli';
@@ -77,10 +77,6 @@ export default class EpContent extends Mixins(EpValidation) {
   @Prop({ default: null })
   private opsId!: number | null;
   
-  // // OPS:n käsitteet
-  // @Prop({ default: () => {} })
-  // private opsKasitteet!: object;
-
   @Prop({ default: '' })
   private help!: string;
 
@@ -129,18 +125,12 @@ export default class EpContent extends Mixins(EpValidation) {
 
     if (this.opsIdVal !== null) {
       extensions.push(new ImageExtension(this.opsIdVal));
-      extensions.push(new Termi(this.opsIdVal));
+      extensions.push(new TermiExtension(this.opsIdVal));
     }
 
     this.editor = new Editor({
       content: this.localizedValue,
       editable: this.isEditable,
-      // editorProps: {
-      //   transformPastedHTML(html: string) {
-      //     console.log(html);
-      //     return html;
-      //   },
-      // },
       onUpdate: () => {
         this.setUpEditorEvents();
       },
