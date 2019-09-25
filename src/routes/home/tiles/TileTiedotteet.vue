@@ -16,9 +16,7 @@ base-tile(icon="tiedotteet", :route="{ name: 'tiedotteet' }")
 import { Vue, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
 import { Ulkopuoliset } from '@/api';
-import {
-  EpSpinner,
-} from '@/components';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import _ from 'lodash';
 import { delay } from '@/utils/delay';
 

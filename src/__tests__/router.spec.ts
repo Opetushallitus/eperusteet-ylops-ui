@@ -98,13 +98,13 @@ describe('Router', () => {
     });
   }
 
-  beforeEach(() => {
-    router.push({
+  beforeEach(async () => {
+    return router.push({
       name: 'root',
       params: {
         lang: 'fi',
       },
-    });
+    }).catch(err => {});
   });
 
   test('App creation', async () => {
