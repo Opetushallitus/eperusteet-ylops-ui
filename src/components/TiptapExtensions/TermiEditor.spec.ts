@@ -18,7 +18,7 @@ function createTestHandler(): IKasiteHandler {
       return _.values(kaikki);
     },
     async getOne(avain: string) {
-      return kaikki[avain]
+      return kaikki[avain];
     },
     async addOrUpdate(termi: TermiDto) {
       termi.id = nextAvain;

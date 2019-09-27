@@ -184,9 +184,9 @@ describe('Oppiaine validators', () => {
 
     wrapper.setData({
       kielet: ['fi'],
-      ops: { nimi, julkaisukielet: ['fi'], },
-      opsLuonti: { nimi, julkaisukielet: ['fi'], },
-      pohjaLuonti: { nimi, julkaisukielet: ['fi'], },
+      ops: { nimi, julkaisukielet: ['fi'] },
+      opsLuonti: { nimi, julkaisukielet: ['fi'] },
+      pohjaLuonti: { nimi, julkaisukielet: ['fi'] },
     });
 
     expect(wrapper.vm.$v.ops!.$invalid).toBe(false);
