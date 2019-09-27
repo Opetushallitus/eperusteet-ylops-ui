@@ -15,8 +15,19 @@ export interface IAttachmentWrapper {
 }
 
 export interface IKasiteHandler {
+  /**
+   * Hae yksi termi termin avainarvolla (UUID)
+   */
   getOne: (avain: string) => Promise<TermiDto>,
+
+  /**
+   * Hae kaikki termit
+   */
   getAll: () => Promise<TermiDto[]>,
+
+  /**
+   * Lisää uusi termi tai päivitä termiä. Vanhaa päivitetään jos `avain` ja `id` löytyy.
+   */
   addOrUpdate: (termi: TermiDto) => Promise<TermiDto>,
 };
 

@@ -10,9 +10,10 @@ class MurupolkuStore {
 
   @Getter()
   murut() {
+    const nimi = _.get(Opetussuunnitelma(), 'opetussuunnitelma.nimi');
     return {
       ...this.polku,
-      opetussuunnitelma: Opetussuunnitelma.opetussuunnitelma && Opetussuunnitelma.opetussuunnitelma.nimi,
+      opetussuunnitelma: nimi,
     };
   }
 

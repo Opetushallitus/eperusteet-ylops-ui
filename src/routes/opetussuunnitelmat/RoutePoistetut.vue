@@ -45,7 +45,6 @@ import {
   EpSpinner,
 } from '@/components';
 import { Lops2019PoistettuDto } from '@/tyypit';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
@@ -76,7 +75,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private query = '';
 
   async init() {
-    this.poistetut = await Opetussuunnitelma.getPoistetut();
+    this.poistetut = await this.store.getPoistetut();
   }
 
   get rajaus() {
@@ -101,7 +100,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   async palauta(poistettu: Lops2019PoistettuDto) {
-    await Opetussuunnitelma.palauta(poistettu);
+    await this.store.palauta(poistettu);
     // this.$router.push({
     //   name: 'opintojakso',
     //   params: {

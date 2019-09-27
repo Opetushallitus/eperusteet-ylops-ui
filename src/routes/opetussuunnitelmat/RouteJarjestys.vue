@@ -38,8 +38,8 @@
 <script lang="ts">
 import { Mixins, Prop, Component } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoute';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpJarjesta from '@/components/EpJarjesta/EpJarjesta.vue';
 import { Kielet } from '@/stores/kieli';
 import {
@@ -69,7 +69,7 @@ function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKapp
     EpJarjesta,
   },
 })
-export default class RouteJarjestys extends Mixins(EpRoute) {
+export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
   private hooks: EditointiKontrolliConfig = {
     // remove: this.remove,
     source: {
@@ -90,11 +90,11 @@ export default class RouteJarjestys extends Mixins(EpRoute) {
   }
 
   async load() {
-    return await Opetussuunnitelma.getOtsikot();
+    return await this.store.getOtsikot();
   }
 
   async save(data: Puu) {
-    await Opetussuunnitelma.saveTeksti(data);
+    await this.store.saveTeksti(data);
   }
 
 }

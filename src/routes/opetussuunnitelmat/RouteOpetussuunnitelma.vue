@@ -63,7 +63,7 @@
     <div class="lower">
       <ep-sidebar>
         <template slot="bar">
-          <ops-sidenav />
+          <ops-sidenav :opetussuunnitelma-store="store"></ops-sidenav>
         </template>
         <template slot="view">
           <transition name="fade" mode="out-in">
@@ -81,7 +81,6 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import {
   EpNavigation,
   EpSidebar,
@@ -108,10 +107,10 @@ import { Lops2019ValidointiDto } from '@/tyypit';
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   private validation: Lops2019ValidointiDto | null = null;
 
-  protected async init() {
+  async mounted() {
     const id = this.$route.params.id;
-    await Opetussuunnitelma.init(_.parseInt(id));
-    this.validation = await Opetussuunnitelma.validate();
+    await this.store.init();
+    this.validation = await this.store.validate();
   }
 
   get slices() {
@@ -153,7 +152,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
   async arkistoiOps() {
     if (await this.vahvista('arkistoi-ops', 'arkistoi-kuvaus')) {
-      await Opetussuunnitelma.updateTila('poistettu');
+      await this.store.updateTila('poistettu');
       this.$router.push({
         name: 'opetussuunnitelmaListaus',
       });

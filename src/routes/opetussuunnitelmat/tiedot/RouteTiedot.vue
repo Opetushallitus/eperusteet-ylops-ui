@@ -96,17 +96,12 @@ import EpProgress from '@/components/EpProgress.vue';
   },
 })
 export default class RouteTiedot extends EpOpsRoute {
-  @Prop({ required: true })
-  private opetussuunnitelmaStore!: OpetussuunnitelmaStore;
-
   private hooks: EditointiKontrolliConfig | null = null;
 
   async mounted() {
     this.hooks = {
       source: {
-        save: async (ops) => {
-          return this.opetussuunnitelmaStore.save(ops);
-        },
+        save: this.store.save,
         load: this.load,
       },
     };
@@ -120,7 +115,7 @@ export default class RouteTiedot extends EpOpsRoute {
 
   public async tryTilanvaihto(tila: string) {
     try {
-      await this.opetussuunnitelmaStore.updateTila(tila);
+      await this.store.updateTila(tila);
       return true;
     }
     catch (err) {
@@ -134,7 +129,7 @@ export default class RouteTiedot extends EpOpsRoute {
 
   private async load() {
     if (this.$route.params.id) {
-      return this.opetussuunnitelmaStore.get(_.parseInt(this.$route.params.id));
+      return this.store.get();
     }
   }
 }

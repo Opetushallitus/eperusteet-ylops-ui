@@ -1,6 +1,7 @@
-import { Component } from 'vue-property-decorator';
+import { Prop, Component } from 'vue-property-decorator';
 import EpRoute from './EpRoute';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import _ from 'lodash';
 
 
 /**
@@ -8,20 +9,27 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
  */
 @Component
 export default class EpOpsRoute extends EpRoute {
+  @Prop({ required: true })
+  private opetussuunnitelmaStore!: OpetussuunnitelmaStore;
+
+  get store() {
+    return this.opetussuunnitelmaStore;
+  }
+
   get ops() {
-    return Opetussuunnitelma.opetussuunnitelma!;
+    return this.store.opetussuunnitelma!;
   }
 
   get opsId() {
-    return Opetussuunnitelma.opetussuunnitelma!.id!;
+    return this.store.opetussuunnitelma!.id!;
   }
 
   get isPohja() {
-    return Opetussuunnitelma.opetussuunnitelma!.tyyppi as string === 'pohja';
+    return this.store.opetussuunnitelma!.tyyppi as string === 'pohja';
   }
 
   get isOps() {
-    return Opetussuunnitelma.opetussuunnitelma!.tyyppi as string === 'ops';
+    return this.store.opetussuunnitelma!.tyyppi as string === 'ops';
   }
 
   get isValmisPohja() {

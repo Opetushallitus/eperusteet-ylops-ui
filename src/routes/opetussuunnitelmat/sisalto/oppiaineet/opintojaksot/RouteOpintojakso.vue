@@ -237,7 +237,6 @@ import {
 } from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';
@@ -286,7 +285,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   async remove(data: any) {
     if (await this.vahvista()) {
-      await Opetussuunnitelma.removeOpintojakso(data.id);
+      await this.store.removeOpintojakso(data.id);
       this.$router.push({
         name: 'opsPoistetut',
       });
@@ -302,7 +301,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return [];
     }
     else {
-      return Opetussuunnitelma.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+      return this.store.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
     }
   }
 
@@ -329,7 +328,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   get paikallisetOppiaineet() {
-    return _(Opetussuunnitelma.paikallisetOppiaineet)
+    return _(this.store.paikallisetOppiaineet)
       .filter('koodi')
       .map((oa) => {
         return {
@@ -497,7 +496,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return result;
     }
     else {
-      const opintojakso = await Opetussuunnitelma.getOpintojakso(_.parseInt(opintojaksoId));
+      const opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
       if (opintojakso) {
         this.breadcrumb('opintojakso', opintojakso.nimi);
       }
@@ -507,7 +506,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   async save(opintojakso: Lops2019OpintojaksoDto) {
     if (await this.isUusi()) {
-      const uusi = await Opetussuunnitelma.addOpintojakso(opintojakso);
+      const uusi = await this.store.addOpintojakso(opintojakso);
       this.$router.push({
         ...(this.$router.currentRoute as any),
         params: {
@@ -517,7 +516,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       });
     }
     else {
-      await Opetussuunnitelma.saveOpintojakso(opintojakso);
+      await this.store.saveOpintojakso(opintojakso);
     }
   }
 }

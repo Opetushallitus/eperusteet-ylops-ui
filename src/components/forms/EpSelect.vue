@@ -46,8 +46,8 @@ export default class EpSelect extends Mixins(EpValidation) {
   @Prop({ required: true })
   private items!: any[];
 
-  @Model('change', { required: true })
-  private model!: any | any[];
+  @Prop({ required: true })
+  private value!: any | any[];
 
   @Prop({ default: true })
   private useCheckboxes!: boolean;
@@ -62,10 +62,10 @@ export default class EpSelect extends Mixins(EpValidation) {
 
   private updateValue() {
     if (_.isArray(this.innerModel)) {
-      this.$emit('change', [...this.innerModel]);
+      this.$emit('input', [...this.innerModel]);
     }
     else {
-      this.$emit('change', this.innerModel);
+      this.$emit('input', this.innerModel);
     }
 
     if (this.validation) {
@@ -74,7 +74,7 @@ export default class EpSelect extends Mixins(EpValidation) {
   }
 
   mounted() {
-    this.innerModel = this.model;
+    this.innerModel = this.value;
   }
 }
 </script>

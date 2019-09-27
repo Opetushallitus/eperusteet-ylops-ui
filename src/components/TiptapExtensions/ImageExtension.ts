@@ -29,8 +29,6 @@ export default class ImageExtension extends Node {
       },
       content: 'block*',
       group: 'block',
-      // inline: true,
-      // group: 'inline',
       draggable: true,
       parseDOM: [{
         tag: 'img',

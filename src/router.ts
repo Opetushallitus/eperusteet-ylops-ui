@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import { RouteConfig } from 'vue-router';
 import _ from 'lodash';
 
 import Root from '@/routes/Root.vue';
@@ -31,13 +32,19 @@ import { Virheet } from '@/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { info } from '@/utils/notifications';
 
 import { createLogger } from '@/stores/logger';
 
 Vue.use(Router);
 const logger = createLogger('Router');
+
+function props(route) {
+  return {
+    opetussuunnitelmaStore: getOpetussuunnitelmaService(_.parseInt(route.params.id)),
+  };
+}
 
 export const router = new Router({
   scrollBehavior: () => ({ x: 0, y: 0 }),
@@ -94,57 +101,67 @@ export const router = new Router({
       path: 'opetussuunnitelmat/:id',
       name: 'opetussuunnitelma',
       component: RouteOpetussuunnitelma,
+      props,
       children: [{
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
-        props: {
-          opetussuunnitelmaStore: Opetussuunnitelma,
-        },
+        props,
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,
         name: 'opsJulkaisu',
+        props,
       }, {
         path: 'jarjesta',
         component: RouteJarjestys,
         name: 'jarjesta',
+        props,
       }, {
         path: 'dokumentti',
         component: RouteDokumentti,
         name: 'opsDokumentti',
+        props,
       }, {
         path: 'poistetut',
         component: RoutePoistetut,
         name: 'opsPoistetut',
+        props,
       }, {
         path: 'kasitteet',
         component: RouteKasite,
         name: 'opsKasitteet',
+        props,
       }, {
         path: 'oppiaineet',
         component: RouteOppiaineet,
         name: 'oppiaineet',
+        props,
       }, {
         path: 'oppiaineet/:oppiaineId',
         component: RouteOppiaine,
         name: 'oppiaine',
+        props,
       }, {
         path: 'oppiaineet/:oppiaineId/moduulit/:moduuliId',
         component: RouteModuuli,
         name: 'moduuli',
+        props,
       }, {
         path: 'poppiaineet/:paikallinenOppiaineId',
         component: RoutePaikallinenOppiaine,
         name: 'paikallinenOppiaine',
+        props,
       }, {
         path: 'opintojaksot/:opintojaksoId',
         component: RouteOpintojakso,
         name: 'opintojakso',
+        props,
       }, {
         path: 'tekstikappaleet/:osaId',
         component: RouteTekstikappale,
         name: 'tekstikappale',
+        props,
       }],
     }],
   }, {
@@ -211,10 +228,15 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // Alustetaan opetussuunnitelma tilan vaihtuessa
-  if (to.params.id && lastOpsId !== to.params.id) {
-    lastOpsId = to.params.id;
-    await Opetussuunnitelma.init(_.parseInt(lastOpsId));
+  if (Opetussuunnitelma()) {
+    try {
+      await Opetussuunnitelma().init();
+    }
+    catch (err) {
+      console.error(err);
+    }
   }
-  logger.debug(`Route change ${from.name} -> ${to.name}`, from, to);
+
+  // logger.debug(`Route change ${from.name} -> ${to.name}`, from, to);
   next();
 });

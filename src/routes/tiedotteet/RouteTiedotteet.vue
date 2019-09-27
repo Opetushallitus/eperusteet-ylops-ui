@@ -106,25 +106,19 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
   }
 
   async update() {
-    try {
-      const res = (await Ulkopuoliset.getTiedotteetHaku(
-        this.sivu - 1,
-        this.sivukoko,
-        undefined, // kieli
-        this.rajain, // nimi
-        undefined, // perusteId
-        true, // perusteeton
-        true, // julkinen
-        true // yleinen
-      )).data as any;
+    const res = (await Ulkopuoliset.getTiedotteetHaku(
+      this.sivu - 1,
+      this.sivukoko,
+      undefined, // kieli
+      this.rajain, // nimi
+      undefined, // perusteId
+      true, // perusteeton
+      true, // julkinen
+      true // yleinen
+    )).data as any;
 
-      this.kokonaismaara = res.kokonaismäärä;
-
-      this.tiedotteet = res.data;
-    }
-    catch (e) {
-      // Todo: Haku epäonnistui
-    }
+    this.kokonaismaara = res.kokonaismäärä;
+    this.tiedotteet = res.data;
   }
 }
 </script>

@@ -37,8 +37,8 @@ export interface KysymysDto {
   id?: number;
   kysymys?: string;
   vastaus?: string;
-  organisaatiot: OrganisaatioDto[];
-  $uusi: boolean;
+  organisaatiot?: OrganisaatioDto[];
+  $uusi?: boolean;
 }
 
 export interface OrganisaatioDto {
@@ -92,6 +92,7 @@ export type PerusteTekstiKappaleViiteDto = GApi.PerusteTekstiKappaleViiteDto;
 export type Puu = GApi.Puu;
 export type RevisionDto = GApi.RevisionDto;
 export type TekstiKappaleViiteKevytDto = GApi.TekstiKappaleViiteKevytDto;
+export type TekstiKappaleDto = GApi.TekstiKappaleDto;
 export type TermiDto = GApi.TermiDto;
 export type TilaEnum = GApi.OpetussuunnitelmaInfoDto.TilaEnum;
 export type UusiJulkaisuDto = GApi.UusiJulkaisuDto;

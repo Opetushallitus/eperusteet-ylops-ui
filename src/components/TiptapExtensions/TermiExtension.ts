@@ -1,7 +1,7 @@
 import { Node, Mark } from 'tiptap';
 import Vue from 'vue';
 
-import { createKasiteHandler } from '@/stores/kuvat';
+import { IKasiteHandler, createKasiteHandler } from '@/stores/kuvat';
 import { domAttrsGetter } from './helpers';
 import { i18n } from '@/stores/kieli';
 import { TermiDto } from '@/tyypit';
@@ -9,8 +9,8 @@ import TermiEditor from './TermiEditor.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 
 
-export default class TermiExtion extends Mark {
-  public constructor(private opsId: number) {
+export default class TermiExtension extends Mark {
+  public constructor(private handler: IKasiteHandler) {
     super();
   }
 
@@ -47,9 +47,7 @@ export default class TermiExtion extends Mark {
   }
 
   get view() {
-    const opsId = this.opsId;
-    const handler = createKasiteHandler(opsId);
-
+    const handler = this.handler;
     return Vue.extend({
       components: {
         TermiEditor,
@@ -73,7 +71,6 @@ export default class TermiExtion extends Mark {
           const kasiteTitle = h('div', {}, t('valitse-kasite'));
           const editor = h(TermiEditor, {
             props: {
-              opsId,
               value: self.dataViite,
               handler,
             },

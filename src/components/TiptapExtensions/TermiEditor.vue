@@ -1,15 +1,15 @@
 <template>
   <div v-if="isEditing">
-    <ep-form-content name="nimi">
+    <ep-form-content name="termin-nimi">
       <ep-field help="termin-nimi" v-model="muokattava.termi" :validation="$v.muokattava.termi" :is-editing="true" />
     </ep-form-content>
-    <ep-form-content name="kuvaus">
+    <ep-form-content name="termin-kuvaus">
       <ep-field help="termin-kuvaus" v-model="muokattava.selitys" :validation="$v.muokattava.selitys" :is-editing="true" />
     </ep-form-content>
     <ep-form-content name="alaviitteessa">
       <ep-toggle v-model="muokattava.alaviite">{{ $t('nayta-alaviitteessa') }}</ep-toggle>
     </ep-form-content>
-    <ep-button @click="tallenna" :disabled="$v.muokattava.$invalid" :show-spinner="isLoading">{{ $t('tallenna') }}</ep-button>
+    <ep-button id="tallenna-kasite" @click="tallenna" :disabled="$v.muokattava.$invalid" :show-spinner="isLoading">{{ $t('tallenna') }}</ep-button>
     <ep-button class="ml-2" variant="warning" @click="peruuta" :show-spinner="isLoading">{{ $t('peruuta') }}</ep-button>
   </div>
   <div v-else>
@@ -35,11 +35,13 @@
         </template>
       </vue-select>
       <b-button
+        id="muokkaa-termia"
         v-if="valittu"
         class="lisaa-painike"
         variant="primary"
         @click="muokkaa(valittu)">{{ $t('muokkaa-kasitetta') }}</b-button>
       <b-button
+        id="lisaa-uusi-termi"
         class="lisaa-painike"
         variant="primary"
         @click="muokkaa()">{{ $t('lisaa-uusi-kasite') }}</b-button>
@@ -78,9 +80,6 @@ import _ from 'lodash';
 })
 export default class TermitEditor extends Mixins(EpValidation) {
   @Prop({ required: true })
-  private opsId!: number;
-
-  @Prop({ required: true })
   private value!: string | null;
 
   @Prop({ required: true })
@@ -116,6 +115,9 @@ export default class TermitEditor extends Mixins(EpValidation) {
       if (this.value) {
         this.valittu = _.find(this.kasitteet, (k) => k.avain === this.value) || null;
       }
+    }
+    catch (err) {
+      throw err;
     }
     finally {
       this.isLoading = false;

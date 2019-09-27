@@ -41,5 +41,5 @@ export const rootConfig: any = {
   i18n,
   router,
   render: (h: any) => h(App),
-  errorCaptured,
+  // errorCaptured,
 };

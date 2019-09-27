@@ -98,7 +98,6 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
 import _ from 'lodash';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 
@@ -168,12 +167,12 @@ export default class RouteTiedot extends EpOpsRoute {
   }
 
   async init() {
-    this.validointi = await Opetussuunnitelma.validate();
-    this.julkaisut = await Opetussuunnitelma.getJulkaisut();
+    this.validointi = await this.store.validate();
+    this.julkaisut = await this.store.getJulkaisut();
   }
 
   async julkaise() {
-    const julkaisu = await Opetussuunnitelma.julkaise(this.uusiJulkaisu);
+    const julkaisu = await this.store.julkaise(this.uusiJulkaisu);
     this.julkaisut.unshift(julkaisu);
   }
 

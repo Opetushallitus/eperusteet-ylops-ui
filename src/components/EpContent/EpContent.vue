@@ -10,7 +10,6 @@
   <editor-content
     ref="content"
     :editor="editor" />
-  <hr>
 </div>
 
 </template>
@@ -22,6 +21,7 @@ import TermiExtension from '@/components/TiptapExtensions/TermiExtension';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import { Editor, EditorContent } from 'tiptap';
 import { Kielet } from '@/stores/kieli';
+import { createKasiteHandler } from '@/stores/kuvat';
 import {
   Blockquote,
   Bold,
@@ -45,7 +45,7 @@ import EpEditorMenuBar from './EpEditorMenuBar.vue';
 import Sticky from 'vue-sticky-directive';
 import { EditorLayout } from '@/tyypit';
 import EpValidation from '@/mixins/EpValidation';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
 
 @Component({
@@ -58,36 +58,32 @@ import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
   },
 })
 export default class EpContent extends Mixins(EpValidation) {
+  @Prop({ default: null })
+  private opetussuunnitelmaStore!: OpetussuunnitelmaStore | null;
+
   @Prop({ required: true })
-  private value!: Object;
+  value!: Object;
 
   @Prop({ default: false })
-  private isEditable!: boolean;
+  isEditable!: boolean;
   
   @Prop()
-  private locale!: string;
+  locale!: string;
 
   // layout (määrittää editorin ominaisuudet)
   @Prop({ default: 'simplified' })
-  private layout!: EditorLayout;
+  layout!: EditorLayout;
   
   @Prop({ default: false })
-  private isPlainString!: boolean;
-  
-  @Prop({ default: null })
-  private opsId!: number | null;
+  isPlainString!: boolean;
   
   @Prop({ default: '' })
-  private help!: string;
+  help!: string;
 
   @Prop({ default: false })
-  private sticky!: boolean;
+  sticky!: boolean;
 
   private editor: any = null;
-
-  get opsIdVal() {
-    return this.opsId || Opetussuunnitelma.getId();
-  }
 
   get lang() {
     return this.locale || Kielet.getSisaltoKieli() || 'fi';
@@ -123,9 +119,10 @@ export default class EpContent extends Mixins(EpValidation) {
       new TableRow(),
     ];
 
-    if (this.opsIdVal !== null) {
-      extensions.push(new ImageExtension(this.opsIdVal));
-      extensions.push(new TermiExtension(this.opsIdVal));
+    if (this.opetussuunnitelmaStore) {
+      const kasiteHandler = createKasiteHandler(this.opetussuunnitelmaStore.getId());
+      extensions.push(new ImageExtension(this.opetussuunnitelmaStore.getId()));
+      extensions.push(new TermiExtension(kasiteHandler));
     }
 
     this.editor = new Editor({
@@ -140,7 +137,7 @@ export default class EpContent extends Mixins(EpValidation) {
   }
 
   @Watch('isEditable', { immediate: true })
-  private onChange(val) {
+  onChange(val) {
     if (val) {
       this.setClass('form-control');
     }
@@ -161,13 +158,13 @@ export default class EpContent extends Mixins(EpValidation) {
     }, 100);
   }
 
-  public beforeDestroy() {
+  beforeDestroy() {
     if (this.editor) {
       this.editor.destroy();
     }
   }
 
-  private setUpEditorEvents() {
+  setUpEditorEvents() {
     const data = this.editor.getHTML();
     if (this.isPlainString) {
       this.$emit('input', data);
@@ -181,7 +178,7 @@ export default class EpContent extends Mixins(EpValidation) {
   }
 
   @Watch('lang')
-  private onEditableChange(val) {
+  onEditableChange(val) {
     if (this.editor) {
       this.editor.setContent(this.localizedValue);
     }

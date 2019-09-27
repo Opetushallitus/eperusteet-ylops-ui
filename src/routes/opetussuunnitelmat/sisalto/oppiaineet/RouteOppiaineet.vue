@@ -155,8 +155,8 @@ import {
 } from '@/components';
 import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
@@ -172,7 +172,7 @@ import { Kielet } from '@/stores/kieli';
     EpSpinner,
   },
 })
-export default class RouteOppiaineet extends Mixins(EpRoute) {
+export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
   private cache: PerusteCache | null = null;
   private valitutModuuliUrit: { [uri: string]: string } | null = null;
   private query = '';
@@ -276,7 +276,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute) {
       .map(oa => [oa, ...(oa.oppimaarat || [])])
       .flatten()
       .map(oa => {
-        const opintojaksot = _(Opetussuunnitelma.opintojaksot)
+        const opintojaksot = _(this.store.opintojaksot)
           .filter(oj => _.includes(
             _(oj.oppiaineet)
               .map('koodi')

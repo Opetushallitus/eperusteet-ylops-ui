@@ -9,9 +9,8 @@ import {
   genOikeudet,
   genKayttaja,
 } from '&/utils/data';
-import {
-  OpetussuunnitelmaInfoDto,
-} from '@/tyypit';
+
+import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 
 import {
   Kayttajat as KayttajatApi,
