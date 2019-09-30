@@ -144,7 +144,6 @@ export default class EpContent extends Mixins(EpValidation) {
       },
       extensions,
     });
-
   }
 
   @Watch('isEditable', { immediate: true })
@@ -164,17 +163,19 @@ export default class EpContent extends Mixins(EpValidation) {
       else {
         this.setClass('');
       }
-
-      this.editor.setOptions({
-        editable: !!val,
-      });
     });
   }
 
-  setClass(c: string) {
-    this.$nextTick(() => {
-      (this.$refs.content as any).$el.firstChild.className = 'ProseMirror ' + c;
-    });
+  async setClass(c: string) {
+    // HACK: give prose mirror 10 vue ticks.
+    for (let count = 0; count < 10; ++count) {
+      await this.$nextTick();
+      const pm = (this.$refs.content as any).$el.firstChild;
+      if (pm) {
+        (this.$refs.content as any).$el.firstChild.className = 'ProseMirror ' + c;
+        break;
+      }
+    }
   }
 
   beforeDestroy() {
