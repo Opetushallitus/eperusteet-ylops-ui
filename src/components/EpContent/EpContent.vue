@@ -11,12 +11,11 @@
   <editor-content
     ref="content"
     :editor="editor"
-    :class="{ 'content-invalid': validationError, 'content-valid': !validationError }" />
+    :class="{ 'content-invalid': validation && validationError, 'content-valid': validation && !validationError }" />
   <div class="valid-feedback" v-if="!validationError && validMessage && isEditable">{{ $t(validMessage) }}</div>
   <div class="invalid-feedback" v-else-if="validationError && invalidMessage && isEditable">{{ $t(invalidMessage) }}</div>
   <div class="invalid-feedback" v-else-if="validationError && !invalidMessage && isEditable">{{ $t('validation-error-' + validationError, validation.$params[validationError]) }}</div>
   <small class="form-text text-muted" v-if="help && isEditable">{{ $t(help) }}</small>
-  <pre>{{focused}}</pre>
 </div>
 
 </template>
