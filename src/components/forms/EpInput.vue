@@ -15,7 +15,7 @@
     </div>
   </div>
   <div class="valid-feedback" v-if="!validationError && validMessage">{{ $t(validMessage) }}</div>
-  <div class="invalid-feedback" v-else-if="validationError && invalidMessage ">{{ $t(invalidMessage) }}</div>
+  <div class="invalid-feedback" v-else-if="validationError && invalidMessage">{{ $t(invalidMessage) }}</div>
   <div class="invalid-feedback" v-else-if="validationError && !invalidMessage">{{ $t('validation-error-' + validationError, validation.$params[validationError]) }}</div>
   <small class="form-text text-muted" v-if="help && isEditing">{{ $t(help) }}</small>
 </div>

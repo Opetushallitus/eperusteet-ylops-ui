@@ -43,7 +43,9 @@
             <fal v-if="feature.icon" class="fa-fw">
               <fas :icon="feature.icon" fixed-width />
               <fas v-if="feature.uppericon" transform="up-4 left-6" :icon="feature.uppericon" :style="{ color: feature.color || 'black' }" />
+              <fas v-if="feature.righticon" transform="right-6" :icon="feature.righticon" :style="{ color: feature.color || 'black' }" />
               <fas v-if="feature.subicon" class="fa-inverse" transform="down-4 left-6" :icon="feature.subicon" :style="{ color: feature.color || 'black' }" />
+              <fas v-if="feature.lefticon" transform="left-6" :icon="feature.lefticon" :style="{ color: feature.color || 'black' }" />
             </fal>
           </b-button>
         </div>
@@ -189,12 +191,12 @@ export default class EpEditorMenuBar extends Vue {
       command: 'addColumnBefore',
       icon: 'columns',
       text: 'lisaa-sarake-ennen',
-      uppericon: 'plus',
+      lefticon: 'plus',
     }, {
       color: AddColor,
       command: 'addColumnAfter',
       icon: 'columns',
-      subicon: 'plus',
+      righticon: 'plus',
       text: 'lisaa-sarake-jalkeen',
     }, {
       color: RemoveColor,

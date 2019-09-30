@@ -46,7 +46,6 @@ import { Kieli } from '@/tyypit';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import Loading from 'vue-loading-overlay';
 import Sticky from 'vue-sticky-directive';
 import _ from 'lodash';
 

@@ -4,13 +4,19 @@
   <ep-editor-menu-bar
     :opetussuunnitelma-store="opetussuunnitelmaStore"
     :layout="layout"
-    :help="help"
     :is-editable="isEditable"
     :sticky="sticky"
-    :editor="editor" />
+    :editor="editor"
+    v-if="focused" />
   <editor-content
     ref="content"
-    :editor="editor" />
+    :editor="editor"
+    :class="{ 'content-invalid': validationError, 'content-valid': !validationError }" />
+  <div class="valid-feedback" v-if="!validationError && validMessage && isEditable">{{ $t(validMessage) }}</div>
+  <div class="invalid-feedback" v-else-if="validationError && invalidMessage && isEditable">{{ $t(invalidMessage) }}</div>
+  <div class="invalid-feedback" v-else-if="validationError && !invalidMessage && isEditable">{{ $t('validation-error-' + validationError, validation.$params[validationError]) }}</div>
+  <small class="form-text text-muted" v-if="help && isEditable">{{ $t(help) }}</small>
+  <pre>{{focused}}</pre>
 </div>
 
 </template>
@@ -29,8 +35,6 @@ import {
   Underline,
   Strike,
   Italic,
-  Code,
-  CodeBlock,
   HardBreak,
   History,
   BulletList,
@@ -67,16 +71,16 @@ export default class EpContent extends Mixins(EpValidation) {
 
   @Prop({ default: false })
   isEditable!: boolean;
-  
+
   @Prop()
   locale!: string;
 
   @Prop({ required: true })
   layout!: EditorLayout;
-  
+
   @Prop({ default: false })
   isPlainString!: boolean;
-  
+
   @Prop({ default: '' })
   help!: string;
 
@@ -84,6 +88,8 @@ export default class EpContent extends Mixins(EpValidation) {
   sticky!: boolean;
 
   private editor: any = null;
+
+  private focused = false;
 
   get lang() {
     return this.locale || Kielet.getSisaltoKieli() || 'fi';
@@ -131,25 +137,35 @@ export default class EpContent extends Mixins(EpValidation) {
       onUpdate: () => {
         this.setUpEditorEvents();
       },
+      onFocus: () => {
+        this.focused = true;
+      },
+      onBlur: () => {
+        this.focused = false;
+      },
       extensions,
     });
 
   }
 
   @Watch('isEditable', { immediate: true })
-  onChange(val) {
-    if (!this.editor) {
+  onChange(val, oldVal) {
+    if (val === oldVal) {
       return;
     }
 
-    if (val) {
-      this.setClass('form-control');
-    }
-    else {
-      this.setClass('');
-    }
-
     this.$nextTick(() => {
+      if (!this.editor) {
+        return;
+      }
+
+      if (val) {
+        this.setClass('form-control');
+      }
+      else {
+        this.setClass('');
+      }
+
       this.editor.setOptions({
         editable: !!val,
       });
@@ -157,9 +173,9 @@ export default class EpContent extends Mixins(EpValidation) {
   }
 
   setClass(c: string) {
-    setTimeout(() => {
+    this.$nextTick(() => {
       (this.$refs.content as any).$el.firstChild.className = 'ProseMirror ' + c;
-    }, 100);
+    });
   }
 
   beforeDestroy() {
@@ -197,8 +213,10 @@ export default class EpContent extends Mixins(EpValidation) {
 @import "@/styles/_variables.scss";
 
 .ep-content {
-  padding: 0px;
+  padding: 0;
+
   /deep/ abbr {
+    text-decoration: none !important;
     border-bottom: 1px dotted #999;
     cursor: help;
   }
@@ -212,7 +230,7 @@ export default class EpContent extends Mixins(EpValidation) {
     border-color: #999;
     border-spacing: 1px;
     display: table;
-    margin: 0%;
+    margin: 0;
     overflow: hidden;
     table-layout: fixed;
     width: 100%;
@@ -224,9 +242,38 @@ export default class EpContent extends Mixins(EpValidation) {
   }
 
   /deep/ abbr.virheellinen {
-    color: #e44e4e;
+    color: $invalid;
   }
 
+  /deep/ .form-control {
+    &.ProseMirror-focused {
+      border-top-right-radius: 0;
+      border-top-left-radius: 0;
+    }
+
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  /deep/ .tableWrapper .selectedCell {
+    background-color: $gray-lighten-5;
+  }
+
+  .content-invalid /deep/ .form-control {
+    border-color: $invalid;
+  }
+
+  .content-valid /deep/ .form-control {
+    border-color: $valid;
+  }
+}
+
+// Piilotettu Bootstrapissa oletuksena
+/deep/ .invalid-feedback,
+/deep/ .valid-feedback {
+  display: block;
 }
 
 </style>

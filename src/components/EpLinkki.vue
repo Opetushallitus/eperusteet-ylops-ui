@@ -34,6 +34,8 @@ export default class EpLinkki extends Vue {
       ? (this.url.replace(/^https?:\/\//, ''))
       : '';
 
+    result = result.replace(/^mailto?:/, '');
+
     if (this.onlyTopLevel) {
       const idx = result.indexOf('/');
       if (idx > 0) {

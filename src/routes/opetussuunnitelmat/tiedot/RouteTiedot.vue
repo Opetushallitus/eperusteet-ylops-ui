@@ -44,8 +44,7 @@
             </div>
             <div class="col-md-6" v-if="isOps">
               <ep-form-content name="ops-esikatseltavissa">
-                <ep-toggle help="ops-esikatseltavissa-ohje" v-model="data.esikatseltavissa" :is-editing="isEditing">
-                </ep-toggle>
+                <ep-toggle help="ops-esikatseltavissa-ohje" v-model="data.esikatseltavissa" :is-editing="isEditing"></ep-toggle>
               </ep-form-content>
             </div>
             <div class="col-md-12">
