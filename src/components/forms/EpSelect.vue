@@ -17,7 +17,7 @@ div(v-if="isEditing")
   ep-spinner(v-else)
 div(v-else)
   ul
-    li(v-for="item in model")
+    li(v-for="item in value")
       slot(name="default", :item="item")
         span {{ item }}
 

@@ -9,7 +9,7 @@ import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Lops2019ValidointiDto,
 import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
 import { AxiosResponse } from 'axios';
 import { createLogger } from './logger';
-import { State, Store } from './store';
+import { Getter, State, Store } from './store';
 import { success, fail } from '@/utils/notifications';
 import _ from 'lodash';
 
@@ -26,7 +26,7 @@ interface OpintojaksoQuery {
 
 @Store
 export class OpetussuunnitelmaStore {
-  constructor(private opsId: number) {
+  constructor(public readonly opsId: number) {
     this.init();
   }
 
@@ -51,12 +51,7 @@ export class OpetussuunnitelmaStore {
   private initcv: Promise<void> | null = null;
   private initDone = false;
 
-  public getId() {
-    return this.opsId;
-  }
-
   // Tekstikappaleet
-
   public async getOtsikot() {
     return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opsId)).data;
   }
@@ -291,7 +286,7 @@ export function Opetussuunnitelma() {
 }
 
 export function getOpetussuunnitelmaService(id: number) {
-  if (!opsServiceCache || opsServiceCache.getId() !== id) {
+  if (!opsServiceCache || opsServiceCache.opsId !== id) {
     opsServiceCache = new OpetussuunnitelmaStore(id);
   }
   return opsServiceCache;

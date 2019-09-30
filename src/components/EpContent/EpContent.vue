@@ -2,6 +2,7 @@
 
 <div class="ep-content">
   <ep-editor-menu-bar
+    :opetussuunnitelma-store="opetussuunnitelmaStore"
     :layout="layout"
     :help="help"
     :is-editable="isEditable"
@@ -70,8 +71,7 @@ export default class EpContent extends Mixins(EpValidation) {
   @Prop()
   locale!: string;
 
-  // layout (määrittää editorin ominaisuudet)
-  @Prop({ default: 'simplified' })
+  @Prop({ required: true })
   layout!: EditorLayout;
   
   @Prop({ default: false })
@@ -120,9 +120,9 @@ export default class EpContent extends Mixins(EpValidation) {
     ];
 
     if (this.opetussuunnitelmaStore) {
-      const kasiteHandler = createKasiteHandler(this.opetussuunnitelmaStore.getId());
-      extensions.push(new ImageExtension(this.opetussuunnitelmaStore.getId()));
+      const kasiteHandler = createKasiteHandler(this.opetussuunnitelmaStore.opsId);
       extensions.push(new TermiExtension(kasiteHandler));
+      extensions.push(new ImageExtension(this.opetussuunnitelmaStore.opsId));
     }
 
     this.editor = new Editor({
@@ -138,6 +138,10 @@ export default class EpContent extends Mixins(EpValidation) {
 
   @Watch('isEditable', { immediate: true })
   onChange(val) {
+    if (!this.editor) {
+      return;
+    }
+
     if (val) {
       this.setClass('form-control');
     }

@@ -10,23 +10,20 @@
     <div class="collapse-container">
       <ep-collapse v-if="oppiaine.tehtava">
         <h4 slot="header">{{ $t('oppiaineet-tehtava') }}</h4>
-        <ep-content v-model="oppiaine.tehtava.kuvaus">
-        </ep-content>
+        <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tehtava.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset">
         <h4 slot="header">{{ $t('laaja-alainen-osaaminen') }}</h4>
-        <ep-content v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus">
-        </ep-content>
+        <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.tavoitteet">
         <h4 slot="header">{{ $t('tavoitteet') }}</h4>
-        <ep-content v-model="oppiaine.tavoitteet.kuvaus"></ep-content>
+        <ep-content layout="normal" opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tavoitteet.kuvaus"></ep-content>
         <ep-prefix-list :value="oppiaine.tavoitteet.tavoitealueet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.arviointi">
         <h4 slot="header">{{ $t('arviointi') }}</h4>
-        <ep-content v-model="oppiaine.arviointi.kuvaus">
-        </ep-content>
+        <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.arviointi.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.oppimaarat && oppiaine.oppimaarat.length > 0">
         <h4 slot="header">{{ $t('oppimaarat') }}</h4>

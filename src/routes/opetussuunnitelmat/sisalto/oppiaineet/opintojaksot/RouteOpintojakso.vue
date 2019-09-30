@@ -42,6 +42,7 @@
                 <ep-form-content name="oppiaineet">
                   <ep-oppiaine-selector
                     v-if="isEditing"
+                    :opetussuunnitelma-store="opetussuunnitelmaStore"
                     :ops-id="$route.params.id"
                     :validation="validation.oppiaineet"
                     :value="data.oppiaineet.map(x => x.koodi)"
@@ -151,12 +152,16 @@
             <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
               <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
-                <ep-content :value="oppiaine.laajaAlaisetOsaamiset.kuvaus" help="ohje-lyhyt-laaja-alainen" />
+                <ep-content
+                  layout="normal" 
+                  :opetussuunnitelma-store="opetussuunnitelmaStore"
+                  :value="oppiaine.laajaAlaisetOsaamiset.kuvaus"
+                  help="ohje-lyhyt-laaja-alainen"></ep-content>
               </div>
               <!-- Todo: Tee parempi ratkaisu tähän -->
               <div v-else-if="oppiaine.laajaAlainenOsaaminen">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
-                <ep-content :value="oppiaine.laajaAlainenOsaaminen" />
+                <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="oppiaine.laajaAlainenOsaaminen"></ep-content>
               </div>
             </div>
 
@@ -197,13 +202,13 @@
             <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
               <div v-if="oppiaine.arviointi && oppiaine.arviointi.kuvaus">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
-                <ep-content :value="oppiaine.arviointi.kuvaus" />
+                <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="oppiaine.arviointi.kuvaus"></ep-content>
               </div>
             </div>
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
-            <ep-content layout="normal" v-model="data.arviointi" :is-editable="isEditing" />
+            <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.arviointi" :is-editable="isEditing"></ep-content>
           </ep-collapse>
         </div>
 
@@ -211,8 +216,7 @@
           <ep-collapse tyyppi="opintojakson-vapaa-kuvaus">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-vapaa-kuvaus') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.kuvaus">{{ $t('ei-kuvausta') }}</div>
-            <ep-content layout="normal" v-model="data.kuvaus" :is-editable="isEditing" help="ohje-lyhyt-vapaa-kuvaus" >
-            </ep-content>
+            <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.kuvaus" :is-editable="isEditing" help="ohje-lyhyt-vapaa-kuvaus" ></ep-content>
           </ep-collapse>
         </div>
       </template>

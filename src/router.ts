@@ -227,6 +227,8 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
+  console.log(to, from);
+
   // Alustetaan opetussuunnitelma tilan vaihtuessa
   if (Opetussuunnitelma()) {
     try {
