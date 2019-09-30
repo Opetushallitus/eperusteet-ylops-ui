@@ -8,8 +8,7 @@
           <p>{{ $t('ohje-tekstikapale-perusteteksti') }}</p>
           <div class="ohjeet" v-if="data.ohjeet.length > 0">
             <div class="ohje" v-for="ohje in data.ohjeet" :key="ohje.id">
-              <ep-content v-model="ohje.teksti" :is-editable="allowOhjeEdit && isEditing">
-              </ep-content>
+              <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="ohje.teksti" :is-editable="allowOhjeEdit && isEditing"> </ep-content>
             </div>
           </div>
         </div>
@@ -50,8 +49,7 @@
               <template #header>
                 <h5>{{ $t('paikallinen-teksti') }}</h5>
               </template>
-              <ep-content layout="normal" v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing">
-              </ep-content>
+              <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing"> </ep-content>
               <div class="alert alert-info" v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)">{{ $t('paikallista-sisaltoa-ei-maaritetty') }}</div>
             </ep-collapse>
           </span>

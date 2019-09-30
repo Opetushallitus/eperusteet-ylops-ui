@@ -57,6 +57,8 @@
 import { Vue, Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import { Editor, EditorMenuBar } from 'tiptap';
 import Sticky from 'vue-sticky-directive';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import _ from 'lodash';
 
 
 @Component({
@@ -68,6 +70,9 @@ import Sticky from 'vue-sticky-directive';
   },
 })
 export default class EpEditorMenuBar extends Vue {
+  @Prop({ default: null })
+  private opetussuunnitelmaStore!: OpetussuunnitelmaStore | null;
+
   @Prop({ required: true })
   private editor!: any;
 
@@ -126,13 +131,18 @@ export default class EpEditorMenuBar extends Vue {
   // private link = '';
 
   get linking() {
-    return [{
-      icon: 'paperclip',
-      command: 'termi',
-    }, {
-      icon: 'file-image',
-      command: 'image',
-    }];
+    if (this.opetussuunnitelmaStore) {
+      return [{
+        icon: 'paperclip',
+        command: 'termi',
+      }, {
+        icon: 'file-image',
+        command: 'image',
+      }];
+    }
+    else {
+      return [];
+    }
   }
 
   get lists() {
@@ -229,13 +239,13 @@ export default class EpEditorMenuBar extends Vue {
 
   get groups() {
     if (this.layout === 'normal') {
-      return [
+      return _.filter([
         this.history,
         this.textManipulation,
         this.linking,
         this.lists,
         this.tables,
-      ];
+      ], v => !_.isEmpty(v));
     }
     else if (this.layout === 'simplified') {
       return [

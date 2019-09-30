@@ -54,6 +54,7 @@ div.content
         .col-md-12
           ep-form-content(name="ops-kuvaus")
             ep-content(
+              opetussuunnitelma-store="opetussuunnitelmaStore",
               v-model="ops.kuvaus",
               help="ops-kuvaus-ohje")
 
@@ -62,6 +63,7 @@ div.content
       h3(slot="header")  {{ $t('uusi-julkaisu') }}
       div(v-if="true || isValid")
         ep-content(
+          opetussuunnitelma-store="opetussuunnitelmaStore",
           v-model="uusiJulkaisu.julkaisutiedote",
           help="uuden-julkaisun-tiedote",
           layout="simplified",

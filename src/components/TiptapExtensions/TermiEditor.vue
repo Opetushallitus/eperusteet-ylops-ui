@@ -61,7 +61,6 @@ import EpToggle from '@/components/forms/EpToggle.vue';
 import EpValidation from '@/mixins/EpValidation';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { kasiteValidator } from '@/validators/kasite';
-import { Termisto } from '@/api';
 import VueSelect from 'vue-select';
 import { IKasiteHandler } from '@/stores/kuvat';
 import _ from 'lodash';
