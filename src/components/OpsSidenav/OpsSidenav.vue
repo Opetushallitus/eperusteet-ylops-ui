@@ -17,10 +17,10 @@
         ops-sidenav-link(:to="itemRoute",
           :class="{ 'module-link': onkoModTaiOj(itemData.item) }",
           v-if="!isSubmenu && itemRoute")
-          ep-color-ball(
-            v-if="onkoModTaiOj(itemData.item)",
-            :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'")
           a.btn.btn-link
+            ep-color-ball.mr-2(
+              v-if="onkoModTaiOj(itemData.item)",
+              :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'")
             span {{ kaanna(itemData.item) }}
             span.code-field(v-if="itemData.item.type === 'moduuli'") ({{ haeModuuliKoodi(itemData.item) }})
         li.subheader(v-if="!isSubmenu && !itemRoute")

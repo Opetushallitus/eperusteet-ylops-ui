@@ -10,8 +10,7 @@
       <p>{{ $t('ukk-kuvaus-nakyma') }}</p>
       <ep-spinner v-if="isLoading"></ep-spinner>
       <div v-else>
-        <ep-search v-model="rajain">
-        </ep-search>
+        <ep-search v-model="rajain" class="mb-3"></ep-search>
         <p>{{ $t('ukk-luoja-rajaus') }}:</p>
         <div class="form-check form-check-inline" v-for="(org, idx) in organisaatiot" :key="idx">
           <input class="form-check-input" :id="org.oid" type="checkbox" v-model="org.$checked" />

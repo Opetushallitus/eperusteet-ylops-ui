@@ -6,7 +6,7 @@
   ep-spinner(v-if="isLoading")
   div.sisalto(v-else)
     .otsikko-toiminnot
-      ep-search(v-model="hakusana")
+      ep-search.mb-3(v-model="hakusana")
       .lisaysnappi
         button(@click="avaaMuokkausModal(null)")
           fas.mr-2(icon="plus-circle")

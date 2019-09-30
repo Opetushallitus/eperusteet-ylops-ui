@@ -4,14 +4,8 @@
       <h2 class="otsikko">{{ $t('poistetut') }}</h2>
     </div>
     <div class="sisalto">
-      <div class="haku">
-        <b-row>
-          <b-col>
-            <ep-search v-model="query" />
-          </b-col>
-          <b-col></b-col>
-          <b-col></b-col>
-        </b-row>
+      <div class="d-flex mb-3">
+        <ep-search v-model="query"></ep-search>
       </div>
       <b-tabs content-class="mt-3">
         <b-tab :title="$t('opintojaksot')">
@@ -130,10 +124,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   .sisalto {
     padding: 15px;
-
-    .haku {
-      padding: 0 0 15px 0;
-    }
   }
 }
 

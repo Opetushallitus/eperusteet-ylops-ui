@@ -15,7 +15,7 @@ ep-main-view
       div.row
         //div.col.col-fixed
         div.col
-          ep-search(v-model="rajain", @input="updateSearch")
+          ep-search.mb-3(v-model="rajain", @input="updateSearch")
       // Tiedotteet
       div.row(v-if="!hasTiedotteet")
         //div.col.col-fixed.col-new

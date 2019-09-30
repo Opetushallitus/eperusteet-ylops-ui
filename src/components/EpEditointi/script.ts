@@ -14,8 +14,6 @@ import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
 import { setItem, getItem } from '@/utils/localstorage';
 
-export { EditointiKontrolliConfig } from '@/stores/editointi';
-
 @Component({
   validations() {
     return {

@@ -7,6 +7,7 @@
     :is-editable="isEditable"
     :sticky="sticky"
     :editor="editor"
+    :help="toolbarHelp"
     v-if="focused" />
   <editor-content
     ref="content"
@@ -79,6 +80,9 @@ export default class EpContent extends Mixins(EpValidation) {
 
   @Prop({ default: false })
   isPlainString!: boolean;
+
+  @Prop({ default: '' })
+  toolbarHelp!: string;
 
   @Prop({ default: '' })
   help!: string;
@@ -250,11 +254,11 @@ export default class EpContent extends Mixins(EpValidation) {
       border-top-right-radius: 0;
       border-top-left-radius: 0;
     }
+  }
 
-    &:focus {
-      outline: none !important;
-      box-shadow: none !important;
-    }
+  /deep/ [contenteditable]:focus {
+    outline: none !important;
+    box-shadow: none !important;
   }
 
   /deep/ .tableWrapper .selectedCell {

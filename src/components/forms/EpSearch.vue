@@ -1,8 +1,8 @@
 <template lang="pug">
-div.form-group.has-search
+div.filter
   span.form-control-feedback
     fas(icon="search")
-  input.form-control.mb-3(
+  input.form-control(
     type="search",
     :placeholder="placeholderText",
     @input="onInput($event.target.value)",
@@ -45,7 +45,7 @@ export default class EpSearch extends Vue {
 
 <style scoped lang="scss">
 
-.has-search .form-control {
+.filter .form-control {
   padding-left: 2.375rem;
   border-radius: 15px;
   background: #F3F3F3;
@@ -57,7 +57,7 @@ export default class EpSearch extends Vue {
 
 }
 
-.has-search .form-control-feedback {
+.filter .form-control-feedback {
   position: absolute;
   z-index: 2;
   display: block;
