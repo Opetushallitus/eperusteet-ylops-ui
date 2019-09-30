@@ -1,13 +1,12 @@
 import { Component, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { PerusteCache } from '@/stores/peruste';
 
 import {
   SideMenuEntry,
   SideMenuItem,
-  Lops2019OpintojaksoDto,
+  Lops2019OppiaineDto,
 } from '@/tyypit';
 
 import {
@@ -17,6 +16,7 @@ import {
   EpSearch,
 } from '@/components';
 
+import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
 import {
@@ -86,19 +86,19 @@ const i18keys = {
     EpSearch,
   },
 })
-export default class OpsSidenav extends Vue {
+export default class OpsSidenav extends EpOpsComponent {
   private cache: PerusteCache = null as any;
   private showHallintatyokalut = false;
 
   get opintojaksot() {
-    return Opetussuunnitelma.opintojaksot;
+    return this.store.opintojaksot;
   }
 
   async created() {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
   }
 
-  private opintojaksoModuuliLista(source) {
+  private opintojaksoModuuliLista(source: Lops2019OppiaineDto) {
     const result: SideMenuEntry[] = [];
     const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(this.opintojaksot, source);
     if (!_.isEmpty(oppiaineenOpintojaksot)) {
@@ -124,8 +124,8 @@ export default class OpsSidenav extends Vue {
     return result;
   }
 
-  private oppiaineOppimaaraLinkit(oppiaine) {
-    return oppiaine.oppimaarat.map(oppimaara =>
+  private oppiaineOppimaaraLinkit(oppiaine: Lops2019OppiaineDto) {
+    return _.map(oppiaine.oppimaarat, oppimaara =>
       oppiaineLinkki(
         'oppimaara',
         oppimaara,
@@ -183,7 +183,7 @@ export default class OpsSidenav extends Vue {
     ];
 
     // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
-    const paikallisetOppiaineet = Opetussuunnitelma.paikallisetOppiaineet;
+    const paikallisetOppiaineet = this.store.paikallisetOppiaineet;
     const oppiaineLinkit = this.opsOppiaineLinkit;
     // debugger;
 
@@ -210,10 +210,10 @@ export default class OpsSidenav extends Vue {
   }
 
   private get opsLapset() {
-    return _.get(Opetussuunnitelma, 'sisalto.lapset', []);
+    return _.get(this.store, 'sisalto.lapset', []);
   }
 
   private get opsSisalto() {
-    return Opetussuunnitelma.sisalto;
+    return this.store.sisalto;
   }
 }

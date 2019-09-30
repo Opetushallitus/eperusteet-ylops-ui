@@ -54,12 +54,12 @@ import {
   EpSteps,
 } from '@/components';
 
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpValidation from '@/mixins/EpValidation';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
 import _ from 'lodash';
 import EpParams from '@/mixins/EpParams';
 import { opintojaksoLuontiValidator } from '@/validators/opintojakso';
-import { oppiaineLuontiValidator } from '@/validators/oppiaine';
+import { oppiaineLuontiValidator } from '@/validators/oppiaineet';
 import { tekstikappaleLuontiValidator } from '@/validators/tekstikappaleet';
 import { PerusteCache } from '@/stores/peruste';
 import { createLogger } from '@/stores/logger';
@@ -76,7 +76,7 @@ const logger = createLogger('SisaltoModaali');
     EpSteps,
   },
 })
-export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
+export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams, EpOpsComponent) {
   @Prop({
     default: null,
   })
@@ -179,8 +179,8 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
     (this.$refs.modal as any).hide();
   }
 
-  private async addTekstikappale() {
-    return Opetussuunnitelma.addTeksti({
+  async addTekstikappale() {
+    return this.store.addTeksti({
       tekstiKappale: {
         ...this.uusi,
       },
@@ -191,15 +191,15 @@ export default class EpSisaltoModaali extends Mixins(EpValidation, EpParams) {
     return _.map(this.oppiainekoodit, koodi => ({ koodi }));
   }
 
-  private async addOpintojakso() {
-    return Opetussuunnitelma.addOpintojakso({
+  async addOpintojakso() {
+    return this.store.addOpintojakso({
       ...this.uusi,
       oppiaineet: this.mappedOppiaineet,
     });
   }
 
-  private async addOppiaine() {
-    return Opetussuunnitelma.addOppiaine({
+  async addOppiaine() {
+    return this.store.addOppiaine({
       ...this.uusi,
       oppiaineet: this.mappedOppiaineet,
     });

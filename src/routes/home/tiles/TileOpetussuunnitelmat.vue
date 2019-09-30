@@ -27,10 +27,8 @@
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 import EpRoot from '@/mixins/EpRoot';
 import BaseTile from './BaseTile.vue';
-import {
-  EpContent,
-  EpSpinner,
-} from '@/components';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { Opetussuunnitelmat } from '@/api';
 import { delay } from '@/utils/delay';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';

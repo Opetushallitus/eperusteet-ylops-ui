@@ -1,35 +1,35 @@
 <template>
 <div class="home-container">
-    <div class="header">
-        <ep-navigation :sticky="false"></ep-navigation>
-        <div class="container">
-            <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
-            <p>{{ $t('tervetuloa-kuvaus') }}</p>
-            <div class="row">
-                <div class="col-md-4">
-                    <ep-search v-model="rajain"></ep-search>
-                </div>
-            </div>
+  <div class="header">
+    <ep-navigation :sticky="false"></ep-navigation>
+    <div class="container">
+      <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
+      <p>{{ $t('tervetuloa-kuvaus') }}</p>
+      <div class="row">
+        <div class="col-md-4">
+          <ep-search v-model="rajain"></ep-search>
         </div>
+      </div>
     </div>
-    <div class="container tile-container">
-        <div class="d-flex flex-row flex-wrap justify-content-center">
-            <tile-opetussuunnitelmat
-              :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
-              :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
-              :count-is-loading="isLoading" />
-            <tile-opetussuunnitelmat
-              :keskeneraiset="etusivu.pohjatKeskeneraiset"
-              :julkaistut="etusivu.pohjatJulkaistut"
-              :is-ops="false"
-              v-oikeustarkastelu="'hallinta'"
-              :count-is-loading="isLoading" />
-            <tile-organisaatio />
+  </div>
+  <div class="container tile-container">
+    <div class="d-flex flex-row flex-wrap justify-content-center">
+      <tile-opetussuunnitelmat
+        :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
+        :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
+        :count-is-loading="isLoading" />
+        <tile-opetussuunnitelmat
+          :keskeneraiset="etusivu.pohjatKeskeneraiset"
+          :julkaistut="etusivu.pohjatJulkaistut"
+          :is-ops="false"
+          v-oikeustarkastelu="'hallinta'"
+          :count-is-loading="isLoading" />
+          <tile-organisaatio />
             <tile-valtakunnalliset-perusteet />
-            <tile-tiedotteet />
-            <tile-ukk />
-        </div>
+              <tile-tiedotteet />
+                <tile-ukk />
     </div>
+  </div>
 </div>
 </template>
 
@@ -50,6 +50,9 @@ import TileTiedotteet from './tiles/TileTiedotteet.vue';
 import EpRoute from '@/mixins/EpRoute';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EtusivuDto } from '@/tyypit';
+import ImageModal from '@/components/TiptapExtensions/ImageModal.vue';
+import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
+
 
 import {
   EpAikaleima,
@@ -59,6 +62,7 @@ import {
   EpSpinner,
 } from '@/components';
 
+
 @Component({
   components: {
     EpAikaleima,
@@ -66,12 +70,12 @@ import {
     EpNavigation,
     EpSearch,
     EpSpinner,
-    TileUkk,
     TileLoki,
     TileOpetussuunnitelmat,
     TileOrganisaatio,
     TilePohjat,
     TileTiedotteet,
+    TileUkk,
     TileUusiOpetussuunnitelma,
     TileUusiPohja,
     TileValtakunnallisetPerusteet,

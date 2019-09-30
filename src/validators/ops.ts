@@ -2,29 +2,6 @@ import { notNull, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@/tyypit';
 import { minLength, required } from 'vuelidate/lib/validators';
 
-export function opsTiedotValidator(kielet: Kieli[] = [], isOps = true) {
-  const common = {
-    nimi: {
-      ...requiredLokalisoituTeksti(kielet),
-    },
-    julkaisukielet: {
-      required,
-      'min-length': minLength(1),
-    },
-  };
-
-  if (isOps) {
-    return {
-      ...common,
-    };
-  }
-  else {
-    return {
-      ...common,
-    };
-  }
-}
-
 export function pohjaLuontiValidator(kielet: Kieli[] = []) {
   return {
     nimi: {
@@ -50,4 +27,27 @@ export function opsLuontiValidator(kielet: Kieli[] = []) {
       },
     },
   };
+}
+
+export function opsTiedotValidator(kielet: Kieli[] = [], isOps = true) {
+  const common = {
+    nimi: {
+      ...requiredLokalisoituTeksti(kielet),
+    },
+  };
+
+  if (isOps) {
+    return {
+      ...common,
+      julkaisukielet: {
+        required,
+        'min-length': minLength(1),
+      },
+    };
+  }
+  else {
+    return {
+      ...common,
+    };
+  }
 }

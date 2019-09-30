@@ -4,6 +4,7 @@ const webpack = require('webpack');
 module.exports = {
   lintOnSave: false,
   publicPath: process.env.NODE_ENV === 'production' ? '/eperusteet-ylops-app/uusi/' : '/',
+  runtimeCompiler: true,
   configureWebpack: {
     /*optimization: {
       providedExports: process.env.NODE_ENV === 'production', // https://github.com/vuejs/vue-cli/issues/1708
@@ -18,6 +19,7 @@ module.exports = {
       errors: true,
     },
     clientLogLevel: 'none',
+    host: '0.0.0.0',
     port: 9040,
     proxy: {
       '/eperusteet-ylops-service': {

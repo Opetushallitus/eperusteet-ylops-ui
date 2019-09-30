@@ -102,8 +102,8 @@ import {
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019OppiaineDto, Lops2019OpintojaksoDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import _ from 'lodash';
 
 @Component({
@@ -116,7 +116,7 @@ import _ from 'lodash';
     EpPrefixList,
   },
 })
-export default class RouteOppiaine extends Mixins(EpRoute) {
+export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   private cache: PerusteCache | null = null;
   private oppiaine: Lops2019OppiaineDto | null = null;
 
@@ -127,7 +127,7 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
   }
 
   get opintojaksot() {
-    return _.filter(Opetussuunnitelma.opintojaksot, (oj) => _(oj.oppiaineet)
+    return _.filter(this.store.opintojaksot, (oj) => _(oj.oppiaineet)
       .sortBy('koodi')
       .map('koodi')
       .includes(this.oppiaine!.koodi!.uri));

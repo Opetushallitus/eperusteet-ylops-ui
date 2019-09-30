@@ -25,7 +25,11 @@ interface OpintojaksoQuery {
 }
 
 @Store
-class OpetussuunnitelmaStore {
+export class OpetussuunnitelmaStore {
+  constructor(private opsId: number) {
+    this.init();
+  }
+
   @State()
   public sisalto: TekstiKappaleViiteKevytDto | null = null;
 
@@ -44,19 +48,21 @@ class OpetussuunnitelmaStore {
   @State()
   public progress = 0;
 
-  private opsId: number | null = null;
   private initcv: Promise<void> | null = null;
+  private initDone = false;
+
+  public getId() {
+    return this.opsId;
+  }
 
   // Tekstikappaleet
 
   public async getOtsikot() {
-    const opsId = _.get(this.opetussuunnitelma, 'id', null);
-    return opsId ? (await OpetussuunnitelmanSisalto.getTekstiOtsikot(opsId)).data : null;
+    return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.opsId)).data;
   }
 
   public async getKasitteet() {
-    const opsId = _.get(this.opetussuunnitelma, 'id', null);
-    return opsId ? (await Termisto.getAllTermit(opsId)).data : [];
+    return (await Termisto.getAllTermit(this.opsId)).data || [];
   }
 
   public async updateSisalto() {
@@ -64,17 +70,17 @@ class OpetussuunnitelmaStore {
     this.kasitteet = await this.getKasitteet();
   }
 
-  public async init(id: number) {
-    if (this.opsId === id) {
-      if (this.initcv) {
-        await this.initcv;
-      }
+  public async init() {
+    if (this.initDone) {
+      return;
+    }
+    else if (this.initcv) {
+      await this.initcv;
     }
     else {
-      this.opsId = id;
       this.initcv = new Promise(async (resolve) => {
-        logger.info('Initing peruste rakenne', id);
-        this.opetussuunnitelma = await this.get(id);
+        logger.info('Initing peruste store', this.opsId);
+        this.opetussuunnitelma = await this.get();
         await this.updateSisalto();
 
         if ((this.opetussuunnitelma.toteutus as any) === 'lops2019') {
@@ -82,21 +88,18 @@ class OpetussuunnitelmaStore {
           this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
         }
 
-        logger.info('Inited peruste rakenne');
         this.initcv = null;
+        this.initDone = true;
         resolve();
       });
       await this.initcv;
     }
   }
 
-  public async get(id: number) {
-    return (await Opetussuunnitelmat.getOpetussuunnitelma(id)).data;
+  public async get() {
+    return (await Opetussuunnitelmat.getOpetussuunnitelma(this.opsId)).data;
   }
 
-  // @Checked({
-  //   success: "tallennus-onnistui-opetussuunnitelma",
-  // })
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
     const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma as OpetussuunnitelmaDto);
     success('tallennus-onnistui-opetussuunnitelma');
@@ -281,4 +284,15 @@ class OpetussuunnitelmaStore {
   }
 }
 
-export const Opetussuunnitelma = new OpetussuunnitelmaStore();
+let opsServiceCache: OpetussuunnitelmaStore | null = null;
+
+export function Opetussuunnitelma() {
+  return opsServiceCache!;
+}
+
+export function getOpetussuunnitelmaService(id: number) {
+  if (!opsServiceCache || opsServiceCache.getId() !== id) {
+    opsServiceCache = new OpetussuunnitelmaStore(id);
+  }
+  return opsServiceCache;
+}

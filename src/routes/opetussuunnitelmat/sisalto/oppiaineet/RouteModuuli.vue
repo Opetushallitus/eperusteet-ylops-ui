@@ -47,8 +47,8 @@ import {
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import _ from 'lodash';
 
 @Component({
@@ -61,7 +61,7 @@ import _ from 'lodash';
     EpSpinner,
   },
 })
-export default class RouteOppiaine extends Mixins(EpRoute) {
+export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   private cache: PerusteCache | null = null;
   private moduuli: Lops2019ModuuliDto | null = null;
   private opintojaksot: Lops2019OpintojaksoDto[] = [];
@@ -71,7 +71,7 @@ export default class RouteOppiaine extends Mixins(EpRoute) {
     this.moduuli = await this.cache.getModuuli(
       _.parseInt(this.$route.params.oppiaineId),
       _.parseInt(this.$route.params.moduuliId));
-    this.opintojaksot = await Opetussuunnitelma.getOpintojaksot({
+    this.opintojaksot = await this.store.getOpintojaksot({
       moduuliUri: this.moduuli!.koodi!.uri as string,
     } as any);
     this.breadcrumb('moduuli', this.moduuli.nimi);

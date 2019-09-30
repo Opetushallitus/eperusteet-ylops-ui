@@ -49,9 +49,9 @@ import _ from 'lodash';
 import { Mixins, Component, Prop } from 'vue-property-decorator';
 
 import EpValidation from '@/mixins/EpValidation';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { EpMultiSelect } from '@/components';
 import { PerusteCache } from '@/stores/peruste';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { Kielet } from '@/stores/kieli';
 
 @Component({
@@ -59,10 +59,7 @@ import { Kielet } from '@/stores/kieli';
     EpMultiSelect,
   },
 })
-export default class EpOppiaineSelector extends Mixins(EpValidation) {
-  @Prop({ required: true })
-  private opsId!: number;
-
+export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsComponent) {
   @Prop()
   private value!: string | string[];
 
@@ -101,7 +98,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation) {
   }
 
   get paikallisetOppiaineet() {
-    return _(Opetussuunnitelma.paikallisetOppiaineet)
+    return _(this.store.paikallisetOppiaineet)
       .filter('koodi')
       .map((oa) => {
         return {

@@ -11,7 +11,6 @@ import { Termisto } from '@/api';
 import { Kielet, UiKielet } from '@/stores/kieli';
 import { Kieli, TermiDto } from '@/tyypit';
 import { kasiteValidator } from '@/validators/kasite';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 interface Kasite {
   kasite: TermiDto;
@@ -68,7 +67,7 @@ export default class RouteKasite extends EpOpsRoute {
       await Termisto.deleteTermi(this.opsId, this.kasite.id);
       _.remove(this.termisto, k => k.kasite.id === this.kasite.id);
       this.termisto = [...this.termisto];
-      await Opetussuunnitelma.updateSisalto();
+      await this.store.updateSisalto();
     }
     catch (err) {
       // Todo: Termin poisto epäonnistui
@@ -118,7 +117,7 @@ export default class RouteKasite extends EpOpsRoute {
       }
 
       // Päivitetään OPS:n sisällä oleva käsitelista
-      await Opetussuunnitelma.updateSisalto();
+      await this.store.updateSisalto();
       (this as any).$refs.kasitteenLuontiModal.hide();
     }
     catch (err) {

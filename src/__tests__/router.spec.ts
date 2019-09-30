@@ -9,9 +9,8 @@ import {
   genOikeudet,
   genKayttaja,
 } from '&/utils/data';
-import {
-  OpetussuunnitelmaInfoDto,
-} from '@/tyypit';
+
+import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 
 import {
   Kayttajat as KayttajatApi,
@@ -98,13 +97,13 @@ describe('Router', () => {
     });
   }
 
-  beforeEach(() => {
-    router.push({
+  beforeEach(async () => {
+    return router.push({
       name: 'root',
       params: {
         lang: 'fi',
       },
-    });
+    }).catch(err => {});
   });
 
   test('App creation', async () => {

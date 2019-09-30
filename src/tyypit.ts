@@ -37,8 +37,8 @@ export interface KysymysDto {
   id?: number;
   kysymys?: string;
   vastaus?: string;
-  organisaatiot: OrganisaatioDto[];
-  $uusi: boolean;
+  organisaatiot?: OrganisaatioDto[];
+  $uusi?: boolean;
 }
 
 export interface OrganisaatioDto {
@@ -72,6 +72,7 @@ export interface RecursiveTreeItem {
 
 export type EtusivuDto = GApi.EtusivuDto;
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
+export type LiiteDto = GApi.LiiteDto;
 export type Lops2019ModuuliDto = GApi.Lops2019ModuuliDto;
 export type Lops2019OpintojaksoDto = GApi.Lops2019OpintojaksoDto;
 export type Lops2019OpintojaksonModuuliDto = GApi.Lops2019OpintojaksonModuuliDto;
@@ -91,6 +92,7 @@ export type PerusteTekstiKappaleViiteDto = GApi.PerusteTekstiKappaleViiteDto;
 export type Puu = GApi.Puu;
 export type RevisionDto = GApi.RevisionDto;
 export type TekstiKappaleViiteKevytDto = GApi.TekstiKappaleViiteKevytDto;
+export type TekstiKappaleDto = GApi.TekstiKappaleDto;
 export type TermiDto = GApi.TermiDto;
 export type TilaEnum = GApi.OpetussuunnitelmaInfoDto.TilaEnum;
 export type UusiJulkaisuDto = GApi.UusiJulkaisuDto;

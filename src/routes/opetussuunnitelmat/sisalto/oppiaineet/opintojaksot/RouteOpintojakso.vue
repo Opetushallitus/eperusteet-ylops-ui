@@ -12,13 +12,31 @@
       </template>
       <template slot="keskustelu" slot-scope="{ }">
       </template>
-      <template slot="header" slot-scope="{ data, validation, isEditing }">
-        <ep-field help="opintojakso-nimi-ohje" v-model="data.nimi" :validation="validation.nimi" :is-header="true" :is-editing="isEditing"></ep-field>
+      <template slot="header" slot-scope="{ data }">
+        <div class="nimi">{{ $kaanna(data.nimi) || $t('opintojakso') }}</div>
       </template>
       <template v-slot="{ data, validation, isEditing }">
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-tiedot">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-tiedot') }}</div>
+            <div class="row">
+              <div class="col-md-6">
+                <ep-form-content name="nimi">
+                  <ep-field
+                    help="opintojakso-nimi-ohje"
+                    v-model="data.nimi"
+                    :validation="validation.nimi"
+                    :is-header="false"
+                    :is-editing="isEditing"></ep-field>
+                </ep-form-content>
+              </div>
+              <div class="col-md-6">
+                <ep-form-content name="koodi">
+                  <ep-field help="opintojakso-koodi-ohje" v-model="data.koodi" type="string" :validation="validation.koodi" :is-editing="isEditing">
+                  </ep-field>
+                </ep-form-content>
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-6">
                 <ep-form-content name="oppiaineet">
@@ -35,12 +53,6 @@
                       </li>
                     </ul>
                   </div>
-                </ep-form-content>
-              </div>
-              <div class="col-md-6">
-                <ep-form-content name="koodi">
-                  <ep-field help="opintojakso-koodi-ohje" v-model="data.koodi" type="string" :validation="validation.koodi" :is-editing="isEditing">
-                  </ep-field>
                 </ep-form-content>
               </div>
               <div class="col-md-6">
@@ -139,7 +151,7 @@
             <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
               <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
-                <ep-content :value="oppiaine.laajaAlaisetOsaamiset.kuvaus" />
+                <ep-content :value="oppiaine.laajaAlaisetOsaamiset.kuvaus" help="ohje-lyhyt-laaja-alainen" />
               </div>
               <!-- Todo: Tee parempi ratkaisu tähän -->
               <div v-else-if="oppiaine.laajaAlainenOsaaminen">
@@ -199,7 +211,7 @@
           <ep-collapse tyyppi="opintojakson-vapaa-kuvaus">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-vapaa-kuvaus') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.kuvaus">{{ $t('ei-kuvausta') }}</div>
-            <ep-content layout="normal" v-model="data.kuvaus" :is-editable="isEditing">
+            <ep-content layout="normal" v-model="data.kuvaus" :is-editable="isEditing" help="ohje-lyhyt-vapaa-kuvaus" >
             </ep-content>
           </ep-collapse>
         </div>
@@ -225,7 +237,6 @@ import {
 } from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';
@@ -274,7 +285,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   async remove(data: any) {
     if (await this.vahvista()) {
-      await Opetussuunnitelma.removeOpintojakso(data.id);
+      await this.store.removeOpintojakso(data.id);
       this.$router.push({
         name: 'opsPoistetut',
       });
@@ -290,7 +301,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return [];
     }
     else {
-      return Opetussuunnitelma.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+      return this.store.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
     }
   }
 
@@ -317,7 +328,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   get paikallisetOppiaineet() {
-    return _(Opetussuunnitelma.paikallisetOppiaineet)
+    return _(this.store.paikallisetOppiaineet)
       .filter('koodi')
       .map((oa) => {
         return {
@@ -485,7 +496,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return result;
     }
     else {
-      const opintojakso = await Opetussuunnitelma.getOpintojakso(_.parseInt(opintojaksoId));
+      const opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
       if (opintojakso) {
         this.breadcrumb('opintojakso', opintojakso.nimi);
       }
@@ -495,7 +506,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   async save(opintojakso: Lops2019OpintojaksoDto) {
     if (await this.isUusi()) {
-      const uusi = await Opetussuunnitelma.addOpintojakso(opintojakso);
+      const uusi = await this.store.addOpintojakso(opintojakso);
       this.$router.push({
         ...(this.$router.currentRoute as any),
         params: {
@@ -505,7 +516,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       });
     }
     else {
-      await Opetussuunnitelma.saveOpintojakso(opintojakso);
+      await this.store.saveOpintojakso(opintojakso);
     }
   }
 }
@@ -513,6 +524,11 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
 <style lang="scss" scoped>
 @import "@/styles/_variables.scss";
+
+/deep/ .nimi {
+  font-size: 150%;
+  font-weight: 600;
+}
 
 .moduulit {
   display: flex;

@@ -75,8 +75,8 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
 import _ from 'lodash';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import { Component } from 'vue-property-decorator';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { Prop, Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@/stores/kieli';
 import EpProgress from '@/components/EpProgress.vue';
@@ -101,9 +101,7 @@ export default class RouteTiedot extends EpOpsRoute {
   async mounted() {
     this.hooks = {
       source: {
-        async save(ops) {
-          return Opetussuunnitelma.save(ops);
-        },
+        save: this.store.save,
         load: this.load,
       },
     };
@@ -117,7 +115,7 @@ export default class RouteTiedot extends EpOpsRoute {
 
   public async tryTilanvaihto(tila: string) {
     try {
-      await Opetussuunnitelma.updateTila(tila);
+      await this.store.updateTila(tila);
       return true;
     }
     catch (err) {
@@ -131,7 +129,7 @@ export default class RouteTiedot extends EpOpsRoute {
 
   private async load() {
     if (this.$route.params.id) {
-      return Opetussuunnitelma.get(_.parseInt(this.$route.params.id));
+      return this.store.get();
     }
   }
 }

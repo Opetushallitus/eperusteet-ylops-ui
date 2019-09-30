@@ -74,7 +74,7 @@ export function Store<T extends StoreConstructor>(constructor: T) {
     public static store: any;
 
     constructor(...args: any[]) {
-      super();
+      super(...args);
       const ClassName = Object.getPrototypeOf(this.constructor.prototype).constructor.name;
       const config = (this as any)._storeconfig;
 

@@ -1,5 +1,11 @@
 @import './variables';
 @import '../../node_modules/oph-virkailija-style-guide/oph-styles';
+@import './editorstyle';
+@import 'vue-select/src/scss/vue-select.scss';
+
+img.content-image {
+  max-width: 100%;
+}
 
 .content {
   margin: 0;
@@ -41,10 +47,8 @@
 
   }
 
-  // https://getbootstrap.com/docs/4.3/layout/overview/#z-index
-  --ck-z-default: 1080;
-
-  overflow-y: scroll;
+  // Modaalin aukaiseminen siirtää elementtejä
+  //overflow-y: scroll;
 }
 
 body {

@@ -99,8 +99,8 @@ import {
 } from '@/components';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019PaikallinenOppiaineDto } from '@/tyypit';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpRoute from '@/mixins/EpRoute';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
 import _ from 'lodash';
 import { Kielet } from '@/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
@@ -121,7 +121,7 @@ import * as defaults from '@/defaults';
     EpSpinner,
   },
 })
-export default class RouteOpintojakso extends Mixins(EpRoute) {
+export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
   private oppiaineQuery = '';
   private editable: any = null;
   private hooks: EditointiKontrolliConfig = {
@@ -134,7 +134,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   };
 
   async remove(data: any) {
-    await Opetussuunnitelma.removeOppiaine(data.id);
+    await this.store.removeOppiaine(data.id);
     this.$router.push({
       name: 'opsPoistetut',
     });
@@ -145,7 +145,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
   }
 
   get opintojaksot() {
-    return _.chain(Opetussuunnitelma.opintojaksot as any)
+    return _.chain(this.store.opintojaksot as any)
       .filter(oj => {
         return !!_(oj.oppiaineet)
           .map('koodi')
@@ -182,7 +182,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
     let paikallinen = defaults.oppiaine();
     if (!await this.isUusi()) {
       const { paikallinenOppiaineId } = this.$route.params;
-      paikallinen = await Opetussuunnitelma.getPaikallinenOppiaine(_.parseInt(paikallinenOppiaineId));
+      paikallinen = await this.store.getPaikallinenOppiaine(_.parseInt(paikallinenOppiaineId));
     }
 
     paikallinen.tehtava = paikallinen.tehtava || {};
@@ -195,10 +195,10 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 
   async save(oppiaine: Lops2019PaikallinenOppiaineDto) {
     if (await this.isUusi()) {
-      await Opetussuunnitelma.addOppiaine(oppiaine);
+      await this.store.addOppiaine(oppiaine);
     }
     else {
-      await Opetussuunnitelma.savePaikallinenOppiaine(oppiaine);
+      await this.store.savePaikallinenOppiaine(oppiaine);
     }
   }
 }
@@ -208,7 +208,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute) {
 @import "@/styles/_variables.scss";
 
 .content {
-  margin: 10px;
+  padding: 10px;
 }
 
 .tavoitealueet {

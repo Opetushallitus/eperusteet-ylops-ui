@@ -18,11 +18,12 @@
         <span>
         </span>
       </template>
-      <template slot="peruste" slot-scope="{ }">
-        <div class="sidepad">
-          <p v-if="perusteenTeksti && perusteenTeksti.perusteenOsa" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)" />
-        </div>
-      </template>
+      <!-- Ei käytössä toistaiseksi -->
+      <!-- <template slot="peruste" slot-scope="{ }">                                                                -->
+      <!--   <div class="sidepad">                                                                                                -->
+      <!--     <p v-if="perusteenTeksti && perusteenTeksti.perusteenOsa" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)" /> -->
+      <!--   </div>                                                                                                               -->
+      <!-- </template>                                                                                                            -->
       <template slot="header" slot-scope="{ isEditing, data }">
         <div class="otsikko">
           <ep-field v-if="data.tov.tekstiKappale" help="tekstikappale-nimi-ohje" v-model="data.tov.tekstiKappale.nimi" :is-header="true" :is-editing="isEditing">
@@ -66,9 +67,9 @@ import { Mixins, Component, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoute';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 
 import EpRoot from '@/mixins/EpRoot';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import {
   EpButton,
@@ -103,7 +104,7 @@ import {
     EpInput,
   },
 })
-export default class RouteTekstikappale extends Mixins(EpRoute) {
+export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) {
   private ohjeet: OhjeDto[] = [];
   private perusteenTeksti: PerusteTekstiKappaleViiteDto | null = null;
   private nimi: any = {};
@@ -117,7 +118,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
   };
 
   async remove(data: any) {
-    await Opetussuunnitelma.removeTeksti(data.tov);
+    await this.store.removeTeksti(data.tov);
     this.$router.push({
       name: 'opsTiedot',
       // params: {
@@ -127,7 +128,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
   }
 
   get isPohja() {
-    return Opetussuunnitelma.opetussuunnitelma!.tyyppi as string === 'pohja';
+    return this.store.opetussuunnitelma!.tyyppi as string === 'pohja';
   }
 
   get allowOhjeEdit() {
@@ -178,11 +179,11 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
 
   private async save({ tov, ohjeet }) {
     if (await this.isUusi()) {
-      await Opetussuunnitelma.addTeksti(tov, _.parseInt(this.$route.params.parentId));
+      await this.store.addTeksti(tov, _.parseInt(this.$route.params.parentId));
     }
     else {
-      await Opetussuunnitelma.saveTeksti(tov);
-      await Promise.all(_.map(ohjeet, (ohje) => Opetussuunnitelma.saveOhje({
+      await this.store.saveTeksti(tov);
+      await Promise.all(_.map(ohjeet, (ohje) => this.store.saveOhje({
         ...ohje,
         kohde: tov.tekstiKappale.tunniste,
       })));
@@ -190,7 +191,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute) {
   }
 
   private async addAlikappale(parent: Puu) {
-    const uusi = await Opetussuunnitelma.addTeksti({}, parent.id);
+    const uusi = await this.store.addTeksti({}, parent.id);
     this.$router.push({
       name: 'tekstikappale',
       params: {

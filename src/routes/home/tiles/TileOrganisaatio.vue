@@ -20,10 +20,8 @@ import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import BaseTile from './BaseTile.vue';
-import {
-  EpColorBall,
-  EpSpinner,
-} from '@/components';
+import { EpColorBall } from '@/components';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { organizations } from '@/utils/organisaatiot';
 
 @Component({
