@@ -5,9 +5,9 @@ module.exports = {
   lintOnSave: false,
   publicPath: process.env.NODE_ENV === 'production' ? '/eperusteet-ylops-app/uusi/' : '/',
   configureWebpack: {
-    optimization: {
-      providedExports: process.env.NODE_ENV === 'production',
-    },
+    /*optimization: {
+      providedExports: process.env.NODE_ENV === 'production', // https://github.com/vuejs/vue-cli/issues/1708
+    },*/
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ],
