@@ -23,7 +23,7 @@
       </ep-collapse>
       <ep-collapse v-if="oppiaine.arviointi">
         <h4 slot="header">{{ $t('arviointi') }}</h4>
-        <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.arviointi.kuvaus"> </ep-content>
+        <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.arviointi.kuvaus"></ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.oppimaarat && oppiaine.oppimaarat.length > 0">
         <h4 slot="header">{{ $t('oppimaarat') }}</h4>
@@ -37,6 +37,10 @@
         <h4 slot="header">{{ $t('moduulit') }}</h4>
         <div class="block-container">
           <h5>{{ $t('pakolliset-moduulit') }}</h5>
+          <ep-content v-if="oppiaine.pakollisetModuulitKuvaus"
+                      layout="normal"
+                      :opetussuunnitelma-store="opetussuunnitelmaStore"
+                      v-model="oppiaine.pakollisetModuulitKuvaus"></ep-content>
           <div v-for="moduuli in pakollisetModuulit" :key="moduuli.id">
             <div class="oj-content pakollinen">
               <span class="nimi">
@@ -49,6 +53,10 @@
         </div>
         <div class="block-container">
           <h5>{{ $t('valinnaiset-moduulit') }}</h5>
+          <ep-content v-if="oppiaine.valinnaisetModuulitKuvaus"
+                      layout="normal"
+                      :opetussuunnitelma-store="opetussuunnitelmaStore"
+                      v-model="oppiaine.valinnaisetModuulitKuvaus"></ep-content>
           <div v-for="moduuli in valinnaisetModuulit" :key="moduuli.id">
             <div class="oj-content">
               <span class="nimi">
