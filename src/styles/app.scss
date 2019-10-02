@@ -19,15 +19,10 @@ img.content-image {
   padding: 0 !important;
 }
 
+// html element
 :root {
   margin: 0;
   padding: 0;
-
-  color: $font-color-base;
-
-  -webkit-hyphens: auto;
-  -ms-hyphens: auto;
-  hyphens: auto;
 
   div.form {
     padding: 20px;
@@ -38,21 +33,19 @@ img.content-image {
   }
 
   a {
-    color: $link-color;
-
     &:hover {
       text-decoration: none;
-      color: $link-color-hover;
     }
-
   }
 
   // Modaalin aukaiseminen siirtää elementtejä
   //overflow-y: scroll;
 }
 
+// Bootstrap asettaa omat fonttinsta body-elementtiin
 body {
   font-family: "Open Sans", "Helvetica", sans-serif;
+  hyphens: auto;
 }
 
 button:disabled {

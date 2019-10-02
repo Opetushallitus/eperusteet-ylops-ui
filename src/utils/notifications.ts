@@ -35,7 +35,7 @@ export function fail(title: string, reason: string | undefined) {
   (Vue as any).notify({
     title: i18n.t(title),
     type: 'error',
-    text: reason,
+    text: reason ? i18n.t(reason): reason,
   });
 }
 

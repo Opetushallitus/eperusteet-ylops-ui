@@ -102,7 +102,7 @@ export default class EpMultiSelect extends Mixins(EpValidation) {
   border: none;
   border-bottom: 1px solid #e8e8e8;
   border-radius: 0;
-  -webkit-appearance: none;
+  appearance: none;
 }
 
 

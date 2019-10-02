@@ -138,7 +138,7 @@ input.input-style {
   border-left: 0;
   border-right: 0;
   border-radius: 0;
-  -webkit-appearance: none;
+  appearance: none;
   font-size: 1rem;
   line-height: 1.5;
   font-weight: 500;
