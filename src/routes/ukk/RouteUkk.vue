@@ -126,6 +126,10 @@ import { Kieli, KysymysDto } from '@/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
 
+export interface KysymysLaajennettuDto extends KysymysDto {
+  $uusi?: boolean;
+}
+
 @Component({
   components: {
     EpAikaleima,
@@ -147,9 +151,9 @@ import { organizations } from '@/utils/organisaatiot';
 } as any)
 export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   private rajain = '';
-  private kysymykset: KysymysDto[] = [];
+  private kysymykset: KysymysLaajennettuDto[] = [];
   private orgs: any[] = [];
-  private kysymys: KysymysDto = {
+  private kysymys: KysymysLaajennettuDto = {
     $uusi: true,
     organisaatiot: []
   };
@@ -267,7 +271,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   }
 
   // Aloitetaan kysymyksen muokkaamisen modaali
-  private startKysymysModal(kysymys: KysymysDto | null) {
+  private startKysymysModal(kysymys: KysymysLaajennettuDto | null) {
     if (kysymys) {
       this.kysymys = {
         $uusi: false,
@@ -284,7 +288,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   }
 
   // Aloitetaan kysymyksen poiston modaali
-  private startRemoveKysymys(kysymys: KysymysDto) {
+  private startRemoveKysymys(kysymys: KysymysLaajennettuDto) {
     this.kysymys = {
       $uusi: false,
       ..._.cloneDeep(kysymys)

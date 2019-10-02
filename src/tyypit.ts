@@ -33,14 +33,6 @@ export interface LokalisoituTekstiDto {
   [key: string]: string;
 }
 
-export interface KysymysDto {
-  id?: number;
-  kysymys?: string;
-  vastaus?: string;
-  organisaatiot?: OrganisaatioDto[];
-  $uusi?: boolean;
-}
-
 export interface OrganisaatioDto {
   oid: string;
 }
@@ -96,6 +88,7 @@ export type TekstiKappaleDto = GApi.TekstiKappaleDto;
 export type TermiDto = GApi.TermiDto;
 export type TilaEnum = GApi.OpetussuunnitelmaInfoDto.TilaEnum;
 export type UusiJulkaisuDto = GApi.UusiJulkaisuDto;
+export type KysymysDto = GApi.KysymysDto;
 
 export default GApi;
 // export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;
