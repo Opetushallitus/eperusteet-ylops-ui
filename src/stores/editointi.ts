@@ -5,6 +5,7 @@ import { createLogger } from './logger';
 import * as _ from 'lodash';
 import { RevisionDto } from '@/tyypit';
 import { router } from '@/router';
+import { fail } from '@/utils/notifications';
 
 interface EditointiKontrolliFeatures {
   removal: boolean;
@@ -193,12 +194,13 @@ export class EditointiKontrolli {
       EditointiKontrolli.totalEditingEditors -= 1;
       try {
         await this.config.source.save(this.mstate.data);
+        this.logger.success('Tallennettu onnistuneesti');
       }
       catch (err) {
+        fail('tallennus-epaonnistui', err.response.data.syy);
         EditointiKontrolli.totalEditingEditors += 1;
         this.isEditingState = true;
       }
-      this.logger.success('Tallennettu');
     }
     else {
       this.logger.debug('Tallentaminen ei mahdollista');
