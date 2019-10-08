@@ -32,7 +32,7 @@ export interface IKasiteHandler {
 };
 
 export function createLiitetiedostoHandler(opsId: number): IAttachmentWrapper {
-  const Endpoint = Api.defaults.baseURL + '/opetussuunnitelmat/' + opsId + '/kuvat/';
+  const Endpoint = '/opetussuunnitelmat/' + opsId + '/kuvat';
 
   return {
     endpoint() {
@@ -40,14 +40,14 @@ export function createLiitetiedostoHandler(opsId: number): IAttachmentWrapper {
     },
 
     url(id: string): string {
-      return Endpoint + id;
+      return Api.defaults.baseURL + Endpoint + '/' + id;
     },
 
     async hae(): Promise<LiiteWithSrc[]> {
       const result = await Liitetiedostot.getAllLiitteet(opsId);
       return _.map(result.data, d => ({
         ...d,
-        src: Endpoint + d.id,
+        src: Api.defaults.baseURL + Endpoint + '/' + d.id,
       }));
     },
   };

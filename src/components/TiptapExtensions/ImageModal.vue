@@ -5,7 +5,7 @@
       <div v-if="image">
         <img class="esikatselukuva" :src="image.preview" alt="esikatselu">
         <input :placeholder="$t('nimi')" class="form-control" type="text" v-model="nimi">
-        <b-button-group>
+        <b-button-group class="buttons">
           <b-button variant="primary" @click="upload" :disabled="!nimi">
             {{ $t('lataa-uusi') }}
           </b-button>
@@ -167,8 +167,6 @@ export default class ImageModal extends Vue {
 
 <style scoped lang="scss">
 .imageselector {
-  width: 246px;
-
   .imgselect {
     margin-bottom: 12px;
   }
@@ -193,6 +191,10 @@ export default class ImageModal extends Vue {
 
   input {
     margin-bottom: 10px;
+  }
+
+  .buttons {
+    width: 100%;
   }
 
   /deep/ #fileInput {
