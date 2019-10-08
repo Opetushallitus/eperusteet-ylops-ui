@@ -21,15 +21,6 @@
             <span v-if="feature.text">{{ $t(feature.text) }}</span>
           </b-button>
         </div>
-        <div class="btn-group mr-2" role="group" v-if="help">
-          <b-button class="ohje" variant="outline" :id="'ohje-' + id">
-            <fas icon="question" fixed-width />
-          </b-button>
-            <b-popover :target="'ohje-' + id">
-              <template v-slot:title>{{ $t('ohje') }}</template>
-              {{ $t(help) }}
-          </b-popover>
-        </div>
       </div>
       <div class="btn-toolbar sub-bar" role="toolbar" v-if="layout === 'normal' && data.isActive.table()">
         <div class="btn-group mr-2" role="group" v-for="(group, idx) in helperTable" :key="idx">
@@ -83,9 +74,6 @@ export default class EpEditorMenuBar extends Vue {
 
   @Prop({ required: true })
   private layout!: string;
-
-  @Prop({ required: true })
-  private help!: string;
 
   @Prop({
     required: true,
