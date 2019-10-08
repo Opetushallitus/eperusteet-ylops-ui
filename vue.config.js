@@ -1,14 +1,18 @@
 const servicePort = process.env.YLOPS_SERVICE_PORT || 8081;
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   lintOnSave: false,
   publicPath: process.env.NODE_ENV === 'production' ? '/eperusteet-ylops-app/uusi/' : '/',
   runtimeCompiler: true,
   configureWebpack: {
-    /*optimization: {
-      providedExports: process.env.NODE_ENV === 'production', // https://github.com/vuejs/vue-cli/issues/1708
-    },*/
+    resolve: {
+      alias: {
+        vue: path.resolve(__dirname, 'node_modules/vue'),
+        '@shared': path.resolve(__dirname, 'node_modules/eperusteet-frontend-utils/vue/src'),
+      },
+    },
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ],

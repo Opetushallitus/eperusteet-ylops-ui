@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { Store, Getter, Mutation, Action, State } from './store';
+import { Store, Getter, Mutation, Action, State } from '@shared/stores/store';
 import { createLogger } from './logger';
 import * as _ from 'lodash';
 import { RevisionDto } from '@/tyypit';

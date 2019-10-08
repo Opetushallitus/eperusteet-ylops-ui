@@ -161,6 +161,10 @@ export default class EpContent extends Mixins(EpValidation) {
         return;
       }
 
+      this.editor.setOptions({
+        editable: val,
+      });
+
       if (val) {
         this.setClass('form-control');
       }

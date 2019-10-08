@@ -65,7 +65,7 @@ export default class TermiExtension extends Mark {
             return;
           }
 
-          const self = this;
+          const self = (this as any);
           const h = this.$createElement;
           const t = (v: string): string => i18n.t(v) as string;
           const kasiteTitle = h('div', {}, t('valitse-kasite'));
@@ -90,7 +90,7 @@ export default class TermiExtension extends Mark {
       },
       watch: {
         dataViite: {
-          async handler(value: string) {
+          handler: async(value: string) => {
             if (!value) {
               return;
             }
@@ -117,7 +117,7 @@ export default class TermiExtension extends Mark {
             });
           },
         },
-        title() {
+        title: () => {
           if (this.abbrdata) {
             return (this as any).$kaanna(this.abbrdata.selitys);
           }
@@ -126,9 +126,23 @@ export default class TermiExtension extends Mark {
           }
         },
       },
-      template: `
-        <abbr :class="{ 'virheellinen': !dataViite }" :data-viite="dataViite" @click="showTermiSelector" :title="title"></abbr>
-      `,
+      render(h) {
+        return h('abbr', {
+          class: {
+            virheellinen: !(this as any).dataViite,
+          },
+          props: {
+            'data-viite': (this as any).dataViite,
+            title: (this as any).title,
+          },
+          on: {
+            click: (this as any).showTermiSelector,
+          },
+        });
+      },
+      // template: `
+      //   <abbr :class="{ 'virheellinen': !dataViite }" :data-viite="dataViite" @click="showTermiSelector" :title="title"></abbr>
+      // `,
     });
   }
 

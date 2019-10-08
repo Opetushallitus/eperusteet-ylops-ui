@@ -12,7 +12,7 @@ import 'moment/locale/se';
 import 'moment/locale/sv';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import { Getter, Mutation, State, Store } from './store';
+import { Getter, Mutation, State, Store } from '@shared/stores/store';
 
 Vue.use(VueI18n);
 Vue.use(new Aikaleima());

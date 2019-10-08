@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import { Store, State } from './store';
+import { Store, State } from '@shared/stores/store';
 
 @Store
 class BreadcrumbStore {
