@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Store, Getter, State } from './store';
+import { Store, Getter, State } from '@shared/stores/store';
 import { KayttajanTietoDto } from '@/tyypit';
 import {
   Kayttajat as KayttajatApi,

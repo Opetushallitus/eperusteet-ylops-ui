@@ -1,4 +1,4 @@
-import { Store, Getter, Mutation, Action, State } from '../store';
+import { Store, Getter, Mutation, Action, State } from '@shared/stores/store';
 
 interface SomeData {
   foo: string;

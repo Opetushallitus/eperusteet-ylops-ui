@@ -9,7 +9,7 @@ import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Lops2019ValidointiDto,
 import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
 import { AxiosResponse } from 'axios';
 import { createLogger } from './logger';
-import { Getter, State, Store } from './store';
+import { Getter, State, Store } from '@shared/stores/store';
 import { success, fail } from '@/utils/notifications';
 import _ from 'lodash';
 

@@ -19,6 +19,7 @@
       "jest"
     ],
     "paths": {
+      "@shared/*": ["node_modules/eperusteet-frontend-utils/vue/src/*"],
       "@/*": ["src/*"],
       "&/*": ["tests/*"]
     },

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import { Store, Getter, Mutation, Action, State } from './store';
+import { Store, Getter, Mutation, Action, State } from '@shared/stores/store';
 import { SovellusVirhe } from '@/tyypit';
 
 export type ErrorHandler = (virhe: SovellusVirhe) => Promise<void> | void;
