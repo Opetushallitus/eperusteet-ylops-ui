@@ -90,7 +90,7 @@ export default class TermiExtension extends Mark {
       },
       watch: {
         dataViite: {
-          handler: async(value: string) => {
+          async handler(value: string) {
             if (!value) {
               return;
             }
@@ -117,7 +117,7 @@ export default class TermiExtension extends Mark {
             });
           },
         },
-        title: () => {
+        title() {
           if (this.abbrdata) {
             return (this as any).$kaanna(this.abbrdata.selitys);
           }
@@ -126,23 +126,9 @@ export default class TermiExtension extends Mark {
           }
         },
       },
-      render(h) {
-        return h('abbr', {
-          class: {
-            virheellinen: !(this as any).dataViite,
-          },
-          props: {
-            'data-viite': (this as any).dataViite,
-            title: (this as any).title,
-          },
-          on: {
-            click: (this as any).showTermiSelector,
-          },
-        });
-      },
-      // template: `
-      //   <abbr :class="{ 'virheellinen': !dataViite }" :data-viite="dataViite" @click="showTermiSelector" :title="title"></abbr>
-      // `,
+      template: `
+        <abbr :class="{ 'virheellinen': !dataViite }" :data-viite="dataViite" @click="showTermiSelector" :title="title"></abbr>
+      `,
     });
   }
 

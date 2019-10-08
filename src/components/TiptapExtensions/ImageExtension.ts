@@ -2,6 +2,7 @@ import { Node, Mark, Plugin } from 'tiptap';
 import Vue from 'vue';
 import VueSelect from 'vue-select';
 
+import { i18n } from '@/stores/kieli';
 import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
 import { domAttrsGetter, mapNodeAttrs } from './helpers';
 import ImageModal from './ImageModal.vue';
@@ -64,27 +65,32 @@ export default class ImageExtension extends Node {
           liitteet: createLiitetiedostoHandler(opsId),
         };
       },
-      mounted() {
-        if (!(this as any).node.attrs['data-uid']) {
-          setTimeout(() => {
-            (this.$refs.kuvanLisaysPopover as Vue).$emit('open');
-          }, 100);
-        }
-      },
       methods: {
-        async close() {
-          if (!this.view.editable) {
-            return;
-          }
-          this.isOpen = false;
-          (this.$refs.kuvanLisaysPopover as Vue).$emit('close');
-        },
         async open() {
           if (!this.view.editable) {
             return;
           }
-          this.isOpen = !this.isOpen;
-          (this.$refs.kuvanLisaysPopover as Vue).$emit(this.isOpen ? 'close' : 'open');
+
+          const self = (this as any);
+          const h = this.$createElement;
+          const t = (v: string): string => i18n.t(v) as string;
+          const editor = h(ImageModal, {
+            props: {
+              value: self.dataUid,
+              loader: self.liitteet,
+            },
+            on: {
+              input(value: string) {
+                self.dataUid = value;
+              },
+            },
+          });
+          this.$bvModal.msgBoxOk([editor], {
+            buttonSize: 'sm',
+            centered: true,
+            size: 'sm',
+            title: [h('div', {}, t('valitse-kuva'))],
+          });
         },
       },
       computed: {
@@ -97,13 +103,7 @@ export default class ImageExtension extends Node {
             (this as any).updateAttrs({
               'data-uid': value,
             });
-            if (value) {
-              ((this as any).$refs.kuvanLisaysPopover as Vue).$emit('close');
-            }
           },
-        },
-        id() {
-          return 'editor-popover-' + (this as any)._uid;
         },
         url() {
           return this.liitteet.url((this as any).dataUid);
@@ -111,16 +111,7 @@ export default class ImageExtension extends Node {
       },
       template: `
         <div class="ep-editor-component">
-          <img class="content-image" @click="open()" :data-uid="dataUid" :src="url" :title="title" :alt="alt" :id="id">
-          <b-popover v-if="view.editable" ref="kuvanLisaysPopover" :target="id">
-            <template slot="title">
-              {{ $t('kuvan-valitsin') }}
-            </template>
-            <image-modal v-model="dataUid" :loader="liitteet"></image-modal>
-            <b-button variant="link" @click="close">
-              {{ $t('sulje') }}
-            </b-button>
-          </b-popover>
+          <img class="content-image" @click="open()" :data-uid="dataUid" :src="url" :title="title" :alt="alt">
         </div>
       `,
     });
