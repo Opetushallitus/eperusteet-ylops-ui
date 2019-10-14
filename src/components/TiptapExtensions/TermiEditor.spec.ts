@@ -32,7 +32,12 @@ function createTestHandler(): IKasiteHandler {
 
 describe('Termi plugin', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue);
+  KieliStore.setup(localVue, {
+    messages: {
+      fi: require('@/translations/locale-fi.json'),
+      sv: require('@/translations/locale-sv.json'),
+    },
+  });
   const i18n = KieliStore.i18n;
 
   it('Näyttää editoitavan datan', async () => {

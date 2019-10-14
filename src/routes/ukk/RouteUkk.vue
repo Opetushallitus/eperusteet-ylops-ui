@@ -155,27 +155,22 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
     organisaatiot: []
   };
 
-  async init() {
-    try {
-      this.kysymykset = (await Kysymykset.getKysymykset() as any).data;
+  async mounted() {
+    this.kysymykset = (await Kysymykset.getKysymykset() as any).data;
 
-      // Haetaan käyttäjän organisaatiot
-      const orgs = (await Ulkopuoliset.getUserOrganisations() as any).data;
+    // Haetaan käyttäjän organisaatiot
+    const orgs = (await Ulkopuoliset.getUserOrganisations() as any).data;
 
-      if (!_.find(orgs, o => o.oid === organizations.oph.oid)) {
-        orgs.push(organizations.oph);
-      }
-
-      // Ei rajausta oletuksena
-      _.each(orgs, o => {
-        o.$checked = true;
-      });
-
-      this.orgs = orgs;
+    if (!_.find(orgs, o => o.oid === organizations.oph.oid)) {
+      orgs.push(organizations.oph);
     }
-    finally {
-      // Todo: isLoading;
-    }
+
+    // Ei rajausta oletuksena
+    _.each(orgs, o => {
+      o.$checked = true;
+    });
+
+    this.orgs = orgs;
   }
 
   private get validator() {

@@ -15,7 +15,12 @@ import '@/config/fontawesome';
 
 describe('RouteUkk', async () => {
   const localVue = createLocalVue();
-  await KieliStore.setup(localVue);
+  KieliStore.setup(localVue, {
+    messages: {
+      fi: require('@/translations/locale-fi.json'),
+      sv: require('@/translations/locale-sv.json'),
+    },
+  });
   const i18n = KieliStore.i18n;
 
   jest.spyOn(Ulkopuoliset, 'getUserOrganisations')
@@ -42,13 +47,14 @@ describe('RouteUkk', async () => {
       }],
     }] as any));
 
-  const wrapper = mount(RouteUkk as any, {
-    i18n,
-    localVue,
-    stubs: ['EpSelect', 'EpNavigation'],
-  } as any);
-
   test('Rendering', async () => {
+    const wrapper = mount(RouteUkk as any, {
+      i18n,
+      localVue,
+      stubs: ['EpSelect', 'EpNavigation'],
+    } as any);
+
+    await localVue.nextTick();
     await localVue.nextTick();
     await localVue.nextTick();
     expect(wrapper.html()).toContain('kysymys');

@@ -12,25 +12,35 @@ import '@/config/fontawesome';
 
 describe('RouteDokumentti', async () => {
   const localVue = createLocalVue();
-  await KieliStore.setup(localVue);
+  KieliStore.setup(localVue, {
+    messages: {
+      fi: require('@/translations/locale-fi.json'),
+      sv: require('@/translations/locale-sv.json'),
+    },
+  });
   const i18n = KieliStore.i18n;
   OpetussuunnitelmaStore.prototype.init = jest.fn();
   Dokumentit.getDokumenttiId = jest.fn();
   const opetussuunnitelmaStore = new OpetussuunnitelmaStore(42);
-  opetussuunnitelmaStore.opetussuunnitelma = {
-    id: 42,
-    nimi: {
-      fi: 'nimi',
-    } as any,
-  };
 
-  const wrapper = mount(RouteDokumentti as any, {
-    i18n,
-    localVue,
-    propsData: {
-      opetussuunnitelmaStore,
-    },
-  } as any);
+  test('mounting', async () => {
+    const wrapper = mount(RouteDokumentti as any, {
+      i18n,
+      localVue,
+      propsData: {
+        opetussuunnitelmaStore,
+      },
+    } as any);
+
+    opetussuunnitelmaStore.opetussuunnitelma = {
+      id: 42,
+      nimi: {
+        fi: 'nimi',
+      } as any,
+    };
+
+    await localVue.nextTick();
+  });
 
 });
 

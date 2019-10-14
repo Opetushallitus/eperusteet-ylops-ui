@@ -12,7 +12,7 @@ describe('EpEditointi component', () => {
   KieliStore.setup(localVue);
   const i18n = KieliStore.setup(localVue);
 
-  it('Renders header and content', async () => {
+  test('Renders header and content', async () => {
     const editointi: EditointiKontrolliConfig = {
       source: {
         async load() {
@@ -44,11 +44,12 @@ describe('EpEditointi component', () => {
       </div>
       `,
     } as any, {
-      i18n,
       localVue,
+      mocks: {
+        $t: x => x,
+      },
     } as any);
 
-    // FIXME
     await localVue.nextTick();
     await localVue.nextTick();
     await localVue.nextTick();

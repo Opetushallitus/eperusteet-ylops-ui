@@ -29,11 +29,8 @@ ep-main-view
           div
             p.text-secondary {{ $sd(tiedote.luotu) }}
             ep-collapse.mb-2(:default-state="false")
-              h5(slot="header")
-                ep-kaanna(:value="tiedote.otsikko")
-                  // Piilotetaan valitsin
-                  div
-              ep-kaanna(:value="tiedote.sisalto", :class="{ preview: !tiedote.$nayta }")
+              h5(slot="header") {{ $kaanna(tiedote.otsikko) }}
+              span(:class="{ preview: !tiedote.$nayta }") {{ $kaanna(tiedote.sisalto) }}
             hr
       // Paginaatio
       div.row(v-if="hasTiedotteet")
@@ -54,11 +51,11 @@ import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoot';
+import EpCollapse from '@/components/EpCollapse/EpCollapse';
 
 import {
   EpContent,
   EpIcon,
-  EpKaanna,
   EpMainView,
   EpNavigation,
   EpSearch,
@@ -66,12 +63,12 @@ import {
 } from '@/components';
 import { Ulkopuoliset } from '@/api';
 
+
 @Component({
   components: {
     EpCollapse,
     EpContent,
     EpIcon,
-    EpKaanna,
     EpMainView,
     EpNavigation,
     EpSearch,

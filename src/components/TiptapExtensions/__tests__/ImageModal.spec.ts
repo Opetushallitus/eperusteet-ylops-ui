@@ -22,37 +22,35 @@ describe('Tiptap Image Extension', () => {
   });
 
   describe('Mounted extension component', async () => {
-    const extension = new ImageExtension(13);
-    const wrapper = mount(extension.view as any, {
-      i18n,
-      localVue,
-      propsData: {
-        view: {
-          editable: false,
-        },
-        node: {
-          attrs: {
-            'data-uid': '1234',
-          },
-        },
-      },
-    } as any);
 
     test('Readonly and editable modes', async () => {
-      await localVue.nextTick();
-      expect(wrapper.vm.$refs.kuvanLisaysPopover).toBeFalsy();
+      const extension = new ImageExtension(13);
+      const wrapper = mount(extension.view as any, {
+        localVue,
+        propsData: {
+          view: {
+            editable: false,
+          },
+          node: {
+            attrs: {
+              'data-uid': '1234',
+            },
+          },
+        },
+        mocks: {
+          $t: x => x,
+        },
+      } as any);
 
       wrapper.setProps({
         view: {
           editable: true,
         },
       });
-      await localVue.nextTick();
-      expect(wrapper.vm.$refs.kuvanLisaysPopover).toBeTruthy();
-    });
 
-    test('Contains right data', async () => {
-      const img = wrapper.find('#' + (wrapper.vm as any).id);
+      await localVue.nextTick();
+      console.log(wrapper.html());
+      const img = wrapper.find('img');
       expect(img).toBeTruthy();
       expect(img.attributes()['data-uid']).toEqual('1234');
       expect(img.attributes()['src']).toEqual('/eperusteet-ylops-service/api/opetussuunnitelmat/13/kuvat/1234');
@@ -60,7 +58,7 @@ describe('Tiptap Image Extension', () => {
 
   });
 
-  describe('Image modal', async () => {
+  test('Mounting', async () => {
     const loader: IAttachmentWrapper = {
       async hae() {
         return [];
