@@ -8,12 +8,32 @@ jdk:
 env:
   global:
     - YLOPS_SERVICE_DIR=$PWD/eperusteet-ylops/eperusteet-ylops-service
+    - EPERUSTEET_SERVICE_DIR=$PWD/eperusteet/eperusteet/eperusteet-service
 
 install:
-  - git clone --branch uusi_lukio https://github.com/Opetushallitus/eperusteet-ylops
+  - nvm install 10.16.3
+  - git clone --depth=1 --branch uusi_lukio https://github.com/Opetushallitus/eperusteet-ylops
+  - git clone --depth=1 https://github.com/Opetushallitus/eperusteet
+  - git clone --depth=1 https://github.com/Opetushallitus/eperusteet-frontend-utils
+
+  - echo 'Generate API...' && echo -en 'travis_fold:start:script.1\\r'
+  - cd eperusteet/eperusteet && mvn dependency:resolve --quiet && cd ../..
   - cd eperusteet-ylops && mvn dependency:resolve --quiet && cd ..
-  - nvm install 10.15.0
-  - yarn install
+  - cd eperusteet-frontend-utils
+  - yarn link
+  - cd vue
+  - yarn install > /dev/null
+  - yarn gen:api > /dev/null
+  - cd ../..
+  - echo -en 'travis_fold:end:script.1\\r'
+  - ls
+  - ls eperusteet-frontend-utils/vue/src/generated/eperusteet/
+  - ls eperusteet-frontend-utils/vue/src/generated/ylops/
+  - yarn link eperusteet-frontend-utils
+  - yarn install > /dev/null
+  - yarn gen:api # FIXME
+  - ls node_modules/eperusteet-frontend-utils/vue
+  - ls node_modules/eperusteet-frontend-utils/vue/src/generated/eperusteet
 
 before_script:
   - echo $JAVA_HOME
@@ -23,11 +43,7 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - nvm use 10.15.0
-  - echo 'Generate API...' && echo -en 'travis_fold:start:script.1\\r'
-  - yarn run gen:api
-  - echo -en 'travis_fold:end:script.1\\r'
-  - rm -rf eperusteet-ylops
+  - nvm install 10.16.3
   - yarn run lint
   - yarn run build
   - yarn run test:unit
@@ -44,11 +60,6 @@ cache:
     - $HOME/.npm
     - $HOME/.m2
     - $HOME/.cache
-
-addons:
-  code_climate:
-    repo_token:
-      secure: "emhRVszFIxtDo7dZJyVirQg4zAriqfjYqtK+/WUkCTZbsQ7c/EBq04XBCIlDtVs5V8nkhZXsBr6RAOjK89kLBAIG4wVr1LYGEHbz4iLuvUWTTUCTvZfIiji9M+L6KRpWzjRpFopGHxn7CPqC9BAk2hj9XUVSPxYaj0Q7BQf1/z0ciKkmhDUQz2WWdSwiVOlWG2g3EQBbwVWbUMP6LC3vCqB2CrmuWWrd7WM7k6ndfYjt8haKNuUA66qUxfiHvTbZx7tn8xn96MpUffp1yqfiqjU6EpcdqOMI9RPIwiRtZ6LWU9RMmdcQ/v7q868jlopmLyPk2Ht/HyGxyYFJLfBIQfCGc9uDbRw/oLgfIBLYXV4zKsQ/rOUSOl2P3C1T0biuKTkXo45RKw1CiEjv7nDFZY+WwadZWlsAScWTW/kSUStmltHbOs/F0j3IX1lgGoeTY7Wt6/D0NWxxqBggjjBz9zZYWEMHTH0buzKoNpNigROS9s/OXILsHMX/NwIUq4iUnj+KbKJga6zR0a5+6ztvoCtwnP1iQSOmXd9sWLj2ZhKL+ifFsrAUdv38Nltwhypd2povSKmOfLweDoq+1PIEhl89Awwfr5o+205lzvI8wXmxKu9+30CiREtWLQVnSs6Ps2JfWiY0tIEtQQR5xZS5ONMGU/dnDwMe43vGAdDQl2g="
 
 deploy:
   provider: releases

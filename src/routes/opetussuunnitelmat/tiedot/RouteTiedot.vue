@@ -66,7 +66,8 @@
 
 <script lang="ts">
 
-import { EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle } from '@/components';
+import { EpContent, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle } from '@/components';
+import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 
