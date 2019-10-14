@@ -16,7 +16,7 @@
 <script lang="ts">
 import { Vue, Prop, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {

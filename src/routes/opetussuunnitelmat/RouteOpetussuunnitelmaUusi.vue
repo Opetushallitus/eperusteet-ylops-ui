@@ -87,7 +87,7 @@ import EpRoute from '@/mixins/EpRoute';
 
 import _ from 'lodash';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import { success } from '@/utils/notifications';
 import { required } from 'vuelidate/lib/validators';

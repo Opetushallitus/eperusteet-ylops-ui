@@ -47,7 +47,7 @@ import EpRoute from '@/mixins/EpRoute';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import _ from 'lodash';
 import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import { required } from 'vuelidate/lib/validators';
 import { validationMixin } from 'vuelidate';

@@ -55,7 +55,6 @@ import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
 
 
 import {
-  EpAikaleima,
   EpNavigation,
   EpContent,
   EpSearch,
@@ -65,7 +64,6 @@ import {
 
 @Component({
   components: {
-    EpAikaleima,
     EpContent,
     EpNavigation,
     EpSearch,

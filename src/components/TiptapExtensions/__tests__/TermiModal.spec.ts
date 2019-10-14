@@ -3,7 +3,7 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuelidate from 'vuelidate';
 import TermiExtension from '../TermiExtension';
 import TermiEditor from '../TermiEditor.vue';
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 import { IKasiteHandler } from '@/stores/kuvat';
 import { TermiDto } from '@/tyypit';
 import { Termisto } from '@/api';
@@ -31,6 +31,9 @@ function mockKasitteet(): IKasiteHandler {
 
 describe('Tiptap Termi Extension', () => {
   const localVue = createLocalVue();
+  KieliStore.setup(localVue);
+  const i18n = KieliStore.i18n;
+
   const kasitteetHandler = mockKasitteet();
 
   test('Prose mirror extension', async () => {
@@ -42,7 +45,7 @@ describe('Tiptap Termi Extension', () => {
 
   describe('Mounted extension component', async () => {
     const extension = new TermiExtension(kasitteetHandler);
-    const wrapper = shallowMount(extension.view, {
+    const wrapper = shallowMount(extension.view as any, {
       i18n,
       localVue,
       propsData: {
@@ -55,7 +58,7 @@ describe('Tiptap Termi Extension', () => {
           },
         },
       },
-    });
+    } as any);
 
     test('Readonly and editable modes', async () => {
       await localVue.nextTick();
@@ -66,14 +69,14 @@ describe('Tiptap Termi Extension', () => {
 
   describe('Termi modal', async () => {
     const handler = mockKasitteet();
-    const wrapper = mount(TermiEditor, {
+    const wrapper = mount(TermiEditor as any, {
       propsData: {
         value: '1234',
         handler,
       },
       i18n,
       localVue,
-    });
+    } as any);
     await localVue.nextTick();
   });
 

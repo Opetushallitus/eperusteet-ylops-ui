@@ -2,7 +2,7 @@ import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { mount, createLocalVue } from '@vue/test-utils';
 import ImageExtension from '../ImageExtension';
 import ImageModal from '../ImageModal.vue';
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 import { IAttachmentWrapper } from '@/stores/kuvat';
 
 import '@/config/bootstrap';
@@ -11,6 +11,8 @@ import '@/config/fontawesome';
 
 describe('Tiptap Image Extension', () => {
   const localVue = createLocalVue();
+  KieliStore.setup(localVue);
+  const i18n = KieliStore.setup(localVue);
 
   test('Prose mirror extension', async () => {
     const extension = new ImageExtension(13);
@@ -21,7 +23,7 @@ describe('Tiptap Image Extension', () => {
 
   describe('Mounted extension component', async () => {
     const extension = new ImageExtension(13);
-    const wrapper = mount(extension.view, {
+    const wrapper = mount(extension.view as any, {
       i18n,
       localVue,
       propsData: {
@@ -34,7 +36,7 @@ describe('Tiptap Image Extension', () => {
           },
         },
       },
-    });
+    } as any);
 
     test('Readonly and editable modes', async () => {
       await localVue.nextTick();
@@ -56,13 +58,6 @@ describe('Tiptap Image Extension', () => {
       expect(img.attributes()['src']).toEqual('/eperusteet-ylops-service/api/opetussuunnitelmat/13/kuvat/1234');
     });
 
-    test('Contains right data', async () => {
-      await wrapper.vm.open();
-      await localVue.nextTick();
-      await wrapper.vm.close();
-      await localVue.nextTick();
-    });
-
   });
 
   describe('Image modal', async () => {
@@ -78,13 +73,13 @@ describe('Tiptap Image Extension', () => {
       },
     };
 
-    const wrapper = mount(ImageModal, {
+    const wrapper = mount(ImageModal as any, {
       propsData: {
         value: '1234',
         loader,
       },
       i18n,
       localVue,
-    });
+    } as any);
   });
 });

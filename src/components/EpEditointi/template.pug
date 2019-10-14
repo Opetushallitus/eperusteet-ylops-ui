@@ -8,7 +8,7 @@ div
             name="header",
             :isEditing="ctrls.isEditing",
             :data="state.data",
-            :validation="$v.state.data")
+            :validation="$v && $v.state && $v.state.data")
         .p2(v-if="!ctrls.isEditing")
           .muokattu(v-if="latest") {{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
           //- ep-versio-modaali(:value="current", :versions="historia")
@@ -23,7 +23,7 @@ div
             ep-button.ml-4(
               @click="ctrls.save()",
               v-if="ctrls.isEditing",
-              :disabled="state.disabled || $v.state.data.$invalid",
+              :disabled="state.disabled || ($v && $v.state && $v.state.data.$invalid)",
               variant="primary",
               :show-spinner="state.isSaving"
               :help="saveHelpText")

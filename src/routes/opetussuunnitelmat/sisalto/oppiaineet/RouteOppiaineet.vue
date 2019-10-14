@@ -159,7 +159,7 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
 
 import _ from 'lodash';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {

@@ -12,7 +12,7 @@ div.filter
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   name: 'EpSearch',

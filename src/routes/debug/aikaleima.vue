@@ -32,9 +32,7 @@ div
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import EpAikaleima from '@/components/EpAikaleima/EpAikaleima.vue';
 @Component({
-  components: { EpAikaleima },
 })
 export default class AikaleimaDebug extends Vue {
   private value = 1548070246000;

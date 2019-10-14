@@ -41,7 +41,7 @@ import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import EpJarjesta from '@/components/EpJarjesta/EpJarjesta.vue';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import {
   EpButton,
   EpEditointi,

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { i18n } from '@/stores/kieli';
+import { i18n } from '@shared/stores/kieli';
 
 export default {
   i18n,

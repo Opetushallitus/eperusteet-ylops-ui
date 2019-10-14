@@ -43,7 +43,7 @@ div.topbar(v-sticky="sticky" sticky-z-index="600")
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Kieli } from '@/tyypit';
-import { Kielet, UiKielet } from '@/stores/kieli';
+import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Sticky from 'vue-sticky-directive';

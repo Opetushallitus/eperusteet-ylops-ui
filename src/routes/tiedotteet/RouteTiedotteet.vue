@@ -27,8 +27,7 @@ ep-main-view
         // Todo: Toteuta paikalliset tiedotteet!
         div.col
           div
-            p
-              ep-aikaleima.text-secondary(:value="tiedote.luotu", type="sd")
+            p.text-secondary {{ $sd(tiedote.luotu) }}
             ep-collapse.mb-2(:default-state="false")
               h5(slot="header")
                 ep-kaanna(:value="tiedote.otsikko")
@@ -57,8 +56,6 @@ import _ from 'lodash';
 import EpRoute from '@/mixins/EpRoot';
 
 import {
-  EpAikaleima,
-  EpCollapse,
   EpContent,
   EpIcon,
   EpKaanna,
@@ -71,7 +68,6 @@ import { Ulkopuoliset } from '@/api';
 
 @Component({
   components: {
-    EpAikaleima,
     EpCollapse,
     EpContent,
     EpIcon,

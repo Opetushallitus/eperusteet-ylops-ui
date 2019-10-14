@@ -153,7 +153,7 @@
               <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
                 <ep-content
-                  layout="normal" 
+                  layout="normal"
                   :opetussuunnitelma-store="opetussuunnitelmaStore"
                   :value="oppiaine.laajaAlaisetOsaamiset.kuvaus"
                   help="ohje-lyhyt-laaja-alainen"></ep-content>
@@ -246,7 +246,7 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';
 import EpOpintojaksonModuuli from './EpOpintojaksonModuuli.vue';
 import { opintojaksoValidator } from '@/validators/opintojakso';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import * as defaults from '@/defaults';
 import { getLaajaAlaisetKoodit } from '@/utils/perusteet';
 

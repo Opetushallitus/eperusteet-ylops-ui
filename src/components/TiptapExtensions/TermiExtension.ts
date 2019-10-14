@@ -3,7 +3,7 @@ import Vue from 'vue';
 
 import { IKasiteHandler, createKasiteHandler } from '@/stores/kuvat';
 import { domAttrsGetter } from './helpers';
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 import { TermiDto } from '@/tyypit';
 import TermiEditor from './TermiEditor.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
@@ -67,7 +67,7 @@ export default class TermiExtension extends Mark {
 
           const self = (this as any);
           const h = this.$createElement;
-          const t = (v: string): string => i18n.t(v) as string;
+          const t = (v: string): string => KieliStore.i18n.t(v) as string;
           const kasiteTitle = h('div', {}, t('valitse-kasite'));
           const editor = h(TermiEditor, {
             props: {

@@ -30,7 +30,7 @@ import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 
 import { Virheet } from '@/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
-import { Kielet, UiKielet } from '@/stores/kieli';
+import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { info } from '@/utils/notifications';

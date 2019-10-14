@@ -1,19 +1,21 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import EpKaanna from './EpKaanna.vue';
-import { i18n, Kielet } from '@/stores/kieli';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 import { Kieli } from '@/tyypit';
 
 import '@/config/bootstrap';
 
 describe('EpKaanna component', () => {
   const localVue = createLocalVue();
+  KieliStore.setup(localVue);
+  const i18n = KieliStore.setup(localVue);
 
   beforeEach(() => {
     Kielet.setUiKieli(Kieli.fi);
   });
 
   it('Renders content', () => {
-    let wrapper = shallowMount(EpKaanna, {
+    let wrapper = shallowMount(EpKaanna as any, {
       propsData: {
         value: {
           _id: 1,
@@ -23,12 +25,12 @@ describe('EpKaanna component', () => {
       },
       i18n,
       localVue,
-    });
+    } as any);
     expect(wrapper.html()).toContain('fi');
   });
 
   it('Renders available content', () => {
-    let wrapper = shallowMount(EpKaanna, {
+    let wrapper = shallowMount(EpKaanna as any, {
       propsData: {
         value: {
           _id: 2,
@@ -38,7 +40,7 @@ describe('EpKaanna component', () => {
       },
       i18n,
       localVue,
-    });
+    } as any);
     expect(wrapper.html()).toContain('en');
     expect(wrapper.findAll('button').length).toEqual(2);
 

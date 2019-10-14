@@ -41,7 +41,7 @@ import {
 import { Lops2019PoistettuDto } from '@/tyypit';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import Multiselect from 'vue-multiselect';
 import PoistetutTable from './PoistetutTable.vue';
 

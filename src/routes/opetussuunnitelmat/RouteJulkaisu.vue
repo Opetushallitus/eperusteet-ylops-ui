@@ -103,7 +103,7 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@/tyypit';
 
 

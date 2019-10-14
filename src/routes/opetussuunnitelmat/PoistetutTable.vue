@@ -28,7 +28,7 @@ import { EpButton } from '@/components';
 import _ from 'lodash';
 import { Lops2019PoistettuDto } from '@/tyypit';
 import { opintojaksoValidator } from '@/validators/opintojakso';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 
 
 @Component({

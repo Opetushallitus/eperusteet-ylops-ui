@@ -2,7 +2,7 @@ import { Node, Mark, Plugin } from 'tiptap';
 import Vue from 'vue';
 import VueSelect from 'vue-select';
 
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
 import { domAttrsGetter, mapNodeAttrs } from './helpers';
 import ImageModal from './ImageModal.vue';
@@ -73,7 +73,7 @@ export default class ImageExtension extends Node {
 
           const self = (this as any);
           const h = this.$createElement;
-          const t = (v: string): string => i18n.t(v) as string;
+          const t = (v: string): string => KieliStore.i18n.t(v) as string;
           const editor = h(ImageModal, {
             props: {
               value: self.dataUid,

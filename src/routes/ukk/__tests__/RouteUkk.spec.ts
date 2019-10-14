@@ -2,7 +2,9 @@ import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { makeAxiosResponse } from '&/utils/data';
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import RouteUkk from '../RouteUkk.vue';
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
+const i18n = KieliStore.i18n;
+
 import _ from 'lodash';
 import { Ulkopuoliset, Kysymykset } from '@/api';
 import { KysymysDto } from '@/tyypit';
@@ -13,6 +15,9 @@ import '@/config/fontawesome';
 
 describe('RouteUkk', async () => {
   const localVue = createLocalVue();
+  await KieliStore.setup(localVue);
+  const i18n = KieliStore.i18n;
+
   jest.spyOn(Ulkopuoliset, 'getUserOrganisations')
     .mockImplementation(async () => makeAxiosResponse([{
       oid: '123',
@@ -37,14 +42,11 @@ describe('RouteUkk', async () => {
       }],
     }] as any));
 
-  const wrapper = mount(RouteUkk, {
+  const wrapper = mount(RouteUkk as any, {
     i18n,
     localVue,
-    stubs: {
-      'EpSelect': true,
-      'EpNavigation': true,
-    },
-  });
+    stubs: ['EpSelect', 'EpNavigation'],
+  } as any);
 
   test('Rendering', async () => {
     await localVue.nextTick();

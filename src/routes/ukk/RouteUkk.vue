@@ -42,13 +42,12 @@
               </button>
             </div>
             <div>
-              <p>
-              <ep-aikaleima class="text-secondary" :value="kysymys.luotu" type="ago">
-              </ep-aikaleima>
+              <p class="text-secondary">
+                {{ $ago(kysymys.luotu) }}
               </p>
               <h5 v-html="$kaanna(kysymys.kysymys)"></h5>
               <p class="text-secondary">
-              <ep-content :value="kysymys.vastaus"></ep-content>
+              <ep-content layout="simplified" :value="kysymys.vastaus"></ep-content>
               </p>
               <hr />
             </div>
@@ -111,7 +110,6 @@ import { Component, Mixins } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
 import EpRoute from '@/mixins/EpRoot';
 import {
-  EpAikaleima,
   EpContent,
   EpFormContent,
   EpIcon,
@@ -121,7 +119,7 @@ import {
 } from '@/components';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { Kysymykset, Ulkopuoliset } from '@/api';
-import { Kielet, UiKielet } from '@/stores/kieli';
+import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, KysymysDto } from '@/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
@@ -132,7 +130,6 @@ export interface KysymysLaajennettuDto extends KysymysDto {
 
 @Component({
   components: {
-    EpAikaleima,
     EpContent,
     EpFormContent,
     EpIcon,

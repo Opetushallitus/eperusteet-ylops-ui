@@ -1,6 +1,7 @@
 import Vue from 'vue';
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 
+const i18n = KieliStore.i18n;
 type NotificationKind = 'info' | 'warn' | 'error' | 'success';
 
 interface NotificationConfig {

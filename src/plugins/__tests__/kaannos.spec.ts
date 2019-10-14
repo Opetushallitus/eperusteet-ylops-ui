@@ -1,6 +1,7 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import { i18n, Kielet } from '@/stores/kieli';
+import { Kielet, KieliStore } from '@shared/stores/kieli';
 import { Kieli } from '@/tyypit';
+import Vue from 'vue';
 
 describe('Plugin kaannos', () => {
   beforeEach(() => {
@@ -15,9 +16,9 @@ describe('Plugin kaannos', () => {
           ...data,
         };
       },
-    }, {
-      i18n,
-    });
+    } as any, {
+      i18n: KieliStore.i18n,
+    } as any);
   }
 
   test('tekstioliot', () => {

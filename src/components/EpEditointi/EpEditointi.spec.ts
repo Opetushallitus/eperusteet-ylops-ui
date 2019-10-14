@@ -2,14 +2,15 @@ import Vue from 'vue';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import EpEditointi from './EpEditointi.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { rootConfig } from '@/mainvue';
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
 describe('EpEditointi component', () => {
   const localVue = createLocalVue();
+  KieliStore.setup(localVue);
+  const i18n = KieliStore.setup(localVue);
 
   it('Renders header and content', async () => {
     const editointi: EditointiKontrolliConfig = {
@@ -42,10 +43,10 @@ describe('EpEditointi component', () => {
         </ep-editointi>
       </div>
       `,
-    }, {
+    } as any, {
       i18n,
       localVue,
-    });
+    } as any);
 
     // FIXME
     await localVue.nextTick();

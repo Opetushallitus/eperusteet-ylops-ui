@@ -1,10 +1,5 @@
-import {
-  Termisto,
-} from '@/api';
-import {
-  TermiDto,
-  Lops2019PoistettuDto,
-} from '@/tyypit';
+import { Termisto } from '@/api';
+import { TermiDto, Lops2019PoistettuDto } from '@/tyypit';
 import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Lops2019ValidointiDto, Matala, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
 import { AxiosResponse } from 'axios';

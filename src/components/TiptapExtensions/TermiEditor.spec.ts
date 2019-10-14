@@ -4,7 +4,7 @@ import { IKasiteHandler } from '@/stores/kuvat';
 import { TermiDto } from '@/tyypit';
 import _ from 'lodash';
 
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
@@ -32,10 +32,12 @@ function createTestHandler(): IKasiteHandler {
 
 describe('Termi plugin', () => {
   const localVue = createLocalVue();
+  KieliStore.setup(localVue);
+  const i18n = KieliStore.i18n;
 
   it('Näyttää editoitavan datan', async () => {
     const handler = createTestHandler();
-    const wrapper = mount(TermiEditor, {
+    const wrapper = mount(TermiEditor as any, {
       localVue,
       i18n,
       propsData: {
@@ -46,7 +48,7 @@ describe('Termi plugin', () => {
       stubs: {
         'vue-select': true,
       },
-    });
+    } as any);
 
     await localVue.nextTick();
 

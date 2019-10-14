@@ -2,10 +2,9 @@ import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import RouteDokumentti from '../RouteDokumentti.vue';
 import { OpetussuunnitelmaStore  } from '@/stores/opetussuunnitelma';
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 import _ from 'lodash';
 import { Dokumentit, Opetussuunnitelmat } from '@/api';
-import { } from '@/api';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
@@ -13,6 +12,8 @@ import '@/config/fontawesome';
 
 describe('RouteDokumentti', async () => {
   const localVue = createLocalVue();
+  await KieliStore.setup(localVue);
+  const i18n = KieliStore.i18n;
   OpetussuunnitelmaStore.prototype.init = jest.fn();
   Dokumentit.getDokumenttiId = jest.fn();
   const opetussuunnitelmaStore = new OpetussuunnitelmaStore(42);
@@ -22,16 +23,15 @@ describe('RouteDokumentti', async () => {
       fi: 'nimi',
     } as any,
   };
-  const wrapper = mount(RouteDokumentti, {
+
+  const wrapper = mount(RouteDokumentti as any, {
     i18n,
     localVue,
     propsData: {
       opetussuunnitelmaStore,
     },
-  });
+  } as any);
 
-  test('', async () => {
-  });
 });
 
 

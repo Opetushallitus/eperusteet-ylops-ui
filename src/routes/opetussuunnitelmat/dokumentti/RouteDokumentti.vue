@@ -69,7 +69,7 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import { EpButton, EpFormContent, EpSpinner } from '@/components';
 import { Component, Watch } from 'vue-property-decorator';
 import { baseURL, Dokumentit, DokumentitParams } from '@/api';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { DokumenttiDto } from '@/generated';
 
 @Component({

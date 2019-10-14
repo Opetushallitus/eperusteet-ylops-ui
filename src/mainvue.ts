@@ -6,8 +6,9 @@ import '@/config/bootstrap';
 import '@/config/fontawesome';
 
 import { router } from '@/router';
-import { i18n } from '@/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 import { Virheet } from '@/stores/virheet';
+import { Ulkopuoliset } from '@/api';
 
 import { createLogger } from '@/stores/logger';
 import _ from 'lodash';
@@ -37,9 +38,35 @@ function errorCaptured(err: Error, vm: Vue, info: string) {
   }
 }
 
-export const rootConfig: any = {
-  i18n,
-  router,
-  render: (h: any) => h(App),
-  // errorCaptured,
-};
+import VueI18n, { IVueI18n } from 'vue-i18n';
+
+declare module 'vue/types/vue' {
+  interface Vue {
+    readonly $i18n: VueI18n & IVueI18n;
+    $t: typeof VueI18n.prototype.t;
+    $tc: typeof VueI18n.prototype.tc;
+    $te: typeof VueI18n.prototype.te;
+    $d: typeof VueI18n.prototype.d;
+    $n: typeof VueI18n.prototype.n;
+  }
+}
+
+async function getLokalisoinnit() {
+  return (await Ulkopuoliset.getLokalisoinnit()).data as any;
+}
+
+export async function getRootConfig() {
+  KieliStore.setup(Vue, {
+    messages: {
+      fi: require('@/translations/locale-fi.json'),
+      sv: require('@/translations/locale-sv.json'),
+    },
+  });
+  await KieliStore.load(getLokalisoinnit);
+
+  return {
+    i18n: KieliStore.i18n,
+    router,
+    render: (h: any) => h(App),
+  };
+}

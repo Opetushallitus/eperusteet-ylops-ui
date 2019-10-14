@@ -6,7 +6,7 @@ div(v-if="!isInitializing")
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Kielet, i18n } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { Kayttajat } from '@/stores/kayttaja';
 import { delay } from '@/utils/delay';
 import { notify } from '@/utils/notifications';

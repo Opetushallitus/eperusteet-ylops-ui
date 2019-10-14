@@ -52,7 +52,7 @@ import EpValidation from '@/mixins/EpValidation';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { EpMultiSelect } from '@/components';
 import { PerusteCache } from '@/stores/peruste';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {

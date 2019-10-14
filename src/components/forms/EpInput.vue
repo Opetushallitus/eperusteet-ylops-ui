@@ -25,7 +25,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { createLogger } from '@/stores/logger';
 import EpValidation from '@/mixins/EpValidation';
 

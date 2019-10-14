@@ -22,7 +22,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
 
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { Kieli } from '@/tyypit';
 
 

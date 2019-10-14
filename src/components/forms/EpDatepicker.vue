@@ -26,7 +26,7 @@
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 import DatePicker from 'vue2-datepicker';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { EpFormContent } from '@/components';
 import EpValidation from '@/mixins/EpValidation';
 

@@ -6,7 +6,7 @@ component(:is="tag", @click="handleClick", :class="{ 'router-link-exact-active':
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import _ from 'lodash';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { SideMenuEntry } from '@/tyypit';
 
 @Component

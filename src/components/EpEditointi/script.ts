@@ -6,7 +6,7 @@ import {
   EditointiKontrolliConfig,
 } from '@/stores/editointi';
 import EpVersioModaali from './EpVersioModaali.vue';
-import '@/stores/kieli';
+import '@shared/stores/kieli';
 import { validationMixin } from 'vuelidate';
 import Sticky from 'vue-sticky-directive';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';

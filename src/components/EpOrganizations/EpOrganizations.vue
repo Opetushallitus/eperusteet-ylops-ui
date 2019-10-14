@@ -76,7 +76,7 @@ import {
 
 import _ from 'lodash';
 import { Watch, Vue, Component, Prop, Mixins } from 'vue-property-decorator';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { OphOid, hasOrganisaatioTyyppi, metadataToTeksti } from '@/utils/organisaatiot';
 
 import {

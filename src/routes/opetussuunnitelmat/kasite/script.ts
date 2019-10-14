@@ -8,7 +8,7 @@ import { EpContent, EpFormContent, EpSearch, EpSpinner } from '@/components';
 import EpInput from '@/components/forms/EpInput.vue';
 import { Termisto } from '@/api';
 
-import { Kielet, UiKielet } from '@/stores/kieli';
+import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, TermiDto } from '@/tyypit';
 import { kasiteValidator } from '@/validators/kasite';
 

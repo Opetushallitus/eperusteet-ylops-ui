@@ -100,7 +100,7 @@ import { Lops2019PaikallinenOppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import _ from 'lodash';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import Multiselect from 'vue-multiselect';
 import * as defaults from '@/defaults';

@@ -1,7 +1,6 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import EpContent from './EpContent.vue';
 import EpEditorMenuBar from './EpEditorMenuBar.vue';
-import { i18n, Kielet } from '@/stores/kieli';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 import { Editor } from 'tiptap';
 // import { rootConfig } from '@/mainvue';
 import '@/config/bootstrap';
@@ -49,10 +48,10 @@ function createWrapper(localVue, config: any = {}) {
     ],
   });
 
-  const wrapper = mount(EpEditorMenuBar, {
+  const wrapper = mount(EpEditorMenuBar as any, {
     localVue,
     attachToDocument: true,
-    i18n,
+    i18n: KieliStore.i18n,
     propsData: {
       help: '',
       layout: 'simplified',
@@ -61,13 +60,14 @@ function createWrapper(localVue, config: any = {}) {
       editor: editor,
       ...config,
     },
-  });
+  } as any);
   return wrapper;
 }
 
 
 describe('EpContentMenu component', () => {
   const localVue = createLocalVue();
+  KieliStore.setup(localVue);
 
   it('Hide menu when read only', async () => {
     const wrapper = createWrapper(localVue, {

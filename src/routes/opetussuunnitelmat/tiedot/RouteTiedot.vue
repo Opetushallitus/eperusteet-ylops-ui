@@ -76,7 +76,7 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { Prop, Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
-import { Kielet } from '@/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import EpProgress from '@/components/EpProgress.vue';
 
 
