@@ -93,7 +93,8 @@ div.content
 
 <script lang="ts">
 
-import { EpCollapse, EpButton, EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle } from '@/components';
+import { EpCollapse, EpButton, EpContent, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle } from '@/components';
+import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 
