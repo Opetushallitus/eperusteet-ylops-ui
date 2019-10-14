@@ -274,7 +274,7 @@ $box-radius: 10px;
         color: #2B2B2B;
         text-align: center;
         hyphens: none;
-        font-size: 16px;
+        font-size: 12px;
         font-weight: 600;
       }
     }
