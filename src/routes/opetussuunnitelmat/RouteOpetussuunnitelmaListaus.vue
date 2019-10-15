@@ -269,6 +269,7 @@ $box-radius: 10px;
       margin: 0 auto;
       border: 1px solid #E7E7E7;
       border-top-width: 0;
+      overflow-y: auto;
 
       .nimi {
         color: #2B2B2B;
