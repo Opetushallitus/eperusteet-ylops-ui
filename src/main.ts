@@ -3,6 +3,7 @@ import { getRootConfig } from '@/mainvue';
 // import '@/registerServiceWorker';
 import { createLogger } from '@/stores/logger';
 import Vue from 'vue';
+import { router } from '@/router';
 
 const logger = createLogger('Main');
 
@@ -17,5 +18,17 @@ async function main() {
     logger.error('Top level error:" ', err);
   }
 }
+
+Vue.config.errorHandler = (err, vm, info) => {
+  router.replace({
+    name: 'virhe',
+    query: {
+      viesti: 'virhe-nakyma-tapahtuma',
+      virhe: err.message,
+      komponentti: vm.$options.name,
+      info
+    },
+  });
+};
 
 main();
