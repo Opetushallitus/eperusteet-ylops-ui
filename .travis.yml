@@ -15,26 +15,20 @@ install:
   - nvm install 10.16.3
   - git clone --depth=1 https://github.com/Opetushallitus/eperusteet-ylops
   - git clone --depth=1 https://github.com/Opetushallitus/eperusteet
-  - git clone --depth=1 https://github.com/Opetushallitus/eperusteet-frontend-utils
+  - git submodule update --recursive --init
 
   - echo 'Generate API...' && echo -en 'travis_fold:start:script.1\\r'
   - cd eperusteet/eperusteet && mvn dependency:resolve --batch-mode && cd ../..
   - cd eperusteet-ylops && mvn dependency:resolve --batch-mode && cd ..
-  - cd eperusteet-frontend-utils
-  - yarn link
-  - cd vue
-  - yarn install > /dev/null
-  - yarn gen:api > /dev/null
-  - cd ../..
   - echo -en 'travis_fold:end:script.1\\r'
-  - ls
-  - ls eperusteet-frontend-utils/vue/src/generated/eperusteet/
-  - ls eperusteet-frontend-utils/vue/src/generated/ylops/
-  - yarn link eperusteet-frontend-utils
-  - yarn install > /dev/null
+
+  - yarn install --silent
+  - yarn gen:api
+
+  - cd eperusteet-frontend-utils/vue
+  - yarn install --silent
   - yarn gen:api # FIXME
-  - ls node_modules/eperusteet-frontend-utils/vue
-  - ls node_modules/eperusteet-frontend-utils/vue/src/generated/eperusteet
+  - cd ../..
 
 before_script:
   - echo $JAVA_HOME
@@ -44,10 +38,11 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
+  - pwd
   - nvm install 10.16.3
-  - yarn run lint
-  - yarn run build
-  - yarn run test:unit
+  - yarn lint
+  - yarn build
+  - yarn test:unit
 
 after_script:
   - ./cc-test-reporter format-coverage -t lcov ./coverage/lcov.info

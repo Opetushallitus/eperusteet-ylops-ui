@@ -41,7 +41,7 @@ module.exports = {
     '/node_modules/(?!(@ckeditor|katex|vue-masonry|lodash-es|bootstrap-vue)/)',
   ],
   moduleNameMapper: {
-    '^@shared/(.*)$': '<rootDir>/node_modules/eperusteet-frontend-utils/vue/src/$1',
+    '^@shared/(.*)$': '<rootDir>/eperusteet-frontend-utils/vue/src/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^&/(.*)$': '<rootDir>/tests/$1',
   },
