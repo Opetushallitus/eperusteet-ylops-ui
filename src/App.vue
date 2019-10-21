@@ -6,7 +6,7 @@ div(v-if="!isInitializing")
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Kielet } from '@shared/stores/kieli';
+import { KieliStore } from '@shared/stores/kieli';
 import { Kayttajat } from '@/stores/kayttaja';
 import { delay } from '@/utils/delay';
 import { notify } from '@/utils/notifications';
@@ -20,7 +20,7 @@ export default class App extends Vue {
       color: '#2E5FD1',
     });
 
-    await Kielet.init();
+    KieliStore.setup(Vue);
     await Kayttajat.init();
     await delay(500);
     this.isInitializing = false;
