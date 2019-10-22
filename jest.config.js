@@ -49,7 +49,7 @@ module.exports = {
     'jest-serializer-vue',
   ],
   testMatch: [
-    '<rootDir>/src/**/*.spec.(ts|tsx)',
+    '<rootDir>/src/**/*.spec.ts',
     '<rootDir>/tests/integration/**/*.spec.(ts|tsx)',
   ],
   testURL: 'http://localhost/',
