@@ -156,7 +156,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
 
   get validator() {
     return oppiaineValidator([
-      Kielet.getSisaltoKieli(),
+      Kielet.getSisaltoKieli,
     ]);
   }
 
@@ -176,7 +176,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
     ];
   }
 
-  public async load() {
+  async load() {
     let paikallinen = defaults.oppiaine();
     if (!await this.isUusi()) {
       const { paikallinenOppiaineId } = this.$route.params;

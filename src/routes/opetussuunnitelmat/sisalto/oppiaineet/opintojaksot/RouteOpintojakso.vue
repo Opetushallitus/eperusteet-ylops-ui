@@ -315,7 +315,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   get validator() {
     return opintojaksoValidator([
-      Kielet.getSisaltoKieli(), // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli, // Validoidaan kentät sisältökielen mukaan
     ]);
   }
 

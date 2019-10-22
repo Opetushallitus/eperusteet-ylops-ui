@@ -34,6 +34,7 @@ import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { info } from '@/utils/notifications';
+import { attachRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@/stores/logger';
 
@@ -42,7 +43,6 @@ const logger = createLogger('Router');
 
 function props(route) {
   return {
-    opetussuunnitelmaStore: getOpetussuunnitelmaService(_.parseInt(route.params.id)),
   };
 }
 
@@ -101,67 +101,66 @@ export const router = new Router({
       path: 'opetussuunnitelmat/:id',
       name: 'opetussuunnitelma',
       component: RouteOpetussuunnitelma,
-      props,
+      meta: {
+        resolve: {
+          cacheBy: ['id'],
+          async props(route) {
+            return {
+              default: {
+                opetussuunnitelmaStore: getOpetussuunnitelmaService(_.parseInt(route.params.id)),
+              },
+            };
+          },
+        },
+      },
       children: [{
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
-        props,
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,
         name: 'opsJulkaisu',
-        props,
       }, {
         path: 'jarjesta',
         component: RouteJarjestys,
         name: 'jarjesta',
-        props,
       }, {
         path: 'dokumentti',
         component: RouteDokumentti,
         name: 'opsDokumentti',
-        props,
       }, {
         path: 'poistetut',
         component: RoutePoistetut,
         name: 'opsPoistetut',
-        props,
       }, {
         path: 'kasitteet',
         component: RouteKasite,
         name: 'opsKasitteet',
-        props,
       }, {
         path: 'oppiaineet',
         component: RouteOppiaineet,
         name: 'oppiaineet',
-        props,
       }, {
         path: 'oppiaineet/:oppiaineId',
         component: RouteOppiaine,
         name: 'oppiaine',
-        props,
       }, {
         path: 'oppiaineet/:oppiaineId/moduulit/:moduuliId',
         component: RouteModuuli,
         name: 'moduuli',
-        props,
       }, {
         path: 'poppiaineet/:paikallinenOppiaineId',
         component: RoutePaikallinenOppiaine,
         name: 'paikallinenOppiaine',
-        props,
       }, {
         path: 'opintojaksot/:opintojaksoId',
         component: RouteOpintojakso,
         name: 'opintojakso',
-        props,
       }, {
         path: 'tekstikappaleet/:osaId',
         component: RouteTekstikappale,
         name: 'tekstikappale',
-        props,
       }],
     }],
   }, {
@@ -191,6 +190,8 @@ Virheet.onError((virhe: SovellusVirhe) => {
     },
   });
 });
+
+attachRouterMetaProps(router);
 
 // router.beforeEach((to, from, next) => {
 //   if (to.params.lang

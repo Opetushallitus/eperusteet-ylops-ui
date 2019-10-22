@@ -63,15 +63,15 @@ export default class EpNavigation extends Vue {
   private tyyli!: string;
 
   get murut() {
-    return Murupolku.murut();
+    return Murupolku.murut;
   }
 
   get uiKieli() {
-    return Kielet.getUiKieli();
+    return Kielet.getUiKieli;
   }
 
   get sisaltoKieli() {
-    return Kielet.getSisaltoKieli();
+    return Kielet.getSisaltoKieli;
   }
 
   get sovelluksenKielet() {

@@ -146,7 +146,7 @@ export default class OpsSidenav extends EpOpsComponent {
   }
 
   private kaannaHelper(value: SideMenuItem) {
-    const locale = Kielet.getSisaltoKieli();
+    const locale = Kielet.getSisaltoKieli;
     const i18key = i18keys[value.type] || 'nimetön';
     return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
   }

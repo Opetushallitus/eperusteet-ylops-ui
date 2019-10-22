@@ -88,7 +88,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   private href: string | null = null;
 
   get kieli() {
-    return Kielet.getSisaltoKieli();
+    return Kielet.getSisaltoKieli;
   }
 
   @Watch('kieli')
