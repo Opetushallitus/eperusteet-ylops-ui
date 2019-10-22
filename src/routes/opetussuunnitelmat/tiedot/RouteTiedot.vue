@@ -108,7 +108,7 @@ export default class RouteTiedot extends EpOpsRoute {
 
   get validator() {
     return opsTiedotValidator([
-      Kielet.getSisaltoKieli(), // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli, // Validoidaan kentät sisältökielen mukaan
     ], !this.isPohja);
   }
 

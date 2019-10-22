@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { KieliStore } from '@shared/stores/kieli';
 
-const i18n = KieliStore.i18n;
 type NotificationKind = 'info' | 'warn' | 'error' | 'success';
 
 interface NotificationConfig {
@@ -12,31 +11,31 @@ interface NotificationConfig {
 
 export function notify(config: NotificationConfig) {
   (Vue as any).notify({
-    title: i18n.t(config.title),
+    title: KieliStore.i18n.t(config.title),
     type: config.kind || 'info',
-    text: config.text && i18n.t(config.text),
+    text: config.text && KieliStore.i18n.t(config.text),
   });
 }
 
 export function success(title: string) {
   (Vue as any).notify({
-    title: i18n.t(title),
+    title: KieliStore.i18n.t(title),
     type: 'success',
   });
 }
 
 export function info(title: string) {
   (Vue as any).notify({
-    title: i18n.t(title),
+    title: KieliStore.i18n.t(title),
     type: 'info',
   });
 }
 
 export function fail(title: string, reason: string | undefined) {
   (Vue as any).notify({
-    title: i18n.t(title),
+    title: KieliStore.i18n.t(title),
     type: 'error',
-    text: reason ? i18n.t(reason): reason,
+    text: reason ? KieliStore.i18n.t(reason): reason,
   });
 }
 

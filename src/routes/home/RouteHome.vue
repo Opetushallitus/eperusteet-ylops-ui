@@ -95,11 +95,11 @@ export default class Home extends Mixins(EpRoute) {
     this.etusivu = await Kayttajat.getEtusivu();
   }
 
-  private get nimi() {
-    return Kayttajat.nimi();
+  get nimi() {
+    return Kayttajat.nimi;
   }
 
-  private get kayttaja() {
+  get kayttaja() {
     return Kayttajat.tiedot;
   }
 }
