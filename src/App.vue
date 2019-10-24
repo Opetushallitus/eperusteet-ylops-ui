@@ -20,7 +20,6 @@ export default class App extends Vue {
       color: '#2E5FD1',
     });
 
-    KieliStore.setup(Vue);
     await Kayttajat.init();
     await delay(500);
     this.isInitializing = false;

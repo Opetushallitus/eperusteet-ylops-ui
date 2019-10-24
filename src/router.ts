@@ -34,17 +34,12 @@ import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { info } from '@/utils/notifications';
-import { attachRouterMetaProps } from '@shared/utils/router';
+import { changeTitleAndLang, resolveRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@/stores/logger';
 
 Vue.use(Router);
 const logger = createLogger('Router');
-
-function props(route) {
-  return {
-  };
-}
 
 export const router = new Router({
   scrollBehavior: () => ({ x: 0, y: 0 }),
@@ -191,26 +186,6 @@ Virheet.onError((virhe: SovellusVirhe) => {
   });
 });
 
-attachRouterMetaProps(router);
-
-// router.beforeEach((to, from, next) => {
-//   if (to.params.lang
-//     && to.params.lang !== from.params.lang
-//     && _.includes(UiKielet, to.params.lang)) {
-//     Kielet.setUiKieli(to.params.lang as Kieli);
-//   }
-//   next();
-//   // else {
-//   //   router.push({
-//   //     ...to,
-//   //     params: {
-//   //       ...to.params,
-//   //       lang: i18n.fallbackLocale || 'fi',
-//   //     },
-//   //   });
-//   // }
-// });
-
 let lastOpsId!: string;
 
 window.onbeforeunload = () => {
@@ -227,6 +202,9 @@ router.beforeEach(async (to, from, next) => {
     info('tallenna-tai-peruuta-muutoksesi-ensin');
     return;
   }
+
+  // changeTitleAndLang(to);
+  await resolveRouterMetaProps(to);
 
   // Alustetaan opetussuunnitelma tilan vaihtuessa
   if (Opetussuunnitelma()) {

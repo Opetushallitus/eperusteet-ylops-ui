@@ -52,6 +52,7 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EtusivuDto } from '@/tyypit';
 import ImageModal from '@/components/TiptapExtensions/ImageModal.vue';
 import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 
 
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
@@ -100,6 +101,7 @@ export default class Home extends Mixins(EpRoute) {
   get kayttaja() {
     return Kayttajat.tiedot;
   }
+
 }
 </script>
 

@@ -95,14 +95,16 @@ export default class EpNavigation extends Vue {
   private valitseUiKieli(kieli: Kieli) {
     const router = this.$router;
     const current: any = router.currentRoute;
-    router.push({
-      ...current,
-      params: {
-        ...current.params,
-        lang: kieli || this.$i18n.fallbackLocale,
-      },
-    });
     Kielet.setUiKieli(kieli);
+    const next = {
+      ...current,
+        params: {
+          ...current.params,
+          lang: kieli || this.$i18n.fallbackLocale,
+        },
+    }
+    console.log(next);
+    router.push(next).catch(_.noop);
   }
 
   private valitseSisaltoKieli(kieli: Kieli) {
