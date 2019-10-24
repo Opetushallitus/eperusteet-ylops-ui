@@ -98,11 +98,11 @@ export default class EpNavigation extends Vue {
     Kielet.setUiKieli(kieli);
     const next = {
       ...current,
-        params: {
-          ...current.params,
-          lang: kieli || this.$i18n.fallbackLocale,
-        },
-    }
+      params: {
+        ...current.params,
+        lang: kieli || this.$i18n.fallbackLocale,
+      },
+    };
     console.log(next);
     router.push(next).catch(_.noop);
   }
