@@ -227,18 +227,16 @@
 
 <script lang="ts">
 import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
-import {
-  EpCollapse,
-  EpColorBall,
-  EpContent,
-  EpEditointi,
-  EpField,
-  EpFormContent,
-  EpInput,
-  EpList,
-  EpOppiaineSelector,
-  EpPrefixList,
-} from '@/components';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpField from '@/components/forms/EpField.vue';
+import EpFormContent from '@/components/forms/EpFormContent.vue';
+import EpInput from '@/components/forms/EpInput.vue';
+import EpList from '@/components/forms/EpList.vue';
+import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
+import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
 import { PerusteCache } from '@/stores/peruste';

@@ -109,14 +109,12 @@ import _ from 'lodash';
 import { Component, Mixins } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
 import EpRoute from '@/mixins/EpRoot';
-import {
-  EpContent,
-  EpFormContent,
-  EpIcon,
-  EpMainView,
-  EpSearch,
-  EpSelect,
-} from '@/components';
+import EpContent from'@/components/EpContent/EpContent.vue';
+import EpFormContent from'@/components/forms/EpFormContent.vue';
+import EpIcon from'@/components/EpIcon/EpIcon.vue';
+import EpMainView from'@/components/EpMainView/EpMainView.vue';
+import EpSearch from'@/components/forms/EpSearch.vue';
+import EpSelect from'@/components/forms/EpSelect.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { Kysymykset, Ulkopuoliset } from '@/api';
 import { Kielet, UiKielet } from '@shared/stores/kieli';

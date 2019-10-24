@@ -25,10 +25,8 @@ div
 
 <script lang="ts">
 import { Prop, Component, Mixins } from 'vue-property-decorator';
-import {
-  EpButton,
-  EpFormContent,
-} from '@/components';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpFormContent from '@/components/forms/EpFormContent.vue';
 
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpValidation from '@/mixins/EpValidation';

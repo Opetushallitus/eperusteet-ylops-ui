@@ -54,12 +54,10 @@ import ImageModal from '@/components/TiptapExtensions/ImageModal.vue';
 import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
 
 
-import {
-  EpNavigation,
-  EpContent,
-  EpSearch,
-  EpSpinner,
-} from '@/components';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpSearch from '@/components/forms/EpSearch.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 
 
 @Component({

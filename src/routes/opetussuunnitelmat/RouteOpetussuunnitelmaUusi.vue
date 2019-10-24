@@ -69,19 +69,17 @@ ep-main-view
 
 <script lang="ts">
 
-import {
-  EpButton,
-  EpContent,
-  EpField,
-  EpFormContent,
-  EpIcon,
-  EpInput,
-  EpMainView,
-  EpNavigation,
-  EpOrganizations,
-  EpSelect,
-  EpSpinner,
-} from '@/components';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpField from '@/components/forms/EpField.vue';
+import EpFormContent from '@/components/forms/EpFormContent.vue';
+import EpIcon from '@/components/EpIcon/EpIcon.vue';
+import EpInput from '@/components/forms/EpInput.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
+import EpSelect from '@/components/forms/EpSelect.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 
 import EpRoute from '@/mixins/EpRoute';
 

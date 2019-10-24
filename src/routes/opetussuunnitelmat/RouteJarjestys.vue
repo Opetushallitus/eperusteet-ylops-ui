@@ -42,10 +42,8 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
 import EpJarjesta from '@/components/EpJarjesta/EpJarjesta.vue';
 import { Kielet } from '@shared/stores/kieli';
-import {
-  EpButton,
-  EpEditointi,
-} from '@/components';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import _ from 'lodash';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 

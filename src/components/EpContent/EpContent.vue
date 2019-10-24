@@ -7,8 +7,7 @@
     :is-editable="isEditable"
     :sticky="sticky"
     :editor="editor"
-    :help="toolbarHelp"
-    v-if="focused" />
+    :help="toolbarHelp" />
   <editor-content
     ref="content"
     :editor="editor"

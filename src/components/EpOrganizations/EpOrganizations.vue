@@ -67,12 +67,10 @@
 
 <script lang="ts">
 
-import {
-  EpButton,
-  EpFormContent,
-  EpMultiSelect,
-  EpSpinner,
-} from '@/components';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpFormContent from '@/components/forms/EpFormContent.vue';
+import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 
 import _ from 'lodash';
 import { Watch, Vue, Component, Prop, Mixins } from 'vue-property-decorator';

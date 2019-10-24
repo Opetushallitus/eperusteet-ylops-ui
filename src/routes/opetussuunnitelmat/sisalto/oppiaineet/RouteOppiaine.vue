@@ -96,14 +96,12 @@
 
 <script lang="ts">
 import { Mixins, Component, Prop } from 'vue-property-decorator';
-import {
-  EpButton,
-  EpCollapse,
-  EpContent,
-  EpEditointi,
-  EpSpinner,
-  EpPrefixList,
-} from '@/components';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019OppiaineDto, Lops2019OpintojaksoDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';

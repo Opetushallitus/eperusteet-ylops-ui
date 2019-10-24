@@ -32,7 +32,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { EpButton, EpContent } from '@/components';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
 import EpInput from '@/components/forms/EpInput.vue';
 import _ from 'lodash';
 import draggable from 'vuedraggable';

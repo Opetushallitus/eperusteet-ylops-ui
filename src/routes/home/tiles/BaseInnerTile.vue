@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'vue-property-decorator';
-import { EpIcon } from '@/components';
+import EpIcon from '@/components/EpIcon/EpIcon.vue';
 
 @Component({
   components: {

@@ -26,12 +26,10 @@ import EpRoute from '@/mixins/EpRoot';
 import { Ulkopuoliset } from '@/api';
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import { organizations } from '@/utils/organisaatiot';
-import {
-  EpColorBall,
-  EpIcon,
-  EpMainView,
-  EpSpinner,
-} from '@/components';
+import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpIcon from '@/components/EpIcon/EpIcon.vue';
+import EpMainView from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 
 @Component({
   components: {

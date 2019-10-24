@@ -118,14 +118,12 @@ import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoot';
 import { Opetussuunnitelmat } from '@/api';
 
-import {
-  EpContent,
-  EpIcon,
-  EpMainView,
-  EpNavigation,
-  EpProgress,
-  EpSpinner,
-} from '@/components';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpIcon from '@/components/EpIcon/EpIcon.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import EpProgress from '@/components/EpProgress.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 
 @Component({
   components: {
