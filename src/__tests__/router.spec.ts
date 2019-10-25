@@ -24,6 +24,7 @@ describe('Router', () => {
   const localVue = createLocalVue();
   KieliStore.setup(localVue);
 
+
   async function createMounted(
     oikeudet = genOikeudet('oph')
   ) {
