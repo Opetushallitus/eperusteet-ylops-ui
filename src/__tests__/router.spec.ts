@@ -3,6 +3,7 @@ import { Kayttajat } from '@/stores/kayttaja';
 import { router } from '@/router';
 import { expectEventually } from '&/utils/assertions';
 import { getRootConfig } from '@/mainvue';
+import { KieliStore } from '@shared/stores/kieli';
 import {
   makeAxiosResponse,
   genOikeudet,
@@ -20,9 +21,13 @@ import '@/config/bootstrap';
 import '@/config/fontawesome';
 
 describe('Router', () => {
+  const localVue = createLocalVue();
+  KieliStore.setup(localVue);
+
   async function createMounted(
     oikeudet = genOikeudet('oph')
   ) {
+
     jest.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
 
@@ -87,7 +92,7 @@ describe('Router', () => {
 
     await Kayttajat.init();
     return mount(await getRootConfig(), {
-      localVue: createLocalVue(),
+      localVue,
     });
   }
 
@@ -115,7 +120,9 @@ describe('Router', () => {
     router.push({
       name: 'root',
       params: { lang: 'sv' },
-    });
+    }).catch(err => {});
+
+    await localVue.nextTick();
 
     expect(router.currentRoute.params).toEqual({ lang: 'sv' });
 

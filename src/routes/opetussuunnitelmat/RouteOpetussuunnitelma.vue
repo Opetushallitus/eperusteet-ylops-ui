@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
+import { Watch, Mixins, Component } from 'vue-property-decorator';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
@@ -145,6 +145,13 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         failed: 0,
         ok: 0,
       };
+    }
+  }
+
+  @Watch('$route', { immediate: true })
+  onRouteUpdate(route) {
+    if (this.store && this.store.opetussuunnitelma) {
+      this.breadcrumb('opetussuunnitelma', this.store.opetussuunnitelma.nimi, { name: 'opsTiedot' });
     }
   }
 

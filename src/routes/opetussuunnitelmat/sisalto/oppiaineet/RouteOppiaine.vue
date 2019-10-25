@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
+import { Watch, Mixins, Component, Prop } from 'vue-property-decorator';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
@@ -126,7 +126,6 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   async init() {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
     this.oppiaine = await this.cache.getOppiaine(_.parseInt(this.$route.params.oppiaineId));
-    this.breadcrumb('oppiaine', this.oppiaine!.nimi);
   }
 
   get opintojaksot() {

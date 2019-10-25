@@ -2,6 +2,8 @@ import { Getter, State, Store } from '@shared/stores/store';
 import Vue from 'vue';
 import _ from 'lodash';
 import { Opetussuunnitelma } from './opetussuunnitelma';
+import { Location } from 'vue-router';
+
 
 @Store
 class MurupolkuStore {
@@ -11,16 +13,19 @@ class MurupolkuStore {
   @Getter(state => {
     const nimi = _.get(Opetussuunnitelma(), 'opetussuunnitelma.nimi');
     return {
-      ...state.polku,
       opetussuunnitelma: nimi,
+      ...state.polku,
     };
   })
   public readonly murut!: object;
 
-  aseta(key: string, value: any) {
+  aseta(key: string, value: any, location?: Location) {
     this.polku = {
       ...this.polku,
-      [key]: value,
+      [key]: {
+        name: value,
+        location,
+      },
     };
   }
 }
