@@ -169,7 +169,8 @@ export const router = new Router({
           ...to.params,
         },
         query: {
-          // virhe: JSON.stringify({}),
+          viesti: 'virhe-route',
+          virhe: to.path,
         },
       };
     },
