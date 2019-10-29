@@ -1,5 +1,5 @@
 <template lang="pug">
-ep-main-view
+ep-main-view(:tutoriaalistore="tutoriaalistore")
   template(slot="icon")
     ep-icon.float-right(icon="luo-uusi")
 
@@ -90,6 +90,7 @@ import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import { success } from '@/utils/notifications';
 import { required } from 'vuelidate/lib/validators';
 import { validationMixin } from 'vuelidate';
+import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
 
 import {
   Ulkopuoliset,
@@ -135,6 +136,9 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       kunnat: [],
     },
   };
+
+  @Prop()
+  private tutoriaalistore!: TutoriaaliStore;
 
   get steps() {
     return [{

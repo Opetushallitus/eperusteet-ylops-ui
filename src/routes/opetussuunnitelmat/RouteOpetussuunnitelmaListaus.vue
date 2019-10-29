@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ep-main-view>
+  <ep-main-view :tutoriaalistore="tutoriaalistore">
     <template slot="icon">
       <ep-icon class="float-right" icon="opetussuunnitelmasi" background-color="#5bca13">
       </ep-icon>
@@ -124,6 +124,7 @@ import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpProgress from '@/components/EpProgress.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
 
 @Component({
   components: {
@@ -138,6 +139,9 @@ import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   @Prop({ default: 'opetussuunnitelmat' })
   private tyyppi!: 'opetussuunnitelmat' | 'pohjat';
+
+  @Prop()
+  private tutoriaalistore!: TutoriaaliStore;
 
   private opslista: OpetussuunnitelmaInfoDto[] = [];
 

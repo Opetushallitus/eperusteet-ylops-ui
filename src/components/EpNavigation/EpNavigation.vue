@@ -17,9 +17,13 @@ div.topbar(v-sticky="sticky" sticky-z-index="600")
             span(v-if="murut[route.name]") {{ $kaanna(murut[route.name]) }}
             span(v-else) {{ $t('route-' + route.name) }}
 
+
     b-navbar-nav.ml-auto
+      b-nav-form(v-if="tutoriaalistore && naytettaviaTutoriaaleja")  
+        fas.tutorial.mr-5(icon="question-circle", @click="kaynnistaTutoriaali")
+
       // Sisällön kieli
-      b-nav-item-dropdown(id="content-lang-selector")
+      b-nav-item-dropdown(id="content-lang-selector" v-tutorial)
         template(slot="button-content")
           span.kielivalitsin {{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}
         b-dropdown-item(
@@ -29,7 +33,7 @@ div.topbar(v-sticky="sticky" sticky-z-index="600")
           :disabled="kieli === sisaltoKieli") {{ kieli }}
 
       // Käyttöliittymän kieli
-      b-nav-item-dropdown(id="ui-lang-selector")
+      b-nav-item-dropdown(id="ui-lang-selector" v-tutorial )
         template(slot="button-content")
           span.kielivalitsin {{ $t("kieli") }}: {{ uiKieli }}
         b-dropdown-item(
@@ -48,11 +52,16 @@ import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Sticky from 'vue-sticky-directive';
 import _ from 'lodash';
+import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import EpButton from '@/components/EpButton/EpButton.vue';
 
 @Component({
   directives: {
     oikeustarkastelu,
     Sticky,
+  },
+  components: {
+    EpButton,
   },
 })
 export default class EpNavigation extends Vue {
@@ -61,6 +70,9 @@ export default class EpNavigation extends Vue {
 
   @Prop({ default: 'normaali' })
   private tyyli!: string;
+
+  @Prop()
+  private tutoriaalistore!: TutoriaaliStore;
 
   get murut() {
     return Murupolku.murut;
@@ -76,6 +88,14 @@ export default class EpNavigation extends Vue {
 
   get sovelluksenKielet() {
     return UiKielet;
+  }
+
+  get naytettaviaTutoriaaleja() {
+    return !_.isEmpty(this.tutoriaalistore.avaimet);
+  }
+
+  kaynnistaTutoriaali() {
+    this.tutoriaalistore.setActive(true);
   }
 
   get routePath() {
@@ -146,6 +166,11 @@ export default class EpNavigation extends Vue {
     background-image: url('../../../public/img/banners/header.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
+
+    .tutorial {
+      color: rgba(255, 255, 255, 255);
+      cursor: pointer;
+    }
   }
 }
 

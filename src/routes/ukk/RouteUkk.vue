@@ -1,5 +1,5 @@
 <template>
-  <ep-main-view>
+  <ep-main-view :tutoriaalistore="tutoriaalistore">
     <template slot="icon">
       <ep-icon class="float-right" icon="question" background-color="#CE52C6"></ep-icon>
     </template>
@@ -106,7 +106,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Component, Mixins } from 'vue-property-decorator';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
 import EpRoute from '@/mixins/EpRoot';
 import EpContent from'@/components/EpContent/EpContent.vue';
@@ -121,6 +121,7 @@ import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, KysymysDto } from '@/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
+import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
 
 export interface KysymysLaajennettuDto extends KysymysDto {
   $uusi?: boolean;
@@ -152,6 +153,9 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
     $uusi: true,
     organisaatiot: []
   };
+
+  @Prop()
+  private tutoriaalistore!: TutoriaaliStore;
 
   async mounted() {
     this.kysymykset = (await Kysymykset.getKysymykset() as any).data;

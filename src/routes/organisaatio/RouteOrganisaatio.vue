@@ -1,6 +1,6 @@
 <template lang="pug">
 
-ep-main-view
+ep-main-view(:tutoriaalistore="tutoriaalistore")
   template(slot="icon")
     ep-icon.float-right(icon="tyoryhma", background-color="#82D4FF")
 
@@ -19,7 +19,7 @@ ep-main-view
 </template>
 
 <script lang="ts">
-import { Vue, Component, Mixins } from 'vue-property-decorator';
+import { Vue, Component, Mixins, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoot';
@@ -30,6 +30,7 @@ import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpSpinner/EpSpinner.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
 
 @Component({
   components: {
@@ -40,6 +41,10 @@ import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
   },
 })
 export default class RouteOrganisaatio extends Mixins(EpRoute) {
+
+  @Prop()
+  private tutoriaalistore!: TutoriaaliStore;
+
   async init() {
     await Kayttajat.updateOrganisaatioVirkailijat();
   }
