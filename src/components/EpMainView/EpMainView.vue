@@ -31,7 +31,6 @@ export default class EpMainView extends Vue {
 
   @Prop({required: true})
   private tutoriaalistore!: TutoriaaliStore;
-
 }
 </script>
 
