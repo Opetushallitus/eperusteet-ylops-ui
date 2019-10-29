@@ -81,14 +81,12 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
-import {
-  EpNavigation,
-  EpSidebar,
-  EpSpinner,
-  EpCommentThreads,
-  OpsSidenav,
-  EpButton,
-} from '@/components';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
+import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
+import EpButton from '@/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress.vue';
 import { Lops2019ValidointiDto } from '@/tyypit';
 

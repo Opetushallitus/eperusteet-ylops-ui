@@ -54,10 +54,8 @@ class KayttajaStore {
     pohja: [],
   };
 
-  @Getter()
-  public nimi() {
-    return parsiEsitysnimi(this.tiedot);
-  }
+  @Getter(state => parsiEsitysnimi(state.tiedot))
+  public readonly nimi!: string;
 
   public async init() {
     try {

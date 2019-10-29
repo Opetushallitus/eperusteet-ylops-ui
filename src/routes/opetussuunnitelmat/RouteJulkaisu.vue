@@ -93,7 +93,15 @@ div.content
 
 <script lang="ts">
 
-import { EpCollapse, EpButton, EpContent, EpDatepicker, EpEditointi, EpField, EpFormContent, EpSelect, EpToggle } from '@/components';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpField from '@/components/forms/EpField.vue';
+import EpFormContent from '@/components/forms/EpFormContent.vue';
+import EpSelect from '@/components/forms/EpSelect.vue';
+import EpToggle from '@/components/forms/EpToggle.vue';
+import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 

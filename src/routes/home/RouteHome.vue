@@ -52,14 +52,13 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EtusivuDto } from '@/tyypit';
 import ImageModal from '@/components/TiptapExtensions/ImageModal.vue';
 import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 
 
-import {
-  EpNavigation,
-  EpContent,
-  EpSearch,
-  EpSpinner,
-} from '@/components';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpSearch from '@/components/forms/EpSearch.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 
 
 @Component({
@@ -95,13 +94,14 @@ export default class Home extends Mixins(EpRoute) {
     this.etusivu = await Kayttajat.getEtusivu();
   }
 
-  private get nimi() {
-    return Kayttajat.nimi();
+  get nimi() {
+    return Kayttajat.nimi;
   }
 
-  private get kayttaja() {
+  get kayttaja() {
     return Kayttajat.tiedot;
   }
+
 }
 </script>
 

@@ -82,19 +82,17 @@
 
 <script lang="ts">
 import { Mixins, Component, Prop } from 'vue-property-decorator';
-import {
-  EpButton,
-  EpCollapse,
-  EpColorBall,
-  EpContent,
-  EpEditointi,
-  EpField,
-  EpFormContent,
-  EpMultiSelect,
-  EpOppiaineSelector,
-  EpPrefixList,
-  EpSpinner,
-} from '@/components';
+import EpButton from'@/components/EpButton/EpButton.vue';
+import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
+import EpColorBall from'@/components/EpColorBall/EpColorBall.vue';
+import EpContent from'@/components/EpContent/EpContent.vue';
+import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
+import EpField from'@/components/forms/EpField.vue';
+import EpFormContent from'@/components/forms/EpFormContent.vue';
+import EpMultiSelect from'@/components/forms/EpMultiSelect.vue';
+import EpOppiaineSelector from'@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
+import EpPrefixList from'@/components/EpPrefixList/EpPrefixList.vue';
+import EpSpinner from'@/components/EpSpinner/EpSpinner.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019PaikallinenOppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
@@ -156,7 +154,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
 
   get validator() {
     return oppiaineValidator([
-      Kielet.getSisaltoKieli(),
+      Kielet.getSisaltoKieli,
     ]);
   }
 
@@ -176,7 +174,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
     ];
   }
 
-  public async load() {
+  async load() {
     let paikallinen = defaults.oppiaine();
     if (!await this.isUusi()) {
       const { paikallinenOppiaineId } = this.$route.params;

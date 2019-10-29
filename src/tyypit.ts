@@ -91,4 +91,3 @@ export type UusiJulkaisuDto = GApi.UusiJulkaisuDto;
 export type KysymysDto = GApi.KysymysDto;
 
 export default GApi;
-// export type LokalisoituTekstiDto = GApi.LokalisoituTekstiDto;

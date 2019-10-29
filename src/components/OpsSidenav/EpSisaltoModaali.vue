@@ -45,14 +45,12 @@
 
 <script lang="ts">
 import { Prop, Component, Mixins } from 'vue-property-decorator';
-import {
-  EpButton,
-  EpFormContent,
-  EpInput,
-  EpSelect,
-  EpOppiaineSelector,
-  EpSteps,
-} from '@/components';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpFormContent from '@/components/forms/EpFormContent.vue';
+import EpInput from '@/components/forms/EpInput.vue';
+import EpSelect from '@/components/forms/EpSelect.vue';
+import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
+import EpSteps from '@/components/EpSteps/EpSteps.vue';
 
 import EpValidation from '@/mixins/EpValidation';
 import EpOpsComponent from '@/mixins/EpOpsComponent';

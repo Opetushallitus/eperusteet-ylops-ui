@@ -8,14 +8,14 @@ class MurupolkuStore {
   @State()
   public polku: { [avain: string]: any } = {};
 
-  @Getter()
-  murut() {
+  @Getter(state => {
     const nimi = _.get(Opetussuunnitelma(), 'opetussuunnitelma.nimi');
     return {
-      ...this.polku,
+      ...state.polku,
       opetussuunnitelma: nimi,
     };
-  }
+  })
+  public readonly murut!: object;
 
   aseta(key: string, value: any) {
     this.polku = {

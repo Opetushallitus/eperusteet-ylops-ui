@@ -9,12 +9,10 @@ import {
   Lops2019OppiaineDto,
 } from '@/tyypit';
 
-import {
-  EpButton,
-  EpRecursiveNav,
-  EpColorBall,
-  EpSearch,
-} from '@/components';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
+import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpSearch from '@/components/forms/EpSearch.vue';
 
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
@@ -146,7 +144,7 @@ export default class OpsSidenav extends EpOpsComponent {
   }
 
   private kaannaHelper(value: SideMenuItem) {
-    const locale = Kielet.getSisaltoKieli();
+    const locale = Kielet.getSisaltoKieli;
     const i18key = i18keys[value.type] || 'nimetön';
     return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
   }

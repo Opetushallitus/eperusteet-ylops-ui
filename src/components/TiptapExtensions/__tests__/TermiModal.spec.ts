@@ -31,7 +31,12 @@ function mockKasitteet(): IKasiteHandler {
 
 describe('Tiptap Termi Extension', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue);
+  KieliStore.setup(localVue, {
+    messages: {
+      fi: require('@/translations/locale-fi.json'),
+      sv: require('@/translations/locale-sv.json'),
+    },
+  });
   const i18n = KieliStore.i18n;
 
   const kasitteetHandler = mockKasitteet();

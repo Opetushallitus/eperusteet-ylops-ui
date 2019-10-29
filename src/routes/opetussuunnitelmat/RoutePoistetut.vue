@@ -24,20 +24,18 @@
 
 <script lang="ts">
 import { Mixins, Component } from 'vue-property-decorator';
-import {
-  EpButton,
-  EpCollapse,
-  EpColorBall,
-  EpContent,
-  EpEditointi,
-  EpSearch,
-  EpFormContent,
-  EpInput,
-  EpMultiSelect,
-  EpOppiaineSelector,
-  EpPrefixList,
-  EpSpinner,
-} from '@/components';
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpSearch from '@/components/forms/EpSearch.vue';
+import EpFormContent from '@/components/forms/EpFormContent.vue';
+import EpInput from '@/components/forms/EpInput.vue';
+import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
+import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
+import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
+import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { Lops2019PoistettuDto } from '@/tyypit';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';

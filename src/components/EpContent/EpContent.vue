@@ -7,8 +7,7 @@
     :is-editable="isEditable"
     :sticky="sticky"
     :editor="editor"
-    :help="toolbarHelp"
-    v-if="focused" />
+    :help="toolbarHelp" />
   <editor-content
     ref="content"
     :editor="editor"
@@ -95,7 +94,7 @@ export default class EpContent extends Mixins(EpValidation) {
   private focused = false;
 
   get lang() {
-    return this.locale || Kielet.getSisaltoKieli() || 'fi';
+    return this.locale || Kielet.getSisaltoKieli || 'fi';
   }
 
   get localizedValue() {
@@ -200,7 +199,7 @@ export default class EpContent extends Mixins(EpValidation) {
     else {
       this.$emit('input', {
         ...this.value,
-        [Kielet.getSisaltoKieli() as unknown as string]: data,
+        [Kielet.getSisaltoKieli as unknown as string]: data,
       });
     }
   }

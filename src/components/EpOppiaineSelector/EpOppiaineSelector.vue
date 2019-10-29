@@ -50,7 +50,7 @@ import { Mixins, Component, Prop } from 'vue-property-decorator';
 
 import EpValidation from '@/mixins/EpValidation';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import { EpMultiSelect } from '@/components';
+import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
 

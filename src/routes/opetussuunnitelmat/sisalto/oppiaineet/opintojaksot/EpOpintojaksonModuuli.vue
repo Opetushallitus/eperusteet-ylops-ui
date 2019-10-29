@@ -22,7 +22,7 @@
 import { Mixins, Component, Prop } from 'vue-property-decorator';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import { EpColorBall } from '@/components';
+import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
 import { Lops2019OpintojaksonModuuliDto, Lops2019ModuuliDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import _ from 'lodash';

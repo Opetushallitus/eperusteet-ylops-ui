@@ -47,6 +47,7 @@ import { RecursiveTreeItem } from '@/tyypit';
 import _ from 'lodash';
 
 @Component({
+  name: 'EpJarjesta',
   components: {
     draggable,
   },

@@ -34,17 +34,12 @@ import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { info } from '@/utils/notifications';
+import { changeTitleAndLang, resolveRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@/stores/logger';
 
 Vue.use(Router);
 const logger = createLogger('Router');
-
-function props(route) {
-  return {
-    opetussuunnitelmaStore: getOpetussuunnitelmaService(_.parseInt(route.params.id)),
-  };
-}
 
 export const router = new Router({
   scrollBehavior: () => ({ x: 0, y: 0 }),
@@ -101,67 +96,66 @@ export const router = new Router({
       path: 'opetussuunnitelmat/:id',
       name: 'opetussuunnitelma',
       component: RouteOpetussuunnitelma,
-      props,
+      meta: {
+        resolve: {
+          cacheBy: ['id'],
+          async props(route) {
+            return {
+              default: {
+                opetussuunnitelmaStore: getOpetussuunnitelmaService(_.parseInt(route.params.id)),
+              },
+            };
+          },
+        },
+      },
       children: [{
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
-        props,
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,
         name: 'opsJulkaisu',
-        props,
       }, {
         path: 'jarjesta',
         component: RouteJarjestys,
         name: 'jarjesta',
-        props,
       }, {
         path: 'dokumentti',
         component: RouteDokumentti,
         name: 'opsDokumentti',
-        props,
       }, {
         path: 'poistetut',
         component: RoutePoistetut,
         name: 'opsPoistetut',
-        props,
       }, {
         path: 'kasitteet',
         component: RouteKasite,
         name: 'opsKasitteet',
-        props,
       }, {
         path: 'oppiaineet',
         component: RouteOppiaineet,
         name: 'oppiaineet',
-        props,
       }, {
         path: 'oppiaineet/:oppiaineId',
         component: RouteOppiaine,
         name: 'oppiaine',
-        props,
       }, {
         path: 'oppiaineet/:oppiaineId/moduulit/:moduuliId',
         component: RouteModuuli,
         name: 'moduuli',
-        props,
       }, {
         path: 'poppiaineet/:paikallinenOppiaineId',
         component: RoutePaikallinenOppiaine,
         name: 'paikallinenOppiaine',
-        props,
       }, {
         path: 'opintojaksot/:opintojaksoId',
         component: RouteOpintojakso,
         name: 'opintojakso',
-        props,
       }, {
         path: 'tekstikappaleet/:osaId',
         component: RouteTekstikappale,
         name: 'tekstikappale',
-        props,
       }],
     }],
   }, {
@@ -193,24 +187,6 @@ Virheet.onError((virhe: SovellusVirhe) => {
   });
 });
 
-// router.beforeEach((to, from, next) => {
-//   if (to.params.lang
-//     && to.params.lang !== from.params.lang
-//     && _.includes(UiKielet, to.params.lang)) {
-//     Kielet.setUiKieli(to.params.lang as Kieli);
-//   }
-//   next();
-//   // else {
-//   //   router.push({
-//   //     ...to,
-//   //     params: {
-//   //       ...to.params,
-//   //       lang: i18n.fallbackLocale || 'fi',
-//   //     },
-//   //   });
-//   // }
-// });
-
 let lastOpsId!: string;
 
 window.onbeforeunload = () => {
@@ -227,6 +203,9 @@ router.beforeEach(async (to, from, next) => {
     info('tallenna-tai-peruuta-muutoksesi-ensin');
     return;
   }
+
+  // changeTitleAndLang(to);
+  await resolveRouterMetaProps(to);
 
   // Alustetaan opetussuunnitelma tilan vaihtuessa
   if (Opetussuunnitelma()) {

@@ -67,7 +67,12 @@ function createWrapper(localVue, config: any = {}) {
 
 describe('EpContentMenu component', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue);
+  KieliStore.setup(localVue, {
+    messages: {
+      fi: require('@/translations/locale-fi.json'),
+      sv: require('@/translations/locale-sv.json'),
+    },
+  });
 
   it('Hide menu when read only', async () => {
     const wrapper = createWrapper(localVue, {
@@ -80,6 +85,7 @@ describe('EpContentMenu component', () => {
     const wrapper = createWrapper(localVue, {
       isEditable: true,
     });
+
     expect(wrapper.find('button[title="Lihavoi"]').exists()).toBe(true);
     expect(wrapper.find('button[title="Kursivoi"]').exists()).toBe(true);
     expect(wrapper.find('button[title="Redo"]').exists()).toBe(true);

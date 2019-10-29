@@ -63,15 +63,15 @@ export default class EpNavigation extends Vue {
   private tyyli!: string;
 
   get murut() {
-    return Murupolku.murut();
+    return Murupolku.murut;
   }
 
   get uiKieli() {
-    return Kielet.getUiKieli();
+    return Kielet.getUiKieli;
   }
 
   get sisaltoKieli() {
-    return Kielet.getSisaltoKieli();
+    return Kielet.getSisaltoKieli;
   }
 
   get sovelluksenKielet() {
@@ -95,14 +95,16 @@ export default class EpNavigation extends Vue {
   private valitseUiKieli(kieli: Kieli) {
     const router = this.$router;
     const current: any = router.currentRoute;
-    router.push({
+    Kielet.setUiKieli(kieli);
+    const next = {
       ...current,
       params: {
         ...current.params,
         lang: kieli || this.$i18n.fallbackLocale,
       },
-    });
-    Kielet.setUiKieli(kieli);
+    };
+    console.log(next);
+    router.push(next).catch(_.noop);
   }
 
   private valitseSisaltoKieli(kieli: Kieli) {

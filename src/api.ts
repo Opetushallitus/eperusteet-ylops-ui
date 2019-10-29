@@ -21,6 +21,8 @@ import {
   UlkopuolisetApi,
 } from '@/generated/api';
 
+axios.defaults.headers.common['Caller-Id'] = '1.2.246.562.10.00000000001.eperusteet';
+
 type FactoryFn<T> = (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;
 
 const logger = createLogger('Axios');
