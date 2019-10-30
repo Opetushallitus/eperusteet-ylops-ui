@@ -52,7 +52,7 @@ import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Sticky from 'vue-sticky-directive';
 import _ from 'lodash';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpButton from '@/components/EpButton/EpButton.vue';
 
 @Component({

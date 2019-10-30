@@ -20,7 +20,7 @@ library.add(solid.faChevronUp);
 library.add(solid.faClock);
 library.add(solid.faCog);
 library.add(solid.faColumns);
-library.add(solid.faCommentDots)
+library.add(solid.faCommentDots);
 library.add(solid.faEllipsisH);
 library.add(solid.faExclamation);
 library.add(solid.faExternalLinkAlt);
@@ -49,7 +49,7 @@ library.add(solid.faPencilRuler);
 library.add(solid.faPlus);
 library.add(solid.faPlusCircle);
 library.add(solid.faQuestion);
-library.add(solid.faQuestionCircle)
+library.add(solid.faQuestionCircle);
 library.add(solid.faRecycle);
 library.add(solid.faRedo);
 library.add(solid.faSearch);

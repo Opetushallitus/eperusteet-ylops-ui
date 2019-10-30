@@ -124,7 +124,7 @@ import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpProgress from '@/components/EpProgress.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 @Component({
   components: {

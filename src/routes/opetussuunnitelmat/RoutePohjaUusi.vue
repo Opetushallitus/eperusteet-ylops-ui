@@ -59,7 +59,7 @@ import { createLogger } from '@/stores/logger';
 import EpRoute from '@/mixins/EpRoute';
 import EpValidation from '@/mixins/EpValidation';
 import { success } from '@/utils/notifications';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 const logger = createLogger('RoutePohjaUusi');
 

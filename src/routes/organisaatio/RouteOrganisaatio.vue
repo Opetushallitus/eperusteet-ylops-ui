@@ -30,7 +30,7 @@ import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpSpinner/EpSpinner.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 @Component({
   components: {

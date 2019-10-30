@@ -121,7 +121,7 @@ import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, KysymysDto } from '@/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 export interface KysymysLaajennettuDto extends KysymysDto {
   $uusi?: boolean;

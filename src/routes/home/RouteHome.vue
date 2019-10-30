@@ -59,7 +59,7 @@ import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSearch from '@/components/forms/EpSearch.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 
 @Component({

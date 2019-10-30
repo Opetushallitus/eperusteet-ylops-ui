@@ -13,12 +13,12 @@ export const VueTutorial: Vue.PluginObject<VueTutorialParams> = {
     } 
 
     Vue.directive('tutorial', {
-        inserted(el, def) {
+      inserted(el, def) {
 
-          el.setAttribute('tutorial','');
-          options.tutoriaalistore.paivitaAvaimet();
+        el.setAttribute('tutorial','');
+        options.tutoriaalistore.paivitaAvaimet();
 
       }
     });
   }
-}
+};

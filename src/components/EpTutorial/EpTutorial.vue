@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import _ from 'lodash';
 
 @Component({
@@ -80,7 +80,8 @@ export default class EpTutorial extends Vue {
     if (val) {
       this.tutoriaalistore.paivitaAvaimet();
       this.muutaTyyli(this.current, undefined);
-    } else {
+    }
+    else {
       this.muutaTyyli(undefined, this.current);
     }
   }
@@ -91,8 +92,8 @@ export default class EpTutorial extends Vue {
     if (oldVal) {
       const oldEl = document.getElementById(oldVal);
       if(oldEl) {
-          oldEl.classList.remove('tutorial-highlight');
-        }
+        oldEl.classList.remove('tutorial-highlight');
+      }
     }
 
     if (val && this.show) {

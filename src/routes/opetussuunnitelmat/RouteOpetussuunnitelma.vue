@@ -89,7 +89,7 @@ import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress.vue';
 import { Lops2019ValidointiDto } from '@/tyypit';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 
 @Component({

@@ -20,7 +20,7 @@ div
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 @Component({
   components: {
@@ -31,7 +31,7 @@ export default class EpMainView extends Vue {
 
   @Prop({required: true})
   private tutoriaalistore!: TutoriaaliStore;
-  
+
 }
 </script>
 

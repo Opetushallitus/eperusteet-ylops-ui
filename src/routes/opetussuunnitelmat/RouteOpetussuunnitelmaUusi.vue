@@ -90,7 +90,7 @@ import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import { success } from '@/utils/notifications';
 import { required } from 'vuelidate/lib/validators';
 import { validationMixin } from 'vuelidate';
-import { TutoriaaliStore } from '@/stores/TutoriaaliStore.ts';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import {
   Ulkopuoliset,
