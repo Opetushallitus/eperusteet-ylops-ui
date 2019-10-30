@@ -23,6 +23,8 @@
     <a
       v-else
       :href="href && href"
+      rel="noopener noreferrer"
+      target="_blank"
       @mouseover="effects.hover = true"
       @mouseleave="effects.hover = false"
       @focus="effects.focus = true"

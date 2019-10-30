@@ -1,7 +1,7 @@
 <template>
   <base-tile
     icon="valtakunnalliset-perusteet"
-    :href="'https://eperusteet.opintopolku.fi/#/' + kieli">
+    :href="href">
     <template slot="header">
       <span>{{ $t('tile-perusteet') }}</span>
     </template>
@@ -26,6 +26,11 @@ import { Kielet } from '@shared/stores/kieli';
 export default class TileOpetussuunnitelmat extends Vue {
   get kieli() {
     return Kielet.getUiKieli;
+  }
+
+  get href() {
+    return 'https://eperusteet.opintopolku.fi/#/' + this.kieli;
+
   }
 }
 </script>

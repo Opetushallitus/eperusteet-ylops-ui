@@ -18,16 +18,16 @@
         :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
         :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
         :count-is-loading="isLoading" />
-        <tile-opetussuunnitelmat
-          :keskeneraiset="etusivu.pohjatKeskeneraiset"
-          :julkaistut="etusivu.pohjatJulkaistut"
-          :is-ops="false"
-          v-oikeustarkastelu="'hallinta'"
-          :count-is-loading="isLoading" />
-          <tile-organisaatio />
-            <tile-valtakunnalliset-perusteet />
-              <tile-tiedotteet />
-                <tile-ukk />
+      <tile-opetussuunnitelmat
+        :keskeneraiset="etusivu.pohjatKeskeneraiset"
+        :julkaistut="etusivu.pohjatJulkaistut"
+        :is-ops="false"
+        v-oikeustarkastelu="'hallinta'"
+        :count-is-loading="isLoading" />
+      <tile-organisaatio />
+      <tile-valtakunnalliset-perusteet />
+      <tile-tiedotteet />
+      <tile-ukk />
     </div>
   </div>
 </div>
