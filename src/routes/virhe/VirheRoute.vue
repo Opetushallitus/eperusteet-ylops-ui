@@ -16,19 +16,19 @@
       <ep-form-content name="virhe-nakyma-kuvaus">
         <ep-content v-model="virheteksti" layout="simplified" :is-editable="!sent" help="virhe-nakyma-selite"></ep-content>
       </ep-form-content>
-   
+
       <div class="d-flex flex-row-reverse">
-        <div class="ml-4"> 
-          <ep-button 
+        <div class="ml-4">
+          <ep-button
             v-if="!sent"
             :show-spinner="sending"
             @click="lahetaVirheteksti">{{$t('virhe-nakyma-laheta')}}</ep-button>
         </div>
         <div class="align-self-center">
-          <router-link :to="{ name: 'root'}">{{ $t('palaa-etusivulle') }}</router-link>       
+          <router-link :to="{ name: 'root'}">{{ $t('palaa-etusivulle') }}</router-link>
         </div>
       </div>
-    </template>  
+    </template>
 
   </ep-main-view>
 
@@ -37,13 +37,11 @@
 import { Component, Vue, Mixins } from 'vue-property-decorator';
 import { createLogger } from '@/stores/logger';
 import { success, fail, info } from '@/utils/notifications';
-import {
-  EpMainView,
-  EpField,
-  EpContent,
-  EpFormContent,
-  EpButton,
-} from '@/components';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpButton from '@/components/EpButton/EpButton.vue';
 
 const logger = createLogger('Virhe');
 
@@ -75,22 +73,24 @@ export default class VirheRoute extends Vue {
     try {
       this.sending = true;
       await this.delay(2000);
-      
+
       this.sent = true;
       success('virhe-nakyma-lahetetty');
 
-    } catch(err) {
+    }
+    catch(err) {
       logger.log('Virhe virheen lähetyksessä: ' + err);
       fail('virhe-nakyma-lahetys-virhe', err);
       this.sent = false;
-    } finally {
+    }
+    finally {
       this.sending = false;
     }
-    
+
   }
 
   public delay(ms) {
-    return new Promise(res => { 
+    return new Promise(res => {
       setTimeout(res, ms);
       // throw new Error('errori');
     });
