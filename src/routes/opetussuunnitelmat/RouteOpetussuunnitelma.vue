@@ -39,17 +39,17 @@
             <b-dropdown-item :to="{ name: 'opsKasitteet' }">
               <fas class="mr-2" icon="bookmark" fixed-width /><span>{{ $t('kasitteet') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'opsPoistetut' }">
+            <b-dropdown-item v-oikeustarkastelu="'hallinta'" :to="{ name: 'opsPoistetut' }">
               <fas class="mr-2" icon="recycle" fixed-width /><span>{{ $t('poistetut') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsDokumentti' }">
               <fas class="mr-2" icon="file-pdf" fixed-width /><span>{{ $t('luo-pdf') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'opsJulkaisu' }" v-if="!isPohja">
+            <b-dropdown-item v-oikeustarkastelu="'hallinta'" :to="{ name: 'opsJulkaisu' }" v-if="!isPohja">
               <fas class="mr-2" icon="upload" fixed-width /><span>{{ $t('julkaise') }}</span>
             </b-dropdown-item>
-            <b-dropdown-divider v-if="!isPohja" />
-            <b-dropdown-item @click="arkistoiOps" v-if="!isPohja">
+            <b-dropdown-divider v-oikeustarkastelu="'hallinta'" v-if="!isPohja" />
+            <b-dropdown-item v-oikeustarkastelu="'hallinta'" @click="arkistoiOps" v-if="!isPohja">
               <fas class="mr-2" icon="folder" fixed-width /><span>{{ $t('arkistoi-ops') }}</span>
             </b-dropdown-item>
           </b-dropdown>

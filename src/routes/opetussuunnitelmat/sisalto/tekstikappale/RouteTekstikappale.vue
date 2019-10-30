@@ -158,7 +158,11 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     else {
       const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteSyva(this.opsId, this.osaId)).data;
       const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
-      this.alkuperainen = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteOriginal(this.opsId, this.osaId)).data;
+      try {
+        this.alkuperainen = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteOriginal(this.opsId, this.osaId)).data;
+      }
+      catch (err) {}
+
       const result = {
         tov: _.omit(_.cloneDeep(teksti), 'lapset'),
         ohjeet: ohjeet.data || [],

@@ -6,9 +6,9 @@
       <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
       <p>{{ $t('tervetuloa-kuvaus') }}</p>
       <div class="row">
-        <div class="col-md-4 mb-3">
-          <ep-search v-model="rajain"></ep-search>
-        </div>
+      <!--   <div class="col-md-4 mb-3">                -->
+      <!--     <ep-search v-model="rajain"></ep-search> -->
+      <!--   </div>                                     -->
       </div>
     </div>
   </div>

@@ -17,11 +17,9 @@
           <label class="form-check-label" :for="org.oid">{{ $kaanna(org.nimi) }}</label>
         </div>
         <p>
-        <b-button class="float-right" variant="link" @click="startKysymysModal(null)">
-          <fas class="mr-2" icon="plus-circle">
-          </fas>
-          <span>{{ $t('lisaa-uusi-kysymys') }}</span>
-        </b-button>
+          <ep-button v-oikeustarkastelu="'tilanvaihto'" class="float-right" variant="outline-primary" icon="plus" @click="startKysymysModal(null)">
+            {{ $t('lisaa-uusi-kysymys') }}
+          </ep-button>
         </p>
       </div>
     </template>
@@ -47,7 +45,7 @@
               </p>
               <h5 v-html="$kaanna(kysymys.kysymys)"></h5>
               <p class="text-secondary">
-              <ep-content layout="simplified" :value="kysymys.vastaus"></ep-content>
+                <ep-content layout="simplified" :value="kysymys.vastaus"></ep-content>
               </p>
               <hr />
             </div>
@@ -110,6 +108,7 @@ import { Component, Mixins } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
 import EpRoute from '@/mixins/EpRoot';
 import EpContent from'@/components/EpContent/EpContent.vue';
+import EpButton from'@shared/components/EpButton/EpButton.vue';
 import EpFormContent from'@/components/forms/EpFormContent.vue';
 import EpIcon from'@/components/EpIcon/EpIcon.vue';
 import EpMainView from'@/components/EpMainView/EpMainView.vue';
@@ -121,13 +120,18 @@ import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, KysymysDto } from '@/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
 export interface KysymysLaajennettuDto extends KysymysDto {
   $uusi?: boolean;
 }
 
 @Component({
+  directives: {
+    oikeustarkastelu,
+  },
   components: {
+    EpButton,
     EpContent,
     EpFormContent,
     EpIcon,

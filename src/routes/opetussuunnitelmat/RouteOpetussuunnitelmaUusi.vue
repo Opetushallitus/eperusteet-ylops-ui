@@ -61,7 +61,7 @@ ep-main-view
       v-model="uusi.organisaatiot")
 
     ep-button(
-      :disabled="$v.uusi.$invalid",
+      :disabled="$v.uusi.$invalid || addingOpetussuunnitelma",
       @click="luoUusiOpetussuunnitelma",
       :show-spinner="isLoading") {{ $t('luo-opetussuunnitelma') }}
 
@@ -126,6 +126,7 @@ import { opsLuontiValidator } from '@/validators/ops';
 export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, EpRoute) {
   private pohjat: OpetussuunnitelmaInfoDto[] | null = null;
   private oletuspohjasta: 'pohjasta' | 'opsista' | null = null;
+  private addingOpetussuunnitelma = false;
   private uusi = {
     pohja: null as (OpetussuunnitelmaInfoDto | null),
     nimi: {},
@@ -155,6 +156,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   }
 
   public async luoUusiOpetussuunnitelma() {
+    this.addingOpetussuunnitelma = true;
     this.loading(async () => {
       const ops: OpetussuunnitelmaLuontiDto = {
         nimi: this.uusi.nimi,

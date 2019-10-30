@@ -24,6 +24,7 @@ import {
   opsLapsiLinkit,
   paikallinenOppiaineToMenu,
 } from './menuBuildingMethods';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [{
@@ -75,6 +76,9 @@ const i18keys = {
 };
 
 @Component({
+  directives: {
+    oikeustarkastelu,
+  },
   components: {
     EpButton,
     EpColorBall,
