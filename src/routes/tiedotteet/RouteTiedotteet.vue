@@ -51,8 +51,6 @@ import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoot';
-import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
-
 import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpIcon from'@/components/EpIcon/EpIcon.vue';
