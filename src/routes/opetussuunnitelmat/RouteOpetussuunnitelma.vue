@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ep-navigation tyyli="ops"></ep-navigation>
+  <ep-navigation tyyli="ops" :tutoriaalistore="tutoriaalistore"></ep-navigation>
   <div class="opetussuunnitelma" v-if="ops">
     <div class="header">
       <div class="progress-chart">
@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
+import { Mixins, Component, Prop } from 'vue-property-decorator';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
@@ -89,6 +89,7 @@ import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress.vue';
 import { Lops2019ValidointiDto } from '@/tyypit';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 
 @Component({
@@ -103,6 +104,10 @@ import { Lops2019ValidointiDto } from '@/tyypit';
   },
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
+
+  @Prop()
+  private tutoriaalistore!: TutoriaaliStore;
+
   private validation: Lops2019ValidointiDto | null = null;
 
   async mounted() {

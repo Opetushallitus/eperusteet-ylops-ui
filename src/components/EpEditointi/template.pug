@@ -43,6 +43,8 @@ div
                 :disabled="state.disabled")
                 slot(name="poista") {{ $t('poista') }}
             ep-button(
+              id="editointi-muokkaus",
+              v-tutorial,
               variant="link",
               @click="ctrls.start()",
               v-if="!ctrls.isEditing",
@@ -56,6 +58,8 @@ div
               icon="ukk",
               variant="lightblue")
             ep-round-button.ml-2(
+              id="editointi-muokkaus-question"
+              v-tutorial,
               v-if="hasOhjeSlot",
               @click="toggleSidebarState(2)",
               icon="question",

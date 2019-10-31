@@ -1,6 +1,6 @@
 <template lang="pug">
 
-ep-main-view
+ep-main-view(:tutoriaalistore="tutoriaalistore")
   template(slot="icon")
     ep-icon.float-right(icon="tiedotteet", background-color="#000000")
 
@@ -59,6 +59,7 @@ import EpNavigation from'@/components/EpNavigation/EpNavigation.vue';
 import EpSearch from'@/components/forms/EpSearch.vue';
 import EpSpinner from'@/components/EpSpinner/EpSpinner.vue';
 import { Ulkopuoliset } from '@/api';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 
 @Component({
@@ -81,6 +82,9 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
   private debounceUpdateSearch = _.debounce(() => {
     this.update();
   }, 300);
+
+  @Prop()
+  private tutoriaalistore!: TutoriaaliStore;
 
   async init() {
     await this.update();
