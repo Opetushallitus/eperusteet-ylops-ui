@@ -38,10 +38,9 @@ div
               template(slot="button-content")
                 fas(icon="ellipsis-h")
               b-dropdown-item(
-                v-if="hooks.remove",
                 @click="ctrls.remove()",
                 key="poista",
-                :disabled="state.disabled")
+                :disabled="!hooks.remove || state.disabled")
                 slot(name="poista") {{ $t('poista') }}
             ep-button(
               variant="link",
