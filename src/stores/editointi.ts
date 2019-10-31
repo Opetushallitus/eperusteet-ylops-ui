@@ -156,6 +156,7 @@ export class EditointiKontrolli {
     if (this.config.source.cancel) {
       await this.config.source.cancel!();
     }
+
     this.mstate.data = JSON.parse(this.backup);
     // this.config.setData!(JSON.parse(this.backup));
     this.isEditingState = false;

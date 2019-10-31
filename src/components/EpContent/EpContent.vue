@@ -98,14 +98,17 @@ export default class EpContent extends Mixins(EpValidation) {
   }
 
   get localizedValue() {
-    if (this.isPlainString) {
+    if (!this.value) {
+      return '';
+    }
+    else if (this.isPlainString) {
       return this.value || '';
     }
-    else {
-      if (!this.value) {
-        return '';
-      }
+    else if (_.isObject(this.value)) {
       return this.value[this.lang] || '';
+    }
+    else {
+      return this.value;
     }
   }
 
@@ -188,6 +191,16 @@ export default class EpContent extends Mixins(EpValidation) {
   beforeDestroy() {
     if (this.editor) {
       this.editor.destroy();
+    }
+  }
+
+  @Watch('value', {
+    immediate: true,
+    deep: true,
+  })
+  onValueUpdate(val, old) {
+    if (this.editor && !this.focused) {
+      this.editor.setContent(this.localizedValue);
     }
   }
 

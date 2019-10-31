@@ -26,20 +26,6 @@ Vue.use(Loading, {
   loader: 'dots',
 });
 
-const isDevelopmentMode = () => _.get(process.env.NODE_ENV, '') === 'development';
-
-function errorCaptured(err: Error, vm: Vue, info: string) {
-  logger.error(err, info);
-  if (!isDevelopmentMode()) {
-    // Virheet.lisaaVirhe({
-    //   path: vm.$route.path,
-    //   state: _.cloneDeep(vm.$data),
-    //   err: err.message,
-    //   info,
-    // });
-  }
-}
-
 import VueI18n, { IVueI18n } from 'vue-i18n';
 
 declare module 'vue/types/vue' {

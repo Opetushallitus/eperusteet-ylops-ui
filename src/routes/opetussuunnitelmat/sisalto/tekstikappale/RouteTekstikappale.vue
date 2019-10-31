@@ -19,8 +19,7 @@
       </template>
       <template slot="header" slot-scope="{ isEditing, data }">
         <div class="otsikko">
-          <ep-field v-if="data.tov.tekstiKappale" help="tekstikappale-nimi-ohje" v-model="data.tov.tekstiKappale.nimi" :is-header="true" :is-editing="isEditing">
-          </ep-field>
+          <ep-field v-if="data.tov.tekstiKappale" help="tekstikappale-nimi-ohje" v-model="data.tov.tekstiKappale.nimi" :is-header="true" :is-editing="isEditing && !data.tov.perusteTekstikappaleId"></ep-field>
         </div>
       </template>
       <template slot-scope="{ isEditing, data }">
@@ -34,8 +33,8 @@
               <div v-if="isEditing">
                 <b-form-checkbox v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</b-form-checkbox>
               </div>
+              <div class="spacing" />
             </ep-collapse>
-            <div class="spacing" />
             <ep-collapse v-if="alkuperainen && alkuperainen.tekstiKappale && (isEditing || data.tov.naytaPohjanTeksti)">
               <h5 slot="header">
                 {{ $t('pohjan-teksti') }}
@@ -44,9 +43,9 @@
               <div v-if="isEditing">
                 <b-form-checkbox v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</b-form-checkbox>
               </div>
+              <div class="spacing" />
             </ep-collapse>
-            <div class="spacing" />
-            <ep-collapse>
+            <ep-collapse :disable-header="!!data.tov.perusteTekstikappaleId">
               <template #header>
                 <h5>{{ $t('paikallinen-teksti') }}</h5>
               </template>
@@ -106,6 +105,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   private perusteenTeksti: PerusteTekstiKappaleViiteDto | null = null;
   private alkuperainen: PerusteTekstiKappaleViiteDto | null = null;
   private nimi: any = {};
+
+
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: async () => this.isUusi(),
     source: {
