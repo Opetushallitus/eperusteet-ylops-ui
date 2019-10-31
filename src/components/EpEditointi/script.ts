@@ -76,6 +76,9 @@ export default class EpEditointi extends Mixins(validationMixin) {
   get saveHelpText() {
     const vuelidate = this.$v as any;
     if (this.state.disabled) {
+      return 'tallenna-kaynnissa';
+    }
+    else if (this.state.disabled) {
       return 'tallenna-tila-virhe-ohje';
     }
     else if (vuelidate.state.data.$invalid) {
