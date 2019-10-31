@@ -36,8 +36,12 @@ export class TutoriaaliStore {
 
   public readonly paivitaAvaimet = _.debounce(() => {
     const uudetAvaimet: string[] = [];
-    document.querySelectorAll('[tutorial]').forEach(el => uudetAvaimet.push(el.getAttribute('id')));
-    this.avaimet = uudetAvaimet.filter(avain => avain !== null);
+    document.querySelectorAll('[tutorial]').forEach(el => {
+      const elId = el.getAttribute('id');
+      if (elId) {
+        uudetAvaimet.push(elId);
+      }
+    });
   }, 100);
 
   setActive(active: boolean) {
