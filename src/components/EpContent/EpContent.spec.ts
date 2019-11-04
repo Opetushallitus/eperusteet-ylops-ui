@@ -90,7 +90,7 @@ describe.only('EpContent component', async () => {
       fi: 'foo',
       sv: 'sv',
     },
-  }
+  };
 
   const wrapper = mount(EpContent as any, {
     localVue,

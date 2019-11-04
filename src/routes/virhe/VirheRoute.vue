@@ -78,11 +78,13 @@ export default class VirheRoute extends Vue {
       this.sent = true;
       success('virhe-nakyma-lahetetty');
 
-    } catch(err) {
+    }
+    catch(err) {
       logger.log('Virhe virheen lähetyksessä: ' + err);
       fail('virhe-nakyma-lahetys-virhe', err);
       this.sent = false;
-    } finally {
+    }
+    finally {
       this.sending = false;
     }
 
