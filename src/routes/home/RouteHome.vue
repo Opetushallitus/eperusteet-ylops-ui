@@ -1,7 +1,7 @@
 <template>
 <div class="home-container">
   <div class="header">
-    <ep-navigation :sticky="false"></ep-navigation>
+    <ep-navigation :sticky="false" :tutoriaalistore="tutoriaalistore"></ep-navigation>
     <div class="container">
       <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
       <p>{{ $t('tervetuloa-kuvaus') }}</p>
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Mixins } from 'vue-property-decorator';
+import { Component, Vue, Mixins, Prop } from 'vue-property-decorator';
 
 import { Kayttajat } from '@/stores/kayttaja';
 
@@ -59,6 +59,7 @@ import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSearch from '@/components/forms/EpSearch.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 
 @Component({
@@ -82,6 +83,10 @@ import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
   },
 })
 export default class Home extends Mixins(EpRoute) {
+
+  @Prop()
+  private tutoriaalistore!: TutoriaaliStore;
+
   private rajain: string = '';
   private etusivu: EtusivuDto = {
     opetussuunnitelmatKeskeneraiset: 0,

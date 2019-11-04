@@ -37,9 +37,13 @@ import { info } from '@/utils/notifications';
 import { changeTitleAndLang, resolveRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@/stores/logger';
+import { tutoriaalistore } from './stores/tutoriaaliStore';
+import { VueTutorial } from './directives/tutoriaali';
 
 Vue.use(Router);
 const logger = createLogger('Router');
+
+Vue.use(VueTutorial, {tutoriaalistore});
 
 export const router = new Router({
   scrollBehavior: () => ({ x: 0, y: 0 }),
@@ -49,6 +53,17 @@ export const router = new Router({
   }, {
     path: '/:lang',
     component: Root,
+    meta: {
+      resolve: {
+        async props(route) {
+          return {
+            default: {
+              tutoriaalistore: tutoriaalistore,
+            },
+          };
+        },
+      },
+    },
     children: [{
       path: '',
       name: 'root',

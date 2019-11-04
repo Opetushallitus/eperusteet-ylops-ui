@@ -1,5 +1,5 @@
 <template>
-  <ep-main-view>
+  <ep-main-view :tutoriaalistore="tutoriaalistore">
     <template slot="icon">
       <ep-icon class="float-right" icon="luo-uusi">
       </ep-icon>
@@ -59,6 +59,7 @@ import { createLogger } from '@/stores/logger';
 import EpRoute from '@/mixins/EpRoute';
 import EpValidation from '@/mixins/EpValidation';
 import { success } from '@/utils/notifications';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 const logger = createLogger('RoutePohjaUusi');
 
@@ -83,6 +84,9 @@ export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
     valittuPeruste: null as (PerusteInfoDto | null),
     nimi: {},
   };
+
+  @Prop()
+  private tutoriaalistore!: TutoriaaliStore;
 
   get validationConfig() {
     return {

@@ -1,5 +1,5 @@
 <template>
-<ep-main-view>
+<ep-main-view :tutoriaalistore="tutoriaalistore">
   <template slot="icon">
     <ep-icon class="float-right" icon="tiedotteet" background-color="#000000">
     </ep-icon>
@@ -62,6 +62,8 @@ import _ from 'lodash';
 
 import EpButton from'@/components/EpButton/EpButton.vue';
 import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
+import EpRoute from '@/mixins/EpRoot';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpIcon from'@/components/EpIcon/EpIcon.vue';
 import EpMainView from'@/components/EpMainView/EpMainView.vue';
@@ -72,6 +74,7 @@ import EpSpinner from'@/components/EpSpinner/EpSpinner.vue';
 
 import { Ulkopuoliset } from '@/api';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 
 @Component({
@@ -98,6 +101,9 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
   private debounceUpdateSearch = _.debounce(() => {
     this.update();
   }, 300);
+
+  @Prop({ required: true })
+  private tutoriaalistore!: TutoriaaliStore;
 
   async init() {
     await this.update();

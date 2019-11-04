@@ -1,7 +1,7 @@
 <template lang="pug">
 
 div(v-if="mahdollisetTilat")
-  ep-button(v-b-modal.tilanvaihtomodal)
+  ep-button(v-b-modal.tilanvaihtomodal,id="opetussuunnitelma-tilanvaihto",v-tutorial)
     | {{ $t('vaihda-tilaa') }}
 
   b-modal(
