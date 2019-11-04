@@ -4,7 +4,7 @@ import EpFooter from'@/components/EpFooter/EpFooter.vue';
 
 import Sticky from 'vue-sticky-directive';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-import EpTutorial from '@/components/EpTutorial/EpTutorial.vue';
+import EpTutorial from '@shared/components/EpTutorial/EpTutorial.vue';
 
 @Component({
   directives: {

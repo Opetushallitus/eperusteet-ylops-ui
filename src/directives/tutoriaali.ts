@@ -1,6 +1,4 @@
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-import Vue, {PluginObject} from 'vue';
-import EpTutorial from '@/components/EpTutorial/EpTutorial.vue';
 
 interface VueTutorialParams {
   tutoriaalistore: TutoriaaliStore
