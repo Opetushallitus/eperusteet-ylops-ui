@@ -146,7 +146,7 @@
         </div>
 
         <div class="osio">
-          <ep-collapse tyyppi="opintojakson-laaja-alaiset">
+         <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header">{{ $t('laaja-alaiset-sisallot') }}</div>
 
             <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
@@ -265,9 +265,7 @@ import { getLaajaAlaisetKoodit } from '@/utils/perusteet';
   },
 })
 export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
-  @Prop({
-    required: false,
-  })
+  @Prop({ required: false })
   private oppiaineUri!: string;
 
   private oppiaineQuery = '';

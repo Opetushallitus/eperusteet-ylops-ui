@@ -73,6 +73,7 @@ export type Lops2019OppiaineDto = GApi.Lops2019OppiaineKaikkiDto;
 export type Lops2019PaikallinenOppiaineDto = GApi.Lops2019PaikallinenOppiaineDto;
 export type Lops2019PoistettuDto = GApi.Lops2019PoistettuDto;
 export type Lops2019ValidointiDto = GApi.Lops2019ValidointiDto;
+export type Lops2019PaikallinenLaajaAlainenDto = GApi.Lops2019PaikallinenLaajaAlainenDto;
 export type Matala = GApi.Matala;
 export type OhjeDto = GApi.OhjeDto;
 export type OpetussuunnitelmaDto = GApi.OpetussuunnitelmaDto;

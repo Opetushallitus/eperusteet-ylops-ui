@@ -53,10 +53,16 @@
             </div>
           </ep-collapse>
           <hr class="valiviiva" />
+
           <ep-collapse tyyppi="laajaAlainenOsaaminen">
             <h4 class="header" slot="header">{{ $t('laaja-alaiset-sisallot') }}</h4>
-            <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.laajaAlainenOsaaminen" :is-editable="isEditing" layout="normal"> </ep-content>
+            <laaja-alaiset-osaamiset
+              v-model="data.laajaAlainenOsaaminen"
+              :koodit="koodit"
+              :nimi="'lisaa-laaja-alainen-osaaminen'"
+              :is-editable="isEditing" />
           </ep-collapse>
+
           <div v-if="!isEditing">
             <hr class="valiviiva" />
             <ep-collapse tyyppi="opintojaksot">
@@ -102,6 +108,10 @@ import { Kielet } from '@shared/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import Multiselect from 'vue-multiselect';
 import * as defaults from '@/defaults';
+import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
+import { Opetussuunnitelmat } from '@/api';
+import { KoodistoLops2019LaajaAlaiset  } from '@/utils/perusteet';
+
 
 @Component({
   components: {
@@ -115,11 +125,13 @@ import * as defaults from '@/defaults';
     EpOppiaineSelector,
     EpPrefixList,
     EpSpinner,
+    LaajaAlaisetOsaamiset,
   },
 })
 export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
   private oppiaineQuery = '';
   private editable: any = null;
+  private laajaAlaisetKoodit: any = null;
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: this.isUusi,
     remove: this.remove,
@@ -138,6 +150,10 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
 
   async isUusi() {
     return this.$route.params.paikallinenOppiaineId === 'uusi';
+  }
+
+  get koodit() {
+    return _.sortBy(this.laajaAlaisetKoodit, 'koodiArvo');
   }
 
   get opintojaksot() {
@@ -180,6 +196,9 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
       const { paikallinenOppiaineId } = this.$route.params;
       paikallinen = await this.store.getPaikallinenOppiaine(_.parseInt(paikallinenOppiaineId));
     }
+
+    const { id } = this.$route.params;
+    this.laajaAlaisetKoodit = (await Opetussuunnitelmat.getKoodistonKoodit(_.parseInt(id), KoodistoLops2019LaajaAlaiset)).data;
 
     paikallinen.tehtava = paikallinen.tehtava || {};
     paikallinen.arviointi = paikallinen.arviointi || {};

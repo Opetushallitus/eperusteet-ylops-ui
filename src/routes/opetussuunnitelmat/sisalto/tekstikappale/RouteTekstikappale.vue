@@ -45,7 +45,7 @@
               </div>
               <div class="spacing" />
             </ep-collapse>
-            <ep-collapse :disable-header="!!data.tov.perusteTekstikappaleId">
+            <ep-collapse :disable-header="!data.tov.perusteTekstikappaleId">
               <template #header>
                 <h5>{{ $t('paikallinen-teksti') }}</h5>
               </template>

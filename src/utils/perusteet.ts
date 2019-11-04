@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+export const KoodistoLops2019LaajaAlaiset = 'laajaalainenosaaminenlops2021';
+
 export const YlopsKoulutustyypit = Object.freeze([
   // AIKUISTENPERUSOPETUS("koulutustyyppi_17"),
   // PERUSOPETUS("koulutustyyppi_16"),

@@ -1,8 +1,10 @@
 import { createLocalVue, mount } from '@vue/test-utils';
+import Vue from 'vue';
 import EpEditorMenuBar from './EpEditorMenuBar.vue';
+import EpContent from './EpContent.vue';
 import { KieliStore, Kielet } from '@shared/stores/kieli';
+import { Kieli } from '@/tyypit';
 import { Editor } from 'tiptap';
-// import { rootConfig } from '@/mainvue';
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
@@ -25,8 +27,8 @@ import {
   TableRow,
 } from 'tiptap-extensions';
 
-function createWrapper(localVue, config: any = {}) {
-  const editor = new Editor({
+function createEditor(config: any) {
+  return new Editor({
     content: '',
     editable: config.isEditable,
     extensions: [
@@ -47,7 +49,9 @@ function createWrapper(localVue, config: any = {}) {
       new TableRow(),
     ],
   });
+}
 
+function createWrapper(localVue, config: any = {}) {
   const wrapper = mount(EpEditorMenuBar as any, {
     localVue,
     attachToDocument: true,
@@ -57,7 +61,7 @@ function createWrapper(localVue, config: any = {}) {
       layout: 'simplified',
       sticky: false,
       isEditable: false,
-      editor: editor,
+      editor: createEditor(config),
       ...config,
     },
   } as any);
@@ -65,14 +69,76 @@ function createWrapper(localVue, config: any = {}) {
 }
 
 
+describe.only('EpContent component', async () => {
+
+  beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation();
+  });
+
+  afterAll(() => {
+    (console.error as any).mockRestore();
+  });
+
+  const localVue = createLocalVue();
+  KieliStore.setup(localVue);
+  const propsData = {
+    help: '',
+    layout: 'simplified',
+    sticky: false,
+    isEditable: false,
+    value: {
+      fi: 'foo',
+      sv: 'sv',
+    },
+  }
+
+  const wrapper = mount(EpContent as any, {
+    localVue,
+    attachToDocument: true,
+    i18n: KieliStore.i18n,
+    propsData,
+    stubs: {
+      'EditorView': true,
+    },
+  } as any);
+
+  test('Initializes', () => {
+    expect(wrapper.html()).toBeTruthy();
+    expect((wrapper.vm as any).editor).toBeTruthy();
+  });
+
+  test('Value updates', () => {
+    expect((wrapper.vm as any).localizedValue).toEqual('foo');
+    wrapper.setProps({ value: 'bar' });
+    expect((wrapper.vm as any).localizedValue).toEqual('bar');
+  });
+
+  test('Renders', async () => {
+    wrapper.setProps({
+      value: {
+        fi: 'teksti1234',
+        sv: 'sv',
+      },
+    });
+    expect(wrapper.html()).toContain('teksti1234');
+  });
+
+  test('Language changing works', async () => {
+    expect((wrapper.vm as any).lang).toEqual('fi');
+    wrapper.setProps({ locale: 'sv' });
+    expect((wrapper.vm as any).locale).toEqual('sv');
+    expect((wrapper.vm as any).localizedValue).toEqual('sv');
+    expect(wrapper.html()).not.toContain('teksti1234');
+    expect(wrapper.html()).toContain('sv');
+  });
+
+  return wrapper;
+});
+
+
 describe('EpContentMenu component', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue, {
-    messages: {
-      fi: require('@/translations/locale-fi.json'),
-      sv: require('@/translations/locale-sv.json'),
-    },
-  });
+  KieliStore.setup(localVue);
 
   it('Hide menu when read only', async () => {
     const wrapper = createWrapper(localVue, {

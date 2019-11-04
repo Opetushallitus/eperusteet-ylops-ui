@@ -22,6 +22,7 @@
 
 <script lang="ts">
 
+import * as _ from 'lodash';
 import ImageExtension from '@/components/TiptapExtensions/ImageExtension';
 import TermiExtension from '@/components/TiptapExtensions/TermiExtension';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
@@ -194,9 +195,8 @@ export default class EpContent extends Mixins(EpValidation) {
     }
   }
 
-  @Watch('value', {
+  @Watch('localizedValue', {
     immediate: true,
-    deep: true,
   })
   onValueUpdate(val, old) {
     if (this.editor && !this.focused) {

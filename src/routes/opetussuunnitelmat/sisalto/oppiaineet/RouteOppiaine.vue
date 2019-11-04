@@ -12,7 +12,7 @@
         <h4 slot="header">{{ $t('oppiaineet-tehtava') }}</h4>
         <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tehtava.kuvaus"> </ep-content>
       </ep-collapse>
-      <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset">
+      <ep-collapse>
         <h4 slot="header">{{ $t('laaja-alainen-osaaminen') }}</h4>
         <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus"> </ep-content>
       </ep-collapse>
