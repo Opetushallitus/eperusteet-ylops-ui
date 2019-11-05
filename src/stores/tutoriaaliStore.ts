@@ -42,6 +42,8 @@ export class TutoriaaliStore {
         uudetAvaimet.push(elId);
       }
     });
+
+    this.avaimet = uudetAvaimet;
   }, 100);
 
   setActive(active: boolean) {
