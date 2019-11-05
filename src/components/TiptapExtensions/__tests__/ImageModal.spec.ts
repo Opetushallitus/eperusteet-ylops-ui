@@ -49,7 +49,6 @@ describe('Tiptap Image Extension', () => {
       });
 
       await localVue.nextTick();
-      console.log(wrapper.html());
       const img = wrapper.find('img');
       expect(img).toBeTruthy();
       expect(img.attributes()['data-uid']).toEqual('1234');
@@ -75,6 +74,9 @@ describe('Tiptap Image Extension', () => {
       propsData: {
         value: '1234',
         loader,
+      },
+      mocks: {
+        $t: x => x,
       },
       i18n,
       localVue,

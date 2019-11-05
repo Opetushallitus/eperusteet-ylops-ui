@@ -7,6 +7,9 @@ export default class EpCollapse extends Vue {
   @Prop({ default: true })
   private expandedByDefault!: boolean;
 
+  @Prop({ default: false })
+  private disableHeader!: boolean;
+
   @Prop({ default: '' })
   private tyyppi!: string;
 

@@ -6,9 +6,9 @@
       <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
       <p>{{ $t('tervetuloa-kuvaus') }}</p>
       <div class="row">
-        <div class="col-md-4 mb-3">
-          <ep-search v-model="rajain"></ep-search>
-        </div>
+      <!--   <div class="col-md-4 mb-3">                -->
+      <!--     <ep-search v-model="rajain"></ep-search> -->
+      <!--   </div>                                     -->
       </div>
     </div>
   </div>
@@ -18,16 +18,16 @@
         :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
         :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
         :count-is-loading="isLoading" />
-        <tile-opetussuunnitelmat
-          :keskeneraiset="etusivu.pohjatKeskeneraiset"
-          :julkaistut="etusivu.pohjatJulkaistut"
-          :is-ops="false"
-          v-oikeustarkastelu="'hallinta'"
-          :count-is-loading="isLoading" />
-          <tile-organisaatio />
-            <tile-valtakunnalliset-perusteet />
-              <tile-tiedotteet />
-                <tile-ukk />
+      <tile-opetussuunnitelmat
+        :keskeneraiset="etusivu.pohjatKeskeneraiset"
+        :julkaistut="etusivu.pohjatJulkaistut"
+        :is-ops="false"
+        v-oikeustarkastelu="'hallinta'"
+        :count-is-loading="isLoading" />
+      <tile-organisaatio />
+      <tile-valtakunnalliset-perusteet />
+      <tile-tiedotteet />
+      <tile-ukk />
     </div>
   </div>
 </div>

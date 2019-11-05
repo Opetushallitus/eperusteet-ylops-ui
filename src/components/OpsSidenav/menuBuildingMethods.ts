@@ -5,6 +5,16 @@ import {
   Lops2019OppiaineDto,
 } from '@/tyypit';
 
+function koodiIdentityFn(koodillinen: object) {
+  const arvo = _.get(koodillinen, 'koodi.arvo', _.get(koodillinen, 'arvo'));
+  if (_.isString(arvo) && !_.isEmpty(arvo)) {
+    if (/^\d+$/.test(arvo)) {
+      return _.parseInt(arvo);
+    }
+  }
+  return arvo;
+}
+
 export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
   return _.map(lapset, (lapsi: any, idx) => {
     const chapter = prefix + '' + (idx + 1);
@@ -54,7 +64,7 @@ export function oppiaineLinkki(type: string, objref: any, children: SideMenuEntr
 
 export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
   return _.chain(oppimaara.moduulit)
-    .sortBy('koodi.arvo')
+    .sortBy(koodiIdentityFn)
     .map(moduuli => {
       return {
         item: {
@@ -76,7 +86,7 @@ export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
 export function oppimaaraOpintojaksoLinkit(opintojaksot: any, oppimaara: Lops2019OppiaineDto): SideMenuEntry[] {
   return _.chain(opintojaksot)
     .filter((oj) => oj.oppiaineet && oppimaara.koodi && _.map(oj.oppiaineet, 'koodi').indexOf(oppimaara.koodi.uri) > -1)
-    .sortBy('koodi.arvo')
+    .sortBy(koodiIdentityFn)
     .map(oj => {
       return {
         item: {

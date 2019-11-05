@@ -1,17 +1,19 @@
-.ep-collapse
-  // Button tagia ei voida käyttää, sillä ml-auto ei toimi.
-  // Käytetään button rolea saavutettavuuden takaamiseksi.
-  .collapse-button.d-flex(
-      @click="toggle()",
-      @keyup.enter="toggle()",
-      role="button",
-      tabindex="0"
-      :aria-expanded="toggled")
-    .align-self-start
-      .header
-        slot(name="header")
-    .ml-auto.align-self-start
-      fas(icon="chevron-up", v-if="toggled")
-      fas(icon="chevron-down", v-else)
-  div(v-if="toggled")
-    slot
+div
+  .ep-collapse(v-if="!disableHeader")
+    // Button tagia ei voida käyttää, sillä ml-auto ei toimi.
+    // Käytetään button rolea saavutettavuuden takaamiseksi.
+    .collapse-button.d-flex(
+        @click="toggle()",
+        @keyup.enter="toggle()",
+        role="button",
+        tabindex="0"
+        :aria-expanded="toggled")
+      .align-self-start
+        .header
+          slot(name="header")
+      .ml-auto.align-self-start
+        fas(icon="chevron-up", v-if="toggled")
+        fas(icon="chevron-down", v-else)
+    div(v-if="toggled")
+      slot
+  slot(v-else)

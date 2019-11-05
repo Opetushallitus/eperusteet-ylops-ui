@@ -24,6 +24,7 @@ import {
   opsLapsiLinkit,
   paikallinenOppiaineToMenu,
 } from './menuBuildingMethods';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [{
@@ -75,6 +76,9 @@ const i18keys = {
 };
 
 @Component({
+  directives: {
+    oikeustarkastelu,
+  },
   components: {
     EpButton,
     EpColorBall,
@@ -131,7 +135,7 @@ export default class OpsSidenav extends EpOpsComponent {
   }
 
   get opsOppiaineLinkit() {
-    return _.chain(!this.cache ? [] : this.cache.peruste.oppiaineet)
+    return _.chain(_.get(this.cache, 'peruste.oppiaineet', []))
       .sortBy('koodi.arvo')
       .map(oppiaine =>
         oppiaineLinkki(

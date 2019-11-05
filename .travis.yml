@@ -28,6 +28,7 @@ install:
   - cd eperusteet-frontend-utils/vue
   - yarn install --silent
   - yarn gen:api # FIXME
+  - rm -rf node_modules
   - cd ../..
 
 before_script:

@@ -1,69 +1,86 @@
-<template lang="pug">
-
-ep-main-view(:tutoriaalistore="tutoriaalistore")
-  template(slot="icon")
-    ep-icon.float-right(icon="tiedotteet", background-color="#000000")
-
-  template(slot="header")
-    h2 {{ $t('tiedotteet') }}
-    p {{ $t('tiedotteet-kuvaus-nakyma') }}
-
-  template(slot="custom-content")
-    ep-spinner(v-if="isLoading")
-    div(v-else)
-      // Rajaimet
-      div.row
-        //div.col.col-fixed
-        div.col
-          ep-search.mb-3(v-model="rajain", @input="updateSearch")
-      // Tiedotteet
-      div.row(v-if="!hasTiedotteet")
-        //div.col.col-fixed.col-new
-        div.col
-          p {{ $t('ei-hakutuloksia') }}
-      div.row(v-for="tiedote in tiedotteet", :key="tiedote.id")
-        //div.col.col-fixed
-          // Todo: Toteuta profiililla uusi
-        // Todo: Toteuta paikalliset tiedotteet!
-        div.col
-          div
-            p.text-secondary {{ $sd(tiedote.luotu) }}
-            ep-collapse.mb-2(:default-state="false")
-              h5(slot="header") {{ $kaanna(tiedote.otsikko) }}
-              span(:class="{ preview: !tiedote.$nayta }") {{ $kaanna(tiedote.sisalto) }}
-            hr
-      // Paginaatio
-      div.row(v-if="hasTiedotteet")
-        //div.col.col-fixed
-        div.col
-          b-pagination.justify-content-center(
-            v-model="sivu",
-            :per-page="sivukoko",
-            :total-rows="kokonaismaara",
-            :limit="10",
-            @input="update",
-            aria-controls="tiedotteet")
-
+<template>
+<ep-main-view :tutoriaalistore="tutoriaalistore">
+  <template slot="icon">
+    <ep-icon class="float-right" icon="tiedotteet" background-color="#000000">
+    </ep-icon>
+  </template>
+  <template slot="header">
+    <h2>
+      {{ $t('tiedotteet') }}
+      <a class="btn btn-link" rel="noopener noreferrer" target="_blank" href="https://virkailija.opintopolku.fi/eperusteet-app/#/fi/admin/tiedotteet" v-oikeustarkastelu="'hallinta'">
+        <fas icon="external-link-alt" />
+        {{ $t('siirry-muokkaamaan-tiedotteita') }}
+      </a>
+    </h2>
+    <p>{{ $t('tiedotteet-kuvaus-nakyma') }}</p>
+  </template>
+  <template slot="custom-content">
+    <ep-spinner v-if="isLoading">
+    </ep-spinner>
+    <div v-else>
+      <!-- Rajaimet-->
+      <div class="row">
+        <div class="col">
+          <ep-search class="mb-3" v-model="rajain" @input="updateSearch">
+          </ep-search>
+        </div>
+      </div>
+      <!-- Tiedotteet-->
+      <div class="row" v-if="!hasTiedotteet">
+        <div class="col">
+          <p>{{ $t('ei-hakutuloksia') }}</p>
+        </div>
+      </div>
+      <div class="row" v-for="tiedote in tiedotteet" :key="tiedote.id">
+        <div class="col">
+          <div>
+            <p class="text-secondary">{{ $sd(tiedote.luotu) }}</p>
+            <ep-collapse class="mb-2" :default-state="false">
+              <h5 slot="header">{{ $kaanna(tiedote.otsikko) }}</h5>
+              <span :class="{ preview: !tiedote.$nayta }">{{ $kaanna(tiedote.sisalto) }}</span>
+            </ep-collapse>
+            <hr />
+          </div>
+        </div>
+      </div>
+      <!-- Paginaatio-->
+      <div class="row" v-if="hasTiedotteet">
+        <!--div.col.col-fixed-->
+        <div class="col">
+          <b-pagination class="justify-content-center" v-model="sivu" :per-page="sivukoko" :total-rows="kokonaismaara" :limit="10" @input="update" aria-controls="tiedotteet">
+          </b-pagination>
+        </div>
+      </div>
+    </div>
+  </template>
+</ep-main-view>
 </template>
 
 <script lang="ts">
 import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
-import EpRoute from '@/mixins/EpRoot';
-import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpButton from'@/components/EpButton/EpButton.vue';
+import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpIcon from'@/components/EpIcon/EpIcon.vue';
 import EpMainView from'@/components/EpMainView/EpMainView.vue';
 import EpNavigation from'@/components/EpNavigation/EpNavigation.vue';
+import EpRoute from '@/mixins/EpRoot';
 import EpSearch from'@/components/forms/EpSearch.vue';
 import EpSpinner from'@/components/EpSpinner/EpSpinner.vue';
+
 import { Ulkopuoliset } from '@/api';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 
 @Component({
+  directives: {
+    oikeustarkastelu,
+  },
   components: {
+    EpButton,
     EpCollapse,
     EpContent,
     EpIcon,
@@ -83,7 +100,7 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
     this.update();
   }, 300);
 
-  @Prop()
+  @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
 
   async init() {

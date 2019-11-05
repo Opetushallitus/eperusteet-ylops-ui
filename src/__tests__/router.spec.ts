@@ -3,6 +3,7 @@ import { Kayttajat } from '@/stores/kayttaja';
 import { router } from '@/router';
 import { expectEventually } from '&/utils/assertions';
 import { getRootConfig } from '@/mainvue';
+import { KieliStore } from '@shared/stores/kieli';
 import {
   makeAxiosResponse,
   genOikeudet,
@@ -20,9 +21,14 @@ import '@/config/bootstrap';
 import '@/config/fontawesome';
 
 describe('Router', () => {
+  const localVue = createLocalVue();
+  KieliStore.setup(localVue);
+
+
   async function createMounted(
     oikeudet = genOikeudet('oph')
   ) {
+
     jest.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
 
@@ -80,14 +86,17 @@ describe('Router', () => {
         data: [{
           julkinen: true,
           yleinen: true,
-          otsikko: { fi: 'Tämä on tiedote' },
+          otsikko: {
+            fi: 'Tämä on tiedote',
+            sv: 'Tämä on tiedote',
+          },
           koulutustyyppi: 'koulutustyyppi_2',
         }]
       }));
 
     await Kayttajat.init();
     return mount(await getRootConfig(), {
-      localVue: createLocalVue(),
+      localVue,
     });
   }
 
@@ -115,7 +124,9 @@ describe('Router', () => {
     router.push({
       name: 'root',
       params: { lang: 'sv' },
-    });
+    }).catch(err => {});
+
+    await localVue.nextTick();
 
     // expect(router.currentRoute.params).toEqual({ lang: 'sv' });
 
@@ -126,21 +137,4 @@ describe('Router', () => {
     await expectEventually(() => expect(app.find('.tile-content').html()).toContain('43'));
   });
 
-  // test('Navigation - ', async () => {
-  //   const app = await createMounted();
-  //   expect(router.currentRoute.name).toEqual('root');
-  //   expect(router.currentRoute.params).toEqual({ lang: 'fi' });
-  //   router.push({
-  //     name: 'root',
-  //     params: { lang: 'sv' },
-  //   });
-  //   expect(router.currentRoute.params).toEqual({ lang: 'sv' });
-  // });
-
-  // test('Navigation - Hallinta', async () => {
-  //   router.push({
-  //     name: 'admin',
-  //     params: router.currentRoute.params,
-  //   });
-  // });
 });

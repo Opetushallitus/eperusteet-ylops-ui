@@ -1,47 +1,49 @@
-<template lang="pug">
-div.topbar(v-sticky="sticky" sticky-z-index="600")
+<template>
+<div class="topbar" v-sticky="sticky" sticky-z-index="600">
+  <b-navbar class="ep-navbar" type="dark" toggleable="md" :class="'navbar-style-' + tyyli" :style="{ 'background-attachment': sticky ? 'fixed' : '' }">
+    <b-navbar-nav>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <router-link id="nav-admin" :to="{ name: 'root' }">
+              <fas class="fa-fw" icon="home" />
+            </router-link>
+          </li>
+          <li class="breadcrumb-item" v-for="(route, idx) in routePath" :key="idx">
+            <router-link v-if="route.muru && route.muru.location" :to="route.muru.location">
+              {{ $kaanna(route.muru.name) }}
+            </router-link>
+            <span v-else-if="route.muru">
+              {{ $kaanna(route.muru.name) }}
+            </span>
+            <span v-else>{{ $t('route-' + route.name) }}</span>
+          </li>
+        </ol>
+      </nav>
+    </b-navbar-nav>
+    <b-navbar-nav class="ml-auto">
+      <b-nav-form v-if="tutoriaalistore && naytettaviaTutoriaaleja">
+        <fas class="tutorial mr-5" icon="question-circle" @click="kaynnistaTutoriaali" />
+      </b-nav-form>
 
-  b-navbar.ep-navbar(
-    type="dark",
-    toggleable="md",
-    :class="'navbar-style-' + tyyli",
-    :style="{ 'background-attachment': sticky ? 'fixed' : '' }")
+      <!-- Sisällön kieli-->
+      <b-nav-item-dropdown id="content-lang-selector" v-tutorial>
+        <template slot="button-content">
+          <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}</span>
+        </template>
+        <b-dropdown-item @click="valitseSisaltoKieli(kieli)" v-for="kieli in sovelluksenKielet" :key="kieli" :disabled="kieli === sisaltoKieli">{{ kieli }}</b-dropdown-item>
+      </b-nav-item-dropdown>
 
-    b-navbar-nav
-      nav(aria-label="breadcrumb")
-        ol.breadcrumb
-          li.breadcrumb-item
-            router-link(id="nav-admin" :to="{ name: 'root' }")
-              fas.fa-fw(icon="home")
-          li.breadcrumb-item(v-for="route in routePath")
-            span(v-if="murut[route.name]") {{ $kaanna(murut[route.name]) }}
-            span(v-else) {{ $t('route-' + route.name) }}
-
-
-    b-navbar-nav.ml-auto
-      b-nav-form(v-if="tutoriaalistore && naytettaviaTutoriaaleja")  
-        fas.tutorial.mr-5(icon="question-circle", @click="kaynnistaTutoriaali")
-
-      // Sisällön kieli
-      b-nav-item-dropdown(id="content-lang-selector" v-tutorial)
-        template(slot="button-content")
-          span.kielivalitsin {{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}
-        b-dropdown-item(
-          @click="valitseSisaltoKieli(kieli)"
-          v-for="kieli in sovelluksenKielet"
-          :key="kieli"
-          :disabled="kieli === sisaltoKieli") {{ kieli }}
-
-      // Käyttöliittymän kieli
-      b-nav-item-dropdown(id="ui-lang-selector" v-tutorial )
-        template(slot="button-content")
-          span.kielivalitsin {{ $t("kieli") }}: {{ uiKieli }}
-        b-dropdown-item(
-          @click="valitseUiKieli(kieli)"
-          v-for="kieli in sovelluksenKielet"
-          :key="kieli"
-          :disabled="kieli === uiKieli") {{ kieli }}
-
+      <!-- Käyttöliittymän kieli-->
+      <b-nav-item-dropdown id="ui-lang-selector" v-tutorial>
+        <template slot="button-content">
+          <span class="kielivalitsin">{{ $t("kieli") }}: {{ uiKieli }}</span>
+        </template>
+        <b-dropdown-item @click="valitseUiKieli(kieli)" v-for="kieli in sovelluksenKielet" :key="kieli" :disabled="kieli === uiKieli">{{ kieli }}</b-dropdown-item>
+      </b-nav-item-dropdown>
+    </b-navbar-nav>
+  </b-navbar>
+</div>
 </template>
 
 <script lang="ts">
@@ -105,6 +107,7 @@ export default class EpNavigation extends Vue {
         const computeds = _.get(route, 'instances.default');
         const result = {
           ...route,
+          muru: this.murut[route!.name!],
           breadname: computeds && computeds.breadcrumb,
         };
         return result;
@@ -123,7 +126,6 @@ export default class EpNavigation extends Vue {
         lang: kieli || this.$i18n.fallbackLocale,
       },
     };
-    console.log(next);
     router.push(next).catch(_.noop);
   }
 

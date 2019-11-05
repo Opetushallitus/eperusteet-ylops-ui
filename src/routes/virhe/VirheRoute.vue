@@ -1,5 +1,4 @@
 <template>
-
   <ep-main-view>
     <template slot="icon">
       <ep-icon class="float-right" icon="question" background-color="#CE52C6"></ep-icon>
@@ -9,8 +8,10 @@
       <h2>{{$t('virhe-nakyma-otsikko') }}</h2>
     </template>
 
-    <template slot="custom-content">
-
+    <div slot="custom-content">
+      <div class="virhekuva">
+        <img src="img/images/virhe.svg" :alt="$t('virhekuva')">
+      </div>
       <p v-if="error">{{$t (error.viesti)}}: {{error.virhe}}</p>
 
       <ep-form-content name="virhe-nakyma-kuvaus">
@@ -28,20 +29,20 @@
           <router-link :to="{ name: 'root'}">{{ $t('palaa-etusivulle') }}</router-link>
         </div>
       </div>
-    </template>
-
+    </div>
   </ep-main-view>
 
 </template>
+
 <script lang="ts" >
 import { Component, Vue, Mixins } from 'vue-property-decorator';
 import { createLogger } from '@/stores/logger';
 import { success, fail, info } from '@/utils/notifications';
-import EpMainView from '@/components/EpMainView/EpMainView.vue';
-import EpField from '@shared/components/forms/EpField.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
 
 const logger = createLogger('Virhe');
 
@@ -99,11 +100,18 @@ export default class VirheRoute extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "@/styles/_variables.scss";
 
 .confirm-buttons::after {
   clear: both;
+}
+
+.virhekuva {
+  img {
+    width: 100%;
+  }
+  padding: 0 10% 0 10%;
 }
 
 

@@ -32,39 +32,44 @@ div
               v-if="ctrls.isEditing",
               size="md",
               variant="link",
+              :disabled="state.disabled",
               toggle-class="text-decoration-none",
               no-caret)
               template(slot="button-content")
                 fas(icon="ellipsis-h")
               b-dropdown-item(
-                v-if="hooks.remove",
                 @click="ctrls.remove()",
                 key="poista",
-                :disabled="state.disabled")
+                :disabled="!hooks.remove || state.disabled")
                 slot(name="poista") {{ $t('poista') }}
             ep-button(
               id="editointi-muokkaus",
               v-tutorial,
               variant="link",
+              v-oikeustarkastelu="'muokkaus'",
               @click="ctrls.start()",
               v-if="!ctrls.isEditing",
               icon="pen",
+              :show-spinner="state.isSaving",
               :disabled="state.disabled")
               slot(name="muokkaa") {{ $t('muokkaa') }}
             // TODO: replace with chat icon
             ep-round-button.ml-2(
+              :disabled="state.disabled",
               v-if="hasKeskusteluSlot",
               @click="toggleSidebarState(1)",
               icon="ukk",
               variant="lightblue")
             ep-round-button.ml-2(
-              id="editointi-muokkaus-question"
+              :disabled="state.disabled",
+              id="editointi-muokkaus-question",
               v-tutorial,
               v-if="hasOhjeSlot",
               @click="toggleSidebarState(2)",
               icon="question",
               variant="green")
             ep-round-button.ml-2(
+              :disabled="state.disabled",
               v-if="hasPerusteSlot",
               @click="toggleSidebarState(3)",
               icon="valtakunnalliset-perusteet",

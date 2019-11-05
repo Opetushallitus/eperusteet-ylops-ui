@@ -39,17 +39,17 @@
             <b-dropdown-item :to="{ name: 'opsKasitteet' }">
               <fas class="mr-2" icon="bookmark" fixed-width /><span>{{ $t('kasitteet') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'opsPoistetut' }">
+            <b-dropdown-item v-oikeustarkastelu="'hallinta'" :to="{ name: 'opsPoistetut' }">
               <fas class="mr-2" icon="recycle" fixed-width /><span>{{ $t('poistetut') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsDokumentti' }">
               <fas class="mr-2" icon="file-pdf" fixed-width /><span>{{ $t('luo-pdf') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'opsJulkaisu' }" v-if="!isPohja">
+            <b-dropdown-item v-oikeustarkastelu="'hallinta'" :to="{ name: 'opsJulkaisu' }" v-if="!isPohja">
               <fas class="mr-2" icon="upload" fixed-width /><span>{{ $t('julkaise') }}</span>
             </b-dropdown-item>
-            <b-dropdown-divider v-if="!isPohja" />
-            <b-dropdown-item @click="arkistoiOps" v-if="!isPohja">
+            <b-dropdown-divider v-oikeustarkastelu="'hallinta'" v-if="!isPohja" />
+            <b-dropdown-item v-oikeustarkastelu="'hallinta'" @click="arkistoiOps" v-if="!isPohja">
               <fas class="mr-2" icon="folder" fixed-width /><span>{{ $t('arkistoi-ops') }}</span>
             </b-dropdown-item>
           </b-dropdown>
@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Mixins, Component, Prop } from 'vue-property-decorator';
+import { Prop, Watch, Mixins, Component } from 'vue-property-decorator';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
@@ -105,7 +105,7 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
-  @Prop()
+  @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
 
   private validation: Lops2019ValidointiDto | null = null;
@@ -150,6 +150,13 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         failed: 0,
         ok: 0,
       };
+    }
+  }
+
+  @Watch('$route', { immediate: true })
+  onRouteUpdate(route) {
+    if (this.store && this.store.opetussuunnitelma) {
+      this.breadcrumb('opetussuunnitelma', this.store.opetussuunnitelma.nimi, { name: 'opsTiedot' });
     }
   }
 
@@ -207,11 +214,8 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
       @media only screen and (max-width: 768px) {
         padding-left: 30px;
       }
-
     }
-
   }
-
 }
 
 table.category-table {

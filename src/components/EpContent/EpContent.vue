@@ -22,6 +22,7 @@
 
 <script lang="ts">
 
+import * as _ from 'lodash';
 import ImageExtension from '@/components/TiptapExtensions/ImageExtension';
 import TermiExtension from '@/components/TiptapExtensions/TermiExtension';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
@@ -98,14 +99,17 @@ export default class EpContent extends Mixins(EpValidation) {
   }
 
   get localizedValue() {
-    if (this.isPlainString) {
+    if (!this.value) {
+      return '';
+    }
+    else if (this.isPlainString) {
       return this.value || '';
     }
-    else {
-      if (!this.value) {
-        return '';
-      }
+    else if (_.isObject(this.value)) {
       return this.value[this.lang] || '';
+    }
+    else {
+      return this.value;
     }
   }
 
@@ -188,6 +192,15 @@ export default class EpContent extends Mixins(EpValidation) {
   beforeDestroy() {
     if (this.editor) {
       this.editor.destroy();
+    }
+  }
+
+  @Watch('localizedValue', {
+    immediate: true,
+  })
+  onValueUpdate(val, old) {
+    if (this.editor && !this.focused) {
+      this.editor.setContent(this.localizedValue);
     }
   }
 

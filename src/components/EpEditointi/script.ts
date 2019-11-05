@@ -13,6 +13,7 @@ import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
 import { setItem, getItem } from '@/utils/localstorage';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
 @Component({
   validations() {
@@ -25,6 +26,7 @@ import { setItem, getItem } from '@/utils/localstorage';
     };
   },
   directives: {
+    oikeustarkastelu,
     Sticky,
   },
   components: {
@@ -74,6 +76,9 @@ export default class EpEditointi extends Mixins(validationMixin) {
   get saveHelpText() {
     const vuelidate = this.$v as any;
     if (this.state.disabled) {
+      return 'tallenna-kaynnissa';
+    }
+    else if (this.state.disabled) {
       return 'tallenna-tila-virhe-ohje';
     }
     else if (vuelidate.state.data.$invalid) {

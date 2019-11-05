@@ -1,3 +1,8 @@
+declare module '*.vue' {
+  import Vue from 'vue';
+  export default Vue;
+}
+
 type Ref = any;
 
 declare module 'vue-loading-overlay';

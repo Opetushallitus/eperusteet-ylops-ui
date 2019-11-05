@@ -16,7 +16,7 @@
         <h2>{{ $t(vars.keskeneraiset) }}</h2>
 
         <div class="opscontainer">
-          <div class="opsbox">
+          <div class="opsbox" v-oikeustarkastelu="'luonti'">
             <router-link tag="a" :to="{ name: vars.uusiRoute }">
               <div class="uusi">
                 <div class="plus">
@@ -73,8 +73,7 @@
 
         <div class="opscontainer">
           <div v-for="ops in julkaistut" :key="ops.id">
-            <div class="opsbox"
-                 v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'">
+            <div class="opsbox" v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'">
               <router-link
                 tag="a"
                 :to="{ name: 'opsTiedot', params: { id: ops.id } }"
@@ -124,9 +123,14 @@ import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpProgress from '@/components/EpProgress.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
+
 @Component({
+  directives: {
+    oikeustarkastelu,
+  },
   components: {
     EpContent,
     EpIcon,
@@ -140,7 +144,7 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   @Prop({ default: 'opetussuunnitelmat' })
   private tyyppi!: 'opetussuunnitelmat' | 'pohjat';
 
-  @Prop()
+  @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
 
   private opslista: OpetussuunnitelmaInfoDto[] = [];

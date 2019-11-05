@@ -12,31 +12,19 @@ import { Ulkopuoliset } from '@/api';
 
 import { createLogger } from '@/stores/logger';
 import _ from 'lodash';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
 import App from '@/App.vue';
 const logger = createLogger('main');
 
 Vue.use(Notifications);
+Vue.directive('oikeustarkastelu', oikeustarkastelu);
 
 Vue.use(Loading, {
   fullPage: true,
   color: '#159ecb',
   loader: 'dots',
 });
-
-const isDevelopmentMode = () => _.get(process.env.NODE_ENV, '') === 'development';
-
-function errorCaptured(err: Error, vm: Vue, info: string) {
-  logger.error(err, info);
-  if (!isDevelopmentMode()) {
-    // Virheet.lisaaVirhe({
-    //   path: vm.$route.path,
-    //   state: _.cloneDeep(vm.$data),
-    //   err: err.message,
-    //   info,
-    // });
-  }
-}
 
 import VueI18n, { IVueI18n } from 'vue-i18n';
 

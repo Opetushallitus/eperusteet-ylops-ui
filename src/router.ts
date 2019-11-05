@@ -34,7 +34,7 @@ import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli, SovellusVirhe } from '@/tyypit';
 import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { info } from '@/utils/notifications';
-import { changeTitleAndLang, resolveRouterMetaProps } from '@shared/utils/router';
+import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@/stores/logger';
 import { tutoriaalistore } from './stores/tutoriaaliStore';
@@ -219,7 +219,7 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
-  // changeTitleAndLang(to);
+  changeLang(to);
   await resolveRouterMetaProps(to);
 
   // Alustetaan opetussuunnitelma tilan vaihtuessa

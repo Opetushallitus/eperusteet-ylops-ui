@@ -3,16 +3,12 @@ import { delay } from '@/utils/delay';
 import _ from 'lodash';
 import EpRoot from './EpRoot';
 import { Murupolku } from '@/stores/murupolku';
+import { Location } from 'vue-router';
 
-// Component.registerHooks([
-//   'beforeRouteEnter',
-//   'beforeRouteUpdate',
-//   'beforeRouteLeave',
-// ]);
 
 @Component
 export default class EpRoute extends EpRoot {
-  breadcrumb(key: string, value: any) {
-    Murupolku.aseta(key, value);
+  breadcrumb(key: string, value: any, location?: Location) {
+    Murupolku.aseta(key, value, location);
   }
 }

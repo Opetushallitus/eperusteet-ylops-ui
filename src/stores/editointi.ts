@@ -156,6 +156,7 @@ export class EditointiKontrolli {
     if (this.config.source.cancel) {
       await this.config.source.cancel!();
     }
+
     this.mstate.data = JSON.parse(this.backup);
     // this.config.setData!(JSON.parse(this.backup));
     this.isEditingState = false;
@@ -190,11 +191,11 @@ export class EditointiKontrolli {
       this.logger.warn('Ei voi tallentaa ilman editointia');
     }
     else if (await this.validate()) {
-      this.isEditingState = false;
       EditointiKontrolli.totalEditingEditors -= 1;
       try {
         await this.config.source.save(this.mstate.data);
         this.logger.success('Tallennettu onnistuneesti');
+        this.isEditingState = false;
       }
       catch (err) {
         fail('tallennus-epaonnistui', err.response.data.syy);

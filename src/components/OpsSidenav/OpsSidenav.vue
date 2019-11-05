@@ -37,7 +37,7 @@
       </template>
       <template v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
         <li v-if="itemData.item.type === 'tekstikappale'">
-          <router-link class="btn btn-link" :to="{ name: 'tekstikappale', params: { osaId: 'uusi', parentId: itemRoute.params.osaId } }">
+          <router-link v-oikeustarkastelu="'muokkaus'" class="btn btn-link" :to="{ name: 'tekstikappale', params: { osaId: 'uusi', parentId: itemRoute.params.osaId } }">
             <fas class="mr-2" icon="plus">
             </fas>
             <span>{{ $t('uusi-tekstikappale') }}</span>

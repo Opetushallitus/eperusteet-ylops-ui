@@ -17,23 +17,14 @@
         <span>
         </span>
       </template>
-      <!-- Ei käytössä toistaiseksi -->
-      <!-- <template slot="peruste" slot-scope="{ }">                                                                -->
-      <!--   <div class="sidepad">                                                                                                -->
-      <!--     <p v-if="perusteenTeksti && perusteenTeksti.perusteenOsa" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)" /> -->
-      <!--   </div>                                                                                                               -->
-      <!-- </template>                                                                                                            -->
       <template slot="header" slot-scope="{ isEditing, data }">
         <div class="otsikko">
-          <ep-field v-if="data.tov.tekstiKappale" help="tekstikappale-nimi-ohje" v-model="data.tov.tekstiKappale.nimi" :is-header="true" :is-editing="isEditing">
-          </ep-field>
+          <ep-field v-if="data.tov.tekstiKappale" help="tekstikappale-nimi-ohje" v-model="data.tov.tekstiKappale.nimi" :is-header="true" :is-editing="isEditing && !data.tov.perusteTekstikappaleId"></ep-field>
         </div>
       </template>
       <template slot-scope="{ isEditing, data }">
         <div class="teksti">
           <span comment-uuid="data.tov.tekstiKappale.tunniste">
-            <div class="spacing">
-            </div>
             <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
               <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)">
@@ -42,10 +33,19 @@
               <div v-if="isEditing">
                 <b-form-checkbox v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</b-form-checkbox>
               </div>
+              <div class="spacing" />
             </ep-collapse>
-            <div class="spacing">
-            </div>
-            <ep-collapse>
+            <ep-collapse v-if="alkuperainen && alkuperainen.tekstiKappale && (isEditing || data.tov.naytaPohjanTeksti)">
+              <h5 slot="header">
+                {{ $t('pohjan-teksti') }}
+              </h5>
+              <p class="perusteteksti" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
+              <div v-if="isEditing">
+                <b-form-checkbox v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</b-form-checkbox>
+              </div>
+              <div class="spacing" />
+            </ep-collapse>
+            <ep-collapse :disable-header="!data.tov.perusteTekstikappaleId">
               <template #header>
                 <h5>{{ $t('paikallinen-teksti') }}</h5>
               </template>
@@ -103,7 +103,10 @@ import {
 export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) {
   private ohjeet: OhjeDto[] = [];
   private perusteenTeksti: PerusteTekstiKappaleViiteDto | null = null;
+  private alkuperainen: PerusteTekstiKappaleViiteDto | null = null;
   private nimi: any = {};
+
+
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: async () => this.isUusi(),
     source: {
@@ -156,6 +159,11 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     else {
       const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteSyva(this.opsId, this.osaId)).data;
       const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
+      try {
+        this.alkuperainen = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteOriginal(this.opsId, this.osaId)).data;
+      }
+      catch (err) {}
+
       const result = {
         tov: _.omit(_.cloneDeep(teksti), 'lapset'),
         ohjeet: ohjeet.data || [],
@@ -229,7 +237,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     }
 
     .spacing {
-      margin-bottom: 20px;
+      margin-bottom: 40px;
     }
 
     .perusteteksti {
