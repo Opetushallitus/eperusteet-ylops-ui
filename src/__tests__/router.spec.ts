@@ -86,7 +86,10 @@ describe('Router', () => {
         data: [{
           julkinen: true,
           yleinen: true,
-          otsikko: { fi: 'Tämä on tiedote' },
+          otsikko: {
+            fi: 'Tämä on tiedote',
+            sv: 'Tämä on tiedote',
+          },
           koulutustyyppi: 'koulutustyyppi_2',
         }]
       }));
@@ -134,21 +137,4 @@ describe('Router', () => {
     await expectEventually(() => expect(app.find('.tile-content').html()).toContain('43'));
   });
 
-  // test('Navigation - ', async () => {
-  //   const app = await createMounted();
-  //   expect(router.currentRoute.name).toEqual('root');
-  //   expect(router.currentRoute.params).toEqual({ lang: 'fi' });
-  //   router.push({
-  //     name: 'root',
-  //     params: { lang: 'sv' },
-  //   });
-  //   expect(router.currentRoute.params).toEqual({ lang: 'sv' });
-  // });
-
-  // test('Navigation - Hallinta', async () => {
-  //   router.push({
-  //     name: 'admin',
-  //     params: router.currentRoute.params,
-  //   });
-  // });
 });
