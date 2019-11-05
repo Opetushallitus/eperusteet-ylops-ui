@@ -38,16 +38,11 @@
 import { Component, Vue, Mixins } from 'vue-property-decorator';
 import { createLogger } from '@/stores/logger';
 import { success, fail, info } from '@/utils/notifications';
-import EpMainView from '@/components/EpMainView/EpMainView.vue';
-import EpField from '@/components/forms/EpField.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
-import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
 
 const logger = createLogger('Virhe');
 

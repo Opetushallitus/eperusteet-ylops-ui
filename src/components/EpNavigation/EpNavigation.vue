@@ -23,7 +23,7 @@
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
       <b-nav-form v-if="tutoriaalistore && naytettaviaTutoriaaleja">
-        <fas class="tutorial mr-5" icon="question-circle", @click="kaynnistaTutoriaali" />
+        <fas class="tutorial mr-5" icon="question-circle" @click="kaynnistaTutoriaali" />
       </b-nav-form>
 
       <!-- Sisällön kieli-->
