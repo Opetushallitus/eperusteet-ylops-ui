@@ -1,21 +1,24 @@
-<template lang="pug">
-.moduulibox(:class="valittu && 'moduulibox-valittu'")
-  .name {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
-  .bottom
-    .d-flex.bd-highlight
-      .px-2.flex-grow-1
-        .icon(v-if="isEditing",
-          :class="isEditing && 'icon-editing'",
-          @click="toggle()",
-          @keyup.enter="toggle()",
-          role="button",
-          tabindex="0")
-          fas(v-if="valittu", icon="check")
-          fas(v-else, icon="plus")
-      .px-2.info
-        span.op {{ moduuli.laajuus }} {{ $t('opintopiste') }}
-        ep-color-ball(:kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'")
-
+<template>
+<div class="moduulibox" role="button" :class="valittu && 'moduulibox-valittu'" @click="toggle()" @keyup.enter="toggle()" tabindex="0">
+  <div class="name">{{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})</div>
+  <div class="bottom">
+    <div class="d-flex bd-highlight">
+      <div class="px-2 flex-grow-1">
+        <div class="icon" v-if="isEditing" :class="isEditing && 'icon-editing'">
+          <fas v-if="valittu" icon="check">
+          </fas>
+          <fas v-else icon="plus">
+          </fas>
+        </div>
+      </div>
+      <div class="px-2 info">
+        <span class="op">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
+        <ep-color-ball :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
+        </ep-color-ball>
+      </div>
+    </div>
+  </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -87,16 +90,17 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
   background-image: url('../../../../../../public/img/banners/moduuli.svg');
   height: 161px;
   margin: 0;
-  padding: 40px 10px 44px 20px;
+  padding: 20px 10px 44px 20px;
   position: relative;
   width: 158px;
   color: $blue-darken-1;
   user-select: none;
+  cursor: pointer;
 
   .name {
     font-weight: bold;
     max-height: 76px;
-    overflow: auto;
+    // overflow: auto;
 
     &::-webkit-scrollbar {
       width: 0.5em;

@@ -22,6 +22,9 @@ export function opsLuontiValidator(kielet: Kieli[] = []) {
       ...notNull(),
     },
     organisaatiot: {
+      kunnat: {
+        required,
+      },
       jarjestajat: {
         required,
       },

@@ -47,6 +47,18 @@
                 <ep-toggle help="ops-esikatseltavissa-ohje" v-model="data.esikatseltavissa" :is-editing="isEditing"></ep-toggle>
               </ep-form-content>
             </div>
+            <div class="col-md-6">
+              <ep-form-content name="ops-organisaatiot">
+                <ul>
+                  <li v-for="(kunta, idx) in data.kunnat" :key="idx + 1">
+                    {{ $kaanna(kunta.nimi) }}
+                  </li>
+                  <li v-for="(organisaatio, idx) in data.organisaatiot" :key="idx * 1000">
+                    {{ $kaanna(organisaatio.nimi) }}
+                  </li>
+                </ul>
+              </ep-form-content>
+            </div>
             <div class="col-md-12">
               <ep-form-content name="ops-kuvaus">
                 <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.kuvaus" help="ops-kuvaus-ohje" :validation="validation.kuvaus" :is-editable="isEditing"> </ep-content>

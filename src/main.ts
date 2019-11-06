@@ -11,19 +11,21 @@ const logger = createLogger('Main');
 Vue.config.productionTip = false;
 
 async function main() {
-  if (process.env.NODE_ENV !== 'development') {
-    Vue.config.errorHandler = (err, vm, info) => {
-      router.replace({
-        name: 'virhe',
-        query: {
-          viesti: 'virhe-nakyma-tapahtuma',
-          virhe: err.message,
-          komponentti: vm.$options.name,
-          info
-        },
-      });
-    };
-  }
+  Vue.config.errorHandler = (err, vm, info) => {
+    console.error(err, vm, info);
+    // TODO: Laita takaisin päälle
+    // if (process.env.NODE_ENV !== 'development') {
+    //   router.replace({
+    //     name: 'virhe',
+    //     query: {
+    //       viesti: 'virhe-nakyma-tapahtuma',
+    //       virhe: err.message,
+    //       komponentti: vm.$options.name,
+    //       info
+    //     },
+    //   });
+    // };
+  };
 
   try {
     logger.info('Mounting #app');

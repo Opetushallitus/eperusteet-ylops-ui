@@ -91,6 +91,7 @@ const i18keys = {
 export default class OpsSidenav extends EpOpsComponent {
   private cache: PerusteCache = null as any;
   private showHallintatyokalut = false;
+  private query = '';
 
   get opintojaksot() {
     return this.store.opintojaksot;
@@ -187,7 +188,6 @@ export default class OpsSidenav extends EpOpsComponent {
     // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
     const paikallisetOppiaineet = this.store.paikallisetOppiaineet;
     const oppiaineLinkit = this.opsOppiaineLinkit;
-    // debugger;
 
     if (oppiaineLinkit.length > 0 || paikallisetOppiaineet.length > 0) {
       menuOpsData = [
