@@ -174,8 +174,8 @@ export class OpetussuunnitelmaStore {
   // Paikalliset oppiaineet
   public async addOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto = {}) {
     const result = (await Oppiaineet.addLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine)).data;
-    success('lisays-onnistui-oppiaine');
     this.paikallisetOppiaineet = [...this.paikallisetOppiaineet, result];
+    success('lisays-onnistui-oppiaine');
     return result;
   }
 

@@ -2,8 +2,7 @@
 <div class="sidebar">
   <div class="search">
     <!-- Todo: filter navi-->
-    <ep-search>
-    </ep-search>
+    <ep-search v-model="query" />
   </div>
   <ul class="navigation" v-if="valikkoData.length > 0">
     <ep-recursive-nav :value="valikkoData">

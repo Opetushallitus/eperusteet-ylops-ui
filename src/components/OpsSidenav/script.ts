@@ -91,6 +91,7 @@ const i18keys = {
 export default class OpsSidenav extends EpOpsComponent {
   private cache: PerusteCache = null as any;
   private showHallintatyokalut = false;
+  private query = '';
 
   get opintojaksot() {
     return this.store.opintojaksot;

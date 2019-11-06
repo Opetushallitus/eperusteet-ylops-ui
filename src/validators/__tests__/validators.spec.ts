@@ -203,6 +203,9 @@ describe('Oppiaine validators', () => {
           pohja: '42',
         },
         organisaatiot: {
+          kunnat: [{
+            oid: 'y',
+          }],
           jarjestajat: [{
             oid: 'x',
           }],

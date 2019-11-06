@@ -210,7 +210,13 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
 
   async save(oppiaine: Lops2019PaikallinenOppiaineDto) {
     if (await this.isUusi()) {
-      await this.store.addOppiaine(oppiaine);
+      const oa = await this.store.addOppiaine(oppiaine);
+      this.$router.push({
+        name: 'paikallinenOppiaine',
+        params: {
+          paikallinenOppiaineId: '' + oa.id,
+        },
+      });
     }
     else {
       await this.store.savePaikallinenOppiaine(oppiaine);
