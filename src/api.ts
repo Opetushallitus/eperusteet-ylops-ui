@@ -34,12 +34,12 @@ const ax = axios.create({
   baseURL,
 });
 
-function axiosHandler(msg: string) {
-  return async (err: any) => {
-    logger.error(msg as any, err);
-    throw err;
-  };
-}
+// function axiosHandler(msg: string) {
+//   return async (err: any) => {
+//     logger.error(msg as any, err);
+//     throw err;
+//   };
+// }
 
 // Apufuntio kirjautumiseen ja paluulinkin luontiin
 function getCasURL() {
@@ -67,8 +67,8 @@ function successfulResponseHandler() {
   };
 }
 
-ax.interceptors.request.use(_.identity, axiosHandler('Request error'));
-ax.interceptors.response.use(successfulResponseHandler(), axiosHandler('Response error'));
+// ax.interceptors.request.use(_.identity, axiosHandler('Request error'));
+// ax.interceptors.response.use(successfulResponseHandler(), axiosHandler('Response error'));
 
 // https://github.com/Microsoft/TypeScript/issues/20719
 type BaseAPIConstructor<T> = new(configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => T;

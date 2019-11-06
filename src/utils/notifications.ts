@@ -31,7 +31,7 @@ export function info(title: string) {
   });
 }
 
-export function fail(title: string, reason: string | undefined) {
+export function fail(title: string, reason?: string) {
   (Vue as any).notify({
     title: KieliStore.i18n.t(title),
     type: 'error',

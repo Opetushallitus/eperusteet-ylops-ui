@@ -120,9 +120,6 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     await this.store.removeTeksti(data.tov);
     this.$router.push({
       name: 'opsTiedot',
-      // params: {
-      //   ...this.$route.params,
-      // },
     });
   }
 
@@ -181,9 +178,23 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     }
   }
 
-  private async save({ tov, ohjeet }) {
+  siirry(uusi) {
+    setTimeout(() => {
+      this.$router.push({
+        name: 'tekstikappale',
+        params: {
+          ...this.$route.params,
+          osaId: '' + uusi.id,
+        },
+      });
+    }, 300);
+  }
+
+  async save({ tov, ohjeet }) {
     if (await this.isUusi()) {
-      await this.store.addTeksti(tov, _.parseInt(this.$route.params.parentId));
+      const uusi = await this.store.addTeksti(tov, _.parseInt(this.$route.params.parentId));
+      console.log('siirrytään', uusi);
+      this.$nextTick(() => this.siirry(uusi));
     }
     else {
       await this.store.saveTeksti(tov);
@@ -194,16 +205,11 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     }
   }
 
-  private async addAlikappale(parent: Puu) {
+  async addAlikappale(parent: Puu) {
     const uusi = await this.store.addTeksti({}, parent.id);
-    this.$router.push({
-      name: 'tekstikappale',
-      params: {
-        ...this.$route.params,
-        osaId: '' + uusi.id,
-      },
-    });
+    this.$nextTick(() => this.siirry(uusi));
   }
+
 }
 </script>
 

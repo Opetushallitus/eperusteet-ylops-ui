@@ -25,7 +25,7 @@ async function main() {
     //     },
     //   });
     // };
-  }
+  };
 
   try {
     logger.info('Mounting #app');

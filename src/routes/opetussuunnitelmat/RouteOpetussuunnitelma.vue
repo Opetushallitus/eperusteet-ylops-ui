@@ -63,7 +63,9 @@
     <div class="lower">
       <ep-sidebar>
         <template slot="bar">
-          <ops-sidenav :opetussuunnitelma-store="store"></ops-sidenav>
+          <ops-sidenav
+            :opetussuunnitelma-store="store"
+            :key="$route.fullPath" />
         </template>
         <template slot="view">
           <transition name="fade" mode="out-in">

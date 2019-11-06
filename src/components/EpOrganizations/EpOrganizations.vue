@@ -2,23 +2,18 @@
 <div class="organisaatiot">
   <ep-form-content name="organisaatiot">
     <div class="selectors">
-      <div class="options">
-        <ep-toggle v-model="seutukunnille">
-          {{ $t('seutukunta') }}
-        </ep-toggle>
-      </div>
-    </div>
-    <div class="selectors">
-      <div v-if="seutukunnille" class="selectors">
-        <h6>{{ $t('kunnat') }}</h6>
+      <div class="form-group required">
+        <label>{{ $t('kunnat') }}*</label>
         <ep-multi-select :multiple="true"
-                         v-model="valitutKunnat"
-                         track-by="koodiUri"
-                         :validation="kunnatValidation"
-                         @search="query.kunnat = $event"
-                         :is-editing="true"
-                         :options="filteredKunnat"
-                         help="ops-koulutuksen-jarjestaja-ohje">
+          :value="valitutKunnat"
+          @input="updateKunnat"
+          track-by="koodiUri"
+          :validation="$v.valitutKunnat"
+          @search="query.kunnat = $event"
+          :is-editing="true"
+          :options="filteredKunnat"
+          help="ops-koulutuksen-jarjestaja-ohje"
+          required>
           <template slot="singleLabel" slot-scope="{ option }">
             <span class="selected">{{ $kaanna(option.nimi) }}</span>
           </template>
@@ -39,12 +34,13 @@
     </div>
 
     <div class="selectors">
-      <h6>{{ $t('jarjestajat') }}</h6>
+      <label>{{ $t('jarjestajat') }}*</label>
       <ep-multi-select :multiple="true"
-                       v-model="jarjestajat"
+                       :value="valitutJarjestajat"
                        track-by="oid"
-                       :validation="jarjestajatValidation"
+                       :validation="$v.valitutJarjestajat"
                        :is-editing="true"
+                       @input="updateJarjestajat"
                        @search="query.jarjestajat = $event"
                        :options="filteredJarjestajat"
                        help="ops-koulutuksen-jarjestaja-ohje">
@@ -67,11 +63,12 @@
     </div>
 
     <div class="selectors">
-      <h6>{{ $t('oppilaitokset') }}</h6>
+      <label>{{ $t('oppilaitokset') }}</label>
       <ep-multi-select :multiple="true"
-                       v-model="oppilaitokset"
-                       :validation="oppilaitosValidation"
+                       :value="valitutOppilaitokset"
+                       :validation="$v"
                        @search="query.oppilaitokset = $event"
+                       @input="updateOppilaitokset"
                        :is-editing="true"
                        track-by="oid"
                        :options="filteredOppilaitokset"
@@ -94,14 +91,6 @@
       </ep-multi-select>
     </div>
 
-    <div v-if="!seutukunnille" class="selectors">
-      <div v-if="kunnat.length > 0">
-        <h6>{{ $t('kunnat') }}</h6>
-        <ul class="kunnat">
-          <li v-for="(kunta, idx) in kunnat" :key="idx">{{ $kaanna(kunta.nimi) }}</li>
-        </ul>
-      </div>
-    </div>
   </ep-form-content>
 </div>
 </template>
@@ -113,8 +102,9 @@ import EpFormContent from '@/components/forms/EpFormContent.vue';
 import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
+import { minLength, required } from 'vuelidate/lib/validators';
 
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { Watch, Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import { OphOid, hasOrganisaatioTyyppi, metadataToTeksti } from '@/utils/organisaatiot';
@@ -132,6 +122,13 @@ import {
 import EpValidation from '@/mixins/EpValidation';
 
 
+interface ValueType {
+  jarjestajat: any[];
+  oppilaitokset: any[];
+  kunnat: any[];
+}
+
+
 @Component({
   components: {
     EpButton,
@@ -142,161 +139,115 @@ import EpValidation from '@/mixins/EpValidation';
   },
 })
 export default class EpOrganizations extends Mixins(EpValidation) {
-  private value: any = null;
-  private seutukunnille = false;
-  private valitutKunnat: any[] = [];
-  private kuntienJarjestajat: any = {};
-  private jarjestajat: any[] = [];
-  private oppilaitokset: any[] = [];
+  @Prop({ required: true })
+  value!: ValueType;
 
-  private query = {
+  kayttajanOrganisaatiot: any = {};
+  kunnat: any[] = [];
+  jarjestajat: any[] = [];
+  oppilaitokset: any[] = [];
+
+  valitutKunnat: any[] = [];
+  valitutJarjestajat: any[] = [];
+  valitutOppilaitokset: any[] = [];
+
+  query = {
     jarjestajat: '',
     oppilaitokset: '',
     kunnat: '',
   };
 
-  private koodisto: any = {
-    jarjestajat: [], // Koulutuksen järjestäjät
-    kunnat: [], // Kunnat joihin järjestävät kuuluvat
-    kaikkiKunnat: [], // Kaikki kunnat
-    kuntaMap: {}, // Kunnat joihin järjestävät kuuluvat
-    oppilaitokset: [], // Oppilaitokset
-    organisaatiot: [], // Käyttöoikeuksia sisältävät organisaatiot
-  };
+  get validationConfig() {
+    return {
+      valitutKunnat: {
+        required,
+        'min-length': minLength(1),
+      },
+      valitutJarjestajat: {
+        required,
+        'min-length': minLength(1),
+      },
+    };
+  }
 
   filterAndSort(orgs, query) {
     return _.chain(orgs)
       .filter(org => Kielet.search(query, org.nimi))
       .sortBy(org => Kielet.kaanna(org.nimi))
+      .sortBy(org => this.kayttajanOrganisaatiot[org.oid])
       .value();
-  }
-
-  get kunnatValidation() {
-    return this.validation ? this.validation.kunnat : [];
-  }
-
-  get jarjestajatValidation() {
-    return this.validation ? this.validation.jarjestajat : [];
-  }
-
-  get oppilaitosValidation() {
-    return this.validation ? this.validation.oppilaitokset : [];
   }
 
   get filteredKunnat() {
     return this.filterAndSort(this.kunnat, this.query.kunnat);
   }
 
-  get kuntienJarjestajatFlattened() {
-    return _.chain(this.kuntienJarjestajat)
-      .values()
-      .flatten()
-      .sortBy(org => Kielet.kaanna(org.nimi))
-      .value();
-  }
-
   get filteredJarjestajat() {
-    if (this.seutukunnille) {
-      return this.filterAndSort(this.kuntienJarjestajatFlattened, this.query.jarjestajat);
-    }
-    else {
-      return this.filterAndSort(this.koodisto.jarjestajat, this.query.jarjestajat);
-    }
+    return this.filterAndSort(this.jarjestajat, this.query.jarjestajat);
   }
-
-  get jarjestajienOppilaitokset() {
-    return _.chain(this.filteredJarjestajat)
-      .map('children')
-      .flatten()
-      // .sortBy(org => Kielet.kaanna(org.nimi))
-      .value();
-  }
-
+  
   get filteredOppilaitokset() {
-    return this.filterAndSort(this.koodisto.oppilaitokset, this.query.oppilaitokset);
+    return this.filterAndSort(this.oppilaitokset, this.query.oppilaitokset);
   }
 
-  get kunnat() {
-    if (this.seutukunnille) {
-      return this.koodisto.kaikkiKunnat;
-    }
-    else {
-      return _([
-        ...this.jarjestajat,
-        ...this.oppilaitokset,
-        ])
-        .map((org) => this.koodisto.kuntaMap[org.kotipaikkaUri])
-        .uniq()
-        .value();
-    }
-  }
-
-  @Watch('valitutKunnat')
-  async onKunnatChange(kunnat) {
-    if (kunnat && this.seutukunnille) {
-      const toimijat = {};
-      _.forEach((await Ulkopuoliset.getKoulutustoimijat(_.map(kunnat, 'koodiUri'), [])).data, (toimija: any) => {
-        if (!toimijat[toimija.kotipaikkaUri]) {
-          toimijat[toimija.kotipaikkaUri] = [];
-        }
-        toimijat[toimija.kotipaikkaUri].push(toimija);
-      });
-      this.kuntienJarjestajat = toimijat;
-    }
-  }
-
-  @Watch('kunnat')
-  onChange() {
+  updateInput() {
     this.$emit('input', {
-      jarjestajat: _.map(this.jarjestajat, (org) => _.pick(org, 'oid')),
-      oppilaitokset: _.map(this.oppilaitokset, (org) => _.pick(org, 'oid')),
-      kunnat: this.seutukunnille
-        ? []
-        : _.map(this.kunnat, (org) => _.pick(org, 'koodiUri', 'koodiArvo', 'versio')),
+      kunnat: this.valitutKunnat,
+      jarjestajat: this.valitutJarjestajat,
+      oppilaitokset: this.valitutOppilaitokset,
     });
   }
 
+  updateOppilaitokset(valitut) {
+    this.valitutOppilaitokset = valitut;
+    this.updateInput();
+  }
+
+  updateJarjestajat(valitut) {
+    this.valitutJarjestajat = valitut;
+    this.oppilaitokset = _.chain(valitut)
+      .map('children')
+      .flatten()
+      .value();
+    const jarjestajaOids = _.map(this.valitutJarjestajat, 'oid');
+    this.valitutOppilaitokset = _.filter(this.valitutOppilaitokset,
+      ol => _.includes(jarjestajaOids, ol.parentOid));
+    this.updateInput();
+  }
+
+  async updateKunnat(kunnat) {
+    this.valitutKunnat = kunnat;
+    this.jarjestajat = _.chain((await Ulkopuoliset.getKoulutustoimijat(_.map(kunnat, 'koodiUri'), [])).data)
+      .sortBy((org: any) => Kielet.kaanna(org.nimi))
+      .value();
+
+    const kuntaUris = _.map(kunnat, 'koodiUri');
+    this.valitutJarjestajat = _.filter(
+      this.valitutJarjestajat,
+      jarjestaja => _.includes(kuntaUris, jarjestaja.kotipaikkaUri));
+    this.updateJarjestajat(this.valitutJarjestajat);
+  }
+
   async update() {
-    this.koodisto.kaikkiKunnat = (await Ulkopuoliset.kaikkiKoodistonKoodit('kunta')).data;
-    const kunnat = _(this.koodisto.kaikkiKunnat)
+    const kunnat = (await Ulkopuoliset.kaikkiKoodistonKoodit('kunta')).data;
+    this.kunnat = _.chain(kunnat)
       .map((kunta: any) => ({
         ...kunta,
         nimi: metadataToTeksti('nimi', kunta.metadata),
       }))
-      .keyBy('koodiUri')
+      .sortBy(org => Kielet.kaanna(org.nimi))
       .value();
 
-    this.koodisto.organisaatiot = _((await Ulkopuoliset.getUserOrganisations()).data)
+    this.kayttajanOrganisaatiot = _.chain((await Ulkopuoliset.getUserOrganisations()).data)
       .reject(_.isNull)
+      .keyBy('oid')
       .value();
-    this.koodisto.kunnat = _(this.koodisto.organisaatiot)
-      .map('kotipaikkaUri')
-      .filter(_.identity)
-      .uniq()
-      .map((kunta: string) => kunnat[kunta])
-      .value();
-    this.koodisto.kuntaMap = kunnat;
-    this.koodisto.oppilaitokset = _(this.koodisto.organisaatiot)
-      .filter('oppilaitosTyyppiUri')
-      .value();
-    this.koodisto.jarjestajat = _(this.koodisto.organisaatiot)
-      .filter((org) => hasOrganisaatioTyyppi([OrganisaatioTyyppi.Toimija], org.tyypit))
-      .value();
-    const jarjestajaOids = _.map(this.koodisto.jarjestajat, 'oid');
-    const oppilaitostenJarjestajatRes = await Promise.all(_.chain(this.koodisto.oppilaitokset)
-      .map('parentOid')
-      .reject(parentOid => parentOid === OphOid || _.includes(jarjestajaOids, parentOid))
-      .uniq()
-      .map(oid => Ulkopuoliset.getOrganisaatio(oid))
-      .value());
-    this.koodisto.jarjestajat = [
-      ...this.koodisto.jarjestajat,
-      ..._.map(oppilaitostenJarjestajatRes, 'data')];
   }
 
-  public mounted() {
+  mounted() {
     this.update();
   }
+
 }
 
 </script>
@@ -307,6 +258,10 @@ export default class EpOrganizations extends Mixins(EpValidation) {
 
   h6 {
     color: #555;
+
+    &.required {
+      font-weight: bolder;
+    }
   }
 
 }
