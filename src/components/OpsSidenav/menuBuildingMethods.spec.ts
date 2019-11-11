@@ -6,6 +6,9 @@ import {
   paikallinenOppiaineToMenu,
 } from './menuBuildingMethods';
 
+import * as _ from 'lodash';
+import { koodiAlku, koodiNumero } from '@/utils/perusteet';
+
 describe('OpsSidenav menubuilder helper', () => {
   it('runs opsLapsiLinkit & oppiaineLinkki without errors', () => {
     const res1 = opsLapsiLinkit([{
@@ -53,4 +56,29 @@ describe('OpsSidenav menubuilder helper', () => {
     const res1 = paikallinenOppiaineToMenu({ id: 1 });
     expect(res1.item.type).toEqual('oppiaine');
   });
+
+  test('koodi arvot numerojärjestyksessä', () => {
+    const sorted = _.sortBy([{
+      koodi: {
+        arvo: 'MA11',
+      },
+    }, {
+      koodi: {
+        arvo: 'MA1',
+      },
+    }], koodiAlku, koodiNumero);
+
+    const sorted2 = _.sortBy([{
+      arvo: 'MA11',
+    }, {
+      arvo: 'MA1',
+    }], koodiAlku, koodiNumero);
+
+    const sorted3 = _.sortBy(['MA11', 'MA1'], koodiAlku, koodiNumero);
+
+    expect(_.map(sorted, 'koodi.arvo')).toEqual(['MA1', 'MA11']);
+    expect(_.map(sorted2, 'arvo')).toEqual(['MA1', 'MA11']);
+    expect(sorted3).toEqual(['MA1', 'MA11']);
+  });
+
 });

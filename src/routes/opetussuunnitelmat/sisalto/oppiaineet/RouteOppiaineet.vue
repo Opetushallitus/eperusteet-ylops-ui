@@ -153,6 +153,7 @@ import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
+import { koodiAlku, koodiNumero } from '@/utils/perusteet';
 
 import _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
@@ -211,17 +212,17 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
 
   get oppiaineetJaOppimaarat() {
     return _(this.peruste.oppiaineet as Lops2019OppiaineDto[])
-      .sortBy()
       .map(oa => [oa, ...(oa.oppimaarat || [])])
       .flatten()
       .value();
   }
 
   get moduulit() {
-    return _(this.oppiaineetJaOppimaarat)
+    const result = _(this.oppiaineetJaOppimaarat)
       .map('moduulit')
       .flatten()
       .value();
+    return result;
   }
 
   get moduulitByKoodi() {
@@ -240,16 +241,18 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           moduulit: _(oa.moduulit)
             .reject((moduuli) => this.vainPuuttuvat && moduuli.used)
             .filter((moduuli) => Kielet.search(this.query, moduuli.nimi))
+            .sortBy(koodiAlku, koodiNumero)
             .value(),
           opintojaksot: _(oa.opintojaksot)
             .filter((oj) => Kielet.search(this.query, oj.nimi))
+            .sortBy(koodiAlku, koodiNumero)
             .value(),
         };
       })
       .filter((oa) => Kielet.search(this.query, oa.nimi)
           || !_.isEmpty(oa.moduulit)
           || !_.isEmpty(oa.opintojaksot))
-      .sortBy('koodi.uri')
+      .sortBy(koodiAlku, koodiNumero)
       .value();
   }
 
@@ -284,8 +287,8 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
               .filter(_.identity)
               .value(),
             oa.koodi!.uri))
-          .sortBy('koodi')
           .value();
+        // console.log(_.map(result, 'koodi.arvo'));
         const opintojaksojenModuulit = _(opintojaksot)
           .map('moduulit')
           .flatten()
@@ -294,7 +297,6 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
         const vieraatModuulit = _(opintojaksot)
           .map('moduulit')
           .flatten()
-          .sortBy('koodiUri')
           .map(moduuli => {
             return this.moduulitByKoodi[moduuli.koodiUri];
           })

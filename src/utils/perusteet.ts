@@ -56,3 +56,28 @@ export function getLaajaAlaisetKoodit() {
     },
   }];
 }
+
+
+
+const splitKoodi = _.memoize((arvo: string) => {
+  if (_.isString(arvo) && !_.isEmpty(arvo)) {
+    let idx = _.size(arvo) - 1;
+    let arvoNmbStr = '';
+    while (idx >= 0 && arvo[idx] >= '0' && arvo[idx] <= '9') {
+      arvoNmbStr = arvo[idx] + arvoNmbStr;
+      --idx;
+    }
+    return [arvo.substr(0, idx), _.parseInt(arvoNmbStr)];
+  }
+  return arvo;
+});
+
+export function koodiAlku(koodillinen: object | string) {
+  const arvo = _.get(koodillinen, 'koodi.arvo', _.get(koodillinen, 'arvo', koodillinen));
+  return splitKoodi(arvo)[0];
+}
+
+export function koodiNumero(koodillinen: object | string) {
+  const arvo = _.get(koodillinen, 'koodi.arvo', _.get(koodillinen, 'arvo', koodillinen));
+  return splitKoodi(arvo)[1];
+}
