@@ -161,7 +161,7 @@ export default class RouteDokumentti extends EpOpsRoute {
     // Jos dokumentti löytyy, haetaan sen tila
     if (_.isNumber(res.data)) {
       const dokumenttiId = res.data;
-      this.href = baseURL + DokumentitParams.get(dokumenttiId).url;
+      this.href = baseURL + DokumentitParams.get(_.toString(dokumenttiId)).url;
     }
 
     await this.getDokumenttiTila();
@@ -179,7 +179,7 @@ export default class RouteDokumentti extends EpOpsRoute {
       this.polling = null;
 
       if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDto.TilaEnum.VALMIS) && this.dto.id) {
-        this.href = baseURL + DokumentitParams.get(this.dto.id).url;
+        this.href = baseURL + DokumentitParams.get(_.toString(this.dto.id)).url;
       }
     }
   }
