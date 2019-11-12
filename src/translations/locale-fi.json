@@ -122,6 +122,8 @@
   "kysymys-nimi": "Kysymyksen otsikko",
   "kysymys-nimi-ohje": "Tähän kysymys",
   "kysymys-organisaatiot-ohje": "Tähän organisaatiot, joille kysymys rajattu",
+  "ops-organisaatiot": "Organisaatiot",
+  "ei-riittavia-oikeuksia-organisaatioissa": "Ei riittäviä oikeuksia organisaatiossa",
   "kysymys-vastaus": "Kysymyksen vastaus",
   "kysymys-vastaus-ohje": "Tähän kysymyksen vastaus",
   "laaja-alaiset-sisallot": "Laaja-alainen osaaminen",
