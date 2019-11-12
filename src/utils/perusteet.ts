@@ -58,6 +58,15 @@ export function getLaajaAlaisetKoodit() {
 }
 
 
+export function paikallisestiSallitutLaajennokset() {
+  return [
+    'oppiaineetjaoppimaaratlops2021_ai12',
+    'oppiaineetjaoppimaaratlops2021_ux',
+    'oppiaineetjaoppimaaratlops2021_vka',
+    'oppiaineetjaoppimaaratlops2021_vkb',
+  ];
+}
+
 
 const splitKoodi = _.memoize((arvo: string) => {
   if (_.isString(arvo) && !_.isEmpty(arvo)) {

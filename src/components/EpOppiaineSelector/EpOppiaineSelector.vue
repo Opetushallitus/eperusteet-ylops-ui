@@ -53,6 +53,8 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
+import { paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
+
 
 @Component({
   components: {
@@ -60,23 +62,17 @@ import { Kielet } from '@shared/stores/kieli';
   },
 })
 export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsComponent) {
-  @Prop()
+  @Prop({ required: true })
   private value!: string | string[];
 
-  @Prop({
-    default: true,
-  })
+  @Prop({ default: true })
   private isEditable!: boolean;
 
-  @Prop({
-    default: true,
-  })
+  @Prop({ default: true, })
   private multiple!: boolean;
 
-  @Prop({
-    required: false,
-  })
-  private allowed!: string[];
+  @Prop()
+  private allowed!: string[] | null;
 
   private cache: PerusteCache | null = null;
   private query = '';
@@ -124,14 +120,23 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   }
 
   get oppiaineetJaOppimaarat() {
+    const laajennokset = paikallisestiSallitutLaajennokset();
     return _(this.oppiaineet)
-      .map((oa: any) => [oa, ..._.map(oa.oppimaarat, om => {
-        return {
-          ...om,
-          parentUri: oa.koodi.uri,
-        };
-      })])
+      .map((oa: any) => {
+        if (_.isEmpty(oa.oppimaarat)) {
+          return [oa];
+        }
+        else {
+          return _.map(oa.oppimaarat, om => ({
+              ...om,
+              parentUri: oa.koodi.uri,
+          }));
+        }
+      })
       .flatten()
+      .reject(oa =>
+        _.some(laajennokset, (laajennos) =>
+          _.startsWith(_.get(oa, 'koodi.uri'), laajennos)))
       .value();
   }
 
@@ -144,9 +149,10 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
       .filter((org: any) => Kielet.search(this.query, org.nimi))
       .map('koodi.uri');
     if (_.isArray(this.allowed) && !_.isEmpty(this.allowed)) {
-      pipe = pipe.filter(uri => _.includes(this.allowed, uri));
+      pipe = pipe.filter(uri => _.some(this.allowed, alku => _.startsWith(uri, alku)));
     }
-    return pipe.sort()
+    return pipe
+      .sortBy(koodiAlku, koodiNumero)
       .value();
   }
 
