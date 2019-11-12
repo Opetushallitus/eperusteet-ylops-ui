@@ -68,7 +68,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   @Prop({ default: true })
   private isEditable!: boolean;
 
-  @Prop({ default: true, })
+  @Prop({ default: true })
   private multiple!: boolean;
 
   @Prop()
@@ -128,8 +128,8 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
         }
         else {
           return _.map(oa.oppimaarat, om => ({
-              ...om,
-              parentUri: oa.koodi.uri,
+            ...om,
+            parentUri: oa.koodi.uri,
           }));
         }
       })

@@ -135,8 +135,6 @@
       </tr>
     </tbody>
   </table>
-  <!-- h2 {{ $t('paikalliset') }}-->
-  <!-- ep-button(icon="plus", @click="uusiOppiaine()") {{ $t('lisaa-paikallinen-oppiaine') }}-->
 </div>
 </template>
 
@@ -288,17 +286,17 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
               .value(),
             oa.koodi!.uri))
           .value();
+
         const opintojaksojenModuulit = _(opintojaksot)
           .map('moduulit')
           .flatten()
           .keyBy('koodiUri')
           .value();
+
         const vieraatModuulit = _(opintojaksot)
           .map('moduulit')
           .flatten()
-          .map(moduuli => {
-            return this.moduulitByKoodi[moduuli.koodiUri];
-          })
+          .map(moduuli => this.moduulitByKoodi[moduuli.koodiUri])
           .reject((moduuli: any) => !moduuli.koodi || _.startsWith(moduuli.koodi!.arvo, oa.koodi!.arvo))
           .map(moduuli => this.moduuliPresentation(moduuli, opintojaksojenModuulit))
           .value();

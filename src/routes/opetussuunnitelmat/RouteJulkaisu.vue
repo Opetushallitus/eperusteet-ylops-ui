@@ -17,7 +17,7 @@
             </span>
             <span class="saanto">{{ $t(category.key) }}</span>
           </h4>
-          <div class="validointi" v-for="validation in category.value">
+          <div class="validointi" v-for="(validation, vidx) in category.value" :key="vidx + (idx + 1) * 1000">
             <span>{{ $t(validation.kuvaus) }} ({{ $kaanna(validation.nimi) }})</span>
           </div>
         </ep-collapse>
