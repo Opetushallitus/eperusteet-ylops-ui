@@ -11,16 +11,16 @@
       help="oppiaine-valitsin-ohje">
     <template slot="singleLabel" slot-scope="{ option }">
       <span class="selected">{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-      <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
+      <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
     </template>
     <template slot="option" slot-scope="{ option }">
       <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-      <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
+      <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
     </template>
     <template slot="tag" slot-scope="{ option, remove }">
       <span class="selected">
         <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-        <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
+        <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
         <button class="btn btn-link" @click="remove(option)">
           <fas icon="times" />
         </button>
@@ -33,13 +33,13 @@
     <ul>
       <li v-for="uri in value" :key="uri">
         <span>{{ $kaanna(oppiaineetMap[uri].nimi) }}</span>
-        <span class="ml-1">({{ oppiaineetMap[uri].koodi.arvo }})</span>
+        <span class="ml-1">({{ oppiaineetMap[uri].koodiArvo }})</span>
       </li>
     </ul>
   </div>
   <div v-else-if="oppiaineetMap[value]">
     <span>{{ $kaanna(oppiaineetMap[value].nimi) }}</span>
-    <span class="ml-1">({{ oppiaineetMap[value].koodi.arvo }})</span>
+    <span class="ml-1">({{ oppiaineetMap[value].koodiArvo }})</span>
   </div>
 </div>
 </template>
@@ -53,7 +53,7 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
-import { paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
+import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
 
 
 @Component({
@@ -95,7 +95,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
 
   get paikallisetOppiaineet() {
     return _(this.store.paikallisetOppiaineet)
-      .filter('koodi')
+      .filter(getUri)
       .map((oa) => {
         return {
           ...oa,
@@ -134,25 +134,30 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
         }
       })
       .flatten()
+      .map(oa => ({
+        ...oa,
+        koodiUri: getUri(oa),
+        koodiArvo: getArvo(oa),
+      }))
       .reject(oa =>
         _.some(laajennokset, (laajennos) =>
-          _.startsWith(_.get(oa, 'koodi.uri'), laajennos)))
+          _.startsWith(oa.koodiUri, laajennos)))
       .value();
   }
 
   get oppiaineetMap() {
-    return _.keyBy(this.oppiaineetJaOppimaarat, 'koodi.uri');
+    return _.keyBy(this.oppiaineetJaOppimaarat, getUri);
   }
 
   get filteredOppiaineet() {
     let pipe = _(this.oppiaineetJaOppimaarat)
       .filter((org: any) => Kielet.search(this.query, org.nimi))
-      .map('koodi.uri');
+      .map(getUri);
     if (_.isArray(this.allowed) && !_.isEmpty(this.allowed)) {
       pipe = pipe.filter(uri => _.some(this.allowed, alku => _.startsWith(uri, alku)));
     }
     return pipe
-      .sortBy(koodiAlku, koodiNumero)
+      .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
       .value();
   }
 

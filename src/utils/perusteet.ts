@@ -81,8 +81,16 @@ const splitKoodi = _.memoize((arvo: string) => {
   return arvo;
 });
 
-function getArvo(koodillinen: object | string) {
-  return _.get(koodillinen, 'koodi.arvo', _.get(koodillinen, 'arvo', koodillinen));
+export function getArvo(koodillinen: any) {
+  return _.get(koodillinen, 'koodi.arvo')
+    || _.get(koodillinen, 'arvo')
+    || _.get(koodillinen, 'koodi.uri')
+    || _.get(koodillinen, 'uri')
+    || koodillinen;
+}
+
+export function getUri(koodillinen: any) {
+  return _.get(koodillinen, 'koodi.uri', _.get(koodillinen, 'uri', koodillinen));
 }
 
 export function koodiAlku(koodillinen: object | string) {

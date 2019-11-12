@@ -247,10 +247,10 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
             .value(),
         };
       })
-      .filter((oa) => Kielet.search(this.query, oa.nimi)
+      .filter((oa: any) => Kielet.search(this.query, oa.nimi)
           || !_.isEmpty(oa.moduulit)
           || !_.isEmpty(oa.opintojaksot))
-      .sortBy(koodiAlku, koodiNumero)
+      .sortBy((oa: any) => oa.paikallinen, koodiAlku, koodiNumero)
       .value();
   }
 
@@ -269,7 +269,37 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
     };
   }
 
-  get oppiaineRakenne() {
+  get paikallinenOppiaineRakenne() {
+    if (!this.peruste || !this.store.paikallisetOppiaineet) {
+      return [];
+    }
+    return _(this.store.paikallisetOppiaineet)
+      .map(oa => {
+        const opintojaksot = [];
+
+        return {
+          ...oa,
+          koodi: {
+            arvo: oa.koodi,
+            uri: oa.koodi,
+          },
+          isOpen: this.opened[oa.id!] || !_.isEmpty(this.query),
+          paikallinen: true,
+          vieraatModuulit: [],
+          opintojaksot: [],
+          moduulit: [],
+          stats: {
+            opintojaksot: _.size(opintojaksot),
+            kaytetytModuulit: 0,
+            kaikkiModuulit: 0,
+            valid: !_.isEmpty(opintojaksot),
+          },
+        };
+      })
+      .value();
+  }
+
+  get perusteenOppiaineRakenne() {
     if (!this.peruste) {
       return [];
     }
@@ -307,6 +337,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           isOpen: this.opened[oa.id!] || !_.isEmpty(this.query),
           moduulit: _.map(oa.moduulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
           vieraatModuulit,
+          paikallinen: false,
           opintojaksot,
           stats: {
             opintojaksot: _.size(opintojaksot),
@@ -317,6 +348,12 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
         };
       })
       .value();
+  }
+
+  get oppiaineRakenne() {
+    return [
+      ...this.perusteenOppiaineRakenne,
+      ...this.paikallinenOppiaineRakenne];
   }
 
   async mounted() {
