@@ -288,7 +288,6 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
               .value(),
             oa.koodi!.uri))
           .value();
-        // console.log(_.map(result, 'koodi.arvo'));
         const opintojaksojenModuulit = _(opintojaksot)
           .map('moduulit')
           .flatten()
