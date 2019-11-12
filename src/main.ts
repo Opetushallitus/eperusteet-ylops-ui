@@ -12,20 +12,20 @@ Vue.config.productionTip = false;
 
 async function main() {
   Vue.config.errorHandler = (err, vm, info) => {
-    if (process.env.NODE_ENV !== 'development') {
-      router.replace({
-        name: 'virhe',
-        query: {
-          viesti: 'virhe-nakyma-tapahtuma',
-          virhe: err.message,
-          komponentti: vm.$options.name,
-          info
-        },
-      });
-    }
-    else {
+    // if (process.env.NODE_ENV !== 'development') {
+    //   router.replace({
+    //     name: 'virhe',
+    //     query: {
+    //       viesti: 'virhe-nakyma-tapahtuma',
+    //       virhe: err.message,
+    //       komponentti: vm.$options.name,
+    //       info
+    //     },
+    //   });
+    // }
+    // else {
       console.error(err, vm, info);
-    }
+    // }
   };
 
   try {

@@ -32,8 +32,7 @@
               </div>
               <div class="col-md-6">
                 <ep-form-content name="koodi">
-                  <ep-field help="opintojakso-koodi-ohje" v-model="data.koodi" type="string" :validation="validation.koodi" :is-editing="isEditing">
-                  </ep-field>
+                  <ep-field help="opintojakso-koodi-ohje" v-model="data.koodi" type="string" :validation="validation.koodi" :is-editing="isEditing" />
                 </ep-form-content>
               </div>
             </div>
