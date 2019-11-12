@@ -120,14 +120,12 @@ export class OpetussuunnitelmaStore {
     let osa: AxiosResponse<Matala>;
     if (parentId) {
       osa = await OpetussuunnitelmanSisalto.addTekstiKappaleLapsi(this.opetussuunnitelma!.id!, parentId, tov as Matala);
-      console.log(this.sisalto);
     }
     else {
       osa = await OpetussuunnitelmanSisalto.addTekstiKappale(this.opetussuunnitelma!.id!, tov as Matala);
     }
     success('lisays-onnistui-tekstikappale');
     await this.updateSisalto();
-    console.log(this.sisalto);
     return osa.data;
   }
 

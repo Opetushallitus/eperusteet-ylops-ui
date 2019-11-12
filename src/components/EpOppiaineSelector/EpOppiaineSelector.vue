@@ -11,16 +11,16 @@
       help="oppiaine-valitsin-ohje">
     <template slot="singleLabel" slot-scope="{ option }">
       <span class="selected">{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-      <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
+      <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
     </template>
     <template slot="option" slot-scope="{ option }">
       <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-      <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
+      <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
     </template>
     <template slot="tag" slot-scope="{ option, remove }">
       <span class="selected">
         <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-        <span class="ml-1">({{ oppiaineetMap[option].koodi.arvo }})</span>
+        <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
         <button class="btn btn-link" @click="remove(option)">
           <fas icon="times" />
         </button>
@@ -33,13 +33,13 @@
     <ul>
       <li v-for="uri in value" :key="uri">
         <span>{{ $kaanna(oppiaineetMap[uri].nimi) }}</span>
-        <span class="ml-1">({{ oppiaineetMap[uri].koodi.arvo }})</span>
+        <span class="ml-1">({{ oppiaineetMap[uri].koodiArvo }})</span>
       </li>
     </ul>
   </div>
   <div v-else-if="oppiaineetMap[value]">
     <span>{{ $kaanna(oppiaineetMap[value].nimi) }}</span>
-    <span class="ml-1">({{ oppiaineetMap[value].koodi.arvo }})</span>
+    <span class="ml-1">({{ oppiaineetMap[value].koodiArvo }})</span>
   </div>
 </div>
 </template>
@@ -53,6 +53,8 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
+import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
+
 
 @Component({
   components: {
@@ -60,23 +62,17 @@ import { Kielet } from '@shared/stores/kieli';
   },
 })
 export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsComponent) {
-  @Prop()
+  @Prop({ required: true })
   private value!: string | string[];
 
-  @Prop({
-    default: true,
-  })
+  @Prop({ default: true })
   private isEditable!: boolean;
 
-  @Prop({
-    default: true,
-  })
+  @Prop({ default: true })
   private multiple!: boolean;
 
-  @Prop({
-    required: false,
-  })
-  private allowed!: string[];
+  @Prop()
+  private allowed!: string[] | null;
 
   private cache: PerusteCache | null = null;
   private query = '';
@@ -99,7 +95,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
 
   get paikallisetOppiaineet() {
     return _(this.store.paikallisetOppiaineet)
-      .filter('koodi')
+      .filter(getUri)
       .map((oa) => {
         return {
           ...oa,
@@ -124,29 +120,44 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   }
 
   get oppiaineetJaOppimaarat() {
+    const laajennokset = paikallisestiSallitutLaajennokset();
     return _(this.oppiaineet)
-      .map((oa: any) => [oa, ..._.map(oa.oppimaarat, om => {
-        return {
-          ...om,
-          parentUri: oa.koodi.uri,
-        };
-      })])
+      .map((oa: any) => {
+        if (_.isEmpty(oa.oppimaarat)) {
+          return [oa];
+        }
+        else {
+          return _.map(oa.oppimaarat, om => ({
+            ...om,
+            parentUri: oa.koodi.uri,
+          }));
+        }
+      })
       .flatten()
+      .map(oa => ({
+        ...oa,
+        koodiUri: getUri(oa),
+        koodiArvo: getArvo(oa),
+      }))
+      .reject(oa =>
+        _.some(laajennokset, (laajennos) =>
+          _.startsWith(oa.koodiUri, laajennos)))
       .value();
   }
 
   get oppiaineetMap() {
-    return _.keyBy(this.oppiaineetJaOppimaarat, 'koodi.uri');
+    return _.keyBy(this.oppiaineetJaOppimaarat, getUri);
   }
 
   get filteredOppiaineet() {
     let pipe = _(this.oppiaineetJaOppimaarat)
       .filter((org: any) => Kielet.search(this.query, org.nimi))
-      .map('koodi.uri');
+      .map(getUri);
     if (_.isArray(this.allowed) && !_.isEmpty(this.allowed)) {
-      pipe = pipe.filter(uri => _.includes(this.allowed, uri));
+      pipe = pipe.filter(uri => _.some(this.allowed, alku => _.startsWith(uri, alku)));
     }
-    return pipe.sort()
+    return pipe
+      .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
       .value();
   }
 

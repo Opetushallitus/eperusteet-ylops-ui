@@ -56,3 +56,47 @@ export function getLaajaAlaisetKoodit() {
     },
   }];
 }
+
+
+export function paikallisestiSallitutLaajennokset() {
+  return [
+    'oppiaineetjaoppimaaratlops2021_ai12',
+    'oppiaineetjaoppimaaratlops2021_ux',
+    'oppiaineetjaoppimaaratlops2021_vka',
+    'oppiaineetjaoppimaaratlops2021_vkb',
+  ];
+}
+
+
+const splitKoodi = _.memoize((arvo: string) => {
+  if (_.isString(arvo) && !_.isEmpty(arvo)) {
+    let idx = _.size(arvo) - 1;
+    let arvoNmbStr = '';
+    while (idx >= 0 && arvo[idx] >= '0' && arvo[idx] <= '9') {
+      arvoNmbStr = arvo[idx] + arvoNmbStr;
+      --idx;
+    }
+    return [arvo.substr(0, idx), _.parseInt(arvoNmbStr)];
+  }
+  return arvo;
+});
+
+export function getArvo(koodillinen: any) {
+  return _.get(koodillinen, 'koodi.arvo')
+    || _.get(koodillinen, 'arvo')
+    || _.get(koodillinen, 'koodi.uri')
+    || _.get(koodillinen, 'uri')
+    || koodillinen;
+}
+
+export function getUri(koodillinen: any) {
+  return _.get(koodillinen, 'koodi.uri', _.get(koodillinen, 'uri', koodillinen));
+}
+
+export function koodiAlku(koodillinen: object | string) {
+  return splitKoodi(getArvo(koodillinen))[0];
+}
+
+export function koodiNumero(koodillinen: object | string) {
+  return splitKoodi(getArvo(koodillinen))[1];
+}

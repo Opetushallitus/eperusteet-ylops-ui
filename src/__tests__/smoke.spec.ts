@@ -14,7 +14,7 @@ describe('tests', () => {
       errormsg = err.message;
     }
 
-    // expect(spy).toBeCalled();
-    // expect(errormsg).toEqual('No mock defined for config [GET] /eperusteet-ylops-service/api/helloworld\n');
+    expect(spy).toBeCalled();
+    expect(errormsg).toEqual('No mock defined for config [GET] /eperusteet-ylops-service/api/helloworld\n');
   });
 });

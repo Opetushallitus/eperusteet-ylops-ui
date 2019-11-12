@@ -110,7 +110,7 @@ import Multiselect from 'vue-multiselect';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
 import { Opetussuunnitelmat } from '@/api';
-import { KoodistoLops2019LaajaAlaiset  } from '@/utils/perusteet';
+import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
 
 
 @Component({
@@ -175,19 +175,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
   }
 
   get allowed() {
-    return [
-      'oppiaineetjaoppimaaratlops2021_vk1',
-      'oppiaineetjaoppimaaratlops2021_vk2',
-      'oppiaineetjaoppimaaratlops2021_vk3',
-      'oppiaineetjaoppimaaratlops2021_vk4',
-      'oppiaineetjaoppimaaratlops2021_vk5',
-      'oppiaineetjaoppimaaratlops2021_vk6',
-      'oppiaineetjaoppimaaratlops2021_vk7',
-      'oppiaineetjaoppimaaratlops2021_vk8',
-      'oppiaineetjaoppimaaratlops2021_vk9',
-      'oppiaineetjaoppimaaratlops2021_vk10',
-      'oppiaineetjaoppimaaratlops2021_ux',
-    ];
+    return paikallisestiSallitutLaajennokset();
   }
 
   async load() {

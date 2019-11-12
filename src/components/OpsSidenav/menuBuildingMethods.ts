@@ -1,18 +1,20 @@
-import _ from 'lodash';
+import * as _ from 'lodash';
 import {
   SideMenuEntry,
   Lops2019PaikallinenOppiaineDto,
   Lops2019OppiaineDto,
 } from '@/tyypit';
 
-function koodiIdentityFn(koodillinen: object) {
-  const arvo = _.get(koodillinen, 'koodi.arvo', _.get(koodillinen, 'arvo'));
-  if (_.isString(arvo) && !_.isEmpty(arvo)) {
-    if (/^\d+$/.test(arvo)) {
-      return _.parseInt(arvo);
-    }
-  }
-  return arvo;
+import { koodiNumero, koodiAlku } from '@/utils/perusteet';
+
+
+interface Koodi {
+  arvo: string;
+}
+
+
+interface Koodillinen {
+  koodi: Koodi;
 }
 
 export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
@@ -63,8 +65,8 @@ export function oppiaineLinkki(type: string, objref: any, children: SideMenuEntr
 }
 
 export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
-  return _.chain(oppimaara.moduulit)
-    .sortBy(koodiIdentityFn)
+  const result = _.chain(oppimaara.moduulit)
+    .sortBy(koodiAlku, koodiNumero)
     .map(moduuli => {
       return {
         item: {
@@ -81,12 +83,13 @@ export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
       };
     })
     .value();
+  return result;
 }
 
 export function oppimaaraOpintojaksoLinkit(opintojaksot: any, oppimaara: Lops2019OppiaineDto): SideMenuEntry[] {
   return _.chain(opintojaksot)
     .filter((oj) => oj.oppiaineet && oppimaara.koodi && _.map(oj.oppiaineet, 'koodi').indexOf(oppimaara.koodi.uri) > -1)
-    .sortBy(koodiIdentityFn)
+    .sortBy(koodiAlku, koodiNumero)
     .map(oj => {
       return {
         item: {
