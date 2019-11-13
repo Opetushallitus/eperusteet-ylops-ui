@@ -58,6 +58,6 @@ describe('OpsSidenav component', async () => {
       },
     } as any);
 
-    expect(wrapper.html()).toContain('search');
+    expect(wrapper.html()).toContain('oph-spinner');
   });
 });

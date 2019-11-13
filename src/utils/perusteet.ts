@@ -101,3 +101,7 @@ export function koodiAlku(koodillinen: object | string) {
 export function koodiNumero(koodillinen: object | string) {
   return splitKoodi(getArvo(koodillinen))[1];
 }
+
+export function koodiSorters(): any[] {
+  return [koodiAlku, koodiNumero];
+}
