@@ -76,9 +76,10 @@ const splitKoodi = _.memoize((arvo: string) => {
       arvoNmbStr = arvo[idx] + arvoNmbStr;
       --idx;
     }
-    return [arvo.substr(0, idx), _.parseInt(arvoNmbStr)];
+
+    return [arvo.substr(0, idx), _.isEmpty(arvoNmbStr) ? 0 : _.parseInt(arvoNmbStr)];
   }
-  return arvo;
+  return [arvo, 0];
 });
 
 export function getArvo(koodillinen: any) {

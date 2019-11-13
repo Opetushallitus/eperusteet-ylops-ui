@@ -17,6 +17,7 @@ import EpSearch from '@/components/forms/EpSearch.vue';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import {
   oppiaineLinkki,
   oppimaaraModuuliLinkit,
@@ -83,9 +84,10 @@ const i18keys = {
     EpButton,
     EpColorBall,
     EpRecursiveNav,
-    EpSisaltoModaali,
-    OpsSidenavLink,
     EpSearch,
+    EpSisaltoModaali,
+    EpSpinner,
+    OpsSidenavLink,
   },
 })
 export default class OpsSidenav extends EpOpsComponent {
@@ -135,8 +137,20 @@ export default class OpsSidenav extends EpOpsComponent {
         this.opintojaksoModuuliLista(oppimaara)));
   }
 
+  get perusteenOppiaineet() {
+    return _.get(this.cache, 'peruste.oppiaineet', null);
+  }
+
+  get isLoading() {
+    return !this.perusteenOppiaineet;
+  }
+
   get opsOppiaineLinkit() {
-    return _.chain(_.get(this.cache, 'peruste.oppiaineet', []))
+    if (!this.perusteenOppiaineet) {
+      return [];
+    }
+
+    return _.chain(this.perusteenOppiaineet)
       .sortBy('koodi.arvo')
       .map(oppiaine =>
         oppiaineLinkki(
