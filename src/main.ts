@@ -24,7 +24,7 @@ async function main() {
     //   });
     // }
     // else {
-      console.error(err, vm, info);
+    console.error(err, vm, info);
     // }
   };
 
