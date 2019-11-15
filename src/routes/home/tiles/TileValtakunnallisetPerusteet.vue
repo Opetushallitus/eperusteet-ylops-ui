@@ -29,8 +29,7 @@ export default class TileOpetussuunnitelmat extends Vue {
   }
 
   get href() {
-    return 'https://eperusteet.opintopolku.fi/#/' + this.kieli;
-
+    return `https://eperusteet.opintopolku.fi/beta/#/${this.kieli}`;
   }
 }
 </script>
