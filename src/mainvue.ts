@@ -44,13 +44,12 @@ async function getLokalisoinnit() {
 }
 
 export async function getRootConfig() {
-  const config = {
+  KieliStore.setup(Vue, {
     messages: {
       fi: require('@/translations/locale-fi.json'),
       sv: require('@/translations/locale-sv.json'),
     },
-  };
-  KieliStore.setup(Vue, config);
+  });
   await KieliStore.load(getLokalisoinnit);
 
   return {
