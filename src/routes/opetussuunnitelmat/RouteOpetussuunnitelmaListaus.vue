@@ -43,7 +43,7 @@
                 </div>
                 <div class="info">
                   <div class="nimi">
-                    {{ $kaanna(ops.nimi) }}
+                    {{ $kaanna(ops.nimi, true) }}
                   </div>
                 </div>
               </router-link>
