@@ -83,16 +83,14 @@ import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
 import EpField from'@/components/forms/EpField.vue';
 import EpFormContent from'@/components/forms/EpFormContent.vue';
 import EpSelect from'@/components/forms/EpSelect.vue';
-import EpToggle from'@/components/forms/EpToggle.vue';
+import EpToggle from'@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
-import _ from 'lodash';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { Prop, Component } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
 import EpProgress from '@/components/EpProgress.vue';
