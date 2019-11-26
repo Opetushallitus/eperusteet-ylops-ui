@@ -8,5 +8,5 @@ div
       button.btn.btn-link(@click="toggled = !toggled", v-if="toggled")
         fas(icon="bars")
       slot(name="bar")
-    .view
+    .view(id="main-ops-content", ref="content")
       slot(name="view")

@@ -10,6 +10,7 @@ import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
 import RouteDokumentti from '@/routes/opetussuunnitelmat/dokumentti/RouteDokumentti.vue';
 import RouteKasite from '@/routes/opetussuunnitelmat/kasite/RouteKasite.vue';
+import RouteKommentit from '@/routes/kommentit/RouteKommentit.vue';
 import RouteModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteModuuli.vue';
 import RouteOpetussuunnitelma from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelma.vue';
 import RouteOpetussuunnitelmaListaus from '@/routes/opetussuunnitelmat/RouteOpetussuunnitelmaListaus.vue';
@@ -68,6 +69,10 @@ export const router = new Router({
       path: '',
       name: 'root',
       component: Home,
+    }, {
+      path: 'kommentit',
+      name: 'kommentit',
+      component: RouteKommentit,
     }, {
       path: 'admin',
       name: 'admin',
@@ -219,7 +224,7 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
-  changeLang(to);
+  changeLang(to, from);
   await resolveRouterMetaProps(to);
 
   // Alustetaan opetussuunnitelma tilan vaihtuessa

@@ -6,7 +6,7 @@ import {
   DokumentitApi,
   DokumentitApiAxiosParamCreator,
   KayttajatApi,
-  KommentitApi,
+  KommentointiApi,
   KysymyksetApi,
   LiitetiedostotApi,
   Lops2019Api,
@@ -82,7 +82,7 @@ function initApi<T>(X: BaseAPIConstructor<T>): T {
 export const Api = ax;
 export const Dokumentit = initApi(DokumentitApi);
 export const Kayttajat = initApi(KayttajatApi);
-export const Kommentit = initApi(KommentitApi);
+export const Kommentointi = initApi(KommentointiApi);
 export const Kysymykset = initApi(KysymyksetApi);
 export const Liitetiedostot = initApi(LiitetiedostotApi);
 export const Lops2019 = initApi(Lops2019Api);

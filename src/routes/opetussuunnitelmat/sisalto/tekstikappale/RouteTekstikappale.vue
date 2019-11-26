@@ -14,8 +14,7 @@
         </div>
       </template>
       <template slot="keskustelu" slot-scope="{ }">
-        <span>
-        </span>
+        <ep-comment-threads />
       </template>
       <template slot="header" slot-scope="{ isEditing, data }">
         <div class="otsikko">
@@ -27,6 +26,7 @@
           <span comment-uuid="data.tov.tekstiKappale.tunniste">
             <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
+              <span kommentti="fa2832fe-3d64-42f1-8978-bdf4cfa3c4e6">Tämä on kommentti?</span>
               <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)">
               </p>
               <div class="alert alert-info" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
@@ -76,6 +76,8 @@ import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
 import EpField from'@/components/forms/EpField.vue';
 import EpFormContent from'@/components/forms/EpFormContent.vue';
 import EpInput from'@/components/forms/EpInput.vue';
+import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue';
+
 
 import {
   Lops2019Perusteet,
@@ -93,10 +95,11 @@ import {
   components: {
     EpButton,
     EpCollapse,
+    EpCommentThreads,
     EpContent,
     EpEditointi,
-    EpFormContent,
     EpField,
+    EpFormContent,
     EpInput,
   },
 })

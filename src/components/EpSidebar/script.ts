@@ -1,5 +1,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import Sticky from 'vue-sticky-directive';
+import { Kommentit } from '@/stores/kommentit';
+
 
 @Component({
   directives: {
@@ -12,10 +14,12 @@ export default class EpSidebar extends Vue {
 
   public mounted() {
     window.addEventListener('resize', this.onResize);
+    Kommentit.attach(this.$refs.content as Element);
   }
 
-  public destroyed() {
+  public beforeDestroy() {
     window.removeEventListener('resize', this.onResize);
+    Kommentit.detach();
   }
 
   private onResize(data: Event) {

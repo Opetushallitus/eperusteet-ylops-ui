@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
 import Notifications from 'vue-notification';
+import PortalVue from 'portal-vue'
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
@@ -17,8 +18,13 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import App from '@/App.vue';
 const logger = createLogger('main');
 
+import VueCompositionApi from '@vue/composition-api';
+
+Vue.use(VueCompositionApi);
+
 Vue.use(Notifications);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);
+Vue.use(PortalVue)
 
 Vue.use(Loading, {
   fullPage: true,
@@ -36,6 +42,7 @@ declare module 'vue/types/vue' {
     $te: typeof VueI18n.prototype.te;
     $d: typeof VueI18n.prototype.d;
     $n: typeof VueI18n.prototype.n;
+    $kaanna: (localizationObject: object) => string;
   }
 }
 

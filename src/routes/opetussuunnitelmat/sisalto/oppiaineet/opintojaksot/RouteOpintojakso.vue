@@ -66,6 +66,7 @@
         <div class="osio" v-if="isEditing || data.moduulit.length > 0">
           <ep-collapse tyyppi="opintojakson-moduulit">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-moduulit') }}</div>
+            <span kommentti="fa2832fe-3d64-42f1-8978-bdf4cfa3c4e6">hello</span>
             <div class="oppiaineet" v-if="isEditing">
               <div v-for="oa in data.oppiaineet" :key="oa.koodi">
                 <div>
