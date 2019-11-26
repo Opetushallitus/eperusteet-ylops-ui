@@ -23,8 +23,11 @@ const koulutustyyppiToOppilaitos = {
   'koulutustyyppi_6': Perusoppilaitokset,
 };
 
-export function koulutustyypinOppilaitokset(koulutustyyppi: string) {
-  return koulutustyyppiToOppilaitos[koulutustyyppi] || Perusoppilaitokset;
+export function koulutustyypinOppilaitokset(koulutustyyppi: string | undefined | null) {
+  if (koulutustyyppi) {
+    return koulutustyyppiToOppilaitos[koulutustyyppi] || Perusoppilaitokset;
+  }
+  return Perusoppilaitokset;
 }
 
 export function isPerusteSupported(peruste: any) {
