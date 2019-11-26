@@ -12,8 +12,8 @@
 
     <ep-spinner v-if="isLoading"></ep-spinner>
     <div v-else>
-      <div>
-        <h2>{{ $t(vars.keskeneraiset) }}</h2>
+      <div class="opslistaus">
+        <h3>{{ $t(vars.keskeneraiset) }}</h3>
 
         <div class="opscontainer">
           <div class="opsbox" v-oikeustarkastelu="'luonti'">
@@ -64,8 +64,8 @@
         </div>
       </div>
 
-      <div>
-        <h2>{{ $t(vars.julkaistut) }}</h2>
+      <div class="opslistaus">
+        <h3 class="mt-4">{{ $t(vars.julkaistut) }}</h3>
 
         <div class="info" v-if="julkaistut.length === 0">
           <div class="alert alert-info">{{ $t(vars.eivalmiita) }}</div>
@@ -105,6 +105,35 @@
           </div>
         </div>
       </div>
+
+      <div class="opslistaus">
+        <h3 class="mt-4">{{ $t(vars.poistetut) }}</h3>
+
+        <div class="info" v-if="poistetut.length === 0">
+          <div class="alert alert-info">{{ $t(vars.eiarkistoituja) }}</div>
+        </div>
+
+        <div class="opscontainer">
+          <div v-for="ops in poistetut" :key="ops.id">
+            <div ref="disabled"
+                 class="opsbox disabled">
+              <div class="poistettu">
+                <div class="ikoni">
+                  <fas icon="ban"></fas>
+                </div>
+                <div class="text">
+                  {{ $kaanna(ops.nimi) }}
+                </div>
+                <div class="palauta">
+                  <ep-button variant="danger" @click="palauta(ops)" v-oikeustarkastelu="'hallinta'">
+                    {{ $t('palauta') }}
+                  </ep-button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </ep-main-view>
 </div>
@@ -123,8 +152,11 @@ import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpProgress from '@/components/EpProgress.vue';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpButton from '@/components/EpButton/EpButton.vue';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { success, fail } from '@/utils/notifications';
 
 
 @Component({
@@ -132,6 +164,7 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
     oikeustarkastelu,
   },
   components: {
+    EpButton,
     EpContent,
     EpIcon,
     EpMainView,
@@ -160,6 +193,10 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
     return _.reject(this.jarjestetyt, ops => (ops.tila as any) === 'poistettu');
   }
 
+  get poistetut() {
+    return _.filter(this.jarjestetyt, ops => (ops.tila as any) === 'poistettu');
+  }
+
   get valmisTila() {
     return this.tyyppi === 'pohjat'
       ? 'valmis'
@@ -177,23 +214,47 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   get vars() {
     if (this.tyyppi === 'pohjat') {
       return {
+        eiarkistoituja: 'ei-arkistoituja-pohjia',
+        eivalmiita: 'ei-valmiita-pohjia',
         getTarget: 'POHJA',
         julkaistut: 'valmiit-pohjat',
         keskeneraiset: 'keskeneraiset-pohjat',
         kuvaus: 'pohjat-kuvaus',
+        poistetut: 'arkistoidut-pohjat',
         uusiRoute: 'uusiPohja',
-        eivalmiita: 'ei-valmiita-pohjia',
+        palautaOps: 'palauta-pohja',
+        palautaOpsKuvaus: 'palauta-pohja-kuvaus',
       };
     }
     else {
       return {
+        eiarkistoituja: 'ei-arkistoituja-opetussuunnitelmia',
+        eivalmiita: 'ei-julkaistuja-opetussuunnitelmia',
         getTarget: 'OPS',
         julkaistut: 'julkaistut-opetussuunnitelmat',
         keskeneraiset: 'keskeneraiset-opetussuunnitelmat',
         kuvaus: 'opetussuunnitelmat-kuvaus',
+        poistetut: 'arkistoidut-opetussuunnitelmat',
         uusiRoute: 'uusiOpetussuunnitelma',
-        eivalmiita: 'ei-julkaistuja-opetussuunnitelmia',
+        palautaOps: 'palauta-ops',
+        palautaOpsKuvaus: 'palauta-ops-kuvaus',
       };
+    }
+  }
+
+  async palauta(ops: OpetussuunnitelmaInfoDto) {
+    if (await this.vahvista(this.vars.palautaOps, this.vars.palautaOpsKuvaus)) {
+      try {
+        await OpetussuunnitelmaStore.updateOpsTila(ops.id!, 'luonnos');
+        const idx = _.findIndex(this.opslista, { id: ops.id });
+        if (idx > -1) {
+          this.opslista[idx].tila = 'luonnos' as any;
+        }
+        success('palautus-onnistui');
+      }
+      catch (err) {
+        fail('palautus-epaonnistui');
+      }
     }
   }
 
@@ -212,98 +273,132 @@ $box-size: 350px;
 
 $box-radius: 10px;
 
-.opscontainer {
-  display: flex;
-  flex-wrap: wrap;
+.opslistaus {
+  .opscontainer {
+    display: flex;
+    flex-wrap: wrap;
 
-  .opsbox {
-    user-select: none;
-    margin: 10px;
-    border-radius: $box-radius;
-    @include tile-background-shadow;
-
-    .uusi {
-      background-size: contain;
-      background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
+    .opsbox {
+      user-select: none;
+      margin: 10px;
       border-radius: $box-radius;
-      height: 230px;
-      margin: 0 auto;
-      padding-top: 48px;
-      text-align: center;
-      width: 192px;
+      @include tile-background-shadow;
 
-      .plus {
-        color: white;
-        font-size: 50px;
+      .poistettu {
+        background-size: contain;
+        background: linear-gradient(180deg, #e7eefe 0%, #f3f6fe 100%);
+        border-radius: $box-radius;
+        height: 230px;
+        margin: 0 auto;
+        padding-top: 0px;
+        text-align: center;
+        width: 192px;
+
+        .ikoni {
+          color: #e44e4e;
+          font-size: 50px;
+          margin: 0 auto;
+          text-align: center;
+          width: 80px;
+        }
+
+        .text {
+          color: black;
+          font-weight: 400;
+          margin: 0 auto;
+          text-align: center;
+          overflow-y: auto;
+          height: 80px;
+        }
+
+        .palauta {
+          margin-top: 20px;
+        }
+      }
+
+      .uusi {
+        background-size: contain;
+        background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
+        border-radius: $box-radius;
+        height: 230px;
+        margin: 0 auto;
+        padding-top: 48px;
+        text-align: center;
+        width: 192px;
+
+        .plus {
+          color: white;
+          font-size: 50px;
+          margin: 0 auto;
+          text-align: center;
+          width: 80px;
+        }
+
+        .text {
+          color: white;
+          font-weight: 600;
+          margin: 0 auto;
+          text-align: center;
+          width: 80px;
+        }
+      }
+
+      .chart {
+        width: 192px;
+        border-radius: $box-radius $box-radius 0 0;
+        height: 138px;
+        background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
+        background-size: contain;
         margin: 0 auto;
         text-align: center;
-        width: 80px;
+        padding-top: 28px;
+
+        .progress-clamper {
+          width: 80px;
+          text-align: center;
+          margin: 0 auto;
+        }
       }
 
-      .text {
-        color: white;
-        font-weight: 600;
+      .info {
+        border-radius: 0 0 $box-radius $box-radius;
+        text-align: center;
+        height: 92px;
+        width: 192px;
+        padding: 10px 10px;
+        margin: 0 auto;
+        border: 1px solid #E7E7E7;
+        border-top-width: 0;
+        overflow-y: auto;
+
+        .nimi {
+          color: #2B2B2B;
+          text-align: center;
+          hyphens: none;
+          font-size: 12px;
+          font-weight: 600;
+        }
+      }
+
+      &:hover:not(.disabled) {
+        @include tile-background-shadow-selected;
+      }
+    }
+
+    .disabled {
+      cursor: not-allowed;
+
+      .info-top {
+        width: 192px;
+        height: 138px;
+        border-radius: $box-radius $box-radius 0 0;
+        background-color: lightgray;
         margin: 0 auto;
         text-align: center;
-        width: 80px;
+        padding-top: 28px;
+        padding-left: 10px;
+        padding-right: 10px;
       }
-    }
-
-    .chart {
-      width: 192px;
-      border-radius: $box-radius $box-radius 0 0;
-      height: 138px;
-      background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
-      background-size: contain;
-      margin: 0 auto;
-      text-align: center;
-      padding-top: 28px;
-
-      .progress-clamper {
-        width: 80px;
-        text-align: center;
-        margin: 0 auto;
-      }
-    }
-
-    .info {
-      border-radius: 0 0 $box-radius $box-radius;
-      text-align: center;
-      height: 92px;
-      width: 192px;
-      padding: 10px 10px;
-      margin: 0 auto;
-      border: 1px solid #E7E7E7;
-      border-top-width: 0;
-      overflow-y: auto;
-
-      .nimi {
-        color: #2B2B2B;
-        text-align: center;
-        hyphens: none;
-        font-size: 12px;
-        font-weight: 600;
-      }
-    }
-
-    &:hover:not(.disabled) {
-      @include tile-background-shadow-selected;
-    }
-  }
-
-  .disabled {
-    cursor: not-allowed;
-
-    .info-top {
-      width: 192px;
-      height: 138px;
-      border-radius: $box-radius $box-radius 0 0;
-      background-color: lightgray;
-      margin: 0 auto;
-      text-align: center;
-      padding-top: 28px;
-      padding-left: 10px;
-      padding-right: 10px;
     }
   }
 }
