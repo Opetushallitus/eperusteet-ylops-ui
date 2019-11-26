@@ -222,8 +222,8 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   async updateKunnat(kunnat) {
     this.valitutKunnat = kunnat;
     this.jarjestajat = _.chain((await Ulkopuoliset.getKoulutustoimijat(
-        _.map(kunnat, 'koodiUri'), 
-        koulutustyypinOppilaitokset(this.koulutustyyppi))).data)
+      _.map(kunnat, 'koodiUri'), 
+      koulutustyypinOppilaitokset(this.koulutustyyppi))).data)
       .sortBy((org: any) => Kielet.kaanna(org.nimi))
       .value();
 

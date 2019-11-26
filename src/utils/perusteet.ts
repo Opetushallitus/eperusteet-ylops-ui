@@ -20,7 +20,7 @@ const koulutustyyppiToOppilaitos = {
   'koulutustyyppi_15': Perusoppilaitokset,
   'koulutustyyppi_2': [...Perusoppilaitokset, 15],
   'koulutustyyppi_20': [...Perusoppilaitokset],
-  'koulutustyyppi_15': Perusoppilaitokset,
+  'koulutustyyppi_6': Perusoppilaitokset,
 };
 
 export function koulutustyypinOppilaitokset(koulutustyyppi: string) {
