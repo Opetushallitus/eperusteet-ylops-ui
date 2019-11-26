@@ -58,6 +58,7 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
     hr
     ep-organizations(
       :validation="$v.uusi.organisaatiot",
+      :koulutustyyppi="koulutustyyppi",
       v-model="uusi.organisaatiot")
 
     ep-button(
@@ -153,6 +154,10 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     }, {
       name: 'wizard-lisatiedot',
     }];
+  }
+
+  get koulutustyyppi() {
+    return _.get(this.uusi, 'pohja.koulutustyyppi');
   }
 
   protected async init() {
