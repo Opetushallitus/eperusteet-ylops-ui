@@ -3,17 +3,29 @@ import _ from 'lodash';
 export const KoodistoLops2019LaajaAlaiset = 'laajaalainenosaaminenlops2021';
 
 export const YlopsKoulutustyypit = Object.freeze([
-  // AIKUISTENPERUSOPETUS("koulutustyyppi_17"),
-  // PERUSOPETUS("koulutustyyppi_16"),
-  // PERUSOPETUSVALMISTAVA("koulutustyyppi_22"),
-  // 'koulutustyyppi_14', // AIKUISLUKIOKOULUTUS
   'koulutustyyppi_15', // ESIOPETUS
-  'koulutustyyppi_6', // LISAOPETUS
   'koulutustyyppi_2', // LUKIOKOULUTUS
+  'koulutustyyppi_20', // VARHAISKASVATUS
+  'koulutustyyppi_6', // LISAOPETUS
+  // 'koulutustyyppi_14', // AIKUISLUKIOKOULUTUS
   // 'koulutustyyppi_23', // LUKIOVALMISTAVAKOULUTUS
   // 'koulutustyyppi_999907', // TPO
-  'koulutustyyppi_20', // VARHAISKASVATUS
+  // 'koulutustyyppi_17', // AIKUISTENPERUSOPETUS
+  // 'koulutustyyppi_16', // PERUSOPETUS
+  // 'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
 ]);
+
+const Perusoppilaitokset = [11, 19, 64];
+const koulutustyyppiToOppilaitos = {
+  'koulutustyyppi_15': Perusoppilaitokset,
+  'koulutustyyppi_2': [...Perusoppilaitokset, 15],
+  'koulutustyyppi_20': [...Perusoppilaitokset],
+  'koulutustyyppi_15': Perusoppilaitokset,
+};
+
+export function koulutustyypinOppilaitokset(koulutustyyppi: string) {
+  return koulutustyyppiToOppilaitos[koulutustyyppi] || Perusoppilaitokset;
+}
 
 export function isPerusteSupported(peruste: any) {
   const { toteutus, koulutustyyppi } = peruste;

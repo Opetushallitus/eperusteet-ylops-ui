@@ -5,14 +5,14 @@
       <div class="form-group required">
         <label>{{ $t('kunnat') }}*</label>
         <ep-multi-select :multiple="true"
-          :value="valitutKunnat"
-          @input="updateKunnat"
-          track-by="koodiUri"
-          :validation="$v.valitutKunnat"
-          @search="query.kunnat = $event"
           :is-editing="true"
           :options="filteredKunnat"
+          :validation="$v.valitutKunnat"
+          :value="valitutKunnat"
+          @input="updateKunnat"
+          @search="query.kunnat = $event"
           help="ops-koulutuksen-jarjestaja-ohje"
+          track-by="koodiUri"
           required>
           <template slot="singleLabel" slot-scope="{ option }">
             <span class="selected">{{ $kaanna(option.nimi) }}</span>
@@ -107,6 +107,7 @@ import { minLength, required } from 'vuelidate/lib/validators';
 import * as _ from 'lodash';
 import { Watch, Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
+import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
 import { OphOid, hasOrganisaatioTyyppi, metadataToTeksti } from '@/utils/organisaatiot';
 
 import {
@@ -141,6 +142,9 @@ interface ValueType {
 export default class EpOrganizations extends Mixins(EpValidation) {
   @Prop({ required: true })
   value!: ValueType;
+
+  @Prop({ required: false })
+  koulutustyyppi: string | null = null;
 
   kayttajanOrganisaatiot: any = {};
   kunnat: any[] = [];
@@ -217,7 +221,9 @@ export default class EpOrganizations extends Mixins(EpValidation) {
 
   async updateKunnat(kunnat) {
     this.valitutKunnat = kunnat;
-    this.jarjestajat = _.chain((await Ulkopuoliset.getKoulutustoimijat(_.map(kunnat, 'koodiUri'), [])).data)
+    this.jarjestajat = _.chain((await Ulkopuoliset.getKoulutustoimijat(
+        _.map(kunnat, 'koodiUri'), 
+        koulutustyypinOppilaitokset(this.koulutustyyppi))).data)
       .sortBy((org: any) => Kielet.kaanna(org.nimi))
       .value();
 
