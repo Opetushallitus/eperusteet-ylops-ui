@@ -9,7 +9,7 @@
     </h2>
     <div class="collapse-container">
       <ep-collapse v-if="oppiaine.tehtava">
-        <h4 slot="header">{{ $t('oppiaineet-tehtava') }}</h4>
+        <h4 slot="header">{{ oppiaine._oppiaine ? $t('oppimaaran-tehtava') : $t('oppiaineet-tehtava') }}</h4>
         <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tehtava.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset">

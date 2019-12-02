@@ -24,6 +24,7 @@ import {
   oppimaaraOpintojaksoLinkit,
   opsLapsiLinkit,
   paikallinenOppiaineToMenu,
+  oppimaaraUusiLinkki,
 } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
@@ -106,16 +107,17 @@ export default class OpsSidenav extends EpOpsComponent {
   private opintojaksoModuuliLista(source: Lops2019OppiaineDto) {
     const result: SideMenuEntry[] = [];
     const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(this.opintojaksot, source);
-    if (!_.isEmpty(oppiaineenOpintojaksot)) {
-      result.push({
-        item: {
-          type: 'staticlink',
-          i18key: 'opintojaksot',
-        },
-        flatten: true,
-        children: oppiaineenOpintojaksot,
-      });
-    }
+    result.push({
+      item: {
+        type: 'staticlink',
+        i18key: 'opintojaksot',
+      },
+      flatten: true,
+      children: [
+        ...oppiaineenOpintojaksot,
+        oppimaaraUusiLinkki(source),
+      ]
+    });
     result.push({
       item: {
         type: 'staticlink',
@@ -126,6 +128,7 @@ export default class OpsSidenav extends EpOpsComponent {
         ...oppimaaraModuuliLinkit(source),
       ],
     });
+
     return result;
   }
 
@@ -185,7 +188,7 @@ export default class OpsSidenav extends EpOpsComponent {
     return (item.type === 'moduuli' || item.type === 'opintojakso');
   }
 
-  private haeModuuliKoodi(item: SideMenuItem) {
+  private haeKoodi(item: SideMenuItem) {
     return _.get(item, 'objref.koodi.arvo', '');
   }
 

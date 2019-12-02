@@ -16,8 +16,6 @@ export default class EpCommentThreads extends Vue {
   mounted() {
     if (this.$slots.default) {
       setTimeout(() => {
-        // const el = this.$slots.default[0].elm;
-        // console.log(this.$slots.default);
         const comments = document.querySelectorAll('[comment-uuid]');
       }, 1000);
     }

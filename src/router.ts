@@ -168,6 +168,10 @@ export const router = new Router({
         component: RouteOpintojakso,
         name: 'opintojakso',
       }, {
+        path: 'opintojaksot/:opintojaksoId/:oppiaineKoodi',
+        component: RouteOpintojakso,
+        name: 'uusi-opintojakso',
+      }, {
         path: 'tekstikappaleet/:osaId',
         component: RouteTekstikappale,
         name: 'tekstikappale',
