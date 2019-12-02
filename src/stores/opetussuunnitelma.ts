@@ -204,7 +204,7 @@ export class OpetussuunnitelmaStore {
     if (query.moduuliUri) {
       chain = chain.filter(oj => _.includes(
         _.map(oj.moduulit, 'koodiUri'),
-        query.oppiaineUri));
+        query.moduuliUri));
     }
     return chain.value();
   }

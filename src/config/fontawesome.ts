@@ -7,6 +7,7 @@ import * as oph from './icons';
 
 library.add(regular.faComment);
 library.add(regular.faTrashAlt);
+library.add(regular.faFolder);
 library.add(solid.faBan);
 library.add(solid.faBars);
 library.add(solid.faBell);
@@ -14,6 +15,7 @@ library.add(solid.faBold);
 library.add(solid.faBookmark);
 library.add(solid.faCalendarDay);
 library.add(solid.faCheck);
+library.add(solid.faCheckCircle);
 library.add(solid.faChevronDown);
 library.add(solid.faChevronLeft);
 library.add(solid.faChevronRight);

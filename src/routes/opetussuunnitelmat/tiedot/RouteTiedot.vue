@@ -1,7 +1,7 @@
 <template>
 <div class="content">
   <div v-if="hooks">
-    <ep-editointi :hooks="hooks" :validator="validator">
+    <ep-editointi :hooks="hooks" :validator="validator" type="opetussuunnitelma">
       <h2 class="otsikko" slot="header">{{ $t('tiedot') }}</h2>
       <template v-slot="{ data, validation, isEditing }">
         <div>
@@ -14,8 +14,7 @@
             </div>
             <div class="col-md-6">
               <ep-form-content name="peruste">
-                <ep-field v-model="data.perusteenDiaarinumero">
-                </ep-field>
+                <ep-external-link :url="data.perusteUrl">{{data.perusteenDiaarinumero}}</ep-external-link>
               </ep-form-content>
             </div>
             <div class="col-md-6">
@@ -49,9 +48,8 @@
             </div>
             <div class="col-md-6" v-if="isOps">
               <ep-form-content name="esikatsele-opetussuunnitelmaa">
-                <ep-linkki v-if="data.esikatseltavissa && !isEditing"
-                           :url="esikatseluUrl(data)"
-                           icon="external-link-alt"></ep-linkki>
+                <ep-external-link v-if="data.esikatseltavissa && !isEditing"
+                           :url="data.opetussuunitelmaUrl"></ep-external-link>
               </ep-form-content>
             </div>
             <div class="col-md-6">
@@ -102,6 +100,7 @@ import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
 import EpProgress from '@/components/EpProgress.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
+import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 
 
@@ -117,6 +116,7 @@ import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
     EpToggle,
     EpLinkki,
     Tilanvaihto,
+    EpExternalLink,
   },
 })
 export default class RouteTiedot extends EpOpsRoute {
@@ -155,14 +155,14 @@ export default class RouteTiedot extends EpOpsRoute {
     return Kielet.getSisaltoKieli;
   }
 
-  private esikatseluUrl(data) {
-    const route = `/opetussuunnitelma/${data.id}/lukiokoulutus/tiedot`;
-    return buildEsikatseluUrl(this.kieli, route);
-  }
-
   private async load() {
     if (this.$route.params.id) {
-      return this.store.get();
+      const ops = await this.store.get();
+      return {
+        ...ops,
+        perusteUrl: buildEsikatseluUrl(this.kieli, `/lukiokoulutus/${ops.perusteenId}/tiedot`),
+        opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}/lukiokoulutus/tiedot`),
+      };
     }
   }
 }

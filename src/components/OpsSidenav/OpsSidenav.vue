@@ -13,24 +13,40 @@
               <fas icon="chevron-left" />
             </ops-sidenav-link>
             <ops-sidenav-link class="previous-link" tag="span" :to="itemRoute">
-              <a class="btn btn-link">{{ kaanna(itemData.item) }}</a>
+              <a class="btn btn-link">
+                {{ kaanna(itemData.item) }}
+                <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
+               </a>
             </ops-sidenav-link>
           </li>
         </template>
         <template v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
           <ops-sidenav-link :to="itemRoute" :class="{ 'module-link': onkoModTaiOj(itemData.item) }" v-if="!isSubmenu && itemRoute">
-            <a class="btn btn-link">
-              <ep-color-indicator class="mr-2" v-if="onkoModTaiOj(itemData.item)" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
-              </ep-color-indicator>
-              <span>{{ kaanna(itemData.item) }}</span>
-              <span class="code-field" v-if="itemData.item.type === 'moduuli'">({{ haeModuuliKoodi(itemData.item) }})</span>
+            <a class="btn btn-link-link" v-if="itemData.item.type === 'uusi-opintojakso'">
+               <fas class="mr-2" icon="plus" />
+              <span>{{ $t('luo-uusi-opintojakso') }}</span>
+            </a>
+            <a v-else class="btn btn-link">
+                <div class="d-inline-flex">
+                  <div>
+                    <ep-color-indicator class="mr-2" v-if="onkoModTaiOj(itemData.item)" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
+                    </ep-color-indicator>
+                  </div>
+                  <div>
+                    <span>{{ kaanna(itemData.item) }}</span>
+                    <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
+                  </div>
+                </div>
             </a>
           </ops-sidenav-link>
           <li class="subheader" v-if="!isSubmenu && !itemRoute">
             <span>{{ kaanna(itemData.item) }}</span>
           </li>
           <ops-sidenav-link class="submenu" v-if="isSubmenu" :itemData="itemData" :to="itemRoute" :click="navigate">
-            <a class="btn btn-link">{{ kaanna(itemData.item) }}</a>
+            <a class="btn btn-link">
+              {{ kaanna(itemData.item) }}
+              <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
+            </a>
             <fas icon="chevron-right" v-if="!itemData.item.hideChevron">
             </fas>
           </ops-sidenav-link>
@@ -46,6 +62,14 @@
         </template>
       </ep-recursive-nav>
     </ul>
+  </div>
+  <div class="muokkaa-kappaleita mt-5">
+    <router-link :to="{name: 'jarjesta'}">
+      <div class="inner">
+        <fas icon="sort" />
+        <a class="btn btn-link">{{$t('muokkaa-kappaleita')}}</a>
+      </div>
+    </router-link>
   </div>
 </div>
 </template>

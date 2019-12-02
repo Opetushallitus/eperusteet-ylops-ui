@@ -13,11 +13,11 @@
             v-model="data.lapset"
             child-field="lapset"
             group="sisalto">
-          <template #default="{ isEditing, node }">
+          <template #default="{ node }">
             <span v-if="isEditing">
               {{ $kaanna(node.tekstiKappale.nimi) }}
             </span>
-            <router-link :to="{ name: 'tekstikappale', params: { osaId: node.id } }">
+            <router-link v-else :to="{ name: 'tekstikappale', params: { osaId: node.id } }">
               {{ $kaanna(node.tekstiKappale.nimi) }}
             </router-link>
           </template>

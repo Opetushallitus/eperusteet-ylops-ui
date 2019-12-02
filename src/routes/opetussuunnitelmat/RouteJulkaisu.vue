@@ -117,7 +117,6 @@ import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@/components/forms/EpField.vue';
 import EpFormContent from '@/components/forms/EpFormContent.vue';
 import EpSelect from '@/components/forms/EpSelect.vue';
-import EpToggle from '@/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
@@ -141,7 +140,6 @@ import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@/tyypit';
     EpField,
     EpFormContent,
     EpSelect,
-    EpToggle,
     Tilanvaihto,
   },
 })
@@ -215,7 +213,6 @@ export default class RouteTiedot extends EpOpsRoute {
 
   .vaihe {
     margin-top: 60px;
-    border-top: 1px solid #ccc;
     padding-top: 20px;
   }
 

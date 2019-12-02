@@ -1,5 +1,6 @@
 <template>
 <div>
+  <hr v-if="first" />
   <div class="ep-collapse" v-if="!disableHeader">
     <!-- Button tagia ei voida käyttää, sillä ml-auto ei toimi.-->
     <!-- Käytetään button rolea saavutettavuuden takaamiseksi.-->
@@ -24,13 +25,13 @@
     </div>
   </div>
   <slot v-else></slot>
+  <hr />
 </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { setItem, getItem } from '@/utils/localstorage';
 import _ from 'lodash';
-
 
 @Component
 export default class EpCollapse extends Vue {
@@ -42,6 +43,9 @@ export default class EpCollapse extends Vue {
 
   @Prop({ default: '' })
   private tyyppi!: string;
+
+  @Prop({ default: false})
+  private first!: boolean;
 
   private toggled = false;
 
@@ -80,6 +84,9 @@ export default class EpCollapse extends Vue {
 @import '@/styles/_variables.scss';
 
 .ep-collapse {
+
+  padding: 27px 0 27px 0;
+
   .collapse-button {
     cursor: pointer;
     outline: none;
@@ -88,5 +95,10 @@ export default class EpCollapse extends Vue {
   .header {
     user-select: none;
   }
+
+  hr {
+    margin: 0px;
+  }
+
 }
 </style>

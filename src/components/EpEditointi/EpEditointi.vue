@@ -34,17 +34,19 @@
               <slot name="tallenna">{{ $t('tallenna') }}</slot>
             </ep-button>
             <b-dropdown class="ml-4 mr-4"
-                        v-if="ctrls.isEditing"
+                        v-if="dropDownValinnatVisible"
                         size="md"
                         variant="link"
                         :disabled="state.disabled"
                         toggle-class="text-decoration-none"
-                        no-caret="no-caret">
+                        no-caret="no-caret"
+
+                        right>
               <template slot="button-content"><fas icon="ellipsis-h"></fas></template>
               <b-dropdown-item @click="ctrls.remove()"
                                key="poista"
                                :disabled="!hooks.remove || state.disabled">
-                <slot name="poista">{{ $t('poista') }}</slot>
+                <slot name="poista">{{ poistoteksti }}</slot>
               </b-dropdown-item>
             </b-dropdown>
             <ep-button id="editointi-muokkaus"
@@ -52,7 +54,7 @@
                        variant="link"
                        v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
                        @click="ctrls.start()"
-                       v-if="!ctrls.isEditing"
+                       v-if="!ctrls.isEditing && ctrls.isEditable"
                        icon="pen"
                        :show-spinner="state.isSaving"
                        :disabled="state.disabled">
@@ -159,11 +161,26 @@ export default class EpEditointi extends Mixins(validationMixin) {
   @Prop({ default: null })
   private validator!: any | null;
 
+  @Prop({ required: false })
+  private type!: string | null;
+
   private sidebarState = 0;
 
   private ctrls: EditointiKontrolli | null = null;
   private state: any = null;
   private isInitialized = false;
+
+  get poistoteksti() {
+    if(!this.type) {
+      return this.$t('poista');
+    }
+
+    return this.$t('poista-'+this.type);
+  }
+
+  get dropDownValinnatVisible() {
+    return this.ctrls!.isEditing && !(!this.hooks.remove || this.state.disabled);
+  }
 
   get hasKeskusteluSlot() {
     return this.$scopedSlots.keskustelu;

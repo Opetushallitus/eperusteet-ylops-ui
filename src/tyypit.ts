@@ -41,6 +41,7 @@ export interface SideMenuItem {
 export interface SideMenuRoute {
   name: string,
   params: object,
+  query?: object,
 }
 
 export interface RecursiveTreeItem {

@@ -1,6 +1,6 @@
 <template>
 <div v-if="hooks && !isLoading">
-  <ep-editointi :hooks="hooks" v-model="editable" :validator="validator">
+  <ep-editointi :hooks="hooks" v-model="editable" :validator="validator" type="paikallinen-oppiaine">
     <template slot="header" slot-scope="{ data, }">
       <h2>{{ $kaanna(data.nimi) }}</h2>
     </template>
@@ -38,12 +38,10 @@
           </b-col>
         </b-row>
         <div>
-          <hr class="valiviiva" />
-          <ep-collapse tyyppi="tehtava">
+          <ep-collapse tyyppi="tehtava" :first="true">
             <h4 class="header" slot="header">{{ $t('tehtava') }}</h4>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tehtava.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
           </ep-collapse>
-          <hr class="valiviiva" />
           <ep-collapse tyyppi="tavoitteet">
             <h4 class="header" slot="header">{{ $t('tavoitteet') }}</h4>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tavoitteet.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
@@ -52,7 +50,6 @@
               </ep-prefix-list>
             </div>
           </ep-collapse>
-          <hr class="valiviiva" />
 
           <ep-collapse tyyppi="laajaAlainenOsaaminen">
             <h4 class="header" slot="header">{{ $t('laaja-alaiset-sisallot') }}</h4>
@@ -64,20 +61,17 @@
           </ep-collapse>
 
           <div v-if="!isEditing">
-            <hr class="valiviiva" />
-            <ep-collapse tyyppi="opintojaksot">
-              <h4 class="header" slot="header">{{ $t('opintojaksot') }}</h4>
-              <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
-                <div class="oj-content pakollinen">
-                  <span class="nimi">
-                    <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
-                      {{ $kaanna(opintojakso.nimi) }}
-                    </router-link>
-                  </span>
-                  <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
-                </div>
+            <h4 class="header" slot="header">{{ $t('opintojaksot') }}</h4>
+            <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
+              <div class="oj-content pakollinen">
+                <span class="nimi">
+                  <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
+                    {{ $kaanna(opintojakso.nimi) }}
+                  </router-link>
+                </span>
+                <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
               </div>
-            </ep-collapse>
+            </div>
           </div>
         </div>
       </div>

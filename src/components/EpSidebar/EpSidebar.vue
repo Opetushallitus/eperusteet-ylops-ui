@@ -6,7 +6,8 @@
         <span class="bar"><fas icon="bars"></fas></span>
       </button>
     </div>
-    <div class="bar" v-if="toggled"><button class="btn btn-link" @click="toggled = !toggled" v-if="toggled"><fas icon="bars"></fas></button>
+    <div class="bar" v-if="toggled">
+      <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="toggled"><fas icon="bars"></fas></button>
       <slot name="bar"></slot>
     </div>
     <div class="view">
@@ -17,14 +18,8 @@
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import Sticky from 'vue-sticky-directive';
 
-
-@Component({
-  directives: {
-    Sticky,
-  },
-})
+@Component
 export default class EpSidebar extends Vue {
   private width = window.innerWidth;
   private toggled = true;
@@ -56,17 +51,10 @@ export default class EpSidebar extends Vue {
 .sidenav {
   height: 100%;
 
-  .closed {
-    // height: 100vh;
-
-    // FIXME: Näyttää hassulta jos liikkuu sulkiessa/avatessa
-    /*button {
-      width: 26px;
-
-      span.bar {
-        margin-left: -8px;
-      }
-    }*/
+  @media (min-width: 1443.98px) {
+    .menubutton {
+      display:none;
+    }
   }
 
   @media only screen and (min-width: 768px) {

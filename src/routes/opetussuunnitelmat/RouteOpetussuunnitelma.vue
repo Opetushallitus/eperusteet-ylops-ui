@@ -33,9 +33,6 @@
             <b-dropdown-item :to="{ name: 'opsTiedot' }">
               <fas class="mr-2" icon="info-circle" fixed-width /><span>{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'jarjesta' }">
-              <fas class="mr-2" icon="cog" fixed-width /><span>{{ $t('rakenne') }}</span>
-            </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsKasitteet' }">
               <fas class="mr-2" icon="bookmark" fixed-width /><span>{{ $t('kasitteet') }}</span>
             </b-dropdown-item>
@@ -48,9 +45,11 @@
             <b-dropdown-item v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" :to="{ name: 'opsJulkaisu' }" v-if="!isPohja">
               <fas class="mr-2" icon="upload" fixed-width /><span>{{ $t('julkaise') }}</span>
             </b-dropdown-item>
-            <b-dropdown-divider v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" v-if="!isPohja" />
-            <b-dropdown-item v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" @click="arkistoiOps" v-if="!isPohja">
-              <fas class="mr-2" icon="folder" fixed-width /><span>{{ $t('arkistoi-ops') }}</span>
+            <b-dropdown-divider v-if="ops.tila !== 'poistettu'"
+              v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" />
+            <b-dropdown-item v-if="ops.tila !== 'poistettu'"
+              v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" @click="arkistoiOps">
+              <fas class="mr-2" icon="folder" fixed-width /><span>{{ $t('arkistoi-' + tyyppi) }}</span>
             </b-dropdown-item>
           </b-dropdown>
           <!-- b-badgeOpetushallitus.ml-2(style="font-size: 14px", variant="success", v-if="isValmisPohja")| {{ $t('julkinen') }}
@@ -121,6 +120,10 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     }
   }
 
+  get tyyppi() {
+    return this.isPohja ? 'pohja' : 'opetussuunnitelma';
+  }
+
   get slices() {
     return _.map(this.validationStats.categories, c => c.ok / c.total);
   }
@@ -159,10 +162,10 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   }
 
   async arkistoiOps() {
-    if (await this.vahvista('arkistoi-ops', 'arkistoi-kuvaus')) {
+    if (await this.vahvista('arkistoi-'+ this.tyyppi, 'arkistoi-kuvaus-'+this.tyyppi)) {
       await this.store.updateTila('poistettu');
       this.$router.push({
-        name: 'opetussuunnitelmaListaus',
+        name: this.tyyppi + 'Listaus',
       });
     }
   }
@@ -209,6 +212,8 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     }
 
     .info {
+      padding-left: 15px;
+
       @media only screen and (max-width: 768px) {
         padding-left: 30px;
       }
