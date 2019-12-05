@@ -11,7 +11,7 @@
       <fas :icon="icon" fixed-width />
     </div>
     <slot />
-    <ep-spinner-inline />
+    <ep-spinner-inline v-if="showSpinner" />
   </button>
   <b-tooltip v-if="help" :target="() => $refs['button-container']">{{ $t(help) }}</b-tooltip>
 </div>
