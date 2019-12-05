@@ -99,9 +99,9 @@
                       </div>
                     </div>
                     <div class="moduulikuvaukset mt-1 mb-5" v-if="isEditing">
-                      <ep-color-ball kind="pakollinen" />
+                      <ep-color-indicator kind="pakollinen" />
                       <span class="ml-2">{{ $t('pakollinen') }}</span>
-                      <ep-color-ball class="ml-4" kind="valinnainen" />
+                      <ep-color-indicator class="ml-4" kind="valinnainen" />
                       <span class="ml-2">{{ $t('valinnainen') }}</span>
                     </div>
                   </div>
@@ -127,7 +127,7 @@
                   </div>
                   <div class="p-2">
                     <span class="laajuus">{{ moduulitMap[moduuli.koodiUri].laajuus }} {{ $t('opintopiste') }}</span>
-                    <ep-color-ball :kind="moduulitMap[moduuli.koodiUri].pakollinen ? 'pakollinen' : 'valinnainen'" />
+                    <ep-color-indicator :kind="moduulitMap[moduuli.koodiUri].pakollinen ? 'pakollinen' : 'valinnainen'" />
                   </div>
                 </div>
               </div>
@@ -253,7 +253,7 @@
 <script lang="ts">
 import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@/components/forms/EpField.vue';
@@ -279,7 +279,7 @@ import { koodiSorters } from '@/utils/perusteet';
 @Component({
   components: {
     EpCollapse,
-    EpColorBall,
+    EpColorIndicator,
     EpContent,
     EpEditointi,
     EpField,

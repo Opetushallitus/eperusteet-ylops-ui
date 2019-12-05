@@ -13,8 +13,8 @@
       </div>
       <div class="px-2 info">
         <span class="op">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
-        <ep-color-ball :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
-        </ep-color-ball>
+        <ep-color-indicator :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
+        </ep-color-indicator>
       </div>
     </div>
   </div>
@@ -25,14 +25,14 @@
 import { Mixins, Component, Prop } from 'vue-property-decorator';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import { Lops2019OpintojaksonModuuliDto, Lops2019ModuuliDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import _ from 'lodash';
 
 @Component({
   components: {
-    EpColorBall,
+    EpColorIndicator,
   },
 })
 export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {

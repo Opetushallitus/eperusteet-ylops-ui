@@ -11,7 +11,7 @@ import {
 
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpSearch from '@/components/forms/EpSearch.vue';
 
 import EpOpsComponent from '@/mixins/EpOpsComponent';
@@ -82,7 +82,7 @@ const i18keys = {
   },
   components: {
     EpButton,
-    EpColorBall,
+    EpColorIndicator,
     EpRecursiveNav,
     EpSearch,
     EpSisaltoModaali,

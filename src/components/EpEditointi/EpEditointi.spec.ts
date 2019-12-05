@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import EpEditointi from './EpEditointi.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { KieliStore } from '@shared/stores/kieli';

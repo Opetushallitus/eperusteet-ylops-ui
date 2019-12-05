@@ -11,21 +11,24 @@
       <fas :icon="icon" fixed-width />
     </div>
     <slot />
-    <ep-spinner-inline v-if="showSpinner" />
+    <ep-spinner-inline />
   </button>
   <b-tooltip v-if="help" :target="() => $refs['button-container']">{{ $t(help) }}</b-tooltip>
 </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpSpinnerInline from '@shared/components/EpSpinner/EpSpinnerInline.vue';
+
 
 @Component({
   components: {
     EpSpinnerInline,
+    EpSpinner,
   },
 })
 export default class EpButton extends Vue {

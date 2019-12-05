@@ -9,7 +9,7 @@ base-tile(icon="tyoryhma",
       b-row.mx-5.virkailijat
         b-col.virkailija.text-left(sm="6", v-for="virkailija in virkailijatPrewview", :key="virkailija.oid")
           // TODO: offline / online toiminnallisuus
-          ep-color-ball.mr-2(kind="offline", :tooltip="false")
+          ep-color-indicator.mr-2(kind="offline", :tooltip="false")
           span {{ virkailija.esitysnimi }}
       p.mt-3(v-if="virkailijat && virkailijat.length > previewSize") {{ $t('nayta-lisaa') }}
 
@@ -20,14 +20,14 @@ import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import BaseTile from './BaseTile.vue';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { organizations } from '@/utils/organisaatiot';
 
 @Component({
   components: {
     BaseTile,
-    EpColorBall,
+    EpColorIndicator,
     EpSpinner,
   },
 })

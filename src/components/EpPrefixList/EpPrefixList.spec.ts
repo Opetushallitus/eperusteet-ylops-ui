@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import EpPrefixList from './../EpPrefixList.vue';
+import EpPrefixList from './EpPrefixList.vue';
 
 describe('EpPrefixList', () => {
   it('Read-only', () => {

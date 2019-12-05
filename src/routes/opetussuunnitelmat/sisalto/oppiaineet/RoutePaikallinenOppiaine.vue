@@ -90,7 +90,7 @@
 import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from'@/components/EpButton/EpButton.vue';
 import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
-import EpColorBall from'@/components/EpColorBall/EpColorBall.vue';
+import EpColorIndicator from'@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
 import EpField from'@/components/forms/EpField.vue';
@@ -115,7 +115,7 @@ import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from 
   components: {
     EpButton,
     EpCollapse,
-    EpColorBall,
+    EpColorIndicator,
     EpContent,
     EpEditointi,
     EpField,

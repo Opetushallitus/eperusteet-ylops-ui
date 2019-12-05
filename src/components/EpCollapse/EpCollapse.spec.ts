@@ -1,4 +1,4 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
 import EpCollapse from './EpCollapse.vue';
 import '@/config/bootstrap';
 import '@/config/fontawesome';

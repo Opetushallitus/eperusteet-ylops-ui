@@ -13,6 +13,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 
 import EpSpinnerInline from '@shared/components/EpSpinner/EpSpinnerInline.vue';
 
+
 @Component({
   components: {
     EpSpinnerInline,

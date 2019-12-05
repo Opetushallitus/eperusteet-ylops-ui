@@ -92,8 +92,8 @@
                   <table>
                     <tr class="item">
                       <td>
-                        <ep-color-ball class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
-                        </ep-color-ball>
+                        <ep-color-indicator class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
+                        </ep-color-indicator>
                         <span>{{ $kaanna(moduuli.nimi) }}</span>
                         <span class="ml-1" v-if="moduuli.koodi">({{ moduuli.koodi.arvo }})</span>
                       </td>
@@ -111,7 +111,7 @@
                 <div class="moduuli" :class="moduuli.classes">
                   <table>
                     <td>
-                      <ep-color-ball class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'"> </ep-color-ball>
+                      <ep-color-indicator class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'"> </ep-color-indicator>
                       <span>{{ $kaanna(moduuli.nimi) }}</span>
                       <span class="ml-1">({{ moduuli.koodi.arvo }})</span>
                     </td>
@@ -142,7 +142,7 @@
 import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
@@ -165,7 +165,7 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
   components: {
     EpButton,
     EpCollapse,
-    EpColorBall,
+    EpColorIndicator,
     EpContent,
     EpEditointi,
     EpSearch,

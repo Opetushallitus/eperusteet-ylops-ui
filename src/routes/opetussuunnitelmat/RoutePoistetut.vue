@@ -26,7 +26,7 @@
 import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSearch from '@/components/forms/EpSearch.vue';
@@ -48,7 +48,7 @@ import PoistetutTable from './PoistetutTable.vue';
   components: {
     EpButton,
     EpCollapse,
-    EpColorBall,
+    EpColorIndicator,
     EpContent,
     EpEditointi,
     EpSearch,
