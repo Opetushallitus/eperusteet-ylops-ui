@@ -28,22 +28,22 @@ import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 
-import { Virheet } from '@/stores/virheet';
+import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { Kieli, SovellusVirhe } from '@/tyypit';
+import { Kieli, SovellusVirhe } from '@shared/tyypit';
 import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { info } from '@/utils/notifications';
 import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 
-import { createLogger } from '@/stores/logger';
+import { createLogger } from '@shared/utils/logger';
 import { tutoriaalistore } from './stores/tutoriaaliStore';
 import { VueTutorial } from './directives/tutoriaali';
 
 Vue.use(Router);
-const logger = createLogger('Router');
-
 Vue.use(VueTutorial, {tutoriaalistore});
+
+const logger = createLogger('Router');
 
 export const router = new Router({
   scrollBehavior: () => ({ x: 0, y: 0 }),
@@ -193,45 +193,38 @@ export const router = new Router({
 });
 
 Virheet.onError((virhe: SovellusVirhe) => {
-  logger.error('Route error', virhe);
   router.push({
     name: 'virhe',
     query: {
-      // virhe: JSON.stringify(virhe),
+      virhe: JSON.stringify(virhe),
     },
   });
 });
 
-let lastOpsId!: string;
-
-window.onbeforeunload = () => {
+// Estetään ikkunan sulkeminen suoraan muokkaustilassa
+window.addEventListener('beforeunload', e => {
   if (EditointiKontrolli.anyEditing()) {
-    return 'Oletko varma?';
+    e.preventDefault();
+    // Vanhemmat selainversiot vaativat erillisen varmistustekstin
+    e.returnValue = Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti');
   }
-};
+});
 
-router.beforeEach(async (to, from, next) => {
-  // Estetään siirtyminen jos editointi on käynnissä
+// Estetään tilan vaihtaminen muokkaustilassa
+router.beforeEach((to, from, next) => {
   if (EditointiKontrolli.anyEditing()) {
-    // TODO: Lisää notifikaatio
-    logger.warn('Route change denied: Still in editing state', from, to);
     info('tallenna-tai-peruuta-muutoksesi-ensin');
     return;
   }
+  next();
+})
 
+router.beforeEach((to, from, next) => {
   changeLang(to);
+  next();
+})
+
+router.beforeEach(async (to, from, next) => {
   await resolveRouterMetaProps(to);
-
-  // Alustetaan opetussuunnitelma tilan vaihtuessa
-  if (Opetussuunnitelma()) {
-    try {
-      await Opetussuunnitelma().init();
-    }
-    catch (err) {
-      console.error(err);
-    }
-  }
-
-  // logger.debug(`Route change ${from.name} -> ${to.name}`, from, to);
   next();
 });

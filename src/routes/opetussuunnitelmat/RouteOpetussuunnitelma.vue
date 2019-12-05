@@ -85,7 +85,7 @@ import { Prop, Watch, Mixins, Component } from 'vue-property-decorator';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
@@ -112,8 +112,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
   private validation: Lops2019ValidointiDto | null = null;
 
-  async mounted() {
-    const id = this.$route.params.id;
+  protected async init() {
     await this.store.init();
     this.validation = await this.store.validate();
   }

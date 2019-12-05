@@ -96,32 +96,21 @@
 </template>
 
 <script lang="ts">
+import * as _ from 'lodash';
+import { Component, Prop, Mixins } from 'vue-property-decorator';
+
+import { minLength, required } from 'vuelidate/lib/validators';
+import { Kielet } from '@shared/stores/kieli';
+import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
+import { metadataToTeksti } from '@/utils/organisaatiot';
+import { Ulkopuoliset } from '@/api';
 
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpFormContent from '@/components/forms/EpFormContent.vue';
 import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
-import { minLength, required } from 'vuelidate/lib/validators';
-
-import * as _ from 'lodash';
-import { Watch, Vue, Component, Prop, Mixins } from 'vue-property-decorator';
-import { Kielet } from '@shared/stores/kieli';
-import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
-import { OphOid, hasOrganisaatioTyyppi, metadataToTeksti } from '@/utils/organisaatiot';
-
-import {
-  Ulkopuoliset,
-  Opetussuunnitelmat,
-} from '@/api';
-
-import {
-  Kieli,
-  OrganisaatioTyyppi,
-} from '@/tyypit';
-
 import EpValidation from '@/mixins/EpValidation';
-
 
 interface ValueType {
   jarjestajat: any[];
@@ -189,7 +178,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   get filteredJarjestajat() {
     return this.filterAndSort(this.jarjestajat, this.query.jarjestajat);
   }
-  
+
   get filteredOppilaitokset() {
     return this.filterAndSort(this.oppilaitokset, this.query.oppilaitokset);
   }
@@ -222,7 +211,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   async updateKunnat(kunnat) {
     this.valitutKunnat = kunnat;
     this.jarjestajat = _.chain((await Ulkopuoliset.getKoulutustoimijat(
-      _.map(kunnat, 'koodiUri'), 
+      _.map(kunnat, 'koodiUri'),
       koulutustyypinOppilaitokset(this.koulutustyyppi))).data)
       .sortBy((org: any) => Kielet.kaanna(org.nimi))
       .value();

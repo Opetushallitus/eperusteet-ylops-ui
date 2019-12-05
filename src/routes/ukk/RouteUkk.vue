@@ -6,7 +6,7 @@
 
     <!-- Rajaimet-->
     <template slot="header">
-      <h2>{{ $t('ukk') }}</h2>
+      <h1>{{ $t('ukk') }}</h1>
       <p>{{ $t('ukk-kuvaus-nakyma') }}</p>
       <ep-spinner v-if="isLoading"></ep-spinner>
       <div v-else>
@@ -105,7 +105,17 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
+
 import { validationMixin } from 'vuelidate';
+import { Kysymykset, Ulkopuoliset } from '@/api';
+import { Kielet, UiKielet } from '@shared/stores/kieli';
+import { KysymysDto } from '@/tyypit';
+import { Kieli } from '@shared/tyypit';
+import { kysymysValidator } from '@/validators/ukk';
+import { organizations } from '@/utils/organisaatiot';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+
 import EpRoute from '@/mixins/EpRoot';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpButton from'@shared/components/EpButton/EpButton.vue';
@@ -114,19 +124,12 @@ import EpIcon from'@/components/EpIcon/EpIcon.vue';
 import EpMainView from'@/components/EpMainView/EpMainView.vue';
 import EpSearch from'@/components/forms/EpSearch.vue';
 import EpSelect from'@/components/forms/EpSelect.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import { Kysymykset, Ulkopuoliset } from '@/api';
-import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { Kieli, KysymysDto } from '@/tyypit';
-import { kysymysValidator } from '@/validators/ukk';
-import { organizations } from '@/utils/organisaatiot';
-import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 export interface KysymysLaajennettuDto extends KysymysDto {
   $uusi?: boolean;
 }
+
 
 @Component({
   directives: {
@@ -148,8 +151,8 @@ export interface KysymysLaajennettuDto extends KysymysDto {
         ...(this as any).validator,
       },
     };
-  },
-} as any)
+  }
+})
 export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   rajain = '';
   kysymykset: KysymysLaajennettuDto[] = [];

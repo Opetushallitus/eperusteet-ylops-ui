@@ -59,7 +59,7 @@ import EpFormContent from '@/components/forms/EpFormContent.vue';
 import EpInput from '@/components/forms/EpInput.vue';
 import EpToggle from '@/components/forms/EpToggle.vue';
 import EpValidation from '@/mixins/EpValidation';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { kasiteValidator } from '@/validators/kasite';
 import VueSelect from 'vue-select';
 import { IKasiteHandler } from '@/stores/kuvat';

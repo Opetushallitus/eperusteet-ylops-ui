@@ -23,9 +23,9 @@ base-tile(icon="opetussuunnitelmasi", :route="{ name: 'pohjaListaus' }")
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Opetussuunnitelmat } from '@/api';
-import { delay } from '@/utils/delay';
+import { delay } from '@shared/utils/delay';
 import { OpetussuunnitelmaInfoDto } from '@/tyypit';
 import _ from 'lodash';
 

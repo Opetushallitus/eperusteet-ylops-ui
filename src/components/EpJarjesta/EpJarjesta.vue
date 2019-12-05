@@ -39,12 +39,8 @@
 
 <script lang="ts">
 
-import { Vue, Mixins, Prop, Component } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { Vue, Prop, Component } from 'vue-property-decorator';
 import draggable from 'vuedraggable';
-import { RecursiveTreeItem } from '@/tyypit';
-import _ from 'lodash';
 
 @Component({
   name: 'EpJarjesta',

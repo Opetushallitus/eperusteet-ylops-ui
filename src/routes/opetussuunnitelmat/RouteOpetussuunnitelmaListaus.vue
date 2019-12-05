@@ -6,14 +6,14 @@
       </ep-icon>
     </template>
     <template slot="header">
-      <h2>{{ $t(tyyppi) }}</h2>
+      <h1>{{ $t(tyyppi) }}</h1>
       <p>{{ $t(vars.kuvaus) }}</p>
     </template>
 
     <ep-spinner v-if="isLoading"></ep-spinner>
     <div v-else>
       <div class="opslistaus">
-        <h3>{{ $t(vars.keskeneraiset) }}</h3>
+        <h2>{{ $t(vars.keskeneraiset) }}</h2>
 
         <div class="opscontainer">
           <div class="opsbox" v-oikeustarkastelu="'luonti'">
@@ -65,7 +65,7 @@
       </div>
 
       <div class="opslistaus">
-        <h3 class="mt-4">{{ $t(vars.julkaistut) }}</h3>
+        <h2 class="mt-4">{{ $t(vars.julkaistut) }}</h2>
 
         <div class="info" v-if="julkaistut.length === 0">
           <div class="alert alert-info">{{ $t(vars.eivalmiita) }}</div>
@@ -107,7 +107,7 @@
       </div>
 
       <div class="opslistaus">
-        <h3 class="mt-4">{{ $t(vars.poistetut) }}</h3>
+        <h2 class="mt-4">{{ $t(vars.poistetut) }}</h2>
 
         <div class="info" v-if="poistetut.length === 0">
           <div class="alert alert-info">{{ $t(vars.eiarkistoituja) }}</div>
@@ -151,7 +151,7 @@ import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpProgress from '@/components/EpProgress.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';

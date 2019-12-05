@@ -1,7 +1,5 @@
 import { Getter, State, Store } from '@shared/stores/store';
-import Vue from 'vue';
 import _ from 'lodash';
-import { Opetussuunnitelma } from './opetussuunnitelma';
 
 @Store
 export class TutoriaaliStore {
@@ -9,7 +7,7 @@ export class TutoriaaliStore {
   public avaimet: string[]= [];
 
   @State()
-  private index = 0; 
+  private index = 0;
 
   @State()
   public active = false;

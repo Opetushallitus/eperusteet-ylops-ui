@@ -2,7 +2,7 @@ import '@/config/styles';
 import _ from 'lodash';
 import { getRootConfig } from '@/mainvue';
 // import '@/registerServiceWorker';
-import { createLogger } from '@/stores/logger';
+import { createLogger } from '@shared/utils/logger';
 import Vue from 'vue';
 import { router } from '@/router';
 

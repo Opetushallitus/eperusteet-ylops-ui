@@ -60,7 +60,7 @@ import { opintojaksoLuontiValidator } from '@/validators/opintojakso';
 import { oppiaineLuontiValidator } from '@/validators/oppiaineet';
 import { tekstikappaleLuontiValidator } from '@/validators/tekstikappaleet';
 import { PerusteCache } from '@/stores/peruste';
-import { createLogger } from '@/stores/logger';
+import { createLogger } from '@shared/utils/logger';
 
 const logger = createLogger('SisaltoModaali');
 

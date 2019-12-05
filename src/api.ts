@@ -1,6 +1,6 @@
 import { Configuration } from '@/generated/configuration';
 import axios, { AxiosInstance } from 'axios';
-import { createLogger } from '@/stores/logger';
+import { createLogger } from '@shared/utils/logger';
 import _ from 'lodash';
 import {
   DokumentitApi,
@@ -36,7 +36,7 @@ const ax = axios.create({
 
 function axiosHandler(msg: string) {
   return async (err: any) => {
-    logger.error(msg as any, err);
+    logger.error(msg, err);
     throw err;
   };
 }

@@ -13,28 +13,27 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
     b-row.virkailijat
       b-col.virkailija.text-left(sm="6", v-for="virkailija in virkailijatFormatted", :key="virkailija.oid")
         // Todo: offline / online toiminnallisuus
-        ep-color-ball.mr-2(kind="offline")
+        ep-color-indicator.mr-2(kind="offline")
         span {{ virkailija.esitysnimi }}
 
 </template>
 
 <script lang="ts">
-import { Vue, Component, Mixins, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
+
+import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import EpRoute from '@/mixins/EpRoot';
-import { Ulkopuoliset } from '@/api';
-import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
-import { organizations } from '@/utils/organisaatiot';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
-import EpMainView from '@/components/EpSpinner/EpSpinner.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 
 @Component({
   components: {
-    EpColorBall,
+    EpColorIndicator,
     EpIcon,
     EpMainView,
     EpSpinner,

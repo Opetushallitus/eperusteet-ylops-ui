@@ -69,6 +69,13 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
+import { Component, Prop, Mixins } from 'vue-property-decorator';
+
+import { success, fail } from '@/utils/notifications';
+import { validationMixin } from 'vuelidate';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+import { delay } from '@shared/utils/delay';
 
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
@@ -80,30 +87,17 @@ import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
 import EpSelect from '@/components/forms/EpSelect.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpRoute from '@/mixins/EpRoute';
 
-import _ from 'lodash';
-import { Component, Prop, Mixins } from 'vue-property-decorator';
-import { Kielet } from '@shared/stores/kieli';
-import { YlopsKoulutustyypit } from '@/utils/perusteet';
-import { success, fail } from '@/utils/notifications';
-import { required } from 'vuelidate/lib/validators';
-import { validationMixin } from 'vuelidate';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-import { delay } from '@/utils/delay';
 
 import {
-  Ulkopuoliset,
   Opetussuunnitelmat,
 } from '@/api';
 
 import {
   OpetussuunnitelmaInfoDto,
   OpetussuunnitelmaLuontiDto,
-  LokalisoituTekstiDto,
-  Kieli,
 } from '@/tyypit';
 
 import { opsLuontiValidator } from '@/validators/ops';

@@ -21,7 +21,7 @@ import { Vue, Component } from 'vue-property-decorator';
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import BaseTile from './BaseTile.vue';
 import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { organizations } from '@/utils/organisaatiot';
 
 @Component({

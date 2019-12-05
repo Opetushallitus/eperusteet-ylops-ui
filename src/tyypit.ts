@@ -1,14 +1,6 @@
 // FIXME: vue-loader issue 1281
 import * as GApi from '@/generated/api';
 
-export enum Kieli {
-  fi = 'fi',
-  sv = 'sv',
-  se = 'se',
-  ru = 'ru',
-  en = 'en',
-}
-
 export enum OrganisaatioTyyppi {
   Muu = 'Muu organisaatio',
   Varhaiskasvatus = 'Varhaiskasvatuksen jarjestaja',
@@ -19,13 +11,6 @@ export enum OrganisaatioTyyppi {
 export type DiagrammiVarit = 'vaalea_sininen' | 'vihrea_sininen';
 
 export type EditorLayout = 'minimal' | 'simplified' | 'normal';
-
-export interface SovellusVirhe {
-  path?: string;
-  err?: string;
-  state?: object;
-  info?: string;
-}
 
 export interface LokalisoituTekstiDto {
   // id?: number;

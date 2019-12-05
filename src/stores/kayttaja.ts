@@ -7,9 +7,7 @@ import {
   Ulkopuoliset,
 } from '@/api';
 import { organizations } from '@/utils/organisaatiot';
-
-import { createLogger } from './logger';
-const logger = createLogger('Kayttaja');
+import { createLogger } from '@shared/utils/logger';
 
 // FIXME: tyypitä backendiin
 export type Oikeus = 'luku' | 'kommentointi' | 'muokkaus' | 'luonti' | 'poisto' | 'tilanvaihto' | 'hallinta';
@@ -36,6 +34,8 @@ export function parsiEsitysnimi(tiedot: any): string {
     return tiedot.oidHenkilo as string;
   }
 }
+
+const logger = createLogger('Kayttaja');
 
 @Store
 class KayttajaStore {

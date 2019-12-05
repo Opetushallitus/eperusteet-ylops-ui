@@ -28,7 +28,7 @@ import { Component, Prop, Model, Mixins } from 'vue-property-decorator';
 
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpInput from '@/components/forms/EpInput.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpValidation from '@/mixins/EpValidation';
 import _ from 'lodash';
 

@@ -1,11 +1,9 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
-import { Store, Getter, Mutation, Action, State } from '@shared/stores/store';
-import { createLogger } from './logger';
 import * as _ from 'lodash';
 import { RevisionDto } from '@/tyypit';
 import { router } from '@/router';
 import { fail } from '@/utils/notifications';
+import { createLogger } from '@shared/utils/logger';
 
 interface EditointiKontrolliFeatures {
   removal: boolean;
@@ -45,6 +43,7 @@ const DefaultConfig = {
   remove: async () => {},
   validate: async () => true,
 };
+
 
 export class EditointiKontrolli {
   private static totalEditingEditors = 0;

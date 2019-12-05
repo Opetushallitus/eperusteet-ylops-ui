@@ -68,7 +68,7 @@ import _ from 'lodash';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpFormContent from '@/components/forms/EpFormContent.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Component, Watch } from 'vue-property-decorator';
 import { baseURL, Dokumentit, DokumentitParams } from '@/api';
 import { Kielet } from '@shared/stores/kieli';

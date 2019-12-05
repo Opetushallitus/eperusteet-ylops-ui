@@ -11,7 +11,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
+import EpSpinnerInline from '@shared/components/EpSpinner/EpSpinnerInline.vue';
 
 @Component({
   components: {

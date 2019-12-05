@@ -3,7 +3,7 @@ import Vue from 'vue';
 import EpEditorMenuBar from './EpEditorMenuBar.vue';
 import EpContent from './EpContent.vue';
 import { KieliStore, Kielet } from '@shared/stores/kieli';
-import { Kieli } from '@/tyypit';
+import { Kieli } from '@shared/tyypit';
 import { Editor } from 'tiptap';
 import '@/config/bootstrap';
 import '@/config/fontawesome';

@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Kieli } from '@/tyypit';
+import { Kieli } from '@shared/tyypit';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
@@ -56,6 +56,7 @@ import Sticky from 'vue-sticky-directive';
 import _ from 'lodash';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpButton from '@/components/EpButton/EpButton.vue';
+
 
 @Component({
   directives: {
@@ -73,8 +74,8 @@ export default class EpNavigation extends Vue {
   @Prop({ default: 'normaali' })
   private tyyli!: string;
 
-  @Prop()
-  private tutoriaalistore!: TutoriaaliStore;
+  @Prop({ required: false })
+  private tutoriaalistore!: TutoriaaliStore | undefined;
 
   get murut() {
     return Murupolku.murut;
@@ -93,11 +94,7 @@ export default class EpNavigation extends Vue {
   }
 
   get naytettaviaTutoriaaleja() {
-    return !_.isEmpty(this.tutoriaalistore.avaimet);
-  }
-
-  kaynnistaTutoriaali() {
-    this.tutoriaalistore.setActive(true);
+    return !_.isEmpty(this.tutoriaalistore!.avaimet);
   }
 
   get routePath() {
@@ -113,6 +110,10 @@ export default class EpNavigation extends Vue {
         return result;
       })
       .value();
+  }
+
+  private kaynnistaTutoriaali() {
+    this.tutoriaalistore!.setActive(true);
   }
 
   private valitseUiKieli(kieli: Kieli) {

@@ -35,7 +35,7 @@ import EpInput from '@/components/forms/EpInput.vue';
 import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Lops2019PoistettuDto } from '@/tyypit';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';

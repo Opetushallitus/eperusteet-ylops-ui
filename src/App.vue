@@ -8,7 +8,7 @@ div(v-if="!isInitializing")
 import { Component, Vue } from 'vue-property-decorator';
 import { KieliStore } from '@shared/stores/kieli';
 import { Kayttajat } from '@/stores/kayttaja';
-import { delay } from '@/utils/delay';
+import { delay } from '@shared/utils/delay';
 import { notify } from '@/utils/notifications';
 
 @Component

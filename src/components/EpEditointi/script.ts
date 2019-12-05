@@ -9,7 +9,7 @@ import EpVersioModaali from './EpVersioModaali.vue';
 import '@shared/stores/kieli';
 import { validationMixin } from 'vuelidate';
 import Sticky from 'vue-sticky-directive';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
 import { setItem, getItem } from '@/utils/localstorage';
