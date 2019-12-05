@@ -45,6 +45,9 @@
             <div class="col-md-6" v-if="isOps">
               <ep-form-content name="ops-esikatseltavissa">
                 <ep-toggle help="ops-esikatseltavissa-ohje" v-model="data.esikatseltavissa" :is-editing="isEditing"></ep-toggle>
+                <ep-linkki v-if="data.esikatseltavissa && !isEditing"
+                           :url="esikatseluUrl(data)"
+                           icon="external-link-alt"></ep-linkki>
               </ep-form-content>
             </div>
             <div class="col-md-6">
@@ -83,7 +86,7 @@ import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
 import EpField from'@/components/forms/EpField.vue';
 import EpFormContent from'@/components/forms/EpFormContent.vue';
 import EpSelect from'@/components/forms/EpSelect.vue';
-import EpToggle from'@/components/forms/EpToggle.vue';
+import EpToggle from'@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
@@ -96,6 +99,7 @@ import { Prop, Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
 import EpProgress from '@/components/EpProgress.vue';
+import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 
 
 @Component({
@@ -108,6 +112,7 @@ import EpProgress from '@/components/EpProgress.vue';
     EpProgress,
     EpSelect,
     EpToggle,
+    EpLinkki,
     Tilanvaihto,
   },
 })
@@ -143,6 +148,27 @@ export default class RouteTiedot extends EpOpsRoute {
     return ['fi', 'sv', 'en'];
   }
 
+  get kieli() {
+    return Kielet.getSisaltoKieli;
+  }
+
+  private esikatseluUrl(data) {
+    const origin = window.origin;
+    const route = `/opetussuunnitelma/${data.id}/lukiokoulutus/tiedot`;
+    if (origin.indexOf('localhost') > -1) {
+      //localhost - dev
+      return `http://localhost:9020/#/${this.kieli}` + route;
+    }
+    else if (origin.indexOf('virkailija.testiopintopolku.fi') > -1) {
+      // QA
+      return `https://eperusteet.testiopintopolku.fi/beta/#/${this.kieli}` + route;
+    }
+    else {
+      // Tuotanto
+      return `https://eperusteet.opintopolku.fi/beta/#/${this.kieli}` + route;
+    }
+  }
+
   private async load() {
     if (this.$route.params.id) {
       return this.store.get();
@@ -155,5 +181,11 @@ export default class RouteTiedot extends EpOpsRoute {
 @import "@/styles/_variables.scss";
 .otsikko {
     margin-bottom: 0;
+}
+/deep/ .linkki a {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
 }
 </style>
