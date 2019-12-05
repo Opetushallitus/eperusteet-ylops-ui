@@ -115,6 +115,10 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   protected async init() {
     await this.store.init();
     this.validation = await this.store.validate();
+
+    if (this.store.opetussuunnitelma) {
+      this.breadcrumb('opetussuunnitelma', this.store.opetussuunnitelma.nimi, { name: 'opsTiedot' });
+    }
   }
 
   get slices() {
@@ -151,13 +155,6 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         failed: 0,
         ok: 0,
       };
-    }
-  }
-
-  @Watch('$route', { immediate: true })
-  onRouteUpdate(route) {
-    if (this.store && this.store.opetussuunnitelma) {
-      this.breadcrumb('opetussuunnitelma', this.store.opetussuunnitelma.nimi, { name: 'opsTiedot' });
     }
   }
 

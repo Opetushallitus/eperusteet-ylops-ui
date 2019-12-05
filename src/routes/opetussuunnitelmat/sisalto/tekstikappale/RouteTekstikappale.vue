@@ -173,7 +173,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       if (teksti.perusteTekstikappaleId) {
         this.perusteenTeksti = (await Lops2019Perusteet.getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId)).data as PerusteTekstiKappaleViiteDto;
       }
-      this.breadcrumb('tekstikappale', teksti.tekstiKappale!.nimi);
+      if (teksti.tekstiKappale) {
+        this.breadcrumb('tekstikappale', teksti.tekstiKappale.nimi);
+      }
       return result;
     }
   }
