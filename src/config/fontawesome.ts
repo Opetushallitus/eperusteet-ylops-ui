@@ -43,7 +43,7 @@ library.add(solid.faListOl);
 library.add(solid.faListUl);
 library.add(solid.faMinus);
 library.add(solid.faObjectGroup);
-library.add(solid.faPaperclip);
+library.add(solid.faAtlas);
 library.add(solid.faPen);
 library.add(solid.faPencilAlt);
 library.add(solid.faPencilRuler);
