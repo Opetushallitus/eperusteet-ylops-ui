@@ -101,7 +101,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   get tilaFormatted() {
     if (this.dto) {
       return this.$t('dokumentti-' + _.kebabCase(this.dto.tila), {
-        valmistumisaika: (this as any).$sdt(this.dto.valmistumisaika),
+        valmistumisaika: this.dto.valmistumisaika ? (this as any).$sdt(this.dto.valmistumisaika) : null,
       });
     }
     else {

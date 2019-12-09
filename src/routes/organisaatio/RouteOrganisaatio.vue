@@ -13,7 +13,7 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
     b-row.virkailijat
       b-col.virkailija.text-left(sm="6", v-for="virkailija in virkailijatFormatted", :key="virkailija.oid")
         // Todo: offline / online toiminnallisuus
-        ep-color-indicator.mr-2(kind="offline")
+        //ep-color-indicator.mr-2(kind="offline")
         span {{ virkailija.esitysnimi }}
 
 </template>
