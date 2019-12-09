@@ -217,12 +217,12 @@ router.beforeEach((to, from, next) => {
     return;
   }
   next();
-})
+});
 
 router.beforeEach((to, from, next) => {
   changeLang(to);
   next();
-})
+});
 
 router.beforeEach(async (to, from, next) => {
   await resolveRouterMetaProps(to);
