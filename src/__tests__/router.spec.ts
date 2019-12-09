@@ -131,7 +131,7 @@ describe('Router', () => {
     // expect(router.currentRoute.params).toEqual({ lang: 'sv' });
 
     await expectEventually(() =>
-      expect(app.html()).toContain('Hei Keke Käyttäjä, tervetuloa ePerusteet OPS-työkaluun!'));
+      expect(app.html()).toContain('Hej Keke Käyttäjä, välkommen till läroplansverktyget i eGrunder!'));
     await expectEventually(() => expect(app.html()).toContain('Tämä on tiedote'));
     await expectEventually(() => expect(app.find('.tile-content').html()).toContain('42'));
     await expectEventually(() => expect(app.find('.tile-content').html()).toContain('43'));

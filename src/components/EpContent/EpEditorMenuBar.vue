@@ -41,17 +41,26 @@
           </b-button>
         </div>
       </div>
+      <b-modal ref="link-modal"
+               :title="$t('lisaa-muokkaa-linkki')"
+               :ok-title="$t('ok')"
+               :cancel-title="$t('peruuta')"
+               @ok="editLink(data)"
+               @keyup.enter="editLink(data)"
+               @hidden="linkValue = null">
+        <b-form-input v-model="linkValue" placeholder="https://..."></b-form-input>
+      </b-modal>
     </div>
   </editor-menu-bar>
 </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Mixins, Prop, Watch } from 'vue-property-decorator';
-import { Editor, EditorMenuBar } from 'tiptap';
+import _ from 'lodash';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { EditorMenuBar } from 'tiptap';
 import Sticky from 'vue-sticky-directive';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import _ from 'lodash';
 
 
 @Component({
@@ -83,6 +92,8 @@ export default class EpEditorMenuBar extends Vue {
 
   @Prop({ default: true })
   private alwaysVisible!: boolean;
+
+  private linkValue: string | null = null;
 
   get id() {
     return (this as any)._uid;
@@ -116,15 +127,24 @@ export default class EpEditorMenuBar extends Vue {
     }];
   }
 
-  private editIcon = false;
-  // private addingLink = false;
-  // private link = '';
-
   get linking() {
     if (this.opetussuunnitelmaStore) {
       return [{
-        icon: 'paperclip',
+        icon: 'link',
+        command: 'link',
+        disabled: this.editor.selection.from === this.editor.selection.to,
+        customClick: (data) => {
+          const isNew = !data.isActive.link();
+          const attrs = data.getMarkAttrs('link');
+          if (!isNew && attrs && attrs.href) {
+            this.linkValue = attrs.href;
+          }
+          (this as any).$refs['link-modal'].show();
+        },
+      }, {
+        icon: 'atlas',
         command: 'termi',
+        disabled: this.editor.selection.from === this.editor.selection.to,
       }, {
         icon: 'file-image',
         command: 'image',
@@ -249,6 +269,15 @@ export default class EpEditorMenuBar extends Vue {
       ];
     }
   }
+
+  private editLink(data) {
+    if (!_.isEmpty(this.linkValue)) {
+      data.commands.link({
+        href: this.linkValue
+      });
+      this.linkValue = null;
+    }
+  }
 }
 </script>
 
@@ -260,7 +289,7 @@ export default class EpEditorMenuBar extends Vue {
 }
 
 .sub-bar {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 /deep/ .active {
@@ -272,7 +301,7 @@ export default class EpEditorMenuBar extends Vue {
   background-color: #f1f1f1;
   border: 1px solid #d1d1d1;
   border-bottom: none;
-  padding: 0px;
+  padding: 0;
   border-top-left-radius: .25rem;
   border-top-right-radius: .25rem;
 }

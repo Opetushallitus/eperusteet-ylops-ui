@@ -129,9 +129,13 @@ export class OpetussuunnitelmaStore {
     return osa.data;
   }
 
+  public static async updateOpsTila(opsId: number, uusiTila: string) {
+    return await Opetussuunnitelmat.updateTila(opsId, uusiTila as any);
+  }
+
   public async updateTila(uusiTila: string) {
     if (uusiTila) {
-      await Opetussuunnitelmat.updateTila(this.opetussuunnitelma!.id!, uusiTila as any);
+      await OpetussuunnitelmaStore.updateOpsTila(this.opetussuunnitelma!.id!, uusiTila as any);
       this.opetussuunnitelma = {
         ...this.opetussuunnitelma!,
         tila: uusiTila as any,

@@ -9,6 +9,8 @@ export function notNull() {
   };
 }
 
+const ValidoitavatKielet = ['fi', 'sv', 'se', 'en', 'ru'];
+
 export function requiredLokalisoituTeksti(kielet: Kieli[]) {
   const exists = (value: any, kieli: Kieli) =>
     _.has(value, kieli)
@@ -20,7 +22,7 @@ export function requiredLokalisoituTeksti(kielet: Kieli[]) {
         return false;
       }
 
-      const isInSomeLang = () => _.some(['fi'], kieli => exists(value, kieli as Kieli));
+      const isInSomeLang = () => _.some(ValidoitavatKielet, kieli => exists(value, kieli as Kieli));
       const isMaaritettyInAllLangs = () => _.every(kielet, kieli => exists(value, kieli));
       const isValid = _.isEmpty(kielet) ? isInSomeLang() : isMaaritettyInAllLangs();
       return isValid;
