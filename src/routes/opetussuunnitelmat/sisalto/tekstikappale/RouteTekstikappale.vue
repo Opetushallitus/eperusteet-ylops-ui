@@ -25,25 +25,26 @@
       <template slot-scope="{ isEditing, data }">
         <div class="teksti">
           <span comment-uuid="data.tov.tekstiKappale.tunniste">
+            <div v-if="isEditing" class="mb-4">
+              <b-form-checkbox v-model="data.tov.liite">{{ $t('nayta-liitteena') }}</b-form-checkbox>
+            </div>
             <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
               <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)">
               </p>
               <div class="alert alert-info" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
-              <div v-if="isEditing">
+              <div v-if="isEditing" class="mb-4">
                 <b-form-checkbox v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</b-form-checkbox>
               </div>
-              <div class="spacing" />
             </ep-collapse>
             <ep-collapse v-if="alkuperainen && alkuperainen.tekstiKappale && (isEditing || data.tov.naytaPohjanTeksti)">
               <h5 slot="header">
                 {{ $t('pohjan-teksti') }}
               </h5>
               <p class="perusteteksti" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
-              <div v-if="isEditing">
+              <div v-if="isEditing" class="mb-4">
                 <b-form-checkbox v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</b-form-checkbox>
               </div>
-              <div class="spacing" />
             </ep-collapse>
             <ep-collapse :disable-header="!data.tov.perusteTekstikappaleId">
               <template #header>
@@ -61,12 +62,10 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
+import { Mixins, Component } from 'vue-property-decorator';
 import _ from 'lodash';
 
 import EpRoute from '@/mixins/EpRoute';
-
-import EpRoot from '@/mixins/EpRoot';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpButton from'@/components/EpButton/EpButton.vue';
@@ -88,6 +87,7 @@ import {
   OhjeDto,
   PerusteTekstiKappaleViiteDto,
 } from '@/tyypit';
+
 
 @Component({
   components: {
@@ -242,10 +242,6 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
           margin: 0 4px 0 4px;
         }
       }
-    }
-
-    .spacing {
-      margin-bottom: 40px;
     }
 
     .perusteteksti {
