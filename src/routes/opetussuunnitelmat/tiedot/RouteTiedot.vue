@@ -47,7 +47,7 @@
                 <ep-toggle help="ops-esikatseltavissa-ohje" v-model="data.esikatseltavissa" :is-editing="isEditing"></ep-toggle>
                 <ep-linkki v-if="data.esikatseltavissa && !isEditing"
                            :url="esikatseluUrl(data)"
-                           icon="external-link-alt"></ep-linkki>
+                           icon="external-link-alt">{{ $t('esikatsele-eperusteissa') }}</ep-linkki>
               </ep-form-content>
             </div>
             <div class="col-md-6">
@@ -100,6 +100,7 @@ import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
 import EpProgress from '@/components/EpProgress.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
+import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 
 
 @Component({
@@ -153,20 +154,8 @@ export default class RouteTiedot extends EpOpsRoute {
   }
 
   private esikatseluUrl(data) {
-    const origin = window.origin;
     const route = `/opetussuunnitelma/${data.id}/lukiokoulutus/tiedot`;
-    if (origin.indexOf('localhost') > -1) {
-      //localhost - dev
-      return `http://localhost:9020/#/${this.kieli}` + route;
-    }
-    else if (origin.indexOf('virkailija.testiopintopolku.fi') > -1) {
-      // QA
-      return `https://eperusteet.testiopintopolku.fi/beta/#/${this.kieli}` + route;
-    }
-    else {
-      // Tuotanto
-      return `https://eperusteet.opintopolku.fi/beta/#/${this.kieli}` + route;
-    }
+    return buildEsikatseluUrl(this.kieli, route);
   }
 
   private async load() {
