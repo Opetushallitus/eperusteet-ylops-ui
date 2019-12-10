@@ -33,13 +33,14 @@
                        :help="saveHelpText">
               <slot name="tallenna">{{ $t('tallenna') }}</slot>
             </ep-button>
-            <b-dropdown class="ml-4 mr-4"
+            <b-dropdown class="mx-4"
                         v-if="ctrls.isEditing"
                         size="md"
                         variant="link"
                         :disabled="state.disabled"
                         toggle-class="text-decoration-none"
-                        no-caret="no-caret">
+                        no-caret="no-caret"
+                        right>
               <template slot="button-content"><fas icon="ellipsis-h"></fas></template>
               <b-dropdown-item @click="ctrls.remove()"
                                key="poista"
@@ -58,12 +59,32 @@
                        :disabled="state.disabled">
               <slot name="muokkaa">{{ $t('muokkaa') }}</slot>
             </ep-button>
-            <!-- TODO: replace with chat icon-->
+            <b-dropdown class="mx-4"
+                        v-if="!ctrls.isEditing"
+                        size="md"
+                        variant="link"
+                        :disabled="state.disabled"
+                        toggle-class="text-decoration-none"
+                        no-caret="no-caret"
+                        right>
+              <template slot="button-content">
+                <fas icon="ellipsis-h"></fas>
+              </template>
+              <b-dropdown-item :disabled="!hooks.preview || state.disabled">
+                {{ $t('esikatsele-sivua') }}
+              </b-dropdown-item>
+              <b-dropdown-item :disabled="!hooks.validate || state.disabled">
+                {{ $t('validoi') }}
+              </b-dropdown-item>
+              <b-dropdown-item :disabled="!hooks.history || state.disabled">
+                <ep-versio-modaali :value="current" :versions="historia"></ep-versio-modaali>
+              </b-dropdown-item>
+            </b-dropdown>
             <ep-round-button class="ml-2"
                              :disabled="state.disabled"
                              v-if="hasKeskusteluSlot"
                              @click="toggleSidebarState(1)"
-                             icon="ukk"
+                             icon="comments"
                              variant="lightblue"></ep-round-button>
             <ep-round-button class="ml-2"
                              :disabled="state.disabled"
@@ -232,7 +253,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
 
   get historia() {
     const revs = this.ctrls!.state!.revisions || [];
-    return _.map(this.ctrls!.state!.revisions, (rev, index) => ({
+    return _.map(revs, (rev, index) => ({
       ...rev,
       index: revs.length - index,
     }));

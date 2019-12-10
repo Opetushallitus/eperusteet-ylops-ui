@@ -41,7 +41,7 @@
               <h5 slot="header">
                 {{ $t('pohjan-teksti') }}
               </h5>
-              <p class="perusteteksti" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
+              <p class="perusteteksti" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)"></p>
               <div v-if="isEditing" class="mb-4">
                 <b-form-checkbox v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</b-form-checkbox>
               </div>
@@ -86,7 +86,8 @@ import {
   Puu,
   OhjeDto,
   PerusteTekstiKappaleViiteDto,
-} from '@/tyypit';
+  RevisionDto,
+} from "@/tyypit";
 
 
 @Component({
@@ -114,6 +115,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       save: this.save,
     },
     remove: this.remove,
+    history: {
+      revisions: this.revisions,
+    }
   };
 
   async remove(data: any) {
@@ -141,6 +145,13 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
   async isUusi() {
     return this.$route.params.osaId === 'uusi';
+  }
+
+  private async revisions() {
+    const revisions: RevisionDto[] = [];
+
+
+    return revisions;
   }
 
   private async load() {
@@ -195,7 +206,6 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   async save({ tov, ohjeet }) {
     if (await this.isUusi()) {
       const uusi = await this.store.addTeksti(tov, _.parseInt(this.$route.params.parentId));
-      console.log('siirrytään', uusi);
       this.$nextTick(() => this.siirry(uusi));
     }
     else {

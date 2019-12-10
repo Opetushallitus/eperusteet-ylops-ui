@@ -27,19 +27,29 @@
       </b-nav-form>
 
       <!-- Sisällön kieli-->
-      <b-nav-item-dropdown id="content-lang-selector" v-tutorial>
+      <b-nav-item-dropdown id="content-lang-selector" right v-tutorial>
         <template slot="button-content">
           <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}</span>
         </template>
-        <b-dropdown-item @click="valitseSisaltoKieli(kieli)" v-for="kieli in sovelluksenKielet" :key="kieli" :disabled="kieli === sisaltoKieli">{{ kieli }}</b-dropdown-item>
+        <b-dropdown-item @click="valitseSisaltoKieli(kieli)"
+                         v-for="kieli in sovelluksenKielet"
+                         :key="kieli"
+                         :disabled="kieli === sisaltoKieli">
+          {{ kieli }}
+        </b-dropdown-item>
       </b-nav-item-dropdown>
 
       <!-- Käyttöliittymän kieli-->
-      <b-nav-item-dropdown id="ui-lang-selector" v-tutorial>
+      <b-nav-item-dropdown id="ui-lang-selector" right v-tutorial>
         <template slot="button-content">
           <span class="kielivalitsin">{{ $t("kieli") }}: {{ uiKieli }}</span>
         </template>
-        <b-dropdown-item @click="valitseUiKieli(kieli)" v-for="kieli in sovelluksenKielet" :key="kieli" :disabled="kieli === uiKieli">{{ kieli }}</b-dropdown-item>
+        <b-dropdown-item @click="valitseUiKieli(kieli)"
+                         v-for="kieli in sovelluksenKielet"
+                         :key="kieli"
+                         :disabled="kieli === uiKieli">
+          {{ kieli }}
+        </b-dropdown-item>
       </b-nav-item-dropdown>
     </b-navbar-nav>
   </b-navbar>
