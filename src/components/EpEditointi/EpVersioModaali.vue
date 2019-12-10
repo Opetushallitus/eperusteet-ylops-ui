@@ -5,11 +5,7 @@
            size="lg"
            :title="$t('historia')"
            ok-title="OK">
-    <div class="revisions">
-      <div class="revision">
-        <b-table striped="striped" :items="versionsFormatted" :fields="fields"></b-table>
-      </div>
-    </div>
+    <b-table striped="striped" :items="versionsFormatted" :fields="fields"></b-table>
     <div slot="modal-footer"></div>
   </b-modal>
 </div>
