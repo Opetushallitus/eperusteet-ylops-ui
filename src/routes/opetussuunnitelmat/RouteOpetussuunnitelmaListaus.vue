@@ -16,7 +16,7 @@
         <h2>{{ $t(vars.keskeneraiset) }}</h2>
 
         <div class="opscontainer">
-          <div class="opsbox" v-oikeustarkastelu="'luonti'">
+          <div class="opsbox" v-oikeustarkastelu="{ oikeus: 'luonti', kohde: 'opetussuunnitelma' }">
             <router-link tag="a" :to="{ name: vars.uusiRoute }">
               <div class="uusi">
                 <div class="plus">
@@ -125,7 +125,7 @@
                   {{ $kaanna(ops.nimi) }}
                 </div>
                 <div class="palauta">
-                  <ep-button variant="danger" @click="palauta(ops)" v-oikeustarkastelu="'hallinta'">
+                  <ep-button variant="danger" @click="palauta(ops)" v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'opetussuunnitelma' }">
                     {{ $t('palauta') }}
                   </ep-button>
                 </div>

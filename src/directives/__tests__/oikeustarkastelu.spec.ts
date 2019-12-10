@@ -32,7 +32,7 @@ describe('Directive oikeustarkastelu', () => {
       template: `
       <div>
         <button v-oikeustarkastelu>Hello</button>
-        <button v-oikeustarkastelu="'muokkaus'">World</button>
+        <button v-oikeustarkastelu="{ oikeus: 'muokkaus'}">World</button>
       </div>`,
     }, { localVue });
 

@@ -8,7 +8,7 @@
     <h1>{{ $t('tiedotteet') }}</h1>
 
     <ep-linkki url="/eperusteet-app/#/fi/admin/tiedotteet"
-               v-oikeustarkastelu="'hallinta'">
+               v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
       {{ $t('siirry-muokkaamaan-tiedotteita') }}
     </ep-linkki>
 

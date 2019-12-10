@@ -22,8 +22,8 @@
     </div>
     <div class="col-md-3">
       <div>
-        <ep-button v-oikeustarkastelu="'muokkaus'" variant="outline-primary" icon="plus" @click="uusiOppiaine()">{{ $t('paikallinen-oppiaine') }}</ep-button>
-        <ep-button v-oikeustarkastelu="'muokkaus'" variant="outline-primary" icon="plus" @click="uusiOpintojakso()">{{ $t('opintojakso') }}</ep-button>
+        <ep-button v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" variant="outline-primary" icon="plus" @click="uusiOppiaine()">{{ $t('paikallinen-oppiaine') }}</ep-button>
+        <ep-button v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" variant="outline-primary" icon="plus" @click="uusiOpintojakso()">{{ $t('opintojakso') }}</ep-button>
       </div>
     </div>
   </div>
