@@ -50,7 +50,7 @@
             <ep-button id="editointi-muokkaus"
                        v-tutorial
                        variant="link"
-                       v-oikeustarkastelu="'muokkaus'"
+                       v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
                        @click="ctrls.start()"
                        v-if="!ctrls.isEditing"
                        icon="pen"

@@ -9,9 +9,14 @@ export const oikeustarkastelu: Vue.DirectiveOptions = {
     // Hide the element before rights have been resolved
     const old = el.style.display;
     el.style.display = 'none';
-    const value = binding.value || 'luku';
+    let value = binding.value || 'luku';
+    let kohde;
+    if (_.isObject(value)) {
+      kohde = (value as any).kohde;
+      value = (value as any).oikeus;
+    }
 
-    if (await Kayttajat.hasOikeus(value)) {
+    if (await Kayttajat.hasOikeus(value, kohde)) {
       el.style.display = old;
     }
     else {

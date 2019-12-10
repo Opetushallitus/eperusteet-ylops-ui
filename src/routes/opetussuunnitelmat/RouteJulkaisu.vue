@@ -60,7 +60,10 @@
         </div>
         <div class="col-md-12">
           <ep-form-content name="ops-kuvaus">
-            <ep-content opetussuunnitelma-store="opetussuunnitelmaStore" v-model="ops.kuvaus" help="ops-kuvaus-ohje">
+            <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
+                        layout="simplified"
+                        v-model="ops.kuvaus"
+                        help="ops-kuvaus-ohje">
             </ep-content>
           </ep-form-content>
         </div>
@@ -123,9 +126,8 @@ import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
 import _ from 'lodash';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Component } from 'vue-property-decorator';
-import { opsTiedotValidator } from '@/validators/ops';
 
-import { Kielet } from '@shared/stores/kieli';
+import { UiKielet } from '@shared/stores/kieli';
 import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@/tyypit';
 
 
@@ -160,6 +162,10 @@ export default class RouteTiedot extends EpOpsRoute {
 
   get nimi() {
     return this.ops.nimi;
+  }
+
+  get kielet() {
+    return UiKielet;
   }
 
   get julkaisuhistoria() {

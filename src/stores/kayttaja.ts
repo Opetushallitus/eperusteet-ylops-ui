@@ -82,7 +82,7 @@ class KayttajaStore {
       return false;
     }
     else if (oikeus === 'hallinta') {
-      return this.hasHallintaoikeus();
+      return this.hasHallintaoikeus(kohde);
     }
     else {
       return this.vertaa(oikeus, kohde);
@@ -105,8 +105,8 @@ class KayttajaStore {
     }
   }
 
-  private hasHallintaoikeus() {
-    return _.includes(this.oikeudet['pohja' as OikeusKohde], 'luonti');
+  private hasHallintaoikeus(kohde) {
+    return _.includes(this.oikeudet[kohde], 'luonti');
   }
 }
 

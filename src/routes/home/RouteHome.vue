@@ -22,7 +22,7 @@
         :keskeneraiset="etusivu.pohjatKeskeneraiset"
         :julkaistut="etusivu.pohjatJulkaistut"
         :is-ops="false"
-        v-oikeustarkastelu="'hallinta'"
+        v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }"
         :count-is-loading="isLoading" />
       <tile-organisaatio />
       <tile-valtakunnalliset-perusteet />
