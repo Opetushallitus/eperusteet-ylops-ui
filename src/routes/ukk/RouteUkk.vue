@@ -16,7 +16,7 @@
           <ep-toggle v-model="org.$checked" :id="org.oid">{{ $kaanna(org.nimi) }}</ep-toggle>
         </div>
         <p>
-          <ep-button v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }" class="float-right" variant="outline-primary" icon="plus" @click="startKysymysModal(null)">
+          <ep-button v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }" class="float-right" variant="outline-primary" icon="plussa" @click="startKysymysModal(null)">
             {{ $t('lisaa-uusi-kysymys') }}
           </ep-button>
         </p>

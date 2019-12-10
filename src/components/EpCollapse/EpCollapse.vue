@@ -16,8 +16,8 @@
         </div>
       </div>
       <div class="ml-auto align-self-start">
-        <fas icon="chevron-up" v-if="toggled"></fas>
-        <fas icon="chevron-down" v-else></fas>
+        <fas fixed-width icon="chevron-up" v-if="toggled"></fas>
+        <fas fixed-width icon="chevron-down" v-else></fas>
       </div>
     </div>
     <div v-if="toggled">

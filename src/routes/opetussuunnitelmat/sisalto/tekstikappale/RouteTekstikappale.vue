@@ -8,18 +8,23 @@
           <p>{{ $t('ohje-tekstikapale-perusteteksti') }}</p>
           <div class="ohjeet" v-if="data.ohjeet.length > 0">
             <div class="ohje" v-for="ohje in data.ohjeet" :key="ohje.id">
-              <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="ohje.teksti" :is-editable="allowOhjeEdit && isEditing"> </ep-content>
+              <ep-content layout="normal"
+                          :opetussuunnitelma-store="opetussuunnitelmaStore"
+                          v-model="ohje.teksti"
+                          :is-editable="allowOhjeEdit && isEditing"></ep-content>
             </div>
           </div>
         </div>
       </template>
-      <template slot="keskustelu" slot-scope="{ }">
-        <span>
-        </span>
+      <template slot="keskustelu" slot-scope="{}">
       </template>
       <template slot="header" slot-scope="{ isEditing, data }">
         <div class="otsikko">
-          <ep-field v-if="data.tov.tekstiKappale" help="tekstikappale-nimi-ohje" v-model="data.tov.tekstiKappale.nimi" :is-header="true" :is-editing="isEditing && !data.tov.perusteTekstikappaleId"></ep-field>
+          <ep-field v-if="data.tov.tekstiKappale"
+                    help="tekstikappale-nimi-ohje"
+                    v-model="data.tov.tekstiKappale.nimi"
+                    :is-header="true"
+                    :is-editing="isEditing && !data.tov.perusteTekstikappaleId"></ep-field>
         </div>
       </template>
       <template slot-scope="{ isEditing, data }">
@@ -59,12 +64,11 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Component } from 'vue-property-decorator';
 import _ from 'lodash';
+import { Mixins, Component } from 'vue-property-decorator';
 
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpButton from'@/components/EpButton/EpButton.vue';
 import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
@@ -80,13 +84,12 @@ import {
   Ohjeet,
   OpetussuunnitelmanSisalto,
 } from '@/api';
-
+import { EditointiKontrolliConfig } from '@/stores/editointi';
 import {
   Puu,
   OhjeDto,
   PerusteTekstiKappaleViiteDto,
-  RevisionDto,
-} from "@/tyypit";
+} from '@/tyypit';
 
 
 @Component({
@@ -149,10 +152,12 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   }
 
   private async revisions() {
-    const revisions: RevisionDto[] = [];
-
-
-    return revisions;
+    // Todo: käytä jo ladattua tekstikappaletta
+    const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViite(this.opsId, this.osaId)).data;
+    if (teksti.tekstiKappale) {
+      return (await OpetussuunnitelmanSisalto
+        .getVersionsForTekstiKappaleViite(this.opsId, teksti.tekstiKappale!.id)).data;
+    }
   }
 
   private async load() {
@@ -169,7 +174,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteSyva(this.opsId, this.osaId)).data;
       const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
       try {
-        this.alkuperainen = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteOriginal(this.opsId, this.osaId)).data;
+        this.alkuperainen = (await OpetussuunnitelmanSisalto
+          .getTekstiKappaleViiteOriginal(this.opsId, this.osaId)).data as PerusteTekstiKappaleViiteDto;
       }
       catch (err) {}
 
@@ -183,7 +189,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       }
 
       if (teksti.perusteTekstikappaleId) {
-        this.perusteenTeksti = (await Lops2019Perusteet.getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId)).data as PerusteTekstiKappaleViiteDto;
+        this.perusteenTeksti = (await Lops2019Perusteet
+          .getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId))
+          .data as PerusteTekstiKappaleViiteDto;
       }
       if (teksti.tekstiKappale) {
         this.breadcrumb('tekstikappale', teksti.tekstiKappale.nimi);

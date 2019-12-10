@@ -15,7 +15,7 @@
   <div style="margin-top: 20px;">
     <ep-button
       variant="outline-primary"
-      icon="plus"
+      icon="plussa"
       @click="lisaaRivi()">
       {{ $t(lisays) }}
     </ep-button>

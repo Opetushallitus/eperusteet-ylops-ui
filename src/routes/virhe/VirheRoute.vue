@@ -10,7 +10,7 @@
 
     <div slot="custom-content">
       <div class="virhekuva">
-        <img src="../../../public/img/images/virhe.svg" :alt="$t('virhe-kuva-teksti')">
+        <img src="../../../public/img/images/virhe.png" :alt="$t('virhe-kuva-teksti')">
       </div>
 
       <div class="d-flex flex-row-reverse">
