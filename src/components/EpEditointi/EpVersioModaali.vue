@@ -1,39 +1,28 @@
-<template lang="pug">
-div
-  ep-button.btn-versiohistoria(v-b-modal.epversiomodaali, variant="link")
-    span {{ $t('versiohistoria') }}
-
-  b-modal(
-    ref="modal",
-    id="epversiomodaali",
-    size="lg",
-    title="testi")
-    template(slot="modal-title")
-      | {{ $t('historia') }}
-
-    template(slot="modal-footer")
-      ep-button(@click="hide()") {{ $t('sulje') }}
-
-    .revisions
-      .revision
-        b-table(
-          striped,
-          :items="wat",
-          :fields="fields")
-
+<template>
+<div v-b-modal.epversiomodaali>
+  {{ $t('muokkaushistoria') }}
+  <b-modal id="epversiomodaali"
+           size="lg"
+           :title="$t('historia')"
+           ok-title="OK">
+    <div class="revisions">
+      <div class="revision">
+        <b-table striped="striped" :items="versionsFormatted" :fields="fields"></b-table>
+      </div>
+    </div>
+    <div slot="modal-footer"></div>
+  </b-modal>
+</div>
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Prop, Component, Mixins } from 'vue-property-decorator';
+import { RevisionDto } from '@/tyypit';
+
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpFormContent from '@/components/forms/EpFormContent.vue';
-
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import EpValidation from '@/mixins/EpValidation';
-import { opintojaksoLuontiValidator } from '@/validators/opintojakso';
-import { tekstikappaleLuontiValidator } from '@/validators/tekstikappaleet';
-import { RevisionDto } from '@/tyypit';
-import _ from 'lodash';
 
 @Component({
   components: {
@@ -41,7 +30,7 @@ import _ from 'lodash';
     EpFormContent,
   },
 })
-export default class EpSisaltoModaali extends Mixins(EpValidation) {
+export default class EpVersioModaali extends Mixins(EpValidation) {
   @Prop({ required: true })
   private versions!: RevisionDto[];
 
@@ -50,6 +39,9 @@ export default class EpSisaltoModaali extends Mixins(EpValidation) {
 
   get fields() {
     return [{
+      key: 'index',
+      label: this.$t('versio'),
+    }, {
       key: 'ajankohta',
       label: this.$t('ajankohta'),
     }, {
@@ -58,13 +50,10 @@ export default class EpSisaltoModaali extends Mixins(EpValidation) {
     }, {
       key: 'kommentti',
       label: this.$t('kommentti'),
-    }, {
-      key: 'index',
-      label: this.$t('versio'),
     }];
   }
 
-  get wat() {
+  get versionsFormatted() {
     return _.map(this.versions, (rev) => ({
       ...rev,
       muokkaaja: rev.nimi,
@@ -77,11 +66,4 @@ export default class EpSisaltoModaali extends Mixins(EpValidation) {
 </script>
 
 <style scoped lang="scss">
-.btn-versiohistoria {
-  color: inherit;
-  text-decoration: underline;
-  margin: 0;
-  padding: 0;
-  font-size: 85%;
-}
 </style>

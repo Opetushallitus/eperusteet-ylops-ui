@@ -10,6 +10,7 @@ interface EditointiKontrolliFeatures {
   validation: boolean;
   history: boolean;
   restore: boolean;
+  preview: boolean;
 }
 
 export interface EditointiKontrolliHistory {
@@ -36,6 +37,7 @@ export interface EditointiKontrolliConfig {
   start?: () => Promise<void>;
   remove?: (data: any) => Promise<void>;
   validate?: () => Promise<boolean>;
+  preview?: () => Promise<void>;
 }
 
 const DefaultConfig = {
@@ -74,6 +76,7 @@ export class EditointiKontrolli {
       validation: !!config.validate,
       history: !!config.history,
       restore: !!config.history && !!config.history.restore,
+      preview: !!config.preview,
     };
 
     this.logger.debug('Initing editointikontrollit with: ', _.keys(config));

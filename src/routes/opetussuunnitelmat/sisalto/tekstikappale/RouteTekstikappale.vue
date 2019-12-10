@@ -42,7 +42,7 @@
                 {{ $t('pohjan-teksti') }}
               </h5>
               <p class="perusteteksti" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
-              <div v-if="isEditing">
+              <div v-if="isEditing" class="mb-4">
                 <ep-toggle v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</ep-toggle>
               </div>
             </ep-collapse>
@@ -85,7 +85,8 @@ import {
   Puu,
   OhjeDto,
   PerusteTekstiKappaleViiteDto,
-} from '@/tyypit';
+  RevisionDto,
+} from "@/tyypit";
 
 
 @Component({
@@ -115,6 +116,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       save: this.save,
     },
     remove: this.remove,
+    history: {
+      revisions: this.revisions,
+    }
   };
 
   async remove(data: any) {
@@ -142,6 +146,13 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
   async isUusi() {
     return this.$route.params.osaId === 'uusi';
+  }
+
+  private async revisions() {
+    const revisions: RevisionDto[] = [];
+
+
+    return revisions;
   }
 
   private async load() {
