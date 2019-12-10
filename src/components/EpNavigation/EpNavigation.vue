@@ -6,7 +6,7 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
             <router-link id="nav-admin" :to="{ name: 'root' }">
-              <fas class="fa-fw" icon="home" />
+              <fas fixed-width icon="koti" />
             </router-link>
           </li>
           <li class="breadcrumb-item" v-for="(route, idx) in routePath" :key="idx">
@@ -23,7 +23,9 @@
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
       <b-nav-form v-if="tutoriaalistore && naytettaviaTutoriaaleja">
-        <fas class="tutorial mr-5" icon="question-circle" @click="kaynnistaTutoriaali" />
+        <b-button variant="primary" size="sm" @click="kaynnistaTutoriaali" class="mr-2">
+          {{ $t('tutorial-avaa') }}
+        </b-button>
       </b-nav-form>
 
       <!-- Sisällön kieli-->
@@ -66,6 +68,7 @@ import Sticky from 'vue-sticky-directive';
 import _ from 'lodash';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpButton from '@/components/EpButton/EpButton.vue';
+import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
 
 
 @Component({
@@ -74,6 +77,7 @@ import EpButton from '@/components/EpButton/EpButton.vue';
     Sticky,
   },
   components: {
+    EpRoundButton,
     EpButton,
   },
 })
@@ -180,8 +184,8 @@ export default class EpNavigation extends Vue {
     background-position: 100% 0;
     background-repeat: no-repeat;
 
-    .tutorial {
-      color: rgba(255, 255, 255, 255);
+    .kysymysmerkki {
+      color: white;
       cursor: pointer;
     }
   }

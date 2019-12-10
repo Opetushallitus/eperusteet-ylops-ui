@@ -1,0 +1,11 @@
+// https://bootstrap-vue.js.org/docs/reference/theming/
+
+$primary: #3367E3;
+
+$input-btn-padding-y: .4375rem;
+$input-btn-padding-x: .625rem;
+$btn-border-radius: 1.25rem; // 20px
+
+// Include Bootstrap and BootstrapVue SCSS files
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';

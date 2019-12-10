@@ -1,7 +1,7 @@
 <template lang="pug">
 div.filter
   span.form-control-feedback
-    fas(icon="search")
+    fas(icon="etsi")
   input.form-control(
     type="search",
     :placeholder="placeholderText",
@@ -66,7 +66,7 @@ export default class EpSearch extends Vue {
   line-height: 2.375rem;
   text-align: center;
   pointer-events: none;
-  color: #aaa;
+  color: #575757;
 }
 
 </style>

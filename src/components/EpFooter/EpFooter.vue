@@ -6,13 +6,13 @@ footer
         img(src="../../../public/img/banners/oph_logo.svg", slot="footer-logo")
       .col-md.col-slot
         b {{ $t('opetushallitus') }}
-        ep-linkki(:url="$kaanna(linkit.oph)", icon="external-link-alt")
+        ep-linkki(:url="$kaanna(linkit.oph)", icon="ulkoinen-linkki")
       .col-md.col-slot
         b {{ $t('opintopolku') }}
-        ep-linkki(:url="$kaanna(linkit.opintopolku)", icon="external-link-alt")
+        ep-linkki(:url="$kaanna(linkit.opintopolku)", icon="ulkoinen-linkki")
       .col-md.col-slot
         b {{ $t('eperusteet') }}
-        ep-linkki(:url="$kaanna(linkit.eperusteet)", icon="external-link-alt")
+        ep-linkki(:url="$kaanna(linkit.eperusteet)", icon="ulkoinen-linkki")
       .col-md.col-slot
         a(:href="$kaanna(linkit.seloste)") {{ $t('tietosuojaseloste') }}
 </template>
