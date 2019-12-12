@@ -1,17 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Numerointi</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <path d="M0,15 L2,15 L2,15.5 L1,15.5 L1,16.5 L2,16.5 L2,17 L0,17 L0,18 L3,18 L3,14 L0,14 L0,15 Z M1,6 L2,6 L2,2 L0,2 L0,3 L1,3 L1,6 Z M0,9 L1.8,9 L0,11.1 L0,12 L3,12 L3,11 L1.2,11 L3,8.9 L3,8 L0,8 L0,9 Z M5,3 L5,5 L19,5 L19,3 L5,3 Z M5,17 L19,17 L19,15 L5,15 L5,17 Z M5,11 L19,11 L19,9 L5,9 L5,11 Z" id="path-1"></path>
+        <path d="M0 15h2v.5H1v1h1v.5H0v1h3v-4H0v1zm1-9h1V2H0v1h1v3zM0 9h1.8L0 11.1v.9h3v-1H1.2L3 8.9V8H0v1zm5-6v2h14V3H5zm0 14h14v-2H5v2zm0-6h14V9H5v2z" id="a"/>
     </defs>
-    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ryhma-Copy-61">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-        </g>
-    </g>
+    <use xlink:href="#a"/>
 </svg>

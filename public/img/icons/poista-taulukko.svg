@@ -1,17 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Poista_taulukko</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <path d="M12.3180195,20.0961941 L10.9038059,18.6819805 L14.0857864,15.5 L10.9038059,12.3180195 L12.3180195,10.9038059 L15.5,14.0857864 L17,12.585 L18.6819805,10.9038059 L20.0961941,12.3180195 L16.9142136,15.5 L20.0961941,18.6819805 L18.6819805,20.0961941 L15.5,16.9142136 L12.3180195,20.0961941 Z M17,1 L17,11.17 L15.5,12.6715729 L15,12.138 L15,10 L10,10 L10,12.998 L10,13 L10,13 L10,15 L12.137,15 L12.6715729,15.5 L11.171,17 L1,17 L1,1 L17,1 Z M8,10 L3,10 L3,15 L8,15 L8,10 Z M8,3 L3,3 L3,8 L8,8 L8,3 Z M15,3 L10,3 L10,8 L15,8 L15,3 Z" id="path-1"></path>
+        <path d="M12.318 20.096l-1.414-1.414 3.182-3.182-3.182-3.182 1.414-1.414 3.182 3.182 1.5-1.501 1.682-1.681 1.414 1.414-3.182 3.182 3.182 3.182-1.414 1.414-3.182-3.182-3.182 3.182zM17 1v10.17l-1.5 1.502-.5-.534V10h-5v5h2.137l.535.5L11.17 17H1V1h16zm-9 9H3v5h5v-5zm0-7H3v5h5V3zm7 0h-5v5h5V3z" id="a"/>
     </defs>
-    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ryhma-Copy-111">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <use id="Combined-Shape" fill="#2B2B2B" fill-rule="nonzero" xlink:href="#path-1"></use>
-        </g>
-    </g>
+    <use fill="#2B2B2B" xlink:href="#a"/>
 </svg>

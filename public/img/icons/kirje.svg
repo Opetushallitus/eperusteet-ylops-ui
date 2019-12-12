@@ -1,20 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Kasitteet</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <path d="M17.8666667,1.33333333 L2.13333333,1.33333333 C0.96,1.33333333 0.0106666667,2.30833333 0.0106666667,3.5 L0,15.1666667 C0,16.3583333 0.96,17.3333333 2.13333333,17.3333333 L17.8666667,17.3333333 C19.04,17.3333333 20,16.3583333 20,15.1666667 L20,3.5 C20,2.30833333 19.04,1.33333333 17.8666667,1.33333333 Z M17.3333333,14.6666667 L2.66666667,14.6666667 L2.66666667,6.66666667 L10,12 L17.3333333,6.66666667 L17.3333333,14.6666667 Z M10,9.33333333 L2.66666667,4 L17.3333333,4 L10,9.33333333 Z" id="path-1"></path>
+        <path d="M17.867 1.333H2.133C.96 1.333.011 2.308.011 3.5L0 15.167c0 1.191.96 2.166 2.133 2.166h15.734c1.173 0 2.133-.975 2.133-2.166V3.5c0-1.192-.96-2.167-2.133-2.167zm-.534 13.334H2.667v-8L10 12l7.333-5.333v8zM10 9.333L2.667 4h14.666L10 9.333z" id="a"/>
     </defs>
-    <g id="Kasitteet" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ikonit/Kirje">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <use id="Mask" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-            <g id="Värit/Tumma-harmaa" mask="url(#mask-2)" fill="#575757" fill-rule="evenodd">
-                <rect id="Rectangle" x="0" y="0" width="20" height="20"></rect>
-            </g>
+    <g fill="none" fill-rule="evenodd">
+        <mask id="b" fill="#fff">
+            <use xlink:href="#a"/>
+        </mask>
+        <use fill="#000" fill-rule="nonzero" xlink:href="#a"/>
+        <g mask="url(#b)" fill="#575757">
+            <path d="M0 0h20v20H0z"/>
         </g>
     </g>
 </svg>

@@ -1,19 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Poista_kolumni</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <path d="M12.1213203,3.46446609 L13.5355339,4.87867966 L11.4135065,6.99929289 L13.5355339,9.12132034 L12.1213203,10.5355339 L9.99929289,8.41350646 L7.87867966,10.5355339 L6.46446609,9.12132034 L8.58507933,6.99929289 L6.46446609,4.87867966 L7.87867966,3.46446609 L9.99929289,5.58507933 L12.1213203,3.46446609 Z M18,0 C19.1045695,0 20,0.8954305 20,2 L20,6 C20,7.1045695 19.1045695,8 18,8 L14,8 L13,7 L14,6 L18,6 L18,2 L2,2 L2,6 L6,6 L7,7 L6,8 L2,8 C0.8954305,8 0,7.1045695 0,6 L0,2 C0,0.8954305 0.8954305,0 2,0 L18,0 Z" id="path-1"></path>
+        <path d="M12.121 3.464l1.415 1.415-2.122 2.12 2.122 2.122-1.415 1.415L10 8.414l-2.12 2.122L6.464 9.12 8.585 7l-2.12-2.12 1.414-1.415 2.12 2.121 2.122-2.12zM18 0a2 2 0 012 2v4a2 2 0 01-2 2h-4l-1-1 1-1h4V2H2v4h4l1 1-1 1H2a2 2 0 01-2-2V2a2 2 0 012-2h16z" id="a"/>
     </defs>
-    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ryhma-Copy-109">
-            <g id="Värit/harmaa-b17" transform="translate(10.000000, 10.000000) rotate(-90.000000) translate(-10.000000, -10.000000) translate(0.000000, 4.500000)">
-                <mask id="mask-2" fill="white">
-                    <use xlink:href="#path-1"></use>
-                </mask>
-                <use id="Shape" fill="#2B2B2B" fill-rule="nonzero" xlink:href="#path-1"></use>
-            </g>
-        </g>
-    </g>
+    <use fill="#2B2B2B" xlink:href="#a" transform="rotate(-90 12.25 7.75)"/>
 </svg>

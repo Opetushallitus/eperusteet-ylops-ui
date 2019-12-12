@@ -1,29 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Kasitteet</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <rect id="path-1" x="0" y="0" width="20" height="20"></rect>
-        <polygon id="path-3" points="8 17.3333333 8 11.2156863 12 11.2156863 12 17.3333333 17 17.3333333 17 9.17647059 20 9.17647059 10 0 0 9.17647059 3 9.17647059 3 17.3333333"></polygon>
+        <path id="a" d="M0 0h20v20H0z"/>
+        <path id="c" d="M8 17.333v-6.117h4v6.117h5V9.176h3L10 0 0 9.176h3v8.157z"/>
     </defs>
-    <g id="Kasitteet" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ikonit/Koti">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <g id="Background"></g>
-            <g id="Värit/Tumma-harmaa" stroke-width="1" fill-rule="evenodd" mask="url(#mask-2)">
-                <g transform="translate(0.000000, 1.333333)">
-                    <mask id="mask-4" fill="white">
-                        <use xlink:href="#path-3"></use>
-                    </mask>
-                    <use id="Mask" stroke="none" fill="#000000" fill-rule="nonzero" xlink:href="#path-3"></use>
-                    <g id="Värit/Tumma-harmaa" stroke="none" fill="none" mask="url(#mask-4)" fill-rule="evenodd">
-                        <g transform="translate(0.000000, -1.333333)" fill="#575757" id="Rectangle">
-                            <rect x="0" y="0" width="20" height="20"></rect>
-                        </g>
-                    </g>
+    <g fill="none" fill-rule="evenodd">
+        <mask id="b" fill="#fff">
+            <use xlink:href="#a"/>
+        </mask>
+        <g mask="url(#b)">
+            <g transform="translate(0 1.333)">
+                <mask id="d" fill="#fff">
+                    <use xlink:href="#c"/>
+                </mask>
+                <use fill="#000" fill-rule="nonzero" xlink:href="#c"/>
+                <g mask="url(#d)">
+                    <path d="M0-1.333h20v20H0z" fill="#575757"/>
                 </g>
             </g>
         </g>

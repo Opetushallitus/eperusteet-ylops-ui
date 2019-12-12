@@ -1,17 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Ikonit/Plus</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <polygon id="path-1" points="17 11 11 11 11 17 9 17 9 11 3 11 3 9 9 9 9 3 11 3 11 9 17 9"></polygon>
+        <path id="a" d="M17 11h-6v6H9v-6H3V9h6V3h2v6h6z"/>
     </defs>
-    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ryhma-Copy-20">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <use id="Mask" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-        </g>
-    </g>
+    <use xlink:href="#a"/>
 </svg>

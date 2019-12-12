@@ -1,22 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>ulkoinen_linkki</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <path d="M9.33333333,0 L9.33333333,2.66666667 L2.66666667,2.66666667 L2.66666667,17.3333333 L17.3333333,17.3333333 L17.3333333,10.6666667 L20,10.6666667 L20,17.6296296 C20,18.9333333 18.9333333,20 17.6296296,20 L17.6296296,20 L2.37037037,20 C1.05481481,20 0,18.9333333 0,17.6296296 L0,17.6296296 L0,2.37037037 C0,1.06666667 1.05481481,0 2.37037037,0 L2.37037037,0 L9.33333333,0 Z M20,-1.50990331e-14 L20,8 L17.3333333,8 L17.3324791,4.552 L9.56209717,12.3235209 L7.67647908,10.4379028 L15.4474791,2.666 L12,2.66666667 L12,-1.50990331e-14 L20,-1.50990331e-14 Z" id="path-1"></path>
+        <path d="M9.333 0v2.667H2.667v14.666h14.666v-6.666H20v6.963A2.377 2.377 0 0117.63 20H2.37A2.37 2.37 0 010 17.63V2.37A2.37 2.37 0 012.37 0h6.963zM20 0v8h-2.667V4.552l-7.77 7.772-1.887-1.886 7.771-7.772H12V0h8z" id="a"/>
     </defs>
-    <g id="ulkoinen_linkki" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ikonit/Ulkoinen-linkki">
-            <g id="Värit/Tumma-harmaa">
-                <mask id="mask-2" fill="white">
-                    <use xlink:href="#path-1"></use>
-                </mask>
-                <use id="Mask" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-                <g mask="url(#mask-2)" fill="#575757" id="Rectangle">
-                    <rect x="0" y="0" width="20" height="20"></rect>
-                </g>
-            </g>
+    <g fill="none" fill-rule="evenodd">
+        <mask id="b" fill="#fff">
+            <use xlink:href="#a"/>
+        </mask>
+        <use fill="#000" fill-rule="nonzero" xlink:href="#a"/>
+        <g mask="url(#b)" fill="#575757">
+            <path d="M0 0h20v20H0z"/>
         </g>
     </g>
 </svg>

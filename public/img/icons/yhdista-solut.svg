@@ -1,17 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Yhdista_solut</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <path d="M1,1 L1,19 L19,19 L19,1 L1,1 Z M9,17 L3,17 L3,14 L9,14 L9,17 Z M17,14 L17,17 L11,17 L11,14 L17,14 Z M17,8 L17,12 L3,12 L3,8 L17,8 Z M9,3 L9,6 L3,6 L3,3 L9,3 Z M17,6 L11,6 L11,3 L17,3 L17,6 Z" id="path-1"></path>
+        <path d="M1 1v18h18V1H1zm8 16H3v-3h6v3zm8-3v3h-6v-3h6zm0-6v4H3V8h14zM9 3v3H3V3h6zm8 3h-6V3h6v3z" id="a"/>
     </defs>
-    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ryhma-Copy-107">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-        </g>
-    </g>
+    <use xlink:href="#a"/>
 </svg>

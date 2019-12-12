@@ -1,20 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>l</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <path d="M10.2330239,6.88888889 C7.90278456,6.88888889 5.79237909,7.76888889 4.16560821,9.2 L1,6 L1,14 L8.91402052,14 L5.7308256,10.7822222 C6.9531021,9.75111111 8.50952614,9.11111111 10.2330239,9.11111111 C13.345872,9.11111111 15.9926722,11.1644444 16.9159746,14 L19,13.3066667 C17.7777235,9.58222222 14.3219345,6.88888889 10.2330239,6.88888889 Z" id="path-1"></path>
+        <path d="M10.233 6.889c-2.33 0-4.44.88-6.067 2.311L1 6v8h7.914l-3.183-3.218c1.222-1.03 2.779-1.67 4.502-1.67 3.113 0 5.76 2.052 6.683 4.888L19 13.307c-1.222-3.725-4.678-6.418-8.767-6.418z" id="a"/>
     </defs>
-    <g id="l" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ikonit/palautus/Palauta">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <use id="Path" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-            <g id="Värit/Tumma-harmaa" mask="url(#mask-2)" fill="#575757" fill-rule="evenodd">
-                <rect id="Rectangle" x="0" y="0" width="20" height="20"></rect>
-            </g>
+    <g fill="none" fill-rule="evenodd">
+        <mask id="b" fill="#fff">
+            <use xlink:href="#a"/>
+        </mask>
+        <use fill="#000" fill-rule="nonzero" xlink:href="#a"/>
+        <g mask="url(#b)" fill="#575757">
+            <path d="M0 0h20v20H0z"/>
         </g>
     </g>
 </svg>

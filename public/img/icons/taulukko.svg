@@ -1,17 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>taulukko</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <path d="M1,1 L1,19 L19,19 L19,1 L1,1 Z M9,17 L3,17 L3,11 L9,11 L9,17 Z M9,9 L3,9 L3,3 L9,3 L9,9 Z M17,17 L11,17 L11,11 L17,11 L17,17 Z M17,9 L11,9 L11,3 L17,3 L17,9 Z" id="path-1"></path>
+        <path d="M1 1v18h18V1H1zm8 16H3v-6h6v6zm0-8H3V3h6v6zm8 8h-6v-6h6v6zm0-8h-6V3h6v6z" id="a"/>
     </defs>
-    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ryhma-Copy-112">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-        </g>
-    </g>
+    <use xlink:href="#a"/>
 </svg>

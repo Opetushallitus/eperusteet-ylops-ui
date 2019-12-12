@@ -1,17 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Lihavointi</title>
-    <desc>Created with Sketch.</desc>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-        <path d="M13.6,9.79 C14.57,9.12 15.25,8.02 15.25,7 C15.25,4.74 13.5,3 11.25,3 L5,3 L5,17 L12.04,17 C14.13,17 15.75,15.3 15.75,13.21 C15.75,11.69 14.89,10.39 13.6,9.79 Z M8,5.5 L11,5.5 C11.83,5.5 12.5,6.17 12.5,7 C12.5,7.83 11.83,8.5 11,8.5 L8,8.5 L8,5.5 Z M11.5,14.5 L8,14.5 L8,11.5 L11.5,11.5 C12.33,11.5 13,12.17 13,13 C13,13.83 12.33,14.5 11.5,14.5 Z" id="path-1"></path>
+        <path d="M13.6 9.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H5v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM8 5.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5H8v-3zm3.5 9H8v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z" id="a"/>
     </defs>
-    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ryhma-Copy-58">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-        </g>
-    </g>
+    <use xlink:href="#a"/>
 </svg>

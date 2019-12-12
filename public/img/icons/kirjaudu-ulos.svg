@@ -1,14 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Kirjaudu_ulos</title>
-    <desc>Created with Sketch.</desc>
-    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Ryhma-Copy-7" fill="#000000" fill-rule="nonzero">
-            <g id="Ikonit/Kirjaudu-ulos">
-                <path d="M14,2 L2,2 L2,18 L14,18 L14,16 L16,16 L16,18 C16,19.1 15.1,20 14,20 L14,20 L2,20 C0.9,20 0,19.1 0,18 L0,18 L0,2 C0,0.9 0.9,0 2,0 L2,0 L14,0 C15.1,0 16,0.9 16,2 L16,2 L16,4 L14,4 L14,2 Z" id="Combined-Shape"></path>
-                <polygon id="Path" transform="translate(12.444981, 9.994981) rotate(45.000000) translate(-12.444981, -9.994981) " points="11.487156 4.73058456 11.487156 6.50836234 14.6782671 6.50836234 7.18058456 14.0060449 8.4339179 15.2593782 15.9316004 7.76169567 15.9316004 10.9528068 17.7093782 10.9528068 17.7093782 4.73058456"></polygon>
-            </g>
-        </g>
-    </g>
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 2H2v16h12v-2h2v2c0 1.1-.9 2-2 2H2c-1.1 0-2-.9-2-2V2C0 .9.9 0 2 0h12c1.1 0 2 .9 2 2v2h-2V2z"/>
+    <path d="M15.49 5.595l-1.257 1.257L16.49 9.11H5.886v1.772H16.49l-2.257 2.257 1.257 1.257 4.4-4.4z"/>
 </svg>
