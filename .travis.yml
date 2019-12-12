@@ -18,8 +18,8 @@ install:
   - git submodule update --recursive --init
 
   - echo 'Generate API...' && echo -en 'travis_fold:start:script.1\\r'
-  - cd eperusteet/eperusteet && mvn dependency:resolve -o --batch-mode && cd ../..
-  - cd eperusteet-ylops && mvn dependency:resolve -o --batch-mode && cd ..
+  - cd eperusteet/eperusteet && mvn dependency:resolve --batch-mode && cd ../..
+  - cd eperusteet-ylops && mvn dependency:resolve --batch-mode && cd ..
   - echo -en 'travis_fold:end:script.1\\r'
 
   - yarn install --silent
