@@ -7,8 +7,8 @@ export const YlopsKoulutustyypit = Object.freeze([
   'koulutustyyppi_2', // LUKIOKOULUTUS
   'koulutustyyppi_20', // VARHAISKASVATUS
   'koulutustyyppi_6', // LISAOPETUS
-  // 'koulutustyyppi_14', // AIKUISLUKIOKOULUTUS
-  // 'koulutustyyppi_23', // LUKIOVALMISTAVAKOULUTUS
+  'koulutustyyppi_14', // AIKUISLUKIOKOULUTUS
+  'koulutustyyppi_23', // LUKIOVALMISTAVAKOULUTUS
   // 'koulutustyyppi_999907', // TPO
   // 'koulutustyyppi_17', // AIKUISTENPERUSOPETUS
   // 'koulutustyyppi_16', // PERUSOPETUS
@@ -32,7 +32,9 @@ export function koulutustyypinOppilaitokset(koulutustyyppi: string | undefined |
 
 export function isPerusteSupported(peruste: any) {
   const { toteutus, koulutustyyppi } = peruste;
-  if (koulutustyyppi === 'koulutustyyppi_2') {
+  if (koulutustyyppi === 'koulutustyyppi_2'
+    || koulutustyyppi === 'koulutustyyppi_14'
+    || koulutustyyppi === 'koulutustyyppi_23') {
     return toteutus === 'lops2019';
   }
   return _.includes(YlopsKoulutustyypit, koulutustyyppi);
