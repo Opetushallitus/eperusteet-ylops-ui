@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>Poista_taulukko</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M12.3180195,20.0961941 L10.9038059,18.6819805 L14.0857864,15.5 L10.9038059,12.3180195 L12.3180195,10.9038059 L15.5,14.0857864 L17,12.585 L18.6819805,10.9038059 L20.0961941,12.3180195 L16.9142136,15.5 L20.0961941,18.6819805 L18.6819805,20.0961941 L15.5,16.9142136 L12.3180195,20.0961941 Z M17,1 L17,11.17 L15.5,12.6715729 L15,12.138 L15,10 L10,10 L10,12.998 L10,13 L10,13 L10,15 L12.137,15 L12.6715729,15.5 L11.171,17 L1,17 L1,1 L17,1 Z M8,10 L3,10 L3,15 L8,15 L8,10 Z M8,3 L3,3 L3,8 L8,8 L8,3 Z M15,3 L10,3 L10,8 L15,8 L15,3 Z" id="path-1"></path>
+    </defs>
+    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Ryhma-Copy-111">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Combined-Shape" fill="#2B2B2B" fill-rule="nonzero" xlink:href="#path-1"></use>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>Vakanen_Vasen</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="2.29609103 0.35 7.49332588 5.54723484 12.6905607 0.35 14.175485 1.83492424 7.49332588 8.51708332 0.8115 1.83459103"></polygon>
+    </defs>
+    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Ryhma-Copy-17">
+            <g id="Ikonit/Väkänen/Vasen">
+                <g id="Ikonit/Väkänen/Alas" transform="translate(9.500000, 10.500000) rotate(90.000000) translate(-9.500000, -10.500000) translate(2.000000, 6.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Mask" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>Lisaa_rivi</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M11,9 L10.999,12 L14,12 L14,14 L10.999,14 L11,17 L9,17 L8.999,14 L6,14 L6,12 L8.999,12 L9,9 L11,9 Z M18,0 C19.1045695,0 20,0.8954305 20,2 L20,6 C20,7.1045695 19.1045695,8 18,8 L2,8 C0.8954305,8 0,7.1045695 0,6 L0,2 C0,0.8954305 0.8954305,0 2,0 L18,0 Z M18,2 L2,2 L2,6 L18,6 L18,2 Z" id="path-1"></path>
+    </defs>
+    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Ryhma-Copy-103">
+            <g id="Värit/harmaa-b17" transform="translate(0.000000, 2.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Mask" fill="#2B2B2B" fill-rule="nonzero" xlink:href="#path-1"></use>
+            </g>
+        </g>
+    </g>
+</svg>

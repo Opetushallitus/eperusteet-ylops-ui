@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>peru</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M18,11 L3.82593578,10.999 L8.34386002,15.5189358 L6.92964646,16.9331493 L2.30926389e-13,10.0035029 L1.41493578,8.59 L6.93472222,3.07 L8.34893578,4.48421356 L3.83393578,8.999 L18,8.999 L18,4 L20,4 L20,11 L18,11 Z" id="path-1"></path>
+    </defs>
+    <g id="peru" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Ikonit/Peru">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Mask" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
+            <g id="Värit/Tumma-harmaa" mask="url(#mask-2)" fill="#575757" fill-rule="evenodd">
+                <g transform="translate(10.000000, 10.000000) scale(-1, 1) translate(-10.000000, -10.000000) " id="Rectangle">
+                    <rect x="0" y="0" width="20" height="20"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

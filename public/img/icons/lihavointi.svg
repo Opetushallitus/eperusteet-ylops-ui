@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Arkisto</title>
+    <title>Lihavointi</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <path d="M9.5285,6.125 L18,6.125 L18,16 L2,16 L2,4 L7.4285,4 L9.5285,6.125 Z M8.4,2 L2.1,2 C0.945,2 0.0105,2.95625 0.0105,4.125 L0,15.875 C0,17.04375 0.945,18 2.1,18 L17.9,18 C19.055,18 20,17.04375 20,15.875 L20,6.25 C20,5.08125 19.055,4.125 17.9,4.125 L10.5,4.125 L8.4,2 Z" id="path-1"></path>
+        <path d="M13.6,9.79 C14.57,9.12 15.25,8.02 15.25,7 C15.25,4.74 13.5,3 11.25,3 L5,3 L5,17 L12.04,17 C14.13,17 15.75,15.3 15.75,13.21 C15.75,11.69 14.89,10.39 13.6,9.79 Z M8,5.5 L11,5.5 C11.83,5.5 12.5,6.17 12.5,7 C12.5,7.83 11.83,8.5 11,8.5 L8,8.5 L8,5.5 Z M11.5,14.5 L8,14.5 L8,11.5 L11.5,11.5 C12.33,11.5 13,12.17 13,13 C13,13.83 12.33,14.5 11.5,14.5 Z" id="path-1"></path>
     </defs>
     <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Arkisto">
+        <g id="Ryhma-Copy-58">
             <mask id="mask-2" fill="white">
                 <use xlink:href="#path-1"></use>
             </mask>
-            <use id="Mask" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
+            <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
         </g>
     </g>
 </svg>

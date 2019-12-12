@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
-    <title>Arkisto</title>
+    <title>Alleviivaus</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <path d="M9.5285,6.125 L18,6.125 L18,16 L2,16 L2,4 L7.4285,4 L9.5285,6.125 Z M8.4,2 L2.1,2 C0.945,2 0.0105,2.95625 0.0105,4.125 L0,15.875 C0,17.04375 0.945,18 2.1,18 L17.9,18 C19.055,18 20,17.04375 20,15.875 L20,6.25 C20,5.08125 19.055,4.125 17.9,4.125 L10.5,4.125 L8.4,2 Z" id="path-1"></path>
+        <path d="M10,15 C13.31,15 16,12.31 16,9 L16,1 L13.5,1 L13.5,9 C13.5,10.93 11.93,12.5 10,12.5 C8.07,12.5 6.5,10.93 6.5,9 L6.5,1 L4,1 L4,9 C4,12.31 6.69,15 10,15 Z M3,17 L3,19 L17,19 L17,17 L3,17 Z" id="path-1"></path>
     </defs>
     <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Arkisto">
+        <g id="Ryhma-Copy-63">
             <mask id="mask-2" fill="white">
                 <use xlink:href="#path-1"></use>
             </mask>
-            <use id="Mask" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
+            <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
         </g>
     </g>
 </svg>

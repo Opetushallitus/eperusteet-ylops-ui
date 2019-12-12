@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>Poista_rivi</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M12.1213203,3.46446609 L13.5355339,4.87867966 L11.4135065,6.99929289 L13.5355339,9.12132034 L12.1213203,10.5355339 L9.99929289,8.41350646 L7.87867966,10.5355339 L6.46446609,9.12132034 L8.58507933,6.99929289 L6.46446609,4.87867966 L7.87867966,3.46446609 L9.99929289,5.58507933 L12.1213203,3.46446609 Z M18,0 C19.1045695,0 20,0.8954305 20,2 L20,6 C20,7.1045695 19.1045695,8 18,8 L14,8 L13,7 L14,6 L18,6 L18,2 L2,2 L2,6 L6,6 L7,7 L6,8 L2,8 C0.8954305,8 0,7.1045695 0,6 L0,2 C0,0.8954305 0.8954305,0 2,0 L18,0 Z" id="path-1"></path>
+    </defs>
+    <g id="ASSETIT-+-tekstityylit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Ryhma-Copy-110">
+            <g id="Värit/harmaa-b17" transform="translate(0.000000, 5.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Mask" fill="#2B2B2B" fill-rule="nonzero" xlink:href="#path-1"></use>
+            </g>
+        </g>
+    </g>
+</svg>
