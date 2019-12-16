@@ -19,7 +19,7 @@
               <slot name="muokkaa">{{ $t('katsele') }}</slot>
             </ep-button>
             <ep-button variant="link"
-                       icon="palauta"
+                       icon="peruuta"
                        @click="$emit('restore', row.item.numero) && $refs['epversiomodaali'].hide()">
               {{ $t('palauta') }}
             </ep-button>

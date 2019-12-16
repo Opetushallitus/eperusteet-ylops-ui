@@ -102,11 +102,11 @@ export default class EpEditorMenuBar extends Vue {
   get history() {
     return [{
       command: 'undo',
-      icon: 'undo',
+      icon: 'palauta',
       disabled: true,
     }, {
       command: 'redo',
-      icon: 'redo',
+      icon: 'tee-uudelleen',
       disabled: true,
     }];
   }
@@ -114,16 +114,16 @@ export default class EpEditorMenuBar extends Vue {
   get textManipulation() {
     return [{
       command: 'bold',
-      icon: 'bold',
+      icon: 'lihavointi',
     }, {
       command: 'italic',
-      icon: 'italic',
+      icon: 'kursivointi',
     }, {
       command: 'strike',
-      icon: 'strikethrough',
+      icon: 'yliviivaus',
     }, {
       command: 'underline',
-      icon: 'underline',
+      icon: 'alleviivaus',
     }];
   }
 
@@ -158,10 +158,10 @@ export default class EpEditorMenuBar extends Vue {
   get lists() {
     return [{
       command: 'bullet_list',
-      icon: 'list-ul',
+      icon: 'lista-luettelo',
     }, {
       command: 'ordered_list',
-      icon: 'list-ol',
+      icon: 'lista-numerointi',
     }];
   }
 
@@ -173,7 +173,7 @@ export default class EpEditorMenuBar extends Vue {
         colsCount: 3,
         withHeaderRow: false,
       },
-      icon: 'table',
+      icon: 'taulukko',
     }];
   }
 
@@ -189,54 +189,46 @@ export default class EpEditorMenuBar extends Vue {
     const tables = [{
       color: RemoveColor,
       command: 'deleteTable',
-      icon: 'table',
-      subicon: 'times',
+      icon: 'poista-taulukko',
       text: 'poista-taulu',
     }];
 
     const columns = [{
       color: AddColor,
       command: 'addColumnBefore',
-      icon: 'columns',
+      icon: 'kolumni-vasen',
       text: 'lisaa-sarake-ennen',
-      lefticon: 'plus',
     }, {
       color: AddColor,
       command: 'addColumnAfter',
-      icon: 'columns',
-      righticon: 'plus',
+      icon: 'kolumni-oikea',
       text: 'lisaa-sarake-jalkeen',
     }, {
       color: RemoveColor,
       command: 'deleteColumn',
-      icon: 'columns',
-      subicon: 'times',
+      icon: 'poista-kolumni',
       text: 'poista-sarake',
     }];
 
     const rows = [{
       command: 'addRowBefore',
       color: AddColor,
-      icon: 'list',
-      uppericon: 'plus',
+      icon: 'rivi-ylos',
       text: 'lisaa-rivi-ennen',
     }, {
       command: 'addRowAfter',
       color: AddColor,
-      icon: 'list',
-      subicon: 'plus',
+      icon: 'rivi-alas',
       text: 'lisaa-rivi-jalkeen',
     }, {
       command: 'deleteRow',
       color: RemoveColor,
-      icon: 'list',
-      subicon: 'times',
+      icon: 'poista-rivi',
       text: 'poista-rivi',
     }, {
       command: 'toggleCellMerge',
       color: MergeColor,
-      icon: 'list',
-      subicon: 'object-group',
+      icon: 'yhdista-solut',
       text: 'yhdista-solut',
     }];
 
