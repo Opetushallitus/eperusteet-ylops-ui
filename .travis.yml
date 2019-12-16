@@ -39,7 +39,6 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - pwd
   - nvm install 10.16.3
   - yarn lint
   - yarn build
