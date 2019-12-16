@@ -41,7 +41,9 @@
                         toggle-class="text-decoration-none"
                         no-caret="no-caret"
                         right>
-              <template slot="button-content"><fas icon="ellipsis-h"></fas></template>
+              <template slot="button-content">
+                <fas icon="menu-vaaka"></fas>
+              </template>
               <b-dropdown-item @click="ctrls.remove()"
                                key="poista"
                                :disabled="!hooks.remove || state.disabled">
@@ -54,7 +56,7 @@
                        v-oikeustarkastelu="'muokkaus'"
                        @click="ctrls.start()"
                        v-if="!ctrls.isEditing"
-                       icon="pen"
+                       icon="kyna"
                        :show-spinner="state.isSaving"
                        :disabled="state.disabled">
               <slot name="muokkaa">{{ $t('muokkaa') }}</slot>
@@ -68,7 +70,7 @@
                         no-caret="no-caret"
                         right>
               <template slot="button-content">
-                <fas icon="ellipsis-h"></fas>
+                <fas icon="menu-vaaka"></fas>
               </template>
               <b-dropdown-item :disabled="!hooks.preview || state.disabled">
                 {{ $t('esikatsele-sivua') }}
@@ -77,14 +79,14 @@
                 {{ $t('validoi') }}
               </b-dropdown-item>
               <b-dropdown-item :disabled="!hooks.history || state.disabled">
-                <ep-versio-modaali :value="current" :versions="historia"></ep-versio-modaali>
+                <ep-versio-modaali :value="current" :versions="historia" @restore="ctrls.restore($event)"></ep-versio-modaali>
               </b-dropdown-item>
             </b-dropdown>
             <ep-round-button class="ml-2"
                              :disabled="state.disabled"
                              v-if="hasKeskusteluSlot"
                              @click="toggleSidebarState(1)"
-                             icon="comments"
+                             icon="kommentit"
                              variant="lightblue"></ep-round-button>
             <ep-round-button class="ml-2"
                              :disabled="state.disabled"
@@ -92,7 +94,7 @@
                              v-tutorial
                              v-if="hasOhjeSlot"
                              @click="toggleSidebarState(2)"
-                             icon="question"
+                             icon="kysymysmerkki"
                              variant="green"></ep-round-button>
             <ep-round-button class="ml-2"
                              :disabled="state.disabled"

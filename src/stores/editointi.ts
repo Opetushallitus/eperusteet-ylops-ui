@@ -14,8 +14,8 @@ interface EditointiKontrolliFeatures {
 }
 
 export interface EditointiKontrolliHistory {
-  revisions: () => Promise<RevisionDto[]>;
-  restore?: (rev: RevisionDto) => Promise<void>;
+  revisions: (data) => Promise<RevisionDto[]>;
+  restore?: (data, rev: RevisionDto) => Promise<void>;
 }
 
 export interface EditointiKontrolliData {
@@ -102,13 +102,12 @@ export class EditointiKontrolli {
     this.isNew = !!(this.config.editAfterLoad && await this.config.editAfterLoad());
     const data = await this.fetch();
     if (this.config.history && this.config.history.revisions) {
-      this.mstate.revisions = await this.config.history.revisions();
+      this.mstate.revisions = await this.config.history.revisions(data);
     }
     this.logger.debug('Haetaan data', data);
     this.backup = JSON.stringify(data);
     this.mstate.data = data;
     this.mstate.disabled = false;
-    // this.config.setData!(data);
     if (this.isNew) {
       await this.start();
     }
@@ -197,6 +196,9 @@ export class EditointiKontrolli {
       try {
         await this.config.source.save(this.mstate.data);
         this.logger.success('Tallennettu onnistuneesti');
+        if (this.config.history && this.config.history.revisions) {
+          this.mstate.revisions = await this.config.history.revisions(this.mstate.data);
+        }
         this.isEditingState = false;
       }
       catch (err) {
@@ -210,6 +212,24 @@ export class EditointiKontrolli {
     }
     this.mstate.disabled = false;
     this.mstate.isSaving = false;
+  }
+
+  public async restore(rev) {
+    if (this.config && this.config.history) {
+      try {
+        await this.config.history.restore(this.mstate.data, rev);
+        this.logger.success('Palautettu onnistuneesti');
+
+        const data = await this.fetch();
+        if (this.config.history && this.config.history.revisions) {
+          this.mstate.revisions = await this.config.history.revisions(this.mstate.data);
+        }
+        this.backup = JSON.stringify(data);
+        this.mstate.data = data;
+      } catch (err) {
+        fail('palautus-epaonnistui', err.response.data.syy);
+      }
+    }
   }
 
   private async fetch() {

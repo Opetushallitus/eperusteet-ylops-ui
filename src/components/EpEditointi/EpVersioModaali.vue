@@ -2,10 +2,42 @@
 <div v-b-modal.epversiomodaali>
   {{ $t('muokkaushistoria') }}
   <b-modal id="epversiomodaali"
+           ref="epversiomodaali"
            size="lg"
-           :title="$t('historia')"
-           ok-title="OK">
-    <b-table striped="striped" :items="versionsFormatted" :fields="fields"></b-table>
+           :title="$t('historia')">
+    <b-table striped="striped"
+             :items="versionsFormatted"
+             :fields="fields"
+             :per-page="perPage"
+             :current-page="currentPage">
+      <template v-slot:cell(actions)="row">
+        <div class="float-right">
+          <div v-if="!row.item.nykyinen">
+            <ep-button variant="link"
+                       icon="silma"
+                       disabled>
+              <slot name="muokkaa">{{ $t('katsele') }}</slot>
+            </ep-button>
+            <ep-button variant="link"
+                       icon="palauta"
+                       @click="$emit('restore', row.item.numero) && $refs['epversiomodaali'].hide()">
+              {{ $t('palauta') }}
+            </ep-button>
+          </div>
+          <ep-button v-else
+                     variant="link"
+                     disabled>
+            {{ $t('nykyinen-versio') }}
+          </ep-button>
+        </div>
+      </template>
+    </b-table>
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rows"
+      :per-page="perPage"
+      align="center"
+      aria-controls="epversiomodaali"></b-pagination>
     <div slot="modal-footer"></div>
   </b-modal>
 </div>
@@ -16,7 +48,7 @@ import _ from 'lodash';
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 import { RevisionDto } from '@/tyypit';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@/components/forms/EpFormContent.vue';
 import EpValidation from '@/mixins/EpValidation';
 
@@ -33,6 +65,9 @@ export default class EpVersioModaali extends Mixins(EpValidation) {
   @Prop({ required: true })
   private value!: number;
 
+  private currentPage = 1;
+  private perPage = 5;
+
   get fields() {
     return [{
       key: 'index',
@@ -44,18 +79,26 @@ export default class EpVersioModaali extends Mixins(EpValidation) {
       key: 'muokkaaja',
       label: this.$t('muokkaaja'),
     }, {
-      key: 'kommentti',
-      label: this.$t('kommentti'),
+      key: 'actions',
+      label: '',
     }];
   }
 
   get versionsFormatted() {
-    return _.map(this.versions, (rev) => ({
+    const versions = _.map(this.versions, (rev) => ({
       ...rev,
-      muokkaaja: rev.nimi,
-      ajankohta: this.$d(rev.pvm || 0),
+      muokkaaja: rev.nimi || rev.muokkaajaOid,
+      ajankohta: rev.pvm ? (this as any).$sdt(rev.pvm) : '-',
       kommentti: rev.kommentti || '-',
     }));
+    if (versions.length > 0) {
+      versions[0].nykyinen = true;
+    }
+    return versions;
+  }
+
+  get rows() {
+    return this.versionsFormatted.length;
   }
 }
 
