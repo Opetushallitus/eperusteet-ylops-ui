@@ -200,9 +200,7 @@ export class EditointiKontrolli {
       try {
         await this.config.source.save(this.mstate.data);
         this.logger.success('Tallennettu onnistuneesti');
-        if (this.config.history && this.config.history.revisions) {
-          this.mstate.revisions = await this.config.history.revisions(this.mstate.data);
-        }
+        await this.fetchRevisions();
         this.isEditingState = false;
       }
       catch (err) {
@@ -224,14 +222,18 @@ export class EditointiKontrolli {
       this.logger.success('Palautettu onnistuneesti');
 
       const data = await this.fetch();
-      if (this.config.history && this.config.history.revisions) {
-        this.mstate.revisions = await this.config.history.revisions(this.mstate.data);
-      }
+      await this.fetchRevisions();
       this.backup = JSON.stringify(data);
       this.mstate.data = data;
     }
     catch (err) {
       fail('palautus-epaonnistui', err.response.data.syy);
+    }
+  }
+
+  private async fetchRevisions() {
+    if (this.config.history && this.config.history.revisions) {
+      this.mstate.revisions = await this.config.history.revisions(this.mstate.data);
     }
   }
 
