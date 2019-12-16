@@ -135,6 +135,7 @@ library.add(oph.sulje);
 library.add(oph.tahti);
 library.add(oph.tahtiTaytetty);
 library.add(oph.taulukko);
+library.add(oph.teeUudelleen);
 library.add(oph.ulkoinenLinkki);
 library.add(oph.vakanenAlas);
 library.add(oph.vakanenAlas);
