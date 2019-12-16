@@ -305,7 +305,7 @@ export const palauta: IconDefinition = {
 
 export const peruuta: IconDefinition = {
   prefix: 'fas',
-  iconName: 'palauta' as any,
+  iconName: 'peruuta' as any,
   icon: [20, 20, [], null as any, 'M18 11l-14.174-.001 4.518 4.52-1.414 1.414L0 10.003 1.415 8.59l5.52-5.52 1.414 1.414L3.834 9H18V4h2v7h-2z'],
 };
 
@@ -403,6 +403,12 @@ export const taulukko: IconDefinition = {
   prefix: 'fas',
   iconName: 'taulukko' as any,
   icon: [20, 20, [], null as any, 'M1 1v18h18V1H1zm8 16H3v-6h6v6zm0-8H3V3h6v6zm8 8h-6v-6h6v6zm0-8h-6V3h6v6z'],
+};
+
+export const teeUudelleen: IconDefinition = {
+  prefix: 'fas',
+  iconName: 'tee-uudelleen' as any,
+  icon: [20, 20, [], null as any, 'M9.77 6.89c2.33 0 4.44.88 6.06 2.31L19 6v8h-7.91l3.18-3.22a6.95 6.95 0 00-4.5-1.67A7.05 7.05 0 003.08 14L1 13.3a9.26 9.26 0 018.77-6.41z'],
 };
 
 export const ulkoinenLinkki: IconDefinition = {
