@@ -69,7 +69,7 @@ import EpButton from'@/components/EpButton/EpButton.vue';
 import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@/components/forms/EpField.vue';
+import EpField from'@shared/components/forms/EpField.vue';
 import EpFormContent from'@/components/forms/EpFormContent.vue';
 import EpInput from'@/components/forms/EpInput.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
@@ -229,6 +229,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   .kappale {
     .otsikko {
       margin-bottom: 0;
+      font-family: Poppins;
     }
 
     .teksti {
