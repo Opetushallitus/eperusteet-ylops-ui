@@ -90,6 +90,7 @@ import {
   OhjeDto,
   PerusteTekstiKappaleViiteDto,
 } from '@/tyypit';
+import { success } from '@/utils/notifications';
 
 
 @Component({
@@ -121,7 +122,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     remove: this.remove,
     history: {
       revisions: this.revisions,
-    }
+      restore: this.restore,
+    },
   };
 
   async remove(data: any) {
@@ -151,12 +153,20 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     return this.$route.params.osaId === 'uusi';
   }
 
-  private async revisions() {
-    // Todo: käytä jo ladattua tekstikappaletta
-    const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViite(this.opsId, this.osaId)).data;
-    if (teksti.tekstiKappale) {
+  private async restore(data, rev) {
+    if (data.tov) {
+      await OpetussuunnitelmanSisalto.revertTekstikappaleToVersion(this.opsId, data.tov!.id!, rev);
+      success('palautus-onnistui');
+    }
+  }
+
+  private async revisions(data) {
+    if (data.tov && data.tov.tekstiKappale && data.tov.tekstiKappale.id) {
       return (await OpetussuunnitelmanSisalto
-        .getVersionsForTekstiKappaleViite(this.opsId, teksti.tekstiKappale!.id)).data;
+        .getVersionsForTekstiKappaleViite(this.opsId, data.tov.tekstiKappale.id)).data;
+    }
+    else {
+      return [];
     }
   }
 
