@@ -13,7 +13,7 @@
       <template slot="keskustelu" slot-scope="{ }">
       </template>
       <template slot="header" slot-scope="{ data }">
-        <div class="nimi">{{ $kaanna(data.nimi) || $t('opintojakso') }}</div>
+        <h2 class="nimi">{{ $kaanna(data.nimi) || $t('opintojakso') }}</h2>
       </template>
       <template v-slot="{ data, validation, isEditing }">
         <div class="osio">

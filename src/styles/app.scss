@@ -3,6 +3,7 @@
 @import './editorstyle';
 @import 'vue-select/src/scss/vue-select.scss';
 @import './tutorial';
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,500,600,700,800|Poppins:100,200,300,400,500,600,700,800&display=swap');
 
 img.content-image {
   max-width: 100%;
@@ -41,18 +42,29 @@ img.content-image {
 
   // Modaalin aukaiseminen siirtää elementtejä
   //overflow-y: scroll;
+
+  body {
+    font-family: "Open Sans", "Helvetica", sans-serif;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  li p {
+    margin-bottom: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: Poppins, sans-serif;
+  }
+
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.3rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.125rem; }
+  h6 { font-size: 1.0rem; }
+
 }
 
-// Bootstrap asettaa omat fonttinsta body-elementtiin
-body {
-  font-family: "Open Sans", "Helvetica", sans-serif;
-  hyphens: auto;
-}
-
-button:disabled {
-  cursor: not-allowed;
-}
-
-li p {
-  margin-bottom: 0;
-}
