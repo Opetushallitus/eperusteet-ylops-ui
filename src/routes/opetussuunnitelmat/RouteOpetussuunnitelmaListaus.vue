@@ -20,7 +20,7 @@
             <router-link tag="a" :to="{ name: vars.uusiRoute }">
               <div class="uusi">
                 <div class="plus">
-                  <fas icon="plus"></fas>
+                  <fas icon="plussa"></fas>
                 </div>
                 <div class="text">
                   {{ $t('luo-uusi') }}

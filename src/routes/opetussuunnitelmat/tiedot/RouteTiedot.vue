@@ -51,7 +51,7 @@
               <ep-form-content name="esikatsele-opetussuunnitelmaa">
                 <ep-linkki v-if="data.esikatseltavissa && !isEditing"
                            :url="esikatseluUrl(data)"
-                           icon="external-link-alt"></ep-linkki>
+                           icon="ulkoinen-linkki"></ep-linkki>
               </ep-form-content>
             </div>
             <div class="col-md-6">

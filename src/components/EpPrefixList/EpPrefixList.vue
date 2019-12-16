@@ -9,7 +9,7 @@
           </div>
           <div class="col-sm-6">
             <div class="actions">
-              <ep-button variant="danger" v-if="true" icon="times" @click="poistaIndeksi(internal, alueIdx)">{{ $t('poista-alue-' + arvot) }}</ep-button>
+              <ep-button variant="danger" icon="times" @click="poistaIndeksi(internal, alueIdx)">{{ $t('poista-alue-' + arvot) }}</ep-button>
             </div>
           </div>
         </div>
@@ -25,11 +25,11 @@
               <ep-input v-model="item[arvo]" :is-editing="true" />
             </div>
             <div class="actions">
-              <ep-button variant="danger" v-if="true" icon="times" @click="poistaIndeksi(alue[arvot], idx)">{{ $t('poista') }}</ep-button>
+              <ep-button variant="danger" icon="times" @click="poistaIndeksi(alue[arvot], idx)">{{ $t('poista') }}</ep-button>
             </div>
           </div>
         </draggable>
-        <ep-button v-if="true" icon="plus" @click="lisaaArvo(alue)">{{ $t('lisaa-arvo-' + arvo) }}</ep-button>
+        <ep-button icon="plus" @click="lisaaArvo(alue)">{{ $t('lisaa-arvo-' + arvo) }}</ep-button>
       </div>
     </div>
   </div>

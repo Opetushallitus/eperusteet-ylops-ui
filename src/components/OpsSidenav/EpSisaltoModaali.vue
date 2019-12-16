@@ -1,7 +1,7 @@
 <template>
 <div>
   <ep-button v-b-modal.epsisaltomodal>
-    <fas class="mr-2" icon="plus">
+    <fas class="mr-2" icon="plussa">
     </fas>
     <span>{{ $t('lisaa-sisalto') }}</span>
   </ep-button>

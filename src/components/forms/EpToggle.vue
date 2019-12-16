@@ -1,6 +1,6 @@
 <template>
   <div class="ep-checkbox">
-    <b-form-checkbox 
+    <b-form-checkbox
       :value="value"
       @input="$emit('input', $event)">
       <slot></slot>
@@ -31,7 +31,7 @@ export default class EpToggle extends Vue {
 <style scoped lang="scss">
 
 .ep-checkbox {
-  margin: 0px 0 6px 0;
+  margin: 0 0 6px 0;
 }
 
 </style>

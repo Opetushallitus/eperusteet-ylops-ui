@@ -31,12 +31,12 @@
                   :disabled="feature.disabled"
                   :class="{ 'active': !feature.disabled && data.isActive[feature.command] && data.isActive[feature.command]() }"
                   @click="feature.customClick ? feature.customClick(data) : data.commands[feature.command](feature.params)">
-            <fal v-if="feature.icon" class="fa-fw">
+            <fal v-if="feature.icon" fixed-width>
               <fas :icon="feature.icon" fixed-width />
-              <fas v-if="feature.uppericon" transform="up-4 left-6" :icon="feature.uppericon" :style="{ color: feature.color || 'black' }" />
-              <fas v-if="feature.righticon" transform="right-6" :icon="feature.righticon" :style="{ color: feature.color || 'black' }" />
-              <fas v-if="feature.subicon" class="fa-inverse" transform="down-4 left-6" :icon="feature.subicon" :style="{ color: feature.color || 'black' }" />
-              <fas v-if="feature.lefticon" transform="left-6" :icon="feature.lefticon" :style="{ color: feature.color || 'black' }" />
+              <fas v-if="feature.uppericon" fixed-width transform="up-4 left-6" :icon="feature.uppericon" :style="{ color: feature.color || 'black' }" />
+              <fas v-if="feature.righticon" fixed-width transform="right-6" :icon="feature.righticon" :style="{ color: feature.color || 'black' }" />
+              <fas v-if="feature.subicon" fixed-width transform="down-4 left-6" :icon="feature.subicon" :style="{ color: feature.color || 'black' }" class="fa-inverse" />
+              <fas v-if="feature.lefticon" fixed-width transform="left-6" :icon="feature.lefticon" :style="{ color: feature.color || 'black' }" />
             </fal>
           </b-button>
         </div>
@@ -142,7 +142,7 @@ export default class EpEditorMenuBar extends Vue {
           (this as any).$refs['link-modal'].show();
         },
       }, {
-        icon: 'atlas',
+        icon: 'kasitteet',
         command: 'termi',
         disabled: this.editor.selection.from === this.editor.selection.to,
       }, {

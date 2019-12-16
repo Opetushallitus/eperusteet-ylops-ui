@@ -17,7 +17,7 @@
           <label class="form-check-label" :for="org.oid">{{ $kaanna(org.nimi) }}</label>
         </div>
         <p>
-          <ep-button v-oikeustarkastelu="'tilanvaihto'" class="float-right" variant="outline-primary" icon="plus" @click="startKysymysModal(null)">
+          <ep-button v-oikeustarkastelu="'tilanvaihto'" class="float-right" variant="outline-primary" icon="plussa" @click="startKysymysModal(null)">
             {{ $t('lisaa-uusi-kysymys') }}
           </ep-button>
         </p>

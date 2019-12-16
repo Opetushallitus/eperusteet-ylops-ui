@@ -1,6 +1,6 @@
 <template>
   <base-tile
-    icon="valtakunnalliset-perusteet"
+    icon="hallitus"
     :href="href">
     <template slot="header">
       <span>{{ $t('tile-perusteet') }}</span>
