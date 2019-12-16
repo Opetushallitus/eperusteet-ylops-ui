@@ -146,7 +146,7 @@ export default class EpEditorMenuBar extends Vue {
         command: 'termi',
         disabled: this.editor.selection.from === this.editor.selection.to,
       }, {
-        icon: 'file-image',
+        icon: 'lisaa-kuva',
         command: 'image',
       }];
     }
