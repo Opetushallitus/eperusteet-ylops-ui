@@ -48,6 +48,10 @@ export interface RecursiveTreeItem {
   id: number;
 }
 
+export interface RevisionDto extends GApi.RevisionDto {
+  nykyinen?: boolean,
+}
+
 export type EtusivuDto = GApi.EtusivuDto;
 export type KayttajanTietoDto = GApi.KayttajanTietoDto;
 export type LiiteDto = GApi.LiiteDto;
@@ -69,7 +73,6 @@ export type OpetussuunnitelmaLuontiDto = GApi.OpetussuunnitelmaLuontiDto;
 export type PerusteInfoDto = GApi.PerusteInfoDto;
 export type PerusteTekstiKappaleViiteDto = GApi.PerusteTekstiKappaleViiteDto;
 export type Puu = GApi.Puu;
-export type RevisionDto = GApi.RevisionDto;
 export type TekstiKappaleViiteKevytDto = GApi.TekstiKappaleViiteKevytDto;
 export type TekstiKappaleDto = GApi.TekstiKappaleDto;
 export type TermiDto = GApi.TermiDto;

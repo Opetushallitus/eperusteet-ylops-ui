@@ -219,20 +219,19 @@ export class EditointiKontrolli {
   }
 
   public async restore(rev) {
-    if (this.config && this.config.history) {
-      try {
-        await this.config.history.restore(this.mstate.data, rev);
-        this.logger.success('Palautettu onnistuneesti');
+    try {
+      await this.config.history!.restore!(this.mstate.data, rev);
+      this.logger.success('Palautettu onnistuneesti');
 
-        const data = await this.fetch();
-        if (this.config.history && this.config.history.revisions) {
-          this.mstate.revisions = await this.config.history.revisions(this.mstate.data);
-        }
-        this.backup = JSON.stringify(data);
-        this.mstate.data = data;
-      } catch (err) {
-        fail('palautus-epaonnistui', err.response.data.syy);
+      const data = await this.fetch();
+      if (this.config.history && this.config.history.revisions) {
+        this.mstate.revisions = await this.config.history.revisions(this.mstate.data);
       }
+      this.backup = JSON.stringify(data);
+      this.mstate.data = data;
+    }
+    catch (err) {
+      fail('palautus-epaonnistui', err.response.data.syy);
     }
   }
 
