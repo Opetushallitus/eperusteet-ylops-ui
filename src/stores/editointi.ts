@@ -18,6 +18,11 @@ export interface EditointiKontrolliHistory {
   restore?: (data, rev: RevisionDto) => Promise<void>;
 }
 
+export interface EditointiKontrolliValidation {
+  valid: boolean;
+  message?: string;
+}
+
 export interface EditointiKontrolliData {
   load: () => Promise<unknown>;
   save?: (data: any) => Promise<any>;
@@ -36,14 +41,16 @@ export interface EditointiKontrolliConfig {
   history?: EditointiKontrolliHistory;
   start?: () => Promise<void>;
   remove?: (data: any) => Promise<void>;
-  validate?: () => Promise<boolean>;
+  validate?: (data: any) => Promise<EditointiKontrolliValidation>;
   preview?: () => Promise<void>;
 }
 
 const DefaultConfig = {
   start: async () => {},
   remove: async () => {},
-  validate: async () => true,
+  validate: async () => ({
+    valid: true
+  }),
 };
 
 
@@ -174,7 +181,7 @@ export class EditointiKontrolli {
   }
 
   public async validate() {
-    const validation = await this.config.validate!();
+    const validation = await this.config.validate!(this.mstate.data);
     this.logger.debug('Validointi:', validation);
     return validation;
   }
@@ -192,15 +199,22 @@ export class EditointiKontrolli {
     this.mstate.disabled = true;
     this.mstate.isSaving = true;
 
+    const validation = await this.validate();
+
     if (!this.isEditing) {
       this.logger.warn('Ei voi tallentaa ilman editointia');
     }
-    else if (await this.validate() && !!(this.config.source.save)) {
+    else if(!validation.valid) {
+      this.logger.debug('Validointi epäonnistui');
+      fail(validation.message ? validation.message : 'validointi-epaonnistui');
+    }
+    else if (!!(this.config.source.save)) {
       EditointiKontrolli.totalEditingEditors -= 1;
       try {
         await this.config.source.save(this.mstate.data);
         this.logger.success('Tallennettu onnistuneesti');
         await this.fetchRevisions();
+        await this.init();
         this.isEditingState = false;
       }
       catch (err) {
