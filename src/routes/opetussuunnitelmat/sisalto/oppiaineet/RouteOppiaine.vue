@@ -88,7 +88,7 @@
               </div>
             </div>
           </div>
-          <ep-button icon="plus" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
+          <ep-button icon="plussa" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
         </ep-collapse>
       </div>
     </div>
@@ -97,19 +97,19 @@
 </template>
 
 <script lang="ts">
-import { Watch, Mixins, Component, Prop } from 'vue-property-decorator';
+import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019OppiaineDto, Lops2019OpintojaksoDto } from '@/tyypit';
+import { Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
 import _ from 'lodash';
+
 
 @Component({
   components: {

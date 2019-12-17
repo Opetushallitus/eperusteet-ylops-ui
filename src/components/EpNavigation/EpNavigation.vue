@@ -167,11 +167,12 @@ export default class EpNavigation extends Vue {
       background: rgba(0, 0, 0, 0);
 
       .breadcrumb-item {
-        color: rgba(255, 255, 255, 255);
-        cursor: pointer;
-
+        color: white;
+        &::before {
+          color: white;
+        }
         a {
-          color: rgba(255, 255, 255, 255);
+          color: white;
         }
       }
     }

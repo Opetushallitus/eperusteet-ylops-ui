@@ -27,7 +27,7 @@
         v-if="isEditing"
         variant="outline-primary"
         @click="lisaaTekstikappale(data.lapset)"
-        icon="plus">
+        icon="plussa">
         {{ $t('lisaa-tekstikappale') }}
       </ep-button>
     </template>

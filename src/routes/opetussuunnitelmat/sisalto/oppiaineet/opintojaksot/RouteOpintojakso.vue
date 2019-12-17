@@ -60,7 +60,7 @@
             </div>
           </div>
         </div>
-        <hr/>
+        <hr v-if="isEditing" />
         <div class="osio" v-if="isEditing || data.moduulit.length > 0">
           <div class="alueotsikko">{{ $t('opintojakson-moduulit') }}</div>
           <div class="oppiaineet" v-if="isEditing">
@@ -193,20 +193,18 @@
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
             <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
-              <ep-collapse>
-                <div slot="header" class="moduuliotsikko">
-                  <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
-                    {{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}
-                  </span>
-                  <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
-                    <fas icon="times" />
-                  </b-button>
-                </div>
-                <ep-content
-                  layout="normal"
-                  v-model="lo.kuvaus"
-                  :is-editable="isEditing"></ep-content>
-              </ep-collapse>
+              <div slot="header" class="moduuliotsikko">
+                <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
+                  {{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}
+                </span>
+                <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
+                  <fas icon="times" />
+                </b-button>
+              </div>
+              <ep-content
+                layout="normal"
+                v-model="lo.kuvaus"
+                :is-editable="isEditing"></ep-content>
             </div>
             <div class="alert alert-info" v-if="!isEditing && data.laajaAlainenOsaaminen.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <b-dropdown v-if="isEditing" :text="$t('lisaa-laaja-alainen-osaaminen')" variant="primary">
@@ -629,7 +627,7 @@ hr.valiviiva {
 
   div.ep-collapse {
     border-top: 1px solid #ccc;
-    padding: 10px 10px 10px 0px;
+    padding: 10px 10px 10px 0;
   }
 
   div.ep-collapse:last-child {
@@ -639,7 +637,7 @@ hr.valiviiva {
 
 
 .osio {
-  padding: 27px 0 0 0px;
+  padding: 27px 0 0 0;
 
   &:not(:first-child) {
     //margin: 27px 0 27px 0;
