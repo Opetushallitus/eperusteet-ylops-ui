@@ -29,11 +29,11 @@
             </div>
           </div>
         </draggable>
-        <ep-button icon="plus" @click="lisaaArvo(alue)">{{ $t('lisaa-arvo-' + arvo) }}</ep-button>
+        <ep-button icon="plussa" @click="lisaaArvo(alue)">{{ $t('lisaa-arvo-' + arvo) }}</ep-button>
       </div>
     </div>
   </div>
-  <ep-button v-if="hasMultiple" icon="plus" @click="lisaaAlue()">{{ $t('lisaa-alue-' + arvot) }}</ep-button>
+  <ep-button v-if="hasMultiple" icon="plussa" @click="lisaaAlue()">{{ $t('lisaa-alue-' + arvot) }}</ep-button>
 </div>
 <div v-else>
   <div class="alue" v-for="(alue, alueIdx) in internal" :key="alueIdx">

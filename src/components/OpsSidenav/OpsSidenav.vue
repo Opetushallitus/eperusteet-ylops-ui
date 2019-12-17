@@ -23,7 +23,7 @@
         <template v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
           <ops-sidenav-link :to="itemRoute" :class="{ 'module-link': onkoModTaiOj(itemData.item) }" v-if="!isSubmenu && itemRoute">
             <a class="btn btn-link-link" v-if="itemData.item.type === 'uusi-opintojakso'">
-               <fas class="mr-2" icon="plus" />
+               <fas class="mr-2" icon="plussa" />
               <span>{{ $t('luo-uusi-opintojakso') }}</span>
             </a>
             <a v-else class="btn btn-link">
@@ -66,7 +66,7 @@
   <div class="muokkaa-kappaleita mt-5">
     <router-link :to="{name: 'jarjesta'}">
       <div class="inner">
-        <fas icon="sort" />
+        <fas icon="jarjesta" fixed-width />
         <a class="btn btn-link">{{$t('muokkaa-kappaleita')}}</a>
       </div>
     </router-link>
