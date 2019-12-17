@@ -37,9 +37,9 @@ describe('Editointi', async () => {
         },
         async start() {},
         async remove() {},
-        async validate() {
-          return true;
-        },
+        validate: async () => ({
+          valid: true
+        }),
       };
 
       const removeSpy = jest.spyOn(config, 'remove');
@@ -89,7 +89,7 @@ describe('Editointi', async () => {
       expect(validateSpy).toBeCalledTimes(0);
 
       await editor.save();
-      expect(loadSpy).toBeCalledTimes(3);
+      expect(loadSpy).toBeCalledTimes(4);
       expect(startSpy).toBeCalledTimes(2);
       expect(saveSpy).toBeCalledTimes(1);
       expect(cancelSpy).toBeCalledTimes(1);
@@ -97,7 +97,7 @@ describe('Editointi', async () => {
       expect(validateSpy).toBeCalledTimes(1);
 
       await editor.start();
-      expect(loadSpy).toBeCalledTimes(4);
+      expect(loadSpy).toBeCalledTimes(5);
       expect(startSpy).toBeCalledTimes(3);
       expect(saveSpy).toBeCalledTimes(1);
       expect(cancelSpy).toBeCalledTimes(1);
@@ -105,7 +105,7 @@ describe('Editointi', async () => {
       expect(validateSpy).toBeCalledTimes(1);
 
       await editor.remove();
-      expect(loadSpy).toBeCalledTimes(4);
+      expect(loadSpy).toBeCalledTimes(5);
       expect(startSpy).toBeCalledTimes(3);
       expect(saveSpy).toBeCalledTimes(1);
       expect(cancelSpy).toBeCalledTimes(1);

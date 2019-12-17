@@ -74,7 +74,13 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
       save: this.save,
       load: this.load,
     },
+    validate: this.validate,
   };
+
+  async validate(data) {
+    const uudet = _.filter(data.lapset, '$uusi');
+    return {valid: uudet.length === 0, message: 'ops-rakenne-epavalidi'};
+  }
 
   lisaaTekstikappale(data) {
     const uusiViite = {
