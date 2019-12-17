@@ -1,6 +1,11 @@
 <template>
 <div class="topbar" v-sticky="sticky" sticky-z-index="600">
-  <b-navbar class="ep-navbar" type="dark" toggleable="md" :class="'navbar-style-' + tyyli" :style="{ 'background-attachment': sticky ? 'fixed' : '' }">
+  <b-navbar id="navigation-bar"
+            class="ep-navbar"
+            type="dark"
+            toggleable="md"
+            :class="'navbar-style-' + tyyli"
+            :style="{ 'background-attachment': sticky ? 'fixed' : '' }">
     <b-navbar-nav>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">

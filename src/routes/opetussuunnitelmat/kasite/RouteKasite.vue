@@ -1,6 +1,6 @@
 <template lang="pug">
 .kasitteet
-  .ylapaneeli
+  .ylapaneeli.d-flex.align-items-center
     h2.otsikko {{ $t('kasitteet') }}
 
   ep-spinner(v-if="isLoading")

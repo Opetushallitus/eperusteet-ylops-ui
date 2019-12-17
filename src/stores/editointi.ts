@@ -1,5 +1,6 @@
-import Vue from 'vue';
 import * as _ from 'lodash';
+import Vue from 'vue';
+import VueScrollTo from 'vue-scrollto';
 import { RevisionDto } from '@/tyypit';
 import { router } from '@/router';
 import { fail } from '@/utils/notifications';
@@ -154,6 +155,17 @@ export class EditointiKontrolli {
     }
     finally {
       this.mstate.disabled = false;
+
+      const navbar = document.getElementById('navigation-bar');
+      const navbarHeight = navbar ? (-1 * navbar.getBoundingClientRect().height) : 0;
+      const target = document.getElementById('scroll-anchor');
+      if (target) {
+        VueScrollTo.scrollTo('#scroll-anchor', {
+          offset: navbarHeight,
+          x: false,
+          y: true,
+        });
+      }
     }
   }
 

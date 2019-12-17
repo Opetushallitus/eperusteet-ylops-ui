@@ -1,5 +1,5 @@
 <template>
-<div v-if="hooks && !isLoading">
+<div id="scroll-anchor" v-if="hooks && !isLoading">
   <ep-editointi :hooks="hooks" v-model="editable" :validator="validator" type="paikallinen-oppiaine">
     <template slot="header" slot-scope="{ data, }">
       <h2>{{ $kaanna(data.nimi) }}</h2>
