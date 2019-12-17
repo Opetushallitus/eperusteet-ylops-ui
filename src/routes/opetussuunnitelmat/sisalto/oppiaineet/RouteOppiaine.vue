@@ -9,7 +9,7 @@
     </h2>
     <div class="collapse-container">
       <ep-collapse v-if="oppiaine.tehtava">
-        <h4 slot="header">{{ oppiaine._oppiaine ? $t('oppimaaran-tehtava') : $t('oppiaineet-tehtava') }}</h4>
+        <h4 slot="header">{{ isOppiaine ? $t('oppiaineet-tehtava') : $t('oppimaaran-tehtava')}}</h4>
         <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tehtava.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset">
@@ -68,27 +68,29 @@
           </div>
         </div>
       </ep-collapse>
-      <ep-spinner v-if="!opintojaksot">
-      </ep-spinner>
-      <ep-collapse v-else>
-        <h4 slot="header">{{ $t('opintojaksot') }}</h4>
-        <div v-if="opintojaksot.length === 0">
-          <div class="alert alert-info">{{ $t('opintojaksoja-ei-lisatty') }}</div>
-        </div>
-        <div v-else>
-          <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
-            <div class="oj-content pakollinen">
-              <span class="nimi">
-                <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
-                  {{ $kaanna(opintojakso.nimi) }}
-                </router-link>
-              </span>
-              <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
+      <div v-if="!(isOppiaine && isOppimaaria)">
+        <ep-spinner v-if="!opintojaksot">
+        </ep-spinner>
+        <ep-collapse else>
+          <h4 slot="header">{{ $t('opintojaksot') }}</h4>
+          <div v-if="opintojaksot.length === 0">
+            <div class="alert alert-info">{{ $t('opintojaksoja-ei-lisatty') }}</div>
+          </div>
+          <div v-else>
+            <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
+              <div class="oj-content pakollinen">
+                <span class="nimi">
+                  <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
+                    {{ $kaanna(opintojakso.nimi) }}
+                  </router-link>
+                </span>
+                <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
+              </div>
             </div>
           </div>
-        </div>
-        <ep-button icon="plus" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
-      </ep-collapse>
+          <ep-button icon="plus" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
+        </ep-collapse>
+      </div>
     </div>
   </div>
 </div>
@@ -153,6 +155,14 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
       .filter(moduuli => !moduuli.pakollinen)
       .sortBy('koodi.arvo')
       .value();
+  }
+
+  get isOppiaine() {
+    return !(this.oppiaine as any)._oppiaine;
+  }
+
+  get isOppimaaria() {
+    return this.oppiaine!.oppimaarat && this.oppiaine!.oppimaarat.length > 0;
   }
 
   public uusiOpintojakso() {
