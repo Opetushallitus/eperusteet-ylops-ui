@@ -441,10 +441,6 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
 <style lang="scss" scoped>
 @import "@/styles/_variables.scss";
 
-.content {
-  padding: 20px;
-}
-
 table.oppiaineet {
   border-collapse: collapse;
 

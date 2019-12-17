@@ -1,5 +1,5 @@
 <template>
-<div class="content">
+<div id="scroll-anchor" class="content">
   <div v-if="hooks && !isLoading">
     <ep-editointi :hooks="hooks" v-model="editable" :validator="validator" type="opintojakso">
       <template slot="ohje" slot-scope="{ }">

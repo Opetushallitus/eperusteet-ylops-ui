@@ -1,6 +1,6 @@
 <template>
   <div class="poistetut">
-    <div class="ylapaneeli">
+    <div class="ylapaneeli d-flex align-items-center">
       <h2 class="otsikko">{{ $t('poistetut') }}</h2>
     </div>
     <div class="sisalto">
@@ -114,6 +114,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     font-weight: 600;
     padding: 5px 15px 5px 15px;
     border-bottom: 1px solid #eee;
+    height: 50px;
 
     .otsikko {
       margin-bottom: 0;

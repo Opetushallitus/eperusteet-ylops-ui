@@ -1,7 +1,7 @@
 <template lang="pug">
 
 .dokumentit
-  .ylapaneeli
+  .ylapaneeli.d-flex.align-items-center
     h2.otsikko {{ $t('luo-pdf') }}
   .sisalto
     div.mb-4
@@ -236,6 +236,7 @@ export default class RouteDokumentti extends EpOpsRoute {
     border-bottom: 1px solid #eee;
     font-weight: 600;
     padding: 5px 15px 5px 15px;
+    height: 50px;
 
     .otsikko {
       margin-bottom: 0;

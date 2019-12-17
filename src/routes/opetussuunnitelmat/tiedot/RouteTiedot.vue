@@ -1,5 +1,5 @@
 <template>
-<div class="content">
+<div id="scroll-anchor" class="content">
   <div v-if="hooks">
     <ep-editointi :hooks="hooks" :validator="validator" type="opetussuunnitelma">
       <h2 class="otsikko" slot="header">{{ $t('tiedot') }}</h2>
@@ -8,7 +8,9 @@
           <div class="row">
             <div class="col-md-6">
               <ep-form-content name="ops-nimi">
-                <ep-field help="ops-nimi-ohje" v-model="data.nimi" :validation="validation.nimi" :is-editing="isEditing">
+                <ep-field help="ops-nimi-ohje"
+                          v-model="data.nimi"
+                          :validation="validation.nimi" :is-editing="isEditing">
                 </ep-field>
               </ep-form-content>
             </div>

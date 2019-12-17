@@ -1,5 +1,5 @@
 <template>
-<div class="tekstiviite" v-if="hooks">
+<div id="scroll-anchor" class="tekstiviite" v-if="hooks">
   <div class="kappale">
     <ep-editointi :hooks="hooks" type="tekstikappale">
       <template slot="ohje" slot-scope="{ isEditing, data }">
