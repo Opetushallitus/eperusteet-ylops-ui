@@ -18,6 +18,7 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
 import {
   oppiaineLinkki,
   oppimaaraModuuliLinkit,
@@ -89,6 +90,7 @@ const i18keys = {
     EpSisaltoModaali,
     EpSpinner,
     OpsSidenavLink,
+    EpTekstikappaleLisays,
   },
 })
 export default class OpsSidenav extends EpOpsComponent {
