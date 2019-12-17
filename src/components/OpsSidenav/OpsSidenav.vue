@@ -58,6 +58,8 @@
               </fas>
               <span>{{ $t('uusi-tekstikappale') }}</span>
             </router-link>
+
+            <!-- <EpTekstikappaleLisays /> -->
           </li>
         </template>
       </ep-recursive-nav>
