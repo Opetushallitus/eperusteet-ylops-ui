@@ -53,13 +53,10 @@
         </template>
         <template v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
           <li v-if="itemData.item.type === 'tekstikappale'">
-            <router-link v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" class="btn btn-link" :to="{ name: 'tekstikappale', params: { osaId: 'uusi', parentId: itemRoute.params.osaId } }">
-              <fas class="mr-2" icon="plussa">
-              </fas>
-              <span>{{ $t('uusi-tekstikappale') }}</span>
-            </router-link>
-
-            <!-- <EpTekstikappaleLisays /> -->
+            <ep-tekstikappale-lisays
+              :opetussuunnitelmaStore="store"
+              :tekstikappaleet="tekstikappaleLapset(itemData)"
+              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
           </li>
         </template>
       </ep-recursive-nav>

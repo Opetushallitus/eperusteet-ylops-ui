@@ -1,14 +1,21 @@
 <template>
 <div>
-  <ep-button v-b-modal.tekstikappalelisays variant="link">
+  <ep-button v-b-modal.tekstikappalelisays variant="link" buttonClass="text-decoration-none">
+     <fas class="mr-2" icon="plussa" />
     <span>{{ $t('uusi-tekstikappale') }}</span>
   </ep-button>
-  <b-modal ref="arkistoidutOpsModal" id="tekstikappalelisays" size="lg">
+  <b-modal ref="tekstikappalelisaysModal" id="tekstikappalelisays" size="lg" :ok-disabled="okDisabled" @hidden="clear" @ok="save">
     <template v-slot:modal-title>
-      {{ $t(lisaa-uusi-tekstikappale) }}
+      {{ $t('lisaa-uusi-tekstikappale') }}
     </template>
 
+    <ep-field class="mb-5" help="tekstikappale-nimi-ohje" v-model="otsikko" :is-editing="true" />
 
+    <ep-select class="mb-5" help="ylaotsikko" v-model="valittuTekstikappale" :items="tekstikappaleet" :is-editing="true">
+      <template slot-scope="{ item }">
+        <span>{{ $kaanna(item.nimi) }}</span>
+      </template>
+    </ep-select>
 
     <template v-slot:modal-cancel>
       {{ $t('peruuta')}}
@@ -23,22 +30,56 @@
 
 <script lang="ts">
 import { Prop, Component, Vue, Mixins } from 'vue-property-decorator';
-import EpButton from '@/components/EpButton/EpButton.vue';
-import _ from 'lodash';
-import { OpetussuunnitelmaInfoDto } from '../../generated';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import EpSearch from '@shared/components/forms/EpSearch.vue';
-import { Kielet } from '@shared/stores/kieli';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpSelect from '@shared/components/forms/EpSelect.vue';
+import _ from 'lodash';
+import { TekstiKappaleViiteKevytDto, LokalisoituTekstiDto } from '@/tyypit';
+import { OpetussuunnitelmanSisalto } from '@/api';
 
 @Component({
   components: {
     EpButton,
-    EpSearch,
+    EpField,
+    EpSelect,
   },
 })
-export default class EpTekstikappaleLisays extends Vue {
+export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponent) {
 
+  private otsikko: LokalisoituTekstiDto = {};
+  private valittuTekstikappale: TekstiKappaleViiteKevytDto = {};
+
+  @Prop({required: true})
+  private tekstikappaleet!: TekstiKappaleViiteKevytDto[];
+
+  get okDisabled() {
+    return _.isEmpty(this.otsikko) || _.isEmpty(this.valittuTekstikappale);
+  }
+
+  async save() {
+    const newTekstikappale = {
+      tekstiKappale: {
+        nimi: this.otsikko,
+      },
+    };
+
+    const uusi = await this.store.addTeksti(newTekstikappale, (this.valittuTekstikappale as any).osaId);
+
+    this.$router.push({
+      name: 'tekstikappale',
+      params: {
+        ...this.$route.params,
+        osaId: '' + uusi.id,
+      },
+    });
+  }
+
+  clear() {
+    this.otsikko = {},
+    this.valittuTekstikappale = {};
+  }
 
 }
 
