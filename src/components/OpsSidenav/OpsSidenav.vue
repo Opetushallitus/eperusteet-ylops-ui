@@ -1,69 +1,67 @@
 <template>
 <ep-spinner v-if="isLoading" />
-<div v-else class="sidebar">
+<div v-else class="sidebar d-flex flex-column flex-fill">
   <div class="search">
     <ep-search v-model="query"/>
   </div>
-  <div>
-    <ul class="navigation" v-if="valikkoData.length > 0">
-      <ep-recursive-nav :value="valikkoData">
-        <template v-slot:previousLink="{ itemData, itemRoute, navigate }">
-          <li class="previous-link">
-            <ops-sidenav-link class="back-btn" tag="span" :click="navigate" :clickParams="false">
-              <fas icon="chevron-left" />
-            </ops-sidenav-link>
-            <ops-sidenav-link class="previous-link" tag="span" :to="itemRoute">
-              <a class="btn btn-link">
-                {{ kaanna(itemData.item) }}
-                <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
-               </a>
-            </ops-sidenav-link>
-          </li>
-        </template>
-        <template v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
-          <ops-sidenav-link :to="itemRoute" :class="{ 'module-link': onkoModTaiOj(itemData.item) }" v-if="!isSubmenu && itemRoute">
-            <a class="btn btn-link-link" v-if="itemData.item.type === 'uusi-opintojakso'">
-               <fas class="mr-2" icon="plussa" />
-              <span>{{ $t('luo-uusi-opintojakso') }}</span>
-            </a>
-            <a v-else class="btn btn-link">
-                <div class="d-inline-flex">
-                  <div>
-                    <ep-color-indicator class="mr-2" v-if="onkoModTaiOj(itemData.item)" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
-                    </ep-color-indicator>
-                  </div>
-                  <div>
-                    <span>{{ kaanna(itemData.item) }}</span>
-                    <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
-                  </div>
-                </div>
-            </a>
+  <ul class="navigation flex-fill" v-if="valikkoData.length > 0">
+    <ep-recursive-nav :value="valikkoData">
+      <template v-slot:previousLink="{ itemData, itemRoute, navigate }">
+        <li class="previous-link">
+          <ops-sidenav-link class="back-btn" tag="span" :click="navigate" :clickParams="false">
+            <fas icon="chevron-left" />
           </ops-sidenav-link>
-          <li class="subheader" v-if="!isSubmenu && !itemRoute">
-            <span>{{ kaanna(itemData.item) }}</span>
-          </li>
-          <ops-sidenav-link class="submenu" v-if="isSubmenu" :itemData="itemData" :to="itemRoute" :click="navigate">
+          <ops-sidenav-link class="previous-link" tag="span" :to="itemRoute">
             <a class="btn btn-link">
               {{ kaanna(itemData.item) }}
               <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
-            </a>
-            <fas icon="chevron-right" v-if="!itemData.item.hideChevron">
-            </fas>
+             </a>
           </ops-sidenav-link>
-        </template>
-        <template v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
-          <li v-if="itemData.item.type === 'tekstikappale'">
-            <ep-tekstikappale-lisays
-              :opetussuunnitelmaStore="store"
-              :tekstikappaleet="tekstikappaleLapset(itemData)"
-              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
-          </li>
-        </template>
-      </ep-recursive-nav>
-    </ul>
-  </div>
+        </li>
+      </template>
+      <template v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
+        <ops-sidenav-link :to="itemRoute" :class="{ 'module-link': onkoModTaiOj(itemData.item) }" v-if="!isSubmenu && itemRoute">
+          <a class="btn btn-link-link" v-if="itemData.item.type === 'uusi-opintojakso'">
+             <fas class="mr-2" icon="plussa" />
+            <span>{{ $t('luo-uusi-opintojakso') }}</span>
+          </a>
+          <a v-else class="btn btn-link">
+              <div class="d-inline-flex">
+                <div>
+                  <ep-color-indicator class="mr-2" v-if="onkoModTaiOj(itemData.item)" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
+                  </ep-color-indicator>
+                </div>
+                <div>
+                  <span>{{ kaanna(itemData.item) }}</span>
+                  <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
+                </div>
+              </div>
+          </a>
+        </ops-sidenav-link>
+        <li class="subheader" v-if="!isSubmenu && !itemRoute">
+          <span>{{ kaanna(itemData.item) }}</span>
+        </li>
+        <ops-sidenav-link class="submenu" v-if="isSubmenu" :itemData="itemData" :to="itemRoute" :click="navigate">
+          <a class="btn btn-link">
+            {{ kaanna(itemData.item) }}
+            <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
+          </a>
+          <fas icon="chevron-right" v-if="!itemData.item.hideChevron">
+          </fas>
+        </ops-sidenav-link>
+      </template>
+      <template v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
+        <li v-if="itemData.item.type === 'tekstikappale'">
+          <ep-tekstikappale-lisays
+            :opetussuunnitelmaStore="store"
+            :tekstikappaleet="tekstikappaleLapset(itemData)"
+            v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
+        </li>
+      </template>
+    </ep-recursive-nav>
+  </ul>
 
-  <div class="muokkaa-kappaleita" v-sticky sticky-side="bottom">
+  <div class="muokkaa-kappaleita" v-sticky sticky-side="bottom" sticky-z-index="500">
     <router-link :to="{name: 'jarjesta'}">
       <div class="inner">
         <fas icon="jarjesta" fixed-width />

@@ -1,14 +1,16 @@
 <template>
 <div>
-  <div class="sidenav">
+  <div class="sidenav d-flex">
     <div class="closed">
       <button class="btn btn-link" @click="toggled = !toggled" v-if="!toggled">
         <span class="bar"><fas icon="bars"></fas></span>
       </button>
     </div>
-    <div class="bar" v-if="toggled">
-      <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="toggled"><fas icon="bars"></fas></button>
-      <slot name="bar"></slot>
+    <div class="bar d-flex flex-column" v-if="toggled">
+      <div class="d-flex flex-row">
+        <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="toggled"><fas icon="bars"></fas></button>
+      </div>
+      <slot name="bar" class="flex-fill"></slot>
     </div>
     <div class="view">
       <slot name="view"></slot>
@@ -49,12 +51,6 @@ export default class EpSidebar extends Vue {
 @import "@/styles/_variables.scss";
 
 .sidenav {
-  height: 100%;
-
-  .bar {
-    display: flex;
-  }
-
   @media (min-width: 1443.98px) {
     .menubutton {
       display:none;
@@ -65,7 +61,6 @@ export default class EpSidebar extends Vue {
     display: flex;
 
     .bar {
-      height: 100%;
       min-width: $sidebar-width;
       max-width: $sidebar-width;
       min-height: 100vh;
