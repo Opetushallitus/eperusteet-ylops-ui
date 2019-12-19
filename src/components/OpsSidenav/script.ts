@@ -239,10 +239,16 @@ export default class OpsSidenav extends EpOpsComponent {
   }
 
   tekstikappaleLapset(itemData) {
-    return _.map(itemData.children, (child) =>
-      ({
-        ...child.item.objref,
-        osaId: child.route.params.osaId,
-      }));
+    return [
+      {
+        item: itemData.item,
+        route: itemData.route,
+      },
+      ..._.map(itemData.children, (child) =>
+        ({
+          item: child.item,
+          route: child.route,
+        }))
+    ];
   }
 }

@@ -13,7 +13,7 @@
 
     <ep-select class="mb-5" help="ylaotsikko" v-model="valittuTekstikappale" :items="tekstikappaleet" :is-editing="true">
       <template slot-scope="{ item }">
-        <span>{{ $kaanna(item.nimi) }}</span>
+        <span>{{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}</span>
       </template>
     </ep-select>
 
@@ -36,7 +36,7 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import _ from 'lodash';
-import { TekstiKappaleViiteKevytDto, LokalisoituTekstiDto } from '@/tyypit';
+import { TekstiKappaleViiteKevytDto, LokalisoituTekstiDto, SideMenuEntry } from '@/tyypit';
 import { OpetussuunnitelmanSisalto } from '@/api';
 
 @Component({
@@ -49,10 +49,10 @@ import { OpetussuunnitelmanSisalto } from '@/api';
 export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponent) {
 
   private otsikko: LokalisoituTekstiDto = {};
-  private valittuTekstikappale: TekstiKappaleViiteKevytDto = {};
+  private valittuTekstikappale: any = {};
 
   @Prop({required: true})
-  private tekstikappaleet!: TekstiKappaleViiteKevytDto[];
+  private tekstikappaleet!: SideMenuEntry[];
 
   get okDisabled() {
     return _.isEmpty(this.otsikko) || _.isEmpty(this.valittuTekstikappale);
@@ -65,7 +65,7 @@ export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponen
       },
     };
 
-    const uusi = await this.store.addTeksti(newTekstikappale, (this.valittuTekstikappale as any).osaId);
+    const uusi = await this.store.addTeksti(newTekstikappale, this.valittuTekstikappale.route.params.osaId);
 
     this.$router.push({
       name: 'tekstikappale',
@@ -77,7 +77,7 @@ export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponen
   }
 
   clear() {
-    this.otsikko = {},
+    this.otsikko = {};
     this.valittuTekstikappale = {};
   }
 
