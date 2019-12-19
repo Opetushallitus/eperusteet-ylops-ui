@@ -2,7 +2,7 @@
 <ep-spinner v-if="isLoading" />
 <div v-else class="sidebar">
   <div class="search">
-    <ep-search v-model="query" />
+    <ep-search v-model="query"/>
   </div>
   <div>
     <ul class="navigation" v-if="valikkoData.length > 0">
@@ -62,7 +62,8 @@
       </ep-recursive-nav>
     </ul>
   </div>
-  <div class="muokkaa-kappaleita mt-5">
+
+  <div class="muokkaa-kappaleita" v-sticky sticky-side="bottom">
     <router-link :to="{name: 'jarjesta'}">
       <div class="inner">
         <fas icon="jarjesta" fixed-width />

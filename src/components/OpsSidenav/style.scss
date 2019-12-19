@@ -2,6 +2,7 @@
 
 .sidebar {
   padding-top: 12px;
+  height: auto;
 
   ul.navigation {
     list-style: none;
@@ -106,12 +107,20 @@
   }
 
   .muokkaa-kappaleita {
-    padding: 20px;
+    margin-top: 40px;
+    padding: 0px 20px 0px 20px;
+    background-color: #fff;
+    position: static;
+    top: auto;
+    bottom: 0;
+    left: auto;
+    width: auto;
+    z-index: 10;
 
     .inner {
       border-color: #D8D8D8;
       border-style: solid;
-      border-width: 1px 0px 1px 0px;
+      border-width: 1px 0px 0px 0px;
       padding: 10px;
     }
 
