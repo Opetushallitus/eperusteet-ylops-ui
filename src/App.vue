@@ -6,10 +6,8 @@ div(v-if="!isInitializing")
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { KieliStore } from '@shared/stores/kieli';
 import { Kayttajat } from '@/stores/kayttaja';
 import { delay } from '@shared/utils/delay';
-import { notify } from '@/utils/notifications';
 
 @Component
 export default class App extends Vue {
