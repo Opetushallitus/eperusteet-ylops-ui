@@ -163,10 +163,16 @@ export const router = new Router({
         path: 'poppiaineet/:paikallinenOppiaineId',
         component: RoutePaikallinenOppiaine,
         name: 'paikallinenOppiaine',
+        meta: {
+          parentNavigation: 'oppiaineet',
+        },
       }, {
         path: 'opintojaksot/:opintojaksoId',
         component: RouteOpintojakso,
         name: 'opintojakso',
+        meta: {
+          parentNavigation: 'oppiaineet'
+        },
       }, {
         path: 'opintojaksot/:opintojaksoId/:oppiaineKoodi',
         component: RouteOpintojakso,
