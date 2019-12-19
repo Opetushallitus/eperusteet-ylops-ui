@@ -15,14 +15,14 @@
           track-by="koodiUri"
           required>
           <template slot="singleLabel" slot-scope="{ option }">
-            <span class="selected">{{ $kaanna(option.nimi) }}</span>
+            <span class="selected">{{ $kaanna(option.nimi) || option.oid }}</span>
           </template>
           <template slot="option" slot-scope="{ option }">
-            <div>{{ $kaanna(option.nimi) }}</div>
+            <div>{{ $kaanna(option.nimi) || option.oid }}</div>
           </template>
           <template slot="tag" slot-scope="{ option, remove }">
             <span class="selected">
-              <span>{{ $kaanna(option.nimi) }}</span>
+              <span>{{ $kaanna(option.nimi) || option.oid }}</span>
               <button class="btn btn-link" @click="remove(option)">
                 <fas icon="times">
                 </fas>
@@ -45,14 +45,14 @@
                        :options="filteredJarjestajat"
                        help="ops-koulutuksen-jarjestaja-ohje">
         <template slot="singleLabel" slot-scope="{ option }">
-          <span class="selected">{{ $kaanna(option.nimi) }}</span>
+          <span class="selected">{{ $kaanna(option.nimi) || option.oid }}</span>
         </template>
         <template slot="option" slot-scope="{ option }">
-          <div>{{ $kaanna(option.nimi) }}</div>
+          <div>{{ $kaanna(option.nimi) || option.oid }}</div>
         </template>
         <template slot="tag" slot-scope="{ option, remove }">
           <span class="selected">
-            <span>{{ $kaanna(option.nimi) }}</span>
+            <span>{{ $kaanna(option.nimi) || option.oid }}</span>
             <button class="btn btn-link" @click="remove(option)">
               <fas icon="times">
               </fas>
@@ -74,14 +74,14 @@
                        :options="filteredOppilaitokset"
                        help="ops-oppilaitokset-ohje">
         <template slot="singleLabel" slot-scope="{ option }">
-          <span class="selected">{{ $kaanna(option.nimi) }}</span>
+          <span class="selected">{{ $kaanna(option.nimi) || option.oid }}</span>
         </template>
         <template slot="option" slot-scope="{ option }">
-          <div>{{ $kaanna(option.nimi) }}</div>
+          <div>{{ $kaanna(option.nimi) || option.oid }}</div>
         </template>
         <template slot="tag" slot-scope="{ option, remove }">
           <span class="selected">
-            <span>{{ $kaanna(option.nimi) }}</span>
+            <span>{{ $kaanna(option.nimi) || option.oid }}</span>
             <button class="btn btn-link" @click="remove(option)">
               <fas icon="times">
               </fas>
@@ -167,7 +167,8 @@ export default class EpOrganizations extends Mixins(EpValidation) {
     return _.chain(orgs)
       .filter(org => Kielet.search(query, org.nimi))
       .sortBy(org => Kielet.kaanna(org.nimi))
-      .sortBy(org => this.kayttajanOrganisaatiot[org.oid])
+      // Aakkosjärjestys selkeämpi?
+      // .sortBy(org => this.kayttajanOrganisaatiot[org.oid])
       .value();
   }
 
@@ -201,6 +202,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
     this.oppilaitokset = _.chain(valitut)
       .map('children')
       .flatten()
+      .sortBy((org: any) => Kielet.kaanna(org.nimi))
       .value();
     const jarjestajaOids = _.map(this.valitutJarjestajat, 'oid');
     this.valitutOppilaitokset = _.filter(this.valitutOppilaitokset,
