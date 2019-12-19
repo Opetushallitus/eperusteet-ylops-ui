@@ -5,6 +5,7 @@
 *.sln
 *.suo
 *.sw*
+*.DS_Store
 .env.*.local
 .env.local
 .idea
