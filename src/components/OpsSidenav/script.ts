@@ -18,6 +18,7 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import Sticky from 'vue-sticky-directive';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
 import {
   oppiaineLinkki,
@@ -81,6 +82,7 @@ const i18keys = {
 @Component({
   directives: {
     oikeustarkastelu,
+    Sticky,
   },
   components: {
     EpButton,

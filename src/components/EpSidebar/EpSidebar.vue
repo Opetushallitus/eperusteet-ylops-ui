@@ -51,6 +51,10 @@ export default class EpSidebar extends Vue {
 .sidenav {
   height: 100%;
 
+  .bar {
+    display: flex;
+  }
+
   @media (min-width: 1443.98px) {
     .menubutton {
       display:none;
