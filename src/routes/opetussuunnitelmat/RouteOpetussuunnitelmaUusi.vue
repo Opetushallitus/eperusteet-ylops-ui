@@ -28,13 +28,10 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
           label.form-check-label(for="uusi-ops-pohjavalinta-2")
             | {{ $t('oletuspohja') }}
 
-    div(v-if="oletuspohjasta === 'opsista'")
-      .alert.alert-info {{ $t('ei-opetussuunnitelmia') }}
-
-    div(v-if="oletuspohjasta === 'pohjasta'")
+    div(v-if="oletuspohjasta")
       .form-group
         div(v-if="pohjat")
-          ep-form-content(name="uusi-ops-pohja")
+          ep-form-content(v-if="pohjat.length > 0", name="uusi-ops-pohja")
             ep-select(
               help="uusi-ops-pohja-ohje",
               v-model="uusi.pohja",
@@ -43,6 +40,8 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
               :is-editing="true")
               template(slot-scope="{ item }")
                 span {{ $kaanna(item.nimi) }} ({{ item.perusteenDiaarinumero }})
+          div(v-else)
+            .alert.alert-info {{ $t('ei-opetussuunnitelmia') }}
         ep-spinner(v-else)
 
   div(v-if="oletuspohjasta")
@@ -70,7 +69,7 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
 
 <script lang="ts">
 import _ from 'lodash';
-import { Component, Prop, Mixins } from 'vue-property-decorator';
+import { Component, Prop, Mixins, Watch } from 'vue-property-decorator';
 
 import { success, fail } from '@/utils/notifications';
 import { validationMixin } from 'vuelidate';
@@ -121,7 +120,8 @@ import { opsLuontiValidator } from '@/validators/ops';
   },
 } as any)
 export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, EpRoute) {
-  private pohjat: OpetussuunnitelmaInfoDto[] | null = null;
+  private oletuspohjat: OpetussuunnitelmaInfoDto[] | null = null;
+  private opetussuunnitelmat: OpetussuunnitelmaInfoDto[] | null = null;
   private oletuspohjasta: 'pohjasta' | 'opsista' | null = null;
   private addingOpetussuunnitelma = false;
   private uusi = {
@@ -154,9 +154,23 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     return _.get(this.uusi, 'pohja.koulutustyyppi');
   }
 
+  @Watch('oletuspohjasta')
+  oletuspohjavalintaMuutos() {
+    this.uusi.pohja = null;
+  }
+
   protected async init() {
-    const response = await Opetussuunnitelmat.getAll('POHJA', 'VALMIS');
-    this.pohjat = response.data;
+    this.oletuspohjat = (await Opetussuunnitelmat.getAll('POHJA', 'VALMIS')).data;
+    this.opetussuunnitelmat = (await Opetussuunnitelmat.getAll('OPS', 'JULKAISTU')).data;
+  }
+
+  get pohjat() {
+    if (this.oletuspohjasta === 'pohjasta') {
+      return this.oletuspohjat;
+    }
+    else {
+      return this.opetussuunnitelmat;
+    }
   }
 
   public async luoUusiOpetussuunnitelma() {
