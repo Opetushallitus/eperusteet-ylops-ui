@@ -230,7 +230,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.beforeEach((to, from, next) => {
-  changeLang(to);
+  changeLang(to, from);
   next();
 });
 
