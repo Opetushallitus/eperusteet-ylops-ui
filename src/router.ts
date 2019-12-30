@@ -230,7 +230,7 @@ router.beforeEach((to, from, next) => {
         title: Kielet.kaannaOlioTaiTeksti('haluatko-poistua-tallentamatta'),
         okTitle: Kielet.kaannaOlioTaiTeksti('poistu-tallentamatta'),
         cancelTitle: Kielet.kaannaOlioTaiTeksti('peruuta'),
-        size: 'lg'
+        size: 'lg',
       })
       .then(value => {
         if (value) {
