@@ -39,7 +39,6 @@ import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 import { createLogger } from '@shared/utils/logger';
 import { tutoriaalistore } from './stores/tutoriaaliStore';
 import { VueTutorial } from './directives/tutoriaali';
-import { VBModal } from 'bootstrap-vue';
 
 Vue.use(Router);
 Vue.use(VueTutorial, {tutoriaalistore});
@@ -224,7 +223,22 @@ window.addEventListener('beforeunload', e => {
 // Estetään tilan vaihtaminen muokkaustilassa
 router.beforeEach((to, from, next) => {
   if (EditointiKontrolli.anyEditing()) {
-    EditointiKontrolli.confirmDialog(next);
+
+    router.app.$bvModal.msgBoxConfirm(
+      Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'),
+      {
+        title: Kielet.kaannaOlioTaiTeksti('haluatko-poistua-tallentamatta'),
+        okTitle: Kielet.kaannaOlioTaiTeksti('poistu-tallentamatta'),
+        cancelTitle: Kielet.kaannaOlioTaiTeksti('peruuta'),
+        size: 'lg'
+      })
+      .then(value => {
+        if (value) {
+          EditointiKontrolli.cancelAll();
+          next();
+        }
+      });
+
     return;
   }
   next();

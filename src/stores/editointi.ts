@@ -56,12 +56,11 @@ const DefaultConfig = {
 
 
 export class EditointiKontrolli {
-  private static totalEditingEditors = 0;
+  private static allEditingEditors: EditointiKontrolli[] = [];
   private logger = createLogger(EditointiKontrolli);
   private isEditingState = false;
   private isRemoved = false;
   private isNew = false;
-  public static confirmDialog: Function;
 
   private readonly features: EditointiKontrolliFeatures;
   private mstate = Vue.observable({
@@ -74,7 +73,13 @@ export class EditointiKontrolli {
   private backup: any = null;
 
   public static anyEditing() {
-    return EditointiKontrolli.totalEditingEditors > 0;
+    return EditointiKontrolli.allEditingEditors.length > 0;
+  }
+
+  public static async cancelAll() {
+    for(const editor of EditointiKontrolli.allEditingEditors) {
+      await editor.cancel(true);
+    }
   }
 
   public constructor(
@@ -149,7 +154,10 @@ export class EditointiKontrolli {
         await this.config.start();
       }
       this.isEditingState = true;
-      EditointiKontrolli.totalEditingEditors += 1;
+      EditointiKontrolli.allEditingEditors = [
+        ...EditointiKontrolli.allEditingEditors,
+        this
+      ];
     }
     catch (err) {
       this.logger.error('Editoinnin aloitus epäonnistui:', err);
@@ -170,7 +178,7 @@ export class EditointiKontrolli {
     }
   }
 
-  public async cancel() {
+  public async cancel(skipRedirectBack?) {
     this.mstate.disabled = true;
     if (!this.isEditing) {
       this.logger.warn('Ei voi perua');
@@ -185,10 +193,10 @@ export class EditointiKontrolli {
     this.mstate.data = JSON.parse(this.backup);
     // this.config.setData!(JSON.parse(this.backup));
     this.isEditingState = false;
-    EditointiKontrolli.totalEditingEditors -= 1;
+    _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor == this);
     this.mstate.disabled = false;
 
-    if (this.isNew && !EditointiKontrolli.confirmDialog) {
+    if (this.isNew && !skipRedirectBack) {
       router.go(-1);
     }
   }
@@ -203,7 +211,7 @@ export class EditointiKontrolli {
     this.mstate.disabled = true;
     this.isRemoved = true;
     this.isEditingState = false;
-    EditointiKontrolli.totalEditingEditors -= 1;
+    _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor == this);
     await this.config.remove!(this.mstate.data);
     this.logger.debug('Poistettu');
   }
@@ -222,17 +230,16 @@ export class EditointiKontrolli {
       fail(validation.message ? validation.message : 'validointi-epaonnistui');
     }
     else if (!!(this.config.source.save)) {
-      EditointiKontrolli.totalEditingEditors -= 1;
       try {
         await this.config.source.save(this.mstate.data);
         this.logger.success('Tallennettu onnistuneesti');
         await this.fetchRevisions();
         await this.init();
         this.isEditingState = false;
+        _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor == this);
       }
       catch (err) {
         fail('tallennus-epaonnistui', err.response.data.syy);
-        EditointiKontrolli.totalEditingEditors += 1;
         this.isEditingState = true;
       }
     }
