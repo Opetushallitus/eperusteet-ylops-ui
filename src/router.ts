@@ -221,27 +221,30 @@ window.addEventListener('beforeunload', e => {
 });
 
 // Estetään tilan vaihtaminen muokkaustilassa
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (EditointiKontrolli.anyEditing()) {
 
-    router.app.$bvModal.msgBoxConfirm(
+    const value = await router.app.$bvModal.msgBoxConfirm(
       Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'),
       {
         title: Kielet.kaannaOlioTaiTeksti('haluatko-poistua-tallentamatta'),
         okTitle: Kielet.kaannaOlioTaiTeksti('poistu-tallentamatta'),
         cancelTitle: Kielet.kaannaOlioTaiTeksti('peruuta'),
         size: 'lg',
-      })
-      .then(value => {
-        if (value) {
-          EditointiKontrolli.cancelAll();
-          next();
-        }
       });
 
-    return;
+    if (value) {
+      try {
+        await EditointiKontrolli.cancelAll();
+      }
+      finally {
+        next();
+      }
+    }
   }
-  next();
+  else {
+    next();
+  }
 });
 
 router.beforeEach((to, from, next) => {
