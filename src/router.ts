@@ -39,6 +39,7 @@ import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 import { createLogger } from '@shared/utils/logger';
 import { tutoriaalistore } from './stores/tutoriaaliStore';
 import { VueTutorial } from './directives/tutoriaali';
+import { VBModal } from 'bootstrap-vue';
 
 Vue.use(Router);
 Vue.use(VueTutorial, {tutoriaalistore});
@@ -223,7 +224,7 @@ window.addEventListener('beforeunload', e => {
 // Estetään tilan vaihtaminen muokkaustilassa
 router.beforeEach((to, from, next) => {
   if (EditointiKontrolli.anyEditing()) {
-    info('tallenna-tai-peruuta-muutoksesi-ensin');
+    EditointiKontrolli.confirmDialog(next);
     return;
   }
   next();

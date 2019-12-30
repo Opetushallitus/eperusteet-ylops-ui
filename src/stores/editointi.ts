@@ -61,6 +61,7 @@ export class EditointiKontrolli {
   private isEditingState = false;
   private isRemoved = false;
   private isNew = false;
+  public static confirmDialog: Function;
 
   private readonly features: EditointiKontrolliFeatures;
   private mstate = Vue.observable({
@@ -187,7 +188,7 @@ export class EditointiKontrolli {
     EditointiKontrolli.totalEditingEditors -= 1;
     this.mstate.disabled = false;
 
-    if (this.isNew) {
+    if (this.isNew && !EditointiKontrolli.confirmDialog) {
       router.go(-1);
     }
   }
