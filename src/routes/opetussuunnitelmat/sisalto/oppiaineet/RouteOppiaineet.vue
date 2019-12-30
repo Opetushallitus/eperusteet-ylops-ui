@@ -154,7 +154,7 @@ import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicat
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpSearch from '@/components/forms/EpSearch.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpToggle from'@shared/components/forms/EpToggle.vue';
 import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';

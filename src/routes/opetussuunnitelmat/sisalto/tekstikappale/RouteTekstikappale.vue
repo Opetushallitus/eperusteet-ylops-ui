@@ -74,8 +74,8 @@ import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
 import EpField from'@shared/components/forms/EpField.vue';
-import EpFormContent from'@/components/forms/EpFormContent.vue';
-import EpInput from'@/components/forms/EpInput.vue';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
+import EpInput from'@shared/components/forms/EpInput.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpToggle from'@shared/components/forms/EpToggle.vue';
 

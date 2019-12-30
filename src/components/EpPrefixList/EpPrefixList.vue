@@ -59,7 +59,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import draggable from 'vuedraggable';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
 
 
 @Component({

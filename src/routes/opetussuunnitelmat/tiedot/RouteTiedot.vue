@@ -86,9 +86,9 @@
 
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@/components/forms/EpField.vue';
-import EpFormContent from'@/components/forms/EpFormContent.vue';
-import EpSelect from'@/components/forms/EpSelect.vue';
+import EpField from'@shared/components/forms/EpField.vue';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
+import EpSelect from'@shared/components/forms/EpSelect.vue';
 import EpToggle from'@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
