@@ -15,7 +15,7 @@ export const YlopsKoulutustyypit = Object.freeze([
   // 'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
 ]);
 
-const Perusoppilaitokset = [11, 19, 64];
+const Perusoppilaitokset = [11, 19, 64, 21];
 const koulutustyyppiToOppilaitos = {
   'koulutustyyppi_15': Perusoppilaitokset,
   'koulutustyyppi_2': [...Perusoppilaitokset, 15],
@@ -89,14 +89,11 @@ export function paikallisestiSallitutLaajennokset() {
 
 const splitKoodi = _.memoize((arvo: string) => {
   if (_.isString(arvo) && !_.isEmpty(arvo)) {
-    let idx = _.size(arvo) - 1;
-    let arvoNmbStr = '';
-    while (idx >= 0 && arvo[idx] >= '0' && arvo[idx] <= '9') {
-      arvoNmbStr = arvo[idx] + arvoNmbStr;
-      --idx;
-    }
+    const splitattu = arvo.match(/^([a-zA-Z]*?)(\d+$)/);
 
-    return [arvo.substr(0, idx), _.isEmpty(arvoNmbStr) ? 0 : _.parseInt(arvoNmbStr)];
+    if(splitattu && splitattu.length > 2) {
+      return [splitattu[1], splitattu[2]];
+    }
   }
   return [arvo, 0];
 });
