@@ -15,7 +15,7 @@ export const YlopsKoulutustyypit = Object.freeze([
   // 'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
 ]);
 
-const Perusoppilaitokset = [11, 19, 64];
+const Perusoppilaitokset = [11, 19, 64, 21];
 const koulutustyyppiToOppilaitos = {
   'koulutustyyppi_15': Perusoppilaitokset,
   'koulutustyyppi_2': [...Perusoppilaitokset, 15],
