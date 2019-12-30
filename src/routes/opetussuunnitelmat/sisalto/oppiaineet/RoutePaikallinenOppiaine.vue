@@ -72,6 +72,7 @@
                 <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
               </div>
             </div>
+            <ep-button v-if="!isUusi()" icon="plussa" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
           </div>
         </div>
       </div>
@@ -125,7 +126,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
   private editable: any = null;
   private laajaAlaisetKoodit: any = null;
   private hooks: EditointiKontrolliConfig = {
-    editAfterLoad: this.isUusi,
+    editAfterLoad: this.editAfterLoad,
     remove: this.remove,
     source: {
       save: this.save,
@@ -140,7 +141,11 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
     });
   }
 
-  async isUusi() {
+  async editAfterLoad() {
+    return this.isUusi();
+  }
+
+  isUusi() {
     return this.$route.params.paikallinenOppiaineId === 'uusi';
   }
 
@@ -158,6 +163,19 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
       })
       .sortBy('koodi')
       .value();
+  }
+
+  public uusiOpintojakso() {
+    this.$router.push({
+      name: 'opintojakso',
+      params: {
+        ...this.$router.currentRoute.params,
+        opintojaksoId: 'uusi',
+      },
+      query: {
+        oppiaineet: this.editable.koodi,
+      },
+    });
   }
 
   get validator() {
@@ -189,7 +207,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
   }
 
   async save(oppiaine: Lops2019PaikallinenOppiaineDto) {
-    if (await this.isUusi()) {
+    if (await this.editAfterLoad()) {
       const oa = await this.store.addOppiaine(oppiaine);
       this.$router.push({
         name: 'paikallinenOppiaine',
