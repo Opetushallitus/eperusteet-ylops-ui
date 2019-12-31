@@ -132,8 +132,6 @@
       </div>
     </div>
   </div>
-
-  <ep-confirm-dialog ref="confirmDialog" :redirect="siirtymaRedirect" :ctrls="ctrls"/>
 </div>
 </template>
 <script lang="ts">
@@ -153,7 +151,6 @@ import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
 import { setItem, getItem } from '@/utils/localstorage';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import EpConfirmDialog from '@shared/components/EpConfirmDialog/EpConfirmDialog.vue';
 
 @Component({
   validations() {
@@ -174,7 +171,6 @@ import EpConfirmDialog from '@shared/components/EpConfirmDialog/EpConfirmDialog.
     EpRoundButton,
     EpSpinner,
     EpVersioModaali,
-    EpConfirmDialog,
   },
 } as any)
 export default class EpEditointi extends Mixins(validationMixin) {
@@ -192,12 +188,6 @@ export default class EpEditointi extends Mixins(validationMixin) {
   private ctrls: EditointiKontrolli | null = null;
   private state: any = null;
   private isInitialized = false;
-  private siirtymaRedirect: Function | null = null;
-
-  setSiirtyma(redirect) {
-    (this.$refs.confirmDialog as any).setVisible();
-    this.siirtymaRedirect = redirect;
-  }
 
   get poistoteksti() {
     if(!this.type) {
@@ -266,8 +256,6 @@ export default class EpEditointi extends Mixins(validationMixin) {
     if (sidebarState) {
       this.sidebarState = sidebarState!.value;
     }
-
-    EditointiKontrolli.confirmDialog = this.setSiirtyma;
   }
 
   get current() {
