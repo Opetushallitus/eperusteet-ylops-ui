@@ -27,7 +27,7 @@
             </div>
             <div class="col-md-6">
               <ep-form-content name="julkaisukielet">
-                <ep-select help="ops-julkaisukielet-ohje" v-model="data.julkaisukielet" :validation="validation.julkaisukielet" :is-editing="isEditing" :items="kielet" :multiple="true">
+                <ep-select help="ops-julkaisukielet-ohje" v-model="data.julkaisukielet" :validation="validation.julkaisukielet" :is-editing="isEditing" :items="kielet" :multiple="true" :useCheckboxes="true">
                 </ep-select>
               </ep-form-content>
             </div>
