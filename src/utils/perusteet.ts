@@ -92,7 +92,7 @@ const splitKoodi = _.memoize((arvo: string) => {
     const splitattu = arvo.match(/^([a-zA-Z]*?)(\d+$)/);
 
     if(splitattu && splitattu.length > 2) {
-      return [splitattu[1], splitattu[2]];
+      return [splitattu[1], Number(splitattu[2])];
     }
   }
   return [arvo, 0];
