@@ -19,16 +19,17 @@
       <template slot="keskustelu" slot-scope="{}">
       </template>
       <template slot="header" slot-scope="{ isEditing, data }">
-        <div class="otsikko">
-          <ep-field v-if="data.tov.tekstiKappale"
-                    help="tekstikappale-nimi-ohje"
-                    v-model="data.tov.tekstiKappale.nimi"
-                    :is-header="true"
-                    :is-editing="isEditing && !data.tov.perusteTekstikappaleId"></ep-field>
-        </div>
+        <h2>{{ $kaanna(data.tov.tekstiKappale.nimi) }}</h2>
       </template>
       <template slot-scope="{ isEditing, data }">
         <div class="teksti">
+
+          <ep-form-content v-if="isEditing" name="tekstikappale-nimi-ohje">
+            <ep-field v-if="data.tov.tekstiKappale"
+                      v-model="data.tov.tekstiKappale.nimi"
+                      :is-header="true"
+                      :is-editing="isEditing && !data.tov.perusteTekstikappaleId"></ep-field>
+          </ep-form-content>
           <span comment-uuid="data.tov.tekstiKappale.tunniste">
             <div v-if="isEditing" class="mb-4">
               <ep-toggle v-model="data.tov.liite">{{ $t('nayta-liitteena') }}</ep-toggle>
