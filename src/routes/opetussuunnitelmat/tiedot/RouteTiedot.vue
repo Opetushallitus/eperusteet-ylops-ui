@@ -27,7 +27,7 @@
             </div>
             <div class="col-md-6">
               <ep-form-content name="julkaisukielet">
-                <ep-select help="ops-julkaisukielet-ohje" v-model="data.julkaisukielet" :validation="validation.julkaisukielet" :is-editing="isEditing" :items="kielet" :multiple="true">
+                <ep-select help="ops-julkaisukielet-ohje" v-model="data.julkaisukielet" :validation="validation.julkaisukielet" :is-editing="isEditing" :items="kielet" :multiple="true" :useCheckboxes="true">
                 </ep-select>
               </ep-form-content>
             </div>
@@ -86,9 +86,9 @@
 
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@/components/forms/EpField.vue';
-import EpFormContent from'@/components/forms/EpFormContent.vue';
-import EpSelect from'@/components/forms/EpSelect.vue';
+import EpField from'@shared/components/forms/EpField.vue';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
+import EpSelect from'@shared/components/forms/EpSelect.vue';
 import EpToggle from'@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 

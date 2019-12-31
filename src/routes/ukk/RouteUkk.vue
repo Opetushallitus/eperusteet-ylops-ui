@@ -118,11 +118,11 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpRoute from '@/mixins/EpRoot';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpButton from'@shared/components/EpButton/EpButton.vue';
-import EpFormContent from'@/components/forms/EpFormContent.vue';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
 import EpIcon from'@/components/EpIcon/EpIcon.vue';
 import EpMainView from'@/components/EpMainView/EpMainView.vue';
-import EpSearch from'@/components/forms/EpSearch.vue';
-import EpSelect from'@/components/forms/EpSelect.vue';
+import EpSearch from'@shared/components/forms/EpSearch.vue';
+import EpSelect from'@shared/components/forms/EpSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpToggle from'@shared/components/forms/EpToggle.vue';
 

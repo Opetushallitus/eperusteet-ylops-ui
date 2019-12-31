@@ -14,11 +14,19 @@
       </span>
     </template>
     <template v-slot:header="{ data, validation, isEditing }">
-      <ep-field help="oppiaine-nimi-ohje" v-model="data.nimi" :is-header="true" :validation="validation.nimi" :is-editing="isEditing">
-      </ep-field>
+      <h2>{{ $kaanna(data.nimi) }}</h2>
     </template>
     <template v-slot="{ data, validation, isEditing }">
       <div class="content">
+        <b-row v-if="isEditing">
+          <b-col>
+            <ep-form-content name="oppiaine-nimi-ohje">
+              <ep-field v-model="data.nimi" :is-header="true" :validation="validation.nimi" :is-editing="isEditing">
+              </ep-field>
+            </ep-form-content>
+          </b-col>
+           <b-col />
+        </b-row>
         <b-row>
           <b-col>
             <ep-form-content name="oppiainekoodi">
@@ -88,8 +96,8 @@ import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from'@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@/components/forms/EpField.vue';
-import EpFormContent from'@/components/forms/EpFormContent.vue';
+import EpField from'@shared/components/forms/EpField.vue';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
 import EpOppiaineSelector from'@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from'@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';

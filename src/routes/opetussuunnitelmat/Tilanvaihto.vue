@@ -41,7 +41,7 @@ div(v-else)
 
 <script lang="ts">
 import EpButton from '@/components/EpButton/EpButton.vue';
-import EpInput from '@/components/forms/EpInput.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { sallittuSiirtyma } from '@/utils/tilat';

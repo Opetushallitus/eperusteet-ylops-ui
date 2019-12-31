@@ -9,13 +9,17 @@
       {{ $t('lisaa-uusi-tekstikappale') }}
     </template>
 
-    <ep-field class="mb-5" help="tekstikappale-nimi-ohje" v-model="otsikko" :is-editing="true" />
+    <ep-form-content name="tekstikappale-nimi-ohje">
+      <ep-field class="mb-5" v-model="otsikko" :is-editing="true" />
+    </ep-form-content>
 
-    <ep-select class="mb-5" help="ylaotsikko" v-model="valittuTekstikappale" :items="tekstikappaleet" :is-editing="true">
-      <template slot-scope="{ item }">
-        <span>{{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}</span>
-      </template>
-    </ep-select>
+    <ep-form-content name="ylaotsikko">
+      <ep-select class="mb-5" v-model="valittuTekstikappale" :items="tekstikappaleet" :is-editing="true">
+        <template slot-scope="{ item }">
+          <span>{{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}</span>
+        </template>
+      </ep-select>
+    </ep-form-content>
 
     <template v-slot:modal-cancel>
       {{ $t('peruuta')}}
@@ -35,6 +39,7 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
 import _ from 'lodash';
 import { TekstiKappaleViiteKevytDto, LokalisoituTekstiDto, SideMenuEntry } from '@/tyypit';
 import { OpetussuunnitelmanSisalto } from '@/api';
@@ -44,6 +49,7 @@ import { OpetussuunnitelmanSisalto } from '@/api';
     EpButton,
     EpField,
     EpSelect,
+    EpFormContent,
   },
 })
 export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponent) {

@@ -46,12 +46,12 @@ import { Kieli } from '@shared/tyypit';
 
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpField from '@/components/forms/EpField.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpSelect from '@/components/forms/EpSelect.vue';
+import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpSteps from '@/components/EpSteps/EpSteps.vue';
 import EpRoute from '@/mixins/EpRoute';

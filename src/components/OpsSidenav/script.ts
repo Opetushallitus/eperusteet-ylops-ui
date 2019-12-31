@@ -12,7 +12,7 @@ import {
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import EpSearch from '@/components/forms/EpSearch.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
 
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpSisaltoModaali from './EpSisaltoModaali.vue';

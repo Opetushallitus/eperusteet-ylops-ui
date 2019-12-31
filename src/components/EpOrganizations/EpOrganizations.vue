@@ -106,7 +106,7 @@ import { metadataToTeksti } from '@/utils/organisaatiot';
 import { Ulkopuoliset } from '@/api';
 
 import EpButton from '@/components/EpButton/EpButton.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
