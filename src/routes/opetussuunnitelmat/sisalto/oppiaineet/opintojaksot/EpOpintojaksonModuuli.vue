@@ -1,5 +1,5 @@
 <template>
-<div class="moduulibox" role="button" :class="valittu && 'moduulibox-valittu'" @click="toggle()" @keyup.enter="toggle()" tabindex="0">
+<div class="moduulibox" role="button" :class="valittu && 'moduulibox-valittu'" @click="toggle()" @keyup.enter="toggle()" tabindex="0" :title="moduuliNimi">
   <div class="name">{{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})</div>
   <div class="bottom">
     <div class="d-flex bd-highlight">
@@ -22,34 +22,48 @@
 <script lang="ts">
 import { Mixins, Component, Prop } from 'vue-property-decorator';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { Opetussuunnitelma, OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import { Lops2019OpintojaksonModuuliDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import _ from 'lodash';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {
     EpColorIndicator,
   },
 })
-export default class EpOpintojaksonModuuli extends Mixins(EpRoute, EpOpsRoute) {
+export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
   @Prop({ required: true })
   private moduuli!: Lops2019ModuuliDto;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   private value!: Lops2019OpintojaksonModuuliDto[];
 
   @Prop({ default: false })
   private isEditing!: boolean;
 
+  @Prop({ required: false })
+  private opetussuunnitelmaStore!: OpetussuunnitelmaStore;
+
+  get store() {
+    return this.opetussuunnitelmaStore;
+  }
+
+  get moduuliNimi() {
+    return Kielet.kaanna((this.moduuli as any).nimi);
+  }
+
   private opintojaksot: Lops2019OpintojaksoDto[] = [];
 
   async init() {
-    this.opintojaksot = await this.store.getOpintojaksot({
-      moduuliUri: this.moduuli!.koodi!.uri as string,
-    } as any);
+    if (this.store) {
+      this.opintojaksot = await this.store.getOpintojaksot({
+        moduuliUri: this.moduuli!.koodi!.uri as string,
+      } as any);
+    }
   }
 
   get koodi() {
@@ -112,6 +126,8 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute, EpOpsRoute) {
   }
 
   .name {
+    text-overflow: ellipsis;
+    overflow: hidden;
     font-weight: bold;
     max-height: 76px;
     // overflow: auto;
