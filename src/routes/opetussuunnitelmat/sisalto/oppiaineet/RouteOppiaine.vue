@@ -27,8 +27,9 @@
       </ep-collapse>
       <ep-collapse v-if="oppiaine.oppimaarat && oppiaine.oppimaarat.length > 0">
         <h4 slot="header">{{ $t('oppimaarat') }}</h4>
-        <div class="block-container" v-for="oppimaara in oppiaine.oppimaarat" :key="oppimaara.id">
-          <router-link class="oj-content" :to="{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }">
+        <div class="oppimaarat-topic">{{ $t('oppiaineeseen-kuuluu-useampia-oppimaaria')}}</div>
+        <div class="block-container oppimaarat" v-for="oppimaara in oppiaine.oppimaarat" :key="oppimaara.id">
+          <router-link class="om-content" :to="{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }">
             <span class="nimi">{{ $kaanna(oppimaara.nimi) }}</span>
           </router-link>
         </div>
@@ -182,8 +183,28 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
 </script>
 
 <style lang="scss" scoped>
+@import "@shared/styles/_variables.scss";
+
 .content {
   padding: 20px;
+}
+
+.oppimaarat-topic {
+  padding: 10px 0px;
+  color: $gray-lighten-1;
+}
+
+.oppimaarat {
+
+  &:nth-child(2n) {
+    background-color: #F9F9F9;
+  }
+
+  .om-content {
+    display: flex;
+    padding: 10px 20px;
+  }
+
 }
 
 .oj-content {
@@ -209,9 +230,6 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   span.tyyppi {
     min-width: 6em;
   }
-}
-
-.block-container {
 }
 
 .collapse-container {
