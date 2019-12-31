@@ -49,7 +49,7 @@ import { Prop, Component, Mixins } from 'vue-property-decorator';
 import { RevisionDto } from '@/tyypit';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpValidation from '@/mixins/EpValidation';
 
 @Component({

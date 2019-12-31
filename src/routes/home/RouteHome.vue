@@ -56,7 +56,7 @@ import TileOrganisaatio from './tiles/TileOrganisaatio.vue';
 import TileTiedotteet from './tiles/TileTiedotteet.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpSearch from '@/components/forms/EpSearch.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 

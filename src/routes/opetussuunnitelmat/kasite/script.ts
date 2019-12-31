@@ -10,10 +10,10 @@ import { Kieli } from '@shared/tyypit';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
-import EpSearch from '@/components/forms/EpSearch.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpInput from '@/components/forms/EpInput.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
 import EpToggle from'@shared/components/forms/EpToggle.vue';
 
 interface Kasite {

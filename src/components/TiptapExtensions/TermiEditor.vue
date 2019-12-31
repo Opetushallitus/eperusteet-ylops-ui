@@ -54,9 +54,9 @@
 import { Mixins, Prop, Component } from 'vue-property-decorator';
 import { TermiDto } from '@/tyypit';
 import EpButton from '@/components/EpButton/EpButton.vue';
-import EpField from '@/components/forms/EpField.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
 import EpToggle from'@shared/components/forms/EpToggle.vue';
 import EpValidation from '@/mixins/EpValidation';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
