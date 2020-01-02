@@ -161,7 +161,7 @@ export const kolumniVasen: IconDefinition = {
 export const kommentit: IconDefinition = {
   prefix: 'fas',
   iconName: 'kommentit' as any,
-  icon: [20, 20, [], null as any, 'M18 0H2C.9 0 0 .9 0 2v12a2 2 0 002 2h3v4l5-4h8c1.1 0 2-.9 2-2V2c0-1.1-.9-2-2-2zm0 14H9l-2 2v-2H2V2h16v12zM9 9h7v2H9V9zM4 5h12v2H4V5z'],
+  icon: [20, 18, [], null as any, 'M18 0H2C.9 0 0 .9 0 2v12a2 2 0 002 2h3v4l5-4h8c1.1 0 2-.9 2-2V2c0-1.1-.9-2-2-2zm0 14H9l-2 2v-2H2V2h16v12zM9 9h7v2H9V9zM4 5h12v2H4V5z'],
 };
 
 export const kommentti: IconDefinition = {
