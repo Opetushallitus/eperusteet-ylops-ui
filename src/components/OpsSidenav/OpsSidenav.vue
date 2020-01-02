@@ -7,8 +7,8 @@
   <ul class="navigation flex-fill" v-if="valikkoData.length > 0">
     <ep-recursive-nav :value="valikkoData">
       <template v-slot:previousLink="{ itemData, itemRoute, navigate }">
-        <li class="previous-link">
-          <ops-sidenav-link class="back-btn" tag="span" :click="navigate" :clickParams="false">
+        <li class="previous-link align-items-start">
+          <ops-sidenav-link class="back-btn mt-1" tag="span" :click="navigate" :clickParams="false">
             <fas icon="chevron-left" />
           </ops-sidenav-link>
           <ops-sidenav-link class="previous-link" tag="span" :to="itemRoute">
