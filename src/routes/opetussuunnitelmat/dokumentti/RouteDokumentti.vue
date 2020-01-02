@@ -27,39 +27,9 @@
     div.row
       div.col-lg-6
         div.form-group
-          ep-form-content(name="kansikuva")
-            div(v-if="dto && dto.kansikuva")
-              img.img-fluid(:src="kansikuva")
-              div.row.mt-3
-                div.col-auto.mr-auto
-                div.col-auto
-                  ep-button(@click="removeImage()", variant="danger")
-                    slot(name="poista") {{ $t('poista') }}
-
-            div(v-else)
-              b-form-file(
-                v-model="file",
-                accept="image/jpeg, image/png"
-                :placeholder="placeholder",
-                :drop-placeholder="dropPlaceholder",
-                :browse-text="browseText",
-                @input="onInput")
-
-              div.row.mt-3(v-if="file")
-                div.col-auto.mr-auto.align-self-center
-                  div {{ $t('fu-valittu-tiedosto') }}: {{ file ? file.name : '' }}
-                div.col-auto
-                  div.btn-toolbar
-                    div.btn-group
-                      ep-button(@click="saveImage()")
-                        slot(name="tallenna") {{ $t('tallenna') }}
-                      ep-button(
-                        @click="file = null",
-                        variant="warning")
-                        slot(name="peruuta") {{ $t('peruuta') }}
-
-              img.mt-3.img-fluid(v-if="previewUrl", :src="previewUrl")
-
+          ep-dokumentti-kuva-lataus(tyyppi="kansikuva" :dto="dto" @saveImage="saveImage" @removeImage="removeImage")
+          ep-dokumentti-kuva-lataus(tyyppi="ylatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage")
+          ep-dokumentti-kuva-lataus(tyyppi="alatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage")
 </template>
 
 <script lang="ts">
@@ -73,16 +43,17 @@ import { Component, Watch } from 'vue-property-decorator';
 import { baseURL, Dokumentit, DokumentitParams } from '@/api';
 import { Kielet } from '@shared/stores/kieli';
 import { DokumenttiDto } from '@/generated';
+import EpDokumenttiKuvaLataus from './EpDokumenttiKuvaLataus.vue';
 
 @Component({
   components: {
     EpButton,
     EpFormContent,
     EpSpinner,
+    EpDokumenttiKuvaLataus,
   },
 })
 export default class RouteDokumentti extends EpOpsRoute {
-  private file = null;
   private previewUrl = null;
   private dto: DokumenttiDto | null = null;
   private polling: any = null;
@@ -109,22 +80,6 @@ export default class RouteDokumentti extends EpOpsRoute {
     }
   }
 
-  get kansikuva() {
-    return baseURL + DokumentitParams.getImage(this.opsId, 'kansikuva', this.kieli).url;
-  }
-
-  get placeholder() {
-    return this.$t('fu-placeholder');
-  }
-
-  get dropPlaceholder() {
-    return this.$t('fu-drop-placeholder');
-  }
-
-  get browseText() {
-    return this.$t('fu-browse-text');
-  }
-
   get isPolling() {
     return this.polling != null;
   }
@@ -149,7 +104,6 @@ export default class RouteDokumentti extends EpOpsRoute {
 
   // Alustetaan komponentti
   async init() {
-    this.file = null;
     this.previewUrl = null;
     this.dto = null;
     clearInterval(this.polling);
@@ -203,21 +157,19 @@ export default class RouteDokumentti extends EpOpsRoute {
   }
 
   // Tallennetaan uusi kansikuva
-  private async saveImage() {
-    if (this.file) {
+  private async saveImage(file, tyyppi) {
+    if (file) {
       const formData = new FormData();
-      formData.append('file', this.file!);
-      this.dto = (await Dokumentit.addImage(this.opsId, 'kansikuva', this.kieli, formData)).data;
-      this.file = null;
-      this.previewUrl = null;
+      formData.append('file', file);
+      this.dto = (await Dokumentit.addImage(this.opsId, tyyppi, this.kieli, formData)).data;
     }
   }
 
   // Poistetaan kansikuva
-  private async removeImage() {
-    await Dokumentit.deleteImage(this.opsId, 'kansikuva', this.kieli);
+  private async removeImage(tyyppi) {
+    await Dokumentit.deleteImage(this.opsId, tyyppi, this.kieli);
     if (this.dto) {
-      this.dto.kansikuva = undefined;
+      this.dto[tyyppi] = undefined;
     }
   }
 

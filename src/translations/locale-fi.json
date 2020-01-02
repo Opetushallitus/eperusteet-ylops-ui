@@ -11,6 +11,7 @@
   "aihekokonaisuus-yleiskuvaus-header": "Yleiskuvaus",
   "aihekokonaisuus-yleiskuvaus-placeholder": "Aihekokonaisuuden yleiskuvauksen paikallinen tarkenne...",
   "ajankohta": "Muokkauksen ajankohta",
+  "alatunniste": "Alatunniste",
   "alaviite": "Alaviite",
   "alaviite-ohje": "Jos käsite on merkattu alaviitteeksi, se näytetään myös generoiduissa dokumenteissa.",
   "alaviitteessa": "Alaviitteessä",
@@ -118,9 +119,9 @@
   "etusivu": "Etusivu",
   "faq": "Usein kysytyt kysymykset",
   "fi": "suomi",
-  "fu-browse-text": "Selaa",
+  "fu-browse-text": "Valitse tiedosto",
   "fu-drop-placeholder": "Pudota kuva tähän",
-  "fu-placeholder": "Kuvaa ei ole valittu",
+  "fu-placeholder": "Raahaa ja pudota tiedosto",
   "fu-valittu-tiedosto": "Valittu kuva",
   "hae-koodistosta": "Hae koodistosta",
   "hae-otsikoista": "Hae otsikoista",
@@ -1028,5 +1029,6 @@
   "yleiset-tavoitteet": "Yleiset tavoitteet",
   "ylikirjoita-uusi-sisalto": "Jatka muokkaamista",
   "ylikirjoittaessasi-voit-palauttaa": "Jatkaessasi voit ylikirjoittaa toisten muutokset. Ne säilyvät edelleen muutoshistoriassa ja voit palauttaa ne sieltä",
-  "ylaotsikko": "Yläotsikko"
+  "ylaotsikko": "Yläotsikko",
+  "ylatunniste": "Ylätunniste"
 }
