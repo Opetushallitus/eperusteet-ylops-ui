@@ -34,7 +34,7 @@
               <slot name="tallenna">{{ $t('tallenna') }}</slot>
             </ep-button>
             <b-dropdown class="mx-4"
-                        v-if="dropDownValinnatVisible"
+                        v-if="editointiDropDownValinnatVisible"
                         size="md"
                         variant="link"
                         :disabled="state.disabled"
@@ -60,7 +60,7 @@
               <slot name="muokkaa">{{ $t('muokkaa') }}</slot>
             </ep-button>
             <b-dropdown class="mx-4"
-                        v-if="!ctrls.isEditing"
+                        v-if="katseluDropDownValinnatVisible"
                         size="md"
                         variant="link"
                         :disabled="state.disabled"
@@ -85,7 +85,7 @@
                              v-if="hasKeskusteluSlot"
                              @click="toggleSidebarState(1)"
                              icon="kommentit"
-                             variant="lightblue"></ep-round-button>
+                             variant="lightblue fa-flip-horizontal"></ep-round-button>
             <ep-round-button class="ml-2"
                              :disabled="state.disabled"
                              id="editointi-muokkaus-question"
@@ -197,8 +197,12 @@ export default class EpEditointi extends Mixins(validationMixin) {
     return this.$t('poista-'+this.type);
   }
 
-  get dropDownValinnatVisible() {
-    return this.ctrls!.isEditing && !(!this.hooks.remove || this.state.disabled);
+  get editointiDropDownValinnatVisible() {
+    return this.ctrls!.isEditing && !this.state.disabled && this.hooks.remove;
+  }
+
+  get katseluDropDownValinnatVisible() {
+    return !this.ctrls!.isEditing && !this.state.disabled && (this.hooks.preview || this.hooks.validate || this.hooks.history);
   }
 
   get hasKeskusteluSlot() {
