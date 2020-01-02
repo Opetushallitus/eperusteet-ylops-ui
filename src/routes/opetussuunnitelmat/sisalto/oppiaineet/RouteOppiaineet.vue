@@ -29,11 +29,22 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-3">
-      <div>
-        <ep-button v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" variant="outline-primary" icon="plussa" @click="uusiOppiaine()">{{ $t('paikallinen-oppiaine') }}</ep-button>
-        <ep-button v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" variant="outline-primary" icon="plussa" @click="uusiOpintojakso()">{{ $t('opintojakso') }}</ep-button>
+      <div class="col-md-3">
+        <div>
+          <ep-button
+            class="w-100"
+            v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+            variant="outline-primary"
+            icon="plussa"
+            @click="uusiOppiaine()">{{ $t('paikallinen-oppiaine') }}</ep-button>
+          <ep-button
+            class="w-100"
+            v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+            variant="outline-primary"
+            icon="plussa"
+            @click="uusiOpintojakso()">{{ $t('opintojakso') }}
+          </ep-button>
+        </div>
       </div>
     </div>
     <table class="table table-borderless oppiaineet">
@@ -70,9 +81,9 @@
             </td>
             <td class="actions">
               <button class="btn btn-link" @click="toggleOppiaine(oa)" v-if="oa.oppimaarat && oa.oppimaarat.length === 0">
-                <fas v-if="oa.isOpen" icon="chevron-down">
+                <fas v-if="oa.isOpen" icon="chevron-up">
                 </fas>
-                <fas v-else icon="chevron-up">
+                <fas v-else icon="chevron-down">
                 </fas>
               </button>
             </td>
@@ -451,6 +462,17 @@ table.oppiaineet {
   thead {
     border: none;
   }
+
+  svg[data-icon='chevron-up'], svg[data-icon='chevron-down'] {
+    color: $black;
+  }
+
+  tr {
+    a:hover {
+      text-decoration:underline;
+    }
+  }
+
 
   tr.headerline {
 
