@@ -11,7 +11,7 @@
       <fas :icon="icon" fixed-width />
     </div>
     <slot />
-    <ep-spinner-inline v-if="showSpinner" />
+    <ep-spinner-inline v-if="showSpinner" :link="variant ==='link'"/>
   </button>
   <b-tooltip v-if="help" :target="() => $refs['button-container']">{{ $t(help) }}</b-tooltip>
 </div>
@@ -80,5 +80,6 @@ export default class EpButton extends Vue {
     color: #fff;
     background-color: #3367E3;
   }
+
 }
 </style>
