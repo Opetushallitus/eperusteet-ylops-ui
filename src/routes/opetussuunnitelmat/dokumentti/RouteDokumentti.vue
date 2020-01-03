@@ -11,14 +11,16 @@
         ep-button(
           @click="createDocument",
           :disabled="isPolling",
-          :show-spinner="isPolling")
-          fas.mr-2(icon="cog")
+          :show-spinner="isPolling",
+          variant="link"
+          )
           span {{ $t('luo-uusi-pdf') }}
-        a.btn.btn-secondary(
+        a.btn.btn-link(
           v-if="dto && href",
           :href="href",
           target="_blank",
-          rel="noopener noreferrer")
+          rel="noopener noreferrer",
+          variant="link")
           fas.mr-2(icon="file-download")
           span {{ $t('lataa-pdf') }}
 
@@ -82,24 +84,6 @@ export default class RouteDokumentti extends EpOpsRoute {
 
   get isPolling() {
     return this.polling != null;
-  }
-
-  // Luodaan esikatselukuva kuvan valitsemisen jälkeen
-  private onInput(file: any) {
-    if (file != null) {
-      // Luodaan uusi lukija ja rekisteröidään kuuntelija
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.previewUrl = e.target.result;
-      };
-
-      // Ladataan kuva Base64 muodossa
-      reader.readAsDataURL(file);
-    }
-    else {
-      // Poistetaan kuvan esikatselu
-      this.previewUrl = null;
-    }
   }
 
   // Alustetaan komponentti

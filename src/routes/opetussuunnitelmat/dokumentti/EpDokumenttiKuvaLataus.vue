@@ -88,6 +88,24 @@ export default class EpDokumenttiKuvaLataus extends Vue {
     this.file = null;
   }
 
+  // Luodaan esikatselukuva kuvan valitsemisen jälkeen
+  private onInput(file: any) {
+    if (file != null) {
+      // Luodaan uusi lukija ja rekisteröidään kuuntelija
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.previewUrl = e.target.result;
+      };
+
+      // Ladataan kuva Base64 muodossa
+      reader.readAsDataURL(file);
+    }
+    else {
+      // Poistetaan kuvan esikatselu
+      this.previewUrl = null;
+    }
+  }
+
   async saveImage() {
     this.$emit('saveImage', this.file, this.tyyppi);
   }
@@ -100,7 +118,8 @@ export default class EpDokumenttiKuvaLataus extends Vue {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
 .dokumentit {
 
   .ops-dokumentti-tiedosto-lataus {
@@ -112,7 +131,7 @@ export default class EpDokumenttiKuvaLataus extends Vue {
     border-style: dashed;
     position: relative;
 
-    .custom-file {
+    .custom-file::v-deep{
       height: 200px;
 
       .custom-file-label {
