@@ -23,6 +23,7 @@ import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RoutePoistetut from '@/routes/opetussuunnitelmat/RoutePoistetut.vue';
 import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
+import RouteHallintapaneeli from '@/routes/opetussuunnitelmat/tiedot/RouteHallintapaneeli.vue';
 import RouteJarjestys from '@/routes/opetussuunnitelmat/RouteJarjestys.vue';
 import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
@@ -127,6 +128,10 @@ export const router = new Router({
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
+      }, {
+        path: 'hallinta',
+        component: RouteHallintapaneeli,
+        name: 'hallintapaneeli',
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,
