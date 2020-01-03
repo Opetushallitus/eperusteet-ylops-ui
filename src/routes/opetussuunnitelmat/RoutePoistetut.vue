@@ -4,18 +4,15 @@
       <h2 class="otsikko">{{ $t('poistetut') }}</h2>
     </div>
     <div class="sisalto">
-      <div class="d-flex mb-3">
-        <ep-search v-model="query"></ep-search>
-      </div>
       <b-tabs content-class="mt-3">
         <b-tab :title="$t('opintojaksot')">
-          <poistetut-table :poistetut="opintojaksot" @palauta="palauta" />
+          <poistetut-haku-table :poistetut="opintojaksot" @palauta="palauta" />
         </b-tab>
         <b-tab :title="$t('oppiaineet')">
-          <poistetut-table :poistetut="oppiaineet" @palauta="palauta" />
+          <poistetut-haku-table :poistetut="oppiaineet" @palauta="palauta" />
         </b-tab>
         <b-tab :title="$t('tekstikappaleet')">
-          <poistetut-table :poistetut="tekstikappaleet" @palauta="palauta" />
+          <poistetut-haku-table :poistetut="tekstikappaleet" @palauta="palauta" />
         </b-tab>
       </b-tabs>
     </div>
@@ -29,7 +26,6 @@ import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
-import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
@@ -41,7 +37,7 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import Multiselect from 'vue-multiselect';
-import PoistetutTable from './PoistetutTable.vue';
+import PoistetutHakuTable from './poistetut/PoistetutHakuTable.vue';
 
 
 @Component({
@@ -51,7 +47,6 @@ import PoistetutTable from './PoistetutTable.vue';
     EpColorIndicator,
     EpContent,
     EpEditointi,
-    EpSearch,
     EpFormContent,
     EpInput,
     EpMultiSelect,
@@ -59,47 +54,30 @@ import PoistetutTable from './PoistetutTable.vue';
     EpPrefixList,
     EpSpinner,
     Multiselect,
-    PoistetutTable,
+    PoistetutHakuTable,
   },
 })
 export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private poistetut: Lops2019PoistettuDto[] = [];
-  private query = '';
 
   async init() {
     this.poistetut = await this.store.getPoistetut();
   }
 
-  get rajaus() {
-    return _.chain(this.poistetut)
-      .filter((p) =>
-        Kielet.search(this.query, p.nimi)
-        || Kielet.search(this.query, p.parent))
-      .sortBy('luotu')
-      .value();
-  }
-
   get oppiaineet() {
-    return _.filter(this.rajaus, p => p.tyyppi as string === 'lops2019oppiaine');
+    return _.filter(this.poistetut, p => p.tyyppi as string === 'lops2019oppiaine');
   }
 
   get tekstikappaleet() {
-    return _.filter(this.rajaus, p => p.tyyppi as string === 'tekstikappale');
+    return _.filter(this.poistetut, p => p.tyyppi as string === 'tekstikappale');
   }
 
   get opintojaksot() {
-    return _.filter(this.rajaus, p => p.tyyppi as string === 'opintojakso');
+    return _.filter(this.poistetut, p => p.tyyppi as string === 'opintojakso');
   }
 
   async palauta(poistettu: Lops2019PoistettuDto) {
     await this.store.palauta(poistettu);
-    // this.$router.push({
-    //   name: 'opintojakso',
-    //   params: {
-    //     ...this.$router.currentRoute.params,
-    //     opintojaksoId: '' + poistettu.poistettu_id,
-    //   },
-    // });
   }
 
 }
