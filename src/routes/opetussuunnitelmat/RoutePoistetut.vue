@@ -4,7 +4,7 @@
       <h2 class="otsikko">{{ $t('poistetut') }}</h2>
     </div>
     <div class="sisalto">
-      <b-tabs content-class="mt-3">
+      <b-tabs content-class="mt-3" v-model="tabIndex">
         <b-tab :title="$t('opintojaksot')">
           <poistetut-haku-table :poistetut="opintojaksot" @palauta="palauta" />
         </b-tab>
@@ -20,7 +20,9 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
+
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
@@ -34,8 +36,6 @@ import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Lops2019PoistettuDto } from '@/tyypit';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
-import _ from 'lodash';
-import { Kielet } from '@shared/stores/kieli';
 import Multiselect from 'vue-multiselect';
 import PoistetutHakuTable from './poistetut/PoistetutHakuTable.vue';
 
@@ -59,9 +59,16 @@ import PoistetutHakuTable from './poistetut/PoistetutHakuTable.vue';
 })
 export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private poistetut: Lops2019PoistettuDto[] = [];
+  private tabIndex = 0;
 
   async init() {
     this.poistetut = await this.store.getPoistetut();
+
+    // Ohjataan oikeaan tabiin
+    const route = (this as any).$route;
+    if (route && route.params && route.params.tabIndex) {
+      this.tabIndex = _.parseInt(route.params.tabIndex);
+    }
   }
 
   get oppiaineet() {

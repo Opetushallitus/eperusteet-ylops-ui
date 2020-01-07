@@ -230,11 +230,11 @@ export class OpetussuunnitelmaStore {
   public async removeOppiaine(id: number) {
     await Oppiaineet.removeLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id);
     success('poisto-onnistui-oppiaineen');
-    const idx = _.findIndex(this.opintojaksot, { id });
-    this.opintojaksot = [
-      ..._.slice(this.opintojaksot, 0, idx),
-      ..._.slice(this.opintojaksot, idx + 1),
-    ];
+    const idx = _.findIndex(this.paikallisetOppiaineet, { id });
+    this.paikallisetOppiaineet = [
+      ..._.slice(this.paikallisetOppiaineet, 0, idx),
+      ..._.slice(this.paikallisetOppiaineet, idx + 1),
+    ] as Lops2019PaikallinenOppiaineDto[];
   }
 
   public async removeOpintojakso(id: number) {
@@ -244,7 +244,7 @@ export class OpetussuunnitelmaStore {
     this.opintojaksot = [
       ..._.slice(this.opintojaksot, 0, idx),
       ..._.slice(this.opintojaksot, idx + 1),
-    ];
+    ] as Lops2019OpintojaksoDto[];
   }
 
   public async saveOpintojakso(opintojakso: Lops2019OpintojaksoDto) {
@@ -255,7 +255,7 @@ export class OpetussuunnitelmaStore {
       ..._.slice(this.opintojaksot, 0, idx),
       result,
       ..._.slice(this.opintojaksot, idx + 1),
-    ];
+    ] as Lops2019OpintojaksoDto[];
     return result;
   }
 }

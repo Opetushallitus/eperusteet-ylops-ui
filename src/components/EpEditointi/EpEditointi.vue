@@ -194,7 +194,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
       return this.$t('poista');
     }
 
-    return this.$t('poista-'+this.type);
+    return this.$t('poista-' + this.type);
   }
 
   get editointiDropDownValinnatVisible() {

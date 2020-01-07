@@ -314,7 +314,10 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     if (await this.vahvista()) {
       await this.store.removeOpintojakso(data.id);
       this.$router.push({
-        name: 'oppiaineet',
+        name: 'opsPoistetut',
+        params: {
+          tabIndex: '0',
+        },
       });
     }
   }
@@ -575,13 +578,15 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
     if (await this.isUusi()) {
       const uusi = await this.store.addOpintojakso(opintojakso);
-      this.$router.push({
-        name: 'opintojakso',
-        params: {
-          ...this.$router.currentRoute.params,
-          opintojaksoId: String(uusi.id),
-        },
-      });
+      return () => {
+        this.$router.push({
+          name: 'opintojakso',
+          params: {
+            ...this.$router.currentRoute.params,
+            opintojaksoId: _.toString(uusi.id),
+          },
+        });
+      };
     }
     else {
       await this.store.saveOpintojakso(opintojakso);

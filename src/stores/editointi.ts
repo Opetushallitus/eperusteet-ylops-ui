@@ -231,12 +231,15 @@ export class EditointiKontrolli {
     }
     else if (!!(this.config.source.save)) {
       try {
-        await this.config.source.save(this.mstate.data);
+        const after = await this.config.source.save(this.mstate.data);
         this.logger.success('Tallennettu onnistuneesti');
         await this.fetchRevisions();
         await this.init();
         this.isEditingState = false;
         _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor == this);
+        if (after && _.isFunction(after)) {
+          await after();
+        }
       }
       catch (err) {
         fail('tallennus-epaonnistui', err.response.data.syy);
