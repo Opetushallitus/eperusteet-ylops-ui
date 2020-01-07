@@ -9,6 +9,7 @@ $btn-border-radius: 1.25rem; // 20px
 // Include Bootstrap and BootstrapVue SCSS files
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap-vue/src/index.scss';
+@import '@/styles/_variables.scss';
 
 .modal-content {
 
@@ -35,9 +36,14 @@ $btn-border-radius: 1.25rem; // 20px
     .nav-item {
 
       .nav-link {
-        padding: 0px;
-        margin: 8px 16px;
+        border-radius: 0px;
+        padding: 0px 10px;
+        margin: 8px 10px;
         border-color: #fff;
+      }
+
+      .nav-link:hover:not(.active), .nav-link:focus:not(.active) {
+        background-color: $gray-lighten-6;
       }
 
       .active {
