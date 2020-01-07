@@ -79,5 +79,6 @@ export type TermiDto = GApi.TermiDto;
 export type TilaEnum = GApi.OpetussuunnitelmaInfoDto.TilaEnum;
 export type UusiJulkaisuDto = GApi.UusiJulkaisuDto;
 export type KysymysDto = GApi.KysymysDto;
+export type MuokkaustietoKayttajallaDto = GApi.MuokkaustietoKayttajallaDto;
 
 export default GApi;

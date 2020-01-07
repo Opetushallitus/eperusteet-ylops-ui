@@ -129,7 +129,7 @@ export const router = new Router({
         component: RouteTiedot,
         name: 'opsTiedot',
       }, {
-        path: 'hallinta',
+        path: 'hallintapaneeli',
         component: RouteHallintapaneeli,
         name: 'hallintapaneeli',
       }, {
