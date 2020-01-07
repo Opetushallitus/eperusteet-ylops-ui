@@ -193,7 +193,16 @@ export default class OpsSidenav extends EpOpsComponent {
   }
 
   private haeKoodi(item: SideMenuItem) {
-    return _.get(item, 'objref.koodi.arvo', '');
+    const koodi = _.get(item, 'objref.koodi.arvo', '');
+    if (!_.isEmpty(koodi)) {
+      return koodi;
+    }
+    else {
+      // Paikallisten oppiaineiden koodin muoto
+      const arvo = _.get(item, 'objref.koodi', '');
+      return _.isString(arvo) ? arvo : '';
+    }
+
   }
 
   get valikkoDataBasics() {
