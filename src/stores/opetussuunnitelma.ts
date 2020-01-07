@@ -180,7 +180,9 @@ export class OpetussuunnitelmaStore {
       ..._.slice(this.paikallisetOppiaineet, 0, idx),
       result,
       ..._.slice(this.paikallisetOppiaineet, idx + 1),
-    ];
+    ] as Lops2019PaikallinenOppiaineDto[];
+    // Oppiaineen koodin vaihtaminen tekee muutoksen opintojakson oppiaineen koodeihin
+    this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
     return result;
   }
 
