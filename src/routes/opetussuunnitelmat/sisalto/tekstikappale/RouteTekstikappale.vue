@@ -130,7 +130,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   async remove(data: any) {
     await this.store.removeTeksti(data.tov);
     this.$router.push({
-      name: 'opsTiedot',
+      name: 'opsPoistetut',
+      params: {
+        tabIndex: '2',
+      },
     });
   }
 

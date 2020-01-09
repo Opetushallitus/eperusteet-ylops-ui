@@ -146,6 +146,9 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
     await this.store.removeOppiaine(data.id);
     this.$router.push({
       name: 'opsPoistetut',
+      params: {
+        tabIndex: '1',
+      },
     });
   }
 
@@ -217,12 +220,14 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
   async save(oppiaine: Lops2019PaikallinenOppiaineDto) {
     if (await this.editAfterLoad()) {
       const oa = await this.store.addOppiaine(oppiaine);
-      this.$router.push({
-        name: 'paikallinenOppiaine',
-        params: {
-          paikallinenOppiaineId: '' + oa.id,
-        },
-      });
+      return () => {
+        this.$router.push({
+          name: 'paikallinenOppiaine',
+          params: {
+            paikallinenOppiaineId: _.toString(oa.id),
+          },
+        });
+      };
     }
     else {
       await this.store.savePaikallinenOppiaine(oppiaine);

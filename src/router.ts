@@ -223,7 +223,6 @@ window.addEventListener('beforeunload', e => {
 // Estetään tilan vaihtaminen muokkaustilassa
 router.beforeEach(async (to, from, next) => {
   if (EditointiKontrolli.anyEditing()) {
-
     const value = await router.app.$bvModal.msgBoxConfirm(
       Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'),
       {
