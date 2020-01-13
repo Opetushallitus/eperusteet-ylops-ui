@@ -63,7 +63,7 @@ describe('Router', () => {
             fi: '2234nimi'
           },
         }
-      ]))
+      ]));
 
     jest.spyOn(Ulkopuoliset, 'getOrganisaatioVirkailijat')
       .mockImplementation(async () => makeAxiosResponse([]));
