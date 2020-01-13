@@ -192,6 +192,7 @@
             </div>
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+
             <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
               <div slot="header" class="moduuliotsikko">
                 <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
@@ -270,9 +271,9 @@ import EpOpintojaksonModuuli from './EpOpintojaksonModuuli.vue';
 import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@shared/stores/kieli';
 import * as defaults from '@/defaults';
-import { getLaajaAlaisetKoodit } from '@/utils/perusteet';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
-import { koodiSorters } from '@/utils/perusteet';
+import { KoodistoLops2019LaajaAlaiset, koodiSorters } from '@/utils/perusteet';
+import { Opetussuunnitelmat } from '@/api';
 
 
 @Component({
@@ -298,6 +299,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private oppiaineQuery = '';
   private editable: Lops2019OpintojaksoDto | null = null;
   private cache!: PerusteCache;
+  private laajaAlaisetKoodit: any | null = null;
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: this.isUusi,
     remove: this.remove,
@@ -309,6 +311,10 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       revisions: this.revisions,
     },
   };
+
+  get laajaAlaisetSorted() {
+    return _.sortBy(this.laajaAlaisetKoodit, 'koodiArvo');
+  }
 
   async remove(data: any) {
     if (await this.vahvista()) {
@@ -337,6 +343,14 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   async init() {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+    try {
+      this.laajaAlaisetKoodit = (await Opetussuunnitelmat.getKoodistonKoodit(
+        this.opsId,
+        KoodistoLops2019LaajaAlaiset)).data;
+    }
+    catch (err) {
+      console.error(err);
+    }
   }
 
   get validator() {
@@ -347,8 +361,9 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   get laajaAlaistenKoodit() {
     const lisatyt = _.map(this.editable!.laajaAlainenOsaaminen!, 'koodi');
-    return _.map(getLaajaAlaisetKoodit(), lo => ({
-      ...lo,
+    return _.map(this.laajaAlaisetKoodit, lo => ({
+      koodi: lo.koodiUri,
+      nimi: lo.nimi,
       hasPaikallinenKuvaus: _.includes(lisatyt, lo.koodi),
     }));
   }
