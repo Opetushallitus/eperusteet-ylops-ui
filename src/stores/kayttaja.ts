@@ -40,7 +40,7 @@ const logger = createLogger('Kayttaja');
 @Store
 class KayttajaStore {
   @State()
-  public organisaatiot: string[] = [];
+  public organisaatiot: any[] = [];
 
   @State()
   public tiedot: KayttajanTietoDto = { };
@@ -61,7 +61,7 @@ class KayttajaStore {
     try {
       logger.info('Haetaan käyttäjän tiedot');
       this.tiedot = (await KayttajatApi.getKayttaja()).data;
-      this.organisaatiot = (await KayttajatApi.getOrganisaatioOikeudet()).data;
+      this.organisaatiot = (await Ulkopuoliset.getUserOrganisations()).data;
       const oikeudet = (await Opetussuunnitelmat.getOikeudet()).data;
       this.oikeudet = (oikeudet as any);
       logger.info('Käyttäjän tiedot', this.tiedot);
@@ -72,9 +72,44 @@ class KayttajaStore {
     }
   }
 
-  public async updateOrganisaatioVirkailijat() {
-    const orgIds = _.filter(this.organisaatiot, oid => oid !== organizations.oph.oid);
+  public async fetchOrganisaatioVirkailijat() {
+    const orgIds = _(this.organisaatiot)
+      .filter(org => org.oid !== organizations.oph.oid)
+      .map(org => org.oid)
+      .value();
     this.virkailijat = (await Ulkopuoliset.getOrganisaatioVirkailijat(orgIds)).data as any[];
+  }
+
+  public async fetchVirkailijatByOrganisaatio() {
+    const res = await Promise.all(_(this.organisaatiot)
+      .filter(org => org.oid !== organizations.oph.oid)
+      .map(org => org.oid)
+      .map(oid => Ulkopuoliset.getOrganisaatioVirkailijat([oid]))
+      .value());
+    const unwrapped = _(res)
+      .map(el => el.data)
+      .value();
+
+    let virkailijat: any[] = [];
+    for (let i = 0; i < unwrapped.length; i++) {
+      const organisaatio =  this.organisaatiot[i];
+      const orgVirkailijat = unwrapped[i];
+      _.each(orgVirkailijat, virkailija => {
+        const oid = virkailija.oid;
+        if (_.includes(virkailijat, { oid })) {
+          const virkailija = _.find(virkailijat, { oid });
+          virkailija.organisaatiot.push(organisaatio);
+        }
+        else {
+          virkailijat.push({
+            ...virkailija,
+            organisaatiot: [organisaatio],
+          });
+        }
+      });
+    }
+
+    this.virkailijat = virkailijat;
   }
 
   public async hasOikeus(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {

@@ -41,7 +41,7 @@ export default class TileOrganisaatio extends Vue {
 
   async mounted() {
     try {
-      await Kayttajat.updateOrganisaatioVirkailijat();
+      await Kayttajat.fetchOrganisaatioVirkailijat();
     }
     finally {
       this.isLoading = false;
