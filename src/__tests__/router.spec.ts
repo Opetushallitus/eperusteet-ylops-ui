@@ -49,6 +49,22 @@ describe('Router', () => {
         '2234',
       ]));
 
+    jest.spyOn(Ulkopuoliset, 'getUserOrganisations')
+      .mockImplementation(async () => makeAxiosResponse([
+        {
+          oid: '1234',
+          nimi: {
+            fi: '1234nimi'
+          },
+        },
+        {
+          oid: '2234',
+          nimi: {
+            fi: '2234nimi'
+          },
+        }
+      ]))
+
     jest.spyOn(Ulkopuoliset, 'getOrganisaatioVirkailijat')
       .mockImplementation(async () => makeAxiosResponse([]));
 
