@@ -81,19 +81,16 @@ class KayttajaStore {
   }
 
   public async fetchVirkailijatByOrganisaatio() {
-    const res = await Promise.all(_(this.organisaatiot)
+    const res = _.map(await Promise.all(_(this.organisaatiot)
       .filter(org => org.oid !== organizations.oph.oid)
       .map(org => org.oid)
       .map(oid => Ulkopuoliset.getOrganisaatioVirkailijat([oid]))
-      .value());
-    const unwrapped = _(res)
-      .map(el => el.data)
-      .value();
+      .value()), 'data');
 
     let virkailijat: any[] = [];
-    for (let i = 0; i < unwrapped.length; i++) {
+    for (let i = 0; i < res.length; i++) {
       const organisaatio =  this.organisaatiot[i];
-      const orgVirkailijat = unwrapped[i];
+      const orgVirkailijat = res[i];
       _.each(orgVirkailijat, virkailija => {
         const oid = virkailija.oid;
         if (_.includes(virkailijat, { oid })) {
@@ -108,7 +105,6 @@ class KayttajaStore {
         }
       });
     }
-
     this.virkailijat = virkailijat;
   }
 
