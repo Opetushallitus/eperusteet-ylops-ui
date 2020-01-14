@@ -20,6 +20,7 @@ import {
   TermistoApi,
   UlkopuolisetApi,
   MuokkaustietoApi,
+  AikatauluApi,
 } from '@/generated/api';
 
 axios.defaults.headers.common['Caller-Id'] = '1.2.246.562.10.00000000001.eperusteet';
@@ -97,6 +98,7 @@ export const Oppiaineet = initApi(Lops2019OppiaineetApi);
 export const Termisto = initApi(TermistoApi);
 export const Ulkopuoliset = initApi(UlkopuolisetApi);
 export const Muokkaustieto = initApi(MuokkaustietoApi);
+export const Aikataulu = initApi(AikatauluApi);
 
 export const DokumentitParams = DokumentitApiAxiosParamCreator(configuration);
 
