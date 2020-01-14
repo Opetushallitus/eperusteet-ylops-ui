@@ -66,5 +66,8 @@ img.content-image {
   h5 { font-size: 1.125rem; }
   h6 { font-size: 1.0rem; }
 
+  div.mx-datepicker-popup {
+    z-index: 5000;
+  }
 }
 

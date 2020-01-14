@@ -121,7 +121,7 @@ export default class OpsViimeaikainenToiminta extends Vue {
       ];
     }
     else {
-      this.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedot(this.ops.id!, this.hakuLukumaara) as any).data;
+      this.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.ops.id!, undefined, this.hakuLukumaara) as any).data;
     }
 
   }
