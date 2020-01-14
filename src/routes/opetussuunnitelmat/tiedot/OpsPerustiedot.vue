@@ -91,7 +91,7 @@ export default class OpsPerustiedot extends Vue {
   }
 
   async init() {
-    await Kayttajat.updateOrganisaatioVirkailijat();
+    await Kayttajat.fetchOrganisaatioVirkailijat();
   }
 
   private get virkailijat() {
