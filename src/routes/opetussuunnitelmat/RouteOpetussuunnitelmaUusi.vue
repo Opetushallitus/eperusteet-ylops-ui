@@ -9,7 +9,7 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
   fieldset.form-group
     .row
       legend.col-form-label.col-sm-2.pt-0 {{ $t('opetussuunnitelman-pohjatyyppi') }}:
-      .col-sm-10
+      .col-sm-10.mb-4
         .form-check
           input.form-check-input(
             id="uusi-ops-pohjavalinta-1"
@@ -33,11 +33,12 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
         div(v-if="pohjat")
           ep-form-content(v-if="pohjat.length > 0", name="uusi-ops-pohja")
             ep-select(
-              help="uusi-ops-pohja-ohje",
               v-model="uusi.pohja",
               :items="pohjat",
               :validation="$v.uusi.pohja",
-              :is-editing="true")
+              :is-editing="true",
+              help="uusi-ops-pohja-ohje",
+              placeholder="valitse-opetussuunnitelman-pohja")
               template(slot-scope="{ item }")
                 span {{ $kaanna(item.nimi) }} ({{ item.perusteenDiaarinumero }})
           div(v-else)
@@ -54,16 +55,17 @@ ep-main-view(:tutoriaalistore="tutoriaalistore")
         :validation="$v.uusi.nimi",
         :is-editing="true")
 
-    hr
-    ep-organizations(
-      :validation="$v.uusi.organisaatiot",
-      :koulutustyyppi="koulutustyyppi",
-      v-model="uusi.organisaatiot")
+    div(v-if="uusi.pohja")
+      hr
+      ep-organizations(
+        :validation="$v.uusi.organisaatiot",
+        :koulutustyyppi="koulutustyyppi",
+        v-model="uusi.organisaatiot")
 
-    ep-button(
-      :disabled="$v.uusi.$invalid || addingOpetussuunnitelma",
-      @click="luoUusiOpetussuunnitelma",
-      :show-spinner="isLoading") {{ $t('luo-opetussuunnitelma') }}
+      ep-button(
+        :disabled="$v.uusi.$invalid || addingOpetussuunnitelma",
+        @click="luoUusiOpetussuunnitelma",
+        :show-spinner="isLoading") {{ $t('luo-opetussuunnitelma') }}
 
 </template>
 
@@ -157,6 +159,16 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   @Watch('oletuspohjasta')
   oletuspohjavalintaMuutos() {
     this.uusi.pohja = null;
+  }
+
+  @Watch('uusi.pohja')
+  uusiPohjaMuutos() {
+    this.uusi.organisaatiot = {
+      jarjestajat: [],
+      oppilaitokset: [],
+      kunnat: [],
+    };
+    console.log('uusiPohjaMuutos', this.uusi);
   }
 
   protected async init() {

@@ -97,7 +97,7 @@
 
 <script lang="ts">
 import * as _ from 'lodash';
-import { Component, Prop, Mixins } from 'vue-property-decorator';
+import { Component, Prop, Mixins, Watch } from 'vue-property-decorator';
 
 import { minLength, required } from 'vuelidate/lib/validators';
 import { Kielet } from '@shared/stores/kieli';
@@ -132,8 +132,8 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   @Prop({ required: true })
   value!: ValueType;
 
-  @Prop({ required: false })
-  koulutustyyppi: string | null = null;
+  @Prop({ default: null })
+  koulutustyyppi!: string | null;
 
   kayttajanOrganisaatiot: any = {};
   kunnat: any[] = [];
@@ -239,6 +239,13 @@ export default class EpOrganizations extends Mixins(EpValidation) {
       .reject(_.isNull)
       .keyBy('oid')
       .value();
+  }
+
+  @Watch('value', { immediate: true })
+  onValueChange(value) {
+    this.valitutKunnat = value.kunnat;
+    this.valitutJarjestajat = value.jarjestajat;
+    this.valitutOppilaitokset = value.oppilaitokset;
   }
 
   mounted() {
