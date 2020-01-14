@@ -143,6 +143,7 @@ library.add(oph.vakanenAlas);
 library.add(oph.vakanenAlas);
 library.add(oph.yhdistaSolut);
 library.add(oph.yliviivaus);
+library.add(oph.vakanenOikea);
 
 Vue.component('fas', FontAwesomeIcon);
 Vue.component('fal', FontAwesomeLayers);

@@ -5,6 +5,15 @@
     <ep-search v-model="query"/>
   </div>
   <ul class="navigation flex-fill" v-if="valikkoData.length > 0">
+
+    <li class="p-0">
+      <router-link :to="{name: 'hallintapaneeli'}">
+        <div class="hallintapaneeli">
+          <span>{{$t('hallintapaneeli')}}</span>
+        </div>
+      </router-link>
+    </li>
+
     <ep-recursive-nav :value="valikkoData">
       <template v-slot:previousLink="{ itemData, itemRoute, navigate }">
         <li class="previous-link align-items-start">
