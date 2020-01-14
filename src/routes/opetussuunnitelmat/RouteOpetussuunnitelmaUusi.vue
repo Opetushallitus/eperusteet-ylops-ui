@@ -168,7 +168,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       oppilaitokset: [],
       kunnat: [],
     };
-    console.log('uusiPohjaMuutos', this.uusi);
   }
 
   protected async init() {

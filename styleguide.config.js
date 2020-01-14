@@ -16,7 +16,6 @@ module.exports = {
       'src/components/EpKaanna/EpKaanna.vue',
       'src/components/EpInfo/EpInfo.vue',
       'src/components/EpIcon/EpIcon.vue',
-      'src/components/EpLinkki.vue',
       'src/components/EpProgress.vue',
     ],
   }, {

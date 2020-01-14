@@ -16,7 +16,7 @@
       <ep-form-content name="peruste">
         <ep-select help="ops-peruste-ohje" v-model="uusi.valittuPeruste" :items="valittavat" :validation="$v.uusi.valittuPeruste" :is-editing="true">
           <template slot-scope="{ item }">
-            <span>{{ $kaanna(item.nimi) }} ({{ item.diaarinumero }})</span>
+            {{ $kaanna(item.nimi) }} ({{ item.diaarinumero }})
           </template>
         </ep-select>
       </ep-form-content>
