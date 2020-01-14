@@ -56,7 +56,6 @@ export function paikallisestiSallitutLaajennokset() {
 const splitKoodi = _.memoize((arvo: string) => {
   if (_.isString(arvo) && !_.isEmpty(arvo)) {
     const splitattu = arvo.match(/^([^0-9]*?)(\d+$)/);
-
     if(splitattu && splitattu.length > 2) {
       return [splitattu[1], Number(splitattu[2])];
     }

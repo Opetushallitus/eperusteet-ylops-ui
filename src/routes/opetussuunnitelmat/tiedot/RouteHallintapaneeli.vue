@@ -12,11 +12,11 @@
       </div>
     </div>
 
-    <!-- <div class="row">
+    <div class="row">
       <div class="col">
-        <ops-aikataulu class="info-box"/>
+        <ops-aikataulu :ops="ops" class="info-box"/>
       </div>
-    </div> -->
+    </div>
 
   </div>
 </template>
