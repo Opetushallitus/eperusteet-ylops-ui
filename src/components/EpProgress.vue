@@ -3,12 +3,17 @@
     class="ep-progress"
     placement="'bottom'"
     id="tila-popover">
-    <div>
+    <div v-if="hasValidation">
       <svg viewBox="0 0 100 100" class="vaiheet">
         <circle
           v-for="(v, idx) in slices" :key="idx"
           r="50%" cx="50%" cy="50%"
           :style="'stroke: rgba(91, 202, 19, ' + (v || 0.2) + ');' + 'stroke-dasharray: ' + segmentLength + ' ' + 314.15 + '; stroke-dashoffset: ' + (-idx * gapLength - 2)" />
+      </svg>
+    </div>
+    <div v-else>
+      <svg viewBox="0 0 100 100" class="vaiheet">
+        <circle r="50%" cx="50%" cy="50%" stroke="rgba(91, 202, 19, 1)"/>
       </svg>
     </div>
 
@@ -47,12 +52,16 @@ export default class EpProgress extends Vue {
   }
 
   get segmentLength() {
-    // 2 * Pi * 50% * 100 * <segment length>
-    return (this.size - this.gap) * 3.1415 * 0.5 * 2 * 100;
+    // 2 * PI * 50% * 100 * <segment length>
+    return (this.size - this.gap) * Math.PI * 0.5 * 2 * 100;
   }
 
   get gapLength() {
-    return this.size * 3.1415 * 0.5 * 2 * 100;
+    return this.size * Math.PI * 0.5 * 2 * 100;
+  }
+
+  get hasValidation() {
+    return this.total !== 0;
   }
 
   get size() {
