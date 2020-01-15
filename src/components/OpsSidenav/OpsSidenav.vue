@@ -7,9 +7,9 @@
   <ul class="navigation flex-fill" v-if="valikkoData.length > 0">
 
     <li class="p-0">
-      <router-link :to="{name: 'hallintapaneeli'}">
+      <router-link :to="{name: 'yleisnakyma'}">
         <div class="hallintapaneeli">
-          <span>{{$t('hallintapaneeli')}}</span>
+          <span>{{$t('yleisnakyma')}}</span>
         </div>
       </router-link>
     </li>
