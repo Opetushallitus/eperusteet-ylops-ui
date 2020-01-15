@@ -6,8 +6,8 @@
           :disabled="disabled || showSpinner"
           @click="$emit('click')">
     <div v-if="icon"
-         class="float-left mr-2"
-         :class="isOutline && 'icon'">
+         :class="[iconClass, isOutline && 'icon']"
+         >
       <fas :icon="icon" fixed-width />
     </div>
     <slot />
@@ -35,12 +35,18 @@ export default class EpButton extends Vue {
   @Prop({ default: '' })
   private icon!: string;
 
+  @Prop({ default: ''})
+  private buttonClass!: string;
+
+  @Prop({ default: 'float-left mr-2'})
+  private iconClass!: string;
+
   get isOutline() {
     return _.startsWith(this.variant, 'outline');
   }
 
   get variantClass() {
-    let result = 'btn-' + this.variant;
+    let result = this.buttonClass + ' btn-' + this.variant;
     if (this.isOutline) {
       result = 'no-outline ' + result;
     }

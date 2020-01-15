@@ -129,9 +129,9 @@ export const router = new Router({
         component: RouteTiedot,
         name: 'opsTiedot',
       }, {
-        path: 'hallintapaneeli',
+        path: 'yleisnakyma',
         component: RouteHallintapaneeli,
-        name: 'hallintapaneeli',
+        name: 'yleisnakyma',
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,
