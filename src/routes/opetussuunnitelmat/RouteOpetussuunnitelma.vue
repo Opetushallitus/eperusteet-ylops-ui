@@ -8,7 +8,7 @@
           <b-button v-if="!isPohja"
                     variant="primary"
                     :to="{ name: 'opsJulkaisu' }"
-                    class="mb-2">{{ $t('siirry-julkaisunakymaan') }}</b-button>
+                    :class="{ 'mb-2': !isEmptyValidation }">{{ $t('siirry-julkaisunakymaan') }}</b-button>
           <div v-if="validation">
             <table class="category-table">
               <tr v-for="c in validationStats.categories" :key="c.category">
@@ -126,6 +126,10 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
   get slices() {
     return _.map(this.validationStats.categories, c => c.ok / c.total);
+  }
+
+  get isEmptyValidation() {
+    return _.isEmpty(this.validationStats.categories);
   }
 
   get validationStats() {

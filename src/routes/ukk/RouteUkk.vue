@@ -90,7 +90,7 @@
             :items="organisaatiot"
             :multiple="true">
             <template slot-scope="{ item }">
-              <span>{{ $kaanna(item.nimi) }}</span>
+              {{ $kaanna(item.nimi) }}
             </template>
           </ep-select>
         </ep-form-content>

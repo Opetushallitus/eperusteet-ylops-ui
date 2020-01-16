@@ -90,6 +90,9 @@ export class OpetussuunnitelmaStore {
       }
       return result;
     }
+    else {
+      return {};
+    }
 
     return null;
   }

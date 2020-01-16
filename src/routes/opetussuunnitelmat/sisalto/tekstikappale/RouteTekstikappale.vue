@@ -23,8 +23,7 @@
       </template>
       <template slot-scope="{ isEditing, data }">
         <div class="teksti">
-
-          <ep-form-content v-if="isEditing" name="tekstikappale-nimi-ohje">
+          <ep-form-content v-if="isEditing && !data.tov.perusteTekstikappaleId" name="tekstikappale-nimi-ohje">
             <ep-field v-if="data.tov.tekstiKappale"
                       v-model="data.tov.tekstiKappale.nimi"
                       :is-header="true"
@@ -34,7 +33,7 @@
             <div v-if="isEditing" class="mb-4">
               <ep-toggle v-model="data.tov.liite">{{ $t('nayta-liitteena') }}</ep-toggle>
             </div>
-            <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa" :first="true">
+            <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa" :first="isEditing">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
               <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)">
               </p>

@@ -5,13 +5,13 @@ footer
       .col-lg.col-slot
         img(src="../../../public/img/banners/oph_logo.svg", slot="footer-logo")
       .col-md.col-slot
-        b {{ $t('opetushallitus') }}
+        p.linkki-kuvaus {{ $t('opetushallitus') }}
         ep-linkki(:url="$kaanna(linkit.oph)", icon="ulkoinen-linkki")
       .col-md.col-slot
-        b {{ $t('opintopolku') }}
+        p.linkki-kuvaus {{ $t('opintopolku') }}
         ep-linkki(:url="$kaanna(linkit.opintopolku)", icon="ulkoinen-linkki")
       .col-md.col-slot
-        b {{ $t('eperusteet') }}
+        p.linkki-kuvaus {{ $t('eperusteet') }}
         ep-linkki(:url="$kaanna(linkit.eperusteet)", icon="ulkoinen-linkki")
       .col-md.col-slot
         a(:href="$kaanna(linkit.seloste)") {{ $t('tietosuojaseloste') }}
@@ -20,7 +20,7 @@ footer
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import EpLinkki from '@/components/EpLinkki.vue';
+import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 
 
 @Component({
@@ -72,6 +72,10 @@ footer {
       align-items: center;
       .col-slot {
         padding: 16px;
+        p {
+          margin: 0;
+          font-weight: 600;
+        }
       }
     }
 

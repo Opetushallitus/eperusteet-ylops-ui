@@ -46,34 +46,26 @@
         </b-dropdown-item>
       </b-nav-item-dropdown>
 
-      <!-- Käyttöliittymän kieli-->
-      <b-nav-item-dropdown id="ui-lang-selector" right v-tutorial>
-        <template slot="button-content">
-          <span class="kielivalitsin">{{ $t("kieli") }}: {{ uiKieli }}</span>
-        </template>
-        <b-dropdown-item @click="valitseUiKieli(kieli)"
-                         v-for="kieli in sovelluksenKielet"
-                         :key="kieli"
-                         :disabled="kieli === uiKieli">
-          {{ kieli }}
-        </b-dropdown-item>
-      </b-nav-item-dropdown>
+      <ep-kayttaja :tiedot="tiedot" />
+
     </b-navbar-nav>
   </b-navbar>
 </div>
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import Sticky from 'vue-sticky-directive';
 import { Kieli } from '@shared/tyypit';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import Sticky from 'vue-sticky-directive';
-import _ from 'lodash';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+import { Kayttajat } from '@/stores/kayttaja';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
+import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
 
 
 @Component({
@@ -84,6 +76,7 @@ import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
   components: {
     EpRoundButton,
     EpButton,
+    EpKayttaja,
   },
 })
 export default class EpNavigation extends Vue {
@@ -96,12 +89,12 @@ export default class EpNavigation extends Vue {
   @Prop({ required: false })
   private tutoriaalistore!: TutoriaaliStore | undefined;
 
-  get murut() {
-    return Murupolku.murut;
+  get tiedot() {
+    return Kayttajat.tiedot;
   }
 
-  get uiKieli() {
-    return Kielet.getUiKieli;
+  get murut() {
+    return Murupolku.murut;
   }
 
   get sisaltoKieli() {
@@ -133,20 +126,6 @@ export default class EpNavigation extends Vue {
 
   private kaynnistaTutoriaali() {
     this.tutoriaalistore!.setActive(true);
-  }
-
-  private valitseUiKieli(kieli: Kieli) {
-    const router = this.$router;
-    const current: any = router.currentRoute;
-    Kielet.setUiKieli(kieli);
-    const next = {
-      ...current,
-      params: {
-        ...current.params,
-        lang: kieli || this.$i18n.fallbackLocale,
-      },
-    };
-    router.push(next).catch(_.noop);
   }
 
   private valitseSisaltoKieli(kieli: Kieli) {

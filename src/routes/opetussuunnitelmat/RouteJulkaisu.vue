@@ -74,8 +74,12 @@
     <ep-collapse tyyppi="uusi-julkaisu">
       <h3 slot="header"> {{ $t('uusi-julkaisu') }}</h3>
       <div v-if="true || isValid">
-        <ep-content opetussuunnitelma-store="opetussuunnitelmaStore" v-model="uusiJulkaisu.julkaisutiedote" help="uuden-julkaisun-tiedote" layout="simplified" :is-editable="true">
-        </ep-content>
+        <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
+                    v-model="uusiJulkaisu.julkaisutiedote"
+                    help="uuden-julkaisun-tiedote"
+                    layout="simplified"
+                    :is-editable="true"
+                    class="mb-4" />
         <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'">{{ $t('julkaise') }}</ep-button>
       </div>
       <div class="alert alert-warning" v-else>{{ $t('opetussuunnitelman-tarkistukset-julkaisu') }}</div>
