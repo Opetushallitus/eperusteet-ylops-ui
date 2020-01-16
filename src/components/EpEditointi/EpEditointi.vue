@@ -164,6 +164,7 @@ import _ from 'lodash';
 import { Watch, Component, Mixins, Prop } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
 import Sticky from 'vue-sticky-directive';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
 import {
   editointi,
@@ -190,6 +191,7 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
   },
   directives: {
     Sticky,
+    oikeustarkastelu,
   },
   components: {
     EpButton,
