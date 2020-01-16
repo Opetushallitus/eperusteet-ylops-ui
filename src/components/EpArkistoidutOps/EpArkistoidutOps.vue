@@ -5,15 +5,21 @@
     </fas>
     <span>{{ $t(title) }}</span>
   </ep-button>
-  <b-modal ref="arkistoidutOpsModal" id="arkistoidutopetussuunnitelmatmodal" size="lg" ok-only>
-    <template v-slot:modal-title>
-      {{ $t(title) }} ({{arkistoidut.length}})
-    </template>
-
+  <b-modal ref="arkistoidutOpsModal"
+           id="arkistoidutopetussuunnitelmatmodal"
+           size="lg"
+           :title="$t(title) + ' (' + arkistoidut.length + ')'"
+           :hide-footer="true">
     <div class="search">
       <ep-search v-model="query" />
     </div>
-    <b-table borderless striped :items="arkistoidut" :fields="fields" :current-page="currentPage" :per-page="perPage">
+    <b-table responsive
+             borderless
+             striped
+             :items="arkistoidut"
+             :fields="fields"
+             :current-page="currentPage"
+             :per-page="perPage">
 
       <template v-slot:cell(nimi)="data">
         {{ $kaanna(data.value) }}
@@ -24,7 +30,11 @@
       </template>
 
       <template v-slot:cell(siirtyminen)="data">
-        <router-link tag="a" :to="{ name: 'opsTiedot', params: { id: data.value } }" :key="data.value"> {{ $t('siirry-tarkastelemaan') }}</router-link>
+        <ep-button variant="link"
+                   icon="peruuta"
+                   @click="$emit('restore', data.item)">
+          {{ $t('palauta') }}
+        </ep-button>
       </template>
 
     </b-table>
@@ -36,24 +46,19 @@
       aria-controls="arkistoidut-opetussuunnitelmat"
       align="center">
     </b-pagination>
-
-    <template v-slot:modal-ok>
-      {{ $t('valmis')}}
-    </template>
-
   </b-modal>
 </div>
 </template>
 
 <script lang="ts">
-import { Prop, Component, Vue, Mixins } from 'vue-property-decorator';
-import EpButton from '@/components/EpButton/EpButton.vue';
 import _ from 'lodash';
+import { Prop, Component, Vue } from 'vue-property-decorator';
+
 import { OpetussuunnitelmaInfoDto } from '../../generated';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
-import EpSearch from '@shared/components/forms/EpSearch.vue';
 import { Kielet } from '@shared/stores/kieli';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+
 
 @Component({
   components: {
@@ -75,12 +80,6 @@ export default class EpArkistoidutOps extends Vue {
 
   get arkistoidut() {
     return _.chain(this.opetussuunnitelmat)
-      .map((ops) => ({
-        nimi: ops.nimi,
-        muokattu: ops.muokattu,
-        arkistoija: ops.muokkaaja,
-        siirtyminen: ops.id,
-      }))
       .filter(ops => Kielet.search(this.query, ops.nimi))
       .orderBy('muokattu', 'desc')
       .value();

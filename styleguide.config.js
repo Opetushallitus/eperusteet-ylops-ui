@@ -10,7 +10,6 @@ module.exports = {
     description: '',
     components: [
       'src/components/EpCollapse/EpCollapse.vue',
-      'src/components/EpButton/EpButton.vue',
       'src/components/EpPRefixList/EpPRefixList.vue',
       'src/components/EpSpinner/EpSpinner.vue',
       'src/components/EpKaanna/EpKaanna.vue',

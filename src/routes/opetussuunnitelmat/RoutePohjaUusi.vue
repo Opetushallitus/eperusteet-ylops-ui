@@ -44,7 +44,7 @@ import { success } from '@/utils/notifications';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kieli } from '@shared/tyypit';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';

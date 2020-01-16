@@ -35,13 +35,10 @@
 </template>
 
 <script lang="ts">
-
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import _ from 'lodash';
-import { OpetussuunnitelmaKevytDto, OpetussuunnitelmanAikatauluDto } from '@/tyypit';
+import { OpetussuunnitelmaKevytDto } from '@/tyypit';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { Aikataulu } from '@/api';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpAikataulu from '@shared/components/EpAikataulu/EpAikataulu.vue';
 import EpAikatauluModal from '@shared/components/EpAikataulu/EpAikatauluModal.vue';
 import { AikatauluStore } from '@/stores/aikataulu';

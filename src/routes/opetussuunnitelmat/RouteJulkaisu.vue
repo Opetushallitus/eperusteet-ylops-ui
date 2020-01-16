@@ -10,9 +10,9 @@
         <ep-collapse :expanded-by-default="false">
           <h4 slot="header">
             <span class="iconspan mr-2">
-              <fas class="warning" v-if="category.hasFatal" icon="huutomerkki-ympyra" fixed-width="fixed-width">
+              <fas class="warning" v-if="category.hasFatal" icon="huutomerkki-ympyra" fixed-width>
               </fas>
-              <fas v-else :class="category.hasWarning ? 'warning' : 'success'" icon="checkmark-ympyra" fixed-width="fixed-width">
+              <fas v-else :class="category.hasWarning ? 'warning' : 'success'" icon="checkmark-ympyra" fixed-width>
               </fas>
             </span>
             <span class="saanto">{{ $t(category.key) }}</span>
@@ -125,7 +125,7 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
 
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';

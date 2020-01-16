@@ -253,10 +253,13 @@ export class EditointiKontrolli {
     this.mstate.isSaving = false;
   }
 
-  public async restore(rev) {
+  public async restore(event) {
     try {
-      await this.config.history!.restore!(this.mstate.data, rev);
+      await this.config.history!.restore!(this.mstate.data, event.numero);
       this.logger.success('Palautettu onnistuneesti');
+      if ( event.modal && _.isFunction(event.modal.hide)) {
+        event.modal.hide();
+      }
 
       const data = await this.fetch();
       await this.fetchRevisions();
@@ -264,7 +267,14 @@ export class EditointiKontrolli {
       this.mstate.data = data;
     }
     catch (err) {
-      fail('palautus-epaonnistui', err.response.data.syy);
+      const syy = _.get(err, 'response.data.syy');
+      if (syy) {
+        fail('palautus-epaonnistui', err.response.data.syy);
+      }
+      else {
+        this.logger.error('Palautus epäonnistui', err);
+        fail('palautus-epaonnistui');
+      }
     }
   }
 

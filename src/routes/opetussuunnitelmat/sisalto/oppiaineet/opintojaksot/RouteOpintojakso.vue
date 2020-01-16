@@ -142,7 +142,7 @@
               <div class="moduuliotsikko">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</div>
               <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].tavoitteet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
             </div>
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-tavoitteet') }}</div>
             <div class="alert alert-info" v-if="!isEditing && data.tavoitteet && data.tavoitteet.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-list
               :is-editable="isEditing"
@@ -161,7 +161,7 @@
               </ep-prefix-list>
             </div>
 
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-keskeiset-sisallot') }}</div>
             <div class="alert alert-info" v-if="!isEditing && data.keskeisetSisallot && data.keskeisetSisallot.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-list
               :is-editable="isEditing"
@@ -191,7 +191,7 @@
               </div>
             </div>
 
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-laaja-alainen') }}</div>
 
             <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
               <div slot="header" class="moduuliotsikko">
@@ -199,7 +199,7 @@
                   {{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}
                 </span>
                 <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
-                  <fas icon="times" />
+                  <fas icon="sulje" />
                 </b-button>
               </div>
               <ep-content
@@ -231,7 +231,7 @@
               </div>
             </div>
 
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-arviointi') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.arviointi" :is-editable="isEditing"></ep-content>
           </ep-collapse>

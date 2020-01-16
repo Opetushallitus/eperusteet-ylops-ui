@@ -1,51 +1,52 @@
-<template lang="pug">
-  ep-form-content(:name="tyyppi")
-
-    div.ops-dokumentti-tiedosto-lataus
-
-      div.d-flex.justify-content-around.align-items-center.h-100(v-if="dto && dto[tyyppi]")
-        div.d-flex.w-25.h-100.justify-content-around.align-items-center
-          img.h-75(:src="kuvaUrl")
-        div.d-flex.vali-viiva.w-25.justify-content-center
-          ep-button(@click="removeImage()", variant="danger")
-            slot(name="poista") {{ $t('poista') }}
-
-      div.h-100(v-else)
-        b-form-file(
-          v-if="!file",
-          v-model="file",
-          accept="image/jpeg, image/png"
-          :placeholder="placeholder",
-          :drop-placeholder="dropPlaceholder",
-          :browse-text="browseText",
-          @input="onInput")
-
-        div.d-flex.justify-content-around.align-items-center.h-100(v-if="file")
-          div.d-flex.w-25.h-100.justify-content-around.align-items-center
-            figure
-              img.h-75(v-if="previewUrl", :src="previewUrl")
-              figcaption {{ $t('fu-valittu-tiedosto') }}: {{ file ? file.name : '' }}
-          div.d-flex.vali-viiva.w-25.justify-content-center
-            div.btn-toolbar
-              div.btn-group
-                ep-button(@click="saveImage()")
-                  slot(name="tallenna") {{ $t('tallenna') }}
-                ep-button(
-                  @click="file = null",
-                  variant="warning")
-                  slot(name="peruuta") {{ $t('peruuta') }}
-
+<template>
+<ep-form-content :name="tyyppi">
+  <div class="ops-dokumentti-tiedosto-lataus">
+    <div class="d-flex justify-content-around align-items-center h-100" v-if="dto && dto[tyyppi]">
+      <div class="d-flex w-25 h-100 justify-content-around align-items-center">
+        <img class="h-75" :src="kuvaUrl" />
+      </div>
+      <div class="d-flex vali-viiva w-25 justify-content-center">
+        <ep-button @click="removeImage()" variant="danger">
+          <slot name="poista">{{ $t('poista') }}</slot>
+        </ep-button>
+      </div>
+    </div>
+    <div class="h-100" v-else>
+      <b-form-file v-if="!file" v-model="file" accept="image/jpeg, image/png" :placeholder="placeholder" :drop-placeholder="dropPlaceholder" :browse-text="browseText" @input="onInput"></b-form-file>
+      <div class="d-flex justify-content-around align-items-center h-100" v-if="file">
+        <div class="d-flex w-25 h-100 justify-content-around align-items-center">
+          <figure>
+            <img class="h-75" v-if="previewUrl" :src="previewUrl" />
+            <figcaption>{{ $t('fu-valittu-tiedosto') }}: {{ file ? file.name : '' }}</figcaption>
+          </figure>
+        </div>
+        <div class="d-flex vali-viiva w-25 justify-content-center">
+          <div class="btn-toolbar">
+            <div class="btn-group">
+              <ep-button @click="saveImage()">
+                <slot name="tallenna">{{ $t('tallenna') }}</slot>
+              </ep-button>
+              <ep-button @click="file = null" variant="warning">
+                <slot name="peruuta">{{ $t('peruuta') }}</slot>
+              </ep-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ep-form-content>
 </template>
 
 <script lang="ts">
-
 import { Vue, Component, Watch, Prop } from 'vue-property-decorator';
-import _ from 'lodash';
-import EpButton from '@/components/EpButton/EpButton.vue';
-import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import { baseURL, Dokumentit, DokumentitParams } from '@/api';
+
+import { baseURL, DokumentitParams } from '@/api';
 import { Kielet } from '@shared/stores/kieli';
 import { DokumenttiDto } from '@/generated';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+
 
 @Component({
   components: {

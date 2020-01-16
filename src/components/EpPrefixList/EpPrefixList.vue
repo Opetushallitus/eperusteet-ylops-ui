@@ -9,7 +9,7 @@
           </div>
           <div class="col-sm-6">
             <div class="actions">
-              <ep-button variant="danger" icon="times" @click="poistaIndeksi(internal, alueIdx)">{{ $t('poista-alue-' + arvot) }}</ep-button>
+              <ep-button variant="danger" icon="sulje" @click="poistaIndeksi(internal, alueIdx)">{{ $t('poista-alue-' + arvot) }}</ep-button>
             </div>
           </div>
         </div>
@@ -25,7 +25,7 @@
               <ep-input v-model="item[arvo]" :is-editing="true" />
             </div>
             <div class="actions">
-              <ep-button variant="danger" icon="times" @click="poistaIndeksi(alue[arvot], idx)">{{ $t('poista') }}</ep-button>
+              <ep-button variant="danger" icon="sulje" @click="poistaIndeksi(alue[arvot], idx)">{{ $t('poista') }}</ep-button>
             </div>
           </div>
         </draggable>
@@ -57,7 +57,7 @@ import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
 import draggable from 'vuedraggable';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 

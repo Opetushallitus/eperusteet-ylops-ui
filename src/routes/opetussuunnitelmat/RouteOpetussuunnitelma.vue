@@ -89,7 +89,7 @@ import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress.vue';
 
 

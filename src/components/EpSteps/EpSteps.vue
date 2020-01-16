@@ -1,16 +1,21 @@
-<template lang="pug">
-div.ep-steps
-  .steps(v-if="show")
-    span.step(v-for="(data, idx) in value")
-      .ball(:class="{ 'active': idx === step }")
-        .number {{ idx + 1 }}
-      .stepline(v-if="idx < value.length - 1")
-      .text {{ $t(data.name) }}
+<template>
+<div class="ep-steps">
+  <div class="steps" v-if="show">
+    <span class="step" v-for="(data, idx) in value" :key="idx">
+      <div class="ball" :class="{ 'active': idx === step }">
+        <div class="number">{{ idx + 1 }}</div>
+      </div>
+      <div class="stepline" v-if="idx < value.length - 1"></div>
+      <div class="text">{{ $t(data.name) }}</div>
+    </span>
+  </div>
+</div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+
 
 @Component({
   components: {

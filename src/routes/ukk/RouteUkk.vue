@@ -34,7 +34,7 @@
                 </fas>
               </button>
               <button class="btn btn-link" @click="startRemoveKysymys(kysymys)">
-                <fas icon="times">
+                <fas icon="sulje">
                 </fas>
               </button>
             </div>

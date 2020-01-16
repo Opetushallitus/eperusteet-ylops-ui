@@ -22,7 +22,7 @@
         <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
         <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
         <button class="btn btn-link" @click="remove(option)">
-          <fas icon="times" />
+          <fas icon="sulje" />
         </button>
       </span>
     </template>

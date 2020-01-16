@@ -9,7 +9,7 @@ import {
   Lops2019OppiaineDto,
 } from '@/tyypit';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';

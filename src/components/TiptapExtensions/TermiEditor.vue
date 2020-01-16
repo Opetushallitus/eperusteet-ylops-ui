@@ -53,7 +53,7 @@
 <script lang="ts">
 import { Mixins, Prop, Component } from 'vue-property-decorator';
 import { TermiDto } from '@/tyypit';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';

@@ -70,7 +70,7 @@
 
           <div v-if="!isEditing">
             <h4 class="header" slot="header">{{ $t('opintojaksot') }}</h4>
-            <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
+            <div class="block-container mb-4" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
               <div class="oj-content pakollinen">
                 <span class="nimi">
                   <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
@@ -91,7 +91,7 @@
 
 <script lang="ts">
 import { Mixins, Component } from 'vue-property-decorator';
-import EpButton from'@/components/EpButton/EpButton.vue';
+import EpButton from'@shared/components/EpButton/EpButton.vue';
 import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from'@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';

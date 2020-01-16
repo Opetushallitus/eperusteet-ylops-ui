@@ -6,7 +6,6 @@ import _ from 'lodash';
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/RouteHome.vue';
 import VirheRoute from '@/routes/virhe/VirheRoute.vue';
-import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
 import RouteDokumentti from '@/routes/opetussuunnitelmat/dokumentti/RouteDokumentti.vue';
 import RouteKasite from '@/routes/opetussuunnitelmat/kasite/RouteKasite.vue';
@@ -71,10 +70,6 @@ export const router = new Router({
       path: '',
       name: 'root',
       component: Home,
-    }, {
-      path: 'admin',
-      name: 'admin',
-      component: HallintaRoute,
     }, {
       path: 'virhe',
       name: 'virhe',
