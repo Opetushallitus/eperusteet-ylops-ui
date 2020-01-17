@@ -6,7 +6,11 @@
         <h3>{{$t('aikataulu')}}</h3>
       </div>
       <div class="col text-right">
-        <ep-aikataulu-modal ref="aikataulumodal" :aikataulut="aikataulut" />
+        <ep-aikataulu-modal ref="aikataulumodal" :rootModel="ops" :aikataulut="aikataulut" @tallenna="tallenna">
+          <template v-slot:selite>
+            <p>{{ $t('aikataulu-modal-selite')}}</p>
+          </template>
+        </ep-aikataulu-modal>
       </div>
     </div>
 
@@ -45,7 +49,7 @@ import EpField from'@shared/components/forms/EpField.vue';
 import { Kielet } from '@shared/stores/kieli';
 import { minLength, required } from 'vuelidate/lib/validators';
 import EpValidation from '@/mixins/EpValidation';
-import { aikataulutapahtuma } from '@shared/utils/aikataulu';
+import { aikataulutapahtuma, aikatauluTapahtumaSort, aikatauluTapahtumapaivaSort } from '@shared/utils/aikataulu';
 
 
 @Component({
@@ -64,136 +68,29 @@ export default class OpsAikataulu extends Mixins(EpValidation) {
   private ops!: OpetussuunnitelmaKevytDto;
 
   private aikataulut: OpetussuunnitelmanAikatauluDto[] | null = null;
-  private aikataulu: OpetussuunnitelmanAikatauluDto = {};
 
   async mounted() {
     this.aikataulut = (await Aikataulu.getAikataulu(this.ops.id!) as any).data;
   }
 
   otaAikatauluKayttoon() {
-    this.aikataulut = [({
-      tapahtuma: aikataulutapahtuma.luominen,
-      opetussuunnitelmaId: this.ops.id!,
-      tapahtumapaiva: this.ops.luotu,
-      tavoite: {},
-    }) as any];
-
-    (this as any).$refs['aikataulumodal'].openModal();
+    (this as any).$refs.aikataulumodal.openModal();
   }
 
-  get modalTopic() {
-    // if (!this.luomisPaiva) {
-    //   return this.$t('opetussuunnitelma-aikataulu-kayttoonotto');
-    // }
+  async tallenna(aikataulut) {
 
-    // if(!this.aikataulu.id) {
-    //   return this.$t('lisaa-tavoite');
-    // }
+    const lisattavat = _.filter(aikataulut, (aikataulu) => _.isNil(aikataulu.id));
+    const paivitettavat = _.filter(aikataulut, (aikataulu) => !_.isNil(aikataulu.id));
+    const poistettavat = _.filter(this.aikataulut, (aikataulu) => !_.includes(_.map(aikataulut, (aikataulu) => aikataulu.id), aikataulu.id));
 
-    return this.$t('muokkaa-tavoitetta');
-  }
+    const lisatyt = _.map(await Promise.all(_.map(lisattavat, (lisattava) => Aikataulu.save(this.ops.id!, (lisattava as any)) as any)), (lisatty) => lisatty.data);
+    const paivitetyt = _.map(await Promise.all(_.map(paivitettavat, (paivitettava) => Aikataulu.update(this.ops.id!, (paivitettava as any)) as any)), (paivitetty) => paivitetty.data);
+    await Promise.all(_.map(poistettavat, (poistettava) => Aikataulu._delete(this.ops.id!, (poistettava as any)) as any));
 
-  get modalSaveText() {
-    // if (!this.luomisPaiva) {
-    //   return this.$t('opetussuunnitelma-aikataulu-kayttoonotto');
-    // }
-
-    // if(!this.aikataulu.id) {
-    //   return this.$t('lisaa-tavoite');
-    // }
-
-    return this.$t('tallenna');
-  }
-
-  get luomisAikataulu() {
-    return _.filter(this.aikataulut, (aikataulu) => aikataulu.tapahtuma === aikataulutapahtuma.luominen)[0];
-  }
-
-  get julkaisuAikataulu() {
-    return _.filter(this.aikataulut, (aikataulu) => aikataulu.tapahtuma === aikataulutapahtuma.julkaisu)[0];
-  }
-
-  get luomisPaiva() {
-    if (this.luomisAikataulu) {
-      return this.luomisAikataulu.tapahtumapaiva;
-    }
-  }
-
-  get julkaisuPaiva() {
-    if (this.julkaisuAikataulu) {
-      return this.julkaisuAikataulu.tapahtumapaiva;
-    }
-  }
-
-  get validationConfig() {
-    return {
-      aikataulu: {
-        tapahtumapaiva: {
-          required,
-        }
-      },
-    };
-  }
-
-  async tallennaAikataulu() {
-
-    if (_.isEmpty(this.aikataulut)) {
-      this.lisaaAikataulu(aikataulutapahtuma.luominen, this.ops.luotu, {});
-      this.lisaaAikataulu(aikataulutapahtuma.julkaisu, (this.aikataulu as any).tapahtumapaiva, {
-        [Kielet.getSisaltoKieli]: this.$t('projektin-suunniteltu-julkaisupaiva')
-      });
-    }
-    else {
-      if  (this.aikataulu.id) {
-        this.paivitaAikataulu();
-      }
-      else {
-        this.lisaaAikataulu(aikataulutapahtuma.tavoite,  (this.aikataulu as any).tapahtumapaiva,  (this.aikataulu as any).tavoite);
-      }
-    }
-
-    this.hideModal();
-  }
-
-  private async lisaaAikataulu(tapahtuma, tapahtumapaiva, tavoite) {
-
-    const luomisAikataulu = {
-      tapahtuma: tapahtuma,
-      opetussuunnitelmaId: this.ops.id!,
-      tapahtumapaiva: tapahtumapaiva,
-      tavoite: tavoite,
-    };
-
-    const lisatty = (await Aikataulu.save(this.ops.id!, (luomisAikataulu as any)) as any).data;
-
-    if (this.aikataulut) {
-      this.aikataulut = [
-        ...this.aikataulut,
-        lisatty,
-      ];
-    }
-
-  }
-
-  private async paivitaAikataulu() {
-    const paivitetty = (await Aikataulu.update(this.ops.id!, (this.aikataulu as any)) as any).data;
-    this.aikataulut = _.map(this.aikataulut, (aikataulu) => aikataulu.id === paivitetty.id ? paivitetty : aikataulu);
-  }
-
-  async poistaAikataulu() {
-    (await Aikataulu._delete(this.ops.id!, (this.aikataulu as any)) as any).data;
-    this.aikataulut = _.filter(this.aikataulut, (aikataulu) => aikataulu.id !== this.aikataulu.id);
-    this.hideModal();
-  }
-
-  muokkaaAikataulua(aikataulu) {
-    this.aikataulu = aikataulu;
-    (this as any).$refs['aikataulutavoitelisaysModal'].show();
-  }
-
-  hideModal() {
-    (this as any).$refs['aikataulutavoitelisaysModal'].hide();
-    this.aikataulu = {};
+    this.aikataulut = [
+      ...lisatyt,
+      ...paivitetyt,
+    ];
   }
 
 }
