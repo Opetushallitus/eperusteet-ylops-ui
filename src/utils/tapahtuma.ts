@@ -18,6 +18,13 @@ const kohdeIcon = {
   opetussuunnitelma: 'opetussuunnitelma',
   opetussuunnitelma_rakenne: 'jarjesta',
   termi: 'kasitteet',
+  kommentti: 'kommentti',
+};
+
+const tapahtumaIcon = {
+  paivitys: 'kyna',
+  luonti: 'plussa',
+  poisto: 'roskalaatikko',
 };
 
 export function muokkaustietoRoute(id, kohde) {
@@ -34,6 +41,10 @@ export function muokkaustietoRoute(id, kohde) {
   return router;
 }
 
-export function muokkaustietoIcon(kohde) {
-  return kohdeIcon[kohde] ? kohdeIcon[kohde] : 'kyna';
+export function muokkaustietoIcon(kohde, tapahtuma) {
+  if (kohde === 'kommentti' || kohde === 'opetussuunnitelma_rakenne') {
+    return kohdeIcon[kohde];
+  }
+
+  return tapahtumaIcon[tapahtuma];
 }
