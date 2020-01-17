@@ -56,3 +56,12 @@ $btn-border-radius: 1.25rem; // 20px
     }
   }
 }
+
+.b-popover {
+
+  .popover-header {
+    background-color: $white;
+    font-size: 1rem;
+    border-bottom: 0px;
+  }
+}
