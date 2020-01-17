@@ -37,7 +37,7 @@
 
 import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
-import { OpetussuunnitelmaKevytDto, OpetussuunnitelmanAikatauluDto, OpetussuunnitelmanAikatauluTapahtuma, LokalisoituTekstiDto } from '@/tyypit';
+import { OpetussuunnitelmaKevytDto, OpetussuunnitelmanAikatauluDto, LokalisoituTekstiDto } from '@/tyypit';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Aikataulu } from '@/api';
 import EpButton from '@/components/EpButton/EpButton.vue';
