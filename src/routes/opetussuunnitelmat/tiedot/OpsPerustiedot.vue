@@ -1,69 +1,71 @@
 <template>
 
   <div class="content">
-      <ep-spinner v-if="!ops"></ep-spinner>
-      <div v-else>
+    <h3>{{$t('tiedot')}}</h3>
 
-        <div class="row">
-          <div class="col w-50">
+    <ep-spinner v-if="!ops"></ep-spinner>
+    <div v-else>
 
-            <div class="data-content">
-              <div class="row">
-                <div class="col-1"><fas class="icon" icon="hallitus" /></div>
-                <div class="col"><div class="topic">{{ $t('peruste')}}</div></div>
-              </div>
-              <div class="row justify-content-end">
-                <div class="col-1"></div>
-                <div class="col">{{ops.perusteenDiaarinumero}}</div>
-              </div>
+      <div class="row">
+        <div class="col w-50">
+
+          <div class="data-content">
+            <div class="row">
+              <div class="col-1"><fas class="icon" icon="hallitus" /></div>
+              <div class="col"><div class="topic">{{ $t('peruste')}}</div></div>
             </div>
-
-            <div class="data-content">
-              <div class="row">
-                <div class="col-1"><fas class="icon" icon="kielet" /></div>
-                <div class="col"><div class="topic">{{ $t('julkaisukielet')}}</div></div>
-              </div>
-              <div class="row justify-content-end">
-                <div class="col-1"></div>
-                <div class="col">{{julkaisukieliet}}</div>
-              </div>
+            <div class="row justify-content-end">
+              <div class="col-1"></div>
+              <div class="col">{{ops.perusteenDiaarinumero}}</div>
             </div>
-
-            <div class="data-content">
-              <div class="row">
-                <div class="col-1"><fas class="icon" icon="kalenteri" /></div>
-                <div class="col"><div class="topic">{{ $t('luotu')}}</div></div>
-              </div>
-              <div class="row justify-content-end">
-                <div class="col-1"></div>
-                <div class="col">{{ $sdt(ops.luotu)}}</div>
-              </div>
-            </div>
-
           </div>
 
-          <div class="col w-50">
+          <div class="data-content">
+            <div class="row">
+              <div class="col-1"><fas class="icon" icon="kielet" /></div>
+              <div class="col"><div class="topic">{{ $t('julkaisukielet')}}</div></div>
+            </div>
+            <div class="row justify-content-end">
+              <div class="col-1"></div>
+              <div class="col">{{julkaisukieliet}}</div>
+            </div>
+          </div>
 
-            <div class="data-content">
-              <div class="row">
-                <div class="col-1"><fas class="icon" icon="tyoryhma" /></div>
-                <div class="col"><div class="topic">{{ $t('tyoryhma')}}</div></div>
-              </div>
-              <div class="row justify-content-end">
-                <div class="col-1"></div>
-                <div class="col">
-                   <span v-for="virkailija in virkailijatFormatted" :key="virkailija.oid">
-                    {{ virkailija.esitysnimi }}
-                  </span>
-                </div>
+          <div class="data-content">
+            <div class="row">
+              <div class="col-1"><fas class="icon" icon="kalenteri" /></div>
+              <div class="col"><div class="topic">{{ $t('luotu')}}</div></div>
+            </div>
+            <div class="row justify-content-end">
+              <div class="col-1"></div>
+              <div class="col">{{ $sdt(ops.luotu)}}</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col w-50">
+
+          <div class="data-content">
+            <div class="row">
+              <div class="col-1"><fas class="icon" icon="tyoryhma" /></div>
+              <div class="col"><div class="topic">{{ $t('tyoryhma')}}</div></div>
+            </div>
+            <div class="row justify-content-end">
+              <div class="col-1"></div>
+              <div class="col">
+                  <span v-for="virkailija in virkailijatFormatted" :key="virkailija.oid">
+                  {{ virkailija.esitysnimi }}
+                </span>
               </div>
             </div>
-
           </div>
 
         </div>
 
       </div>
+
+    </div>
   </div>
 </template>
 
