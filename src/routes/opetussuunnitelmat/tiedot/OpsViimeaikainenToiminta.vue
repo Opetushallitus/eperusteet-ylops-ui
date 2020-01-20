@@ -72,23 +72,25 @@ export default class OpsViimeaikainenToiminta extends Vue {
   private lisahaku: boolean = false;
 
   async mounted() {
-    this.muokkaustietoStore.update();
+    await this.muokkaustietoStore.update();
   }
 
   get muokkaustiedot() {
-    return this.muokkaustietoStore.getMuokkaustiedot();
+    return this.muokkaustietoStore.muokkaustiedot;
   }
 
   get viimeinenHaku() {
-    return this.muokkaustietoStore.getViimeinenHaku();
+    return this.muokkaustietoStore.viimeinenHaku;
   }
 
   get hakuLukumaara() {
-    return this.muokkaustietoStore.getHakuLukumaara();
+    return this.muokkaustietoStore.hakuLukumaara;
   }
 
   async haeLisaa() {
-    this.muokkaustietoStore.update();
+    this.lisahaku = true;
+    await this.muokkaustietoStore.update();
+    this.lisahaku = false;
   }
 
   get muokkaustiedotRouted() {

@@ -10,28 +10,16 @@ export class MuokkaustietoStore {
   public opsId: number;
 
   @State()
-  private muokkaustiedot: MuokkaustietoKayttajallaDto[] | null = null;
+  public muokkaustiedot: MuokkaustietoKayttajallaDto[] | null = null;
 
   @State()
-  private viimeinenHaku: MuokkaustietoKayttajallaDto[] | null = null;
+  public viimeinenHaku: MuokkaustietoKayttajallaDto[] | null = null;
 
   @State()
-  private hakuLukumaara = 8;
+  public hakuLukumaara = 8;
 
   constructor(opsId: number) {
     this.opsId = opsId;
-  }
-
-  getHakuLukumaara() {
-    return this.hakuLukumaara;
-  }
-
-  getMuokkaustiedot() {
-    return this.muokkaustiedot;
-  }
-
-  getViimeinenHaku() {
-    return this.viimeinenHaku;
   }
 
   public async update() {
