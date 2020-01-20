@@ -14,7 +14,7 @@
 
     <div class="row">
       <div class="col">
-        <ops-aikataulu :ops="ops" :aikatauluStore="aikatauluStore" class="info-box"/>
+        <ops-aikataulu :ops="ops" :aikatauluStore="aikatauluStore" class="info-box" v-if="!isPohja"/>
       </div>
     </div>
 
