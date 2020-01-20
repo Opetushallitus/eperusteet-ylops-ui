@@ -6,7 +6,8 @@
         <h3>{{$t('aikataulu')}}</h3>
       </div>
       <div class="col text-right">
-        <ep-aikataulu-modal ref="aikataulumodal" :rootModel="ops" :aikataulut="aikataulut" @tallenna="tallenna">
+        <ep-aikataulu-modal ref="aikataulumodal" :rootModel="ops" :aikataulut="aikataulut" @tallenna="tallenna"
+        v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }">
           <template v-slot:selite>
             <p>{{ $t('aikataulu-modal-selite')}}</p>
           </template>
