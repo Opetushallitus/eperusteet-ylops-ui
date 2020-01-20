@@ -8,13 +8,13 @@
         <oppiaineet-statistiikka :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box" />
       </div>
       <div class="col">
-        <ops-viimeaikainen-toiminta :ops="ops" class="info-box"/>
+        <ops-viimeaikainen-toiminta :muokkaustietoStore="muokkaustietoStore" class="info-box"/>
       </div>
     </div>
 
     <div class="row">
       <div class="col">
-        <ops-aikataulu :ops="ops" class="info-box"/>
+        <ops-aikataulu :ops="ops" :aikatauluStore="aikatauluStore" class="info-box"/>
       </div>
     </div>
 
@@ -24,16 +24,14 @@
 <script lang="ts">
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import OpsPerustiedot from './OpsPerustiedot.vue';
-import { OpetussuunnitelmaKevytDto } from '@/tyypit';
 import OppiaineetStatistiikka from './OppiaineetStatistiikka.vue';
 import OpsMuokkaamattomatOsiot from './OpsMuokkaamattomatOsiot.vue';
 import OpsViimeaikainenToiminta from './OpsViimeaikainenToiminta.vue';
 import OpsAikataulu from './OpsAikataulu.vue';
-import _ from 'lodash';
-import { PerusteCache } from '@/stores/peruste';
-import { TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { MuokkaustietoStore } from '@/stores/muokkaustieto';
+import { AikatauluStore } from '@/stores/aikataulu';
 
 @Component({
   components: {
@@ -45,6 +43,12 @@ import { TekstiKappaleViiteKevytDto } from '@/tyypit';
   }
 })
 export default class RouteHallintapaneeli extends EpOpsRoute {
+
+  @Prop({ required: true })
+  private muokkaustietoStore!: MuokkaustietoStore;
+
+  @Prop({ required: true })
+  private aikatauluStore!: AikatauluStore;
 
 }
 </script>
