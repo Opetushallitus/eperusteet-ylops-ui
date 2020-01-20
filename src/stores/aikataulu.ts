@@ -10,14 +10,10 @@ export class AikatauluStore {
   public opsId: number;
 
   @State()
-  private aikataulut: OpetussuunnitelmanAikatauluDto[] | null = null;
+  public aikataulut: OpetussuunnitelmanAikatauluDto[] | null = null;
 
   constructor(opsId: number) {
     this.opsId = opsId;
-  }
-
-  getAikataulut() {
-    return this.aikataulut;
   }
 
   public async update() {

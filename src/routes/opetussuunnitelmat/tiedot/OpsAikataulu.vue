@@ -44,6 +44,7 @@ import EpButton from '@/components/EpButton/EpButton.vue';
 import EpAikataulu from '@shared/components/EpAikataulu/EpAikataulu.vue';
 import EpAikatauluModal from '@shared/components/EpAikataulu/EpAikatauluModal.vue';
 import { AikatauluStore } from '@/stores/aikataulu';
+import { success } from '@/utils/notifications';
 
 @Component({
   components:{
@@ -62,11 +63,11 @@ export default class OpsAikataulu extends Vue {
   private aikatauluStore!: AikatauluStore;
 
   async mounted() {
-    this.aikatauluStore.update();
+    await this.aikatauluStore.update();
   }
 
   get aikataulut() {
-    return this.aikatauluStore.getAikataulut();
+    return this.aikatauluStore.aikataulut;
   }
 
   otaAikatauluKayttoon() {
@@ -74,7 +75,8 @@ export default class OpsAikataulu extends Vue {
   }
 
   async tallenna(aikataulut) {
-    this.aikatauluStore.saveAikataulut(aikataulut);
+    await this.aikatauluStore.saveAikataulut(aikataulut);
+    success('aikataulu-tallennettu');
   }
 
 }
