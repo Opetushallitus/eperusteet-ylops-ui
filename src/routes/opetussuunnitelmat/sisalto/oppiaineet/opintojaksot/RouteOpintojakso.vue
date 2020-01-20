@@ -1,7 +1,11 @@
 <template>
 <div id="scroll-anchor" class="content">
   <div v-if="hooks && !isLoading">
-    <ep-editointi :hooks="hooks" v-model="editable" :validator="validator" type="opintojakso">
+    <ep-editointi :hooks="hooks"
+                  v-model="editable"
+                  :validator="validator"
+                  :versionumero="versionumero"
+                  type="opintojakso">
       <template slot="ohje" slot-scope="{ }">
         <div class="sidepad">
           <p v-html="$t('ohje-opintojakso')">
@@ -274,6 +278,7 @@ import * as defaults from '@/defaults';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { KoodistoLops2019LaajaAlaiset, koodiSorters } from '@/utils/perusteet';
 import { Opetussuunnitelmat } from '@/api';
+import { success } from '@/utils/notifications';
 
 
 @Component({
@@ -309,6 +314,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     },
     history: {
       revisions: this.revisions,
+      restore: this.restore,
     },
   };
 
@@ -337,8 +343,13 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return [];
     }
     else {
-      return this.store.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+      return await this.store.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
     }
+  }
+
+  async restore(data, numero) {
+    await this.store.revertToVersion(_.parseInt(this.$route.params.opintojaksoId), numero);
+    success('palautus-onnistui');
   }
 
   async init() {
@@ -351,6 +362,10 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     catch (err) {
       console.error(err);
     }
+  }
+
+  get versionumero() {
+    return _.parseInt(_.get(this, '$route.query.versionumero'));
   }
 
   get validator() {

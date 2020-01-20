@@ -1,8 +1,8 @@
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { Component, Mixins } from 'vue-property-decorator';
+import { mount, createLocalVue } from '@vue/test-utils';
 import Vuelidate from 'vuelidate';
 
-import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@shared/mixins/EpValidation';
 import { TekstiKappaleDto, Lops2019OpintojaksoDto, TermiDto, KysymysDto, OpetussuunnitelmaLuontiDto, OpetussuunnitelmaDto, Lops2019OppiaineDto } from '@/tyypit';
 import { kasiteValidator } from '@/validators/kasite';
 import { kysymysValidator } from '@/validators/ukk';

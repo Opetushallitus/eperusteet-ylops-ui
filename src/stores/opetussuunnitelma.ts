@@ -218,6 +218,10 @@ export class OpetussuunnitelmaStore {
     return (await Opintojaksot.getVersionHistory(this.opetussuunnitelma!.id!, opintojaksoId)).data;
   }
 
+  public async revertToVersion(opintojaksoId: number, versionumero: number) {
+    await Opintojaksot.revertToVersion(this.opetussuunnitelma!.id!, opintojaksoId, versionumero);
+  }
+
   public async getOpintojakso(id: number) {
     return (await Opintojaksot.getOpintojakso(this.opetussuunnitelma!.id!, id)).data;
   }

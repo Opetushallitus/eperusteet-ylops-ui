@@ -107,10 +107,10 @@ import { Ulkopuoliset } from '@/api';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
+import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
-import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@shared/mixins/EpValidation';
 
 interface ValueType {
   jarjestajat: any[];

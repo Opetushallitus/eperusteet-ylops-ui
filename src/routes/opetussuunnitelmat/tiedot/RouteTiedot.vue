@@ -104,7 +104,7 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
-import EpProgress from '@/components/EpProgress.vue';
+import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';

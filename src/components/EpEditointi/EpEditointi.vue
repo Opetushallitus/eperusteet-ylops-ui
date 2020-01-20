@@ -232,7 +232,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
   @Prop({ required: false })
   private type!: string | null;
 
-  // Tämä on esitettävä versionumero eikä rev.numero
+  /// Tämä on esitettävä versionumero eikä rev.numero
   @Prop({ required: false, type: Number })
   private versionumero!: number | null;
 
@@ -417,12 +417,6 @@ export default class EpEditointi extends Mixins(validationMixin) {
       &.disabled {
         .page-link {
           color: #575757;
-        }
-      }
-      // Seuraava ja edellinen väkäset
-      &:first-child, &:last-child {
-        .page-link {
-          //color: red;
         }
       }
 

@@ -16,7 +16,7 @@ interface EditointiKontrolliFeatures {
 
 export interface EditointiKontrolliHistory {
   revisions: (data) => Promise<RevisionDto[]>;
-  restore?: (data, rev: RevisionDto) => Promise<void>;
+  restore?: (data, rev: number) => Promise<void>;
 }
 
 export interface EditointiKontrolliValidation {

@@ -1,5 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
+import { Component } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import { PerusteCache } from '@/stores/peruste';
 
@@ -15,7 +15,6 @@ import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicat
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import Sticky from 'vue-sticky-directive';
@@ -89,7 +88,6 @@ const i18keys = {
     EpColorIndicator,
     EpRecursiveNav,
     EpSearch,
-    EpSisaltoModaali,
     EpSpinner,
     OpsSidenavLink,
     EpTekstikappaleLisays,

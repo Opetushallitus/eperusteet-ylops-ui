@@ -15,7 +15,7 @@
       <template v-slot:cell(actions)="row">
         <div class="float-right">
           <div v-if="!row.item.valittu">
-            <router-link :to="{ name: 'tekstikappale', query: { versionumero: row.item.index } }">
+            <router-link :to="{ query: { versionumero: row.item.index } }">
               <ep-button variant="link" icon="silma">
                 {{ $t('katsele') }}
               </ep-button>
@@ -51,7 +51,7 @@ import { RevisionDto } from '@/tyypit';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@shared/mixins/EpValidation';
 
 @Component({
   components: {

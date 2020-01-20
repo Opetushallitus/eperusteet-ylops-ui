@@ -45,19 +45,16 @@
 
 
 <script lang="ts">
-import { Node, Mark, Plugin } from 'tiptap';
-import { updateMark, removeMark, pasteRule } from 'tiptap-commands';
-import { getMarkAttrs } from 'tiptap-utils';
-import { domAttrsGetter, mapNodeAttrs } from './helpers';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import _ from 'lodash';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 import VueSelect from 'vue-select';
-import { Vue, Component, Mixins, Prop, Watch } from 'vue-property-decorator';
-import EpValidation from '@/mixins/EpValidation';
+
 import { IAttachmentWrapper } from '@/stores/kuvat';
 import { LiiteDto } from '@/tyypit';
 import { Api } from '@/api';
-import { info, fail } from '@/utils/notifications';
-import _ from 'lodash';
+import { info } from '@/utils/notifications';
+
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 
 @Component({

@@ -50,7 +50,7 @@ import {
 import EpEditorMenuBar from './EpEditorMenuBar.vue';
 import Sticky from 'vue-sticky-directive';
 import { EditorLayout } from '@/tyypit';
-import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@shared/mixins/EpValidation';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
 
