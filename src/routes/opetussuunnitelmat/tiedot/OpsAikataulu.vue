@@ -35,35 +35,25 @@
 
 <script lang="ts">
 
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
-import { OpetussuunnitelmaKevytDto, OpetussuunnitelmanAikatauluDto, LokalisoituTekstiDto } from '@/tyypit';
+import { OpetussuunnitelmaKevytDto, OpetussuunnitelmanAikatauluDto } from '@/tyypit';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Aikataulu } from '@/api';
 import EpButton from '@/components/EpButton/EpButton.vue';
-import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
-import EpFormContent from'@shared/components/forms/EpFormContent.vue';
 import EpAikataulu from '@shared/components/EpAikataulu/EpAikataulu.vue';
 import EpAikatauluModal from '@shared/components/EpAikataulu/EpAikatauluModal.vue';
-import EpField from'@shared/components/forms/EpField.vue';
-import { Kielet } from '@shared/stores/kieli';
-import { minLength, required } from 'vuelidate/lib/validators';
-import EpValidation from '@/mixins/EpValidation';
-import { aikataulutapahtuma, aikatauluTapahtumaSort, aikatauluTapahtumapaivaSort } from '@shared/utils/aikataulu';
 
 
 @Component({
   components:{
     EpSpinner,
     EpButton,
-    EpDatepicker,
-    EpFormContent,
-    EpField,
     EpAikataulu,
     EpAikatauluModal,
   },
 })
-export default class OpsAikataulu extends Mixins(EpValidation) {
+export default class OpsAikataulu extends Vue {
   @Prop({required: true})
   private ops!: OpetussuunnitelmaKevytDto;
 
