@@ -189,6 +189,18 @@ export class OpetussuunnitelmaStore {
     return result;
   }
 
+  public async getPaikallinenOppiaineenHistoria(id: number) {
+    return (await Oppiaineet.getLops2019PaikallinenVersionHistory(this.opetussuunnitelma!.id!, id)).data;
+  }
+
+  public async getPaikallinenOppiaineVersion(id: number, versionumero: number) {
+    return (await Oppiaineet.getLops2019PaikallinenVersion(this.opetussuunnitelma!.id!, id, versionumero)).data;
+  }
+
+  public async revertPaikallinenOppiaineToVersion(id: number, versionumero: number) {
+    await Oppiaineet.revertLops2019PaikallinenToVersion(this.opetussuunnitelma!.id!, id, versionumero);
+  }
+
   public async getJulkaisut() {
     return (await Opetussuunnitelmat.getJulkaisut(this.opetussuunnitelma!.id!)).data;
   }
@@ -218,8 +230,12 @@ export class OpetussuunnitelmaStore {
     return (await Opintojaksot.getVersionHistory(this.opetussuunnitelma!.id!, opintojaksoId)).data;
   }
 
-  public async revertToVersion(opintojaksoId: number, versionumero: number) {
+  public async revertOpintojaksoToVersion(opintojaksoId: number, versionumero: number) {
     await Opintojaksot.revertToVersion(this.opetussuunnitelma!.id!, opintojaksoId, versionumero);
+  }
+
+  public async getOpintojaksoVersion(opintojaksoId: number, versionumero: number) {
+    return (await Opintojaksot.getVersion(this.opetussuunnitelma!.id!, opintojaksoId, versionumero)).data;
   }
 
   public async getOpintojakso(id: number) {

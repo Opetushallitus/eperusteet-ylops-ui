@@ -2,7 +2,7 @@
 <div>
   <div v-for="(text, idx) in innerValue" :key="idx">
     <slot :kooditettu="text">
-      <h6 class="otsikko">{{ $kaanna(used[text.koodi].nimi) }} ({{ used[text.koodi].koodiArvo }})</h6>
+      <h4 class="otsikko">{{ $kaanna(used[text.koodi].nimi) }} ({{ used[text.koodi].koodiArvo }})</h4>
       <ep-content
         :value="text.kuvaus"
         @input="updatedKuvaus(text.koodi, $event)"
@@ -11,7 +11,7 @@
     </slot>
   </div>
 
-  <div v-if="isEditable" class="valitsin">
+  <div v-if="isEditable" class="mt-4">
     <b-dropdown :text="$t(nimi)" variant="primary">
       <b-dropdown-item-button
         v-for="(koodi, idx) in used"
@@ -122,11 +122,7 @@ export default class LaajaAlaisetOsaamiset extends Vue {
 
 .otsikko {
   margin-top: 1rem;
-  font-weight: bold;
-}
-
-.valitsin {
-  margin-top: 1rem;
+  font-size: 1.15rem;
 }
 
 </style>

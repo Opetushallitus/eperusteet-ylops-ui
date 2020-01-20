@@ -1,6 +1,10 @@
 <template>
 <div id="scroll-anchor" v-if="hooks && !isLoading">
-  <ep-editointi :hooks="hooks" v-model="editable" :validator="validator" type="paikallinen-oppiaine">
+  <ep-editointi :hooks="hooks"
+                v-model="editable"
+                :validator="validator"
+                :versionumero="versionumero"
+                type="paikallinen-oppiaine">
     <template slot="header" slot-scope="{ data, }">
       <h2>{{ $kaanna(data.nimi) }}</h2>
     </template>
@@ -47,11 +51,11 @@
         </b-row>
         <div>
           <ep-collapse tyyppi="tehtava" :first="true">
-            <h4 class="header" slot="header">{{ $t('tehtava') }}</h4>
+            <h3 class="header" slot="header">{{ $t('tehtava') }}</h3>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tehtava.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
           </ep-collapse>
           <ep-collapse tyyppi="tavoitteet">
-            <h4 class="header" slot="header">{{ $t('tavoitteet') }}</h4>
+            <h3 class="header" slot="header">{{ $t('tavoitteet') }}</h3>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tavoitteet.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
             <div class="tavoitealueet">
               <ep-prefix-list v-model="data.tavoitteet.tavoitealueet" arvot="tavoitteet" arvo="tavoite" :is-editable="isEditing">
@@ -60,7 +64,7 @@
           </ep-collapse>
 
           <ep-collapse tyyppi="laajaAlainenOsaaminen">
-            <h4 class="header" slot="header">{{ $t('laaja-alaiset-sisallot') }}</h4>
+            <h3 class="header" slot="header">{{ $t('laaja-alaiset-sisallot') }}</h3>
             <laaja-alaiset-osaamiset
               v-model="data.laajaAlainenOsaaminen"
               :koodit="koodit"
@@ -69,12 +73,13 @@
           </ep-collapse>
 
           <div v-if="!isEditing">
-            <h4 class="header" slot="header">{{ $t('opintojaksot') }}</h4>
+            <h3 class="header" slot="header">{{ $t('opintojaksot') }}</h3>
             <div class="block-container mb-4" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
-              <div class="oj-content pakollinen">
+              <div class="oj-content">
                 <span class="nimi">
                   <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
-                    {{ $kaanna(opintojakso.nimi) }}
+                    <span class="mr-2">{{ $kaanna(opintojakso.nimi) }}</span>
+                    <span v-if="opintojakso.koodi">({{ opintojakso.koodi }})</span>
                   </router-link>
                 </span>
                 <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
@@ -90,7 +95,9 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
+
 import EpButton from'@shared/components/EpButton/EpButton.vue';
 import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from'@shared/components/EpColorIndicator/EpColorIndicator.vue';
@@ -105,13 +112,13 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019PaikallinenOppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
 import { Opetussuunnitelmat } from '@/api';
 import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
+import { success } from '@/utils/notifications';
 
 
 @Component({
@@ -140,6 +147,10 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
       save: this.save,
       load: this.load,
     },
+    history: {
+      revisions: this.revisions,
+      restore: this.restore,
+    },
   };
 
   async remove(data: any) {
@@ -158,6 +169,20 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
 
   isUusi() {
     return this.$route.params.paikallinenOppiaineId === 'uusi';
+  }
+
+  async revisions() {
+    if (await this.isUusi()) {
+      return [];
+    }
+    else {
+      return await this.store.getPaikallinenOppiaineenHistoria(_.parseInt(this.$route.params.paikallinenOppiaineId));
+    }
+  }
+
+  async restore(data, numero) {
+    await this.store.revertPaikallinenOppiaineToVersion(_.parseInt(this.$route.params.paikallinenOppiaineId), numero);
+    success('palautus-onnistui');
   }
 
   get koodit() {
@@ -199,11 +224,22 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
     return paikallisestiSallitutLaajennokset();
   }
 
+  get versionumero() {
+    return _.parseInt(_.get(this, '$route.query.versionumero'));
+  }
+
   async load() {
     let paikallinen = defaults.oppiaine();
     if (!await this.isUusi()) {
       const { paikallinenOppiaineId } = this.$route.params;
-      paikallinen = await this.store.getPaikallinenOppiaine(_.parseInt(paikallinenOppiaineId));
+      const revisions = await this.store.getPaikallinenOppiaineenHistoria(_.parseInt(paikallinenOppiaineId));
+      const rev = revisions[revisions.length - this.versionumero];
+      if (this.versionumero && rev) {
+        paikallinen = await this.store.getPaikallinenOppiaineVersion(_.parseInt(paikallinenOppiaineId), rev.numero as number);
+      }
+      else {
+        paikallinen = await this.store.getPaikallinenOppiaine(_.parseInt(paikallinenOppiaineId));
+      }
     }
 
     const { id } = this.$route.params;
@@ -252,16 +288,13 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
 }
 
 .oj-content {
-  border-radius: 30px;
-  padding: 10px 20px;
+  border-radius: 24px;
+  border: 1px solid #CDEEFF;
+  padding: 14px 30px;
   display: flex;
   margin-top: 5px;
   margin-bottom: 5px;
-  background-color: #e4f3cf;
-
-  &.pakollinen {
-    background-color: #eaf5fe;
-  }
+  background-color: #E6F6FF;
 
   span.nimi {
     flex: 1 0 auto;

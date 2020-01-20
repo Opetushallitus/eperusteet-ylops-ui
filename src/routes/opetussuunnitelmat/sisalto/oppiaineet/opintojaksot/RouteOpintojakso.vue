@@ -348,7 +348,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   async restore(data, numero) {
-    await this.store.revertToVersion(_.parseInt(this.$route.params.opintojaksoId), numero);
+    await this.store.revertOpintojaksoToVersion(_.parseInt(this.$route.params.opintojaksoId), numero);
     success('palautus-onnistui');
   }
 
@@ -582,7 +582,15 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return result;
     }
     else {
-      const opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
+      let opintojakso;
+      const revisions = await this.store.getOpintojaksoHistoria(_.parseInt(opintojaksoId));
+      const rev = revisions[revisions.length - this.versionumero];
+      if (this.versionumero && rev) {
+        opintojakso = await this.store.getOpintojaksoVersion(_.parseInt(opintojaksoId), rev.numero as number);
+      }
+      else {
+        opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
+      }
       _.forEach(opintojakso.oppiaineet, oa => {
         if (oa.laajuus) {
           (oa as any).isModuuliton = true;
