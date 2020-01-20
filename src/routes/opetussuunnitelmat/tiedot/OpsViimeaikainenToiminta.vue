@@ -161,7 +161,6 @@ export default class OpsViimeaikainenToiminta extends Vue {
     margin-top: 40px;
     margin-bottom: 20px;
     min-width: 450px;
-    // padding-right: 0px;
 
     .muokkaustieto {
       margin-top: 0px;
@@ -210,8 +209,8 @@ export default class OpsViimeaikainenToiminta extends Vue {
       }
 
       .router-col {
-        padding: 0px;
-        width: 200px;
+        padding: 0;
+        width: 0;
 
         .router-box {
           line-height: 1;
