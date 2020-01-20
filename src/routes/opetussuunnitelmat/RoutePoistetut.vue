@@ -85,6 +85,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   async palauta(poistettu: Lops2019PoistettuDto) {
     await this.store.palauta(poistettu);
+    this.poistetut = await this.store.getPoistetut();
   }
 
 }

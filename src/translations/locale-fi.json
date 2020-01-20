@@ -581,6 +581,7 @@
   "oppiaineet-tehtava": "Oppiaineen tehtävä",
   "oppiaineittain": "Oppiaineittain",
   "oppiainekoodi": "Oppiaine",
+  "oppiainetta-ei-ole": "Opintojakson oppiaineet täytyy palauttaa ensin",
   "oppilaitokset": "Oppilaitokset",
   "oppimaaraa-ei-voi-siirtaa-oppiaineeksi": "Oppimäärää ei voi siirtää oppiaineeksi.",
   "oppimaaraa-ei-voi-siirtaa-toisen-oppimaaran-alle": "Oppimäärää ei voi siirtää toiseen oppiaineeseen.",

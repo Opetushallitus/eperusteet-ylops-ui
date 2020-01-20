@@ -271,7 +271,7 @@ export class EditointiKontrolli {
 
       // Päivitetään näkymä uusimpaan
       if (event.routePushLatest) {
-        router.push({ query: {} });
+        await router.push({ query: {} });
       }
 
       const data = await this.fetch();

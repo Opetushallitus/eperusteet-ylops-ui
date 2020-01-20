@@ -247,9 +247,13 @@ export class OpetussuunnitelmaStore {
   }
 
   public async palauta(poistettu: Lops2019PoistettuDto) {
-    await Lops2019.palauta(this.opetussuunnitelma!.id!, poistettu.id!);
-    success('palautus-onnistui');
-    // this.opintojaksot = [...this.opintojaksot, result];
+    try {
+      await Lops2019.palauta(this.opetussuunnitelma!.id!, poistettu.id!);
+      success('palautus-onnistui');
+    }
+    catch (err) {
+      fail('palautus-epaonnistui', err.response.data.syy);
+    }
   }
 
   public async removeOppiaine(id: number) {
