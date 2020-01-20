@@ -16,7 +16,7 @@ interface EditointiKontrolliFeatures {
 
 export interface EditointiKontrolliHistory {
   revisions: (data) => Promise<RevisionDto[]>;
-  restore?: (data, rev: RevisionDto) => Promise<void>;
+  restore?: (data, rev: number) => Promise<void>;
 }
 
 export interface EditointiKontrolliValidation {
@@ -44,6 +44,12 @@ export interface EditointiKontrolliConfig {
   remove?: (data: any) => Promise<void>;
   validate?: (data: any) => Promise<EditointiKontrolliValidation>;
   preview?: () => Promise<void>;
+}
+
+export interface EditointiKontrolliRestore {
+  numero: number;
+  modal?: any;
+  routePushLatest?: boolean;
 }
 
 const DefaultConfig = {
@@ -253,10 +259,20 @@ export class EditointiKontrolli {
     this.mstate.isSaving = false;
   }
 
-  public async restore(rev) {
+  public async restore(event: EditointiKontrolliRestore) {
     try {
-      await this.config.history!.restore!(this.mstate.data, rev);
+      await this.config.history!.restore!(this.mstate.data, event.numero);
       this.logger.success('Palautettu onnistuneesti');
+
+      // Piilotetaan modaali
+      if (event.modal && _.isFunction(event.modal.hide)) {
+        event.modal.hide();
+      }
+
+      // Päivitetään näkymä uusimpaan
+      if (event.routePushLatest) {
+        await router.push({ query: {} });
+      }
 
       const data = await this.fetch();
       await this.fetchRevisions();
@@ -264,7 +280,14 @@ export class EditointiKontrolli {
       this.mstate.data = data;
     }
     catch (err) {
-      fail('palautus-epaonnistui', err.response.data.syy);
+      const syy = _.get(err, 'response.data.syy');
+      if (syy) {
+        fail('palautus-epaonnistui', err.response.data.syy);
+      }
+      else {
+        this.logger.error('Palautus epäonnistui', err);
+        fail('palautus-epaonnistui');
+      }
     }
   }
 

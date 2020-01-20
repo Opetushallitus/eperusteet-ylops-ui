@@ -23,12 +23,9 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import EpButton from '@/components/EpButton/EpButton.vue';
 
-import _ from 'lodash';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { Lops2019PoistettuDto } from '@/tyypit';
-import { opintojaksoValidator } from '@/validators/opintojakso';
-import { Kielet } from '@shared/stores/kieli';
 
 
 @Component({

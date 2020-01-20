@@ -63,8 +63,7 @@ import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kayttajat } from '@/stores/kayttaja';
-import EpButton from '@/components/EpButton/EpButton.vue';
-import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
 
 
@@ -74,7 +73,6 @@ import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
     Sticky,
   },
   components: {
-    EpRoundButton,
     EpButton,
     EpKayttaja,
   },

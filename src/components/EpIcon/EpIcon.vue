@@ -1,6 +1,7 @@
-<template lang="pug">
-  div.icon(:style="{ background: actualBackground, color: color }")
-    fas(:icon="icon")
+<template>
+<div class="icon" :style="{ background: actualBackground, color: color }">
+  <fas :icon="icon"></fas>
+</div>
 </template>
 
 <script lang="ts">

@@ -24,7 +24,7 @@
             <span class="selected">
               <span>{{ $kaanna(option.nimi) || option.oid }}</span>
               <button class="btn btn-link" @click="remove(option)">
-                <fas icon="times">
+                <fas icon="sulje">
                 </fas>
               </button>
             </span>
@@ -54,7 +54,7 @@
           <span class="selected">
             <span>{{ $kaanna(option.nimi) || option.oid }}</span>
             <button class="btn btn-link" @click="remove(option)">
-              <fas icon="times">
+              <fas icon="sulje">
               </fas>
             </button>
           </span>
@@ -83,7 +83,7 @@
           <span class="selected">
             <span>{{ $kaanna(option.nimi) || option.oid }}</span>
             <button class="btn btn-link" @click="remove(option)">
-              <fas icon="times">
+              <fas icon="sulje">
               </fas>
             </button>
           </span>
@@ -105,12 +105,12 @@ import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
 import { metadataToTeksti } from '@/utils/organisaatiot';
 import { Ulkopuoliset } from '@/api';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
+import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
-import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@shared/mixins/EpValidation';
 
 interface ValueType {
   jarjestajat: any[];

@@ -19,10 +19,9 @@
     </template>
     <template slot="tag" slot-scope="{ option, remove }">
       <span class="selected">
-        <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-        <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
-        <button class="btn btn-link" @click="remove(option)">
-          <fas icon="times" />
+        {{ $kaanna(oppiaineetMap[option].nimi) }} ({{ oppiaineetMap[option].koodiArvo }})
+        <button class="btn btn-link btn-sm btn-remove" @click="remove(option)">
+          <fas icon="sulje" />
         </button>
       </span>
     </template>
@@ -48,9 +47,9 @@
 import _ from 'lodash';
 import { Mixins, Component, Prop } from 'vue-property-decorator';
 
-import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@shared/mixins/EpValidation';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
+import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
 import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
@@ -170,3 +169,13 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   }
 }
 </script>
+
+<style scoped lang="scss">
+.selected {
+  //font-size: 1rem;
+
+  .btn-remove {
+    padding: 0 0.5rem 0 0.5rem;
+  }
+}
+</style>

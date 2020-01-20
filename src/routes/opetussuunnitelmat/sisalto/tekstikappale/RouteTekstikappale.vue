@@ -1,7 +1,7 @@
 <template>
 <div id="scroll-anchor" class="tekstiviite" v-if="hooks">
   <div class="kappale">
-    <ep-editointi :hooks="hooks" type="tekstikappale">
+    <ep-editointi :hooks="hooks" type="tekstikappale" :versionumero="versionumero">
       <template slot="ohje" slot-scope="{ isEditing, data }">
         <div class="sidepad">
           <p>{{ $t('ohje-tekstikapale') }}</p>
@@ -69,7 +69,7 @@ import { Mixins, Component } from 'vue-property-decorator';
 
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import EpButton from'@/components/EpButton/EpButton.vue';
+import EpButton from'@shared/components/EpButton/EpButton.vue';
 import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
@@ -156,11 +156,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     return this.$route.params.osaId === 'uusi';
   }
 
-  private async restore(data, rev) {
-    if (data.tov) {
-      await OpetussuunnitelmanSisalto.revertTekstikappaleToVersion(this.opsId, data.tov!.id!, rev);
-      success('palautus-onnistui');
-    }
+  private async restore(data, numero) {
+    await OpetussuunnitelmanSisalto.revertTekstikappaleToVersion(this.opsId, data.tov!.id!, numero);
+    success('palautus-onnistui');
   }
 
   private async revisions(data) {
@@ -171,6 +169,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     else {
       return [];
     }
+  }
+
+  get versionumero() {
+    return _.parseInt(_.get(this, '$route.query.versionumero'));
   }
 
   private async load() {
@@ -185,6 +187,15 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     }
     else {
       const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteSyva(this.opsId, this.osaId)).data;
+      if (this.versionumero) {
+        const revisions = (await OpetussuunnitelmanSisalto
+          .getVersionsForTekstiKappaleViite(this.opsId, teksti.tekstiKappale!.id as number)).data;
+        const rev = revisions[revisions.length - this.versionumero];
+        if (rev) {
+          teksti.tekstiKappale = (await OpetussuunnitelmanSisalto
+            .getVersionForTekstiKappaleViite(this.opsId, this.osaId, rev.numero as number)).data;
+        }
+      }
       const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
       try {
         this.alkuperainen = (await OpetussuunnitelmanSisalto

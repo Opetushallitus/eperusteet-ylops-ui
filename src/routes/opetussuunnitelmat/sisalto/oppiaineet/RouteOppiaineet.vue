@@ -159,7 +159,7 @@
 
 <script lang="ts">
 import { Mixins, Component } from 'vue-property-decorator';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';

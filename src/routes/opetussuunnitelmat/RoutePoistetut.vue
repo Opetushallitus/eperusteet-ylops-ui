@@ -23,14 +23,14 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
-import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
+import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
@@ -85,6 +85,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   async palauta(poistettu: Lops2019PoistettuDto) {
     await this.store.palauta(poistettu);
+    this.poistetut = await this.store.getPoistetut();
   }
 
 }

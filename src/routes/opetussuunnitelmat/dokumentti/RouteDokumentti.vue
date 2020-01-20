@@ -1,51 +1,53 @@
-<template lang="pug">
-
-.dokumentit
-  .ylapaneeli.d-flex.align-items-center
-    h2.otsikko {{ $t('luo-pdf') }}
-  .sisalto
-    div.mb-4
-      p {{ tilaFormatted }}…
-
-      div.btn-group
-        ep-button(
-          @click="createDocument",
-          :disabled="isPolling",
-          :show-spinner="isPolling",
-          variant="link"
-          )
-          span {{ $t('luo-uusi-pdf') }}
-        a.btn.btn-link(
-          v-if="dto && href",
-          :href="href",
-          target="_blank",
-          rel="noopener noreferrer",
-          variant="link")
-          fas.mr-2(icon="file-download")
-          span {{ $t('lataa-pdf') }}
-
-    h2 {{ $t('lisaasetukset') }}
-
-    div.row
-      div.col-lg-6
-        div.form-group
-          ep-dokumentti-kuva-lataus(tyyppi="kansikuva" :dto="dto" @saveImage="saveImage" @removeImage="removeImage")
-          ep-dokumentti-kuva-lataus(tyyppi="ylatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage")
-          ep-dokumentti-kuva-lataus(tyyppi="alatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage")
+<template>
+<div class="dokumentit">
+  <div class="ylapaneeli d-flex align-items-center">
+    <h2 class="otsikko">{{ $t('luo-pdf') }}</h2>
+  </div>
+  <div class="sisalto">
+    <div class="mb-4">
+      <p>{{ tilaFormatted }}…</p>
+      <div class="btn-group">
+        <ep-button @click="createDocument" :disabled="isPolling" :show-spinner="isPolling" variant="link">
+          {{ $t('luo-uusi-pdf') }}
+        </ep-button>
+        <a class="btn btn-link"
+           v-if="dto && href"
+           :href="href"
+           target="_blank"
+           rel="noopener noreferrer"
+           variant="link">
+          <fas class="mr-2" icon="file-download"></fas>
+          <span>{{ $t('lataa-pdf') }}</span>
+        </a>
+      </div>
+    </div>
+    <h2>{{ $t('lisaasetukset') }}</h2>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <ep-dokumentti-kuva-lataus tyyppi="kansikuva" :dto="dto" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+          <ep-dokumentti-kuva-lataus tyyppi="ylatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+          <ep-dokumentti-kuva-lataus tyyppi="alatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </template>
 
 <script lang="ts">
-
 import _ from 'lodash';
-import EpOpsRoute from '@/mixins/EpOpsRoute';
-import EpButton from '@/components/EpButton/EpButton.vue';
-import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Component, Watch } from 'vue-property-decorator';
+
 import { baseURL, Dokumentit, DokumentitParams } from '@/api';
 import { Kielet } from '@shared/stores/kieli';
 import { DokumenttiDto } from '@/generated';
+import EpOpsRoute from '@/mixins/EpOpsRoute';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpDokumenttiKuvaLataus from './EpDokumenttiKuvaLataus.vue';
+
 
 @Component({
   components: {

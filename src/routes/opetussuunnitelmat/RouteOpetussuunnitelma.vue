@@ -89,8 +89,8 @@ import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
-import EpButton from '@/components/EpButton/EpButton.vue';
-import EpProgress from '@/components/EpProgress.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpProgress from '@/components/EpProgress/EpProgress.vue';
 
 
 @Component({
@@ -166,7 +166,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   }
 
   async arkistoiOps() {
-    if (await this.vahvista('arkistoi-'+ this.tyyppi, 'arkistoi-kuvaus-'+this.tyyppi)) {
+    if (await this.vahvista('arkistoi-' + this.tyyppi, 'arkistoi-kuvaus-' + this.tyyppi)) {
       await this.store.updateTila('poistettu');
       this.$router.push({
         name: this.tyyppi + 'Listaus',

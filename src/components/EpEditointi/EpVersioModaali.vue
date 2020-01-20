@@ -1,33 +1,35 @@
 <template>
-<div v-b-modal.epversiomodaali>
-  {{ $t('muokkaushistoria') }}
+<span v-b-modal.epversiomodaali>
+  <slot>{{ $t('muokkaushistoria') }}</slot>
   <b-modal id="epversiomodaali"
            ref="epversiomodaali"
            size="lg"
-           :title="$t('historia')">
-    <b-table striped="striped"
+           :title="$t('historia')"
+           :hide-footer="true">
+    <b-table responsive
+             striped
              :items="versionsFormatted"
              :fields="fields"
              :per-page="perPage"
              :current-page="currentPage">
       <template v-slot:cell(actions)="row">
         <div class="float-right">
-          <div v-if="!row.item.nykyinen">
-            <ep-button variant="link"
-                       icon="silma"
-                       disabled>
-              <slot name="muokkaa">{{ $t('katsele') }}</slot>
-            </ep-button>
+          <div v-if="!row.item.valittu">
+            <router-link :to="{ query: { versionumero: row.item.index } }">
+              <ep-button variant="link" icon="silma">
+                {{ $t('katsele') }}
+              </ep-button>
+            </router-link>
             <ep-button variant="link"
                        icon="peruuta"
-                       @click="$emit('restore', row.item.numero) && $refs['epversiomodaali'].hide()">
+                       @click="$emit('restore', { numero: row.item.numero, modal: $refs['epversiomodaali'] })">
               {{ $t('palauta') }}
             </ep-button>
           </div>
           <ep-button v-else
                      variant="link"
                      disabled>
-            {{ $t('nykyinen-versio') }}
+            {{ $t('valittu-versio') }}
           </ep-button>
         </div>
       </template>
@@ -38,9 +40,8 @@
       :per-page="perPage"
       align="center"
       aria-controls="epversiomodaali"></b-pagination>
-    <div slot="modal-footer"></div>
   </b-modal>
-</div>
+</span>
 </template>
 
 <script lang="ts">
@@ -50,7 +51,7 @@ import { RevisionDto } from '@/tyypit';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@shared/mixins/EpValidation';
 
 @Component({
   components: {
@@ -63,10 +64,15 @@ export default class EpVersioModaali extends Mixins(EpValidation) {
   private versions!: RevisionDto[];
 
   @Prop({ required: true })
+  private current!: any;
+
+  @Prop({ required: true })
   private value!: number;
 
   private currentPage = 1;
-  private perPage = 5;
+
+  @Prop({ default: 5 })
+  private perPage!: number;
 
   get fields() {
     return [{
@@ -84,15 +90,20 @@ export default class EpVersioModaali extends Mixins(EpValidation) {
     }];
   }
 
+  get currentIndex() {
+    return _.findIndex(this.versions, this.current);
+  }
+
   get versionsFormatted() {
     const versions = _.map(this.versions, (rev) => ({
       ...rev,
       muokkaaja: rev.nimi || rev.muokkaajaOid,
       ajankohta: rev.pvm ? (this as any).$sdt(rev.pvm) : '-',
       kommentti: rev.kommentti || '-',
+      valittu: false,
     }));
     if (versions.length > 0) {
-      versions[0].nykyinen = true;
+      versions[this.currentIndex].valittu = true;
     }
     return versions;
   }

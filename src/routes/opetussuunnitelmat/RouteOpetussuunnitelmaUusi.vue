@@ -1,72 +1,70 @@
-<template lang="pug">
-ep-main-view(:tutoriaalistore="tutoriaalistore")
-  template(slot="icon")
-    ep-icon.float-right(icon="luo-uusi")
-
-  template(slot="header")
-    h1 {{ $t('uusi-opetussuunnitelma') }}
-
-  fieldset.form-group
-    .row
-      legend.col-form-label.col-sm-2.pt-0 {{ $t('opetussuunnitelman-pohjatyyppi') }}:
-      .col-sm-10.mb-4
-        .form-check
-          input.form-check-input(
-            id="uusi-ops-pohjavalinta-1"
-            type="radio",
-            :value="'opsista'",
-            v-model="oletuspohjasta")
-          label.form-check-label(for="uusi-ops-pohjavalinta-1")
-            | {{ $t('toinen-opetussuunnitelma') }}
-        .form-check
-          input.form-check-input(
-            id="uusi-ops-pohjavalinta-2"
-            type="radio",
-            :value="'pohjasta'",
-            v-model="oletuspohjasta",
-            checked)
-          label.form-check-label(for="uusi-ops-pohjavalinta-2")
-            | {{ $t('oletuspohja') }}
-
-    div(v-if="oletuspohjasta")
-      .form-group
-        div(v-if="pohjat")
-          ep-form-content(v-if="pohjat.length > 0", name="uusi-ops-pohja")
-            ep-select(
-              v-model="uusi.pohja",
-              :items="pohjat",
-              :validation="$v.uusi.pohja",
-              :is-editing="true",
-              help="uusi-ops-pohja-ohje",
-              placeholder="valitse-opetussuunnitelman-pohja")
-              template(slot-scope="{ item }")
-                span {{ $kaanna(item.nimi) }} ({{ item.perusteenDiaarinumero }})
-          div(v-else)
-            .alert.alert-info {{ $t('ei-opetussuunnitelmia') }}
-        ep-spinner(v-else)
-
-  div(v-if="oletuspohjasta")
-    hr
-
-    ep-form-content(name="nimi")
-      ep-field(
-        help="ops-nimi-ohje",
-        v-model="uusi.nimi",
-        :validation="$v.uusi.nimi",
-        :is-editing="true")
-
-    div(v-if="uusi.pohja")
-      hr
-      ep-organizations(
-        :validation="$v.uusi.organisaatiot",
-        :koulutustyyppi="koulutustyyppi",
-        v-model="uusi.organisaatiot")
-
-      ep-button(
-        :disabled="$v.uusi.$invalid || addingOpetussuunnitelma",
-        @click="luoUusiOpetussuunnitelma",
-        :show-spinner="isLoading") {{ $t('luo-opetussuunnitelma') }}
-
+<template>
+<ep-main-view :tutoriaalistore="tutoriaalistore">
+  <template slot="icon">
+    <ep-icon class="float-right" icon="luo-uusi"></ep-icon>
+  </template>
+  <template slot="header">
+    <h1>{{ $t('uusi-opetussuunnitelma') }}</h1>
+  </template>
+  <fieldset class="form-group">
+    <div class="row">
+      <legend class="col-form-label col-sm-2 pt-0">{{ $t('opetussuunnitelman-pohjatyyppi') }}:</legend>
+      <div class="col-sm-10 mb-4">
+        <div class="form-check">
+          <input class="form-check-input"
+                 id="uusi-ops-pohjavalinta-1"
+                 type="radio"
+                 :value="'opsista'"
+                 v-model="oletuspohjasta" />
+          <label class="form-check-label"
+                 for="uusi-ops-pohjavalinta-1">{{ $t('toinen-opetussuunnitelma') }}</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input"
+                 id="uusi-ops-pohjavalinta-2"
+                 type="radio"
+                 :value="'pohjasta'"
+                 v-model="oletuspohjasta"
+                 checked="checked" />
+          <label class="form-check-label" for="uusi-ops-pohjavalinta-2">{{ $t('oletuspohja') }}</label>
+        </div>
+      </div>
+    </div>
+    <div v-if="oletuspohjasta">
+      <div class="form-group">
+        <div v-if="pohjat">
+          <ep-form-content v-if="pohjat.length > 0" name="uusi-ops-pohja">
+            <ep-select v-model="uusi.pohja"
+                       :items="pohjat"
+                       :validation="$v.uusi.pohja"
+                       :is-editing="true"
+                       help="uusi-ops-pohja-ohje"
+                       placeholder="valitse-opetussuunnitelman-pohja">
+              <template slot-scope="{ item }">
+                <span>{{ $kaanna(item.nimi) }} ({{ item.perusteenDiaarinumero }})</span>
+              </template>
+            </ep-select>
+          </ep-form-content>
+          <div v-else>
+            <div class="alert alert-info">{{ $t('ei-opetussuunnitelmia') }}</div>
+          </div>
+        </div>
+        <ep-spinner v-else></ep-spinner>
+      </div>
+    </div>
+  </fieldset>
+  <div v-if="oletuspohjasta">
+    <hr/>
+    <ep-form-content name="nimi">
+      <ep-field help="ops-nimi-ohje" v-model="uusi.nimi" :validation="$v.uusi.nimi" :is-editing="true"></ep-field>
+    </ep-form-content>
+    <div v-if="uusi.pohja">
+      <hr/>
+      <ep-organizations :validation="$v.uusi.organisaatiot" :koulutustyyppi="koulutustyyppi" v-model="uusi.organisaatiot"></ep-organizations>
+      <ep-button :disabled="$v.uusi.$invalid || addingOpetussuunnitelma" @click="luoUusiOpetussuunnitelma" :show-spinner="isLoading">{{ $t('luo-opetussuunnitelma') }}</ep-button>
+    </div>
+  </div>
+</ep-main-view>
 </template>
 
 <script lang="ts">
@@ -78,7 +76,7 @@ import { validationMixin } from 'vuelidate';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { delay } from '@shared/utils/delay';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
