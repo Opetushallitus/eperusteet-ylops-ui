@@ -56,6 +56,7 @@ import { muokkaustietoRoute, muokkaustietoIcon } from '@/utils/tapahtuma';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { parsiEsitysnimi } from '@/stores/kayttaja';
+import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 
 @Component({
   components: {
@@ -65,16 +66,29 @@ import { parsiEsitysnimi } from '@/stores/kayttaja';
 })
 export default class OpsViimeaikainenToiminta extends Vue {
 
-  @Prop({required: true})
-  private ops!: OpetussuunnitelmaKevytDto;
+  @Prop({ required: true })
+  private muokkaustietoStore!: MuokkaustietoStore;
 
-  private hakuLukumaara = 8;
-  private muokkaustiedot: MuokkaustietoKayttajallaDto[] | null = null;
-  private viimeinenHaku: MuokkaustietoKayttajallaDto[] | null = null;
   private lisahaku: boolean = false;
 
   async mounted() {
-    this.haeLisaa();
+    this.muokkaustietoStore.update();
+  }
+
+  get muokkaustiedot() {
+    return this.muokkaustietoStore.getMuokkaustiedot();
+  }
+
+  get viimeinenHaku() {
+    return this.muokkaustietoStore.getViimeinenHaku();
+  }
+
+  get hakuLukumaara() {
+    return this.muokkaustietoStore.getHakuLukumaara();
+  }
+
+  async haeLisaa() {
+    this.muokkaustietoStore.update();
   }
 
   get muokkaustiedotRouted() {
@@ -129,26 +143,6 @@ export default class OpsViimeaikainenToiminta extends Vue {
     }
 
     return muokkaustieto.tapahtuma;
-  }
-
-  async haeLisaa() {
-
-    if (this.muokkaustiedot) {
-      this.lisahaku = true;
-      this.viimeinenHaku = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.ops.id!, (_.last(this.muokkaustiedot) as any).luotu, this.hakuLukumaara) as any).data;
-      this.lisahaku = false;
-
-      if (this.viimeinenHaku) {
-        this.muokkaustiedot = [
-          ...this.muokkaustiedot,
-          ...this.viimeinenHaku
-        ];
-      }
-    }
-    else {
-      this.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.ops.id!, undefined, this.hakuLukumaara) as any).data;
-    }
-
   }
 
 }

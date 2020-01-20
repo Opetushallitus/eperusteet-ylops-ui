@@ -40,6 +40,8 @@ import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 import { createLogger } from '@shared/utils/logger';
 import { tutoriaalistore } from './stores/tutoriaaliStore';
 import { VueTutorial } from './directives/tutoriaali';
+import { MuokkaustietoStore } from '@/stores/muokkaustieto';
+import { AikatauluStore } from './stores/aikataulu';
 
 Vue.use(Router);
 Vue.use(VueTutorial, {tutoriaalistore});
@@ -132,6 +134,19 @@ export const router = new Router({
         path: 'yleisnakyma',
         component: RouteHallintapaneeli,
         name: 'yleisnakyma',
+        meta: {
+          resolve: {
+            cacheBy: ['id'],
+            async props(route) {
+              return {
+                default: {
+                  muokkaustietoStore: new MuokkaustietoStore(_.parseInt(route.params.id)),
+                  aikatauluStore: new AikatauluStore(_.parseInt(route.params.id)),
+                },
+              };
+            },
+          },
+        },
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,

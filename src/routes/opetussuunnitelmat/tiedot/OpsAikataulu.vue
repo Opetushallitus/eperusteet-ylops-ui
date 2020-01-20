@@ -43,7 +43,7 @@ import { Aikataulu } from '@/api';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpAikataulu from '@shared/components/EpAikataulu/EpAikataulu.vue';
 import EpAikatauluModal from '@shared/components/EpAikataulu/EpAikatauluModal.vue';
-
+import { AikatauluStore } from '@/stores/aikataulu';
 
 @Component({
   components:{
@@ -54,13 +54,19 @@ import EpAikatauluModal from '@shared/components/EpAikataulu/EpAikatauluModal.vu
   },
 })
 export default class OpsAikataulu extends Vue {
+
   @Prop({required: true})
   private ops!: OpetussuunnitelmaKevytDto;
 
-  private aikataulut: OpetussuunnitelmanAikatauluDto[] | null = null;
+  @Prop({ required: true })
+  private aikatauluStore!: AikatauluStore;
 
   async mounted() {
-    this.aikataulut = (await Aikataulu.getAikataulu(this.ops.id!) as any).data;
+    this.aikatauluStore.update();
+  }
+
+  get aikataulut() {
+    return this.aikatauluStore.getAikataulut();
   }
 
   otaAikatauluKayttoon() {
@@ -68,19 +74,7 @@ export default class OpsAikataulu extends Vue {
   }
 
   async tallenna(aikataulut) {
-
-    const lisattavat = _.filter(aikataulut, (aikataulu) => _.isNil(aikataulu.id));
-    const paivitettavat = _.filter(aikataulut, (aikataulu) => !_.isNil(aikataulu.id));
-    const poistettavat = _.filter(this.aikataulut, (aikataulu) => !_.includes(_.map(aikataulut, (aikataulu) => aikataulu.id), aikataulu.id));
-
-    const lisatyt = _.map(await Promise.all(_.map(lisattavat, (lisattava) => Aikataulu.save(this.ops.id!, (lisattava as any)) as any)), (lisatty) => lisatty.data);
-    const paivitetyt = _.map(await Promise.all(_.map(paivitettavat, (paivitettava) => Aikataulu.update(this.ops.id!, (paivitettava as any)) as any)), (paivitetty) => paivitetty.data);
-    await Promise.all(_.map(poistettavat, (poistettava) => Aikataulu._delete(this.ops.id!, (poistettava as any)) as any));
-
-    this.aikataulut = [
-      ...lisatyt,
-      ...paivitetyt,
-    ];
+    this.aikatauluStore.saveAikataulut(aikataulut);
   }
 
 }
