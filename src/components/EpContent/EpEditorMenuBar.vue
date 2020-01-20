@@ -266,7 +266,7 @@ export default class EpEditorMenuBar extends Vue {
     if (!_.isEmpty(this.linkValue)) {
       data.commands.link({
         href: this.linkValue
-      });
+      } as any);
       this.linkValue = null;
     }
   }
@@ -276,12 +276,9 @@ export default class EpEditorMenuBar extends Vue {
 <style scoped lang="scss">
 @import "@/styles/_variables.scss";
 
-.menu-placeholder {
-  margin-bottom: 57px;
-}
-
 .sub-bar {
   margin-top: 0;
+  border-top: 2px solid #E0E0E1;
 }
 
 /deep/ .active {
@@ -291,11 +288,11 @@ export default class EpEditorMenuBar extends Vue {
 
 .editor-toolbar {
   background-color: #f1f1f1;
-  border: 1px solid #d1d1d1;
+  border: 2px solid #E0E0E1;
   border-bottom: none;
   padding: 0;
-  border-top-left-radius: .25rem;
-  border-top-right-radius: .25rem;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .editor-toolbar-sticky {

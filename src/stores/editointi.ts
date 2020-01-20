@@ -46,6 +46,12 @@ export interface EditointiKontrolliConfig {
   preview?: () => Promise<void>;
 }
 
+export interface EditointiKontrolliRestore {
+  numero: number;
+  modal?: any;
+  routePushLatest?: boolean;
+}
+
 const DefaultConfig = {
   start: async () => {},
   remove: async () => {},
@@ -253,12 +259,19 @@ export class EditointiKontrolli {
     this.mstate.isSaving = false;
   }
 
-  public async restore(event) {
+  public async restore(event: EditointiKontrolliRestore) {
     try {
       await this.config.history!.restore!(this.mstate.data, event.numero);
       this.logger.success('Palautettu onnistuneesti');
-      if ( event.modal && _.isFunction(event.modal.hide)) {
+
+      // Piilotetaan modaali
+      if (event.modal && _.isFunction(event.modal.hide)) {
         event.modal.hide();
+      }
+
+      // Päivitetään näkymä uusimpaan
+      if (event.routePushLatest) {
+        router.push({ query: {} });
       }
 
       const data = await this.fetch();

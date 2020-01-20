@@ -166,7 +166,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   }
 
   async arkistoiOps() {
-    if (await this.vahvista('arkistoi-'+ this.tyyppi, 'arkistoi-kuvaus-'+this.tyyppi)) {
+    if (await this.vahvista('arkistoi-' + this.tyyppi, 'arkistoi-kuvaus-' + this.tyyppi)) {
       await this.store.updateTila('poistettu');
       this.$router.push({
         name: this.tyyppi + 'Listaus',

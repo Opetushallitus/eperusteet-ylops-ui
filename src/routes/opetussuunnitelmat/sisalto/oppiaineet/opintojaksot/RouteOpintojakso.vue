@@ -191,7 +191,7 @@
               </div>
             </div>
 
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-laaja-alainen') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-opintojakso-laaja-alainen') }}</div>
 
             <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
               <div slot="header" class="moduuliotsikko">
@@ -231,7 +231,7 @@
               </div>
             </div>
 
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-arviointi') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-opintojakso-arviointi') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.arviointi" :is-editable="isEditing"></ep-content>
           </ep-collapse>

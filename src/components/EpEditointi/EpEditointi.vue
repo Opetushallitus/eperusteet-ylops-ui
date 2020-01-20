@@ -54,7 +54,7 @@
                          variant="link"
                          v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
                          @click="ctrls.start()"
-                         v-if="!ctrls.isEditing && ctrls.isEditable"
+                         v-if="!ctrls.isEditing && ctrls.isEditable && !versiohistoriaVisible"
                          icon="kyna"
                          :show-spinner="state.isSaving"
                          :disabled="state.disabled">
@@ -67,7 +67,8 @@
                           :disabled="state.disabled"
                           toggle-class="text-decoration-none"
                           no-caret="no-caret"
-                          right>
+                          right
+                          v-oikeustarkastelu="{ oikeus: 'luku' }">
                 <template slot="button-content">
                   <fas icon="menu-vaaka"></fas>
                 </template>
@@ -109,23 +110,44 @@
           </div>
         </div>
       </div>
-      <div class="d-flex align-items-center versiohistoria" v-if="current && current !== latest">
+      <div class="d-flex align-items-center versiohistoria" v-if="versiohistoriaVisible">
         <div class="headerline">
           <span>{{ $t('muokkaushistoria') }}: {{ $t('versionumero') }} {{ versionumero }}</span>
-          <!--<span v-if="current.kommentti">, {{ $t('kommentti')}}: {{ current.kommentti }}</span>-->
         </div>
         <div class="flex-fill">
           <b-pagination :value="versionumero"
                         @input="updateVersionumero"
                         :total-rows="versions"
                         :per-page="1"
+                        :hide-goto-end-buttons="true"
                         size="sm"
-                        class="mb-0" />
+                        class="mb-0">
+            <template v-slot:prev-text>
+              <fas icon="vakanen-vasen" fixed-width />
+            </template>
+            <template v-slot:next-text>
+              <fas icon="vakanen-oikea" fixed-width />
+            </template>
+          </b-pagination>
         </div>
         <div class="floating-editing-buttons">
-          <ep-button variant="link" icon="peruuta" @click="ctrls.restore({ numero: current.numero })">
+          <ep-button variant="link" icon="lista">
+            <ep-versio-modaali :value="current"
+                               :versions="historia"
+                               :current="current"
+                               :per-page="10"
+                               @restore="ctrls.restore($event)">
+              {{ $t('palaa-listaan') }}
+            </ep-versio-modaali>
+          </ep-button>
+          <ep-button variant="link"
+                     icon="peruuta"
+                     @click="ctrls.restore({ numero: current.numero, routePushLatest: true })">
             {{ $t('palauta-tama-versio') }}
           </ep-button>
+          <router-link :to="{ query: {} }">
+            <ep-button variant="link" icon="sulje" />
+          </router-link>
         </div>
       </div>
     </div>
@@ -247,7 +269,14 @@ export default class EpEditointi extends Mixins(validationMixin) {
   }
 
   get katseluDropDownValinnatVisible() {
-    return !this.ctrls!.isEditing && !this.state.disabled && (this.hooks.preview || this.hooks.validate || this.hooks.history);
+    return !this.ctrls!.isEditing
+      && !this.state.disabled
+      && !this.versiohistoriaVisible
+      && (this.hooks.preview || this.hooks.validate || this.hooks.history);
+  }
+
+  get versiohistoriaVisible() {
+    return this.current && this.current !== this.latest;
   }
 
   get hasKeskusteluSlot() {
@@ -262,7 +291,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
     return this.$scopedSlots.ohje;
   }
 
-  toggleSidebarState(val: number) {
+  private toggleSidebarState(val: number) {
     if (val === this.sidebarState) {
       this.sidebarState = 0;
     }
@@ -338,6 +367,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
       index: revs.length - index,
     }));
   }
+
 }
 
 </script>
@@ -374,6 +404,35 @@ export default class EpEditointi extends Mixins(validationMixin) {
 
     .headerline {
       padding-right: 50px;
+    }
+
+    /deep/ .pagination .page-item {
+      &.active {
+        .page-link {
+          font-weight: 600;
+          color: #575757;
+        }
+      }
+
+      &.disabled {
+        .page-link {
+          color: #575757;
+        }
+      }
+      // Seuraava ja edellinen väkäset
+      &:first-child, &:last-child {
+        .page-link {
+          //color: red;
+        }
+      }
+
+      & .page-link {
+        background-color: transparent;
+        border: none;
+        color: #3367E3;
+        font-weight: 400;
+        font-size: 1rem;
+      }
     }
   }
 

@@ -157,10 +157,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   }
 
   private async restore(data, numero) {
-    if (await this.vahvista('palauta-tekstikappale', 'palauta-tekstikappale-kuvaus')) {
-      await OpetussuunnitelmanSisalto.revertTekstikappaleToVersion(this.opsId, data.tov!.id!, numero);
-      success('palautus-onnistui');
-    }
+    await OpetussuunnitelmanSisalto.revertTekstikappaleToVersion(this.opsId, data.tov!.id!, numero);
+    success('palautus-onnistui');
   }
 
   private async revisions(data) {

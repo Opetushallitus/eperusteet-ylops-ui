@@ -27,7 +27,13 @@
             </div>
             <div class="col-md-6">
               <ep-form-content name="julkaisukielet">
-                <ep-select help="ops-julkaisukielet-ohje" v-model="data.julkaisukielet" :validation="validation.julkaisukielet" :is-editing="isEditing" :items="kielet" :multiple="true" :useCheckboxes="true">
+                <ep-select help="ops-julkaisukielet-ohje"
+                           v-model="data.julkaisukielet"
+                           :validation="validation.julkaisukielet"
+                           :is-editing="isEditing"
+                           :items="kielet"
+                           :multiple="true"
+                           :useCheckboxes="true">
                 </ep-select>
               </ep-form-content>
             </div>
@@ -83,7 +89,6 @@
 </template>
 
 <script lang="ts">
-
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
 import EpField from'@shared/components/forms/EpField.vue';

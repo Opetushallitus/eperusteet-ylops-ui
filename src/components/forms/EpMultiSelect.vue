@@ -102,13 +102,50 @@ export default class EpMultiSelect extends Mixins(EpValidation) {
 <style scoped lang="scss">
 @import '@shared/styles/_variables.scss';
 
+
 /deep/ .multiselect__tags {
-  border: 1px solid;
-  border-radius: 6px;
-  appearance: none;
-  padding: 4px 40px 4px 8px;
+  border: 2px solid #E0E0E1;
+  border-radius: 10px;
+  padding: 0.4375rem 0.625rem;
+  font-size: 1rem;
 }
 
+/deep/ .multiselect--active {
+  .multiselect__tags {
+    border-bottom: 0;
+    border-top: 2px solid #E0E0E1;
+  }
+}
+
+/deep/ .multiselect--above {
+  .multiselect__content-wrapper {
+    border: 2px solid #E0E0E1;
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
+  }
+  .multiselect__tags {
+    border-bottom: 2px solid #E0E0E1;
+  }
+}
+/deep/ .multiselect--above.multiselect--active {
+  .multiselect__tags {
+    border-top: 0;
+  }
+}
+
+/deep/ .multiselect__content-wrapper {
+  border: 2px solid #E0E0E1;
+  border-radius: 0 0 10px 10px;
+  border-top: none;
+}
+
+/deep/ .is-invalid .multiselect__content-wrapper {
+  border-color: #dc3545;
+}
+
+/deep/ .is-valid .multiselect__content-wrapper {
+  border-color: $valid;
+}
 
 /deep/ .is-invalid .multiselect__tags {
   border-color: #dc3545;

@@ -1,6 +1,6 @@
 <template>
-<div v-b-modal.epversiomodaali>
-  {{ $t('muokkaushistoria') }}
+<span v-b-modal.epversiomodaali>
+  <slot>{{ $t('muokkaushistoria') }}</slot>
   <b-modal id="epversiomodaali"
            ref="epversiomodaali"
            size="lg"
@@ -17,9 +17,7 @@
           <div v-if="!row.item.valittu">
             <router-link :to="{ name: 'tekstikappale', query: { versionumero: row.item.index } }">
               <ep-button variant="link" icon="silma">
-                <slot name="muokkaa">
-                  {{ $t('katsele') }}
-                </slot>
+                {{ $t('katsele') }}
               </ep-button>
             </router-link>
             <ep-button variant="link"
@@ -43,7 +41,7 @@
       align="center"
       aria-controls="epversiomodaali"></b-pagination>
   </b-modal>
-</div>
+</span>
 </template>
 
 <script lang="ts">

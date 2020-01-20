@@ -19,9 +19,8 @@
     </template>
     <template slot="tag" slot-scope="{ option, remove }">
       <span class="selected">
-        <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-        <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
-        <button class="btn btn-link" @click="remove(option)">
+        {{ $kaanna(oppiaineetMap[option].nimi) }} ({{ oppiaineetMap[option].koodiArvo }})
+        <button class="btn btn-link btn-sm btn-remove" @click="remove(option)">
           <fas icon="sulje" />
         </button>
       </span>
@@ -170,3 +169,13 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   }
 }
 </script>
+
+<style scoped lang="scss">
+.selected {
+  //font-size: 1rem;
+
+  .btn-remove {
+    padding: 0 0.5rem 0 0.5rem;
+  }
+}
+</style>
