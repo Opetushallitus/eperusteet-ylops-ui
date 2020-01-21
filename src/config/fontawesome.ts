@@ -67,6 +67,7 @@ library.add(solid.faUndo);
 library.add(solid.faUpload);
 library.add(solid.faUsers);
 library.add(solid.faComments);
+library.add(solid.faSave);
 
 // OPH icons
 library.add(oph.arkisto);
