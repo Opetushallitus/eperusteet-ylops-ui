@@ -256,7 +256,8 @@ export class OpetussuunnitelmaStore {
       if (poistettu.tyyppi) {
         await Lops2019.palauta(this.opetussuunnitelma!.id!, poistettu.id!);
         await this.getPoistetut();
-      } else {
+      }
+      else {
         // Tekstikappaleiden poisto
         OpetussuunnitelmanSisalto.returnRemoved(this.opetussuunnitelma!.id!, poistettu!.id);
         await this.getPoistetutTekstikappaleet();

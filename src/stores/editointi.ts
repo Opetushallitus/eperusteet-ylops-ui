@@ -221,7 +221,8 @@ export class EditointiKontrolli {
       await this.config.remove!(this.mstate.data);
       this.logger.debug('Poistettu');
       this.isRemoved = true;
-    } catch (err) {
+    }
+    catch (err) {
       const syy = _.get(err, 'response.data.syy');
       if (syy) {
         fail('poisto-epaonnistui', err.response.data.syy);
