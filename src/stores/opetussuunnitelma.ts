@@ -99,6 +99,7 @@ export class OpetussuunnitelmaStore {
 
   public async removeTeksti(tov: Puu) {
     await OpetussuunnitelmanSisalto.removeTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!);
+    await this.updateSisalto();
   }
 
   public async addTeksti(tov: Puu, parentId?: number) {
@@ -246,10 +247,22 @@ export class OpetussuunnitelmaStore {
     return (await Lops2019.getRemoved(this.opetussuunnitelma!.id!)).data;
   }
 
-  public async palauta(poistettu: Lops2019PoistettuDto) {
+  public async getPoistetutTekstikappaleet() {
+    return (await OpetussuunnitelmanSisalto.getRemovedTekstikappaleet(this.opetussuunnitelma!.id!)).data;
+  }
+
+  public async palauta(poistettu) {
     try {
-      await Lops2019.palauta(this.opetussuunnitelma!.id!, poistettu.id!);
+      if (poistettu.tyyppi) {
+        await Lops2019.palauta(this.opetussuunnitelma!.id!, poistettu.id!);
+        await this.getPoistetut();
+      } else {
+        // Tekstikappaleiden poisto
+        OpetussuunnitelmanSisalto.returnRemoved(this.opetussuunnitelma!.id!, poistettu!.id);
+        await this.getPoistetutTekstikappaleet();
+      }
       success('palautus-onnistui');
+      await this.init();
     }
     catch (err) {
       fail('palautus-epaonnistui', err.response.data.syy);

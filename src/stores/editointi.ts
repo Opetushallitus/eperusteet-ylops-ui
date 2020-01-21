@@ -215,11 +215,24 @@ export class EditointiKontrolli {
 
   public async remove() {
     this.mstate.disabled = true;
-    this.isRemoved = true;
     this.isEditingState = false;
     _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor == this);
-    await this.config.remove!(this.mstate.data);
-    this.logger.debug('Poistettu');
+    try {
+      await this.config.remove!(this.mstate.data);
+      this.logger.debug('Poistettu');
+      this.isRemoved = true;
+    } catch (err) {
+      const syy = _.get(err, 'response.data.syy');
+      if (syy) {
+        fail('poisto-epaonnistui', err.response.data.syy);
+      }
+      else {
+        this.logger.error('poisto-epaonnistui', err);
+        fail('poisto-epaonnistui');
+      }
+      this.isRemoved = false;
+    }
+    this.mstate.disabled = false;
   }
 
   public async save() {

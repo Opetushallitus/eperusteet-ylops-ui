@@ -4,7 +4,7 @@
       <h2 class="otsikko">{{ $t('poistetut') }}</h2>
     </div>
     <div class="sisalto">
-      <b-tabs content-class="mt-3" v-model="tabIndex">
+      <b-tabs content-class="mt-4" v-model="tabIndex">
         <b-tab :title="$t('opintojaksot')">
           <poistetut-haku-table :poistetut="opintojaksot" @palauta="palauta" />
         </b-tab>
@@ -34,7 +34,7 @@ import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { Lops2019PoistettuDto } from '@/tyypit';
+import { Lops2019PoistettuDto, PoistettuTekstiKappaleDto } from '@/tyypit';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Multiselect from 'vue-multiselect';
 import PoistetutHakuTable from './poistetut/PoistetutHakuTable.vue';
@@ -59,10 +59,11 @@ import PoistetutHakuTable from './poistetut/PoistetutHakuTable.vue';
 })
 export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private poistetut: Lops2019PoistettuDto[] = [];
+  private poistetutTekstikappaleet: PoistettuTekstiKappaleDto[] = [];
   private tabIndex = 0;
 
   async init() {
-    this.poistetut = await this.store.getPoistetut();
+    this.fetchPoistetut();
 
     // Ohjataan oikeaan tabiin
     const route = (this as any).$route;
@@ -76,16 +77,25 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   get tekstikappaleet() {
-    return _.filter(this.poistetut, p => p.tyyppi as string === 'tekstikappale');
+    return this.poistetutTekstikappaleet;
   }
 
   get opintojaksot() {
     return _.filter(this.poistetut, p => p.tyyppi as string === 'opintojakso');
   }
 
-  async palauta(poistettu: Lops2019PoistettuDto) {
+  async fetchPoistetut() {
+    const res = await Promise.all([
+      this.store.getPoistetut(),
+      this.store.getPoistetutTekstikappaleet(),
+    ]);
+    this.poistetut = res[0];
+    this.poistetutTekstikappaleet = res[1];
+  }
+
+  async palauta(poistettu: any) {
     await this.store.palauta(poistettu);
-    this.poistetut = await this.store.getPoistetut();
+    this.fetchPoistetut();
   }
 
 }
@@ -95,6 +105,11 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 @import "@/styles/_variables.scss";
 
 .poistetut {
+
+  /deep/ .tabs .nav-item a {
+    margin: 0;
+    padding: 10px;
+  }
 
   .ylapaneeli {
     font-weight: 600;
