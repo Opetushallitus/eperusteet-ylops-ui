@@ -1,38 +1,74 @@
 <template>
-<div class="dokumentit">
-  <div class="ylapaneeli d-flex align-items-center">
-    <h2 class="otsikko">{{ $t('luo-pdf') }}</h2>
-  </div>
-  <div class="sisalto">
-    <div class="mb-4">
-      <p>{{ tilaFormatted }}…</p>
-      <div class="btn-group">
-        <ep-button @click="createDocument" :disabled="isPolling" :show-spinner="isPolling" variant="link">
-          {{ $t('luo-uusi-pdf') }}
-        </ep-button>
-        <a class="btn btn-link"
-           v-if="dto && href"
-           :href="href"
-           target="_blank"
-           rel="noopener noreferrer"
-           variant="link">
-          <fas class="mr-2" icon="file-download"></fas>
-          <span>{{ $t('lataa-pdf') }}</span>
-        </a>
-      </div>
+
+  <div class="dokumentit">
+    <div class="ylapaneeli d-flex align-items-center">
+        <h2 class="otsikko">{{ $t('luo-pdf') }}</h2>
     </div>
-    <h2>{{ $t('lisaasetukset') }}</h2>
-    <div class="row">
-      <div class="col-lg-6">
-        <div class="form-group">
+    <div class="sisalto">
+      <div class="mb-4">
+        <h5>{{ $t('luo-ja-lataa-pdf') }}</h5>
+        <p>{{ $t('luo-pdf-selite')}}</p>
+
+        <div class="row pdf-box align-items-center justify-content-between" :class="dto && href ? 'luotu': 'ei-luotu'">
+          <div class="col col-auto ikoni">
+            <img src="../../../../public/img/icons/pdfkuva_lataus.svg" />
+          </div>
+          <div class="col-lg teksti">
+            <span  v-if="dto && href">
+              {{$kaanna(opetussuunnitelmanimi)}}.pdf
+            </span>
+            <span v-else>
+              {{$t('pdf-tiedostoa-ei-ole-viela-luotu')}}
+            </span>
+          </div>
+          <div class="col-sm-2 text-left luomisaika" v-if="dto && href">
+            {{$t('luotu')}}: {{$sd(dto.valmistumisaika)}}
+          </div>
+          <div class="col-sm-2 text-left"  v-if="dto && href">
+            <a class="btn btn-link pl-0" :href="href" target="_blank" rel="noopener noreferrer" variant="link">
+              <fas class="mr-2" icon="silma"></fas>
+              <span>{{ $t('esikatsele-ja-lataa') }}</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <ep-button @click="createDocument" :disabled="isPolling" :show-spinner="isPolling" buttonClass="px-5"><span>{{ $t('luo-uusi-pdf') }}</span></ep-button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col kuvalataus">
           <ep-dokumentti-kuva-lataus tyyppi="kansikuva" :dto="dto" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+        </div>
+        <div class="col-4 text-center sijaintikuva">
+          <div class="sijainti-topic">{{$t('sijainti')}}</div>
+          <img src="../../../../public/img/icons/pdfkuva_etusivu.svg" />
+        </div>
+      </div>
+
+       <div class="row">
+        <div class="col kuvalataus">
           <ep-dokumentti-kuva-lataus tyyppi="ylatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+        </div>
+        <div class="col-4 text-center sijaintikuva">
+          <div class="sijainti-topic">&nbsp;</div>
+          <img src="../../../../public/img/icons/pdfkuva_header.svg" />
+        </div>
+      </div>
+
+       <div class="row">
+        <div class="col kuvalataus">
           <ep-dokumentti-kuva-lataus tyyppi="alatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+        </div>
+        <div class="col-4 text-center sijaintikuva">
+          <div class="sijainti-topic">&nbsp;</div>
+          <img src="../../../../public/img/icons/pdfkuva_alatunniste.svg"/>
         </div>
       </div>
     </div>
+
   </div>
-</div>
 </template>
 
 <script lang="ts">
@@ -47,7 +83,7 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpDokumenttiKuvaLataus from './EpDokumenttiKuvaLataus.vue';
-
+import { success, fail } from '@/utils/notifications';
 
 @Component({
   components: {
@@ -147,13 +183,16 @@ export default class RouteDokumentti extends EpOpsRoute {
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
+
       this.dto = (await Dokumentit.addImage(this.opsId, tyyppi, this.kieli, formData)).data;
+      success('pdf-tiedosto-kuva-lataus-onnistui');
     }
   }
 
   // Poistetaan kansikuva
   private async removeImage(tyyppi) {
     await Dokumentit.deleteImage(this.opsId, tyyppi, this.kieli);
+    success('pdf-tiedosto-kuva-poisto-onnistui');
     if (this.dto) {
       this.dto[tyyppi] = undefined;
     }
@@ -162,11 +201,17 @@ export default class RouteDokumentti extends EpOpsRoute {
   destroyed() {
     clearInterval(this.polling);
   }
+
+  get opetussuunnitelmanimi() {
+    return this.ops.nimi;
+  }
 }
 
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/_variables.scss";
+
 .dokumentit {
   margin-top: 4px;
 
@@ -182,7 +227,62 @@ export default class RouteDokumentti extends EpOpsRoute {
   }
 
   .sisalto {
-    padding: 15px;
+    margin: 35px 50px 20px 15px;
+
+    .pdf-box {
+      margin: 25px 0px;
+      width: 100%;
+      border-radius: 2px;
+      padding: 25px;
+
+      .ikoni {
+        font-size: 1.5rem;
+      }
+
+      &.luotu {
+        background-color: $gray-lighten-10;
+
+        .ikoni {
+          color: $blue-lighten-6;
+        }
+
+        @media(max-width: 575px) {
+
+          .ikoni {
+            display: none;
+          }
+        }
+
+        .teksti {
+          font-weight: 600;
+        }
+      }
+
+      &.ei-luotu {
+        border: 1px solid $gray-lighten-9;
+        color: $gray-lighten-2;
+        font-style: italic;
+      }
+
+    }
+
+    @media(max-width: 575px) {
+
+      .sijaintikuva {
+        display:none;
+      }
+
+    }
+
+    .kuvalataus {
+      min-width: 300px;
+    }
+
+    .sijainti-topic {
+      margin-bottom: 40px;
+      font-weight: 600;
+    }
+
   }
 }
 
