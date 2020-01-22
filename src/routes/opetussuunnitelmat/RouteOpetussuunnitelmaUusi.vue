@@ -192,7 +192,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   pohjatFilter(pohjat) {
     return _.chain(pohjat)
       .filter(pohja => pohja.tila !== 'POISTETTU')
-      .filter(pohja => pohja.toteutus === 'lops2019' || pohja.toteutus === 'yksinkertainen')
+      .filter(pohja => pohja.toteutus === 'lops2019')
       .value();
   }
 
