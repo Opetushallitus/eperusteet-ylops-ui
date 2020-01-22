@@ -82,5 +82,6 @@ export type KysymysDto = GApi.KysymysDto;
 export type MuokkaustietoKayttajallaDto = GApi.MuokkaustietoKayttajallaDto;
 export type OpetussuunnitelmanAikatauluDto = GApi.OpetussuunnitelmanAikatauluDto;
 export type PoistettuTekstiKappaleDto = GApi.PoistettuTekstiKappaleDto;
+export type OpetussuunnitelmaStatistiikkaDto = GApi.OpetussuunnitelmaStatistiikkaDto;
 
 export default GApi;

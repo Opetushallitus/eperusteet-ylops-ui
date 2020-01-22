@@ -27,6 +27,7 @@ import RouteJarjestys from '@/routes/opetussuunnitelmat/RouteJarjestys.vue';
 import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
+import RouteTilastot from '@/routes/tilastot/RouteTilastot.vue';
 
 import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
@@ -94,6 +95,10 @@ export const router = new Router({
       path: 'ukk',
       name: 'useinkysytyt',
       component: RouteUkk,
+    }, {
+      path: 'tilastot',
+      name: 'tilastot',
+      component: RouteTilastot,
     }, {
       path: 'pohjat',
       name: 'pohjaListaus',
