@@ -190,6 +190,10 @@ export default class OpsSidenav extends EpOpsComponent {
     return (item.type === 'moduuli' || item.type === 'opintojakso');
   }
 
+  private onModuuli(item) {
+    return item.type === 'moduuli';
+  }
+
   private haeKoodi(item: SideMenuItem) {
     const koodi = _.get(item, 'objref.koodi.arvo', '');
     if (!_.isEmpty(koodi)) {

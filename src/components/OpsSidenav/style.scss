@@ -19,11 +19,10 @@
           font-size: 14px;
 
           &.btn-link-link {
-            color: #0041DC;
+            color: $blue-lighten-5;
+            font-weight: 600;
           }
         }
-
-
       }
     }
 
@@ -32,10 +31,13 @@
     }
 
     li.subheader {
+      margin-top: 25px;
+      margin-bottom: 5px;
       span {
         font-size: 90%;
-        padding-left: 1rem;
+        padding-left: 0.63rem;
         user-select: none;
+        color: $gray-lighten-1;
       }
     }
 
@@ -102,6 +104,13 @@
     li {
       a.router-link-active {
         font-weight: 600;
+      }
+    }
+
+    div.subitem {
+      .btn, .btn-link-link {
+        padding-top: 5px;
+        padding-bottom: 5px;
       }
     }
 

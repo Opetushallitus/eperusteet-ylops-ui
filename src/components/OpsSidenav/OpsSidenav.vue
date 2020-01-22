@@ -36,8 +36,8 @@
           </a>
           <a v-else class="btn btn-link">
               <div class="d-inline-flex">
-                <div>
-                  <ep-color-indicator class="mr-2" v-if="onkoModTaiOj(itemData.item)" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
+                <div v-if="onModuuli(itemData.item)">
+                  <ep-color-indicator class="mr-2" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
                   </ep-color-indicator>
                 </div>
                 <div>
