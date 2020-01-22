@@ -71,6 +71,12 @@
                 </ul>
               </ep-form-content>
             </div>
+             <div class="col-md-6">
+              <ep-form-content name="ainepainoitteinen">
+                <ep-toggle v-model="data.ainepainoitteinen" :is-editing="false">
+                </ep-toggle>
+              </ep-form-content>
+            </div>
             <div class="col-md-12">
               <ep-form-content name="ops-kuvaus">
                 <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.kuvaus" help="ops-kuvaus-ohje" :validation="validation.kuvaus" :is-editable="isEditing"> </ep-content>
