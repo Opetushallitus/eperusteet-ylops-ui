@@ -61,6 +61,10 @@
     <div v-if="uusi.pohja">
       <hr/>
       <ep-organizations :validation="$v.uusi.organisaatiot" :koulutustyyppi="koulutustyyppi" v-model="uusi.organisaatiot"></ep-organizations>
+      <ep-form-content name="ainepainoitteinen">
+        <ep-toggle v-model="uusi.ainepainoitteinen" :is-editing="true"></ep-toggle>
+      </ep-form-content>
+
       <ep-button :disabled="$v.uusi.$invalid || addingOpetussuunnitelma" @click="luoUusiOpetussuunnitelma" :show-spinner="isLoading">{{ $t('luo-opetussuunnitelma') }}</ep-button>
     </div>
   </div>
@@ -86,6 +90,7 @@ import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
+import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpRoute from '@/mixins/EpRoute';
 
@@ -114,6 +119,7 @@ import { opsLuontiValidator } from '@/validators/ops';
     EpOrganizations,
     EpSelect,
     EpSpinner,
+    EpToggle,
   },
   validations: {
     uusi: opsLuontiValidator(),
@@ -132,6 +138,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       oppilaitokset: [],
       kunnat: [],
     },
+    ainepainoitteinen: false,
   };
 
   @Prop({ required: true })
@@ -194,6 +201,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
           ...this.uusi.organisaatiot.jarjestajat,
           ...this.uusi.organisaatiot.oppilaitokset,
         ],
+        ainepainoitteinen: this.uusi.ainepainoitteinen,
       };
 
       // FIXME: #swagger
