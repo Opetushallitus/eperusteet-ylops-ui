@@ -504,6 +504,7 @@
   "opetussuunnitelma-vaaran-tyyppinen": "Opetussuunnitelma on väärän tyyppinen",
   "opetussuunnitelmaa-ei-loytynt": "Opetussuunnitelma on väärän tyyppinen",
   "opetussuunnitelmaa-ei-viela-julkaistu": "Opetussuunnitelmasta ei löytynyt julkaisuja",
+  "opetussuunnitelma-pohja-julkaisematon": "Opetussuunnitelman pohjaa ei ole julkaistu",
   "opetussuunnitelman-pohjatyyppi": "Käytä pohjana",
   "opetussuunnitelman-rakenne": "Opetussuunnitelman rakenne",
   "opetussuunnitelman-tarkistukset-julkaisu": "Vain valmiin opetussuunnitelman julkaisu on mahdollista. Korjaa ensin tarkastelussa löytyneet ongelmat.",
