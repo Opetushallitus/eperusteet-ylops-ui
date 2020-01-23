@@ -27,7 +27,7 @@ import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import BaseTile from './BaseTile.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { organizations } from '@/utils/organisaatiot';
+
 
 @Component({
   components: {

@@ -74,8 +74,6 @@
     "node-sass": "^4.12.0",
     "oph-virkailija-style-guide": "github:Opetushallitus/virkailija-styles",
     "postcss-loader": "^3.0.0",
-    "pug": "^2.0.4",
-    "pug-plain-loader": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "register-service-worker": "^1.5.2",
     "sass-loader": "^7.3.1",

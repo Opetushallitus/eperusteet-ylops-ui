@@ -25,6 +25,7 @@ const tapahtumaIcon = {
   paivitys: 'kyna',
   luonti: 'plussa',
   poisto: 'roskalaatikko',
+  palautus: 'peruuta',
 };
 
 export function muokkaustietoRoute(id, kohde) {
@@ -46,5 +47,5 @@ export function muokkaustietoIcon(kohde, tapahtuma) {
     return kohdeIcon[kohde];
   }
 
-  return tapahtumaIcon[tapahtuma];
+  return tapahtumaIcon[tapahtuma] ? tapahtumaIcon[tapahtuma] : 'kysymysmerkki';
 }

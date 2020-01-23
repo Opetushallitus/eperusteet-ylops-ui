@@ -74,7 +74,7 @@
 
           <div v-if="!isEditing">
             <h3 class="header" slot="header">{{ $t('opintojaksot') }}</h3>
-            <div class="block-container mb-4" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
+            <div class="block-container mb-2" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
               <div class="oj-content">
                 <span class="nimi">
                   <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
@@ -85,7 +85,10 @@
                 <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
               </div>
             </div>
-            <ep-button v-if="!isUusi()" icon="plussa" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
+            <ep-button class="mt-2"
+                       v-if="!isUusi()"
+                       icon="plussa"
+                       @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
           </div>
         </div>
       </div>
