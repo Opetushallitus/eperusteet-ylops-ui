@@ -34,7 +34,7 @@
       </b-nav-form>
 
       <!-- Sisällön kieli-->
-      <b-nav-item-dropdown id="content-lang-selector" right v-tutorial>
+      <b-nav-item-dropdown id="content-lang-selector" right>
         <template slot="button-content">
           <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}</span>
         </template>

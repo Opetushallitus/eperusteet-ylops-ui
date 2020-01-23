@@ -6,13 +6,20 @@
     <div class="sisalto">
       <b-tabs content-class="mt-4" v-model="tabIndex">
         <b-tab :title="$t('opintojaksot')">
-          <poistetut-haku-table :poistetut="opintojaksot" @palauta="palauta" />
+          <ep-spinner v-if="isLoading" />
+          <poistetut-haku-table v-else
+                                :poistetut="opintojaksot"
+                                @palauta="palauta" />
         </b-tab>
         <b-tab :title="$t('oppiaineet')">
-          <poistetut-haku-table :poistetut="oppiaineet" @palauta="palauta" />
+          <ep-spinner v-if="isLoading" />
+          <poistetut-haku-table v-else :poistetut="oppiaineet" @palauta="palauta" />
         </b-tab>
         <b-tab :title="$t('tekstikappaleet')">
-          <poistetut-haku-table :poistetut="tekstikappaleet" @palauta="palauta" />
+          <ep-spinner v-if="isLoading" />
+          <poistetut-haku-table v-else
+                                :poistetut="tekstikappaleet"
+                                @palauta="palauta" />
         </b-tab>
       </b-tabs>
     </div>
@@ -63,13 +70,13 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private tabIndex = 0;
 
   async init() {
-    this.fetchPoistetut();
-
     // Ohjataan oikeaan tabiin
     const route = (this as any).$route;
     if (route && route.params && route.params.tabIndex) {
       this.tabIndex = _.parseInt(route.params.tabIndex);
     }
+    await this.fetchPoistetut();
+
   }
 
   get oppiaineet() {
@@ -95,7 +102,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   async palauta(poistettu: any) {
     await this.store.palauta(poistettu);
-    this.fetchPoistetut();
+    await this.fetchPoistetut();
   }
 
 }

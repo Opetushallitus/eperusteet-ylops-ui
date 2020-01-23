@@ -47,16 +47,16 @@
 </template>
 
 <script lang="ts">
-
-import { Vue, Component, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
-import { Muokkaustieto } from '@/api';
-import { MuokkaustietoKayttajallaDto, OpetussuunnitelmaKevytDto } from '@/tyypit';
-import { muokkaustietoRoute, muokkaustietoIcon } from '@/utils/tapahtuma';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+
 import { parsiEsitysnimi } from '@/stores/kayttaja';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
+import { muokkaustietoRoute, muokkaustietoIcon } from '@/utils/tapahtuma';
+
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+
 
 @Component({
   components: {
@@ -143,6 +143,7 @@ export default class OpsViimeaikainenToiminta extends Vue {
     if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
       return 'luokaton';
     }
+    console.log(muokkaustieto.tapahtuma);
 
     return muokkaustieto.tapahtuma;
   }
@@ -159,17 +160,17 @@ export default class OpsViimeaikainenToiminta extends Vue {
     min-width: 450px;
 
     .muokkaustieto {
-      margin-top: 0px;
+      margin-top: 0;
       margin-bottom: 10px;
 
       .ikoni-col {
-        padding-top: 0px;
+        padding-top: 0;
 
         .ikoni {
           width:45px;
           border-radius: 30px;
           padding: 10px;
-          box-shadow: 1px 1px 5px 0px rgba(0,26,88,0.1);
+          box-shadow: 1px 1px 5px 0 rgba(0,26,88,0.1);
           z-index: 15;
           background-color: #fff;
           color: $black;
@@ -192,6 +193,10 @@ export default class OpsViimeaikainenToiminta extends Vue {
 
           .poisto {
             color: $gray;
+          }
+
+          .palautus {
+            color: $blue-darken-1;
           }
 
         }

@@ -88,6 +88,8 @@
               </b-dropdown>
               <ep-round-button class="ml-2"
                                :disabled="state.disabled"
+                               id="editointi-muokkaus-comments"
+                               v-tutorial
                                v-if="hasKeskusteluSlot"
                                @click="toggleSidebarState(1)"
                                icon="kommentit"
