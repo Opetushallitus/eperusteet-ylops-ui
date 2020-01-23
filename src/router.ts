@@ -42,9 +42,13 @@ import { tutoriaalistore } from './stores/tutoriaaliStore';
 import { VueTutorial } from './directives/tutoriaali';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from './stores/aikataulu';
+import VueApexCharts from 'vue-apexcharts';
 
 Vue.use(Router);
 Vue.use(VueTutorial, {tutoriaalistore});
+Vue.use(VueApexCharts);
+
+Vue.component('apexchart', VueApexCharts);
 
 const logger = createLogger('Router');
 

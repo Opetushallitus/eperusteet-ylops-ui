@@ -15,12 +15,10 @@ import { Vue, Component } from 'vue-property-decorator';
 
 import { Ulkopuoliset } from '@/api';
 import BaseTile from './BaseTile.vue';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 @Component({
   components: {
     BaseTile,
-    EpSpinner,
   },
 })
 export default class TileTilastot extends Vue {
