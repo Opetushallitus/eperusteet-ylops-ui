@@ -176,17 +176,24 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   }
 
   protected async init() {
-    this.oletuspohjat = (await Opetussuunnitelmat.getAll('POHJA', 'VALMIS')).data;
-    this.opetussuunnitelmat = (await Opetussuunnitelmat.getAll('OPS', 'JULKAISTU')).data;
+    this.oletuspohjat = (await Opetussuunnitelmat.getAll('POHJA')).data;
+    this.opetussuunnitelmat = (await Opetussuunnitelmat.getAll('OPS')).data;
   }
 
   get pohjat() {
     if (this.oletuspohjasta === 'pohjasta') {
-      return this.oletuspohjat;
+      return this.pohjatFilter(this.oletuspohjat);
     }
     else {
-      return this.opetussuunnitelmat;
+      return this.pohjatFilter(this.opetussuunnitelmat);
     }
+  }
+
+  pohjatFilter(pohjat) {
+    return _.chain(pohjat)
+      .filter(pohja => pohja.tila !== 'POISTETTU')
+      .filter(pohja => pohja.toteutus === 'lops2019')
+      .value();
   }
 
   public async luoUusiOpetussuunnitelma() {
