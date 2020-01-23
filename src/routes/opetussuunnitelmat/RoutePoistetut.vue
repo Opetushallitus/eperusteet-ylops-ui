@@ -96,8 +96,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       this.store.getPoistetut(),
       this.store.getPoistetutTekstikappaleet(),
     ]);
-    this.poistetut = res[0];
-    this.poistetutTekstikappaleet = res[1];
+    [this.poistetut, this.poistetutTekstikappaleet] = res;
   }
 
   async palauta(poistettu: any) {
