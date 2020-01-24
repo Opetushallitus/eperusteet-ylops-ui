@@ -1,5 +1,5 @@
 <template>
-<base-tile icon="taulukko" :route="{ name: 'tilastot' }">
+<base-tile icon="tilasto" :route="{ name: 'tilastot' }">
   <template slot="header">
     <span>{{ $t('ops-tilastot') }}</span>
   </template>
