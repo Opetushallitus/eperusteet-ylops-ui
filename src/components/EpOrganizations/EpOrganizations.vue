@@ -2,93 +2,35 @@
 <div class="organisaatiot">
   <ep-form-content name="organisaatiot">
     <div class="selectors">
-      <div class="form-group required">
+      <div class="form-group required mb-5">
         <label>{{ $t('kunnat') }}*</label>
-        <ep-multi-select :multiple="true"
-          :is-editing="true"
-          :options="filteredKunnat"
-          :validation="$v.valitutKunnat"
+        <ep-multi-list-select
           :value="valitutKunnat"
+          tyyppi="kunta"
+          :items="kunnatSelectOptions"
           @input="updateKunnat"
-          @search="query.kunnat = $event"
-          help="ops-koulutuksen-jarjestaja-ohje"
-          track-by="koodiUri"
-          required>
-          <template slot="singleLabel" slot-scope="{ option }">
-            <span class="selected">{{ $kaanna(option.nimi) || option.oid }}</span>
-          </template>
-          <template slot="option" slot-scope="{ option }">
-            <div>{{ $kaanna(option.nimi) || option.oid }}</div>
-          </template>
-          <template slot="tag" slot-scope="{ option, remove }">
-            <span class="selected">
-              <span>{{ $kaanna(option.nimi) || option.oid }}</span>
-              <button class="btn btn-link" @click="remove(option)">
-                <fas icon="sulje">
-                </fas>
-              </button>
-            </span>
-          </template>
-        </ep-multi-select>
+          :validation="$v.valitutKunnat"/>
       </div>
     </div>
 
-    <div class="selectors">
+    <div class="selectors mb-5">
       <label>{{ $t('jarjestajat') }}*</label>
-      <ep-multi-select :multiple="true"
-                       :value="valitutJarjestajat"
-                       track-by="oid"
-                       :validation="$v.valitutJarjestajat"
-                       :is-editing="true"
-                       @input="updateJarjestajat"
-                       @search="query.jarjestajat = $event"
-                       :options="filteredJarjestajat"
-                       help="ops-koulutuksen-jarjestaja-ohje">
-        <template slot="singleLabel" slot-scope="{ option }">
-          <span class="selected">{{ $kaanna(option.nimi) || option.oid }}</span>
-        </template>
-        <template slot="option" slot-scope="{ option }">
-          <div>{{ $kaanna(option.nimi) || option.oid }}</div>
-        </template>
-        <template slot="tag" slot-scope="{ option, remove }">
-          <span class="selected">
-            <span>{{ $kaanna(option.nimi) || option.oid }}</span>
-            <button class="btn btn-link" @click="remove(option)">
-              <fas icon="sulje">
-              </fas>
-            </button>
-          </span>
-        </template>
-      </ep-multi-select>
+      <ep-multi-list-select
+          :value="valitutJarjestajat"
+          tyyppi="koulutuksen-jarjestaja"
+          :items="jarjestajatSelectOptions"
+          @input="updateJarjestajat"
+          :validation="$v.valitutJarjestajat"/>
     </div>
 
-    <div class="selectors">
+    <div class="selectors mb-5">
       <label>{{ $t('oppilaitokset') }}</label>
-      <ep-multi-select :multiple="true"
-                       :value="valitutOppilaitokset"
-                       :validation="$v"
-                       @search="query.oppilaitokset = $event"
-                       @input="updateOppilaitokset"
-                       :is-editing="true"
-                       track-by="oid"
-                       :options="filteredOppilaitokset"
-                       help="ops-oppilaitokset-ohje">
-        <template slot="singleLabel" slot-scope="{ option }">
-          <span class="selected">{{ $kaanna(option.nimi) || option.oid }}</span>
-        </template>
-        <template slot="option" slot-scope="{ option }">
-          <div>{{ $kaanna(option.nimi) || option.oid }}</div>
-        </template>
-        <template slot="tag" slot-scope="{ option, remove }">
-          <span class="selected">
-            <span>{{ $kaanna(option.nimi) || option.oid }}</span>
-            <button class="btn btn-link" @click="remove(option)">
-              <fas icon="sulje">
-              </fas>
-            </button>
-          </span>
-        </template>
-      </ep-multi-select>
+      <ep-multi-list-select
+          :value="valitutOppilaitokset"
+          tyyppi="oppilaitos"
+          :items="oppilaitoksetSelectOptions"
+          @input="updateOppilaitokset"
+          :validation="$v"/>
     </div>
 
   </ep-form-content>
@@ -107,7 +49,7 @@ import { Ulkopuoliset } from '@/api';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
+import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpValidation from '@shared/mixins/EpValidation';
@@ -123,7 +65,7 @@ interface ValueType {
   components: {
     EpButton,
     EpFormContent,
-    EpMultiSelect,
+    EpMultiListSelect,
     EpSpinner,
     EpToggle,
   },
@@ -176,12 +118,45 @@ export default class EpOrganizations extends Mixins(EpValidation) {
     return this.filterAndSort(this.kunnat, this.query.kunnat);
   }
 
+  get kunnatSelectOptions() {
+    return _.chain(this.filteredKunnat)
+      .map(org => {
+        return {
+          value: org,
+          text: (this as any).$kaanna((org as any).nimi),
+        };
+      })
+      .value();
+  }
+
   get filteredJarjestajat() {
     return this.filterAndSort(this.jarjestajat, this.query.jarjestajat);
   }
 
+  get jarjestajatSelectOptions() {
+    return _.chain(this.filteredJarjestajat)
+      .map(org => {
+        return {
+          value: org,
+          text: (this as any).$kaanna((org as any).nimi),
+        };
+      })
+      .value();
+  }
+
   get filteredOppilaitokset() {
     return this.filterAndSort(this.oppilaitokset, this.query.oppilaitokset);
+  }
+
+  get oppilaitoksetSelectOptions() {
+    return _.chain(this.filteredOppilaitokset)
+      .map(org => {
+        return {
+          value: org,
+          text: (this as any).$kaanna((org as any).nimi),
+        };
+      })
+      .value();
   }
 
   updateInput() {
