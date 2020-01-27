@@ -1,7 +1,8 @@
+import _ from 'lodash';
 import { State, Store } from '@shared/stores/store';
 import { MuokkaustietoKayttajallaDto } from '@/tyypit';
 import { Muokkaustieto } from '@/api';
-import _ from 'lodash';
+
 
 @Store
 export class MuokkaustietoStore {
@@ -23,7 +24,7 @@ export class MuokkaustietoStore {
   }
 
   public async update() {
-    if (!_.isEmpty(this.muokkaustiedot)) {
+    if (this.muokkaustiedot && !_.isEmpty(this.muokkaustiedot)) {
       this.viimeinenHaku = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.opsId!, (_.last(this.muokkaustiedot) as any).luotu, this.hakuLukumaara) as any).data;
 
       if (this.viimeinenHaku) {
