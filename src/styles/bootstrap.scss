@@ -73,3 +73,35 @@ $btn-border-radius: 1.25rem; // 20px
 .form-control {
   border: 2px solid $input-border;
 }
+
+.b-table {
+
+  &.table-borderless {
+
+    thead {
+      th {
+        border-bottom-width: 2px;
+        border-bottom-color: $gray-lighten-3;
+        border-bottom-style: solid;
+      }
+
+      th[aria-sort="descending"], th[aria-sort="ascending"]{
+        border-bottom-width: 2px;
+        border-bottom-color: $black;
+      }
+    }
+  }
+
+}
+
+.table.b-table > thead > tr > [aria-sort]:not(.b-table-sort-icon-left) {
+  background-position: right calc(0.75rem / 2) bottom calc(1rem);
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.00);
+}

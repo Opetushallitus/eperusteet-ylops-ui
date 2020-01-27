@@ -146,6 +146,7 @@ library.add(oph.vakanenYlos);
 library.add(oph.vakanenAlas);
 library.add(oph.vakanenOikea);
 library.add(oph.vakanenVasen);
+library.add(oph.tilasto);
 
 Vue.component('fas', FontAwesomeIcon);
 Vue.component('fal', FontAwesomeLayers);
