@@ -41,7 +41,7 @@ export function muokkaustietoRoute(id, kohde, tapahtuma) {
       params: {
         tabIndex: poistetutTabIndices[kohde],
       }
-    }
+    };
   }
 
   const router = {
