@@ -36,7 +36,7 @@ import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
 import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
-
+import { OppiaineDto } from '../../generated';
 
 @Component({
   components: {
@@ -148,12 +148,12 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
 
   get selectOptions() {
     return _.chain(this.oppiaineetJaOppimaarat)
-      .map(oppiaine => {
+      .map((oppiaine: any) => {
         return {
           value: oppiaine.koodiUri,
-          text: `${(this as any).$kaanna((oppiaine as any).nimi)} (${oppiaine.koodiArvo})`,
-          unselectable: !_.isEmpty((oppiaine as any).oppimaarat),
-          child: (oppiaine as any).child,
+          text: `${(this as any).$kaanna(oppiaine.nimi)} (${oppiaine.koodiArvo})`,
+          unselectable: !_.isEmpty(oppiaine.oppimaarat),
+          child: oppiaine.child,
         };
       })
       .value();

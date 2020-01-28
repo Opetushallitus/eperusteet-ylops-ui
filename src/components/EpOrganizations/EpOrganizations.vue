@@ -108,6 +108,12 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   filterAndSort(orgs, query) {
     return _.chain(orgs)
       .filter(org => Kielet.search(query, org.nimi))
+      .map(org => {
+        return {
+          ...org,
+          children: _.sortBy(org.children, 'oid'),
+        };
+      })
       .sortBy(org => Kielet.kaanna(org.nimi))
       // Aakkosjärjestys selkeämpi?
       // .sortBy(org => this.kayttajanOrganisaatiot[org.oid])
