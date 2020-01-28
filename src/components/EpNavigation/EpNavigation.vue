@@ -36,14 +36,17 @@
       <!-- Sisällön kieli-->
       <b-nav-item-dropdown id="content-lang-selector" right>
         <template slot="button-content">
-          <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}</span>
+          <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ $t(sisaltoKieli) }}</span>
         </template>
-        <b-dropdown-item @click="valitseSisaltoKieli(kieli)"
-                         v-for="kieli in sovelluksenKielet"
-                         :key="kieli"
-                         :disabled="kieli === sisaltoKieli">
-          {{ kieli }}
-        </b-dropdown-item>
+        <div class="kielet">
+          <b-dd-item @click="valitseSisaltoKieli(kieli)"
+                     v-for="kieli in sovelluksenKielet"
+                     :key="kieli"
+                     :disabled="kieli === sisaltoKieli">
+            <fas fixed-width icon="checkmark" v-if="kieli === sisaltoKieli" class="mr-3 valittu" />
+            {{ $t(kieli) }}
+          </b-dd-item>
+        </div>
       </b-nav-item-dropdown>
 
       <ep-kayttaja :tiedot="tiedot" />
@@ -171,6 +174,31 @@ export default class EpNavigation extends Vue {
       color: white;
       cursor: pointer;
     }
+
+    .kielet {
+      text-align: right;
+
+      .valittu {
+        color: #3467E3;
+        vertical-align: -0.25em;
+      }
+    }
+
+    /deep/ .dropdown-menu {
+      padding: 0;
+      color: #000000;
+      min-width: initial;
+    }
+
+    /deep/ .dropdown-item {
+      padding: 0.5rem 1rem;
+      color: #000000;
+    }
+
+    /deep/ .dropdown-item:hover {
+      background-color: inherit;
+    }
+
   }
 }
 

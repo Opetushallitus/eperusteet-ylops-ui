@@ -132,7 +132,11 @@ export const kielet: IconDefinition = {
   icon: [21, 20, [], null as any, 'M12 0c.447 0 .926.333.992.758l.008.1V6h6.125a.87.87 0 01.875.857V20l-3-3H8c-.481 0-1-.529-1-1v-5H3l-3 3V.857C0 .422.336.06.766.007L.875 0H12zm.999 7.999L9 8l-.001 2.999h3.014L12 11H8.999L9 15h8l1 1V8l-5-.001V9h1l2 5h-1l-.648-1.5H12.64L12 14h-1l1.999-4.997V7.999zm.501 2.444l-.423 1.057h.846l-.423-1.057zM11 2H2v8l1-1 4-.001V7.616l-.276.555-1.198-.6c-.298.27-.636.51-1.012.722l-.29.154-.448.224-.447-.895.447-.223c.283-.141.54-.298.771-.47l-.718-.36.447-.894 1.033.516c.286-.363.498-.774.64-1.233L5.98 5H3V4h2V3h1v1h2v1h-.985l-.03.121a4.882 4.882 0 01-.767 1.68L7 7.19v-.334C7 6.386 7.519 6 8 6h3V2z'],
 };
 
-// kirjaudu-ulos
+export const kirjauduUlos: IconDefinition = {
+  prefix: 'fas',
+  iconName: 'kirjaudu-ulos' as any,
+  icon: [21, 20, [], null as any, 'M14 2H2v16h12v-2h2v2a2 2 0 01-2 2H2a2 2 0 01-2-2V2C0 .9.9 0 2 0h12a2 2 0 012 2v2h-2V2z M15.49 5.6l-1.26 1.25 2.26 2.26H5.89v1.77h10.6l-2.26 2.26 1.26 1.26 4.4-4.4z'],
+};
 
 export const kirje: IconDefinition = {
   prefix: 'fas',
@@ -409,6 +413,12 @@ export const teeUudelleen: IconDefinition = {
   prefix: 'fas',
   iconName: 'tee-uudelleen' as any,
   icon: [20, 20, [], null as any, 'M9.77 6.89c2.33 0 4.44.88 6.06 2.31L19 6v8h-7.91l3.18-3.22a6.95 6.95 0 00-4.5-1.67A7.05 7.05 0 003.08 14L1 13.3a9.26 9.26 0 018.77-6.41z'],
+};
+
+export const user: IconDefinition = {
+  prefix: 'fas',
+  iconName: 'user' as any,
+  icon: [21, 20, [], null as any, 'M10 13.5c4.02 0 8 2.32 8 4.5H2c0-2.25 3-4.5 8-4.5zM10 0a5 5 0 110 10 5 5 0 010-10zm0 2a3 3 0 100 6 3 3 0 000-6zm0 9.5C5.66 11.5 0 14 0 18v2h20v-2c0-4-5.66-6.5-10-6.5z'],
 };
 
 export const ulkoinenLinkki: IconDefinition = {

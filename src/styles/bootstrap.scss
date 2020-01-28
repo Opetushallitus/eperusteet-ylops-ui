@@ -4,11 +4,13 @@
 $primary: #3367E3;
 
 $input-border: #E0E0E1;
-$input-border-radius: 10px;
+$input-border-radius: .625rem; // 10px
 
 $input-btn-padding-y: .4375rem;
 $input-btn-padding-x: .625rem;
 $btn-border-radius: 1.25rem; // 20px
+
+$border-radius: .625rem; // 5px
 
 // Include Bootstrap and BootstrapVue SCSS files
 @import '~bootstrap/scss/bootstrap.scss';
