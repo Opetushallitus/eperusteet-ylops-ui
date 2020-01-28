@@ -20,7 +20,8 @@
           tyyppi="koulutuksen-jarjestaja"
           :items="jarjestajatSelectOptions"
           @input="updateJarjestajat"
-          :validation="$v.valitutJarjestajat"/>
+          :validation="$v.valitutJarjestajat"
+          :is-loading="kunnatLoading"/>
     </div>
 
     <div class="selectors mb-5">
@@ -30,7 +31,8 @@
           tyyppi="oppilaitos"
           :items="oppilaitoksetSelectOptions"
           @input="updateOppilaitokset"
-          :validation="$v"/>
+          :validation="$v"
+          :is-loading="jarjestajatLoading"/>
     </div>
 
   </ep-form-content>
@@ -85,6 +87,9 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   valitutKunnat: any[] = [];
   valitutJarjestajat: any[] = [];
   valitutOppilaitokset: any[] = [];
+
+  kunnatLoading: boolean = false;
+  jarjestajatLoading: boolean = false;
 
   query = {
     jarjestajat: '',
@@ -179,6 +184,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   }
 
   updateJarjestajat(valitut) {
+    this.jarjestajatLoading = true;
     this.valitutJarjestajat = valitut;
     this.oppilaitokset = _.chain(valitut)
       .map('children')
@@ -189,9 +195,11 @@ export default class EpOrganizations extends Mixins(EpValidation) {
     this.valitutOppilaitokset = _.filter(this.valitutOppilaitokset,
       ol => _.includes(jarjestajaOids, ol.parentOid));
     this.updateInput();
+    this.jarjestajatLoading = false;
   }
 
   async updateKunnat(kunnat) {
+    this.kunnatLoading = true;
     this.valitutKunnat = kunnat;
     this.jarjestajat = _.chain((await Ulkopuoliset.getKoulutustoimijat(
       _.map(kunnat, 'koodiUri'),
@@ -204,6 +212,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
       this.valitutJarjestajat,
       jarjestaja => _.includes(kuntaUris, jarjestaja.kotipaikkaUri));
     this.updateJarjestajat(this.valitutJarjestajat);
+    this.kunnatLoading = false;
   }
 
   async update() {
