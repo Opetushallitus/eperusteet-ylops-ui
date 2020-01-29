@@ -34,7 +34,7 @@
       <tile-valtakunnalliset-perusteet />
       <tile-tiedotteet />
       <tile-ukk />
-      <tile-tilastot />
+      <tile-tilastot v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }"/>
     </div>
   </div>
 </div>

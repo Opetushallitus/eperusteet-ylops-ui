@@ -93,7 +93,6 @@
             {{ $t(data.value) }}
 
              <ep-button
-                v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }"
                 v-if="data.value === 'poistettu'"
                 variant="link"
                 icon="peruuta"
