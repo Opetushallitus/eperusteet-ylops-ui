@@ -1,31 +1,14 @@
 <template>
 <div v-if="isEditable">
-  <ep-multi-select
-      v-if="cache"
-      :value="sortedValue"
-      :multiple="multiple"
-      @input="handleInput"
-      @search="query = $event"
-      :validation="validation"
-      :options="filteredOppiaineet"
-      help="oppiaine-valitsin-ohje">
-    <template slot="singleLabel" slot-scope="{ option }">
-      <span class="selected">{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-      <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
-    </template>
-    <template slot="option" slot-scope="{ option }">
-      <span>{{ $kaanna(oppiaineetMap[option].nimi) }}</span>
-      <span class="ml-1">({{ oppiaineetMap[option].koodiArvo }})</span>
-    </template>
-    <template slot="tag" slot-scope="{ option, remove }">
-      <span class="selected">
-        {{ $kaanna(oppiaineetMap[option].nimi) }} ({{ oppiaineetMap[option].koodiArvo }})
-        <button class="btn btn-link btn-sm btn-remove" @click="remove(option)">
-          <fas icon="sulje" />
-        </button>
-      </span>
-    </template>
-  </ep-multi-select>
+
+  <ep-multi-list-select
+    v-if="cache"
+    :value="sortedValue"
+    tyyppi="oppiaine"
+    :items="selectOptions"
+    @input="handleInput"
+    :validation="validation"/>
+
 </div>
 <div v-else-if="value">
   <div v-if="isArray">
@@ -49,15 +32,14 @@ import { Mixins, Component, Prop } from 'vue-property-decorator';
 
 import EpValidation from '@shared/mixins/EpValidation';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
+import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
 import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
 
-
 @Component({
   components: {
-    EpMultiSelect,
+    EpMultiListSelect,
   },
 })
 export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsComponent) {
@@ -126,10 +108,13 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
           return [oa];
         }
         else {
-          return _.map(oa.oppimaarat, om => ({
-            ...om,
-            parentUri: oa.koodi.uri,
-          }));
+          return [
+            oa,
+            ..._.map(oa.oppimaarat, om => ({
+              ...om,
+              child: true,
+            }))
+          ];
         }
       })
       .flatten()
@@ -157,6 +142,19 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
     }
     return pipe
       .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
+      .value();
+  }
+
+  get selectOptions() {
+    return _.chain(this.oppiaineetJaOppimaarat)
+      .map((oppiaine: any) => {
+        return {
+          value: oppiaine.koodiUri,
+          text: `${(this as any).$kaanna(oppiaine.nimi)} (${oppiaine.koodiArvo})`,
+          unselectable: !_.isEmpty(oppiaine.oppimaarat),
+          child: oppiaine.child,
+        };
+      })
       .value();
   }
 
