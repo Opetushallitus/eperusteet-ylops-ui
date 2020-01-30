@@ -9,7 +9,8 @@
           tyyppi="kunta"
           :items="kunnatSelectOptions"
           @input="updateKunnat"
-          :validation="$v.valitutKunnat"/>
+          :validation="$v.valitutKunnat"
+          :required="true"/>
       </div>
     </div>
 
@@ -21,7 +22,8 @@
           :items="jarjestajatSelectOptions"
           @input="updateJarjestajat"
           :validation="$v.valitutJarjestajat"
-          :is-loading="kunnatLoading"/>
+          :is-loading="kunnatLoading"
+          :required="true"/>
     </div>
 
     <div class="selectors mb-5">
@@ -31,8 +33,7 @@
           tyyppi="oppilaitos"
           :items="oppilaitoksetSelectOptions"
           @input="updateOppilaitokset"
-          :validation="$v"
-          :is-loading="jarjestajatLoading"/>
+          :is-loading="jarjestajatLoading || kunnatLoading"/>
     </div>
 
   </ep-form-content>
@@ -113,12 +114,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   filterAndSort(orgs, query) {
     return _.chain(orgs)
       .filter(org => Kielet.search(query, org.nimi))
-      .map(org => {
-        return {
-          ...org,
-          children: _.sortBy(org.children, 'oid'),
-        };
-      })
+      .map(org => _.omit(org, 'children'))
       .sortBy(org => Kielet.kaanna(org.nimi))
       // Aakkosjärjestys selkeämpi?
       // .sortBy(org => this.kayttajanOrganisaatiot[org.oid])
@@ -186,7 +182,8 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   updateJarjestajat(valitut) {
     this.jarjestajatLoading = true;
     this.valitutJarjestajat = valitut;
-    this.oppilaitokset = _.chain(valitut)
+    const valitutJarjestajat = _.filter(this.jarjestajat, (jarjestaja) => _.includes(_.map(valitut, 'koodiUri'), jarjestaja.koodiUri));
+    this.oppilaitokset = _.chain(valitutJarjestajat)
       .map('children')
       .flatten()
       .sortBy((org: any) => Kielet.kaanna(org.nimi))

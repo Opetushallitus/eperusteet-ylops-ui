@@ -7,7 +7,8 @@
     tyyppi="oppiaine"
     :items="selectOptions"
     @input="handleInput"
-    :validation="validation"/>
+    :validation="validation"
+    :required="true"/>
 
 </div>
 <div v-else-if="value">
