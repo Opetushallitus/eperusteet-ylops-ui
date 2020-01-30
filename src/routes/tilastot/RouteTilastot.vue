@@ -58,6 +58,19 @@
               </ep-multi-select>
             </ep-form-content>
           </div>
+
+          <div class="col-xl-9 col-md-9 col-sm-12">
+            <ep-form-content name="peruste">
+              <ep-multi-select :multiple="true"
+                :is-editing="true"
+                :options="perusteItems"
+                v-model="valitutPerusteet"
+                :placeholder="$t('kaikki')"
+                track-by="value"
+                label="text">
+              </ep-multi-select>
+            </ep-form-content>
+          </div>
         </div>
 
         <h2 class="mt-4">{{$t('opetussuunnitelmien-lukumaarat')}}</h2>
@@ -139,10 +152,10 @@ import EpSearch from'@shared/components/forms/EpSearch.vue';
 import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
-import { Opetussuunnitelmat } from '@/api';
+import { Opetussuunnitelmat, Ulkopuoliset } from '@/api';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-import { OpetussuunnitelmaInfoDto } from '@/tyypit';
+import { OpetussuunnitelmaInfoDto, PerusteInfoDto } from '@/tyypit';
 import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
@@ -168,6 +181,7 @@ export default class RouteTilastot extends Mixins(EpRoute) {
   @Prop()
   private tutoriaalistore!: TutoriaaliStore;
   private opetussuunnitelmat: OpetussuunnitelmaInfoDto[] = [];
+  private perusteet: PerusteInfoDto[] = [];
 
   private currentPage = 1;
   private perPage = 10;
@@ -175,9 +189,11 @@ export default class RouteTilastot extends Mixins(EpRoute) {
   private valitutTilat: [] = [];
   private valitutKoulutustyypit: [] = [];
   private valitutVoimassaolot: [] = [];
+  private valitutPerusteet: [] = [];
 
   async init() {
-    this.opetussuunnitelmat = (await Opetussuunnitelmat.getAdminList()).data;
+    const res = _.map(await Promise.all([Opetussuunnitelmat.getAdminList(), await Ulkopuoliset.getPerusteet()]), (res: any) => res.data);
+    [this.opetussuunnitelmat, this.perusteet] = res;
   }
 
   get opetussuunnitelmatFiltered() {
@@ -186,6 +202,7 @@ export default class RouteTilastot extends Mixins(EpRoute) {
       .filter(ops => _.isEmpty(this.valitutKoulutustyypit) || _.includes(_.map(this.valitutKoulutustyypit, 'value'), ops.koulutustyyppi))
       .filter(ops => Kielet.search(this.query, ops.nimi))
       .filter(ops => _.isEmpty(this.valitutVoimassaolot) || _.includes(_.map(this.valitutVoimassaolot, 'value'), this.opetussuunnitelmaVoimassaolo(ops)))
+      .filter(ops => _.isEmpty(this.valitutPerusteet) || _.includes(_.map(this.valitutPerusteet, 'value') , ops.perusteenId))
       .sortBy(ops => Kielet.kaanna(ops.nimi!))
       .value();
   }
@@ -220,7 +237,6 @@ export default class RouteTilastot extends Mixins(EpRoute) {
     return {
       koulutustyypeittain: _.groupBy(this.opetussuunnitelmatFiltered, 'koulutustyyppi'),
       tiloittain: _.groupBy(this.opetussuunnitelmatFiltered, 'tila'),
-      toteutustyypeittain: _.groupBy(this.opetussuunnitelmatFiltered, 'toteutus'),
       kielittain: _.omitBy({
         fi: _.filter(this.opetussuunnitelmatFiltered, (ops) => _.includes(ops.julkaisukielet as any, 'fi')),
         sv: _.filter(this.opetussuunnitelmatFiltered, (ops) => _.includes(ops.julkaisukielet as any, 'sv')),
@@ -233,6 +249,7 @@ export default class RouteTilastot extends Mixins(EpRoute) {
         koulujoukko: _.filter(this.opetussuunnitelmatFiltered, (ops) => _.size(_.filter(ops.organisaatiot, (org) => _.size(org.tyypit) > 0 && _.head(org.tyypit) === 'Oppilaitos')) > 1),
         koulut: _.filter(this.opetussuunnitelmatFiltered, (ops) => _.size(_.filter(ops.organisaatiot, (org) => _.size(org.tyypit) > 0 && _.head(org.tyypit) === 'Oppilaitos')) === 1),
       }, _.isEmpty),
+      perusteittain: _.groupBy(this.opetussuunnitelmatFiltered, 'perusteenId'),
     };
   }
 
@@ -268,9 +285,19 @@ export default class RouteTilastot extends Mixins(EpRoute) {
     }];
   }
 
+  chartLegends(otsikko) {
+    if(otsikko != 'perusteittain') {
+      return _.map(_.keys(this.statistiikka![otsikko]), (alaotsikko) => this.$t(alaotsikko));
+    }
+    else {
+      const perusteet = _.keyBy(this.perusteet, 'id');
+      return _.map(_.keys(this.statistiikka![otsikko]), (alaotsikko) => perusteet[alaotsikko] ? (this as any).$kaanna(perusteet[alaotsikko].nimi) : this.$t('null'));
+    }
+  }
+
   chartOptions(otsikko) {
     return {
-      labels: _.map(_.keys(this.statistiikka![otsikko]), (alaotsikko) => this.$t(alaotsikko)),
+      labels: this.chartLegends(otsikko),
       dataLabels: {
         enabled: true,
         style: {
@@ -324,6 +351,15 @@ export default class RouteTilastot extends Mixins(EpRoute) {
       {text: this.$t('tulevat'), value:'tuleva'},
       {text: this.$t('paattyneet'), value:'paattynyt'},
     ];
+  }
+
+  get perusteItems() {
+    return _.map(this.perusteet, (peruste => {
+      return {
+        value: peruste.id,
+        text: (this as any).$kaanna(peruste.nimi),
+      };
+    }));
   }
 
   get tyhjaGraafiOptions() {
