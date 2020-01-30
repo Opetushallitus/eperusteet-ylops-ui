@@ -245,12 +245,6 @@ export default class OpsViimeaikainenToiminta extends Vue {
           }
 
         }
-
-        .router-box-poistettu {
-          .kohde {
-            text-decoration: line-through;
-          }
-        }
       }
     }
 
