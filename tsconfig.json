@@ -8,7 +8,6 @@
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    //"emitDecoratorMetadata": true, // https://github.com/vuejs/vue-cli/issues/1708
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,

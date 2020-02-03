@@ -11,6 +11,7 @@
         </div>
       </template>
       <template slot="keskustelu" slot-scope="{ }">
+        <ep-comment-threads />
       </template>
       <template slot="header" slot-scope="{ data }">
         <div class="nimi">{{ $kaanna(data.nimi) || $t('opintojakso') }}</div>
@@ -66,7 +67,6 @@
         <div class="osio" v-if="isEditing || data.moduulit.length > 0">
           <ep-collapse tyyppi="opintojakson-moduulit">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-moduulit') }}</div>
-            <span kommentti="fa2832fe-3d64-42f1-8978-bdf4cfa3c4e6">hello</span>
             <div class="oppiaineet" v-if="isEditing">
               <div v-for="oa in data.oppiaineet" :key="oa.koodi">
                 <div>
@@ -275,12 +275,14 @@ import * as defaults from '@/defaults';
 import { getLaajaAlaisetKoodit } from '@/utils/perusteet';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { koodiSorters } from '@/utils/perusteet';
+import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue';
 
 
 @Component({
   components: {
     EpCollapse,
     EpColorBall,
+    EpCommentThreads,
     EpContent,
     EpEditointi,
     EpField,

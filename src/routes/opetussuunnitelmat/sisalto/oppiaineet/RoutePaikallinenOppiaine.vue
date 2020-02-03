@@ -111,6 +111,7 @@ import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
 import { Opetussuunnitelmat } from '@/api';
 import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
+import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue';
 
 
 @Component({
@@ -118,6 +119,7 @@ import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from 
     EpButton,
     EpCollapse,
     EpColorBall,
+    EpCommentThreads,
     EpContent,
     EpEditointi,
     EpField,

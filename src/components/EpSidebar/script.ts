@@ -10,7 +10,7 @@ import { Kommentit } from '@/stores/kommentit';
 })
 export default class EpSidebar extends Vue {
   private width = window.innerWidth;
-  private toggled = true;
+  private toggled = false;
 
   public mounted() {
     window.addEventListener('resize', this.onResize);

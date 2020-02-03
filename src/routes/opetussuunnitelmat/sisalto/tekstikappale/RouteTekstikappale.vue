@@ -26,7 +26,6 @@
           <span comment-uuid="data.tov.tekstiKappale.tunniste">
             <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
-              <span kommentti="fa2832fe-3d64-42f1-8978-bdf4cfa3c4e6">Tämä on kommentti?</span>
               <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)">
               </p>
               <div class="alert alert-info" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>

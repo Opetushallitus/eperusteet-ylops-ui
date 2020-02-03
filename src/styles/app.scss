@@ -57,3 +57,19 @@ button:disabled {
 li p {
   margin-bottom: 0;
 }
+
+span[kommentti] {
+  background: #ffe598;
+  color: #000;
+}
+
+
+span[kommentti].active {
+  background: #ffd900;
+  color: #000;
+}
+
+span[kommentti="uusi-kommentti"]  {
+  background: #ffd900;
+  color: #000;
+}

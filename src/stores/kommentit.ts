@@ -1,9 +1,12 @@
 import _ from 'lodash';
 import { KommenttiDto, KayttajanTietoDto } from '@/tyypit';
+import Vue from 'vue';
 import { Kayttajat as KayttajatApi, Kommentointi } from '@/api';
-import { reactive, computed, ref } from '@vue/composition-api';
+import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
+Vue.use(VueCompositionApi);
 
 import { createLogger } from './logger';
+import { delay } from '@shared/utils/delay';
 const logger = createLogger('Kayttaja');
 
 // FIXME: tyypitä backendiin
@@ -57,20 +60,61 @@ export function nestedMap<T>(
 
 class KommenttiStore {
   private state = reactive({
-    updatingThreads: {} as { [uuid: string]: boolean },
     threadUuid: null as string | null,
     thread: null as any | null,
     isLoading: false,
+    selection: false,
+    bounds: null as any | null
   });
 
-  public readonly updatingThreads = computed(() => this.state.updatingThreads);
   public readonly threadUuid = computed(() => this.state.threadUuid);
-  public readonly thread = computed(() => this.state.thread);
+  public readonly thread = computed(() => _.reverse(_.sortBy(this.state.thread, 'luotu')));
   public readonly isLoading = computed(() => this.state.isLoading);
+  public readonly hasSelection = computed(() => this.state.selection);
+  public readonly bounds = computed(() => this.state.bounds);
+
+  constructor() {
+    document.onselectionchange = _.debounce((ev) => {
+      const selection = document.getSelection();
+      this.state.selection = !selection || !selection?.isCollapsed;
+      if (selection && this.state.selection) {
+        const range = selection.getRangeAt(selection.rangeCount - 1);
+        this.state.bounds = range.getBoundingClientRect();
+      }
+      else {
+        this.state.bounds = null;
+      }
+    }, 50);
+  }
+
+  private watcher = watch(async () => {
+    if (this.threadUuid.value) {
+      const thread = await Kommentointi.getKommenttiByKetjuUuid(this.threadUuid.value);
+      this.state.thread = thread.data;
+      // const selected = document.querySelector(`span[kommentti="${this.threadUuid.value}"]`);
+      // if (selected) {
+      //   (selected as any).style.background = '#ffd900';
+      //   (selected as any).style.color = '#000';
+      // }
+    }
+
+    // const selected = document.querySelector(`span[kommentti="${this.threadUuid.value}"]`);
+    // if (selected) {
+    //   (selected as any).style.background = '#ffd900';
+    //   (selected as any).style.color = '#000';
+    // }
+
+  });
+
+  public async clearThread() {
+    this.state.threadUuid = null;
+    this.state.thread = null;
+  }
 
   private obs: MutationObserver | null = null;
 
   public async activateThread(uuid: string) {
+    this.state.thread = null;
     if (this.state.isLoading) {
       return;
     }
@@ -82,7 +126,7 @@ class KommenttiStore {
     try {
       const thread = await Kommentointi.getKommenttiByKetjuUuid(uuid);
       this.state.thread = thread.data;
-      logger.debug("thread found", this.thread);
+      logger.debug("thread found", this.thread.value);
       return true;
     }
     catch (err) {
@@ -97,23 +141,31 @@ class KommenttiStore {
     }
   }
 
+  public async lisaaKahva(kommentti: any) {
+    const ketju = await Kommentointi.addKetju(kommentti);
+    this.state.threadUuid = ketju.data.thread as string;
+    return ketju.data;
+  }
+
   public async tallenna(kommentti) {
     if (kommentti.tunniste) {
       logger.debug("updating comment", kommentti.tunniste);
-      // await Kommentointi.updateKommentti(kommentti);
+      const result = (await Kommentointi.updateKommentti2019(kommentti.thread, kommentti)).data;
+      this.state.thread = [result, ..._.reject(this.state.thread, c => c.tunniste === kommentti.tunniste)];
+      return result;
     }
     else {
       logger.debug("adding comment to", kommentti.parent);
-      console.log(_.cloneDeep(this.thread));
-      // const uusiViesti = (await Kommentointi.addKommenttiKetju(kommentti)).data;
-      console.log(_.cloneDeep(this.thread));
+      const result = (await Kommentointi.addKommentti2019(kommentti.thread, kommentti)).data;
+      this.state.thread = [result, ..._.filter(this.state.thread, c => c.tunniste)];
+      return result;
     }
   }
 
   public async poista(tunniste: string) {
     logger.debug("removing comment", tunniste);
-    // await Kommentointi.poistaKommenttiKetju(tunniste);
-    // this.thread = nestedRemove(this.thread, { tunniste }, 'kommentit');
+    await Kommentointi.poistaKommenttiKetju2019(tunniste);
+    this.state.thread = _.reject(this.state.thread, c => c.tunniste === tunniste);
   }
 
   detach() {

@@ -1,10 +1,17 @@
 import Vue from 'vue';
+import VueCompositionApi from '@vue/composition-api';
+import VueScrollTo from 'vue-scrollto';
+
+Vue.use(VueCompositionApi);
+Vue.use(VueScrollTo);
+
 import Loading from 'vue-loading-overlay';
 import Notifications from 'vue-notification';
 import PortalVue from 'portal-vue'
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
+import 'animate.css/animate.min.css';
 
 import { router } from '@/router';
 import { KieliStore } from '@shared/stores/kieli';
@@ -17,10 +24,6 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
 import App from '@/App.vue';
 const logger = createLogger('main');
-
-import VueCompositionApi from '@vue/composition-api';
-
-Vue.use(VueCompositionApi);
 
 Vue.use(Notifications);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);

@@ -1,6 +1,5 @@
 <template lang="pug">
 div#app(v-if="!isInitializing")
-  router-link(:to="{ name: 'kommentit' }") Kommentit
   router-view
   notifications(style="margin-right: 6px; margin-top: 90px" position="top right" :max="3")
   ep-comments

@@ -25,6 +25,7 @@
 import * as _ from 'lodash';
 import ImageExtension from '@/components/TiptapExtensions/ImageExtension';
 import TermiExtension from '@/components/TiptapExtensions/TermiExtension';
+import CommentExtension from '@/components/TiptapExtensions/CommentExtension';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import { Editor, EditorContent } from 'tiptap';
 import { Kielet } from '@shared/stores/kieli';
@@ -32,18 +33,18 @@ import { createKasiteHandler } from '@/stores/kuvat';
 import {
   Blockquote,
   Bold,
-  Underline,
-  Strike,
-  Italic,
+  BulletList,
   HardBreak,
   History,
-  BulletList,
+  Italic,
   ListItem,
   OrderedList,
+  Strike,
   Table,
   TableCell,
   TableHeader,
   TableRow,
+  Underline,
 } from 'tiptap-extensions';
 
 import EpEditorMenuBar from './EpEditorMenuBar.vue';
@@ -54,6 +55,7 @@ import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
 
 @Component({
+  name: 'EpContent',
   components: {
     EditorContent,
     EpEditorMenuBar,
@@ -129,6 +131,7 @@ export default class EpContent extends Mixins(EpValidation) {
       new TableHeader(),
       new TableCell(),
       new TableRow(),
+      new CommentExtension(),
     ];
 
     if (this.opetussuunnitelmaStore) {
