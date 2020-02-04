@@ -7,6 +7,10 @@ import * as oph from './icons';
 
 library.add(regular.faComment);
 library.add(regular.faTrashAlt);
+library.add(solid.faArrowDown);
+library.add(solid.faArrowLeft);
+library.add(solid.faArrowRight);
+library.add(solid.faArrowUp);
 library.add(solid.faBars);
 library.add(solid.faBell);
 library.add(solid.faBold);

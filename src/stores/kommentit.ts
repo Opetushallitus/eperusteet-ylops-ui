@@ -64,7 +64,8 @@ class KommenttiStore {
     thread: null as any | null,
     isLoading: false,
     selection: false,
-    bounds: null as any | null
+    bounds: null as any | null,
+    visibleChains: [] as string[],
   });
 
   public readonly threadUuid = computed(() => this.state.threadUuid);
@@ -72,6 +73,24 @@ class KommenttiStore {
   public readonly isLoading = computed(() => this.state.isLoading);
   public readonly hasSelection = computed(() => this.state.selection);
   public readonly bounds = computed(() => this.state.bounds);
+
+  public readonly surrounding = computed(() => {
+    if (this.state.threadUuid) {
+      const idx = _.findIndex(this.state.visibleChains, c => c === this.state.threadUuid);
+      if (idx >= 0) {
+        return {
+          previous: this.state.visibleChains[idx === 0
+            ? _.size(this.state.visibleChains) - 1
+            : idx - 1],
+          next: this.state.visibleChains[(idx + 1) % _.size(this.state.visibleChains)],
+        };
+      }
+    }
+    return {
+      previous: null,
+      next: null,
+    };
+  });
 
   constructor() {
     document.onselectionchange = _.debounce((ev) => {
@@ -104,7 +123,7 @@ class KommenttiStore {
   public async activateThread(uuid: string) {
     this.state.thread = null;
     if (this.state.isLoading) {
-      logger.debug("Still loading", uuid);
+      logger.info('Still loading', uuid);
       return;
     }
 
@@ -113,18 +132,18 @@ class KommenttiStore {
       return;
     }
 
-    logger.debug("activating thread", uuid);
+    logger.info('activating thread', uuid);
 
     this.state.isLoading = true;
     this.state.threadUuid = uuid;
     try {
       const thread = await Kommentointi.getKommenttiByKetjuUuid(uuid);
       this.state.thread = thread.data;
-      logger.debug("thread found", this.thread.value);
+      logger.info('thread found', this.thread.value);
       return true;
     }
     catch (err) {
-      logger.debug("could not activate thread", uuid);
+      logger.info('could not activate thread', uuid);
       this.state.thread = {
         tunniste: uuid,
         kommentit: [],
@@ -143,13 +162,13 @@ class KommenttiStore {
 
   public async tallenna(kommentti) {
     if (kommentti.tunniste) {
-      logger.debug("updating comment", kommentti.tunniste);
+      logger.info('updating comment', kommentti.tunniste);
       const result = (await Kommentointi.updateKommentti2019(kommentti.thread, kommentti)).data;
       this.state.thread = [result, ..._.reject(this.state.thread, c => c.tunniste === kommentti.tunniste)];
       return result;
     }
     else {
-      logger.debug("adding comment to", kommentti.parent);
+      logger.info('adding comment to', kommentti.parent);
       const result = (await Kommentointi.addKommentti2019(kommentti.thread, kommentti)).data;
       this.state.thread = [result, ..._.filter(this.state.thread, c => c.tunniste)];
       return result;
@@ -157,7 +176,7 @@ class KommenttiStore {
   }
 
   public async poista(tunniste: string) {
-    logger.debug("removing comment", tunniste);
+    logger.info('removing comment', tunniste);
     await Kommentointi.poistaKommenttiKetju2019(tunniste);
     this.state.thread = _.reject(this.state.thread, c => c.tunniste === tunniste);
   }
@@ -169,6 +188,18 @@ class KommenttiStore {
       this.obs = null;
     }
   }
+
+  private updateVisibleThreads = _.debounce(() => {
+    const chains = [] as string[];
+    document.querySelectorAll('[kommentti]').forEach(k => {
+      const uuid = k.getAttribute('kommentti');
+      if (uuid) {
+        chains.push(uuid);
+      }
+    });
+    logger.info('Updating visible threads', chains);
+    this.state.visibleChains = chains;
+  }, 300);
 
   attach(el: Element) {
     const store = this;
@@ -187,12 +218,13 @@ class KommenttiStore {
           });
         }
       }
-    }
+    };
 
     this.obs = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         mountCommentThreads((mutation.target as any).querySelectorAll('[kommentti]'));
       }
+      this.updateVisibleThreads();
     });
 
     mountCommentThreads((document as any).querySelectorAll('[kommentti]'));

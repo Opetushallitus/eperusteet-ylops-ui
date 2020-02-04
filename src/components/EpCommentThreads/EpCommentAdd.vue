@@ -34,7 +34,7 @@ export default class EpCommentAdd extends Vue {
       return {
         left: window.scrollX + this.bounds.x + 5 + 'px',
         top: window.scrollY + this.bounds.bottom + 10 + 'px',
-      }
+      };
     }
     else {
       return null;

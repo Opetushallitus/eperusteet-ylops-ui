@@ -24,7 +24,7 @@ export default class CommentExtension extends Mark {
       toDOM: (node: any) => ['span', {
         ...node.attrs,
       }, 0],
-    }
+    };
   }
 
   // keys({ type }) {
@@ -36,11 +36,11 @@ export default class CommentExtension extends Mark {
   commands({ type }) {
     return attrs => {
       if (attrs.href) {
-        return updateMark(type, attrs)
+        return updateMark(type, attrs);
       }
 
-      return removeMark(type)
-    }
+      return removeMark(type);
+    };
   }
 
   // inputRules({ type }) {

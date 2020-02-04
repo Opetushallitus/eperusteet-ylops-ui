@@ -40,20 +40,39 @@
             :save="tallenna"
             :value="comment" />
         </div>
-        <div v-if="threadUuid" class="replybox p-3">
-          <textarea
-            :placeholder="$t('vastaa')"
-            class="editori"
-            v-model="reply"
-            :disabled="isWorking"></textarea>
-          <div v-if="reply" class="d-flex justify-content-end">
-            <b-button
-              variant="primary"
-              @click="tallenna({ sisalto: reply })"
-              class="ml-1"
-              :disabled="isWorking">
-              {{ $t('vastaa') }}
-            </b-button>
+        <div v-if="threadUuid">
+          <div class="replybox p-3">
+            <textarea
+              :placeholder="$t('vastaa')"
+              class="editori"
+              v-model="reply"
+              :disabled="isWorking"></textarea>
+            <div v-if="reply" class="d-flex justify-content-end">
+              <b-button
+                variant="primary"
+                @click="tallenna({ sisalto: reply })"
+                class="ml-1"
+                :disabled="isWorking">
+                {{ $t('vastaa') }}
+              </b-button>
+            </div>
+          </div>
+          <div class="prevnext">
+            <div class="d-flex justify-content-between">
+              <b-button variant="link" @click="activateThread(surr.previous)">
+                <fas icon="arrow-left" />
+                {{ $t('edellinen') }}
+              </b-button>
+              <b-button variant="link" @click="activateThread(surr.next)">
+                {{ $t('seuraava') }}
+                <fas icon="arrow-right" />
+              </b-button>
+            </div>
+            <div class="backbutton text-center">
+              <b-button variant="primary" @click="suljeKetju">
+                {{ $t('nayta-kaikki-kommentit') }}
+              </b-button>
+            </div>
           </div>
         </div>
       </div>
@@ -130,6 +149,10 @@ export default class EpCommentThreads extends Vue {
     };
   }
 
+  get surr() {
+    return Kommentit.surrounding.value;
+  }
+
   @Watch('$route.fullPath')
   async pathChange(val, old) {
     await this.clear(true);
@@ -173,23 +196,26 @@ export default class EpCommentThreads extends Vue {
         ...this.newKahva,
         aloituskommentti: this.newThread,
       });
-      console.log(kahva);
-      const doc = document.querySelector(`span[kommentti="uusi-kommentti"]`);
+      const doc = document.querySelector('span[kommentti="uusi-kommentti"]');
       doc?.setAttribute('kommentti', kahva.thread!);
       this.newThread = null;
       this.newKahva = null;
       await delay(50);
-      console.log('Activating thread', kahva.thread!);
       await Kommentit.activateThread(kahva.thread!);
-      console.log('DONE', kahva.thread!);
     }
     finally {
       this.isWorking = false;
     }
   }
 
+  async activateThread(uuid: string) {
+    if (uuid) {
+      await Kommentit.activateThread(uuid);
+    }
+  }
+
   async cancelNewThread() {
-    unwrap(document.querySelector(`span[kommentti="uusi-kommentti"]`));
+    unwrap(document.querySelector('span[kommentti="uusi-kommentti"]'));
     this.newThread = null;
     this.newKahva = null;
   }
@@ -202,7 +228,7 @@ export default class EpCommentThreads extends Vue {
   }
 
   async suljeKetju() {
-    await Kommentit.clearThread();
+    await Kommentit.clearThread(true);
   }
 
   private removeAddBox() {
@@ -362,6 +388,10 @@ textarea.editori {
   padding: 5px;
   resize: vertical;
   width: 100%;
+}
+
+.prevnext {
+
 }
 
 </style>

@@ -7,7 +7,7 @@ Vue.use(VueScrollTo);
 
 import Loading from 'vue-loading-overlay';
 import Notifications from 'vue-notification';
-import PortalVue from 'portal-vue'
+import PortalVue from 'portal-vue';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
@@ -27,7 +27,7 @@ const logger = createLogger('main');
 
 Vue.use(Notifications);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);
-Vue.use(PortalVue)
+Vue.use(PortalVue);
 
 Vue.use(Loading, {
   fullPage: true,
