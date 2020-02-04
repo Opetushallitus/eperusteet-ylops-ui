@@ -68,7 +68,7 @@ class KommenttiStore {
   });
 
   public readonly threadUuid = computed(() => this.state.threadUuid);
-  public readonly thread = computed(() => _.reverse(_.sortBy(this.state.thread, 'luotu')));
+  public readonly thread = computed(() => _.sortBy(this.state.thread, 'luotu'));
   public readonly isLoading = computed(() => this.state.isLoading);
   public readonly hasSelection = computed(() => this.state.selection);
   public readonly bounds = computed(() => this.state.bounds);
@@ -91,19 +91,7 @@ class KommenttiStore {
     if (this.threadUuid.value) {
       const thread = await Kommentointi.getKommenttiByKetjuUuid(this.threadUuid.value);
       this.state.thread = thread.data;
-      // const selected = document.querySelector(`span[kommentti="${this.threadUuid.value}"]`);
-      // if (selected) {
-      //   (selected as any).style.background = '#ffd900';
-      //   (selected as any).style.color = '#000';
-      // }
     }
-
-    // const selected = document.querySelector(`span[kommentti="${this.threadUuid.value}"]`);
-    // if (selected) {
-    //   (selected as any).style.background = '#ffd900';
-    //   (selected as any).style.color = '#000';
-    // }
-
   });
 
   public async clearThread() {
@@ -116,6 +104,12 @@ class KommenttiStore {
   public async activateThread(uuid: string) {
     this.state.thread = null;
     if (this.state.isLoading) {
+      logger.debug("Still loading", uuid);
+      return;
+    }
+
+    if (uuid === 'uusi-kommentti') {
+      this.state.threadUuid = 'uusi-kommentti';
       return;
     }
 
@@ -185,12 +179,12 @@ class KommenttiStore {
     const mountCommentThreads = async (targets: Element[]) => {
       for (const thread of targets) {
         if (thread) {
-          const uuid = thread.getAttribute('kommentti');
-          if (uuid) {
-            thread.addEventListener('click', () => {
+          thread.addEventListener('click', () => {
+            const uuid = thread.getAttribute('kommentti');
+            if (uuid) {
               this.activateThread(uuid);
-            });
-          }
+            }
+          });
         }
       }
     }

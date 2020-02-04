@@ -40,21 +40,18 @@
             :save="tallenna"
             :value="comment" />
         </div>
-        <div class="replybox p-3">
+        <div v-if="threadUuid" class="replybox p-3">
           <textarea
             :placeholder="$t('vastaa')"
             class="editori"
-            v-model="reply"></textarea>
+            v-model="reply"
+            :disabled="isWorking"></textarea>
           <div v-if="reply" class="d-flex justify-content-end">
             <b-button
-              variant="link"
-              @click="cancelNewThread">
-              {{ $t('peruuta') }}
-            </b-button>
-            <b-button
               variant="primary"
-              @click="saveNewThread"
-              class="ml-1">
+              @click="tallenna({ sisalto: reply })"
+              class="ml-1"
+              :disabled="isWorking">
               {{ $t('vastaa') }}
             </b-button>
           </div>
@@ -70,7 +67,7 @@ import { Kommentit } from '@/stores/kommentit';
 import { KommenttiDto, KayttajanTietoDto } from '@/tyypit';
 import { Kielet } from '@shared/stores/kieli';
 import { success } from '@/utils/notifications';
-import { unwrap, findTaggedIndex } from '@/utils/delay';
+import { delay, unwrap, findTaggedIndex } from '@/utils/delay';
 import * as _ from 'lodash';
 import ThreadComment from './ThreadComment.vue';
 import EpCommentAdd from './EpCommentAdd.vue';
@@ -84,6 +81,7 @@ import { KieliStore } from '@shared/stores/kieli';
 })
 export default class EpCommentThreads extends Vue {
 
+  private isWorking = false;
   private thread: KommenttiDto[] | null = null;
   private newThread: KommenttiDto | null = null;
   private newKahva = null as any;
@@ -126,15 +124,30 @@ export default class EpCommentThreads extends Vue {
   }
 
   async addNewComment() {
-    const el = this.$refs.newComment;
     await this.lisaaKommenttiKahva();
     this.newThread = {
       sisalto: '',
     };
   }
 
+  @Watch('$route.fullPath')
+  async pathChange(val, old) {
+    await this.clear(true);
+  }
+
+  async clear(clearThread = false) {
+    this.isWorking = false;
+    this.thread = null;
+    this.newThread = null;
+    this.newKahva = null;
+    this.reply = null;
+    if (clearThread) {
+      await Kommentit.clearThread();
+    }
+  }
+
   @Watch('threadUuid')
-  threadChange(val, old) {
+  async threadChange(val, old) {
     if (val && val !== old) {
       const doc = document.querySelector(`span[kommentti="${this.threadUuid}"]`);
       (this as any).$scrollTo(doc, 300, {
@@ -154,12 +167,25 @@ export default class EpCommentThreads extends Vue {
   }
 
   async saveNewThread() {
-    const kahva = await Kommentit.lisaaKahva({
-      ...this.newKahva,
-      aloituskommentti: this.newThread,
-    });
-    const doc = document.querySelector(`span[kommentti="uusi-kommentti"]`);
-    doc?.setAttribute('kommentti', kahva.thread!);
+    this.isWorking = true;
+    try {
+      const kahva = await Kommentit.lisaaKahva({
+        ...this.newKahva,
+        aloituskommentti: this.newThread,
+      });
+      console.log(kahva);
+      const doc = document.querySelector(`span[kommentti="uusi-kommentti"]`);
+      doc?.setAttribute('kommentti', kahva.thread!);
+      this.newThread = null;
+      this.newKahva = null;
+      await delay(50);
+      console.log('Activating thread', kahva.thread!);
+      await Kommentit.activateThread(kahva.thread!);
+      console.log('DONE', kahva.thread!);
+    }
+    finally {
+      this.isWorking = false;
+    }
   }
 
   async cancelNewThread() {
@@ -177,12 +203,6 @@ export default class EpCommentThreads extends Vue {
 
   async suljeKetju() {
     await Kommentit.clearThread();
-  }
-
-  async lisaaKommentti() {
-    if (this.thread) {
-      this.thread = [{ sisalto: '', }, ...this.thread]
-    }
   }
 
   private removeAddBox() {
@@ -210,6 +230,8 @@ export default class EpCommentThreads extends Vue {
             props: {
               onAdd: async () => {
                 self.removeAddBox();
+                await Kommentit.clearThread();
+                await delay(100);
                 await self.addNewComment();
               }
             },
@@ -273,15 +295,25 @@ export default class EpCommentThreads extends Vue {
   }
 
   async tallenna(kommentti) {
-    const isNew = !!kommentti.tunniste;
-    const result = await Kommentit.tallenna(this.withOpsId(kommentti));
-    if (isNew) {
-      success('kommentti-tallennettu');
+    this.isWorking = true;
+    try {
+      const isNew = !kommentti.tunniste;
+      const result = await Kommentit.tallenna(this.withOpsId(kommentti));
+      this.reply = null;
+      if (isNew) {
+        success('kommentti-tallennettu');
+      }
+      else {
+        success('kommentti-paivitetty');
+      }
+      return result;
     }
-    else {
-      success('kommentti-paivitetty');
+    catch (err) {
+      console.error(err);
     }
-    return result;
+    finally {
+      this.isWorking = false;
+    }
   }
 
 }
