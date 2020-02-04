@@ -176,7 +176,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   }
 
   protected async init() {
-    this.oletuspohjat = (await Opetussuunnitelmat.getAll('POHJA')).data;
+    this.oletuspohjat = (await Opetussuunnitelmat.getAll('POHJA', 'VALMIS')).data;
     this.opetussuunnitelmat = (await Opetussuunnitelmat.getAll('OPS')).data;
   }
 
