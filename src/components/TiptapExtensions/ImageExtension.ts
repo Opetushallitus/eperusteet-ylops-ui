@@ -6,6 +6,7 @@ import { KieliStore } from '@shared/stores/kieli';
 import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
 import { domAttrsGetter, mapNodeAttrs } from './helpers';
 import ImageModal from './ImageModal.vue';
+import EpButton from'@shared/components/EpButton/EpButton.vue';
 
 
 export default class ImageExtension extends Node {
@@ -57,6 +58,7 @@ export default class ImageExtension extends Node {
       components: {
         ImageModal,
         VueSelect,
+        EpButton,
       },
       props: ['node', 'updateAttrs', 'view'],
       data() {
@@ -64,6 +66,9 @@ export default class ImageExtension extends Node {
           isOpen: false,
           liitteet: createLiitetiedostoHandler(opsId),
         };
+      },
+      mounted() {
+        (this as any).open();
       },
       methods: {
         async open() {
@@ -111,7 +116,8 @@ export default class ImageExtension extends Node {
       },
       template: `
         <div class="ep-editor-component">
-          <img class="content-image" @click="open()" :data-uid="dataUid" :src="url" :title="title" :alt="alt">
+          <img v-if="dataUid"class="content-image" @click="open()" :data-uid="dataUid" :src="url" :title="title" :alt="alt">
+          <ep-button v-else variant="outline" icon="plussa" @click="open()">{{$t('lisaa-kuva')}}</ep-button>
         </div>
       `,
     });
