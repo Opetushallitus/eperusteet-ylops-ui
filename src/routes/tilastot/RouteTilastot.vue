@@ -311,7 +311,7 @@ export default class RouteTilastot extends Mixins(EpRoute) {
       legend: {
         position: 'bottom',
         horizontalAlign: 'center',
-        show: true,
+        show: (otsikko !== 'perusteittain' || !_.isEmpty(this.valitutPerusteet)),
         formatter: function(seriesName, opts) {
           return [seriesName, ': ', opts.w.globals.series[opts.seriesIndex]];
         }
