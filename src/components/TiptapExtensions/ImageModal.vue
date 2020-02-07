@@ -31,6 +31,11 @@
             </template>
           </vue-select>
         </div>
+        <div v-if="selected">
+          <ep-form-content name="kuvateksti" class="mt-3">
+            <ep-field v-model="kuvateksti" @input="onKuvatekstichange" :is-editing="true" :validation="$v.kuvateksti"/>
+          </ep-form-content>
+        </div>
         <div>
           <label role="button" class="btn btn-primary uploadbtn">
             <input style="display: none" ref="imageInput" type="file" @change="onImageInput">
@@ -43,32 +48,45 @@
   </div>
 </template>
 
-
 <script lang="ts">
 import _ from 'lodash';
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import VueSelect from 'vue-select';
-
 import { IAttachmentWrapper } from '@/stores/kuvat';
 import { LiiteDto } from '@/tyypit';
 import { Api } from '@/api';
 import { info } from '@/utils/notifications';
-
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
+import EpField from'@shared/components/forms/EpField.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-
+import { validationMixin } from 'vuelidate';
+import { required } from 'vuelidate/lib/validators';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {
     EpSpinner,
     VueSelect,
+    EpFormContent,
+    EpField,
+  },
+  validations: {
+    kuvateksti: {
+      [Kielet.getSisaltoKieli]: {
+        required
+      },
+    },
   },
 })
-export default class ImageModal extends Vue {
+export default class ImageModal extends Mixins(validationMixin) {
   @Prop({ required: true })
   private loader!: IAttachmentWrapper;
 
   @Prop({ required: true })
   private value!: string;
+
+  @Prop({ required: true })
+  private kuvatekstiProp!: {};
 
   private isAdding = true;
   private hasImage: any = false;
@@ -78,8 +96,13 @@ export default class ImageModal extends Vue {
   private data: LiiteDto[] = [];
   private files: LiiteDto[] = [];
   private selected: any = null;
+  private kuvateksti: any = {};
 
   async mounted() {
+    this.kuvateksti = {
+      [Kielet.getSisaltoKieli]: this.kuvatekstiProp
+    };
+
     try {
       this.isLoading = true;
       this.files = await this.loader.hae();
@@ -131,6 +154,10 @@ export default class ImageModal extends Vue {
 
   private onSelect(liite) {
     this.$emit('input', liite ? liite.id : '');
+  }
+
+  private onKuvatekstichange(kuvateksti){
+    this.$emit('onKuvatekstichange', kuvateksti[Kielet.getSisaltoKieli]);
   }
 
   private peruuta() {
