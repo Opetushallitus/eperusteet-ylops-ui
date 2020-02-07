@@ -57,6 +57,9 @@
                 <p v-for="virkailija in virkailijatFormatted" :key="virkailija.oid" class="mb-0">
                   {{ virkailija.esitysnimi }}
                 </p>
+                <ep-button v-if="!naytaLisaaTyoryhmaa && virkailijat.length > tyoryhmaAlkuMaara" @click="naytaLisaaTyoryhmaa = true" variant="link" buttonClass="pl-0 mt-2">
+                  {{$t('nayta-lisaa')}}
+                </ep-button>
               </div>
             </div>
           </div>
@@ -76,16 +79,20 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { OpetussuunnitelmaKevytDto } from '@/tyypit';
 import { Kielet } from '@shared/stores/kieli';
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
-
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 
 @Component({
   components:{
     EpSpinner,
+    EpButton,
   }
 })
 export default class OpsPerustiedot extends Vue {
+
+  private naytaLisaaTyoryhmaa: boolean = false;
+  private tyoryhmaAlkuMaara = 5;
 
   @Prop({required: true})
   private ops!: OpetussuunnitelmaKevytDto;
@@ -103,12 +110,15 @@ export default class OpsPerustiedot extends Vue {
   }
 
   private get virkailijatFormatted() {
-    return _.map(this.virkailijat, virkailija => {
-      return {
-        oid: virkailija.oid,
-        esitysnimi : parsiEsitysnimi(virkailija),
-      };
-    });
+    return _.chain(this.virkailijat)
+      .map(virkailija => {
+        return {
+          oid: virkailija.oid,
+          esitysnimi : parsiEsitysnimi(virkailija),
+        };
+      })
+      .take(!this.naytaLisaaTyoryhmaa ? this.tyoryhmaAlkuMaara : _.size(this.virkailijat))
+      .value();
   }
 
 }
