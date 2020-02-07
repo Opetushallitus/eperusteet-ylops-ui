@@ -28,6 +28,7 @@ import {
   oppimaaraUusiLinkki,
 } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
+import { koodiNumero, koodiAlku } from '@/utils/perusteet';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [{
@@ -135,11 +136,14 @@ export default class OpsSidenav extends EpOpsComponent {
   }
 
   private oppiaineOppimaaraLinkit(oppiaine: Lops2019OppiaineDto) {
-    return _.map(oppiaine.oppimaarat, oppimaara =>
-      oppiaineLinkki(
-        'oppimaara',
-        oppimaara,
-        this.opintojaksoModuuliLista(oppimaara)));
+    return _.chain(oppiaine.oppimaarat)
+      .sortBy(koodiAlku, koodiNumero)
+      .map(oppimaara =>
+        oppiaineLinkki(
+          'oppimaara',
+          oppimaara,
+          this.opintojaksoModuuliLista(oppimaara)))
+      .value();
   }
 
   get perusteenOppiaineet() {
@@ -156,7 +160,7 @@ export default class OpsSidenav extends EpOpsComponent {
     }
 
     return _.chain(this.perusteenOppiaineet)
-      .sortBy('koodi.arvo')
+      .sortBy(koodiAlku, koodiNumero)
       .map(oppiaine =>
         oppiaineLinkki(
           'oppiaine',
