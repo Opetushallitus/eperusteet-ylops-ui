@@ -69,6 +69,7 @@ export function getArvo(koodillinen: any) {
     || _.get(koodillinen, 'arvo')
     || _.get(koodillinen, 'koodi.uri')
     || _.get(koodillinen, 'uri')
+    || _.get(koodillinen, 'koodi')
     || koodillinen;
 }
 
@@ -77,7 +78,7 @@ export function getUri(koodillinen: any) {
 }
 
 export function koodiAlku(koodillinen: object | string) {
-  return splitKoodi(getArvo(koodillinen))[0];
+  return _.toLower(_.toString(splitKoodi(getArvo(koodillinen))[0]));
 }
 
 export function koodiNumero(koodillinen: object | string) {
