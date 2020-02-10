@@ -86,15 +86,17 @@ export default class ImageExtension extends Node {
           const t = (v: string): string => KieliStore.i18n.t(v) as string;
           const oldAltText = self.altText;
           const oldDataUid = self.dataUid;
+          const uidObs = Vue.observable({value: self.dataUid});
           const editor = h(ImageModal, {
             props: {
-              value: self.dataUid,
+              value: uidObs,
               loader: self.liitteet,
               kuvatekstiProp: self.altText,
             },
             on: {
-              input(value: string) {
+              input: (value: string) =>  {
                 self.dataUid = value;
+                uidObs.value = value;
               },
               onKuvatekstichange(value: string) {
                 self.altText = value;
