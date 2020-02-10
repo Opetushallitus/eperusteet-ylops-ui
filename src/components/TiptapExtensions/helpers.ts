@@ -1,9 +1,12 @@
 import _ from 'lodash';
 
 export function domAttrsGetter(...fields: string[]) {
-  return (dom: any) => _.reduce(fields, (acc: any, field: string) => ({
-    [field]: dom.getAttribute(field),
-  }), {});
+  return (dom: any) => _.reduce(fields, (acc: any, field: string) => {
+    return ({
+      ...acc,
+      [field]: dom.getAttribute(field),
+    });
+  }, {});
 }
 
 
