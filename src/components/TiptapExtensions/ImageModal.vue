@@ -83,7 +83,7 @@ export default class ImageModal extends Mixins(validationMixin) {
   private loader!: IAttachmentWrapper;
 
   @Prop({ required: true })
-  private value!: any;
+  private value!: {value?: string};
 
   @Prop({ required: true })
   private kuvatekstiProp!: {};
