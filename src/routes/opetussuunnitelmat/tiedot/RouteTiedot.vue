@@ -27,7 +27,13 @@
             </div>
             <div class="col-md-6">
               <ep-form-content name="julkaisukielet">
-                <ep-select help="ops-julkaisukielet-ohje" v-model="data.julkaisukielet" :validation="validation.julkaisukielet" :is-editing="isEditing" :items="kielet" :multiple="true" :useCheckboxes="true">
+                <ep-select help="ops-julkaisukielet-ohje"
+                           v-model="data.julkaisukielet"
+                           :validation="validation.julkaisukielet"
+                           :is-editing="isEditing"
+                           :items="kielet"
+                           :multiple="true"
+                           :useCheckboxes="true">
                 </ep-select>
               </ep-form-content>
             </div>
@@ -65,6 +71,12 @@
                 </ul>
               </ep-form-content>
             </div>
+             <div class="col-md-6">
+              <ep-form-content name="ainepainoitteinen">
+                <ep-toggle v-model="data.ainepainoitteinen" :is-editing="false">
+                </ep-toggle>
+              </ep-form-content>
+            </div>
             <div class="col-md-12">
               <ep-form-content name="ops-kuvaus">
                 <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.kuvaus" help="ops-kuvaus-ohje" :validation="validation.kuvaus" :is-editable="isEditing"> </ep-content>
@@ -83,7 +95,6 @@
 </template>
 
 <script lang="ts">
-
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
 import EpField from'@shared/components/forms/EpField.vue';
@@ -99,7 +110,7 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
-import EpProgress from '@/components/EpProgress.vue';
+import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';

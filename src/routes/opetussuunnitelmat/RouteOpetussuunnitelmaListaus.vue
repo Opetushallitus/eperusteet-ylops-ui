@@ -6,19 +6,33 @@
       </ep-icon>
     </template>
     <template slot="header">
-      <h2>{{ $t(tyyppi) }}</h2>
+      <h1>{{ $t(tyyppi) }}</h1>
+      <ep-arkistoidut-ops v-if="poistetut.length > 0"
+                          :opetussuunnitelmat="poistetut"
+                          :title="vars.poistetut"
+                          class="float-right"
+                          @restore="palauta"/>
       <p>{{ $t(vars.kuvaus) }}</p>
+      <ep-search v-model="rajain" :placeholder="$t(vars.etsi)"></ep-search>
     </template>
 
     <ep-spinner v-if="isLoading"></ep-spinner>
     <b-container fluid v-else class="pl-0">
       <b-row>
-        <b-col lg="8">
+        <b-col>
           <div class="opslistaus">
-            <h3>{{ $t(vars.keskeneraiset) }}</h3>
+            <h2>{{ $t(vars.keskeneraiset) }}</h2>
+
+            <div class="info" v-if="keskeneraiset.length === 0">
+              <div v-if="hasRajain">
+                {{ $t('ei-hakutuloksia') }}
+              </div>
+            </div>
 
             <div class="opscontainer">
-              <div class="opsbox" v-oikeustarkastelu="{ oikeus: 'luonti', kohde: 'opetussuunnitelma' }">
+              <div v-if="!hasRajain"
+                   class="opsbox"
+                   v-oikeustarkastelu="{ oikeus: 'luonti', kohde: 'opetussuunnitelma' }">
                 <router-link tag="a" :to="{ name: vars.uusiRoute }">
                   <div class="uusi">
                     <div class="plus">
@@ -36,7 +50,7 @@
                     class="opsbox">
                   <router-link
                     tag="a"
-                    :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+                    :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
                     :key="ops.id">
                     <div class="chart">
                       <div class="progress-clamper">
@@ -67,18 +81,21 @@
           </div>
 
           <div class="opslistaus">
-            <h3 class="mt-4">{{ $t(vars.julkaistut) }}</h3>
+            <h2 class="mt-4">{{ $t(vars.julkaistut) }}</h2>
 
             <div class="info" v-if="julkaistut.length === 0">
-              <ep-alert :ops="true" :text="$t(vars.eivalmiita)" />
+              <div v-if="hasRajain">
+                {{ $t('ei-hakutuloksia') }}
+              </div>
+              <ep-alert v-else :ops="true" :text="$t(vars.eivalmiita)" />
             </div>
 
             <div class="opscontainer">
               <div v-for="ops in julkaistut" :key="ops.id">
-                <div class="opsbox" v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'">
+                <div class="opsbox julkaistu" v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'">
                   <router-link
                     tag="a"
-                    :to="{ name: 'opsTiedot', params: { id: ops.id } }"
+                    :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
                     :key="ops.id">
                     <div class="chart">
                       <div class="progress-clamper">
@@ -96,11 +113,6 @@
             </div>
           </div>
         </b-col>
-
-        <b-col v-if="poistetut.length > 0" lg="4">
-          <ep-arkistoidut-ops :opetussuunnitelmat="poistetut" :title="vars.poistetut"/>
-        </b-col>
-
       </b-row>
     </b-container>
   </ep-main-view>
@@ -110,23 +122,26 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Prop, Component, Mixins } from 'vue-property-decorator';
-import { OpetussuunnitelmaInfoDto } from '@/tyypit';
-import EpRoute from '@/mixins/EpRoot';
-import { Opetussuunnitelmat } from '@/api';
 
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
-import EpMainView from '@/components/EpMainView/EpMainView.vue';
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpProgress from '@/components/EpProgress.vue';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpButton from '@/components/EpButton/EpButton.vue';
-import EpArkistoidutOps from '@/components/EpArkistoidutOps/EpArkistoidutOps.vue';
-import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import { OpetussuunnitelmaInfoDto } from '@/tyypit';
+import { Opetussuunnitelmat } from '@/api';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { success, fail } from '@/utils/notifications';
+import { Kielet } from '@shared/stores/kieli';
+
+import EpRoute from '@/mixins/EpRoot';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpIcon from '@/components/EpIcon/EpIcon.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import EpProgress from '@/components/EpProgress/EpProgress.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpArkistoidutOps from '@/components/EpArkistoidutOps/EpArkistoidutOps.vue';
+import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
 
 
 @Component({
@@ -143,6 +158,7 @@ import { success, fail } from '@/utils/notifications';
     EpSpinner,
     EpAlert,
     EpArkistoidutOps,
+    EpSearch,
   },
 })
 export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
@@ -154,8 +170,18 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
 
   private opslista: OpetussuunnitelmaInfoDto[] = [];
 
+  private rajain = '';
+
+  get hasRajain() {
+    return !_.isEmpty(this.rajain);
+  }
+
   get jarjestetyt() {
-    return _.chain(this.opslista)
+    return _(this.opslista)
+      .filter(ops => _.includes(
+        _.toLower(_.get(ops, 'nimi.' + Kielet.getSisaltoKieli)),
+        _.toLower(this.rajain)
+      ))
       .sortBy('luotu')
       .reverse()
       .value();
@@ -180,7 +206,7 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   }
 
   get julkaistut() {
-    return _.filter(this.arkistoimattomat, ops => (ops.tila as any) === this.valmisTila);
+    return _.filter(this.arkistoimattomat,ops => (ops.tila as any) === this.valmisTila);
   }
 
   get vars() {
@@ -188,28 +214,30 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
       return {
         eiarkistoituja: 'ei-arkistoituja-pohjia',
         eivalmiita: 'ei-valmiita-pohjia',
+        etsi: 'etsi-pohjista',
         getTarget: 'POHJA',
         julkaistut: 'valmiit-pohjat',
         keskeneraiset: 'keskeneraiset-pohjat',
         kuvaus: 'pohjat-kuvaus',
-        poistetut: 'arkistoidut-pohjat',
-        uusiRoute: 'uusiPohja',
         palautaOps: 'palauta-pohja',
         palautaOpsKuvaus: 'palauta-pohja-kuvaus',
+        poistetut: 'arkistoidut-pohjat',
+        uusiRoute: 'uusiPohja',
       };
     }
     else {
       return {
         eiarkistoituja: 'ei-arkistoituja-opetussuunnitelmia',
         eivalmiita: 'ei-julkaistuja-opetussuunnitelmia',
+        etsi: 'etsi-opetussuunnitelmia',
         getTarget: 'OPS',
         julkaistut: 'julkaistut-opetussuunnitelmat',
         keskeneraiset: 'keskeneraiset-opetussuunnitelmat',
         kuvaus: 'opetussuunnitelmat-kuvaus',
-        poistetut: 'arkistoidut-opetussuunnitelmat',
-        uusiRoute: 'uusiOpetussuunnitelma',
         palautaOps: 'palauta-ops',
         palautaOpsKuvaus: 'palauta-ops-kuvaus',
+        poistetut: 'arkistoidut-opetussuunnitelmat',
+        uusiRoute: 'uusiOpetussuunnitelma',
       };
     }
   }
@@ -238,17 +266,27 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
 </script>
 
 <style lang="scss" scoped>
-
 @import '@/styles/_mixins.scss';
 
 $box-size: 350px;
 
 $box-radius: 10px;
 
+h1 {
+  color: #001A58;
+  font-size: 0.5555555555555556rem;
+  font-weight: 400;
+}
+
+h2 {
+  font-size: 1.1111111111111112rem;
+  font-weight: 400;
+}
+
 .opslistaus {
 
   .info {
-    padding: 10px 0px;
+    padding: 10px 0;
   }
 
   .opscontainer {
@@ -261,13 +299,17 @@ $box-radius: 10px;
       border-radius: $box-radius;
       @include tile-background-shadow;
 
+      .julkaistu {
+        background: linear-gradient(180deg, #e7eefe 0%, #f3f6fe 100%);
+      }
+
       .poistettu {
         background-size: contain;
         background: linear-gradient(180deg, #e7eefe 0%, #f3f6fe 100%);
         border-radius: $box-radius;
         height: 230px;
         margin: 0 auto;
-        padding-top: 0px;
+        padding-top: 0;
         text-align: center;
         width: 192px;
 

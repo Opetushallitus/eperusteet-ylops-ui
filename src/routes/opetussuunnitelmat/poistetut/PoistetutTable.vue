@@ -1,34 +1,32 @@
 <template>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>{{ $t('nimi') }}</th>
-        <th>{{ $t('poistoajankohta') }}</th>
-        <th>{{ $t('poistaja') }}</th>
-        <th>{{ $t('toiminnot') }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(poistettu, idx) in poistetut" :key="idx">
-        <td>{{ $kaanna(poistettu.nimi) }}</td>
-        <td>{{ $ago(poistettu.luotu) }}</td>
-        <td>{{ poistettu.luoja }}</td>
-        <td>
-          <ep-button class="btn-sm" @click="palauta(poistettu)">{{ $t('palauta') }}</ep-button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <b-table responsive
+           striped
+           hover
+           :items="items"
+           :fields="fields">
+    <template v-slot:cell(nimi)="data">
+      {{ $kaanna(data.value) }}
+    </template>
+    <template v-slot:cell(muokattu)="data">
+      {{ $ago(data.value) }}
+    </template>
+    <template v-slot:cell(esitysnimi)="data">
+      {{ data.value }}
+    </template>
+    <template v-slot:cell(actions)="row">
+      <ep-button variant="link"
+                 icon="peruuta"
+                 @click="palauta(row.item)">
+        {{ $t('palauta') }}
+      </ep-button>
+    </template>
+  </b-table>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import EpButton from '@/components/EpButton/EpButton.vue';
 
-import _ from 'lodash';
-import { Lops2019PoistettuDto } from '@/tyypit';
-import { opintojaksoValidator } from '@/validators/opintojakso';
-import { Kielet } from '@shared/stores/kieli';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 
 
 @Component({
@@ -37,10 +35,37 @@ import { Kielet } from '@shared/stores/kieli';
   },
 })
 export default class PoistettuTable extends Vue {
-  @Prop({
-    required: true,
-  })
-  private poistetut!: Lops2019PoistettuDto[];
+
+  @Prop({ required: true })
+  private poistetut!: any[];
+
+  get items() {
+    return this.poistetut;
+  }
+
+  get fields() {
+    return [
+      {
+        label: this.$t('nimi'),
+        key: 'nimi',
+        sortable: true,
+      },
+      {
+        label: this.$t('poistoajankohta'),
+        key: 'muokattu',
+        sortable: true,
+      },
+      {
+        label: this.$t('poistaja'),
+        key: 'muokkaaja',
+        sortable: true,
+      },
+      {
+        key: 'actions',
+        label: '',
+      },
+    ];
+  }
 
   palauta(poistettu) {
     this.$emit('palauta', poistettu);

@@ -2,93 +2,38 @@
 <div class="organisaatiot">
   <ep-form-content name="organisaatiot">
     <div class="selectors">
-      <div class="form-group required">
+      <div class="form-group required mb-5">
         <label>{{ $t('kunnat') }}*</label>
-        <ep-multi-select :multiple="true"
-          :is-editing="true"
-          :options="filteredKunnat"
-          :validation="$v.valitutKunnat"
+        <ep-multi-list-select
           :value="valitutKunnat"
+          tyyppi="kunta"
+          :items="kunnatSelectOptions"
           @input="updateKunnat"
-          @search="query.kunnat = $event"
-          help="ops-koulutuksen-jarjestaja-ohje"
-          track-by="koodiUri"
-          required>
-          <template slot="singleLabel" slot-scope="{ option }">
-            <span class="selected">{{ $kaanna(option.nimi) || option.oid }}</span>
-          </template>
-          <template slot="option" slot-scope="{ option }">
-            <div>{{ $kaanna(option.nimi) || option.oid }}</div>
-          </template>
-          <template slot="tag" slot-scope="{ option, remove }">
-            <span class="selected">
-              <span>{{ $kaanna(option.nimi) || option.oid }}</span>
-              <button class="btn btn-link" @click="remove(option)">
-                <fas icon="times">
-                </fas>
-              </button>
-            </span>
-          </template>
-        </ep-multi-select>
+          :validation="$v.valitutKunnat"
+          :required="true"/>
       </div>
     </div>
 
-    <div class="selectors">
+    <div class="selectors mb-5">
       <label>{{ $t('jarjestajat') }}*</label>
-      <ep-multi-select :multiple="true"
-                       :value="valitutJarjestajat"
-                       track-by="oid"
-                       :validation="$v.valitutJarjestajat"
-                       :is-editing="true"
-                       @input="updateJarjestajat"
-                       @search="query.jarjestajat = $event"
-                       :options="filteredJarjestajat"
-                       help="ops-koulutuksen-jarjestaja-ohje">
-        <template slot="singleLabel" slot-scope="{ option }">
-          <span class="selected">{{ $kaanna(option.nimi) || option.oid }}</span>
-        </template>
-        <template slot="option" slot-scope="{ option }">
-          <div>{{ $kaanna(option.nimi) || option.oid }}</div>
-        </template>
-        <template slot="tag" slot-scope="{ option, remove }">
-          <span class="selected">
-            <span>{{ $kaanna(option.nimi) || option.oid }}</span>
-            <button class="btn btn-link" @click="remove(option)">
-              <fas icon="times">
-              </fas>
-            </button>
-          </span>
-        </template>
-      </ep-multi-select>
+      <ep-multi-list-select
+          :value="valitutJarjestajat"
+          tyyppi="koulutuksen-jarjestaja"
+          :items="jarjestajatSelectOptions"
+          @input="updateJarjestajat"
+          :validation="$v.valitutJarjestajat"
+          :is-loading="kunnatLoading"
+          :required="true"/>
     </div>
 
-    <div class="selectors">
+    <div class="selectors mb-5">
       <label>{{ $t('oppilaitokset') }}</label>
-      <ep-multi-select :multiple="true"
-                       :value="valitutOppilaitokset"
-                       :validation="$v"
-                       @search="query.oppilaitokset = $event"
-                       @input="updateOppilaitokset"
-                       :is-editing="true"
-                       track-by="oid"
-                       :options="filteredOppilaitokset"
-                       help="ops-oppilaitokset-ohje">
-        <template slot="singleLabel" slot-scope="{ option }">
-          <span class="selected">{{ $kaanna(option.nimi) || option.oid }}</span>
-        </template>
-        <template slot="option" slot-scope="{ option }">
-          <div>{{ $kaanna(option.nimi) || option.oid }}</div>
-        </template>
-        <template slot="tag" slot-scope="{ option, remove }">
-          <span class="selected">
-            <span>{{ $kaanna(option.nimi) || option.oid }}</span>
-            <button class="btn btn-link" @click="remove(option)">
-              <fas icon="times">
-              </fas>
-            </button>
-          </span>
-        </template>
-      </ep-multi-select>
+      <ep-multi-list-select
+          :value="valitutOppilaitokset"
+          tyyppi="oppilaitos"
+          :items="oppilaitoksetSelectOptions"
+          @input="updateOppilaitokset"
+          :is-loading="jarjestajatLoading || kunnatLoading"/>
     </div>
 
   </ep-form-content>
@@ -97,7 +42,7 @@
 
 <script lang="ts">
 import * as _ from 'lodash';
-import { Component, Prop, Mixins } from 'vue-property-decorator';
+import { Component, Prop, Mixins, Watch } from 'vue-property-decorator';
 
 import { minLength, required } from 'vuelidate/lib/validators';
 import { Kielet } from '@shared/stores/kieli';
@@ -105,12 +50,12 @@ import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
 import { metadataToTeksti } from '@/utils/organisaatiot';
 import { Ulkopuoliset } from '@/api';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpMultiSelect from '@/components/forms/EpMultiSelect.vue';
+import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
-import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@shared/mixins/EpValidation';
 
 interface ValueType {
   jarjestajat: any[];
@@ -123,7 +68,7 @@ interface ValueType {
   components: {
     EpButton,
     EpFormContent,
-    EpMultiSelect,
+    EpMultiListSelect,
     EpSpinner,
     EpToggle,
   },
@@ -132,8 +77,8 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   @Prop({ required: true })
   value!: ValueType;
 
-  @Prop({ required: false })
-  koulutustyyppi: string | null = null;
+  @Prop({ default: null })
+  koulutustyyppi!: string | null;
 
   kayttajanOrganisaatiot: any = {};
   kunnat: any[] = [];
@@ -143,6 +88,9 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   valitutKunnat: any[] = [];
   valitutJarjestajat: any[] = [];
   valitutOppilaitokset: any[] = [];
+
+  kunnatLoading: boolean = false;
+  jarjestajatLoading: boolean = false;
 
   query = {
     jarjestajat: '',
@@ -166,6 +114,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   filterAndSort(orgs, query) {
     return _.chain(orgs)
       .filter(org => Kielet.search(query, org.nimi))
+      .map(org => _.omit(org, 'children'))
       .sortBy(org => Kielet.kaanna(org.nimi))
       // Aakkosjärjestys selkeämpi?
       // .sortBy(org => this.kayttajanOrganisaatiot[org.oid])
@@ -176,12 +125,45 @@ export default class EpOrganizations extends Mixins(EpValidation) {
     return this.filterAndSort(this.kunnat, this.query.kunnat);
   }
 
+  get kunnatSelectOptions() {
+    return _.chain(this.filteredKunnat)
+      .map(org => {
+        return {
+          value: org,
+          text: (this as any).$kaanna((org as any).nimi),
+        };
+      })
+      .value();
+  }
+
   get filteredJarjestajat() {
     return this.filterAndSort(this.jarjestajat, this.query.jarjestajat);
   }
 
+  get jarjestajatSelectOptions() {
+    return _.chain(this.filteredJarjestajat)
+      .map(org => {
+        return {
+          value: org,
+          text: (this as any).$kaanna((org as any).nimi),
+        };
+      })
+      .value();
+  }
+
   get filteredOppilaitokset() {
     return this.filterAndSort(this.oppilaitokset, this.query.oppilaitokset);
+  }
+
+  get oppilaitoksetSelectOptions() {
+    return _.chain(this.filteredOppilaitokset)
+      .map(org => {
+        return {
+          value: org,
+          text: (this as any).$kaanna((org as any).nimi),
+        };
+      })
+      .value();
   }
 
   updateInput() {
@@ -198,8 +180,10 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   }
 
   updateJarjestajat(valitut) {
+    this.jarjestajatLoading = true;
     this.valitutJarjestajat = valitut;
-    this.oppilaitokset = _.chain(valitut)
+    const valitutJarjestajat = _.filter(this.jarjestajat, (jarjestaja) => _.includes(_.map(valitut, 'koodiUri'), jarjestaja.koodiUri));
+    this.oppilaitokset = _.chain(valitutJarjestajat)
       .map('children')
       .flatten()
       .sortBy((org: any) => Kielet.kaanna(org.nimi))
@@ -208,9 +192,11 @@ export default class EpOrganizations extends Mixins(EpValidation) {
     this.valitutOppilaitokset = _.filter(this.valitutOppilaitokset,
       ol => _.includes(jarjestajaOids, ol.parentOid));
     this.updateInput();
+    this.jarjestajatLoading = false;
   }
 
   async updateKunnat(kunnat) {
+    this.kunnatLoading = true;
     this.valitutKunnat = kunnat;
     this.jarjestajat = _.chain((await Ulkopuoliset.getKoulutustoimijat(
       _.map(kunnat, 'koodiUri'),
@@ -223,6 +209,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
       this.valitutJarjestajat,
       jarjestaja => _.includes(kuntaUris, jarjestaja.kotipaikkaUri));
     this.updateJarjestajat(this.valitutJarjestajat);
+    this.kunnatLoading = false;
   }
 
   async update() {
@@ -239,6 +226,13 @@ export default class EpOrganizations extends Mixins(EpValidation) {
       .reject(_.isNull)
       .keyBy('oid')
       .value();
+  }
+
+  @Watch('value', { immediate: true })
+  onValueChange(value) {
+    this.valitutKunnat = value.kunnat;
+    this.valitutJarjestajat = value.jarjestajat;
+    this.valitutOppilaitokset = value.oppilaitokset;
   }
 
   mounted() {

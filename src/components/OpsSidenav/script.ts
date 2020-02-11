@@ -1,5 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
+import { Component } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import { PerusteCache } from '@/stores/peruste';
 
@@ -9,13 +9,12 @@ import {
   Lops2019OppiaineDto,
 } from '@/tyypit';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import Sticky from 'vue-sticky-directive';
@@ -29,6 +28,7 @@ import {
   oppimaaraUusiLinkki,
 } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
+import { koodiNumero, koodiAlku } from '@/utils/perusteet';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [{
@@ -89,7 +89,6 @@ const i18keys = {
     EpColorIndicator,
     EpRecursiveNav,
     EpSearch,
-    EpSisaltoModaali,
     EpSpinner,
     OpsSidenavLink,
     EpTekstikappaleLisays,
@@ -137,11 +136,14 @@ export default class OpsSidenav extends EpOpsComponent {
   }
 
   private oppiaineOppimaaraLinkit(oppiaine: Lops2019OppiaineDto) {
-    return _.map(oppiaine.oppimaarat, oppimaara =>
-      oppiaineLinkki(
-        'oppimaara',
-        oppimaara,
-        this.opintojaksoModuuliLista(oppimaara)));
+    return _.chain(oppiaine.oppimaarat)
+      .sortBy(koodiAlku, koodiNumero)
+      .map(oppimaara =>
+        oppiaineLinkki(
+          'oppimaara',
+          oppimaara,
+          this.opintojaksoModuuliLista(oppimaara)))
+      .value();
   }
 
   get perusteenOppiaineet() {
@@ -158,7 +160,7 @@ export default class OpsSidenav extends EpOpsComponent {
     }
 
     return _.chain(this.perusteenOppiaineet)
-      .sortBy('koodi.arvo')
+      .sortBy(koodiAlku, koodiNumero)
       .map(oppiaine =>
         oppiaineLinkki(
           'oppiaine',
@@ -190,6 +192,10 @@ export default class OpsSidenav extends EpOpsComponent {
 
   private onkoModTaiOj(item: SideMenuItem) {
     return (item.type === 'moduuli' || item.type === 'opintojakso');
+  }
+
+  private onModuuli(item) {
+    return item.type === 'moduuli';
   }
 
   private haeKoodi(item: SideMenuItem) {

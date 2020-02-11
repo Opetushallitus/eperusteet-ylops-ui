@@ -90,12 +90,16 @@ export class OpetussuunnitelmaStore {
       }
       return result;
     }
+    else {
+      return {};
+    }
 
     return null;
   }
 
   public async removeTeksti(tov: Puu) {
     await OpetussuunnitelmanSisalto.removeTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!);
+    await this.updateSisalto();
   }
 
   public async addTeksti(tov: Puu, parentId?: number) {
@@ -186,6 +190,18 @@ export class OpetussuunnitelmaStore {
     return result;
   }
 
+  public async getPaikallinenOppiaineenHistoria(id: number) {
+    return (await Oppiaineet.getLops2019PaikallinenVersionHistory(this.opetussuunnitelma!.id!, id)).data;
+  }
+
+  public async getPaikallinenOppiaineVersion(id: number, versionumero: number) {
+    return (await Oppiaineet.getLops2019PaikallinenVersion(this.opetussuunnitelma!.id!, id, versionumero)).data;
+  }
+
+  public async revertPaikallinenOppiaineToVersion(id: number, versionumero: number) {
+    await Oppiaineet.revertLops2019PaikallinenToVersion(this.opetussuunnitelma!.id!, id, versionumero);
+  }
+
   public async getJulkaisut() {
     return (await Opetussuunnitelmat.getJulkaisut(this.opetussuunnitelma!.id!)).data;
   }
@@ -215,6 +231,14 @@ export class OpetussuunnitelmaStore {
     return (await Opintojaksot.getVersionHistory(this.opetussuunnitelma!.id!, opintojaksoId)).data;
   }
 
+  public async revertOpintojaksoToVersion(opintojaksoId: number, versionumero: number) {
+    await Opintojaksot.revertToVersion(this.opetussuunnitelma!.id!, opintojaksoId, versionumero);
+  }
+
+  public async getOpintojaksoVersion(opintojaksoId: number, versionumero: number) {
+    return (await Opintojaksot.getVersion(this.opetussuunnitelma!.id!, opintojaksoId, versionumero)).data;
+  }
+
   public async getOpintojakso(id: number) {
     return (await Opintojaksot.getOpintojakso(this.opetussuunnitelma!.id!, id)).data;
   }
@@ -223,10 +247,27 @@ export class OpetussuunnitelmaStore {
     return (await Lops2019.getRemoved(this.opetussuunnitelma!.id!)).data;
   }
 
-  public async palauta(poistettu: Lops2019PoistettuDto) {
-    await Lops2019.palauta(this.opetussuunnitelma!.id!, poistettu.id!);
-    success('palautus-onnistui');
-    // this.opintojaksot = [...this.opintojaksot, result];
+  public async getPoistetutTekstikappaleet() {
+    return (await OpetussuunnitelmanSisalto.getRemovedTekstikappaleet(this.opetussuunnitelma!.id!)).data;
+  }
+
+  public async palauta(poistettu) {
+    try {
+      if (poistettu.tyyppi) {
+        await Lops2019.palauta(this.opetussuunnitelma!.id!, poistettu.id!);
+        await this.getPoistetut();
+      }
+      else {
+        // Tekstikappaleiden poisto
+        OpetussuunnitelmanSisalto.returnRemoved(this.opetussuunnitelma!.id!, poistettu!.id);
+        await this.getPoistetutTekstikappaleet();
+      }
+      success('palautus-onnistui');
+      await this.init();
+    }
+    catch (err) {
+      fail('palautus-epaonnistui', err.response.data.syy);
+    }
   }
 
   public async removeOppiaine(id: number) {

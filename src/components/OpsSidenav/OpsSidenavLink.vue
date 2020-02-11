@@ -1,13 +1,16 @@
-<template lang="pug">
-component(:is="tag", @click="handleClick", :class="{ 'router-link-exact-active': isExactRoute }")
-  slot
+<template>
+<component :is="tag" @click="handleClick" :class="{ 'router-link-exact-active': isExactRoute }">
+  <slot />
+</component>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import _ from 'lodash';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+
 import { Kielet } from '@shared/stores/kieli';
 import { SideMenuEntry } from '@/tyypit';
+
 
 @Component
 export default class OpsSidenavLink extends Vue {

@@ -36,16 +36,17 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Prop, Component } from 'vue-property-decorator';
+import _ from 'lodash';
+import { Mixins, Component } from 'vue-property-decorator';
+
+import { Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { Kielet } from '@shared/stores/kieli';
+import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import { Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpJarjesta from '@/components/EpJarjesta/EpJarjesta.vue';
-import { Kielet } from '@shared/stores/kieli';
-import EpButton from '@/components/EpButton/EpButton.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
-import _ from 'lodash';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
 
 function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKappaleViiteKevytDto | null {
   if (!root) {

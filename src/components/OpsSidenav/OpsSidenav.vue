@@ -5,6 +5,15 @@
     <ep-search v-model="query"/>
   </div>
   <ul class="navigation flex-fill" v-if="valikkoData.length > 0">
+
+    <li class="p-0">
+      <router-link :to="{name: 'yleisnakyma'}">
+        <div class="hallintapaneeli">
+          <span>{{$t('yleisnakyma')}}</span>
+        </div>
+      </router-link>
+    </li>
+
     <ep-recursive-nav :value="valikkoData">
       <template v-slot:previousLink="{ itemData, itemRoute, navigate }">
         <li class="previous-link align-items-start">
@@ -27,8 +36,8 @@
           </a>
           <a v-else class="btn btn-link">
               <div class="d-inline-flex">
-                <div>
-                  <ep-color-indicator class="mr-2" v-if="onkoModTaiOj(itemData.item)" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
+                <div v-if="onModuuli(itemData.item)">
+                  <ep-color-indicator class="mr-2" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
                   </ep-color-indicator>
                 </div>
                 <div>

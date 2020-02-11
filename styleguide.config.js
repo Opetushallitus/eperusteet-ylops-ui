@@ -10,14 +10,12 @@ module.exports = {
     description: '',
     components: [
       'src/components/EpCollapse/EpCollapse.vue',
-      'src/components/EpButton/EpButton.vue',
-      'src/components/EpPRefixList/EpPRefixList.vue',
+      'src/components/EpPrefixList/EpPrefixList.vue',
       'src/components/EpSpinner/EpSpinner.vue',
       'src/components/EpKaanna/EpKaanna.vue',
       'src/components/EpInfo/EpInfo.vue',
       'src/components/EpIcon/EpIcon.vue',
-      'src/components/EpLinkki.vue',
-      'src/components/EpProgress.vue',
+      'src/components/EpProgress/EpProgress.vue',
     ],
   }, {
     name: 'Form components',

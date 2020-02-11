@@ -1,18 +1,23 @@
-<template lang="pug">
-base-tile(icon="ryhma",
-    :route="{ name: 'organisaatio' }")
-  template(slot="header")
-    span {{ $t('tile-organisaatio') }}
-  template(slot="content")
-    ep-spinner(v-if="isLoading")
-    div(v-else)
-      b-row.mx-5.virkailijat
-        b-col.virkailija.text-left(sm="6", v-for="virkailija in virkailijatPrewview", :key="virkailija.oid")
-          // TODO: offline / online toiminnallisuus
-          //ep-color-indicator.mr-2(kind="offline", :tooltip="false")
-          span {{ virkailija.esitysnimi }}
-      p.mt-3(v-if="virkailijat && virkailijat.length > previewSize") {{ $t('nayta-lisaa') }}
-
+<template>
+<base-tile icon="ryhma" :route="{ name: 'organisaatio' }">
+  <template slot="header">
+    <span>{{ $t('tile-organisaatio') }}</span>
+  </template>
+  <template slot="content">
+    <ep-spinner v-if="isLoading"></ep-spinner>
+    <div v-else>
+      <b-row class="mx-5 virkailijat">
+        <b-col class="virkailija text-left"
+               sm="6"
+               v-for="virkailija in virkailijatPrewview"
+               :key="virkailija.oid">
+          <span>{{ virkailija.esitysnimi }}</span>
+        </b-col>
+      </b-row>
+      <p class="mt-3" v-if="virkailijat && virkailijat.length > previewSize">{{ $t('nayta-lisaa') }}</p>
+    </div>
+  </template>
+</base-tile>
 </template>
 
 <script lang="ts">
@@ -22,7 +27,7 @@ import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import BaseTile from './BaseTile.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { organizations } from '@/utils/organisaatiot';
+
 
 @Component({
   components: {
@@ -41,7 +46,7 @@ export default class TileOrganisaatio extends Vue {
 
   async mounted() {
     try {
-      await Kayttajat.updateOrganisaatioVirkailijat();
+      await Kayttajat.fetchOrganisaatioVirkailijat();
     }
     finally {
       this.isLoading = false;

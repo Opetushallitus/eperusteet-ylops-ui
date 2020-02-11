@@ -1,26 +1,32 @@
-<template lang="pug">
-footer
-  .footer-content
-    .row
-      .col-lg.col-slot
-        img(src="../../../public/img/banners/oph_logo.svg", slot="footer-logo")
-      .col-md.col-slot
-        b {{ $t('opetushallitus') }}
-        ep-linkki(:url="$kaanna(linkit.oph)", icon="ulkoinen-linkki")
-      .col-md.col-slot
-        b {{ $t('opintopolku') }}
-        ep-linkki(:url="$kaanna(linkit.opintopolku)", icon="ulkoinen-linkki")
-      .col-md.col-slot
-        b {{ $t('eperusteet') }}
-        ep-linkki(:url="$kaanna(linkit.eperusteet)", icon="ulkoinen-linkki")
-      .col-md.col-slot
-        a(:href="$kaanna(linkit.seloste)") {{ $t('tietosuojaseloste') }}
+<template>
+<footer>
+  <div class="footer-content">
+    <div class="row">
+      <div class="col-lg col-slot">
+        <img src="../../../public/img/banners/oph_logo.svg" slot="footer-logo" :alt="$t('oph')" />
+      </div>
+      <div class="col-md col-slot">
+        <p class="linkki-kuvaus">{{ $t('opetushallitus') }}</p>
+        <ep-linkki :url="$kaanna(linkit.oph)" icon="ulkoinen-linkki"></ep-linkki>
+      </div>
+      <div class="col-md col-slot">
+        <p class="linkki-kuvaus">{{ $t('opintopolku') }}</p>
+        <ep-linkki :url="$kaanna(linkit.opintopolku)" icon="ulkoinen-linkki"></ep-linkki>
+      </div>
+      <div class="col-md col-slot">
+        <p class="linkki-kuvaus">{{ $t('eperusteet') }}</p>
+        <ep-linkki :url="$kaanna(linkit.eperusteet)" icon="ulkoinen-linkki"></ep-linkki>
+      </div>
+      <div class="col-md col-slot"><a :href="$kaanna(linkit.seloste)">{{ $t('tietosuojaseloste') }}</a></div>
+    </div>
+  </div>
+</footer>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import EpLinkki from '@/components/EpLinkki.vue';
+import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 
 
 @Component({
@@ -72,6 +78,10 @@ footer {
       align-items: center;
       .col-slot {
         padding: 16px;
+        p {
+          margin: 0;
+          font-weight: 600;
+        }
       }
     }
 

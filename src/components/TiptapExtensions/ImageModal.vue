@@ -20,8 +20,8 @@
             v-model="selected"
             :filter-by="filterBy"
             :placeholder="$t('valitse-kuva')"
-            @input="onSelect"
-            :options="options">
+            :options="options"
+            label="id">
             <template #selected-option="option">
               <img class="preview-selected" :src="option.src">
             </template>
@@ -30,6 +30,11 @@
               {{ option.nimi }}
             </template>
           </vue-select>
+        </div>
+        <div v-if="selected">
+          <ep-form-content name="kuvateksti" class="mt-3">
+            <ep-field v-model="kuvateksti" @input="onKuvatekstichange" :is-editing="true" :validation="$v.kuvateksti"/>
+          </ep-form-content>
         </div>
         <div>
           <label role="button" class="btn btn-primary uploadbtn">
@@ -43,35 +48,45 @@
   </div>
 </template>
 
-
 <script lang="ts">
-import { Node, Mark, Plugin } from 'tiptap';
-import { updateMark, removeMark, pasteRule } from 'tiptap-commands';
-import { getMarkAttrs } from 'tiptap-utils';
-import { domAttrsGetter, mapNodeAttrs } from './helpers';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import _ from 'lodash';
+import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import VueSelect from 'vue-select';
-import { Vue, Component, Mixins, Prop, Watch } from 'vue-property-decorator';
-import EpValidation from '@/mixins/EpValidation';
 import { IAttachmentWrapper } from '@/stores/kuvat';
 import { LiiteDto } from '@/tyypit';
 import { Api } from '@/api';
-import { info, fail } from '@/utils/notifications';
-import _ from 'lodash';
-
+import { info } from '@/utils/notifications';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
+import EpField from'@shared/components/forms/EpField.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import { validationMixin } from 'vuelidate';
+import { required } from 'vuelidate/lib/validators';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {
     EpSpinner,
     VueSelect,
+    EpFormContent,
+    EpField,
+  },
+  validations: {
+    kuvateksti: {
+      [Kielet.getSisaltoKieli]: {
+        required
+      },
+    },
   },
 })
-export default class ImageModal extends Vue {
+export default class ImageModal extends Mixins(validationMixin) {
   @Prop({ required: true })
   private loader!: IAttachmentWrapper;
 
   @Prop({ required: true })
-  private value!: string;
+  private value!: {value?: string};
+
+  @Prop({ required: true })
+  private kuvatekstiProp!: {};
 
   private isAdding = true;
   private hasImage: any = false;
@@ -80,16 +95,16 @@ export default class ImageModal extends Vue {
   private isLoading = true;
   private data: LiiteDto[] = [];
   private files: LiiteDto[] = [];
-  private selected: any = null;
+  private kuvateksti: any = {};
 
   async mounted() {
+    this.kuvateksti = {
+      [Kielet.getSisaltoKieli]: this.kuvatekstiProp
+    };
+
     try {
       this.isLoading = true;
       this.files = await this.loader.hae();
-      const it = _.findIndex(this.files, f => f.id === this.value);
-      if (it >= 0) {
-        this.selected = this.files[it];
-      }
     }
     catch (er) {
       throw er;
@@ -132,8 +147,19 @@ export default class ImageModal extends Vue {
     }
   }
 
-  private onSelect(liite) {
-    this.$emit('input', liite ? liite.id : '');
+  set selected(liite: any) {
+    this.$emit('input', liite.id);
+  }
+
+  get selected() {
+    const it = _.findIndex(this.files, f => f.id === this.value.value);
+    if (it >= 0) {
+      return this.files[it];
+    }
+  }
+
+  private onKuvatekstichange(kuvateksti){
+    this.$emit('onKuvatekstichange', kuvateksti[Kielet.getSisaltoKieli]);
   }
 
   private peruuta() {

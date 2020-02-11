@@ -34,46 +34,40 @@
       </b-nav-form>
 
       <!-- Sisällön kieli-->
-      <b-nav-item-dropdown id="content-lang-selector" right v-tutorial>
+      <b-nav-item-dropdown id="content-lang-selector" right>
         <template slot="button-content">
-          <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}</span>
+          <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ $t(sisaltoKieli) }}</span>
         </template>
-        <b-dropdown-item @click="valitseSisaltoKieli(kieli)"
-                         v-for="kieli in sovelluksenKielet"
-                         :key="kieli"
-                         :disabled="kieli === sisaltoKieli">
-          {{ kieli }}
-        </b-dropdown-item>
+        <div class="kielet">
+          <b-dd-item @click="valitseSisaltoKieli(kieli)"
+                     v-for="kieli in sovelluksenKielet"
+                     :key="kieli"
+                     :disabled="kieli === sisaltoKieli">
+            <fas fixed-width icon="checkmark" v-if="kieli === sisaltoKieli" class="mr-3 valittu" />
+            {{ $t(kieli) }}
+          </b-dd-item>
+        </div>
       </b-nav-item-dropdown>
 
-      <!-- Käyttöliittymän kieli-->
-      <b-nav-item-dropdown id="ui-lang-selector" right v-tutorial>
-        <template slot="button-content">
-          <span class="kielivalitsin">{{ $t("kieli") }}: {{ uiKieli }}</span>
-        </template>
-        <b-dropdown-item @click="valitseUiKieli(kieli)"
-                         v-for="kieli in sovelluksenKielet"
-                         :key="kieli"
-                         :disabled="kieli === uiKieli">
-          {{ kieli }}
-        </b-dropdown-item>
-      </b-nav-item-dropdown>
+      <ep-kayttaja :tiedot="tiedot" />
+
     </b-navbar-nav>
   </b-navbar>
 </div>
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import Sticky from 'vue-sticky-directive';
 import { Kieli } from '@shared/tyypit';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import Sticky from 'vue-sticky-directive';
-import _ from 'lodash';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-import EpButton from '@/components/EpButton/EpButton.vue';
-import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
+import { Kayttajat } from '@/stores/kayttaja';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
 
 
 @Component({
@@ -82,8 +76,8 @@ import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
     Sticky,
   },
   components: {
-    EpRoundButton,
     EpButton,
+    EpKayttaja,
   },
 })
 export default class EpNavigation extends Vue {
@@ -96,12 +90,12 @@ export default class EpNavigation extends Vue {
   @Prop({ required: false })
   private tutoriaalistore!: TutoriaaliStore | undefined;
 
-  get murut() {
-    return Murupolku.murut;
+  get tiedot() {
+    return Kayttajat.tiedot;
   }
 
-  get uiKieli() {
-    return Kielet.getUiKieli;
+  get murut() {
+    return Murupolku.murut;
   }
 
   get sisaltoKieli() {
@@ -133,20 +127,6 @@ export default class EpNavigation extends Vue {
 
   private kaynnistaTutoriaali() {
     this.tutoriaalistore!.setActive(true);
-  }
-
-  private valitseUiKieli(kieli: Kieli) {
-    const router = this.$router;
-    const current: any = router.currentRoute;
-    Kielet.setUiKieli(kieli);
-    const next = {
-      ...current,
-      params: {
-        ...current.params,
-        lang: kieli || this.$i18n.fallbackLocale,
-      },
-    };
-    router.push(next).catch(_.noop);
   }
 
   private valitseSisaltoKieli(kieli: Kieli) {
@@ -194,6 +174,31 @@ export default class EpNavigation extends Vue {
       color: white;
       cursor: pointer;
     }
+
+    .kielet {
+      text-align: right;
+
+      .valittu {
+        color: #3467E3;
+        vertical-align: -0.25em;
+      }
+    }
+
+    /deep/ .dropdown-menu {
+      padding: 0;
+      color: #000000;
+      min-width: initial;
+    }
+
+    /deep/ .dropdown-item {
+      padding: 0.5rem 1rem;
+      color: #000000;
+    }
+
+    /deep/ .dropdown-item:hover {
+      background-color: inherit;
+    }
+
   }
 }
 

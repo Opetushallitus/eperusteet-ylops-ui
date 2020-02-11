@@ -1,24 +1,30 @@
-<template lang="pug">
-base-tile(icon="muistikirja", :route="{ name: 'tiedotteet' }")
-  template(slot="header")
-    span {{ $t('tiedotteet') }}
-  template(slot="content")
-    ep-spinner(v-if="isLoading")
-    div(v-else)
-      div.tiedotteet(v-if="tiedotteet && tiedotteet.length > 0")
-        div.tiedote(v-for="tiedote in tiedotteet")
-          small.mr-4 {{ $cdt(tiedote.luotu, 'L') }}
-          span {{ $kaanna(tiedote.otsikko) }}
-      p(v-else) {{ $t('tile-tiedotteet-kuvaus') }}
+<template>
+<base-tile icon="muistikirja" :route="{ name: 'tiedotteet' }">
+  <template slot="header">
+    <span>{{ $t('tiedotteet') }}</span>
+  </template>
+  <template slot="content">
+    <ep-spinner v-if="isLoading"></ep-spinner>
+    <div v-else>
+      <div class="tiedotteet" v-if="tiedotteet && tiedotteet.length > 0">
+        <div class="tiedote" v-for="(tiedote, idx) in tiedotteet" :key="idx">
+          <small class="mr-4">{{ $cdt(tiedote.luotu, 'L') }}</small>
+          <span>{{ $kaanna(tiedote.otsikko) }}</span>
+        </div>
+      </div>
+      <p v-else>{{ $t('tile-tiedotteet-kuvaus') }}</p>
+    </div>
+  </template>
+</base-tile>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-import BaseTile from './BaseTile.vue';
-import { Ulkopuoliset } from '@/api';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import _ from 'lodash';
-import { delay } from '@shared/utils/delay';
+import { Vue, Component } from 'vue-property-decorator';
+
+import { Ulkopuoliset } from '@/api';
+import BaseTile from './BaseTile.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 @Component({
   components: {

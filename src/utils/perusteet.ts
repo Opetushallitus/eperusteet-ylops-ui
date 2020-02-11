@@ -42,40 +42,6 @@ export function isPerusteSupported(peruste: any) {
   return _.includes(YlopsKoulutustyypit, koulutustyyppi);
 }
 
-export function getLaajaAlaisetKoodit() {
-  return [{
-    koodi: 'lops2019laajaalainenosaaminen_1',
-    nimi: {
-      fi: 'Globaali- ja kulttuuriosaaminen',
-    },
-  }, {
-    koodi: 'lops2019laajaalainenosaaminen_2',
-    nimi: {
-      fi: 'Hyvinvointiosaaminen',
-    },
-  }, {
-    koodi: 'lops2019laajaalainenosaaminen_3',
-    nimi: {
-      fi: 'Vuorovaikutusosaaminen',
-    },
-  }, {
-    koodi: 'lops2019laajaalainenosaaminen_4',
-    nimi: {
-      fi: 'Eettisyys ja ympäristöosaaminen',
-    },
-  }, {
-    koodi: 'lops2019laajaalainenosaaminen_5',
-    nimi: {
-      fi: 'Yhteiskunnallinen osaaminen',
-    },
-  }, {
-    koodi: 'lops2019laajaalainenosaaminen_6',
-    nimi: {
-      fi: 'Monitieteinen ja luova osaaminen',
-    },
-  }];
-}
-
 
 export function paikallisestiSallitutLaajennokset() {
   return [
@@ -89,7 +55,7 @@ export function paikallisestiSallitutLaajennokset() {
 
 const splitKoodi = _.memoize((arvo: string) => {
   if (_.isString(arvo) && !_.isEmpty(arvo)) {
-    const splitattu = arvo.match(/^([a-zA-Z]*?)(\d+$)/);
+    const splitattu = arvo.match(/^([^0-9]*?)(\d+$)/);
 
     if(splitattu && splitattu.length > 2) {
       return [splitattu[1], Number(splitattu[2])];
@@ -103,6 +69,7 @@ export function getArvo(koodillinen: any) {
     || _.get(koodillinen, 'arvo')
     || _.get(koodillinen, 'koodi.uri')
     || _.get(koodillinen, 'uri')
+    || _.get(koodillinen, 'koodi')
     || koodillinen;
 }
 
@@ -111,7 +78,7 @@ export function getUri(koodillinen: any) {
 }
 
 export function koodiAlku(koodillinen: object | string) {
-  return splitKoodi(getArvo(koodillinen))[0];
+  return _.toLower(_.toString(splitKoodi(getArvo(koodillinen))[0]));
 }
 
 export function koodiNumero(koodillinen: object | string) {

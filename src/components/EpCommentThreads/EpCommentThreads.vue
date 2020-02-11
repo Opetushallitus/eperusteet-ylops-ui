@@ -91,6 +91,7 @@ import * as _ from 'lodash';
 import ThreadComment from './ThreadComment.vue';
 import EpCommentAdd from './EpCommentAdd.vue';
 import { KieliStore } from '@shared/stores/kieli';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 
 @Component({

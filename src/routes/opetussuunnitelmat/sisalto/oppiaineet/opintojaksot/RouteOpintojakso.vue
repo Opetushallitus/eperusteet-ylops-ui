@@ -1,7 +1,11 @@
 <template>
 <div id="scroll-anchor" class="content">
   <div v-if="hooks && !isLoading">
-    <ep-editointi :hooks="hooks" v-model="editable" :validator="validator" type="opintojakso">
+    <ep-editointi :hooks="hooks"
+                  v-model="editable"
+                  :validator="validator"
+                  :versionumero="versionumero"
+                  type="opintojakso">
       <template slot="ohje" slot-scope="{ }">
         <div class="sidepad">
           <p v-html="$t('ohje-opintojakso')">
@@ -143,7 +147,7 @@
               <div class="moduuliotsikko">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</div>
               <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].tavoitteet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
             </div>
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-tavoitteet') }}</div>
             <div class="alert alert-info" v-if="!isEditing && data.tavoitteet && data.tavoitteet.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-list
               :is-editable="isEditing"
@@ -162,7 +166,7 @@
               </ep-prefix-list>
             </div>
 
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-keskeiset-sisallot') }}</div>
             <div class="alert alert-info" v-if="!isEditing && data.keskeisetSisallot && data.keskeisetSisallot.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-list
               :is-editable="isEditing"
@@ -192,14 +196,15 @@
               </div>
             </div>
 
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-opintojakso-laaja-alainen') }}</div>
+
             <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
               <div slot="header" class="moduuliotsikko">
                 <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
                   {{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}
                 </span>
                 <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
-                  <fas icon="times" />
+                  <fas icon="sulje" />
                 </b-button>
               </div>
               <ep-content
@@ -231,7 +236,7 @@
               </div>
             </div>
 
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
+            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-opintojakso-arviointi') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.arviointi" :is-editable="isEditing"></ep-content>
           </ep-collapse>
@@ -271,10 +276,11 @@ import EpOpintojaksonModuuli from './EpOpintojaksonModuuli.vue';
 import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@shared/stores/kieli';
 import * as defaults from '@/defaults';
-import { getLaajaAlaisetKoodit } from '@/utils/perusteet';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
-import { koodiSorters } from '@/utils/perusteet';
 import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue';
+import { KoodistoLops2019LaajaAlaiset, koodiSorters } from '@/utils/perusteet';
+import { Opetussuunnitelmat } from '@/api';
+import { success } from '@/utils/notifications';
 
 
 @Component({
@@ -301,6 +307,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private oppiaineQuery = '';
   private editable: Lops2019OpintojaksoDto | null = null;
   private cache!: PerusteCache;
+  private laajaAlaisetKoodit: any | null = null;
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: this.isUusi,
     remove: this.remove,
@@ -310,8 +317,13 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     },
     history: {
       revisions: this.revisions,
+      restore: this.restore,
     },
   };
+
+  get laajaAlaisetSorted() {
+    return _.sortBy(this.laajaAlaisetKoodit, 'koodiArvo');
+  }
 
   async remove(data: any) {
     if (await this.vahvista()) {
@@ -334,12 +346,29 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return [];
     }
     else {
-      return this.store.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+      return await this.store.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
     }
+  }
+
+  async restore(data, numero) {
+    await this.store.revertOpintojaksoToVersion(_.parseInt(this.$route.params.opintojaksoId), numero);
+    success('palautus-onnistui');
   }
 
   async init() {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
+    try {
+      this.laajaAlaisetKoodit = (await Opetussuunnitelmat.getKoodistonKoodit(
+        this.opsId,
+        KoodistoLops2019LaajaAlaiset)).data;
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }
+
+  get versionumero() {
+    return _.parseInt(_.get(this, '$route.query.versionumero'));
   }
 
   get validator() {
@@ -350,8 +379,9 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   get laajaAlaistenKoodit() {
     const lisatyt = _.map(this.editable!.laajaAlainenOsaaminen!, 'koodi');
-    return _.map(getLaajaAlaisetKoodit(), lo => ({
-      ...lo,
+    return _.map(this.laajaAlaisetKoodit, lo => ({
+      koodi: lo.koodiUri,
+      nimi: lo.nimi,
       hasPaikallinenKuvaus: _.includes(lisatyt, lo.koodi),
     }));
   }
@@ -555,7 +585,15 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return result;
     }
     else {
-      const opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
+      let opintojakso;
+      const revisions = await this.store.getOpintojaksoHistoria(_.parseInt(opintojaksoId));
+      const rev = revisions[revisions.length - this.versionumero];
+      if (this.versionumero && rev) {
+        opintojakso = await this.store.getOpintojaksoVersion(_.parseInt(opintojaksoId), rev.numero as number);
+      }
+      else {
+        opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
+      }
       _.forEach(opintojakso.oppiaineet, oa => {
         if (oa.laajuus) {
           (oa as any).isModuuliton = true;
@@ -646,11 +684,6 @@ hr.valiviiva {
 
 .osio {
   padding: 27px 0 0 0;
-
-  &:not(:first-child) {
-    //margin: 27px 0 27px 0;
-    // border-top: 1px solid #DADADA;
-  }
 
   .paikallinen-laaja-alainen {
     margin-bottom: 20px;

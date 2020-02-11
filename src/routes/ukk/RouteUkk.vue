@@ -34,7 +34,7 @@
                 </fas>
               </button>
               <button class="btn btn-link" @click="startRemoveKysymys(kysymys)">
-                <fas icon="times">
+                <fas icon="sulje">
                 </fas>
               </button>
             </div>
@@ -90,7 +90,7 @@
             :items="organisaatiot"
             :multiple="true">
             <template slot-scope="{ item }">
-              <span>{{ $kaanna(item.nimi) }}</span>
+              {{ $kaanna(item.nimi) }}
             </template>
           </ep-select>
         </ep-form-content>

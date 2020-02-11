@@ -12,15 +12,10 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Kayttajat } from '@/stores/kayttaja';
 import { notify } from '@/utils/notifications';
 import EpComments from '@/components/EpComments/EpComments.vue';
-import { notify } from '@/utils/notifications';
 import { delay } from '@shared/utils/delay';
 
 
-@Component({
-  components: {
-    EpComments,
-  },
-})
+@Component
 export default class App extends Vue {
   private isInitializing = true;
 

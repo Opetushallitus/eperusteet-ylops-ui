@@ -6,7 +6,6 @@ import _ from 'lodash';
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/RouteHome.vue';
 import VirheRoute from '@/routes/virhe/VirheRoute.vue';
-import HallintaRoute from '@/routes/hallinta/HallintaRoute.vue';
 
 import RouteDokumentti from '@/routes/opetussuunnitelmat/dokumentti/RouteDokumentti.vue';
 import RouteKasite from '@/routes/opetussuunnitelmat/kasite/RouteKasite.vue';
@@ -23,10 +22,12 @@ import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RoutePoistetut from '@/routes/opetussuunnitelmat/RoutePoistetut.vue';
 import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
+import RouteHallintapaneeli from '@/routes/opetussuunnitelmat/tiedot/RouteHallintapaneeli.vue';
 import RouteJarjestys from '@/routes/opetussuunnitelmat/RouteJarjestys.vue';
 import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
+import RouteTilastot from '@/routes/tilastot/RouteTilastot.vue';
 
 import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
@@ -39,9 +40,15 @@ import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 import { createLogger } from '@shared/utils/logger';
 import { tutoriaalistore } from './stores/tutoriaaliStore';
 import { VueTutorial } from './directives/tutoriaali';
+import { MuokkaustietoStore } from '@/stores/muokkaustieto';
+import { AikatauluStore } from './stores/aikataulu';
+import VueApexCharts from 'vue-apexcharts';
 
 Vue.use(Router);
 Vue.use(VueTutorial, {tutoriaalistore});
+Vue.use(VueApexCharts);
+
+Vue.component('apexchart', VueApexCharts);
 
 const logger = createLogger('Router');
 
@@ -69,10 +76,6 @@ export const router = new Router({
       name: 'root',
       component: Home,
     }, {
-      path: 'admin',
-      name: 'admin',
-      component: HallintaRoute,
-    }, {
       path: 'virhe',
       name: 'virhe',
       component: VirheRoute,
@@ -96,6 +99,10 @@ export const router = new Router({
       path: 'ukk',
       name: 'useinkysytyt',
       component: RouteUkk,
+    }, {
+      path: 'tilastot',
+      name: 'tilastot',
+      component: RouteTilastot,
     }, {
       path: 'pohjat',
       name: 'pohjaListaus',
@@ -127,6 +134,23 @@ export const router = new Router({
         path: 'tiedot',
         component: RouteTiedot,
         name: 'opsTiedot',
+      }, {
+        path: 'yleisnakyma',
+        component: RouteHallintapaneeli,
+        name: 'yleisnakyma',
+        meta: {
+          resolve: {
+            cacheBy: ['id'],
+            async props(route) {
+              return {
+                default: {
+                  muokkaustietoStore: new MuokkaustietoStore(_.parseInt(route.params.id)),
+                  aikatauluStore: new AikatauluStore(_.parseInt(route.params.id)),
+                },
+              };
+            },
+          },
+        },
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,

@@ -16,7 +16,7 @@
       <ep-form-content name="peruste">
         <ep-select help="ops-peruste-ohje" v-model="uusi.valittuPeruste" :items="valittavat" :validation="$v.uusi.valittuPeruste" :is-editing="true">
           <template slot-scope="{ item }">
-            <span>{{ $kaanna(item.nimi) }} ({{ item.diaarinumero }})</span>
+            {{ $kaanna(item.nimi) }} ({{ item.diaarinumero }})
           </template>
         </ep-select>
       </ep-form-content>
@@ -44,7 +44,7 @@ import { success } from '@/utils/notifications';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kieli } from '@shared/tyypit';
 
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -53,9 +53,8 @@ import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpSteps from '@/components/EpSteps/EpSteps.vue';
 import EpRoute from '@/mixins/EpRoute';
-import EpValidation from '@/mixins/EpValidation';
+import EpValidation from '@shared/mixins/EpValidation';
 
 const logger = createLogger('RoutePohjaUusi');
 
@@ -71,7 +70,6 @@ const logger = createLogger('RoutePohjaUusi');
     EpNavigation,
     EpSelect,
     EpSpinner,
-    EpSteps,
   },
 })
 export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
@@ -129,7 +127,7 @@ export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
       success('lisays-pohja-onnistui');
       if (_.isNumber(data.id)) {
         this.$router.replace({
-          name: 'opsTiedot',
+          name: 'yleisnakyma',
           params: {
             id: '' + data.id,
           },

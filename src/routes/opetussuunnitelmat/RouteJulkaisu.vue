@@ -10,9 +10,9 @@
         <ep-collapse :expanded-by-default="false">
           <h4 slot="header">
             <span class="iconspan mr-2">
-              <fas class="warning" v-if="category.hasFatal" icon="huutomerkki-ympyra" fixed-width="fixed-width">
+              <fas class="warning" v-if="category.hasFatal" icon="huutomerkki-ympyra" fixed-width>
               </fas>
-              <fas v-else :class="category.hasWarning ? 'warning' : 'success'" icon="checkmark-ympyra" fixed-width="fixed-width">
+              <fas v-else :class="category.hasWarning ? 'warning' : 'success'" icon="checkmark-ympyra" fixed-width>
               </fas>
             </span>
             <span class="saanto">{{ $t(category.key) }}</span>
@@ -74,8 +74,12 @@
     <ep-collapse tyyppi="uusi-julkaisu">
       <h3 slot="header"> {{ $t('uusi-julkaisu') }}</h3>
       <div v-if="true || isValid">
-        <ep-content opetussuunnitelma-store="opetussuunnitelmaStore" v-model="uusiJulkaisu.julkaisutiedote" help="uuden-julkaisun-tiedote" layout="simplified" :is-editable="true">
-        </ep-content>
+        <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
+                    v-model="uusiJulkaisu.julkaisutiedote"
+                    help="uuden-julkaisun-tiedote"
+                    layout="simplified"
+                    :is-editable="true"
+                    class="mb-4" />
         <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'">{{ $t('julkaise') }}</ep-button>
       </div>
       <div class="alert alert-warning" v-else>{{ $t('opetussuunnitelman-tarkistukset-julkaisu') }}</div>
@@ -121,7 +125,7 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
 
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';

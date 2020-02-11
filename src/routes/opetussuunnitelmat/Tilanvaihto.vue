@@ -1,46 +1,45 @@
-<template lang="pug">
-
-div(v-if="mahdollisetTilat")
-  ep-button(v-b-modal.tilanvaihtomodal,id="opetussuunnitelma-tilanvaihto",v-tutorial)
-    | {{ $t('vaihda-tilaa') }}
-
-  b-modal(
-    ref="modal",
-    id="tilanvaihtomodal",
-    size="lg"
-    title="testi")
-    template(slot="modal-title")
-      | {{ $t('vaihda-tilaa') }}
-
-    template(slot="modal-footer")
-      ep-button(@click="tallenna()", :disabled="!selected", :show-spinner="isUpdating")
-        | {{ $t('ok') }}
-      ep-button(@click="peruuta()", :disabled="isUpdating")
-        | {{ $t('peruuta') }}
-
-    .tilat
-      button.btn(
-        type="button"
-        v-for="tila in mahdollisetTilat"
-        @click="vaihdaTila(tila)"
-        @dblclick="vaihdaTila(tila) && tallenna()"
-        tabindex="0")
-        .tila(:class="{ 'tila-selected': selected === tila }")
-          .ikoni(:class="'ikoni-' + tila")
-            .kuvake
-              fas(v-if="tila === 'julkaistu'" icon="glass-cheers")
-              fas(v-if="tila === 'poistettu'" icon="file-archive")
-              fas(v-else-if="tila === 'valmis'" icon="thumbs-up")
-              fas(v-else icon="pencil-ruler")
-            .nimi {{ $t('tilanimi-' + tila) }}
-          .tiedot {{ $t('tilakuvaus-' + tila) }}
-div(v-else)
-  ep-spinner
-
+<template>
+<div v-if="mahdollisetTilat">
+  <ep-button v-b-modal.tilanvaihtomodal="v-b-modal.tilanvaihtomodal"
+             id="opetussuunnitelma-tilanvaihto"
+             v-tutorial>{{ $t('vaihda-tilaa') }}</ep-button>
+  <b-modal ref="modal" id="tilanvaihtomodal" size="lg" title="testi">
+    <template slot="modal-title">{{ $t('vaihda-tilaa') }}</template>
+    <template slot="modal-footer">
+      <ep-button @click="tallenna()" :disabled="!selected" :show-spinner="isUpdating">{{ $t('ok') }}</ep-button>
+      <ep-button @click="peruuta()" :disabled="isUpdating">{{ $t('peruuta') }}</ep-button>
+    </template>
+    <div class="tilat">
+      <button v-for="(tila, idx) in mahdollisetTilat"
+              :key="idx"
+              @click="vaihdaTila(tila)"
+              @dblclick="vaihdaTila(tila) && tallenna()"
+              class="btn"
+              type="button"
+              tabindex="0">
+        <div class="tila" :class="{ 'tila-selected': selected === tila }">
+          <div class="ikoni" :class="'ikoni-' + tila">
+            <div class="kuvake">
+              <fas v-if="tila === 'julkaistu'" icon="glass-cheers"></fas>
+              <fas v-if="tila === 'poistettu'" icon="file-archive"></fas>
+              <fas v-else-if="tila === 'valmis'" icon="thumbs-up"></fas>
+              <fas v-else icon="pencil-ruler"></fas>
+            </div>
+            <div class="nimi">{{ $t('tilanimi-' + tila) }}</div>
+          </div>
+          <div class="tiedot">{{ $t('tilakuvaus-' + tila) }}</div>
+        </div>
+      </button>
+    </div>
+  </b-modal>
+</div>
+<div v-else>
+  <ep-spinner />
+</div>
 </template>
 
 <script lang="ts">
-import EpButton from '@/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Vue, Component, Prop } from 'vue-property-decorator';

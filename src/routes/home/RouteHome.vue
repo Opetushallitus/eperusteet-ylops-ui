@@ -34,6 +34,7 @@
       <tile-valtakunnalliset-perusteet />
       <tile-tiedotteet />
       <tile-ukk />
+      <tile-tilastot v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }"/>
     </div>
   </div>
 </div>
@@ -54,6 +55,7 @@ import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
 import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
 import TileOrganisaatio from './tiles/TileOrganisaatio.vue';
 import TileTiedotteet from './tiles/TileTiedotteet.vue';
+import TileTilastot from './tiles/TileTilastot.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
@@ -71,6 +73,7 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
     TileTiedotteet,
     TileUkk,
     TileValtakunnallisetPerusteet,
+    TileTilastot,
   },
   directives: {
     oikeustarkastelu,

@@ -1,53 +1,52 @@
-<template lang="pug">
-
-div.content
-  ep-spinner(v-if="isLoading")
-  div(v-if="!isLoading")
-    h2 {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
-
-    p.kuvaus(v-html="$kaanna(moduuli.kuvaus)")
-
-    div.collapse-container
-      ep-collapse(:first="true")
-        h4(slot="header") {{ $t('yleiset-tavoitteet') }}
-        ep-prefix-list(
-          :value="moduuli.tavoitteet",
-          kohde="kohde",
-          arvot="tavoitteet")
-
-      ep-collapse
-        h4(slot="header") {{ $t('keskeiset-sisallot') }}
-        ep-prefix-list(
-          :value="moduuli.sisallot",
-          kohde="kohde",
-          arvot="sisallot")
-
-      ep-spinner(v-if="!opintojaksot")
-      ep-collapse(v-else-if="opintojaksot.length > 0")
-        h4(slot="header") {{ $t('opintojaksot') }}
-        div.block-container(v-for="opintojakso in opintojaksot", :key="opintojakso.id")
-          .oj-content.pakollinen
-            span.nimi
-              router-link(:to=`{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }`)
-                | {{ $kaanna(opintojakso.nimi) }}
-            span.pituus {{ opintojakso.laajuus }} {{ $t('opintopiste') }}
-
+<template>
+<div class="content">
+  <ep-spinner v-if="isLoading"></ep-spinner>
+  <div v-if="!isLoading">
+    <h2>{{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})</h2>
+    <p class="kuvaus" v-html="$kaanna(moduuli.kuvaus)"></p>
+    <div class="collapse-container">
+      <ep-collapse :first="true">
+        <h4 slot="header">{{ $t('yleiset-tavoitteet') }}</h4>
+        <ep-prefix-list :value="moduuli.tavoitteet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
+      </ep-collapse>
+      <ep-collapse>
+        <h4 slot="header">{{ $t('keskeiset-sisallot') }}</h4>
+        <ep-prefix-list :value="moduuli.sisallot" kohde="kohde" arvot="sisallot"></ep-prefix-list>
+      </ep-collapse>
+      <ep-spinner v-if="!opintojaksot"></ep-spinner>
+      <ep-collapse v-else-if="opintojaksot.length > 0">
+        <h4 slot="header">{{ $t('opintojaksot') }}</h4>
+        <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
+          <div class="oj-content pakollinen">
+            <span class="nimi">
+              <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
+                {{ $kaanna(opintojakso.nimi) }}
+              </router-link>
+            </span>
+            <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
+          </div>
+        </div>
+      </ep-collapse>
+    </div>
+  </div>
+</div>
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
-import EpButton from '@/components/EpButton/EpButton.vue';
+import _ from 'lodash';
+import { Mixins, Component } from 'vue-property-decorator';
+
+import { Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@/tyypit';
+import { PerusteCache } from '@/stores/peruste';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import { PerusteCache } from '@/stores/peruste';
-import _ from 'lodash';
+
 
 @Component({
   components: {
