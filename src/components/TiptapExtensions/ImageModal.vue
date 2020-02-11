@@ -49,7 +49,7 @@ import { Node, Mark, Plugin } from 'tiptap';
 import { updateMark, removeMark, pasteRule } from 'tiptap-commands';
 import { getMarkAttrs } from 'tiptap-utils';
 import { domAttrsGetter, mapNodeAttrs } from './helpers';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import VueSelect from 'vue-select';
 import { Vue, Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import EpValidation from '@/mixins/EpValidation';
@@ -85,7 +85,7 @@ export default class ImageModal extends Vue {
   async mounted() {
     try {
       this.isLoading = true;
-      this.files = await this.loader.hae(); 
+      this.files = await this.loader.hae();
       const it = _.findIndex(this.files, f => f.id === this.value);
       if (it >= 0) {
         this.selected = this.files[it];

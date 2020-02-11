@@ -1,12 +1,17 @@
 <template>
 <div class="topbar" v-sticky="sticky" sticky-z-index="600">
-  <b-navbar class="ep-navbar" type="dark" toggleable="md" :class="'navbar-style-' + tyyli" :style="{ 'background-attachment': sticky ? 'fixed' : '' }">
+  <b-navbar id="navigation-bar"
+            class="ep-navbar"
+            type="dark"
+            toggleable="md"
+            :class="'navbar-style-' + tyyli"
+            :style="{ 'background-attachment': sticky ? 'fixed' : '' }">
     <b-navbar-nav>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
             <router-link id="nav-admin" :to="{ name: 'root' }">
-              <fas class="fa-fw" icon="home" />
+              <fas fixed-width icon="koti" />
             </router-link>
           </li>
           <li class="breadcrumb-item" v-for="(route, idx) in routePath" :key="idx">
@@ -23,23 +28,35 @@
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
       <b-nav-form v-if="tutoriaalistore && naytettaviaTutoriaaleja">
-        <fas class="tutorial mr-5" icon="question-circle" @click="kaynnistaTutoriaali" />
+        <b-button variant="primary" size="sm" @click="kaynnistaTutoriaali" class="mr-2">
+          {{ $t('tutorial-avaa') }}
+        </b-button>
       </b-nav-form>
 
       <!-- Sisällön kieli-->
-      <b-nav-item-dropdown id="content-lang-selector" v-tutorial>
+      <b-nav-item-dropdown id="content-lang-selector" right v-tutorial>
         <template slot="button-content">
           <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}</span>
         </template>
-        <b-dropdown-item @click="valitseSisaltoKieli(kieli)" v-for="kieli in sovelluksenKielet" :key="kieli" :disabled="kieli === sisaltoKieli">{{ kieli }}</b-dropdown-item>
+        <b-dropdown-item @click="valitseSisaltoKieli(kieli)"
+                         v-for="kieli in sovelluksenKielet"
+                         :key="kieli"
+                         :disabled="kieli === sisaltoKieli">
+          {{ kieli }}
+        </b-dropdown-item>
       </b-nav-item-dropdown>
 
       <!-- Käyttöliittymän kieli-->
-      <b-nav-item-dropdown id="ui-lang-selector" v-tutorial>
+      <b-nav-item-dropdown id="ui-lang-selector" right v-tutorial>
         <template slot="button-content">
           <span class="kielivalitsin">{{ $t("kieli") }}: {{ uiKieli }}</span>
         </template>
-        <b-dropdown-item @click="valitseUiKieli(kieli)" v-for="kieli in sovelluksenKielet" :key="kieli" :disabled="kieli === uiKieli">{{ kieli }}</b-dropdown-item>
+        <b-dropdown-item @click="valitseUiKieli(kieli)"
+                         v-for="kieli in sovelluksenKielet"
+                         :key="kieli"
+                         :disabled="kieli === uiKieli">
+          {{ kieli }}
+        </b-dropdown-item>
       </b-nav-item-dropdown>
     </b-navbar-nav>
   </b-navbar>
@@ -48,7 +65,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Kieli } from '@/tyypit';
+import { Kieli } from '@shared/tyypit';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
@@ -56,6 +73,8 @@ import Sticky from 'vue-sticky-directive';
 import _ from 'lodash';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpButton from '@/components/EpButton/EpButton.vue';
+import EpRoundButton from '@/components/EpButton/EpRoundButton.vue';
+
 
 @Component({
   directives: {
@@ -63,6 +82,7 @@ import EpButton from '@/components/EpButton/EpButton.vue';
     Sticky,
   },
   components: {
+    EpRoundButton,
     EpButton,
   },
 })
@@ -73,8 +93,8 @@ export default class EpNavigation extends Vue {
   @Prop({ default: 'normaali' })
   private tyyli!: string;
 
-  @Prop()
-  private tutoriaalistore!: TutoriaaliStore;
+  @Prop({ required: false })
+  private tutoriaalistore!: TutoriaaliStore | undefined;
 
   get murut() {
     return Murupolku.murut;
@@ -93,11 +113,7 @@ export default class EpNavigation extends Vue {
   }
 
   get naytettaviaTutoriaaleja() {
-    return !_.isEmpty(this.tutoriaalistore.avaimet);
-  }
-
-  kaynnistaTutoriaali() {
-    this.tutoriaalistore.setActive(true);
+    return !_.isEmpty(this.tutoriaalistore!.avaimet);
   }
 
   get routePath() {
@@ -113,6 +129,10 @@ export default class EpNavigation extends Vue {
         return result;
       })
       .value();
+  }
+
+  private kaynnistaTutoriaali() {
+    this.tutoriaalistore!.setActive(true);
   }
 
   private valitseUiKieli(kieli: Kieli) {
@@ -152,11 +172,12 @@ export default class EpNavigation extends Vue {
       background: rgba(0, 0, 0, 0);
 
       .breadcrumb-item {
-        color: rgba(255, 255, 255, 255);
-        cursor: pointer;
-
+        color: white;
+        &::before {
+          color: white;
+        }
         a {
-          color: rgba(255, 255, 255, 255);
+          color: white;
         }
       }
     }
@@ -169,8 +190,8 @@ export default class EpNavigation extends Vue {
     background-position: 100% 0;
     background-repeat: no-repeat;
 
-    .tutorial {
-      color: rgba(255, 255, 255, 255);
+    .kysymysmerkki {
+      color: white;
       cursor: pointer;
     }
   }

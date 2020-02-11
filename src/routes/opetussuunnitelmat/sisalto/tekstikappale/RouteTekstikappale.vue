@@ -1,14 +1,17 @@
 <template>
-<div class="tekstiviite" v-if="hooks">
+<div id="scroll-anchor" class="tekstiviite" v-if="hooks">
   <div class="kappale">
-    <ep-editointi :hooks="hooks">
+    <ep-editointi :hooks="hooks" type="tekstikappale">
       <template slot="ohje" slot-scope="{ isEditing, data }">
         <div class="sidepad">
           <p>{{ $t('ohje-tekstikapale') }}</p>
           <p>{{ $t('ohje-tekstikapale-perusteteksti') }}</p>
           <div class="ohjeet" v-if="data.ohjeet.length > 0">
             <div class="ohje" v-for="ohje in data.ohjeet" :key="ohje.id">
-              <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="ohje.teksti" :is-editable="allowOhjeEdit && isEditing"> </ep-content>
+              <ep-content layout="normal"
+                          :opetussuunnitelma-store="opetussuunnitelmaStore"
+                          v-model="ohje.teksti"
+                          :is-editable="allowOhjeEdit && isEditing"></ep-content>
             </div>
           </div>
         </div>
@@ -17,40 +20,43 @@
         <ep-comment-threads />
       </template>
       <template slot="header" slot-scope="{ isEditing, data }">
-        <div class="otsikko">
-          <ep-field v-if="data.tov.tekstiKappale" help="tekstikappale-nimi-ohje" v-model="data.tov.tekstiKappale.nimi" :is-header="true" :is-editing="isEditing && !data.tov.perusteTekstikappaleId"></ep-field>
-        </div>
+        <h2>{{ $kaanna(data.tov.tekstiKappale.nimi) }}</h2>
       </template>
       <template slot-scope="{ isEditing, data }">
         <div class="teksti">
+
+          <ep-form-content v-if="isEditing" name="tekstikappale-nimi-ohje">
+            <ep-field v-if="data.tov.tekstiKappale"
+                      v-model="data.tov.tekstiKappale.nimi"
+                      :is-header="true"
+                      :is-editing="isEditing && !data.tov.perusteTekstikappaleId"></ep-field>
+          </ep-form-content>
           <span comment-uuid="data.tov.tekstiKappale.tunniste">
-            <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa">
+            <div v-if="isEditing" class="mb-4">
+              <ep-toggle v-model="data.tov.liite">{{ $t('nayta-liitteena') }}</ep-toggle>
+            </div>
+            <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa" :first="true">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
               <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)">
               </p>
-              <div class="alert alert-info" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
+              <div class="font-italic text-secondary" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
               <div v-if="isEditing">
-                <b-form-checkbox v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</b-form-checkbox>
+                <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
               </div>
-              <div class="spacing" />
             </ep-collapse>
             <ep-collapse v-if="alkuperainen && alkuperainen.tekstiKappale && (isEditing || data.tov.naytaPohjanTeksti)">
               <h5 slot="header">
                 {{ $t('pohjan-teksti') }}
               </h5>
               <p class="perusteteksti" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
-              <div v-if="isEditing">
-                <b-form-checkbox v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</b-form-checkbox>
+              <div v-if="isEditing" class="mb-4">
+                <ep-toggle v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</ep-toggle>
               </div>
-              <div class="spacing" />
             </ep-collapse>
-            <ep-collapse :disable-header="!data.tov.perusteTekstikappaleId">
-              <template #header>
-                <h5>{{ $t('paikallinen-teksti') }}</h5>
-              </template>
-              <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing"> </ep-content>
-              <div class="alert alert-info" v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)">{{ $t('paikallista-sisaltoa-ei-maaritetty') }}</div>
-            </ep-collapse>
+
+            <h5>{{ $t('paikallinen-teksti') }}</h5>
+            <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing"> </ep-content>
+            <ep-alert v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)" :ops="false" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
           </span>
         </div>
       </template>
@@ -60,35 +66,35 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
 import _ from 'lodash';
+import { Mixins, Component } from 'vue-property-decorator';
 
 import EpRoute from '@/mixins/EpRoute';
-
-import EpRoot from '@/mixins/EpRoot';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpButton from'@/components/EpButton/EpButton.vue';
 import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@/components/forms/EpField.vue';
-import EpFormContent from'@/components/forms/EpFormContent.vue';
-import EpInput from'@/components/forms/EpInput.vue';
+import EpField from'@shared/components/forms/EpField.vue';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
+import EpInput from'@shared/components/forms/EpInput.vue';
+import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import EpToggle from'@shared/components/forms/EpToggle.vue';
 import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue';
-
 
 import {
   Lops2019Perusteet,
   Ohjeet,
   OpetussuunnitelmanSisalto,
 } from '@/api';
-
+import { EditointiKontrolliConfig } from '@/stores/editointi';
 import {
   Puu,
   OhjeDto,
   PerusteTekstiKappaleViiteDto,
 } from '@/tyypit';
+import { success } from '@/utils/notifications';
+
 
 @Component({
   components: {
@@ -100,6 +106,8 @@ import {
     EpField,
     EpFormContent,
     EpInput,
+    EpAlert,
+    EpToggle,
   },
 })
 export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) {
@@ -116,12 +124,19 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       save: this.save,
     },
     remove: this.remove,
+    history: {
+      revisions: this.revisions,
+      restore: this.restore,
+    },
   };
 
   async remove(data: any) {
     await this.store.removeTeksti(data.tov);
     this.$router.push({
-      name: 'opsTiedot',
+      name: 'opsPoistetut',
+      params: {
+        tabIndex: '2',
+      },
     });
   }
 
@@ -145,6 +160,23 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     return this.$route.params.osaId === 'uusi';
   }
 
+  private async restore(data, rev) {
+    if (data.tov) {
+      await OpetussuunnitelmanSisalto.revertTekstikappaleToVersion(this.opsId, data.tov!.id!, rev);
+      success('palautus-onnistui');
+    }
+  }
+
+  private async revisions(data) {
+    if (data.tov && data.tov.tekstiKappale && data.tov.tekstiKappale.id) {
+      return (await OpetussuunnitelmanSisalto
+        .getVersionsForTekstiKappaleViite(this.opsId, data.tov.tekstiKappale.id)).data;
+    }
+    else {
+      return [];
+    }
+  }
+
   private async load() {
     if (await this.isUusi()) {
       return {
@@ -159,7 +191,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteSyva(this.opsId, this.osaId)).data;
       const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
       try {
-        this.alkuperainen = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteOriginal(this.opsId, this.osaId)).data;
+        this.alkuperainen = (await OpetussuunnitelmanSisalto
+          .getTekstiKappaleViiteOriginal(this.opsId, this.osaId)).data as PerusteTekstiKappaleViiteDto;
       }
       catch (err) {}
 
@@ -173,9 +206,13 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       }
 
       if (teksti.perusteTekstikappaleId) {
-        this.perusteenTeksti = (await Lops2019Perusteet.getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId)).data as PerusteTekstiKappaleViiteDto;
+        this.perusteenTeksti = (await Lops2019Perusteet
+          .getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId))
+          .data as PerusteTekstiKappaleViiteDto;
       }
-      this.breadcrumb('tekstikappale', teksti.tekstiKappale!.nimi);
+      if (teksti.tekstiKappale) {
+        this.breadcrumb('tekstikappale', teksti.tekstiKappale.nimi);
+      }
       return result;
     }
   }
@@ -195,7 +232,6 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   async save({ tov, ohjeet }) {
     if (await this.isUusi()) {
       const uusi = await this.store.addTeksti(tov, _.parseInt(this.$route.params.parentId));
-      console.log('siirrytään', uusi);
       this.$nextTick(() => this.siirry(uusi));
     }
     else {
@@ -217,6 +253,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
 <style scoped lang="scss">
 @import "@/styles/_variables.scss";
+@import '@shared/styles/_mixins.scss';
 
 .badges {
   .badge {
@@ -228,6 +265,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   .kappale {
     .otsikko {
       margin-bottom: 0;
+      font-family: Poppins;
     }
 
     .teksti {
@@ -244,11 +282,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       }
     }
 
-    .spacing {
-      margin-bottom: 40px;
-    }
-
     .perusteteksti {
+
+      @include teksti-sisalto;
+
       font-style: italic;
       font-size: 80%;
     }

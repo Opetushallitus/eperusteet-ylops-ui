@@ -3,13 +3,19 @@
   <div class="header">
     <ep-navigation :sticky="false" :tutoriaalistore="tutoriaalistore"></ep-navigation>
     <div class="container">
-      <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
-      <p>{{ $t('tervetuloa-kuvaus') }}</p>
-      <div class="row">
-      <!--   <div class="col-md-4 mb-3">                -->
-      <!--     <ep-search v-model="rajain"></ep-search> -->
-      <!--   </div>                                     -->
+      <div class="container-fluid">
+        <div class="row">
+          <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
+          <p>{{ $t('tervetuloa-kuvaus') }}</p>
+        </div>
       </div>
+      <!--
+      <div class="row">
+         <div class="col-md-4 mb-3">
+           <ep-search v-model="rajain"></ep-search>
+         </div>
+      </div>
+      -->
     </div>
   </div>
   <div class="container tile-container">
@@ -22,7 +28,7 @@
         :keskeneraiset="etusivu.pohjatKeskeneraiset"
         :julkaistut="etusivu.pohjatJulkaistut"
         :is-ops="false"
-        v-oikeustarkastelu="'hallinta'"
+        v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }"
         :count-is-loading="isLoading" />
       <tile-organisaatio />
       <tile-valtakunnalliset-perusteet />
@@ -34,32 +40,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Mixins, Prop } from 'vue-property-decorator';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import { Kayttajat } from '@/stores/kayttaja';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
+import { EtusivuDto } from '@/tyypit';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+
+import EpRoute from '@/mixins/EpRoute';
 
 import TileUkk from './tiles/TileUkk.vue';
 import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
 import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
-import TileUusiOpetussuunnitelma from './tiles/TileUusiOpetussuunnitelma.vue';
-import TileUusiPohja from './tiles/TileUusiPohja.vue';
-import TileLoki from './tiles/TileLoki.vue';
 import TileOrganisaatio from './tiles/TileOrganisaatio.vue';
-import TilePohjat from './tiles/TilePohjat.vue';
 import TileTiedotteet from './tiles/TileTiedotteet.vue';
-import EpRoute from '@/mixins/EpRoute';
-import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { EtusivuDto } from '@/tyypit';
-import ImageModal from '@/components/TiptapExtensions/ImageModal.vue';
-import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
-import { KieliStore, Kielet } from '@shared/stores/kieli';
-
-
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpSearch from '@/components/forms/EpSearch.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 
 @Component({
@@ -68,14 +66,10 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
     EpNavigation,
     EpSearch,
     EpSpinner,
-    TileLoki,
     TileOpetussuunnitelmat,
     TileOrganisaatio,
-    TilePohjat,
     TileTiedotteet,
     TileUkk,
-    TileUusiOpetussuunnitelma,
-    TileUusiPohja,
     TileValtakunnallisetPerusteet,
   },
   directives: {

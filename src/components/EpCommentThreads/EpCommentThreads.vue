@@ -401,12 +401,6 @@ export default class EpCommentThreads extends Vue {
   border-radius: 10px;
   border: 1px solid #eee;
   box-shadow: 1px 1px 4px #ccc;
-
-  .otsikko {
-  }
-
-  .viesti {
-  }
 }
 
 textarea.editori {
@@ -419,8 +413,5 @@ textarea.editori {
   width: 100%;
 }
 
-.prevnext {
-
-}
 
 </style>

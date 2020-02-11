@@ -28,22 +28,22 @@ import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 
-import { Virheet } from '@/stores/virheet';
+import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { Kieli, SovellusVirhe } from '@/tyypit';
+import { Kieli, SovellusVirhe } from '@shared/tyypit';
 import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import { info } from '@/utils/notifications';
 import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 
-import { createLogger } from '@/stores/logger';
+import { createLogger } from '@shared/utils/logger';
 import { tutoriaalistore } from './stores/tutoriaaliStore';
 import { VueTutorial } from './directives/tutoriaali';
 
 Vue.use(Router);
-const logger = createLogger('Router');
-
 Vue.use(VueTutorial, {tutoriaalistore});
+
+const logger = createLogger('Router');
 
 export const router = new Router({
   scrollBehavior: () => ({ x: 0, y: 0 }),
@@ -163,10 +163,20 @@ export const router = new Router({
         path: 'poppiaineet/:paikallinenOppiaineId',
         component: RoutePaikallinenOppiaine,
         name: 'paikallinenOppiaine',
+        meta: {
+          parentNavigation: 'oppiaineet',
+        },
       }, {
         path: 'opintojaksot/:opintojaksoId',
         component: RouteOpintojakso,
         name: 'opintojakso',
+        meta: {
+          parentNavigation: 'oppiaineet'
+        },
+      }, {
+        path: 'opintojaksot/:opintojaksoId/:oppiaineKoodi',
+        component: RouteOpintojakso,
+        name: 'uusi-opintojakso',
       }, {
         path: 'tekstikappaleet/:osaId',
         component: RouteTekstikappale,
@@ -193,45 +203,54 @@ export const router = new Router({
 });
 
 Virheet.onError((virhe: SovellusVirhe) => {
-  logger.error('Route error', virhe);
   router.push({
     name: 'virhe',
     query: {
-      // virhe: JSON.stringify(virhe),
+      virhe: JSON.stringify(virhe),
     },
   });
 });
 
-let lastOpsId!: string;
-
-window.onbeforeunload = () => {
+// Estetään ikkunan sulkeminen suoraan muokkaustilassa
+window.addEventListener('beforeunload', e => {
   if (EditointiKontrolli.anyEditing()) {
-    return 'Oletko varma?';
+    e.preventDefault();
+    // Vanhemmat selainversiot vaativat erillisen varmistustekstin
+    e.returnValue = Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti');
   }
-};
+});
+
+// Estetään tilan vaihtaminen muokkaustilassa
+router.beforeEach(async (to, from, next) => {
+  if (EditointiKontrolli.anyEditing()) {
+    const value = await router.app.$bvModal.msgBoxConfirm(
+      Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'), {
+        title: Kielet.kaannaOlioTaiTeksti('haluatko-poistua-tallentamatta'),
+        okTitle: Kielet.kaannaOlioTaiTeksti('poistu-tallentamatta'),
+        cancelTitle: Kielet.kaannaOlioTaiTeksti('peruuta'),
+        size: 'lg',
+      });
+
+    if (value) {
+      try {
+        await EditointiKontrolli.cancelAll();
+      }
+      finally {
+        next();
+      }
+    }
+  }
+  else {
+    next();
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  changeLang(to, from);
+  next();
+});
 
 router.beforeEach(async (to, from, next) => {
-  // Estetään siirtyminen jos editointi on käynnissä
-  if (EditointiKontrolli.anyEditing()) {
-    // TODO: Lisää notifikaatio
-    logger.warn('Route change denied: Still in editing state', from, to);
-    info('tallenna-tai-peruuta-muutoksesi-ensin');
-    return;
-  }
-
-  changeLang(to, from);
   await resolveRouterMetaProps(to);
-
-  // Alustetaan opetussuunnitelma tilan vaihtuessa
-  if (Opetussuunnitelma()) {
-    try {
-      await Opetussuunnitelma().init();
-    }
-    catch (err) {
-      console.error(err);
-    }
-  }
-
-  // logger.debug(`Route change ${from.name} -> ${to.name}`, from, to);
   next();
 });

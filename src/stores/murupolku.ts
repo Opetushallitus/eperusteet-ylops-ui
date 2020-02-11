@@ -1,5 +1,4 @@
 import { Getter, State, Store } from '@shared/stores/store';
-import Vue from 'vue';
 import _ from 'lodash';
 import { Opetussuunnitelma } from './opetussuunnitelma';
 import { Location } from 'vue-router';

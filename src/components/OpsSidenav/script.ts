@@ -11,19 +11,22 @@ import {
 
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
-import EpSearch from '@/components/forms/EpSearch.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
 
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpSisaltoModaali from './EpSisaltoModaali.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import Sticky from 'vue-sticky-directive';
+import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
 import {
   oppiaineLinkki,
   oppimaaraModuuliLinkit,
   oppimaaraOpintojaksoLinkit,
   opsLapsiLinkit,
   paikallinenOppiaineToMenu,
+  oppimaaraUusiLinkki,
 } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 
@@ -79,15 +82,17 @@ const i18keys = {
 @Component({
   directives: {
     oikeustarkastelu,
+    Sticky,
   },
   components: {
     EpButton,
-    EpColorBall,
+    EpColorIndicator,
     EpRecursiveNav,
     EpSearch,
     EpSisaltoModaali,
     EpSpinner,
     OpsSidenavLink,
+    EpTekstikappaleLisays,
   },
 })
 export default class OpsSidenav extends EpOpsComponent {
@@ -106,16 +111,17 @@ export default class OpsSidenav extends EpOpsComponent {
   private opintojaksoModuuliLista(source: Lops2019OppiaineDto) {
     const result: SideMenuEntry[] = [];
     const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(this.opintojaksot, source);
-    if (!_.isEmpty(oppiaineenOpintojaksot)) {
-      result.push({
-        item: {
-          type: 'staticlink',
-          i18key: 'opintojaksot',
-        },
-        flatten: true,
-        children: oppiaineenOpintojaksot,
-      });
-    }
+    result.push({
+      item: {
+        type: 'staticlink',
+        i18key: 'opintojaksot',
+      },
+      flatten: true,
+      children: [
+        ...oppiaineenOpintojaksot,
+        oppimaaraUusiLinkki(source),
+      ]
+    });
     result.push({
       item: {
         type: 'staticlink',
@@ -126,6 +132,7 @@ export default class OpsSidenav extends EpOpsComponent {
         ...oppimaaraModuuliLinkit(source),
       ],
     });
+
     return result;
   }
 
@@ -185,8 +192,17 @@ export default class OpsSidenav extends EpOpsComponent {
     return (item.type === 'moduuli' || item.type === 'opintojakso');
   }
 
-  private haeModuuliKoodi(item: SideMenuItem) {
-    return _.get(item, 'objref.koodi.arvo', '');
+  private haeKoodi(item: SideMenuItem) {
+    const koodi = _.get(item, 'objref.koodi.arvo', '');
+    if (!_.isEmpty(koodi)) {
+      return koodi;
+    }
+    else {
+      // Paikallisten oppiaineiden koodin muoto
+      const arvo = _.get(item, 'objref.koodi', '');
+      return _.isString(arvo) ? arvo : '';
+    }
+
   }
 
   get valikkoDataBasics() {
@@ -231,5 +247,19 @@ export default class OpsSidenav extends EpOpsComponent {
 
   private get opsSisalto() {
     return this.store.sisalto;
+  }
+
+  tekstikappaleLapset(itemData) {
+    return [
+      {
+        item: itemData.item,
+        route: itemData.route,
+      },
+      ..._.map(itemData.children, (child) =>
+        ({
+          item: child.item,
+          route: child.route,
+        }))
+    ];
   }
 }

@@ -5,6 +5,10 @@
     <div class="header">
       <div class="progress-chart">
         <ep-progress :slices="slices">
+          <b-button v-if="!isPohja"
+                    variant="primary"
+                    :to="{ name: 'opsJulkaisu' }"
+                    class="mb-2">{{ $t('siirry-julkaisunakymaan') }}</b-button>
           <div v-if="validation">
             <table class="category-table">
               <tr v-for="c in validationStats.categories" :key="c.category">
@@ -27,34 +31,28 @@
           <span>{{ $kaanna(ops.nimi) }}</span><span class="ml-2" v-if="isPohja">({{ $t('pohja') }})</span>
           <b-dropdown size="lg" variant="link" toggle-class="text-decoration-none" no-caret>
             <template slot="button-content">
-              <fas class="hallinta" icon="cog"><span class="sr-only">{{ $t('hallinta') }}</span></fas>
+              <fas class="hallinta" icon="ratas"><span class="sr-only">{{ $t('hallinta') }}</span></fas>
             </template>
             <!-- https://bootstrap-vue.js.org/docs/reference/router-links/ -->
             <b-dropdown-item :to="{ name: 'opsTiedot' }">
-              <fas class="mr-2" icon="info-circle" fixed-width /><span>{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
-            </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'jarjesta' }">
-              <fas class="mr-2" icon="cog" fixed-width /><span>{{ $t('rakenne') }}</span>
-            </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'opsKasitteet' }">
-              <fas class="mr-2" icon="bookmark" fixed-width /><span>{{ $t('kasitteet') }}</span>
-            </b-dropdown-item>
-            <b-dropdown-item v-oikeustarkastelu="'hallinta'" :to="{ name: 'opsPoistetut' }">
-              <fas class="mr-2" icon="recycle" fixed-width /><span>{{ $t('poistetut') }}</span>
+              <fas class="mr-2" icon="info" fixed-width /><span>{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsDokumentti' }">
-              <fas class="mr-2" icon="file-pdf" fixed-width /><span>{{ $t('luo-pdf') }}</span>
+              <fas class="mr-2" icon="luo-pdf" fixed-width /><span>{{ $t('luo-pdf') }}</span>
             </b-dropdown-item>
-            <b-dropdown-item v-oikeustarkastelu="'hallinta'" :to="{ name: 'opsJulkaisu' }" v-if="!isPohja">
-              <fas class="mr-2" icon="upload" fixed-width /><span>{{ $t('julkaise') }}</span>
+            <b-dropdown-item :to="{ name: 'opsKasitteet' }">
+              <fas class="mr-2" icon="kasitteet" fixed-width /><span>{{ $t('kasitteet') }}</span>
             </b-dropdown-item>
-            <b-dropdown-divider v-oikeustarkastelu="'hallinta'" v-if="!isPohja" />
-            <b-dropdown-item v-oikeustarkastelu="'hallinta'" @click="arkistoiOps" v-if="!isPohja">
-              <fas class="mr-2" icon="folder" fixed-width /><span>{{ $t('arkistoi-ops') }}</span>
+            <b-dropdown-item v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" :to="{ name: 'opsPoistetut' }">
+              <fas class="mr-2" icon="roskalaatikko" fixed-width /><span>{{ $t('poistetut') }}</span>
+            </b-dropdown-item>
+            <b-dropdown-divider v-if="ops.tila !== 'poistettu'"
+              v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" />
+            <b-dropdown-item v-if="ops.tila !== 'poistettu'"
+              v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" @click="arkistoiOps">
+              <fas class="mr-2" icon="arkistoi" fixed-width /><span>{{ $t('arkistoi-' + tyyppi) }}</span>
             </b-dropdown-item>
           </b-dropdown>
-          <!-- b-badgeOpetushallitus.ml-2(style="font-size: 14px", variant="success", v-if="isValmisPohja")| {{ $t('julkinen') }}
-        -->
         </h1>
         <h4 v-if="ops.koulutustyyppi" class="secondary">{{ $t(ops.koulutustyyppi) }}</h4>
         <h6 class="secondary">{{ ops.perusteenDiaarinumero }}</h6>
@@ -81,17 +79,18 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Prop, Watch, Mixins, Component } from 'vue-property-decorator';
+import { Prop, Mixins, Component } from 'vue-property-decorator';
+import { Lops2019ValidointiDto } from '@/tyypit';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress.vue';
-import { Lops2019ValidointiDto } from '@/tyypit';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 
 @Component({
@@ -112,10 +111,17 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
   private validation: Lops2019ValidointiDto | null = null;
 
-  async mounted() {
-    const id = this.$route.params.id;
+  protected async init() {
     await this.store.init();
     this.validation = await this.store.validate();
+
+    if (this.store.opetussuunnitelma) {
+      this.breadcrumb('opetussuunnitelma', this.store.opetussuunnitelma.nimi, { name: 'opsTiedot' });
+    }
+  }
+
+  get tyyppi() {
+    return this.isPohja ? 'pohja' : 'opetussuunnitelma';
   }
 
   get slices() {
@@ -155,18 +161,11 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     }
   }
 
-  @Watch('$route', { immediate: true })
-  onRouteUpdate(route) {
-    if (this.store && this.store.opetussuunnitelma) {
-      this.breadcrumb('opetussuunnitelma', this.store.opetussuunnitelma.nimi, { name: 'opsTiedot' });
-    }
-  }
-
   async arkistoiOps() {
-    if (await this.vahvista('arkistoi-ops', 'arkistoi-kuvaus')) {
+    if (await this.vahvista('arkistoi-'+ this.tyyppi, 'arkistoi-kuvaus-'+this.tyyppi)) {
       await this.store.updateTila('poistettu');
       this.$router.push({
-        name: 'opetussuunnitelmaListaus',
+        name: this.tyyppi + 'Listaus',
       });
     }
   }
@@ -198,6 +197,10 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     align-items: center;
     color: $color-ops-header-text;
 
+    h1 /deep/ button {
+      color: $color-ops-header-text;
+    }
+
     .progress-chart {
       width: $sidebar-width;
       height: 150px;
@@ -213,6 +216,8 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     }
 
     .info {
+      padding-left: 15px;
+
       @media only screen and (max-width: 768px) {
         padding-left: 30px;
       }

@@ -1,4 +1,4 @@
-import { delay } from "../../src/utils/delay";
+import { delay } from "@shared/utils/delay";
 
 /**
  * By default this function tries to assert given function for one second.

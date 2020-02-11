@@ -31,27 +31,36 @@
                   :disabled="feature.disabled"
                   :class="{ 'active': !feature.disabled && data.isActive[feature.command] && data.isActive[feature.command]() }"
                   @click="feature.customClick ? feature.customClick(data) : data.commands[feature.command](feature.params)">
-            <fal v-if="feature.icon" class="fa-fw">
+            <fal v-if="feature.icon" fixed-width>
               <fas :icon="feature.icon" fixed-width />
-              <fas v-if="feature.uppericon" transform="up-4 left-6" :icon="feature.uppericon" :style="{ color: feature.color || 'black' }" />
-              <fas v-if="feature.righticon" transform="right-6" :icon="feature.righticon" :style="{ color: feature.color || 'black' }" />
-              <fas v-if="feature.subicon" class="fa-inverse" transform="down-4 left-6" :icon="feature.subicon" :style="{ color: feature.color || 'black' }" />
-              <fas v-if="feature.lefticon" transform="left-6" :icon="feature.lefticon" :style="{ color: feature.color || 'black' }" />
+              <fas v-if="feature.uppericon" fixed-width transform="up-4 left-6" :icon="feature.uppericon" :style="{ color: feature.color || 'black' }" />
+              <fas v-if="feature.righticon" fixed-width transform="right-6" :icon="feature.righticon" :style="{ color: feature.color || 'black' }" />
+              <fas v-if="feature.subicon" fixed-width transform="down-4 left-6" :icon="feature.subicon" :style="{ color: feature.color || 'black' }" class="fa-inverse" />
+              <fas v-if="feature.lefticon" fixed-width transform="left-6" :icon="feature.lefticon" :style="{ color: feature.color || 'black' }" />
             </fal>
           </b-button>
         </div>
       </div>
+      <b-modal ref="link-modal"
+               :title="$t('lisaa-muokkaa-linkki')"
+               :ok-title="$t('ok')"
+               :cancel-title="$t('peruuta')"
+               @ok="editLink(data)"
+               @keyup.enter="editLink(data)"
+               @hidden="linkValue = null">
+        <b-form-input v-model="linkValue" placeholder="https://..."></b-form-input>
+      </b-modal>
     </div>
   </editor-menu-bar>
 </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Mixins, Prop, Watch } from 'vue-property-decorator';
-import { Editor, EditorMenuBar } from 'tiptap';
+import _ from 'lodash';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { EditorMenuBar } from 'tiptap';
 import Sticky from 'vue-sticky-directive';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import _ from 'lodash';
 
 
 @Component({
@@ -84,6 +93,8 @@ export default class EpEditorMenuBar extends Vue {
   @Prop({ default: true })
   private alwaysVisible!: boolean;
 
+  private linkValue: string | null = null;
+
   get id() {
     return (this as any)._uid;
   }
@@ -91,11 +102,11 @@ export default class EpEditorMenuBar extends Vue {
   get history() {
     return [{
       command: 'undo',
-      icon: 'undo',
+      icon: 'palauta',
       disabled: true,
     }, {
       command: 'redo',
-      icon: 'redo',
+      icon: 'tee-uudelleen',
       disabled: true,
     }];
   }
@@ -103,30 +114,39 @@ export default class EpEditorMenuBar extends Vue {
   get textManipulation() {
     return [{
       command: 'bold',
-      icon: 'bold',
+      icon: 'lihavointi',
     }, {
       command: 'italic',
-      icon: 'italic',
+      icon: 'kursivointi',
     }, {
       command: 'strike',
-      icon: 'strikethrough',
+      icon: 'yliviivaus',
     }, {
       command: 'underline',
-      icon: 'underline',
+      icon: 'alleviivaus',
     }];
   }
-
-  private editIcon = false;
-  // private addingLink = false;
-  // private link = '';
 
   get linking() {
     if (this.opetussuunnitelmaStore) {
       return [{
-        icon: 'paperclip',
-        command: 'termi',
+        icon: 'link',
+        command: 'link',
+        disabled: this.editor.selection.from === this.editor.selection.to,
+        customClick: (data) => {
+          const isNew = !data.isActive.link();
+          const attrs = data.getMarkAttrs('link');
+          if (!isNew && attrs && attrs.href) {
+            this.linkValue = attrs.href;
+          }
+          (this as any).$refs['link-modal'].show();
+        },
       }, {
-        icon: 'file-image',
+        icon: 'kasitteet',
+        command: 'termi',
+        disabled: this.editor.selection.from === this.editor.selection.to,
+      }, {
+        icon: 'lisaa-kuva',
         command: 'image',
       }];
     }
@@ -138,10 +158,10 @@ export default class EpEditorMenuBar extends Vue {
   get lists() {
     return [{
       command: 'bullet_list',
-      icon: 'list-ul',
+      icon: 'lista-luettelo',
     }, {
       command: 'ordered_list',
-      icon: 'list-ol',
+      icon: 'lista-numerointi',
     }];
   }
 
@@ -153,7 +173,7 @@ export default class EpEditorMenuBar extends Vue {
         colsCount: 3,
         withHeaderRow: false,
       },
-      icon: 'table',
+      icon: 'taulukko',
     }];
   }
 
@@ -169,54 +189,46 @@ export default class EpEditorMenuBar extends Vue {
     const tables = [{
       color: RemoveColor,
       command: 'deleteTable',
-      icon: 'table',
-      subicon: 'times',
+      icon: 'poista-taulukko',
       text: 'poista-taulu',
     }];
 
     const columns = [{
       color: AddColor,
       command: 'addColumnBefore',
-      icon: 'columns',
+      icon: 'kolumni-vasen',
       text: 'lisaa-sarake-ennen',
-      lefticon: 'plus',
     }, {
       color: AddColor,
       command: 'addColumnAfter',
-      icon: 'columns',
-      righticon: 'plus',
+      icon: 'kolumni-oikea',
       text: 'lisaa-sarake-jalkeen',
     }, {
       color: RemoveColor,
       command: 'deleteColumn',
-      icon: 'columns',
-      subicon: 'times',
+      icon: 'poista-kolumni',
       text: 'poista-sarake',
     }];
 
     const rows = [{
       command: 'addRowBefore',
       color: AddColor,
-      icon: 'list',
-      uppericon: 'plus',
+      icon: 'rivi-ylos',
       text: 'lisaa-rivi-ennen',
     }, {
       command: 'addRowAfter',
       color: AddColor,
-      icon: 'list',
-      subicon: 'plus',
+      icon: 'rivi-alas',
       text: 'lisaa-rivi-jalkeen',
     }, {
       command: 'deleteRow',
       color: RemoveColor,
-      icon: 'list',
-      subicon: 'times',
+      icon: 'poista-rivi',
       text: 'poista-rivi',
     }, {
       command: 'toggleCellMerge',
       color: MergeColor,
-      icon: 'list',
-      subicon: 'object-group',
+      icon: 'yhdista-solut',
       text: 'yhdista-solut',
     }];
 
@@ -249,6 +261,15 @@ export default class EpEditorMenuBar extends Vue {
       ];
     }
   }
+
+  private editLink(data) {
+    if (!_.isEmpty(this.linkValue)) {
+      data.commands.link({
+        href: this.linkValue
+      });
+      this.linkValue = null;
+    }
+  }
 }
 </script>
 
@@ -260,7 +281,7 @@ export default class EpEditorMenuBar extends Vue {
 }
 
 .sub-bar {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 /deep/ .active {
@@ -272,7 +293,7 @@ export default class EpEditorMenuBar extends Vue {
   background-color: #f1f1f1;
   border: 1px solid #d1d1d1;
   border-bottom: none;
-  padding: 0px;
+  padding: 0;
   border-top-left-radius: .25rem;
   border-top-right-radius: .25rem;
 }

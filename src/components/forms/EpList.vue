@@ -15,7 +15,7 @@
   <div style="margin-top: 20px;">
     <ep-button
       variant="outline-primary"
-      icon="plus"
+      icon="plussa"
       @click="lisaaRivi()">
       {{ $t(lisays) }}
     </ep-button>
@@ -34,7 +34,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
 import _ from 'lodash';
 import draggable from 'vuedraggable';
 

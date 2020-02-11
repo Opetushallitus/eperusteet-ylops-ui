@@ -8,7 +8,7 @@
     padding: 0;
 
     li {
-      padding: 6px 8px 6px 28px;
+      padding: 0 7px 0 28px;
     }
 
     .item {
@@ -17,7 +17,13 @@
           text-align: left;
           color: #2b2b2b;
           font-size: 14px;
+
+          &.btn-link-link {
+            color: #0041DC;
+          }
         }
+
+
       }
     }
 
@@ -92,10 +98,32 @@
         }
       }
     }
+
   }
 
   .search {
     padding: 10px 20px 10px 30px;
+  }
+
+  .muokkaa-kappaleita {
+    padding: 0 20px 0 20px;
+    background-color: #fff;
+
+    // sticky initial state
+    position: fixed;
+    bottom: 0;
+    width: $sidebar-width;
+
+    .inner {
+      border-color: #D8D8D8;
+      border-style: solid;
+      border-width: 1px 0 0 0;
+      padding: 10px;
+    }
+
+    a.router-link-active {
+      color: #888888;
+    }
   }
 
 }

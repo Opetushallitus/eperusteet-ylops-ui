@@ -6,18 +6,17 @@
 
     <!-- Rajaimet-->
     <template slot="header">
-      <h2>{{ $t('ukk') }}</h2>
+      <h1>{{ $t('ukk') }}</h1>
       <p>{{ $t('ukk-kuvaus-nakyma') }}</p>
       <ep-spinner v-if="isLoading"></ep-spinner>
       <div v-else>
         <ep-search v-model="rajain" class="mb-3"></ep-search>
         <p>{{ $t('ukk-luoja-rajaus') }}:</p>
         <div class="form-check form-check-inline" v-for="(org, idx) in organisaatiot" :key="idx">
-          <input class="form-check-input" :id="org.oid" type="checkbox" v-model="org.$checked" />
-          <label class="form-check-label" :for="org.oid">{{ $kaanna(org.nimi) }}</label>
+          <ep-toggle v-model="org.$checked" :id="org.oid">{{ $kaanna(org.nimi) }}</ep-toggle>
         </div>
         <p>
-          <ep-button v-oikeustarkastelu="'tilanvaihto'" class="float-right" variant="outline-primary" icon="plus" @click="startKysymysModal(null)">
+          <ep-button v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }" class="float-right" variant="outline-primary" icon="plussa" @click="startKysymysModal(null)">
             {{ $t('lisaa-uusi-kysymys') }}
           </ep-button>
         </p>
@@ -29,7 +28,7 @@
       <div v-if="!isLoading">
         <div class="row" v-for="kysymys in kysymyksetFormatted" :key="kysymys.id">
           <div class="col">
-            <div class="float-right">
+            <div class="float-right" v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }">
               <button class="btn btn-link" @click="startKysymysModal(kysymys)">
                 <fas icon="pen">
                 </fas>
@@ -105,28 +104,33 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
+
 import { validationMixin } from 'vuelidate';
-import EpRoute from '@/mixins/EpRoot';
-import EpContent from'@/components/EpContent/EpContent.vue';
-import EpButton from'@shared/components/EpButton/EpButton.vue';
-import EpFormContent from'@/components/forms/EpFormContent.vue';
-import EpIcon from'@/components/EpIcon/EpIcon.vue';
-import EpMainView from'@/components/EpMainView/EpMainView.vue';
-import EpSearch from'@/components/forms/EpSearch.vue';
-import EpSelect from'@/components/forms/EpSelect.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import { Kysymykset, Ulkopuoliset } from '@/api';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { Kieli, KysymysDto } from '@/tyypit';
+import { KysymysDto } from '@/tyypit';
+import { Kieli } from '@shared/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
+import EpRoute from '@/mixins/EpRoot';
+import EpContent from'@/components/EpContent/EpContent.vue';
+import EpButton from'@shared/components/EpButton/EpButton.vue';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
+import EpIcon from'@/components/EpIcon/EpIcon.vue';
+import EpMainView from'@/components/EpMainView/EpMainView.vue';
+import EpSearch from'@shared/components/forms/EpSearch.vue';
+import EpSelect from'@shared/components/forms/EpSelect.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpToggle from'@shared/components/forms/EpToggle.vue';
+
 
 export interface KysymysLaajennettuDto extends KysymysDto {
   $uusi?: boolean;
 }
+
 
 @Component({
   directives: {
@@ -141,6 +145,7 @@ export interface KysymysLaajennettuDto extends KysymysDto {
     EpSearch,
     EpSelect,
     EpSpinner,
+    EpToggle,
   },
   validations() {
     return {
@@ -148,8 +153,8 @@ export interface KysymysLaajennettuDto extends KysymysDto {
         ...(this as any).validator,
       },
     };
-  },
-} as any)
+  }
+})
 export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   rajain = '';
   kysymykset: KysymysLaajennettuDto[] = [];

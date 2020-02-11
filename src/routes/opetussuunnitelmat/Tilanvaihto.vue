@@ -41,29 +41,10 @@ div(v-else)
 
 <script lang="ts">
 import EpButton from '@/components/EpButton/EpButton.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
-import EpRoute from '@/mixins/EpRoute';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import _ from 'lodash';
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
-import { Kielet } from '@shared/stores/kieli';
-import { YlopsKoulutustyypit } from '@/utils/perusteet';
-import { required } from 'vuelidate/lib/validators';
-import { validationMixin } from 'vuelidate';
+import EpInput from '@shared/components/forms/EpInput.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 import { sallittuSiirtyma } from '@/utils/tilat';
-
-import {
-  Ulkopuoliset,
-  Opetussuunnitelmat,
-} from '@/api';
-
-import {
-  OpetussuunnitelmaInfoDto,
-  OpetussuunnitelmaLuontiDto,
-  LokalisoituTekstiDto,
-  Kieli,
-} from '@/tyypit';
 
 @Component({
   components: {

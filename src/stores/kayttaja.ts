@@ -7,9 +7,7 @@ import {
   Ulkopuoliset,
 } from '@/api';
 import { organizations } from '@/utils/organisaatiot';
-
-import { createLogger } from './logger';
-const logger = createLogger('Kayttaja');
+import { createLogger } from '@shared/utils/logger';
 
 // FIXME: tyypitä backendiin
 export type Oikeus = 'luku' | 'kommentointi' | 'muokkaus' | 'luonti' | 'poisto' | 'tilanvaihto' | 'hallinta';
@@ -36,6 +34,8 @@ export function parsiEsitysnimi(tiedot: any): string {
     return tiedot.oidHenkilo as string;
   }
 }
+
+const logger = createLogger('Kayttaja');
 
 @Store
 class KayttajaStore {
@@ -82,7 +82,7 @@ class KayttajaStore {
       return false;
     }
     else if (oikeus === 'hallinta') {
-      return this.hasHallintaoikeus();
+      return this.hasHallintaoikeus(kohde);
     }
     else {
       return this.vertaa(oikeus, kohde);
@@ -105,8 +105,8 @@ class KayttajaStore {
     }
   }
 
-  private hasHallintaoikeus() {
-    return _.includes(this.oikeudet['pohja' as OikeusKohde], 'luonti');
+  private hasHallintaoikeus(kohde) {
+    return _.includes(this.oikeudet[kohde], 'luonti');
   }
 }
 

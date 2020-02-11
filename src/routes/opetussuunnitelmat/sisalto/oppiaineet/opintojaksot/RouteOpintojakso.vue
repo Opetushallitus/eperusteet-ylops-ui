@@ -1,7 +1,7 @@
 <template>
-<div class="content">
+<div id="scroll-anchor" class="content">
   <div v-if="hooks && !isLoading">
-    <ep-editointi :hooks="hooks" v-model="editable" :validator="validator">
+    <ep-editointi :hooks="hooks" v-model="editable" :validator="validator" type="opintojakso">
       <template slot="ohje" slot-scope="{ }">
         <div class="sidepad">
           <p v-html="$t('ohje-opintojakso')">
@@ -14,129 +14,130 @@
         <ep-comment-threads />
       </template>
       <template slot="header" slot-scope="{ data }">
-        <div class="nimi">{{ $kaanna(data.nimi) || $t('opintojakso') }}</div>
+        <h2 class="nimi">{{ $kaanna(data.nimi) || $t('opintojakso') }}</h2>
       </template>
       <template v-slot="{ data, validation, isEditing }">
         <div class="osio">
-          <ep-collapse tyyppi="opintojakson-tiedot">
-            <div class="alueotsikko" slot="header">{{ $t('opintojakson-tiedot') }}</div>
-            <div class="row">
-              <div class="col-md-6">
-                <ep-form-content name="nimi">
-                  <ep-field
-                    help="opintojakso-nimi-ohje"
-                    v-model="data.nimi"
-                    :validation="validation.nimi"
-                    :is-header="false"
-                    :is-editing="isEditing"></ep-field>
-                </ep-form-content>
-              </div>
-              <div class="col-md-6">
-                <ep-form-content name="koodi">
-                  <ep-field help="opintojakso-koodi-ohje" v-model="data.koodi" type="string" :validation="validation.koodi" :is-editing="isEditing" />
-                </ep-form-content>
-              </div>
+          <div class="row">
+            <div class="col-md-6">
+              <ep-form-content name="nimi">
+                <ep-field
+                  help="opintojakso-nimi-ohje"
+                  v-model="data.nimi"
+                  :validation="validation.nimi"
+                  :is-header="false"
+                  :is-editing="isEditing"></ep-field>
+              </ep-form-content>
             </div>
-            <div class="row">
-              <div class="col-md-6">
-                <ep-form-content name="oppiaineet">
-                  <ep-oppiaine-selector
-                    v-if="isEditing"
-                    :opetussuunnitelma-store="opetussuunnitelmaStore"
-                    :ops-id="$route.params.id"
-                    :validation="validation.oppiaineet"
-                    :value="data.oppiaineet.map(x => x.koodi)"
-                    @input="updateOppiaineet" />
-                  <div v-else>
-                    <ul>
-                      <li v-for="oa in data.oppiaineet" :key="oa.koodi">
-                        {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
-                      </li>
-                    </ul>
-                  </div>
-                </ep-form-content>
-              </div>
-              <div class="col-md-6">
-                <ep-form-content name="opintopisteet">
-                  <span>{{ laajuus }} {{ $t('opintopiste') }} ({{ $t('johdetaan-moduuleista') }})</span>
-                </ep-form-content>
-              </div>
+            <div class="col-md-6">
+              <ep-form-content name="koodi">
+                <ep-field help="opintojakso-koodi-ohje" v-model="data.koodi" type="string" :validation="validation.koodi" :is-editing="isEditing" />
+              </ep-form-content>
             </div>
-          </ep-collapse>
-        </div>
-        <div class="osio" v-if="isEditing || data.moduulit.length > 0">
-          <ep-collapse tyyppi="opintojakson-moduulit">
-            <div class="alueotsikko" slot="header">{{ $t('opintojakson-moduulit') }}</div>
-            <div class="oppiaineet" v-if="isEditing">
-              <div v-for="oa in data.oppiaineet" :key="oa.koodi">
-                <div>
-                  <div class="d-flex moduuliotsikko">
-                    <div class="flex-grow-1">
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <ep-form-content name="oppiaineet">
+                <ep-oppiaine-selector
+                  v-if="isEditing"
+                  :opetussuunnitelma-store="opetussuunnitelmaStore"
+                  :ops-id="$route.params.id"
+                  :validation="validation.oppiaineet"
+                  :value="data.oppiaineet.map(x => x.koodi)"
+                  @input="updateOppiaineet" />
+                <div v-else>
+                  <ul>
+                    <li v-for="oa in data.oppiaineet" :key="oa.koodi">
                       {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
-                    </div>
-                    <ep-toggle @input="toggleLaajuus(oa, $event)" class="mb-2" :value="oa.isModuuliton">
-                      <span class="label">
-                        {{ $t('ilman-moduuleita') }}
-                      </span>
-                    </ep-toggle>
+                    </li>
+                  </ul>
+                </div>
+              </ep-form-content>
+            </div>
+            <div class="col-md-6">
+              <ep-form-content name="opintopisteet">
+                <span>{{ laajuus }} {{ $t('opintopiste') }} ({{ $t('johdetaan-moduuleista') }})</span>
+              </ep-form-content>
+            </div>
+          </div>
+        </div>
+        <hr v-if="isEditing" />
+        <div class="osio" v-if="isEditing || data.moduulit.length > 0">
+          <div class="alueotsikko">{{ $t('opintojakson-moduulit') }}</div>
+          <div class="oppiaineet" v-if="isEditing">
+            <div v-for="oa in data.oppiaineet" :key="oa.koodi">
+              <div>
+                <div class="d-flex moduuliotsikko">
+                  <div class="flex-grow-1">
+                    {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
                   </div>
-                  <div v-if="oa.isModuuliton">
-                    <ep-form-content name="laajuus">
-                      <ep-field
-                        type="number"
-                        help="oppainekohtainen-laajuus-opintojaksossa"
-                        v-model="oa.laajuus"
-                        :is-header="false"
-                        :is-editing="isEditing"></ep-field>
-                    </ep-form-content>
-                  </div>
-                  <div v-else>
-                    <div class="moduulit">
-                      <div class="moduuli" v-for="moduuli in oppiaineetMap[oa.koodi].moduulit" :key="moduuli.id">
-                        <ep-opintojakson-moduuli
-                          :moduuli="moduuli"
-                          :is-editing="true"
-                          v-model="data.moduulit" />
-                      </div>
-                    </div>
-                    <div class="moduulikuvaukset mt-1 mb-5" v-if="isEditing">
-                      <ep-color-ball kind="pakollinen" />
+                  <div class="moduulikuvaukset mr-5 d-inline-flex" v-if="isEditing && !oa.isModuuliton">
+                    <div>
+                      <ep-color-indicator kind="pakollinen" />
                       <span class="ml-2">{{ $t('pakollinen') }}</span>
-                      <ep-color-ball class="ml-4" kind="valinnainen" />
+                    </div>
+                    <div>
+                      <ep-color-indicator class="ml-4" kind="valinnainen" />
                       <span class="ml-2">{{ $t('valinnainen') }}</span>
                     </div>
                   </div>
+                  <ep-toggle @input="toggleLaajuus(oa, $event)" class="mb-2" :value="oa.isModuuliton">
+                    <span class="label">
+                      {{ $t('ilman-moduuleita') }}
+                    </span>
+                  </ep-toggle>
                 </div>
-              </div>
-            </div>
-            <div class="oppiaineet" v-if="!isEditing">
-              <div class="moduulit" v-if="editable && editable.moduulit">
-                <div class="moduuli" v-for="moduuli in editable.moduulit" :key="moduuli.koodiUri">
-                  <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit">
-                  </ep-opintojakson-moduuli>
+                <div v-if="oa.isModuuliton">
+                  <ep-form-content name="laajuus">
+                    <ep-field
+                      type="number"
+                      help="oppainekohtainen-laajuus-opintojaksossa"
+                      v-model="oa.laajuus"
+                      :is-header="false"
+                      :is-editing="isEditing"></ep-field>
+                  </ep-form-content>
                 </div>
-              </div>
-            </div>
-            <div class="moduulilista" v-if="isEditing && editable.moduulit.length > 0">
-              <h5>{{ $t('valitut-moduulit') }}</h5>
-              <div v-for="(moduuli, idx) in editable.moduulit" :key="idx">
-                <div class="d-flex">
-                  <div class="p-2 flex-grow-1">
-                    <fas class="checked" icon="check">
-                    </fas>
-                    <span class="nimi">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</span>
+                <div v-else>
+                  <div class="moduulit">
+                    <div class="moduuli" v-for="moduuli in oppiaineetMap[oa.koodi].moduulit" :key="moduuli.id">
+                      <ep-opintojakson-moduuli
+                        :moduuli="moduuli"
+                        :is-editing="true"
+                        v-model="data.moduulit"
+                        :opetussuunnitelmaStore="opetussuunnitelmaStore"/>
+                    </div>
                   </div>
-                  <div class="p-2">
-                    <span class="laajuus">{{ moduulitMap[moduuli.koodiUri].laajuus }} {{ $t('opintopiste') }}</span>
-                    <ep-color-ball :kind="moduulitMap[moduuli.koodiUri].pakollinen ? 'pakollinen' : 'valinnainen'" />
-                  </div>
                 </div>
               </div>
             </div>
-          </ep-collapse>
+          </div>
+          <div class="oppiaineet" v-if="!isEditing">
+            <div class="moduulit" v-if="editable && editable.moduulit">
+              <div class="moduuli" v-for="moduuli in editable.moduulit" :key="moduuli.koodiUri">
+                <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit" :opetussuunnitelmaStore="opetussuunnitelmaStore">
+                </ep-opintojakson-moduuli>
+              </div>
+            </div>
+          </div>
+          <div class="moduulilista" v-if="isEditing && editable.moduulit.length > 0">
+            <h5>{{ $t('valitut-moduulit') }}</h5>
+            <div v-for="(moduuli, idx) in editable.moduulit" :key="idx">
+              <div class="d-flex">
+                <div class="p-2 flex-grow-1">
+                  <fas class="checked" icon="check">
+                  </fas>
+                  <span class="nimi">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</span>
+                </div>
+                <div class="p-2">
+                  <span class="laajuus">{{ moduulitMap[moduuli.koodiUri].laajuus }} {{ $t('opintopiste') }}</span>
+                  <ep-color-indicator :kind="moduulitMap[moduuli.koodiUri].pakollinen ? 'pakollinen' : 'valinnainen'" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="osio">
-          <ep-collapse tyyppi="opintojakson-tavoitteet">
+          <ep-collapse tyyppi="opintojakson-tavoitteet" :first="true">
             <div class="alueotsikko" slot="header">{{ $t('tavoitteet') }}</div>
             <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx">
               <div class="moduuliotsikko">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</div>
@@ -193,20 +194,18 @@
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays') }}</div>
             <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
-              <ep-collapse>
-                <div slot="header" class="moduuliotsikko">
-                  <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
-                    {{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}
-                  </span>
-                  <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
-                    <fas icon="times" />
-                  </b-button>
-                </div>
-                <ep-content
-                  layout="normal"
-                  v-model="lo.kuvaus"
-                  :is-editable="isEditing"></ep-content>
-              </ep-collapse>
+              <div slot="header" class="moduuliotsikko">
+                <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
+                  {{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}
+                </span>
+                <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
+                  <fas icon="times" />
+                </b-button>
+              </div>
+              <ep-content
+                layout="normal"
+                v-model="lo.kuvaus"
+                :is-editable="isEditing"></ep-content>
             </div>
             <div class="alert alert-info" v-if="!isEditing && data.laajaAlainenOsaaminen.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <b-dropdown v-if="isEditing" :text="$t('lisaa-laaja-alainen-osaaminen')" variant="primary">
@@ -254,13 +253,13 @@
 <script lang="ts">
 import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
-import EpField from '@/components/forms/EpField.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
-import EpList from '@/components/forms/EpList.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
+import EpList from '@shared/components/forms/EpList.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
@@ -281,7 +280,7 @@ import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue'
 @Component({
   components: {
     EpCollapse,
-    EpColorBall,
+    EpColorIndicator,
     EpCommentThreads,
     EpContent,
     EpEditointi,
@@ -319,6 +318,9 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       await this.store.removeOpintojakso(data.id);
       this.$router.push({
         name: 'opsPoistetut',
+        params: {
+          tabIndex: '0',
+        },
       });
     }
   }
@@ -558,6 +560,9 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         if (oa.laajuus) {
           (oa as any).isModuuliton = true;
         }
+        else {
+          (oa as any).isModuuliton = false;
+        }
       });
 
       if (opintojakso) {
@@ -576,13 +581,15 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
     if (await this.isUusi()) {
       const uusi = await this.store.addOpintojakso(opintojakso);
-      this.$router.push({
-        ...(this.$router.currentRoute as any),
-        params: {
-          ...this.$router.currentRoute.params,
-          opintojaksoId: uusi.id,
-        },
-      });
+      return () => {
+        this.$router.push({
+          name: 'opintojakso',
+          params: {
+            ...this.$router.currentRoute.params,
+            opintojaksoId: _.toString(uusi.id),
+          },
+        });
+      };
     }
     else {
       await this.store.saveOpintojakso(opintojakso);
@@ -628,7 +635,7 @@ hr.valiviiva {
 
   div.ep-collapse {
     border-top: 1px solid #ccc;
-    padding: 10px 10px 10px 0px;
+    padding: 10px 10px 10px 0;
   }
 
   div.ep-collapse:last-child {
@@ -638,11 +645,11 @@ hr.valiviiva {
 
 
 .osio {
-  padding: 27px 0 0 0px;
+  padding: 27px 0 0 0;
 
   &:not(:first-child) {
-    margin: 27px 0 27px 0;
-    border-top: 1px solid #DADADA;
+    //margin: 27px 0 27px 0;
+    // border-top: 1px solid #DADADA;
   }
 
   .paikallinen-laaja-alainen {
@@ -660,6 +667,10 @@ hr.valiviiva {
     color: #2B2B2B;
     font-weight: 600;
     margin-bottom: 8px;
+
+    .moduulikuvaukset {
+      font-size: 1rem;
+    }
   }
 
   .perustesisalto {

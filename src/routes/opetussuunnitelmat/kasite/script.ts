@@ -2,23 +2,25 @@ import _ from 'lodash';
 
 import { Component } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
+import { Kielet, UiKielet } from '@shared/stores/kieli';
+import { TermiDto } from '@/tyypit';
+import { kasiteValidator } from '@/validators/kasite';
+import { Termisto } from '@/api';
+import { Kieli } from '@shared/tyypit';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
-import EpSearch from '@/components/forms/EpSearch.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import EpInput from '@/components/forms/EpInput.vue';
-import { Termisto } from '@/api';
-
-import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { Kieli, TermiDto } from '@/tyypit';
-import { kasiteValidator } from '@/validators/kasite';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
+import EpToggle from'@shared/components/forms/EpToggle.vue';
 
 interface Kasite {
   kasite: TermiDto;
   closed: boolean;
 }
+
 
 @Component({
   components: {
@@ -27,6 +29,7 @@ interface Kasite {
     EpInput,
     EpSearch,
     EpSpinner,
+    EpToggle,
   },
   mixins: [
     validationMixin,

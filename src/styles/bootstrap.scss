@@ -1,0 +1,58 @@
+// https://bootstrap-vue.js.org/docs/reference/theming/
+
+$primary: #3367E3;
+
+$input-btn-padding-y: .4375rem;
+$input-btn-padding-x: .625rem;
+$btn-border-radius: 1.25rem; // 20px
+
+// Include Bootstrap and BootstrapVue SCSS files
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+@import '@/styles/_variables.scss';
+
+.modal-content {
+
+  .modal-header {
+    border-bottom: 0px;
+  }
+
+  .modal-footer {
+    border-top: 0px;
+
+    .btn-secondary {
+      background-color: #fff;
+      color: $primary;
+      border-color: #fff;
+    }
+  }
+}
+
+.tabs {
+
+  .nav-tabs {
+    border: 0px;
+
+    .nav-item {
+
+      .nav-link {
+        border-radius: 0px;
+        padding: 0px 10px;
+        margin: 8px 10px;
+        border-color: #fff;
+      }
+
+      .nav-link:hover:not(.active), .nav-link:focus:not(.active) {
+        background-color: $gray-lighten-6;
+      }
+
+      .active {
+        border-bottom: 2px;
+        border-bottom-color: $primary;
+        border-bottom-style: solid;
+        color: $primary;
+        font-weight: bold;
+      }
+    }
+  }
+}

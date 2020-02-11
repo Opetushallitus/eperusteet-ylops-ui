@@ -42,8 +42,8 @@ import { Component, Prop, Model, Mixins } from 'vue-property-decorator';
 
 import Multiselect from 'vue-multiselect';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpValidation from '@/mixins/EpValidation';
 
 @Component({
@@ -97,12 +97,14 @@ export default class EpMultiSelect extends Mixins(EpValidation) {
 </script>
 
 <style scoped lang="scss">
+@import '@shared/styles/_variables.scss';
 
 /deep/ .multiselect__tags {
-  border: none;
-  border-bottom: 1px solid #e8e8e8;
-  border-radius: 0;
+  border: 1px;
+  border-style: solid;
+  border-radius: 6;
   appearance: none;
+  padding: 4px 40px 4px 8px;
 }
 
 
@@ -111,7 +113,7 @@ export default class EpMultiSelect extends Mixins(EpValidation) {
 }
 
 /deep/ .is-valid .multiselect__tags {
-  border-color: #28a745;
+  border-color: $valid;
 }
 
 // Piilotettu Bootstrapissa oletuksena

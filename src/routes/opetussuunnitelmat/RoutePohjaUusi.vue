@@ -29,39 +29,36 @@
 </template>
 
 <script lang="ts">
-import EpButton from '@/components/EpButton/EpButton.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
-import EpField from '@/components/forms/EpField.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
-import EpInput from '@/components/forms/EpInput.vue';
-import EpMainView from '@/components/EpMainView/EpMainView.vue';
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpSelect from '@/components/forms/EpSelect.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
-import EpSteps from '@/components/EpSteps/EpSteps.vue';
-
 import _ from 'lodash';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
-import { Kielet } from '@shared/stores/kieli';
+
 import { Ulkopuoliset, Opetussuunnitelmat } from '@/api';
-import { required } from 'vuelidate/lib/validators';
-import { validationMixin } from 'vuelidate';
 import { pohjaLuontiValidator } from '@/validators/ops';
-import { isPerusteSupported, YlopsKoulutustyypit } from '@/utils/perusteet';
+import { isPerusteSupported } from '@/utils/perusteet';
 import {
   PerusteInfoDto,
   OpetussuunnitelmaLuontiDto,
-  LokalisoituTekstiDto,
-  Kieli,
 } from '@/tyypit';
-import { createLogger } from '@/stores/logger';
-import EpRoute from '@/mixins/EpRoute';
-import EpValidation from '@/mixins/EpValidation';
+import { createLogger } from '@shared/utils/logger';
 import { success } from '@/utils/notifications';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+import { Kieli } from '@shared/tyypit';
+
+import EpButton from '@/components/EpButton/EpButton.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpIcon from '@/components/EpIcon/EpIcon.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import EpSelect from '@shared/components/forms/EpSelect.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpSteps from '@/components/EpSteps/EpSteps.vue';
+import EpRoute from '@/mixins/EpRoute';
+import EpValidation from '@/mixins/EpValidation';
 
 const logger = createLogger('RoutePohjaUusi');
+
 
 @Component({
   components: {

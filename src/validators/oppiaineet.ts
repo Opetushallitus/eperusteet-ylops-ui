@@ -1,6 +1,5 @@
-import { koodiValidator, nimiValidator, requiredLokalisoituTeksti } from '@/validators/required';
-import { Kieli } from '@/tyypit';
-import { minLength, required } from 'vuelidate/lib/validators';
+import { koodiValidator, nimiValidator } from '@/validators/required';
+import { Kieli } from '@shared/tyypit';
 
 export function oppiaineLuontiValidator(kielet: Kieli[] = []) {
   return {

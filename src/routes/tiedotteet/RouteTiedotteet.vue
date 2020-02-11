@@ -5,13 +5,13 @@
     </ep-icon>
   </template>
   <template slot="header">
-    <h2>
-      {{ $t('tiedotteet') }}
-      <a class="btn btn-link" rel="noopener noreferrer" target="_blank" href="https://virkailija.opintopolku.fi/eperusteet-app/#/fi/admin/tiedotteet" v-oikeustarkastelu="'hallinta'">
-        <fas icon="external-link-alt" />
-        {{ $t('siirry-muokkaamaan-tiedotteita') }}
-      </a>
-    </h2>
+    <h1>{{ $t('tiedotteet') }}</h1>
+
+    <ep-linkki url="/eperusteet-app/#/fi/admin/tiedotteet"
+               v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
+      {{ $t('siirry-muokkaamaan-tiedotteita') }}
+    </ep-linkki>
+
     <p>{{ $t('tiedotteet-kuvaus-nakyma') }}</p>
   </template>
   <template slot="custom-content">
@@ -67,8 +67,9 @@ import EpIcon from'@/components/EpIcon/EpIcon.vue';
 import EpMainView from'@/components/EpMainView/EpMainView.vue';
 import EpNavigation from'@/components/EpNavigation/EpNavigation.vue';
 import EpRoute from '@/mixins/EpRoot';
-import EpSearch from'@/components/forms/EpSearch.vue';
-import EpSpinner from'@/components/EpSpinner/EpSpinner.vue';
+import EpSearch from'@shared/components/forms/EpSearch.vue';
+import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
+import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 
 import { Ulkopuoliset } from '@/api';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
@@ -80,6 +81,7 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
     oikeustarkastelu,
   },
   components: {
+    EpLinkki,
     EpButton,
     EpCollapse,
     EpContent,

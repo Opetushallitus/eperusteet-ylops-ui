@@ -1,6 +1,6 @@
 <template lang="pug">
 .kasitteet
-  .ylapaneeli
+  .ylapaneeli.d-flex.align-items-center
     h2.otsikko {{ $t('kasitteet') }}
 
   ep-spinner(v-if="isLoading")
@@ -9,13 +9,13 @@
       ep-search.mb-3(v-model="hakusana")
       .lisaysnappi
         button(@click="avaaMuokkausModal(null)")
-          fas.mr-2(icon="plus-circle")
+          fas.mr-2(icon="plussa")
           span {{ $t('lisaa-kasite') }}
 
     .kasitelista
       .kasite(v-for="k in suodatettuTermisto")
-        ep-content.termi(:class="{ closed: k.closed, open: !k.closed }", :value="k.kasite.termi")
-        ep-content.selitys(:class="{ closed: k.closed, open: !k.closed }", :value="k.kasite.selitys")
+        ep-content.termi(:class="{ closed: k.closed, open: !k.closed }", :value="k.kasite.termi" layout="simplified")
+        ep-content.selitys(:class="{ closed: k.closed, open: !k.closed }", :value="k.kasite.selitys" layout="simplified")
         .toiminnot
           button.btn.btn-link(@click="avaaPoistoModal(k.kasite)")
             fas(:icon="['far','trash-alt']", fixed-width)
@@ -69,9 +69,10 @@
         v-model="kasite.selitys",
         help="kasite-selitys-ohje",
         :validation="validation.selitys",
-        :is-editable="true")
+        :is-editable="true",
+        layout="simplified")
     ep-form-content(name="alaviite")
-      b-form-checkbox(v-model="kasite.alaviite") {{ $t('merkitse-kasite-alaviitteeksi') }}
+      ep-toggle(v-model="kasite.alaviite") {{ $t('merkitse-kasite-alaviitteeksi') }}
     template(slot="modal-cancel") {{ $t('peruuta') }}
     template(slot="modal-ok") {{ kasite.id ? $t('tallenna') : $t('lisaa-kasite') }}
 

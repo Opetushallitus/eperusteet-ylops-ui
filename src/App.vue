@@ -1,17 +1,19 @@
-<template lang="pug">
-div#app(v-if="!isInitializing")
-  router-view
-  notifications(style="margin-right: 6px; margin-top: 90px" position="top right" :max="3")
-  ep-comments
+<template>
+<div v-if="!isInitializing">
+  <router-view />
+  <notifications style="margin-right: 6px; margin-top: 90px;"
+                 position="top right"
+                 :max="3" />
+</div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { KieliStore } from '@shared/stores/kieli';
 import { Kayttajat } from '@/stores/kayttaja';
-import { delay } from '@/utils/delay';
 import { notify } from '@/utils/notifications';
 import EpComments from '@/components/EpComments/EpComments.vue';
+import { notify } from '@/utils/notifications';
+import { delay } from '@shared/utils/delay';
 
 
 @Component({

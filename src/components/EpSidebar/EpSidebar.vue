@@ -1,3 +1,114 @@
-<template lang="pug" src="./template.pug"></template>
-<script lang="ts" src="./script.ts"></script>
-<style scoped lang="scss" src="./style.scss"></style>
+<template>
+<div>
+  <div class="sidenav d-flex">
+    <div class="closed">
+      <button class="btn btn-link" @click="toggled = !toggled" v-if="!toggled">
+        <span class="bar"><fas icon="bars"></fas></span>
+      </button>
+    </div>
+    <div class="bar d-flex flex-column" v-if="toggled">
+      <div class="d-flex flex-row">
+        <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="toggled"><fas icon="bars"></fas></button>
+      </div>
+      <slot name="bar" class="flex-fill"></slot>
+    </div>
+    <div class="view">
+      <slot name="view"></slot>
+    </div>
+  </div>
+</div>
+</template>
+
+
+<script lang="ts">
+import { Vue, Component, Prop, Watch} from 'vue-property-decorator';
+import Sticky from 'vue-sticky-directive';
+import { Kommentit } from '@/stores/kommentit';
+import { setItem, getItem } from '@/utils/localstorage';
+
+
+interface SidenavLocalStorage {
+  enabled: boolean;
+}
+
+const SidenavLocalStorageStr = 'sidenav';
+
+
+@Component({
+  directives: {
+    Sticky,
+  },
+})
+export default class EpSidebar extends Vue {
+  private width = window.innerWidth;
+  private toggled = false;
+
+  public mounted() {
+    window.addEventListener('resize', this.onResize);
+    Kommentit.attach(this.$refs.content as Element);
+    const sidenavLocalStorage = getItem<SidenavLocalStorage>(SidenavLocalStorageStr, {
+      enabled: false,
+    });
+
+    if (sidenavLocalStorage) {
+      this.toggled = sidenavLocalStorage.enabled;
+    }
+  }
+
+  @Watch('toggled')
+  onToggle(newVal, oldVal) {
+    if (newVal !== oldVal) {
+      setItem(SidenavLocalStorageStr, {
+        enabled: newVal,
+      });
+    }
+  }
+
+  public beforeDestroy() {
+    window.removeEventListener('resize', this.onResize);
+    Kommentit.detach();
+  }
+
+  private onResize(data: Event) {
+    const newWidth = window.innerWidth;
+    if (this.width >= 768 && newWidth < 768) {
+      this.toggled = false;
+    }
+    if (this.width < 768 && newWidth >= 768) {
+      this.toggled = true;
+    }
+
+    this.width = newWidth;
+  }
+}
+</script>
+
+
+<style scoped lang="scss">
+@import "@/styles/_variables.scss";
+
+.sidenav {
+  @media (min-width: 1443.98px) {
+    .menubutton {
+      display:none;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    display: flex;
+
+    .bar {
+      min-width: $sidebar-width;
+      max-width: $sidebar-width;
+      min-height: 100vh;
+    }
+
+    .view {
+      border-left: 1px solid #eee;
+      width: 100%;
+      margin-bottom: 200px;
+    }
+  }
+
+}
+</style>

@@ -1,4 +1,5 @@
-import { createLogger } from '@/stores/logger';
+import { createLogger } from '@shared/utils/logger';
+
 const logger = createLogger('LocalStorage');
 
 export function removeItem(key: string) {

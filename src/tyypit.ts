@@ -1,14 +1,6 @@
 // FIXME: vue-loader issue 1281
 import * as GApi from '@/generated/api';
 
-export enum Kieli {
-  fi = 'fi',
-  sv = 'sv',
-  se = 'se',
-  ru = 'ru',
-  en = 'en',
-}
-
 export enum OrganisaatioTyyppi {
   Muu = 'Muu organisaatio',
   Varhaiskasvatus = 'Varhaiskasvatuksen jarjestaja',
@@ -19,13 +11,6 @@ export enum OrganisaatioTyyppi {
 export type DiagrammiVarit = 'vaalea_sininen' | 'vihrea_sininen';
 
 export type EditorLayout = 'minimal' | 'simplified' | 'normal';
-
-export interface SovellusVirhe {
-  path?: string;
-  err?: string;
-  state?: object;
-  info?: string;
-}
 
 export interface LokalisoituTekstiDto {
   // id?: number;
@@ -56,10 +41,15 @@ export interface SideMenuItem {
 export interface SideMenuRoute {
   name: string,
   params: object,
+  query?: object,
 }
 
 export interface RecursiveTreeItem {
   id: number;
+}
+
+export interface RevisionDto extends GApi.RevisionDto {
+  nykyinen?: boolean,
 }
 
 export type EtusivuDto = GApi.EtusivuDto;
@@ -83,7 +73,6 @@ export type OpetussuunnitelmaLuontiDto = GApi.OpetussuunnitelmaLuontiDto;
 export type PerusteInfoDto = GApi.PerusteInfoDto;
 export type PerusteTekstiKappaleViiteDto = GApi.PerusteTekstiKappaleViiteDto;
 export type Puu = GApi.Puu;
-export type RevisionDto = GApi.RevisionDto;
 export type TekstiKappaleViiteKevytDto = GApi.TekstiKappaleViiteKevytDto;
 export type TekstiKappaleDto = GApi.TekstiKappaleDto;
 export type TermiDto = GApi.TermiDto;

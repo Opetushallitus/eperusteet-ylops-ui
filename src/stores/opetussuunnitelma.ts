@@ -1,29 +1,25 @@
 import { Termisto } from '@/api';
 import { TermiDto, Lops2019PoistettuDto } from '@/tyypit';
-import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Lops2019ValidointiDto, Matala, Lops2019OppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
-import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
+import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat } from '@/api';
 import { AxiosResponse } from 'axios';
-import { createLogger } from './logger';
-import { Getter, State, Store } from '@shared/stores/store';
+import { createLogger } from '@shared/utils/logger';
+import { State, Store } from '@shared/stores/store';
 import { success, fail } from '@/utils/notifications';
 import _ from 'lodash';
-
-const logger = createLogger('Opetussuunnitelma');
-
-interface Referencable {
-  id?: number;
-}
 
 interface OpintojaksoQuery {
   oppiaineUri?: string;
   moduuliUri?: string;
 }
 
+const logger = createLogger('Opetussuunnitelma');
+
+
 @Store
 export class OpetussuunnitelmaStore {
-  constructor(public readonly opsId: number) {
-    this.init();
-  }
+  @State()
+  public opsId: number;
 
   @State()
   public sisalto: TekstiKappaleViiteKevytDto | null = null;
@@ -43,8 +39,9 @@ export class OpetussuunnitelmaStore {
   @State()
   public progress = 0;
 
-  private initcv: Promise<void> | null = null;
-  private initDone = false;
+  constructor(opsId: number) {
+    this.opsId = opsId;
+  }
 
   // Tekstikappaleet
   public async getOtsikot() {
@@ -61,28 +58,13 @@ export class OpetussuunnitelmaStore {
   }
 
   public async init() {
-    if (this.initDone) {
-      return;
-    }
-    else if (this.initcv) {
-      await this.initcv;
-    }
-    else {
-      this.initcv = new Promise(async (resolve) => {
-        logger.info('Initing peruste store', this.opsId);
-        this.opetussuunnitelma = await this.get();
-        await this.updateSisalto();
+    logger.info('Initing peruste store', this.opsId);
+    this.opetussuunnitelma = await this.get();
+    await this.updateSisalto();
 
-        if ((this.opetussuunnitelma.toteutus as any) === 'lops2019') {
-          this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
-          this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
-        }
-
-        this.initcv = null;
-        this.initDone = true;
-        resolve();
-      });
-      await this.initcv;
+    if ((this.opetussuunnitelma.toteutus as any) === 'lops2019') {
+      this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
+      this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
     }
   }
 
@@ -129,9 +111,13 @@ export class OpetussuunnitelmaStore {
     return osa.data;
   }
 
+  public static async updateOpsTila(opsId: number, uusiTila: string) {
+    return await Opetussuunnitelmat.updateTila(opsId, uusiTila as any);
+  }
+
   public async updateTila(uusiTila: string) {
     if (uusiTila) {
-      await Opetussuunnitelmat.updateTila(this.opetussuunnitelma!.id!, uusiTila as any);
+      await OpetussuunnitelmaStore.updateOpsTila(this.opetussuunnitelma!.id!, uusiTila as any);
       this.opetussuunnitelma = {
         ...this.opetussuunnitelma!,
         tila: uusiTila as any,
@@ -194,7 +180,9 @@ export class OpetussuunnitelmaStore {
       ..._.slice(this.paikallisetOppiaineet, 0, idx),
       result,
       ..._.slice(this.paikallisetOppiaineet, idx + 1),
-    ];
+    ] as Lops2019PaikallinenOppiaineDto[];
+    // Oppiaineen koodin vaihtaminen tekee muutoksen opintojakson oppiaineen koodeihin
+    this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
     return result;
   }
 
@@ -218,7 +206,7 @@ export class OpetussuunnitelmaStore {
     if (query.moduuliUri) {
       chain = chain.filter(oj => _.includes(
         _.map(oj.moduulit, 'koodiUri'),
-        query.oppiaineUri));
+        query.moduuliUri));
     }
     return chain.value();
   }
@@ -244,11 +232,11 @@ export class OpetussuunnitelmaStore {
   public async removeOppiaine(id: number) {
     await Oppiaineet.removeLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id);
     success('poisto-onnistui-oppiaineen');
-    const idx = _.findIndex(this.opintojaksot, { id });
-    this.opintojaksot = [
-      ..._.slice(this.opintojaksot, 0, idx),
-      ..._.slice(this.opintojaksot, idx + 1),
-    ];
+    const idx = _.findIndex(this.paikallisetOppiaineet, { id });
+    this.paikallisetOppiaineet = [
+      ..._.slice(this.paikallisetOppiaineet, 0, idx),
+      ..._.slice(this.paikallisetOppiaineet, idx + 1),
+    ] as Lops2019PaikallinenOppiaineDto[];
   }
 
   public async removeOpintojakso(id: number) {
@@ -258,7 +246,7 @@ export class OpetussuunnitelmaStore {
     this.opintojaksot = [
       ..._.slice(this.opintojaksot, 0, idx),
       ..._.slice(this.opintojaksot, idx + 1),
-    ];
+    ] as Lops2019OpintojaksoDto[];
   }
 
   public async saveOpintojakso(opintojakso: Lops2019OpintojaksoDto) {
@@ -269,7 +257,7 @@ export class OpetussuunnitelmaStore {
       ..._.slice(this.opintojaksot, 0, idx),
       result,
       ..._.slice(this.opintojaksot, idx + 1),
-    ];
+    ] as Lops2019OpintojaksoDto[];
     return result;
   }
 }

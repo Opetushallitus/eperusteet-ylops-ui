@@ -3,21 +3,40 @@ import _ from 'lodash';
 export const KoodistoLops2019LaajaAlaiset = 'laajaalainenosaaminenlops2021';
 
 export const YlopsKoulutustyypit = Object.freeze([
-  // AIKUISTENPERUSOPETUS("koulutustyyppi_17"),
-  // PERUSOPETUS("koulutustyyppi_16"),
-  // PERUSOPETUSVALMISTAVA("koulutustyyppi_22"),
-  // 'koulutustyyppi_14', // AIKUISLUKIOKOULUTUS
   'koulutustyyppi_15', // ESIOPETUS
-  'koulutustyyppi_6', // LISAOPETUS
   'koulutustyyppi_2', // LUKIOKOULUTUS
-  // 'koulutustyyppi_23', // LUKIOVALMISTAVAKOULUTUS
-  // 'koulutustyyppi_999907', // TPO
   'koulutustyyppi_20', // VARHAISKASVATUS
+  'koulutustyyppi_6', // LISAOPETUS
+  'koulutustyyppi_14', // AIKUISLUKIOKOULUTUS
+  'koulutustyyppi_23', // LUKIOVALMISTAVAKOULUTUS
+  // 'koulutustyyppi_999907', // TPO
+  // 'koulutustyyppi_17', // AIKUISTENPERUSOPETUS
+  // 'koulutustyyppi_16', // PERUSOPETUS
+  // 'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
 ]);
+
+const Perusoppilaitokset = [11, 19, 64, 21];
+const koulutustyyppiToOppilaitos = {
+  'koulutustyyppi_15': Perusoppilaitokset,
+  'koulutustyyppi_2': [...Perusoppilaitokset, 15],
+  'koulutustyyppi_14': [...Perusoppilaitokset, 15],
+  'koulutustyyppi_23': [...Perusoppilaitokset, 15],
+  'koulutustyyppi_20': [...Perusoppilaitokset],
+  'koulutustyyppi_6': Perusoppilaitokset,
+};
+
+export function koulutustyypinOppilaitokset(koulutustyyppi: string | undefined | null) {
+  if (koulutustyyppi) {
+    return koulutustyyppiToOppilaitos[koulutustyyppi] || Perusoppilaitokset;
+  }
+  return Perusoppilaitokset;
+}
 
 export function isPerusteSupported(peruste: any) {
   const { toteutus, koulutustyyppi } = peruste;
-  if (koulutustyyppi === 'koulutustyyppi_2') {
+  if (koulutustyyppi === 'koulutustyyppi_2'
+    || koulutustyyppi === 'koulutustyyppi_14'
+    || koulutustyyppi === 'koulutustyyppi_23') {
     return toteutus === 'lops2019';
   }
   return _.includes(YlopsKoulutustyypit, koulutustyyppi);
@@ -70,14 +89,11 @@ export function paikallisestiSallitutLaajennokset() {
 
 const splitKoodi = _.memoize((arvo: string) => {
   if (_.isString(arvo) && !_.isEmpty(arvo)) {
-    let idx = _.size(arvo) - 1;
-    let arvoNmbStr = '';
-    while (idx >= 0 && arvo[idx] >= '0' && arvo[idx] <= '9') {
-      arvoNmbStr = arvo[idx] + arvoNmbStr;
-      --idx;
-    }
+    const splitattu = arvo.match(/^([a-zA-Z]*?)(\d+$)/);
 
-    return [arvo.substr(0, idx), _.isEmpty(arvoNmbStr) ? 0 : _.parseInt(arvoNmbStr)];
+    if(splitattu && splitattu.length > 2) {
+      return [splitattu[1], Number(splitattu[2])];
+    }
   }
   return [arvo, 0];
 });

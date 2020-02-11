@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { createLogger } from '@/stores/logger';
+import { createLogger } from '@shared/utils/logger';
 
 const logger = createLogger('Virhe');
 
@@ -9,7 +9,7 @@ export default class VirheRoute extends Vue {
 
   public mounted() {
     try {
-      this.error = JSON.parse((this.$route.query as any).virhe);
+      this.error = JSON.parse((this as any).$route.query.virhe);
     }
     catch (err) {
       logger.error(err);

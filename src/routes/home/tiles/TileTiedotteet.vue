@@ -1,5 +1,5 @@
 <template lang="pug">
-base-tile(icon="tiedotteet", :route="{ name: 'tiedotteet' }")
+base-tile(icon="muistikirja", :route="{ name: 'tiedotteet' }")
   template(slot="header")
     span {{ $t('tiedotteet') }}
   template(slot="content")
@@ -16,9 +16,9 @@ base-tile(icon="tiedotteet", :route="{ name: 'tiedotteet' }")
 import { Vue, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
 import { Ulkopuoliset } from '@/api';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import _ from 'lodash';
-import { delay } from '@/utils/delay';
+import { delay } from '@shared/utils/delay';
 
 @Component({
   components: {

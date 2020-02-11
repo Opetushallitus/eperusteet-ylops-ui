@@ -107,6 +107,24 @@ export function oppimaaraOpintojaksoLinkit(opintojaksot: any, oppimaara: Lops201
     .value();
 }
 
+export function oppimaaraUusiLinkki(oppimaara: Lops2019OppiaineDto): SideMenuEntry {
+  return {
+    item: {
+      type: 'uusi-opintojakso',
+    },
+    route: {
+      name: 'uusi-opintojakso',
+      params: {
+        opintojaksoId: 'uusi',
+        oppiaineKoodi: oppimaara.koodi!.arvo,
+      },
+      query: {
+        oppiaineet: oppimaara.koodi!.uri
+      },
+    },
+  };
+}
+
 export function paikallinenOppiaineToMenu(oppiaine: Lops2019PaikallinenOppiaineDto): SideMenuEntry {
   return {
     item: {

@@ -1,5 +1,5 @@
 <template>
-<div v-if="hooks && !isLoading">
+<div id="scroll-anchor" v-if="hooks && !isLoading">
   <ep-editointi :hooks="hooks">
 
     <template #header="{ data }">
@@ -13,11 +13,11 @@
             v-model="data.lapset"
             child-field="lapset"
             group="sisalto">
-          <template #default="{ isEditing, node }">
+          <template #default="{ node }">
             <span v-if="isEditing">
               {{ $kaanna(node.tekstiKappale.nimi) }}
             </span>
-            <router-link :to="{ name: 'tekstikappale', params: { osaId: node.id } }">
+            <router-link v-else :to="{ name: 'tekstikappale', params: { osaId: node.id } }">
               {{ $kaanna(node.tekstiKappale.nimi) }}
             </router-link>
           </template>
@@ -27,7 +27,7 @@
         v-if="isEditing"
         variant="outline-primary"
         @click="lisaaTekstikappale(data.lapset)"
-        icon="plus">
+        icon="plussa">
         {{ $t('lisaa-tekstikappale') }}
       </ep-button>
     </template>
@@ -74,7 +74,13 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
       save: this.save,
       load: this.load,
     },
+    validate: this.validate,
   };
+
+  async validate(data) {
+    const uudet = _.filter(data.lapset, '$uusi');
+    return {valid: uudet.length === 0, message: 'ops-rakenne-epavalidi'};
+  }
 
   lisaaTekstikappale(data) {
     const uusiViite = {

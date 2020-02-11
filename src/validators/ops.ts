@@ -1,5 +1,5 @@
 import { notNull, requiredLokalisoituTeksti } from '@/validators/required';
-import { Kieli } from '@/tyypit';
+import { Kieli } from '@shared/tyypit';
 import { minLength, required } from 'vuelidate/lib/validators';
 
 export function pohjaLuontiValidator(kielet: Kieli[] = []) {

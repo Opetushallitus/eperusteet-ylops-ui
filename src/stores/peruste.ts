@@ -1,11 +1,8 @@
-import { Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Opetussuunnitelmat, Lops2019Perusteet } from '@/api';
-import { Matala, Lops2019OppiaineDto, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
-import { AxiosResponse } from 'axios';
-import { createLogger } from './logger';
-import { State, Store } from '@shared/stores/store';
-import Vue from 'vue';
 import _ from 'lodash';
-import { Opetussuunnitelma } from './opetussuunnitelma';
+import Vue from 'vue';
+
+import { Lops2019Perusteet } from '@/api';
+import { Lops2019OppiaineDto } from '@/tyypit';
 
 function sortedOppiaineet(oppiaineet: Lops2019OppiaineDto[]) {
   return _.chain(oppiaineet)
@@ -19,6 +16,7 @@ function sortedOppiaineet(oppiaineet: Lops2019OppiaineDto[]) {
     .sortBy('koodi.arvo')
     .value();
 }
+
 
 export class PerusteCache {
   private static cache: any = Vue.observable({});

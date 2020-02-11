@@ -1,6 +1,5 @@
-import { Watch, Vue, Component } from 'vue-property-decorator';
-import { delay } from '@/utils/delay';
-import _ from 'lodash';
+import { Vue, Component } from 'vue-property-decorator';
+import { Virheet } from '@shared/stores/virheet';
 
 Component.registerHooks([
   'beforeRouteEnter',
@@ -11,7 +10,6 @@ Component.registerHooks([
 @Component
 export default class EpRoot extends Vue {
   private mIsLoading = true;
-  private mError = null;
 
   public async beforeRouteEnter(to: any, from: any, next: any) {
     next();
@@ -49,7 +47,12 @@ export default class EpRoot extends Vue {
       await fn();
     }
     catch (err) {
-      this.mError = null;
+      if (this.$route) {
+        await Virheet.lisaaVirhe({
+          path: this.$route.path,
+          err,
+        });
+      }
     }
     finally {
       this.mIsLoading = false;
@@ -60,9 +63,5 @@ export default class EpRoot extends Vue {
     return this.mIsLoading;
   }
 
-  public get error() {
-    return this.mError;
-  }
-
-  protected async init() { }
+  protected async init() {}
 }

@@ -9,7 +9,7 @@
     </h2>
     <div class="collapse-container">
       <ep-collapse v-if="oppiaine.tehtava">
-        <h4 slot="header">{{ $t('oppiaineet-tehtava') }}</h4>
+        <h4 slot="header">{{ isOppiaine ? $t('oppiaineet-tehtava') : $t('oppimaaran-tehtava')}}</h4>
         <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tehtava.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset">
@@ -27,87 +27,71 @@
       </ep-collapse>
       <ep-collapse v-if="oppiaine.oppimaarat && oppiaine.oppimaarat.length > 0">
         <h4 slot="header">{{ $t('oppimaarat') }}</h4>
-        <div class="block-container" v-for="oppimaara in oppiaine.oppimaarat" :key="oppimaara.id">
-          <router-link class="oj-content" :to="{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }">
+        <div class="oppimaarat-topic">{{ $t('Oppiaineeseen kuuluu useampia oppimääriä')}}</div>
+        <div class="block-container oppimaarat" v-for="oppimaara in oppiaine.oppimaarat" :key="oppimaara.id">
+          <router-link class="om-content" :to="{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }">
             <span class="nimi">{{ $kaanna(oppimaara.nimi) }}</span>
           </router-link>
         </div>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.moduulit && oppiaine.moduulit.length > 0">
         <h4 slot="header">{{ $t('moduulit') }}</h4>
+        <div class="oppimaarat-topic">{{ $t('oppiaine-moduuli-ohje')}}</div>
         <div class="block-container">
-          <h5>{{ $t('pakolliset-moduulit') }}</h5>
-          <ep-content v-if="oppiaine.pakollisetModuulitKuvaus"
-                      layout="normal"
-                      :opetussuunnitelma-store="opetussuunnitelmaStore"
-                      v-model="oppiaine.pakollisetModuulitKuvaus"></ep-content>
-          <div v-for="moduuli in pakollisetModuulit" :key="moduuli.id">
-            <div class="oj-content pakollinen">
-              <span class="nimi">
-                <router-link :to="{ name: 'moduuli', params: { moduuliId: moduuli.id } }">{{ $kaanna(moduuli.nimi) }}</router-link>
-              </span>
-              <span class="pituus">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
-              <span class="tyyppi">{{ $t('pakollinen') }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="block-container">
-          <h5>{{ $t('valinnaiset-moduulit') }}</h5>
-          <ep-content v-if="oppiaine.valinnaisetModuulitKuvaus"
-                      layout="normal"
-                      :opetussuunnitelma-store="opetussuunnitelmaStore"
-                      v-model="oppiaine.valinnaisetModuulitKuvaus"></ep-content>
-          <div v-for="moduuli in valinnaisetModuulit" :key="moduuli.id">
-            <div class="oj-content">
-              <span class="nimi">
-                <router-link :to="{ name: 'moduuli', params: { moduuliId: moduuli.id } }">{{ $kaanna(moduuli.nimi) }}</router-link>
-              </span>
-              <span class="pituus">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
-              <span class="tyyppi">{{ $t('valinnainen') }}</span>
+          <div class="moduulit">
+            <div class="moduuli" v-for="moduuli in moduulit" :key="moduuli.koodiUri">
+              <router-link :to="{ name: 'moduuli', params: { moduuliId: moduuli.id } }">
+                <ep-opintojakson-moduuli :moduuli="moduuli">
+                </ep-opintojakson-moduuli>
+              </router-link>
             </div>
           </div>
         </div>
       </ep-collapse>
-      <ep-spinner v-if="!opintojaksot">
-      </ep-spinner>
-      <ep-collapse v-else>
-        <h4 slot="header">{{ $t('opintojaksot') }}</h4>
-        <div v-if="opintojaksot.length === 0">
-          <div class="alert alert-info">{{ $t('opintojaksoja-ei-lisatty') }}</div>
-        </div>
-        <div v-else>
-          <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
-            <div class="oj-content pakollinen">
-              <span class="nimi">
-                <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
-                  {{ $kaanna(opintojakso.nimi) }}
-                </router-link>
-              </span>
-              <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
+      <div v-if="!(isOppiaine && isOppimaaria)">
+        <ep-spinner v-if="!opintojaksot">
+        </ep-spinner>
+        <ep-collapse else>
+          <h4 slot="header">{{ $t('opintojaksot') }}</h4>
+          <div v-if="opintojaksot.length === 0">
+            <div class="alert alert-info">{{ $t('opintojaksoja-ei-lisatty') }}</div>
+          </div>
+          <div v-else>
+            <div class="oppimaarat-topic">{{ $t('oppiaine-opintojakso-ohje')}}</div>
+            <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
+              <div class="oj-content pakollinen">
+                <span class="nimi">
+                  <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
+                    {{ $kaanna(opintojakso.nimi) }}
+                  </router-link>
+                </span>
+                <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
+              </div>
             </div>
           </div>
-        </div>
-        <ep-button icon="plus" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
-      </ep-collapse>
+          <ep-button icon="plussa" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
+        </ep-collapse>
+      </div>
     </div>
   </div>
 </div>
 </template>
 
 <script lang="ts">
-import { Watch, Mixins, Component, Prop } from 'vue-property-decorator';
+import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
-import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019OppiaineDto, Lops2019OpintojaksoDto } from '@/tyypit';
+import { Lops2019OppiaineDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
 import _ from 'lodash';
+import EpOpintojaksonModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/opintojaksot/EpOpintojaksonModuuli.vue';
+
 
 @Component({
   components: {
@@ -117,6 +101,7 @@ import _ from 'lodash';
     EpEditointi,
     EpSpinner,
     EpPrefixList,
+    EpOpintojaksonModuuli,
   },
 })
 export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
@@ -155,6 +140,21 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
       .value();
   }
 
+  get moduulit() {
+    return [
+      ...this.pakollisetModuulit ? this.pakollisetModuulit : [],
+      ...this.valinnaisetModuulit ? this.valinnaisetModuulit : [],
+    ];
+  }
+
+  get isOppiaine() {
+    return !(this.oppiaine as any)._oppiaine;
+  }
+
+  get isOppimaaria() {
+    return this.oppiaine!.oppimaarat && this.oppiaine!.oppimaarat.length > 0;
+  }
+
   public uusiOpintojakso() {
     this.$router.push({
       name: 'opintojakso',
@@ -172,8 +172,28 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
 </script>
 
 <style lang="scss" scoped>
+@import "@shared/styles/_variables.scss";
+
 .content {
   padding: 20px;
+}
+
+.oppimaarat-topic {
+  padding: 10px 0px;
+  color: $gray-lighten-1;
+}
+
+.oppimaarat {
+
+  &:nth-child(2n) {
+    background-color: #F9F9F9;
+  }
+
+  .om-content {
+    display: flex;
+    padding: 10px 20px;
+  }
+
 }
 
 .oj-content {
@@ -201,9 +221,6 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   }
 }
 
-.block-container {
-}
-
 .collapse-container {
   padding-top: 30px;
   padding-bottom: 30px;
@@ -215,6 +232,15 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
 
   div.ep-collapse:last-child {
     border-bottom: none;
+  }
+}
+
+.moduulit {
+  display: flex;
+  flex-wrap: wrap;
+
+  .moduuli {
+    margin: 0 10px 10px 0;
   }
 }
 </style>

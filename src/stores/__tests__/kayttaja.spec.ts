@@ -22,7 +22,6 @@ describe('Kayttajat', () => {
       pohja: ['luonti'],
     };
 
-    expect(await Kayttajat.hasOikeus('hallinta')).toEqual(true);
     expect(await Kayttajat.hasOikeus('hallinta', 'pohja')).toEqual(true);
     expect(await Kayttajat.hasOikeus('luku', 'pohja')).toEqual(true);
   });

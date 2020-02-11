@@ -4,14 +4,15 @@
   v-bind="$attrs"
   :disabled="disabled"
   @click="$emit('click')">
-  <fas :icon="icon" />
+  <fas :icon="icon" fixed-width />
 </button>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import EpSpinnerInline from '@/components/EpSpinner/EpSpinnerInline.vue';
+import EpSpinnerInline from '@shared/components/EpSpinner/EpSpinnerInline.vue';
+
 
 @Component({
   components: {
@@ -32,7 +33,7 @@ export default class EpButton extends Vue {
   private disabled!: boolean;
 
   @Prop({ default: 'primary' })
-  private variant!: boolean;
+  private variant!: string;
 }
 </script>
 
@@ -44,18 +45,18 @@ export default class EpButton extends Vue {
   border: none;
   color: #fff;
   display: inline-block;
-  min-height: 32px;
-  min-width: 32px;
+  min-height: 40px;
+  min-width: 40px;
   outline: none;
   font-size: 1.2em;
 }
 
 .round-button-lightblue {
-  background: #668eea;
+  background: #3D6EC9;
 }
 
 .round-button-green {
-  background: #f166c0;
+  background: #D26EAF;
 }
 
 .round-button-pink {

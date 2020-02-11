@@ -1,6 +1,4 @@
-import { Watch, Vue, Component } from 'vue-property-decorator';
-import { delay } from '@/utils/delay';
-import _ from 'lodash';
+import { Component } from 'vue-property-decorator';
 import EpRoot from './EpRoot';
 import { Murupolku } from '@/stores/murupolku';
 import { Location } from 'vue-router';

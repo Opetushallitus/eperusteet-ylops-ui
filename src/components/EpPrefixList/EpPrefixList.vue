@@ -5,48 +5,43 @@
       <div class="header">
         <div class="row">
           <div class="col-sm-6">
-            <ep-input v-model="alue.nimi" :help="arvot + '-nimi'" :placeholder="$t(arvot + '-nimi')" :is-editing="true">
-            </ep-input>
+            <ep-input v-model="alue.nimi" :help="arvot + '-nimi'" :placeholder="$t(arvot + '-nimi')" :is-editing="true" />
           </div>
           <div class="col-sm-6">
             <div class="actions">
-              <ep-button variant="danger" v-if="true" icon="times" @click="poistaIndeksi(internal, alueIdx)">{{ $t('poista-alue-' + arvot) }}</ep-button>
+              <ep-button variant="danger" icon="times" @click="poistaIndeksi(internal, alueIdx)">{{ $t('poista-alue-' + arvot) }}</ep-button>
             </div>
           </div>
         </div>
       </div>
       <div class="kohde">
-        <ep-input v-model="alue[kohde]" :help="kohde" :is-editing="true">
-        </ep-input>
+        <ep-input v-model="alue[kohde]" :help="kohde" :is-editing="true" />
       </div>
       <div class="arvot">
         <draggable class="arvot-group" v-bind="options" :list="alue[arvot]">
           <div class="arvo arvot-group-item" v-for="(item, idx) in alue[arvot]" :key="idx">
             <!-- fas.handle(icon="sort")-->
             <div class="text">
-              <ep-input v-model="item[arvo]" :is-editing="true">
-              </ep-input>
+              <ep-input v-model="item[arvo]" :is-editing="true" />
             </div>
             <div class="actions">
-              <ep-button variant="danger" v-if="true" icon="times" @click="poistaIndeksi(alue[arvot], idx)">{{ $t('poista') }}</ep-button>
+              <ep-button variant="danger" icon="times" @click="poistaIndeksi(alue[arvot], idx)">{{ $t('poista') }}</ep-button>
             </div>
           </div>
         </draggable>
-        <ep-button v-if="true" icon="plus" @click="lisaaArvo(alue)">{{ $t('lisaa-arvo-' + arvo) }}</ep-button>
+        <ep-button icon="plussa" @click="lisaaArvo(alue)">{{ $t('lisaa-arvo-' + arvo) }}</ep-button>
       </div>
     </div>
   </div>
-  <ep-button v-if="hasMultiple" icon="plus" @click="lisaaAlue()">{{ $t('lisaa-alue-' + arvot) }}</ep-button>
+  <ep-button v-if="hasMultiple" icon="plussa" @click="lisaaAlue()">{{ $t('lisaa-alue-' + arvot) }}</ep-button>
 </div>
 <div v-else>
   <div class="alue" v-for="(alue, alueIdx) in internal" :key="alueIdx">
     <div class="header">
-      <ep-input v-model="alue.nimi" :is-editing="isEditable">
-      </ep-input>
+      <ep-input v-model="alue.nimi" :is-editing="isEditable" />
     </div>
     <div class="kohde">
-      <ep-input v-model="alue[kohde]" :is-editing="isEditable">
-      </ep-input>
+      <ep-input v-model="alue[kohde]" :is-editing="isEditable" />
     </div>
     <ul class="arvot">
       <li class="arvo" v-for="(item, idx) in alue[arvot]" :key="idx">
@@ -58,12 +53,14 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
+
+import draggable from 'vuedraggable';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
-import _ from 'lodash';
-import draggable from 'vuedraggable';
+import EpInput from '@shared/components/forms/EpInput.vue';
+
 
 @Component({
   components: {
@@ -182,8 +179,8 @@ export default class EpPrefixList extends Vue {
         width: 119px;
 
         button {
-          border-top-left-radius: 0px;
-          border-bottom-left-radius: 0px;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
         }
       }
     }

@@ -20,5 +20,4 @@ export default class Root extends Vue {
 
   @Prop({required: true})
   private tutoriaalistore!: TutoriaaliStore;
-  
 }

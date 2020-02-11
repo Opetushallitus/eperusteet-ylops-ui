@@ -1,7 +1,7 @@
 <template>
 <div>
   <ep-button v-b-modal.epsisaltomodal>
-    <fas class="mr-2" icon="plus">
+    <fas class="mr-2" icon="plussa">
     </fas>
     <span>{{ $t('lisaa-sisalto') }}</span>
   </ep-button>
@@ -46,9 +46,9 @@
 <script lang="ts">
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 import EpButton from '@/components/EpButton/EpButton.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
-import EpInput from '@/components/forms/EpInput.vue';
-import EpSelect from '@/components/forms/EpSelect.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
+import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpSteps from '@/components/EpSteps/EpSteps.vue';
 
@@ -60,7 +60,7 @@ import { opintojaksoLuontiValidator } from '@/validators/opintojakso';
 import { oppiaineLuontiValidator } from '@/validators/oppiaineet';
 import { tekstikappaleLuontiValidator } from '@/validators/tekstikappaleet';
 import { PerusteCache } from '@/stores/peruste';
-import { createLogger } from '@/stores/logger';
+import { createLogger } from '@shared/utils/logger';
 
 const logger = createLogger('SisaltoModaali');
 

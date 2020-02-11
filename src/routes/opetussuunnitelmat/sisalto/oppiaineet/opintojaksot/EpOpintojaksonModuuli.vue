@@ -1,20 +1,18 @@
 <template>
-<div class="moduulibox" role="button" :class="valittu && 'moduulibox-valittu'" @click="toggle()" @keyup.enter="toggle()" tabindex="0">
+<div class="moduulibox" role="button" :class="valittu && 'moduulibox-valittu'" @click="toggle()" @keyup.enter="toggle()" tabindex="0" :title="moduuliNimi">
   <div class="name">{{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})</div>
   <div class="bottom">
     <div class="d-flex bd-highlight">
       <div class="px-2 flex-grow-1">
-        <div class="icon" v-if="isEditing" :class="isEditing && 'icon-editing'">
-          <fas v-if="valittu" icon="check">
-          </fas>
-          <fas v-else icon="plus">
-          </fas>
+        <div class="icon" v-if="isEditing && opintojaksot.length > 0" :class="isEditing && 'icon-editing'">
+          <fas :icon="valittu ? 'check' : 'check-circle'"></fas>
+          <span class="pl-1">{{opintojaksot.length}}</span>
         </div>
       </div>
       <div class="px-2 info">
         <span class="op">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
-        <ep-color-ball :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
-        </ep-color-ball>
+        <ep-color-indicator :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
+        </ep-color-indicator>
       </div>
     </div>
   </div>
@@ -24,26 +22,49 @@
 <script lang="ts">
 import { Mixins, Component, Prop } from 'vue-property-decorator';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import EpColorBall from '@/components/EpColorBall/EpColorBall.vue';
-import { Lops2019OpintojaksonModuuliDto, Lops2019ModuuliDto } from '@/tyypit';
+import { Opetussuunnitelma, OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
+import { Lops2019OpintojaksonModuuliDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@/tyypit';
 import EpRoute from '@/mixins/EpRoute';
 import _ from 'lodash';
+import EpOpsRoute from '@/mixins/EpOpsRoute';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {
-    EpColorBall,
+    EpColorIndicator,
   },
 })
 export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
   @Prop({ required: true })
   private moduuli!: Lops2019ModuuliDto;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   private value!: Lops2019OpintojaksonModuuliDto[];
 
   @Prop({ default: false })
   private isEditing!: boolean;
+
+  @Prop({ required: false })
+  private opetussuunnitelmaStore!: OpetussuunnitelmaStore;
+
+  get store() {
+    return this.opetussuunnitelmaStore;
+  }
+
+  get moduuliNimi() {
+    return Kielet.kaanna((this.moduuli as any).nimi);
+  }
+
+  private opintojaksot: Lops2019OpintojaksoDto[] = [];
+
+  async init() {
+    if (this.store) {
+      this.opintojaksot = await this.store.getOpintojaksot({
+        moduuliUri: this.moduuli!.koodi!.uri as string,
+      } as any);
+    }
+  }
 
   get koodi() {
     try {
@@ -87,7 +108,7 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
 @import "@/styles/_variables.scss";
 
 .moduulibox {
-  background-image: url('../../../../../../public/img/banners/moduuli.svg');
+  background-color: #E6F6FF;
   height: 161px;
   margin: 0;
   padding: 20px 10px 44px 20px;
@@ -96,8 +117,17 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
   color: $blue-darken-1;
   user-select: none;
   cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 2px 3px 4px 1px rgba(0,26,88,0.1);
+  outline: none;
+
+  &:hover {
+    background-color: #C3EAFF;
+  }
 
   .name {
+    text-overflow: ellipsis;
+    overflow: hidden;
     font-weight: bold;
     max-height: 76px;
     // overflow: auto;
@@ -124,6 +154,7 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
     .icon {
       display: inline-block;
       outline: none;
+      color: #3367E3;
     }
 
     .icon-editing {
@@ -139,9 +170,13 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
 }
 
 .moduulibox-valittu {
-  background-image: url('../../../../../../public/img/banners/moduuli_valittu.svg');
   color: white;
   animation: fade 0.1s linear;
+  background-color: #3367E3;
+
+   &:hover {
+    background-color: #3367E3;
+  }
 
   .name {
     &::-webkit-scrollbar-track {
@@ -151,11 +186,12 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
       background-color: $dark-blue;
     }
   }
-}
 
-@keyframes fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  .bottom {
+    .icon {
+      color: white;
+    }
+  }
 }
 
 </style>

@@ -10,9 +10,9 @@
         <ep-collapse :expanded-by-default="false">
           <h4 slot="header">
             <span class="iconspan mr-2">
-              <fas class="warning" v-if="category.hasFatal" icon="exclamation" fixed-width="fixed-width">
+              <fas class="warning" v-if="category.hasFatal" icon="huutomerkki-ympyra" fixed-width="fixed-width">
               </fas>
-              <fas v-else :class="category.hasWarning ? 'warning' : 'success'" icon="check" fixed-width="fixed-width">
+              <fas v-else :class="category.hasWarning ? 'warning' : 'success'" icon="checkmark-ympyra" fixed-width="fixed-width">
               </fas>
             </span>
             <span class="saanto">{{ $t(category.key) }}</span>
@@ -60,7 +60,10 @@
         </div>
         <div class="col-md-12">
           <ep-form-content name="ops-kuvaus">
-            <ep-content opetussuunnitelma-store="opetussuunnitelmaStore" v-model="ops.kuvaus" help="ops-kuvaus-ohje">
+            <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
+                        layout="simplified"
+                        v-model="ops.kuvaus"
+                        help="ops-kuvaus-ohje">
             </ep-content>
           </ep-form-content>
         </div>
@@ -73,7 +76,7 @@
       <div v-if="true || isValid">
         <ep-content opetussuunnitelma-store="opetussuunnitelmaStore" v-model="uusiJulkaisu.julkaisutiedote" help="uuden-julkaisun-tiedote" layout="simplified" :is-editable="true">
         </ep-content>
-        <ep-button class="btn btn-primary" @click="julkaise()">{{ $t('julkaise') }}</ep-button>
+        <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'">{{ $t('julkaise') }}</ep-button>
       </div>
       <div class="alert alert-warning" v-else>{{ $t('opetussuunnitelman-tarkistukset-julkaisu') }}</div>
     </ep-collapse>
@@ -107,26 +110,24 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
+import { Component } from 'vue-property-decorator';
+
+import { EditointiKontrolliConfig } from '@/stores/editointi';
+import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@/tyypit';
+import { UiKielet } from '@shared/stores/kieli';
+
+import EpOpsRoute from '@/mixins/EpOpsRoute';
+import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
+
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
-import EpField from '@/components/forms/EpField.vue';
-import EpFormContent from '@/components/forms/EpFormContent.vue';
-import EpSelect from '@/components/forms/EpSelect.vue';
-import EpToggle from '@/components/forms/EpToggle.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
-
-import EpOpsRoute from '@/mixins/EpOpsRoute';
-
-import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
-import _ from 'lodash';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Component } from 'vue-property-decorator';
-import { opsTiedotValidator } from '@/validators/ops';
-
-import { Kielet } from '@shared/stores/kieli';
-import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@/tyypit';
 
 
 @Component({
@@ -139,11 +140,10 @@ import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@/tyypit';
     EpField,
     EpFormContent,
     EpSelect,
-    EpToggle,
     Tilanvaihto,
   },
 })
-export default class RouteTiedot extends EpOpsRoute {
+export default class RouteJulkaisu extends EpOpsRoute {
   private hooks: EditointiKontrolliConfig | null = null;
   private validointi: Lops2019ValidointiDto | null = null;
   private isOpen: { [key: string]: boolean } = {};
@@ -160,6 +160,10 @@ export default class RouteTiedot extends EpOpsRoute {
 
   get nimi() {
     return this.ops.nimi;
+  }
+
+  get kielet() {
+    return UiKielet;
   }
 
   get julkaisuhistoria() {
@@ -209,7 +213,6 @@ export default class RouteTiedot extends EpOpsRoute {
 
   .vaihe {
     margin-top: 60px;
-    border-top: 1px solid #ccc;
     padding-top: 20px;
   }
 

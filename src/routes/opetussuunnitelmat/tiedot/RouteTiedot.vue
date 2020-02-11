@@ -1,21 +1,22 @@
 <template>
-<div class="content">
+<div id="scroll-anchor" class="content">
   <div v-if="hooks">
-    <ep-editointi :hooks="hooks" :validator="validator">
+    <ep-editointi :hooks="hooks" :validator="validator" type="opetussuunnitelma">
       <h2 class="otsikko" slot="header">{{ $t('tiedot') }}</h2>
       <template v-slot="{ data, validation, isEditing }">
         <div>
           <div class="row">
             <div class="col-md-6">
               <ep-form-content name="ops-nimi">
-                <ep-field help="ops-nimi-ohje" v-model="data.nimi" :validation="validation.nimi" :is-editing="isEditing">
+                <ep-field help="ops-nimi-ohje"
+                          v-model="data.nimi"
+                          :validation="validation.nimi" :is-editing="isEditing">
                 </ep-field>
               </ep-form-content>
             </div>
             <div class="col-md-6">
               <ep-form-content name="peruste">
-                <ep-field v-model="data.perusteenDiaarinumero">
-                </ep-field>
+                <ep-external-link :url="data.perusteUrl">{{data.perusteenDiaarinumero}}</ep-external-link>
               </ep-form-content>
             </div>
             <div class="col-md-6">
@@ -26,7 +27,7 @@
             </div>
             <div class="col-md-6">
               <ep-form-content name="julkaisukielet">
-                <ep-select help="ops-julkaisukielet-ohje" v-model="data.julkaisukielet" :validation="validation.julkaisukielet" :is-editing="isEditing" :items="kielet" :multiple="true">
+                <ep-select help="ops-julkaisukielet-ohje" v-model="data.julkaisukielet" :validation="validation.julkaisukielet" :is-editing="isEditing" :items="kielet" :multiple="true" :useCheckboxes="true">
                 </ep-select>
               </ep-form-content>
             </div>
@@ -45,6 +46,11 @@
             <div class="col-md-6" v-if="isOps">
               <ep-form-content name="ops-esikatseltavissa">
                 <ep-toggle help="ops-esikatseltavissa-ohje" v-model="data.esikatseltavissa" :is-editing="isEditing"></ep-toggle>
+              </ep-form-content>
+            </div>
+            <div class="col-md-6" v-if="isOps && data.esikatseltavissa && !isEditing">
+              <ep-form-content name="esikatsele-opetussuunnitelmaa">
+                <ep-external-link :url="data.opetussuunitelmaUrl"></ep-external-link>
               </ep-form-content>
             </div>
             <div class="col-md-6">
@@ -80,22 +86,23 @@
 
 import EpContent from'@/components/EpContent/EpContent.vue';
 import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@/components/forms/EpField.vue';
-import EpFormContent from'@/components/forms/EpFormContent.vue';
-import EpSelect from'@/components/forms/EpSelect.vue';
-import EpToggle from'@/components/forms/EpToggle.vue';
+import EpField from'@shared/components/forms/EpField.vue';
+import EpFormContent from'@shared/components/forms/EpFormContent.vue';
+import EpSelect from'@shared/components/forms/EpSelect.vue';
+import EpToggle from'@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
-import _ from 'lodash';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { Prop, Component } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
 import EpProgress from '@/components/EpProgress.vue';
+import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
+import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
+import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 
 
 @Component({
@@ -108,7 +115,9 @@ import EpProgress from '@/components/EpProgress.vue';
     EpProgress,
     EpSelect,
     EpToggle,
+    EpLinkki,
     Tilanvaihto,
+    EpExternalLink,
   },
 })
 export default class RouteTiedot extends EpOpsRoute {
@@ -143,9 +152,18 @@ export default class RouteTiedot extends EpOpsRoute {
     return ['fi', 'sv', 'en'];
   }
 
+  get kieli() {
+    return Kielet.getSisaltoKieli;
+  }
+
   private async load() {
     if (this.$route.params.id) {
-      return this.store.get();
+      const ops = await this.store.get();
+      return {
+        ...ops,
+        perusteUrl: buildEsikatseluUrl(this.kieli, `/lukiokoulutus/${ops.perusteenId}/tiedot`),
+        opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}/lukiokoulutus/tiedot`),
+      };
     }
   }
 }
@@ -155,5 +173,11 @@ export default class RouteTiedot extends EpOpsRoute {
 @import "@/styles/_variables.scss";
 .otsikko {
     margin-bottom: 0;
+}
+/deep/ .linkki a {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
 }
 </style>

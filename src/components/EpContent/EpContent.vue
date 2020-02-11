@@ -37,6 +37,7 @@ import {
   HardBreak,
   History,
   Italic,
+  Link,
   ListItem,
   OrderedList,
   Strike,
@@ -124,6 +125,7 @@ export default class EpContent extends Mixins(EpValidation) {
       new Italic(),
       new Strike(),
       new Underline(),
+      new Link(),
       new BulletList(),
       new OrderedList(),
       new ListItem(),
@@ -268,11 +270,9 @@ export default class EpContent extends Mixins(EpValidation) {
     color: $invalid;
   }
 
-  /deep/ .form-control {
-    &.ProseMirror-focused {
-      border-top-right-radius: 0;
-      border-top-left-radius: 0;
-    }
+  /deep/ .form-control.ProseMirror {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
   }
 
   /deep/ [contenteditable]:focus {

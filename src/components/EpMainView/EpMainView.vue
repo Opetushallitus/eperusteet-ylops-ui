@@ -4,13 +4,10 @@ div
   .content
     .container
       .row
-        //.col.col-fixed
-          slot(name="icon")
         .col
           slot(name="header")
       .view-content(v-if="$slots['default']")
         .row
-          //.col.col-fixed.col-new
           .col
             slot(name="default")
       slot(name="custom-content")
@@ -22,6 +19,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
+
 @Component({
   components: {
     EpNavigation,
@@ -29,8 +27,9 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 })
 export default class EpMainView extends Vue {
 
-  @Prop({required: true})
-  private tutoriaalistore!: TutoriaaliStore;
+  @Prop({ required: false })
+  private tutoriaalistore!: TutoriaaliStore | undefined;
+
 }
 </script>
 
