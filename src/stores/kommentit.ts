@@ -3,6 +3,7 @@ import { KommenttiDto, KayttajanTietoDto } from '@/tyypit';
 import Vue from 'vue';
 import { Kayttajat as KayttajatApi, Kommentointi } from '@/api';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
+import { Kielet } from '@shared/stores/kieli';
 Vue.use(VueCompositionApi);
 
 import { createLogger } from './logger';
@@ -200,6 +201,36 @@ class KommenttiStore {
     logger.info('Updating visible threads', chains);
     this.state.visibleChains = chains;
   }, 300);
+
+  public findTekstikappaleNode(node: Node) {
+    function isEditorContent(n: Node) {
+      if ((el as any)?.__vue__?.$options?._componentTag === 'editor-content') {
+        const value = (el as any)?.__vue__?.$parent?.value;
+        const tekstiId = Number(value?._id);
+        if (tekstiId) {
+          return true;
+        }
+      }
+      else {
+        return false;
+      }
+    }
+
+    let el = node.parentNode;
+    while (el !== null && el !== el.parentNode && !isEditorContent(el)) {
+      el = el.parentNode;
+    }
+
+    if (el) {
+      return {
+        el,
+        tekstiId: Number((el as any)?.__vue__?.$parent?.value?._id),
+      }
+    }
+    else {
+      return null;
+    }
+  }
 
   attach(el: Element) {
     const store = this;

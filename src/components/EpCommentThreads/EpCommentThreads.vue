@@ -86,7 +86,7 @@ import { Kommentit } from '@/stores/kommentit';
 import { KommenttiDto, KayttajanTietoDto } from '@/tyypit';
 import { Kielet } from '@shared/stores/kieli';
 import { success } from '@/utils/notifications';
-import { delay, unwrap, findTaggedIndex } from '@/utils/delay';
+import { delay, unwrap, findIndexWithTagsIncluded } from '@/utils/delay';
 import * as _ from 'lodash';
 import ThreadComment from './ThreadComment.vue';
 import EpCommentAdd from './EpCommentAdd.vue';
@@ -228,7 +228,7 @@ export default class EpCommentThreads extends Vue {
   }
 
   async suljeKetju() {
-    await Kommentit.clearThread(true);
+    await Kommentit.clearThread();
   }
 
   private removeAddBox() {
@@ -267,6 +267,34 @@ export default class EpCommentThreads extends Vue {
     }
   }, 300);
 
+  /**
+   * Copies the selection range and slides it over the containing parent container and
+   * user selection to get the global range relative to parent container.
+   *
+   * @returns Start and stop index of the user selection relational to the given parent node
+   */
+  distanceFromParentBegin(selection: Selection, parent: Node) {
+    const range = selection.getRangeAt(0);
+    const clone = range.cloneRange();
+    clone.selectNodeContents(parent);
+    clone.setEnd(range.startContainer, range.startOffset);
+    const start = _.size(clone.toString());
+    clone.setEnd(range.endContainer, range.endOffset);
+    const stop = _.size(clone.toString());
+    return { start, stop };
+  }
+
+  /**
+   * - Find the parent editing container (if any) and extracts the actual element and the textId of that element.
+   * - Get the start and end of the range relative to the editing container
+   * - Adjust the range to contain tags between the range and the container start
+   * - Start the actual commenting process with the initial location data
+   *
+   * NOTE: It is impossible to distinguish between recent or old comment tags from the actual content.
+   *       Backend adjusts the comment location accordingly.
+   *
+   * @returns {undefined}
+   */
   async lisaaKommenttiKahva() {
     const selection = document.getSelection();
     const node = selection?.anchorNode;
@@ -274,6 +302,8 @@ export default class EpCommentThreads extends Vue {
       console.error('FIXME virheellinen valinta');
       return;
     }
+
+    // const el = Kommentit.findTekstikappaleNode(selection, node);
     let el = node.parentNode;
     while (el !== null && el !== el.parentNode) {
       if ((el as any)?.__vue__?.$options?._componentTag === 'editor-content') {
@@ -281,15 +311,14 @@ export default class EpCommentThreads extends Vue {
         const tekstiId = Number(value?._id);
         if (tekstiId) {
           const teksti = value[Kielet.getSisaltoKieli];
-          const start = Math.min(selection.anchorOffset, selection.focusOffset);
-          const stop = Math.max(selection.anchorOffset, selection.focusOffset);
+          const { start, stop } = this.distanceFromParentBegin(selection, el);
 
           this.newKahva = {
             opsId: Number(this.$route.params.id),
             tekstiId: tekstiId,
             kieli: Kielet.getSisaltoKieli,
-            start: findTaggedIndex(teksti, start),
-            stop: findTaggedIndex(teksti, stop),
+            start: findIndexWithTagsIncluded(teksti, start),
+            stop: findIndexWithTagsIncluded(teksti, stop),
           };
 
           const kspan = document.createElement('span');

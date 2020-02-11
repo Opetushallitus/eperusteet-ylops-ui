@@ -1,6 +1,14 @@
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch} from 'vue-property-decorator';
 import Sticky from 'vue-sticky-directive';
 import { Kommentit } from '@/stores/kommentit';
+import { setItem, getItem } from '@/utils/localstorage';
+
+
+interface SidenavLocalStorage {
+  enabled: boolean;
+}
+
+const SidenavLocalStorageStr = 'sidenav';
 
 
 @Component({
@@ -15,6 +23,22 @@ export default class EpSidebar extends Vue {
   public mounted() {
     window.addEventListener('resize', this.onResize);
     Kommentit.attach(this.$refs.content as Element);
+    const sidenavLocalStorage = getItem<SidenavLocalStorage>(SidenavLocalStorageStr, {
+      enabled: false,
+    });
+
+    if (sidenavLocalStorage) {
+      this.toggled = sidenavLocalStorage.enabled;
+    }
+  }
+
+  @Watch('toggled')
+  onToggle(newVal, oldVal) {
+    if (newVal !== oldVal) {
+      setItem(SidenavLocalStorageStr, {
+        enabled: newVal,
+      });
+    }
   }
 
   public beforeDestroy() {
