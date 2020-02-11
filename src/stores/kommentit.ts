@@ -225,7 +225,7 @@ class KommenttiStore {
       return {
         el,
         tekstiId: Number((el as any)?.__vue__?.$parent?.value?._id),
-      }
+      };
     }
     else {
       return null;
