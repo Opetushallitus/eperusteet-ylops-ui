@@ -20,8 +20,8 @@
             v-model="selected"
             :filter-by="filterBy"
             :placeholder="$t('valitse-kuva')"
-            @input="onSelect"
-            :options="options">
+            :options="options"
+            label="id">
             <template #selected-option="option">
               <img class="preview-selected" :src="option.src">
             </template>
@@ -83,7 +83,7 @@ export default class ImageModal extends Mixins(validationMixin) {
   private loader!: IAttachmentWrapper;
 
   @Prop({ required: true })
-  private value!: string;
+  private value!: {value?: string};
 
   @Prop({ required: true })
   private kuvatekstiProp!: {};
@@ -95,7 +95,6 @@ export default class ImageModal extends Mixins(validationMixin) {
   private isLoading = true;
   private data: LiiteDto[] = [];
   private files: LiiteDto[] = [];
-  private selected: any = null;
   private kuvateksti: any = {};
 
   async mounted() {
@@ -106,10 +105,6 @@ export default class ImageModal extends Mixins(validationMixin) {
     try {
       this.isLoading = true;
       this.files = await this.loader.hae();
-      const it = _.findIndex(this.files, f => f.id === this.value);
-      if (it >= 0) {
-        this.selected = this.files[it];
-      }
     }
     catch (er) {
       throw er;
@@ -152,8 +147,15 @@ export default class ImageModal extends Mixins(validationMixin) {
     }
   }
 
-  private onSelect(liite) {
-    this.$emit('input', liite ? liite.id : '');
+  set selected(liite: any) {
+    this.$emit('input', liite.id);
+  }
+
+  get selected() {
+    const it = _.findIndex(this.files, f => f.id === this.value.value);
+    if (it >= 0) {
+      return this.files[it];
+    }
   }
 
   private onKuvatekstichange(kuvateksti){
