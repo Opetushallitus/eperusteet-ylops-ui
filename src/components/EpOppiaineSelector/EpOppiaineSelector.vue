@@ -8,7 +8,8 @@
     :items="selectOptions"
     @input="handleInput"
     :validation="validation"
-    :required="true"/>
+    :required="true"
+    :multiple="multiple"/>
 
 </div>
 <div v-else-if="value">
