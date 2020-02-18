@@ -3,11 +3,11 @@
   <div class="content">
     <h3>{{$t('tiedot')}}</h3>
 
-    <ep-spinner v-if="!ops"></ep-spinner>
+    <ep-spinner v-if="!ops || !virkailijat"></ep-spinner>
     <div v-else>
 
       <div class="row">
-        <div class="col w-50">
+        <div class="col-5">
 
           <div class="data-content">
             <div class="row">
@@ -44,7 +44,7 @@
 
         </div>
 
-        <div class="col w-50">
+        <div class="col-7">
 
           <div class="data-content">
             <div class="row">
@@ -54,7 +54,7 @@
             <div class="row justify-content-end">
               <div class="col-1"></div>
               <div class="col">
-                <p v-for="virkailija in virkailijatFormatted" :key="virkailija.oid" class="mb-0">
+                <p v-for="virkailija in virkailijatFormatted" :key="virkailija.oid" class="mb-1">
                   {{ virkailija.esitysnimi }}
                 </p>
                 <ep-button v-if="!naytaLisaaTyoryhmaa && virkailijat.length > tyoryhmaAlkuMaara" @click="naytaLisaaTyoryhmaa = true" variant="link" buttonClass="pl-0 mt-2">

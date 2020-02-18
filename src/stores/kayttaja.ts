@@ -46,7 +46,7 @@ class KayttajaStore {
   public tiedot: KayttajanTietoDto = { };
 
   @State()
-  public virkailijat: any[] = []; // FIXME: tyyppi puuttuu
+  public virkailijat: any[] | null = null; // FIXME: tyyppi puuttuu
 
   @State()
   public oikeudet: Oikeudet = {
