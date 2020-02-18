@@ -1,9 +1,8 @@
 <template>
 <div class="content">
-  <h2 class="opsnimi">{{ $kaanna(nimi) }}</h2>
   <div v-html="$t('julkaisuohje')">
   </div>
-  <div class="vaihe">
+  <div class="vaihe" v-if="kooste && kooste.length > 0">
     <h3>{{ $t('validointi') }}</h3>
     <div class="kategoriat">
       <div class="kategoria" v-for="(category, idx) in kooste" :key="idx">
@@ -24,7 +23,7 @@
       </div>
     </div>
   </div>
-  <div class="vaihe">
+  <div class="vaihe" v-if="isValid">
     <h3>{{ $t('tiedot') }}</h3>
     <div>
       <div class="row">
@@ -70,19 +69,16 @@
       </div>
     </div>
   </div>
-  <div class="vaihe">
+  <div class="vaihe" v-if="isValid">
     <ep-collapse tyyppi="uusi-julkaisu">
       <h3 slot="header"> {{ $t('uusi-julkaisu') }}</h3>
-      <div v-if="true || isValid">
-        <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
-                    v-model="uusiJulkaisu.julkaisutiedote"
-                    help="uuden-julkaisun-tiedote"
-                    layout="simplified"
-                    :is-editable="true"
-                    class="mb-4" />
-        <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'">{{ $t('julkaise') }}</ep-button>
-      </div>
-      <div class="alert alert-warning" v-else>{{ $t('opetussuunnitelman-tarkistukset-julkaisu') }}</div>
+      <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
+                  v-model="uusiJulkaisu.julkaisutiedote"
+                  help="uuden-julkaisun-tiedote"
+                  layout="simplified"
+                  :is-editable="true"
+                  class="mb-4" />
+      <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'">{{ $t('julkaise') }}</ep-button>
     </ep-collapse>
   </div>
   <div class="vaihe">
