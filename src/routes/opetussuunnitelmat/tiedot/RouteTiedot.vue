@@ -72,9 +72,8 @@
               </ep-form-content>
             </div>
              <div class="col-md-6">
-              <ep-form-content name="ainepainoitteinen">
-                <ep-toggle v-model="data.ainepainoitteinen" :is-editing="false">
-                </ep-toggle>
+              <ep-form-content name="opintojaksojen-tarkistus" v-if="data.ainepainoitteinen">
+                <ep-toggle v-model="data.ainepainoitteinen" :is-editing="false" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
               </ep-form-content>
             </div>
             <div class="col-md-12">
