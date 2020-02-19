@@ -28,22 +28,15 @@ export default class EpSidebar extends Vue {
 
   public mounted() {
     window.addEventListener('resize', this.onResize);
+    this.onResize();
   }
 
   public destroyed() {
     window.removeEventListener('resize', this.onResize);
   }
 
-  private onResize(data: Event) {
-    const newWidth = window.innerWidth;
-    if (this.width >= 768 && newWidth < 768) {
-      this.toggled = false;
-    }
-    if (this.width < 768 && newWidth >= 768) {
-      this.toggled = true;
-    }
-
-    this.width = newWidth;
+  private onResize() {
+    this.toggled = window.innerWidth > 960;
   }
 }
 </script>
@@ -57,7 +50,7 @@ export default class EpSidebar extends Vue {
     }
   }
 
-  @media only screen and (min-width: 768px) {
+  @media only screen and (min-width: 960px) {
     display: flex;
 
     .bar {
