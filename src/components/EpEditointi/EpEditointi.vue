@@ -397,7 +397,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
       font-size: 0.85rem;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 767.98px) {
         .muokkaus-container {
           width:100%;
           border-top: 1px solid #E7E7E7;

@@ -23,7 +23,6 @@ import { Vue, Component } from 'vue-property-decorator';
 
 @Component
 export default class EpSidebar extends Vue {
-  private width = window.innerWidth;
   private toggled = true;
 
   public mounted() {
@@ -36,7 +35,7 @@ export default class EpSidebar extends Vue {
   }
 
   private onResize() {
-    this.toggled = window.innerWidth > 960;
+    this.toggled = window.innerWidth > 991;
   }
 }
 </script>
@@ -50,7 +49,7 @@ export default class EpSidebar extends Vue {
     }
   }
 
-  @media only screen and (min-width: 960px) {
+  @media only screen and (min-width: 991px) {
     display: flex;
 
     .bar {
