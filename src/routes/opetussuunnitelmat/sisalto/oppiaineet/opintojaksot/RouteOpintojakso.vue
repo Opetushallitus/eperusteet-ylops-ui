@@ -117,7 +117,7 @@
           <div class="oppiaineet" v-if="!isEditing">
             <div class="moduulit" v-if="editable && editable.moduulit">
               <div class="moduuli" v-for="moduuli in editable.moduulit" :key="moduuli.koodiUri">
-                <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit" :opetussuunnitelmaStore="opetussuunnitelmaStore">
+                <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit">
                 </ep-opintojakson-moduuli>
               </div>
             </div>
