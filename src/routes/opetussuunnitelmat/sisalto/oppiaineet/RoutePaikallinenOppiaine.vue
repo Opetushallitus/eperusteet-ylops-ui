@@ -139,7 +139,7 @@ import { success } from '@/utils/notifications';
     LaajaAlaisetOsaamiset,
   },
 })
-export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
+export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   private oppiaineQuery = '';
   private editable: any = null;
   private laajaAlaisetKoodit: any = null;

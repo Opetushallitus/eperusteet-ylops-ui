@@ -66,7 +66,7 @@
         <template v-for="(oa, idx) in suodatettuOppiaineRakenne">
           <tr class="headerline" :class="[oa.isOpen && 'opened', oa._oppiaine ? 'oppimaara': 'oppiaine']" :key="idx">
             <td>
-              <router-link :to="{ name: 'oppiaine', params: { oppiaineId: oa.id } }">
+              <router-link :to="{ name: oa.route.type, params: oa.route[oa.route.type] }">
                 <span>{{ $kaanna(oa.nimi) }}</span>
                 <span class="ml-1" v-if="oa.koodi">({{ oa.koodi.arvo }})</span>
               </router-link>
@@ -275,6 +275,15 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
        .map(oa => {
          return {
            ...oa,
+           route: {
+             type: oa.paikallinen ? 'paikallinenOppiaine' : 'oppiaine',
+             paikallinenOppiaine: {
+               paikallinenOppiaineId: oa.id,
+             },
+             oppiaine: {
+               oppiaineId: oa.id,
+             }
+           },
            vieraatModuulit: this.vainPuuttuvat ? [] : oa.vieraatModuulit,
            moduulit: _(oa.moduulit)
              .reject((moduuli) => this.vainPuuttuvat && moduuli.used)
