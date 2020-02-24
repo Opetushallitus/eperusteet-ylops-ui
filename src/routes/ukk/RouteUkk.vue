@@ -44,7 +44,7 @@
               </p>
               <h5 v-html="$kaanna(kysymys.kysymys)"></h5>
               <p class="text-secondary">
-                <ep-content layout="simplified" :value="kysymys.vastaus"></ep-content>
+                <ep-content layout="normal" :value="kysymys.vastaus"></ep-content>
               </p>
               <hr />
             </div>
@@ -74,11 +74,11 @@
           </b-dropdown>
         </template>
         <ep-form-content name="kysymys-nimi">
-          <ep-content v-model="kysymys.kysymys" help="kysymys-nimi-ohje" layout="simplified" :validation="validation.kysymys" :is-editable="true">
+          <ep-content v-model="kysymys.kysymys" help="kysymys-nimi-ohje" layout="normal" :validation="validation.kysymys" :is-editable="true">
           </ep-content>
         </ep-form-content>
         <ep-form-content name="kysymys-vastaus">
-          <ep-content v-model="kysymys.vastaus" help="kysymys-vastaus-ohje" layout="simplified" :validation="validation.vastaus" :is-editable="true">
+          <ep-content v-model="kysymys.vastaus" help="kysymys-vastaus-ohje" layout="normal" :validation="validation.vastaus" :is-editable="true">
           </ep-content>
         </ep-form-content>
         <ep-form-content name="nayta-organisaatioissa">

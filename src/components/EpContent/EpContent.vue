@@ -25,6 +25,7 @@
 import * as _ from 'lodash';
 import ImageExtension from '@/components/TiptapExtensions/ImageExtension';
 import TermiExtension from '@/components/TiptapExtensions/TermiExtension';
+import CustomLink from '@/components/TiptapExtensions/CustomLink';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import { Editor, EditorContent } from 'tiptap';
 import { Kielet } from '@shared/stores/kieli';
@@ -123,7 +124,7 @@ export default class EpContent extends Mixins(EpValidation) {
       new Italic(),
       new Strike(),
       new Underline(),
-      new Link(),
+      new CustomLink(),
       new BulletList(),
       new OrderedList(),
       new ListItem(),
