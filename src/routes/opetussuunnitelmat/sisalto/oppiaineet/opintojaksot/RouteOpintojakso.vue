@@ -47,7 +47,8 @@
                   :ops-id="$route.params.id"
                   :validation="validation.oppiaineet"
                   :value="data.oppiaineet.map(x => x.koodi)"
-                  @input="updateOppiaineet" />
+                  @input="updateOppiaineet"
+                  :oppiaineFilter="oppiaineFilter"/>
                 <div v-else>
                   <ul>
                     <li v-for="oa in data.oppiaineet" :key="oa.koodi">
@@ -279,6 +280,7 @@ import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { KoodistoLops2019LaajaAlaiset, koodiSorters } from '@/utils/perusteet';
 import { Opetussuunnitelmat } from '@/api';
 import { success } from '@/utils/notifications';
+import { paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 
 
 @Component({
@@ -362,6 +364,11 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     catch (err) {
       console.error(err);
     }
+  }
+
+  oppiaineFilter(oppiaine) {
+    return !_.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
+      _.startsWith(oppiaine.koodiUri, laajennos));
   }
 
   get versionumero() {
