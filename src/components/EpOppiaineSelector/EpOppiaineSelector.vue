@@ -58,7 +58,6 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   private allowed!: string[] | null;
 
   private cache: PerusteCache | null = null;
-  private query = '';
 
   get isArray() {
     return _.isArray(this.value);
@@ -102,8 +101,13 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
     }
   }
 
+  get filteroitavatLaajennokset() {
+    return _.chain(paikallisestiSallitutLaajennokset())
+      .filter(laajennos => !_.includes(this.allowed, laajennos))
+      .value();
+  }
+
   get oppiaineetJaOppimaarat() {
-    const laajennokset = paikallisestiSallitutLaajennokset();
     return _(this.oppiaineet)
       .map((oa: any) => {
         if (_.isEmpty(oa.oppimaarat)) {
@@ -126,7 +130,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
         koodiArvo: getArvo(oa),
       }))
       .reject(oa =>
-        _.some(laajennokset, (laajennos) =>
+        _.some(this.filteroitavatLaajennokset, (laajennos) =>
           _.startsWith(oa.koodiUri, laajennos)))
       .value();
   }
@@ -136,11 +140,9 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   }
 
   get filteredOppiaineet() {
-    let pipe = _(this.oppiaineetJaOppimaarat)
-      .filter((org: any) => Kielet.search(this.query, org.nimi))
-      .map(getUri);
+    let pipe = _(this.oppiaineetJaOppimaarat);
     if (_.isArray(this.allowed) && !_.isEmpty(this.allowed)) {
-      pipe = pipe.filter(uri => _.some(this.allowed, alku => _.startsWith(uri, alku)));
+      pipe = pipe.filter(oa => _.some(this.allowed, alku => _.startsWith(oa.koodiUri, alku)));
     }
     return pipe
       .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
@@ -148,7 +150,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   }
 
   get selectOptions() {
-    return _.chain(this.oppiaineetJaOppimaarat)
+    return _.chain(this.filteredOppiaineet)
       .map((oppiaine: any) => {
         return {
           value: oppiaine.koodiUri,
