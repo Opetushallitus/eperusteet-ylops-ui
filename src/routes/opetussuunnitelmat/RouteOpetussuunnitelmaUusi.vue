@@ -61,8 +61,8 @@
     <div v-if="uusi.pohja">
       <hr/>
       <ep-organizations :validation="$v.uusi.organisaatiot" :koulutustyyppi="koulutustyyppi" v-model="uusi.organisaatiot"></ep-organizations>
-      <ep-form-content name="ainepainoitteinen">
-        <ep-toggle v-model="uusi.ainepainoitteinen" :is-editing="true"></ep-toggle>
+      <ep-form-content name="opintojaksojen-tarkistus">
+        <ep-toggle v-model="uusi.ainepainoitteinen" :is-editing="true" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
       </ep-form-content>
 
       <ep-button :disabled="$v.uusi.$invalid || addingOpetussuunnitelma" @click="luoUusiOpetussuunnitelma" :show-spinner="isLoading">{{ $t('luo-opetussuunnitelma') }}</ep-button>
