@@ -4,111 +4,110 @@
   <div class="editointikontrolli" v-else>
     <div v-sticky sticky-offset="{ top: 50 }" sticky-z-index="500">
       <div class="ylapaneeli">
-        <div class="d-flex align-items-center">
-          <div class="flex-fill headerline">
-            <slot name="header"
-                  :isEditing="ctrls.isEditing"
-                  :data="state.data"
-                  :validation="$v && $v.state && $v.state.data"></slot>
-          </div>
-          <div v-if="!ctrls.isEditing">
-            <div class="muokattu" v-if="latest">
-              {{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ latest.muokkaajaOid }}
+        <div class="d-flex align-items-center flex-md-row flex-column justify-content-between">
+          <div class="d-flex flex-wrap flex-xl-nowrap">
+            <div class="headerline">
+              <slot name="header"
+                    :isEditing="ctrls.isEditing"
+                    :data="state.data"
+                    :validation="$v && $v.state && $v.state.data"></slot>
+            </div>
+            <div class="muokattu d-flex flex-wrap align-self-start pb-2" v-if="!ctrls.isEditing && latest">
+              <div class="text-truncate">{{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, &nbsp;</div>
+              <div>{{ latest.muokkaajaOid }}</div>
             </div>
           </div>
-          <div>
-            <div class="floating-editing-buttons">
-              <ep-button class="ml-4"
-                         v-if="ctrls.isEditing"
-                         @click="ctrls.cancel()"
-                         :disabled="state.disabled"
-                         variant="link">
-                <slot name="peruuta">{{ $t('peruuta') }}</slot>
-              </ep-button>
-              <ep-button class="ml-4"
-                         @click="ctrls.save()"
-                         v-if="ctrls.isEditing"
-                         :disabled="state.disabled || ($v && $v.state && $v.state.data.$invalid)"
-                         variant="primary"
-                         :show-spinner="state.isSaving"
-                         :help="saveHelpText">
-                <slot name="tallenna">{{ $t('tallenna') }}</slot>
-              </ep-button>
-              <b-dropdown class="mx-4"
-                          v-if="editointiDropDownValinnatVisible"
-                          size="md"
-                          variant="link"
-                          :disabled="state.disabled"
-                          toggle-class="text-decoration-none"
-                          no-caret="no-caret"
-                          right>
-                <template slot="button-content"><fas icon="menu-vaaka"></fas></template>
-                <b-dropdown-item @click="ctrls.remove()"
-                                 key="poista"
-                                 :disabled="!hooks.remove || state.disabled">
-                  <slot name="poista">{{ poistoteksti }}</slot>
-                </b-dropdown-item>
-              </b-dropdown>
-              <ep-button id="editointi-muokkaus"
-                         v-tutorial
-                         variant="link"
-                         v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
-                         @click="ctrls.start()"
-                         v-if="!ctrls.isEditing && ctrls.isEditable && !versiohistoriaVisible"
-                         icon="kyna"
-                         :show-spinner="state.isSaving"
-                         :disabled="state.disabled">
-                <slot name="muokkaa">{{ $t('muokkaa') }}</slot>
-              </ep-button>
-              <b-dropdown class="mx-4"
-                          v-if="katseluDropDownValinnatVisible"
-                          size="md"
-                          variant="link"
-                          :disabled="state.disabled"
-                          toggle-class="text-decoration-none"
-                          no-caret="no-caret"
-                          right
-                          v-oikeustarkastelu="{ oikeus: 'luku' }">
-                <template slot="button-content">
-                  <fas icon="menu-vaaka"></fas>
-                </template>
-                <b-dropdown-item :disabled="!hooks.preview || state.disabled">
-                  {{ $t('esikatsele-sivua') }}
-                </b-dropdown-item>
-                <b-dropdown-item :disabled="!hooks.validate || state.disabled">
-                  {{ $t('validoi') }}
-                </b-dropdown-item>
-                <b-dropdown-item :disabled="!hooks.history || state.disabled">
-                  <ep-versio-modaali :value="current"
-                                     :versions="historia"
-                                     :current="current"
-                                     :per-page="10"
-                                     @restore="ctrls.restore($event)" />
-                </b-dropdown-item>
-              </b-dropdown>
-              <ep-round-button class="ml-2"
-                               :disabled="state.disabled"
-                               id="editointi-muokkaus-comments"
-                               v-tutorial
-                               v-if="hasKeskusteluSlot"
-                               @click="toggleSidebarState(1)"
-                               icon="kommentit"
-                               variant="lightblue fa-flip-horizontal"></ep-round-button>
-              <ep-round-button class="ml-2"
-                               :disabled="state.disabled"
-                               id="editointi-muokkaus-question"
-                               v-tutorial
-                               v-if="hasOhjeSlot"
-                               @click="toggleSidebarState(2)"
-                               icon="kysymysmerkki"
-                               variant="green"></ep-round-button>
-              <ep-round-button class="ml-2"
-                               :disabled="state.disabled"
-                               v-if="hasPerusteSlot"
-                               @click="toggleSidebarState(3)"
-                               icon="valtakunnalliset-perusteet"
-                               variant="pink"></ep-round-button>
-            </div>
+          <div class="d-flex flex-nowrap align-self-start justify-content-end pt-2 muokkaus-container">
+            <ep-button class="ml-4"
+                        v-if="ctrls.isEditing"
+                        @click="ctrls.cancel()"
+                        :disabled="state.disabled"
+                        variant="link">
+              <slot name="peruuta">{{ $t('peruuta') }}</slot>
+            </ep-button>
+            <ep-button class="ml-4"
+                        @click="ctrls.save()"
+                        v-if="ctrls.isEditing"
+                        :disabled="state.disabled || ($v && $v.state && $v.state.data.$invalid)"
+                        variant="primary"
+                        :show-spinner="state.isSaving"
+                        :help="saveHelpText">
+              <slot name="tallenna">{{ $t('tallenna') }}</slot>
+            </ep-button>
+            <b-dropdown class="mx-4"
+                        v-if="editointiDropDownValinnatVisible"
+                        size="md"
+                        variant="link"
+                        :disabled="state.disabled"
+                        toggle-class="text-decoration-none"
+                        no-caret="no-caret"
+                        right>
+              <template slot="button-content"><fas icon="menu-vaaka"></fas></template>
+              <b-dropdown-item @click="ctrls.remove()"
+                                key="poista"
+                                :disabled="!hooks.remove || state.disabled">
+                <slot name="poista">{{ poistoteksti }}</slot>
+              </b-dropdown-item>
+            </b-dropdown>
+            <ep-button id="editointi-muokkaus"
+                        v-tutorial
+                        variant="link"
+                        v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
+                        @click="ctrls.start()"
+                        v-if="!ctrls.isEditing && ctrls.isEditable && !versiohistoriaVisible"
+                        icon="kyna"
+                        :show-spinner="state.isSaving"
+                        :disabled="state.disabled">
+              <slot name="muokkaa">{{ $t('muokkaa') }}</slot>
+            </ep-button>
+            <b-dropdown class="mx-4"
+                        v-if="katseluDropDownValinnatVisible"
+                        size="md"
+                        variant="link"
+                        :disabled="state.disabled"
+                        toggle-class="text-decoration-none"
+                        no-caret="no-caret"
+                        right
+                        v-oikeustarkastelu="{ oikeus: 'luku' }">
+              <template slot="button-content">
+                <fas icon="menu-vaaka"></fas>
+              </template>
+              <b-dropdown-item :disabled="!hooks.preview || state.disabled">
+                {{ $t('esikatsele-sivua') }}
+              </b-dropdown-item>
+              <b-dropdown-item :disabled="!hooks.validate || state.disabled">
+                {{ $t('validoi') }}
+              </b-dropdown-item>
+              <b-dropdown-item :disabled="!hooks.history || state.disabled">
+                <ep-versio-modaali :value="current"
+                                    :versions="historia"
+                                    :current="current"
+                                    :per-page="10"
+                                    @restore="ctrls.restore($event)" />
+              </b-dropdown-item>
+            </b-dropdown>
+            <ep-round-button class="ml-2"
+                              :disabled="state.disabled"
+                              id="editointi-muokkaus-comments"
+                              v-tutorial
+                              v-if="hasKeskusteluSlot"
+                              @click="toggleSidebarState(1)"
+                              icon="kommentit"
+                              variant="lightblue fa-flip-horizontal"></ep-round-button>
+            <ep-round-button class="ml-2"
+                              :disabled="state.disabled"
+                              id="editointi-muokkaus-question"
+                              v-tutorial
+                              v-if="hasOhjeSlot"
+                              @click="toggleSidebarState(2)"
+                              icon="kysymysmerkki"
+                              variant="green"></ep-round-button>
+            <ep-round-button class="ml-2"
+                              :disabled="state.disabled"
+                              v-if="hasPerusteSlot"
+                              @click="toggleSidebarState(3)"
+                              icon="valtakunnalliset-perusteet"
+                              variant="pink"></ep-round-button>
           </div>
         </div>
       </div>
@@ -395,6 +394,14 @@ export default class EpEditointi extends Mixins(validationMixin) {
     .muokattu, .muokkaaja {
       color: #555;
       margin-right: 20px;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .muokkaus-container {
+          width:100%;
+          border-top: 1px solid #E7E7E7;
+        }
     }
   }
 
