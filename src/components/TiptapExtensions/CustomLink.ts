@@ -13,14 +13,13 @@ export default class CustomLink extends Link {
           tag: 'a[href]',
           getAttrs: dom => ({
             href: dom.getAttribute('href'),
-            //target: dom.getAttribute('target')
           }),
         },
       ],
       toDOM: node => ['a', {
         ...node.attrs,
-        //target: '__blank',
-        //rel: 'noopener noreferrer nofollow',
+        target: '_blank',
+        rel: 'noopener noreferrer nofollow',
       }, 0],
     };
   }
