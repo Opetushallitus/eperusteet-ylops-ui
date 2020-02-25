@@ -37,9 +37,9 @@
               <ep-oppiaine-selector
                 :opetussuunnitelma-store="opetussuunnitelmaStore"
                 :is-editable="isEditing"
-                :allowed="allowed"
                 :multiple="false"
                 v-model="data.perusteenOppiaineUri"
+                :oppiaineFilter="oppiaineFilter"
                 :ops-id="$route.params.id" />
             </ep-form-content>
           </b-col>
@@ -223,8 +223,9 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
     ]);
   }
 
-  get allowed() {
-    return paikallisestiSallitutLaajennokset();
+  oppiaineFilter(oppiaine) {
+    return _.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
+      _.startsWith(oppiaine.koodiUri, laajennos));
   }
 
   get versionumero() {

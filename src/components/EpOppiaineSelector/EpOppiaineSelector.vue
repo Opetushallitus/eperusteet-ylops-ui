@@ -54,8 +54,8 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   @Prop({ default: true })
   private multiple!: boolean;
 
-  @Prop()
-  private allowed!: string[] | null;
+  @Prop({ required: true})
+  private oppiaineFilter!: Function;
 
   private cache: PerusteCache | null = null;
 
@@ -101,12 +101,6 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
     }
   }
 
-  get filteroitavatLaajennokset() {
-    return _.chain(paikallisestiSallitutLaajennokset())
-      .filter(laajennos => !_.includes(this.allowed, laajennos))
-      .value();
-  }
-
   get oppiaineetJaOppimaarat() {
     return _(this.oppiaineet)
       .map((oa: any) => {
@@ -129,9 +123,8 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
         koodiUri: getUri(oa),
         koodiArvo: getArvo(oa),
       }))
-      .reject(oa =>
-        _.some(this.filteroitavatLaajennokset, (laajennos) =>
-          _.startsWith(oa.koodiUri, laajennos)))
+      .filter(oppiaine => this.oppiaineFilter(oppiaine))
+      .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
       .value();
   }
 
@@ -139,18 +132,8 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
     return _.keyBy(this.oppiaineetJaOppimaarat, getUri);
   }
 
-  get filteredOppiaineet() {
-    let pipe = _(this.oppiaineetJaOppimaarat);
-    if (_.isArray(this.allowed) && !_.isEmpty(this.allowed)) {
-      pipe = pipe.filter(oa => _.some(this.allowed, alku => _.startsWith(oa.koodiUri, alku)));
-    }
-    return pipe
-      .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
-      .value();
-  }
-
   get selectOptions() {
-    return _.chain(this.filteredOppiaineet)
+    return _.chain(this.oppiaineetJaOppimaarat)
       .map((oppiaine: any) => {
         return {
           value: oppiaine.koodiUri,
