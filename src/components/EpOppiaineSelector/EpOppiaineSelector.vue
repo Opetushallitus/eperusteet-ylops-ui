@@ -55,7 +55,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   private multiple!: boolean;
 
   @Prop({ required: true})
-  private oppiaineFilter!: Function;
+  private oppiaineFilter!: (any) => boolean;
 
   private cache: PerusteCache | null = null;
 
