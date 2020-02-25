@@ -27,7 +27,7 @@
       </ep-collapse>
       <ep-collapse v-if="oppiaine.oppimaarat && oppiaine.oppimaarat.length > 0">
         <h4 slot="header">{{ $t('oppimaarat') }}</h4>
-        <div class="oppimaarat-topic">{{ $t('Oppiaineeseen kuuluu useampia oppimääriä')}}</div>
+        <div class="oppimaarat-topic">{{ $t('oppiaine-oppimaara-ohje')}}</div>
         <div class="block-container oppimaarat" v-for="oppimaara in oppiaine.oppimaarat" :key="oppimaara.id">
           <router-link class="om-content" :to="{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }">
             <span class="nimi">{{ $kaanna(oppimaara.nimi) }}</span>
