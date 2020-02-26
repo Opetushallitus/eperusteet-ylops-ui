@@ -51,7 +51,7 @@
                   :oppiaineFilter="oppiaineFilter"/>
                 <div v-else>
                   <ul>
-                    <li v-for="oa in data.oppiaineet" :key="oa.koodi">
+                    <li v-for="(oa,index) in data.oppiaineet" :key="index+'data.oppiaineet.select'">
                       {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
                     </li>
                   </ul>
@@ -60,7 +60,7 @@
             </div>
             <div class="col-md-6">
               <ep-form-content name="opintopisteet">
-                <span>{{ laajuus }} {{ $t('opintopiste') }} ({{ $t('johdetaan-moduuleista') }})</span>
+                <span>{{ laajuus }} {{ $t('opintopiste') }} {{laajuusJohdettavusTeksti}}</span>
               </ep-form-content>
             </div>
           </div>
@@ -69,47 +69,45 @@
         <div class="osio" v-if="isEditing || data.moduulit.length > 0">
           <div class="alueotsikko">{{ $t('opintojakson-moduulit') }}</div>
           <div class="oppiaineet" v-if="isEditing">
-            <div v-for="oa in data.oppiaineet" :key="oa.koodi">
-              <div>
-                <div class="d-flex moduuliotsikko">
-                  <div class="flex-grow-1">
-                    {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
-                  </div>
-                  <div class="moduulikuvaukset mr-5 d-inline-flex" v-if="isEditing && !oa.isModuuliton">
-                    <div>
-                      <ep-color-indicator kind="pakollinen" />
-                      <span class="ml-2">{{ $t('pakollinen') }}</span>
-                    </div>
-                    <div>
-                      <ep-color-indicator class="ml-4" kind="valinnainen" />
-                      <span class="ml-2">{{ $t('valinnainen') }}</span>
-                    </div>
-                  </div>
-                  <ep-toggle @input="toggleLaajuus(oa, $event)" class="mb-2" :value="oa.isModuuliton">
-                    <span class="label">
-                      {{ $t('ilman-moduuleita') }}
-                    </span>
-                  </ep-toggle>
+            <div v-for="(oa, index) in oppiaineetModuuliTaiIlman" :key="index+'oppiaineetModuuliTaiIlman'" >
+              <div class="d-flex moduuliotsikko">
+                <div class="flex-grow-1">
+                  {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
                 </div>
-                <div v-if="oa.isModuuliton">
-                  <ep-form-content name="laajuus">
-                    <ep-field
-                      type="number"
-                      help="oppainekohtainen-laajuus-opintojaksossa"
-                      v-model="oa.laajuus"
-                      :is-header="false"
-                      :is-editing="isEditing"></ep-field>
-                  </ep-form-content>
+                <div class="moduulikuvaukset mr-5 d-inline-flex" v-if="isEditing && !oa.isModuuliton">
+                  <div>
+                    <ep-color-indicator kind="pakollinen" />
+                    <span class="ml-2">{{ $t('pakollinen') }}</span>
+                  </div>
+                  <div>
+                    <ep-color-indicator class="ml-4" kind="valinnainen" />
+                    <span class="ml-2">{{ $t('valinnainen') }}</span>
+                  </div>
                 </div>
-                <div v-else>
-                  <div class="moduulit">
-                    <div class="moduuli" v-for="moduuli in oppiaineidenModuulitMap[oa.koodi].moduulit" :key="moduuli.id">
-                      <ep-opintojakson-moduuli
-                        :moduuli="moduuli"
-                        :is-editing="true"
-                        v-model="data.moduulit"
-                        :opetussuunnitelmaStore="opetussuunnitelmaStore"/>
-                    </div>
+                <ep-toggle @input="toggleLaajuus(oa, $event)" class="mb-2" :value="oa.isModuuliton">
+                  <span class="label">
+                    {{ $t('ilman-moduuleita') }}
+                  </span>
+                </ep-toggle>
+              </div>
+              <div v-if="oa.isModuuliton">
+                <ep-form-content name="laajuus">
+                  <ep-field
+                    type="number"
+                    help="oppainekohtainen-laajuus-opintojaksossa"
+                    v-model="oa.laajuus"
+                    :is-header="false"
+                    :is-editing="isEditing"></ep-field>
+                </ep-form-content>
+              </div>
+              <div v-else>
+                <div class="moduulit">
+                  <div class="moduuli" v-for="(moduuli, index) in oppiaineidenModuulitMap[oa.koodi].moduulit" :key="index+'oppiaineetMap.moduulit'">
+                    <ep-opintojakson-moduuli
+                      :moduuli="moduuli"
+                      :is-editing="true"
+                      v-model="data.moduulit"
+                      :opetussuunnitelmaStore="opetussuunnitelmaStore"/>
                   </div>
                 </div>
               </div>
@@ -117,15 +115,15 @@
           </div>
           <div class="oppiaineet" v-if="!isEditing">
             <div class="moduulit" v-if="editable && editable.moduulit">
-              <div class="moduuli" v-for="moduuli in editable.moduulit" :key="moduuli.koodiUri">
+              <div class="moduuli" v-for="(moduuli, index) in editable.moduulit" :key="index+'editable.moduulit.oppiaineet'">
                 <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit">
                 </ep-opintojakson-moduuli>
               </div>
             </div>
           </div>
-          <div class="moduulilista" v-if="isEditing && editable.moduulit.length > 0">
+          <div class="moduulilista" v-if="editable.moduulit.length > 0">
             <h5>{{ $t('valitut-moduulit') }}</h5>
-            <div v-for="(moduuli, idx) in editable.moduulit" :key="idx">
+            <div v-for="(moduuli, idx) in editable.moduulit" :key="idx+'editable.moduulit.moduulilista'">
               <div class="d-flex">
                 <div class="p-2 flex-grow-1">
                   <fas class="checked" icon="check">
@@ -140,13 +138,43 @@
             </div>
           </div>
         </div>
+        <div class="osio" v-if="editable.paikallisetOpintojaksot.length > 0 || (isEditing && paikallistenOppiaineidenOpintojaksot.length > 0)">
+          <hr/>
+          <div class="alueotsikko">{{ $t('paikallisen-oppiaineen-opintojaksot') }}</div>
+          <div class="oppiaineet">
+            <div v-if="isEditing">
+              <div v-for="(oppiaineOpintojakso, index) in paikallistenOppiaineidenOpintojaksot" :key="index+'paikallistenOppiaineidenOpintojaksot'" >
+                {{ $kaanna(oppiaineetMap[oppiaineOpintojakso.oppiaine.koodi].nimi) }}
+                <ep-opintojakso-select :options="oppiaineOpintojakso.opintojaksot" v-model="editable.paikallisetOpintojaksot" :is-editing="isEditing"/>
+              </div>
+            </div>
+            <div v-else>
+              <div v-for="(oppiaineOpintojakso, index) in esitettavaPaikallistenOppiaineidenOpintojaksot" :key="index+'paikallistenOppiaineidenOpintojaksot'" >
+                {{ $kaanna(oppiaineetMap[oppiaineOpintojakso.oppiaine.koodi].nimi) }}
+                <ep-opintojakso-select v-model="oppiaineOpintojakso.opintojaksot" :is-editing="isEditing"/>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-tavoitteet" :first="true">
             <div class="alueotsikko" slot="header">{{ $t('tavoitteet') }}</div>
-            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx">
+            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx+'data.moduulit.tavoitteet'">
               <div class="moduuliotsikko">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</div>
               <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].tavoitteet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
             </div>
+
+            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'h'">
+              <div class="perustesisalto" v-if="paikallinenOpintojakso.tavoitteet.length > 0">
+                <div class="moduuliotsikko">{{ $kaanna(paikallinenOpintojakso.nimi) }}</div>
+                <ep-list
+                  :is-editable="false"
+                  lisays="lisaa-tavoite"
+                  kentta="kuvaus"
+                  v-model="paikallinenOpintojakso.tavoitteet" />
+              </div>
+            </div>
+
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays-tavoitteet') }}</div>
             <div class="alert alert-info" v-if="!isEditing && data.tavoitteet && data.tavoitteet.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-list
@@ -160,10 +188,21 @@
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-keskeiset-sisallot">
             <div class="alueotsikko" slot="header">{{ $t('keskeiset-sisallot') }}</div>
-            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx">
+            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx+'data.moduulit.keskeiset'">
               <div class="moduuliotsikko">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</div>
               <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].sisallot" kohde="kohde" arvot="sisallot">
               </ep-prefix-list>
+            </div>
+
+            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'data.paikallisetOpintojaksot'">
+              <div class="perustesisalto" v-if="paikallinenOpintojakso.keskeisetSisallot.length > 0">
+                <div class="moduuliotsikko">{{ $kaanna(paikallinenOpintojakso.nimi) }}</div>
+                <ep-list
+                  :is-editable="false"
+                  lisays="lisaa-tavoite"
+                  kentta="kuvaus"
+                  v-model="paikallinenOpintojakso.keskeisetSisallot" />
+              </div>
             </div>
 
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays-keskeiset-sisallot') }}</div>
@@ -180,7 +219,7 @@
          <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header">{{ $t('laaja-alaiset-sisallot') }}</div>
 
-            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx+'opintojaksonOppiaineet'">
               <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
                 <ep-content
@@ -192,36 +231,56 @@
               <!-- Todo: Tee parempi ratkaisu tähän -->
               <div v-else-if="oppiaine.laajaAlainenOsaaminen">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
-                <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="oppiaine.laajaAlainenOsaaminen"></ep-content>
+                <ep-content v-for="(laajalainenosaaminen, index) in oppiaine.laajaAlainenOsaaminen" :key="index+'oppiaine.laajaAlainenOsaaminen'"
+                    layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="laajalainenosaaminen.kuvaus"></ep-content>
               </div>
             </div>
 
-            <div class="moduuliotsikko">{{ $t('paikallinen-lisays-opintojakso-laaja-alainen') }}</div>
+            <div class="moduuliotsikko"><h3>{{ $t('paikallinen-lisays-opintojakso-laaja-alainen') }}</h3></div>
 
-            <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
-              <div slot="header" class="moduuliotsikko">
+            <div class="paikallinen-laaja-alainen" v-for="(lo, index) in data.laajaAlainenOsaaminen" :key="index+'laajaAlainenOsaaminen'">
+              <div slot="header">
                 <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
-                  {{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}
+                  <h5 class="d-inline">{{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}</h5>
+                  <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
+                    <fas icon="sulje" />
+                  </b-button>
                 </span>
-                <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
-                  <fas icon="sulje" />
-                </b-button>
               </div>
               <ep-content
                 layout="normal"
                 v-model="lo.kuvaus"
                 :is-editable="isEditing"></ep-content>
             </div>
+
             <div class="alert alert-info" v-if="!isEditing && data.laajaAlainenOsaaminen.length === 0">{{ $t('ei-paikallista-tarkennusta') }}</div>
-            <b-dropdown v-if="isEditing" :text="$t('lisaa-laaja-alainen-osaaminen')" variant="primary">
+            <b-dropdown v-if="isEditing" :text="$t('lisaa-laaja-alainen-osaaminen')" variant="primary" class="mb-4">
               <b-dropdown-item-button
                 @click="addLaaja(laaja)"
-                v-for="laaja in laajaAlaistenKoodit"
-                :key="laaja.koodi"
+                v-for="(laaja, index) in laajaAlaistenKoodit"
+                :key="index+'addlaaja'"
                 :disabled="laaja.hasPaikallinenKuvaus">
                 {{ $kaanna(laaja.nimi) }}
               </b-dropdown-item-button>
             </b-dropdown>
+
+            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'laaja'">
+              <div v-if="paikallinenOpintojakso.laajaAlainenOsaaminen && paikallinenOpintojakso.laajaAlainenOsaaminen.length > 0">
+                <div class="moduuliotsikko"><h4>{{ $kaanna(paikallinenOpintojakso.nimi) }}</h4></div>
+                <div class="paikallinen-laaja-alainen" v-for="(lo, index) in paikallinenOpintojakso.laajaAlainenOsaaminen" :key="index+'paik-laaja-osa'">
+                  <div slot="header" class="moduuliotsikko">
+                    <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
+                      <h5>{{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}</h5>
+                    </span>
+                  </div>
+                  <ep-content
+                    layout="normal"
+                    v-model="lo.kuvaus"
+                    :is-editable="false"></ep-content>
+                </div>
+              </div>
+            </div>
+
           </ep-collapse>
         </div>
 
@@ -229,16 +288,22 @@
           <ep-collapse tyyppi="opintojakson-arviointi">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-arviointi') }}</div>
 
-            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx+'op-arviointi'">
               <div v-if="oppiaine.arviointi && oppiaine.arviointi.kuvaus">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
                 <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="oppiaine.arviointi.kuvaus"></ep-content>
               </div>
             </div>
-
             <div class="moduuliotsikko">{{ $t('paikallinen-lisays-opintojakso-arviointi') }}</div>
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.arviointi" :is-editable="isEditing"></ep-content>
+
+            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'paik-arviointi'" class="mt-4">
+              <div v-if="paikallinenOpintojakso.arviointi">
+                <div class="moduuliotsikko">{{ $kaanna(paikallinenOpintojakso.nimi) }}</div>
+                <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="paikallinenOpintojakso.arviointi" :is-editable="false"></ep-content>
+              </div>
+            </div>
           </ep-collapse>
         </div>
 
@@ -273,6 +338,7 @@ import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import * as _ from 'lodash';
 import EpOpintojaksonModuuli from './EpOpintojaksonModuuli.vue';
+import EpOpintojaksoSelect from './EpOpintojaksoSelect.vue';
 import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@shared/stores/kieli';
 import * as defaults from '@/defaults';
@@ -297,6 +363,7 @@ import { paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
     EpOppiaineSelector,
     EpPrefixList,
     EpToggle,
+    EpOpintojaksoSelect,
   },
 })
 export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
@@ -415,8 +482,23 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     ] as Lops2019OppiaineDto[];
   }
 
+  get laajuusJohdettavusTeksti() {
+    if (!_.isEmpty(this.editable!.moduulit) && !_.isEmpty(this.editable!.paikallisetOpintojaksot)) {
+      return `(${ this.$t('johdetaan-moduuleista-ja-opintojaksoista') })`;
+    }
+    else if (!_.isEmpty(this.editable!.moduulit)) {
+      return `(${ this.$t('johdetaan-moduuleista') })`;
+    }
+    else if (!_.isEmpty(this.editable!.paikallisetOpintojaksot)) {
+      return `(${ this.$t('johdetaan-opintojaksoista') })`;
+    }
+
+    return '';
+  }
+
   get laajuus() {
     let result: number = _.chain(this.editable!.oppiaineet)
+      .filter((oppiaine) => !_.includes(_.map(this.paikallistenOpintojaksojenOppiaineet,'koodi'), oppiaine.koodi))
       .filter('laajuus')
       .map('laajuus')
       .map(_.parseInt)
@@ -430,6 +512,13 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         .sum()
         .value();
     }
+    result += _.chain(this.editable!.paikallisetOpintojaksot)
+      .map('oppiaineet')
+      .flatMap()
+      .map('laajuus')
+      .sum()
+      .value();
+
     return result;
   }
 
@@ -494,6 +583,12 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .value();
   }
 
+  get oppiaineetModuuliTaiIlman() {
+    return _.chain(this.editable!.oppiaineet)
+      .filter((oppiaine) => !_.includes(_.map(this.paikallistenOpintojaksojenOppiaineet, 'koodi'), oppiaine.koodi))
+      .value();
+  }
+
   get opintojaksonOppiaineet() {
     return _.chain(this.editable!.oppiaineet)
       .map(({ koodi }) => koodi)
@@ -508,7 +603,11 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         }
       })
       .flatten()
-      .map((uri: string) => this.oppiaineetMap[uri])
+      .map((uri: string) => {
+        return {
+          ...this.oppiaineetMap[uri],
+        };
+      })
       .value() as Lops2019OppiaineDto[];
   }
 
@@ -541,6 +640,55 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         })
         .value();
     }
+  }
+
+  get paikallistenOpintojaksojenOppiaineet() {
+    return _.chain(this.editable!.paikallisetOpintojaksot)
+      .map('oppiaineet')
+      .flatMap()
+      .value();
+  }
+
+  get editoitavaOpintojaksoValittuToisessaOpintojaksossa() {
+    return !_.isEmpty(_.filter(this.store.opintojaksot, opintojakso => _.includes(_.map(opintojakso.paikallisetOpintojaksot,'koodi'), this.editable!.koodi)));
+  }
+
+  get paikallistenOppiaineidenOpintojaksot() {
+    if (this.editoitavaOpintojaksoValittuToisessaOpintojaksossa) {
+      return [];
+    }
+
+    return _.chain(this.editable!.oppiaineet)
+      .filter('isModuuliton')
+      .map((oppiaine) => {
+        return {
+          oppiaine,
+          opintojaksot: _.chain(this.store.opintojaksot)
+            // valittavalla ei saa olla paikallisia opintojaksoja (ei saa olla parentti)
+            .filter((opintojakso) => _.isEmpty(opintojakso.paikallisetOpintojaksot))
+            // valittavassa opintojaksossa on editoitavan opintojakson oppiaine
+            .filter((opintojakso) => _.includes(_.map(opintojakso.oppiaineet, 'koodi'), oppiaine.koodi))
+            // valittava ei ole editoitava itse
+            .filter((opintojakso) => opintojakso.koodi !== this.editable!.koodi)
+            .value(),
+        };
+      })
+      .sortBy(...koodiSorters() as any[])
+      .value();
+  }
+
+  get esitettavaPaikallistenOppiaineidenOpintojaksot() {
+    return _.chain(this.editable!.oppiaineet)
+      .filter('isModuuliton')
+      .map((oppiaine) => {
+        return {
+          oppiaine,
+          opintojaksot: _.filter(this.editable!.paikallisetOpintojaksot, (paikallinenOpintojakso) => _.includes(_.map(paikallinenOpintojakso.oppiaineet, 'koodi'), oppiaine.koodi)),
+        };
+      })
+      .filter(oppiaineOpintojakso => !_.isEmpty(oppiaineOpintojakso.opintojaksot))
+      .sortBy(...koodiSorters() as any[])
+      .value();
   }
 
   get laajaAlaisetOsaamiset() {
@@ -586,8 +734,9 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     this.editable!.oppiaineet = _.map(koodit, (koodi) => ({
       koodi,
       laajuus: vanhat[koodi] && vanhat[koodi].laajuus,
-      isModuuliton: false,
+      isModuuliton: _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), koodi),
     }));
+
   }
 
   public async load() {
@@ -599,7 +748,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         result.oppiaineet!.push({
           koodi: oaUri,
           laajuus: null as any,
-          isModuuliton: false,
+          isModuuliton: _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), oaUri),
         } as Partial<Lops2019OpintojaksonOppiaineDto>);
         delete this.$route.query.oppiaineet;
       }
@@ -616,12 +765,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
       }
       _.forEach(opintojakso.oppiaineet, oa => {
-        if (oa.laajuus) {
-          (oa as any).isModuuliton = true;
-        }
-        else {
-          (oa as any).isModuuliton = false;
-        }
+        (oa as any).isModuuliton = _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), oa.koodi);
       });
 
       if (opintojakso) {
@@ -661,8 +805,8 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 @import "@/styles/_variables.scss";
 
 /deep/ .nimi {
-  font-size: 150%;
-  font-weight: 600;
+  // font-size: 150%;
+  // font-weight: 600;
 }
 
 .moduulit {
@@ -757,6 +901,28 @@ hr.valiviiva {
 
 .sidepad {
   padding: 8px;
+}
+
+.oj-content {
+  border-radius: 24px;
+  border: 1px solid #CDEEFF;
+  padding: 14px 30px;
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: #E6F6FF;
+
+  span.nimi {
+    flex: 1 0 auto;
+  }
+
+  span.pituus {
+    min-width: 4em;
+  }
+
+  span.tyyppi {
+    min-width: 6em;
+  }
 }
 
 </style>
