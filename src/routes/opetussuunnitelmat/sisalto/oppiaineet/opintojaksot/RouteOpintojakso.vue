@@ -103,7 +103,7 @@
                 </div>
                 <div v-else>
                   <div class="moduulit">
-                    <div class="moduuli" v-for="moduuli in oppiaineetMap[oa.koodi].moduulit" :key="moduuli.id">
+                    <div class="moduuli" v-for="moduuli in oppiaineidenModuulitMap[oa.koodi].moduulit" :key="moduuli.id">
                       <ep-opintojakson-moduuli
                         :moduuli="moduuli"
                         :is-editing="true"
@@ -402,7 +402,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
           ...oa,
           koodi: {
             uri: oa.koodi,
-          }
+          },
         };
       })
       .value();
@@ -435,6 +435,23 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   get oppiaineetMap() {
     return _.keyBy(this.oppiaineetJaOppimaarat, 'koodi.uri');
+  }
+
+  get oppiaineidenModuulitMap() {
+    return _.chain(this.oppiaineetJaOppimaarat)
+      .map((oa: any) => {
+        if(oa.perusteenOppiaineUri) {
+          return {
+            ...oa,
+            moduulit: this.oppiaineetMap[oa.perusteenOppiaineUri].moduulit,
+          };
+        }
+        else {
+          return oa;
+        }
+      })
+      .keyBy('koodi.uri')
+      .value();
   }
 
   get moduulit() {
