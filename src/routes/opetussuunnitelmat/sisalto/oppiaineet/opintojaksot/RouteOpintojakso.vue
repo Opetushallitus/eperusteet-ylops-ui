@@ -142,14 +142,9 @@
           <hr/>
           <div class="alueotsikko">{{ $t('paikallisen-oppiaineen-opintojaksot') }}</div>
           <div class="oppiaineet">
-            <div v-if="isEditing">
-               <div v-for="(oppiaineOpintojakso, index) in paikallistenOppiaineidenOpintojaksot" :key="index+'paikallistenOppiaineidenOpintojaksot'" >
-                {{ $kaanna(oppiaineetMap[oppiaineOpintojakso.oppiaine.koodi].nimi) }}
-                <ep-opintojakso-select v-if="isEditing" :options="oppiaineOpintojakso.opintojaksot" v-model="editable.paikallisetOpintojaksot" :is-editing="isEditing"/>
-              </div>
-            </div>
-            <div v-else>
-              <ep-opintojakso-select v-model="editable.paikallisetOpintojaksot" :is-editing="isEditing"/>
+              <div v-for="(oppiaineOpintojakso, index) in paikallistenOppiaineidenOpintojaksot" :key="index+'paikallistenOppiaineidenOpintojaksot'" >
+              {{ $kaanna(oppiaineetMap[oppiaineOpintojakso.oppiaine.koodi].nimi) }}
+              <ep-opintojakso-select :options="oppiaineOpintojakso.opintojaksot" v-model="editable.paikallisetOpintojaksot" :is-editing="isEditing"/>
             </div>
           </div>
         </div>
