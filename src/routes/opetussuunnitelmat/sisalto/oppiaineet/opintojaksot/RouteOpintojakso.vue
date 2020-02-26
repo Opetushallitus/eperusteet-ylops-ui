@@ -142,9 +142,17 @@
           <hr/>
           <div class="alueotsikko">{{ $t('paikallisen-oppiaineen-opintojaksot') }}</div>
           <div class="oppiaineet">
+            <div v-if="isEditing">
               <div v-for="(oppiaineOpintojakso, index) in paikallistenOppiaineidenOpintojaksot" :key="index+'paikallistenOppiaineidenOpintojaksot'" >
-              {{ $kaanna(oppiaineetMap[oppiaineOpintojakso.oppiaine.koodi].nimi) }}
-              <ep-opintojakso-select :options="oppiaineOpintojakso.opintojaksot" v-model="editable.paikallisetOpintojaksot" :is-editing="isEditing"/>
+                {{ $kaanna(oppiaineetMap[oppiaineOpintojakso.oppiaine.koodi].nimi) }}
+                <ep-opintojakso-select :options="oppiaineOpintojakso.opintojaksot" v-model="editable.paikallisetOpintojaksot" :is-editing="isEditing"/>
+              </div>
+            </div>
+            <div v-else>
+              <div v-for="(oppiaineOpintojakso, index) in esitettavaPaikallistenOppiaineidenOpintojaksot" :key="index+'paikallistenOppiaineidenOpintojaksot'" >
+                {{ $kaanna(oppiaineetMap[oppiaineOpintojakso.oppiaine.koodi].nimi) }}
+                <ep-opintojakso-select v-model="oppiaineOpintojakso.opintojaksot" :is-editing="isEditing"/>
+              </div>
             </div>
           </div>
         </div>
@@ -669,6 +677,20 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .value();
   }
 
+  get esitettavaPaikallistenOppiaineidenOpintojaksot() {
+    return _.chain(this.editable!.oppiaineet)
+      .filter('isModuuliton')
+      .map((oppiaine) => {
+        return {
+          oppiaine,
+          opintojaksot: _.filter(this.editable!.paikallisetOpintojaksot, (paikallinenOpintojakso) => _.includes(_.map(paikallinenOpintojakso.oppiaineet, 'koodi'), oppiaine.koodi)),
+        };
+      })
+      .filter(oppiaineOpintojakso => !_.isEmpty(oppiaineOpintojakso.opintojaksot))
+      .sortBy(...koodiSorters() as any[])
+      .value();
+  }
+
   get laajaAlaisetOsaamiset() {
     return _.chain(this.opintojaksonOppiaineet)
       .filter((oa: any) => oa.laajaAlaisetOsaamiset && oa.laajaAlaisetOsaamiset.kuvaus)
@@ -743,12 +765,12 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
       }
       _.forEach(opintojakso.oppiaineet, oa => {
-        if (oa.laajuus) {
-          (oa as any).isModuuliton = true;
-        }
-        else {
-          (oa as any).isModuuliton = false;
-        }
+        // if (oa.laajuus) {
+        // (oa as any).isModuuliton = true;
+        // }
+        // else {
+        (oa as any).isModuuliton = _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), oa.koodi);
+        // }
       });
 
       if (opintojakso) {
