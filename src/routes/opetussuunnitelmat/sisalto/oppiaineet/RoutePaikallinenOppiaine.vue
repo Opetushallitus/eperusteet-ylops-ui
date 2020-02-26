@@ -141,7 +141,7 @@ import { success } from '@/utils/notifications';
 })
 export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   private oppiaineQuery = '';
-  private editable: any = null;
+  private editable: Lops2019PaikallinenOppiaineDto = {};
   private laajaAlaisetKoodit: any = null;
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: this.editAfterLoad,

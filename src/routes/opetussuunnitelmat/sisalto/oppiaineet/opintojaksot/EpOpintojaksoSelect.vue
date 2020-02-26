@@ -20,16 +20,20 @@ import _ from 'lodash';
 @Component
 export default class EpOpintojaksoSelect extends Vue {
 
-  @Prop({ required: true})
+  @Prop({ required: false})
   private options!: Lops2019OpintojaksoDto[];
 
-  @Prop()
+  @Prop({ required: true})
   private value!: Lops2019OpintojaksoDto[];
 
   @Prop({ required: false, default: false })
   private isEditing!: boolean;
 
   get opintojaksot() {
+    if(!this.isEditing) {
+      return this.value;
+    }
+
     return _.map(this.options, (option) => {
       return {
         ...option,

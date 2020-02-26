@@ -51,7 +51,7 @@
                   :oppiaineFilter="oppiaineFilter"/>
                 <div v-else>
                   <ul>
-                    <li v-for="oa in data.oppiaineet" :key="oa.koodi">
+                    <li v-for="(oa,index) in data.oppiaineet" :key="index+'data.oppiaineet.select'">
                       {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
                     </li>
                   </ul>
@@ -69,7 +69,7 @@
         <div class="osio" v-if="isEditing || data.moduulit.length > 0">
           <div class="alueotsikko">{{ $t('opintojakson-moduulit') }}</div>
           <div class="oppiaineet" v-if="isEditing">
-            <div v-for="oa in oppiaineetModuuliTaiIlman" :key="oa.koodi" >
+            <div v-for="(oa, index) in oppiaineetModuuliTaiIlman" :key="index+'oppiaineetModuuliTaiIlman'" >
               <div class="d-flex moduuliotsikko">
                 <div class="flex-grow-1">
                   {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
@@ -102,7 +102,7 @@
               </div>
               <div v-else>
                 <div class="moduulit">
-                  <div class="moduuli" v-for="moduuli in oppiaineidenModuulitMap[oa.koodi].moduulit" :key="moduuli.id">
+                  <div class="moduuli" v-for="(moduuli, index) in oppiaineidenModuulitMap[oa.koodi].moduulit" :key="index+'oppiaineetMap.moduulit'">
                     <ep-opintojakson-moduuli
                       :moduuli="moduuli"
                       :is-editing="true"
@@ -115,7 +115,7 @@
           </div>
           <div class="oppiaineet" v-if="!isEditing">
             <div class="moduulit" v-if="editable && editable.moduulit">
-              <div class="moduuli" v-for="moduuli in editable.moduulit" :key="moduuli.koodiUri">
+              <div class="moduuli" v-for="(moduuli, index) in editable.moduulit" :key="index+'editable.moduulit.oppiaineet'">
                 <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit">
                 </ep-opintojakson-moduuli>
               </div>
@@ -123,7 +123,7 @@
           </div>
           <div class="moduulilista" v-if="editable.moduulit.length > 0">
             <h5>{{ $t('valitut-moduulit') }}</h5>
-            <div v-for="(moduuli, idx) in editable.moduulit" :key="idx">
+            <div v-for="(moduuli, idx) in editable.moduulit" :key="idx+'editable.moduulit.moduulilista'">
               <div class="d-flex">
                 <div class="p-2 flex-grow-1">
                   <fas class="checked" icon="check">
@@ -143,25 +143,25 @@
           <div class="alueotsikko">{{ $t('paikallisen-oppiaineen-opintojaksot') }}</div>
           <div class="oppiaineet">
             <div v-if="isEditing">
-               <div v-for="(oppiaineOpintojakso, index) in paikallistenOppiaineidenOpintojaksot" :key="index" >
+               <div v-for="(oppiaineOpintojakso, index) in paikallistenOppiaineidenOpintojaksot" :key="index+'paikallistenOppiaineidenOpintojaksot'" >
                 {{ $kaanna(oppiaineetMap[oppiaineOpintojakso.oppiaine.koodi].nimi) }}
                 <ep-opintojakso-select v-if="isEditing" :options="oppiaineOpintojakso.opintojaksot" v-model="editable.paikallisetOpintojaksot" :is-editing="isEditing"/>
               </div>
             </div>
             <div v-else>
-              <ep-opintojakso-select :options="editable.paikallisetOpintojaksot" :is-editing="isEditing"/>
+              <ep-opintojakso-select v-model="editable.paikallisetOpintojaksot" :is-editing="isEditing"/>
             </div>
           </div>
         </div>
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-tavoitteet" :first="true">
             <div class="alueotsikko" slot="header">{{ $t('tavoitteet') }}</div>
-            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx">
+            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx+'data.moduulit.tavoitteet'">
               <div class="moduuliotsikko">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</div>
               <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].tavoitteet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
             </div>
 
-            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index">
+            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'h'">
               <div class="perustesisalto" v-if="paikallinenOpintojakso.tavoitteet.length > 0">
                 <div class="moduuliotsikko">{{ $kaanna(paikallinenOpintojakso.nimi) }}</div>
                 <ep-list
@@ -185,13 +185,13 @@
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-keskeiset-sisallot">
             <div class="alueotsikko" slot="header">{{ $t('keskeiset-sisallot') }}</div>
-            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx">
+            <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx+'data.moduulit.keskeiset'">
               <div class="moduuliotsikko">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</div>
               <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].sisallot" kohde="kohde" arvot="sisallot">
               </ep-prefix-list>
             </div>
 
-            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index">
+            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'data.paikallisetOpintojaksot'">
               <div class="perustesisalto" v-if="paikallinenOpintojakso.keskeisetSisallot.length > 0">
                 <div class="moduuliotsikko">{{ $kaanna(paikallinenOpintojakso.nimi) }}</div>
                 <ep-list
@@ -216,7 +216,7 @@
          <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header">{{ $t('laaja-alaiset-sisallot') }}</div>
 
-            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx+'opintojaksonOppiaineet'">
               <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
                 <ep-content
@@ -228,14 +228,14 @@
               <!-- Todo: Tee parempi ratkaisu tähän -->
               <div v-else-if="oppiaine.laajaAlainenOsaaminen">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
-                <ep-content v-for="(laajalainenosaaminen, index) in oppiaine.laajaAlainenOsaaminen" :key="index"
+                <ep-content v-for="(laajalainenosaaminen, index) in oppiaine.laajaAlainenOsaaminen" :key="index+'oppiaine.laajaAlainenOsaaminen'"
                     layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="laajalainenosaaminen.kuvaus"></ep-content>
               </div>
             </div>
 
             <div class="moduuliotsikko"><h3>{{ $t('paikallinen-lisays-opintojakso-laaja-alainen') }}</h3></div>
 
-            <div class="paikallinen-laaja-alainen" v-for="lo in data.laajaAlainenOsaaminen" :key="lo.koodi">
+            <div class="paikallinen-laaja-alainen" v-for="(lo, index) in data.laajaAlainenOsaaminen" :key="index+'laajaAlainenOsaaminen'">
               <div slot="header">
                 <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
                   <h5 class="d-inline">{{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}</h5>
@@ -254,17 +254,17 @@
             <b-dropdown v-if="isEditing" :text="$t('lisaa-laaja-alainen-osaaminen')" variant="primary" class="mb-4">
               <b-dropdown-item-button
                 @click="addLaaja(laaja)"
-                v-for="laaja in laajaAlaistenKoodit"
-                :key="laaja.koodi"
+                v-for="(laaja, index) in laajaAlaistenKoodit"
+                :key="index+'addlaaja'"
                 :disabled="laaja.hasPaikallinenKuvaus">
                 {{ $kaanna(laaja.nimi) }}
               </b-dropdown-item-button>
             </b-dropdown>
 
-            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index">
+            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'laaja'">
               <div v-if="paikallinenOpintojakso.laajaAlainenOsaaminen && paikallinenOpintojakso.laajaAlainenOsaaminen.length > 0">
                 <div class="moduuliotsikko"><h4>{{ $kaanna(paikallinenOpintojakso.nimi) }}</h4></div>
-                <div class="paikallinen-laaja-alainen" v-for="lo in paikallinenOpintojakso.laajaAlainenOsaaminen" :key="lo.koodi">
+                <div class="paikallinen-laaja-alainen" v-for="(lo, index) in paikallinenOpintojakso.laajaAlainenOsaaminen" :key="index+'paik-laaja-osa'">
                   <div slot="header" class="moduuliotsikko">
                     <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
                       <h5>{{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}</h5>
@@ -285,7 +285,7 @@
           <ep-collapse tyyppi="opintojakson-arviointi">
             <div class="alueotsikko" slot="header">{{ $t('opintojakson-arviointi') }}</div>
 
-            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx+'op-arviointi'">
               <div v-if="oppiaine.arviointi && oppiaine.arviointi.kuvaus">
                 <div class="moduuliotsikko" v-html="$kaanna(oppiaine.nimi)"></div>
                 <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="oppiaine.arviointi.kuvaus"></ep-content>
@@ -295,7 +295,7 @@
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.arviointi" :is-editable="isEditing"></ep-content>
 
-            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index" class="mt-4">
+            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'paik-arviointi'" class="mt-4">
               <div v-if="paikallinenOpintojakso.arviointi">
                 <div class="moduuliotsikko">{{ $kaanna(paikallinenOpintojakso.nimi) }}</div>
                 <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="paikallinenOpintojakso.arviointi" :is-editable="false"></ep-content>
