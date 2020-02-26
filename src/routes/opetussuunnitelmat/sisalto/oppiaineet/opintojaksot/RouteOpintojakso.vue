@@ -765,12 +765,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
       }
       _.forEach(opintojakso.oppiaineet, oa => {
-        // if (oa.laajuus) {
-        // (oa as any).isModuuliton = true;
-        // }
-        // else {
         (oa as any).isModuuliton = _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), oa.koodi);
-        // }
       });
 
       if (opintojakso) {
