@@ -60,6 +60,9 @@
                 <ep-button v-if="!naytaLisaaTyoryhmaa && virkailijat.length > tyoryhmaAlkuMaara" @click="naytaLisaaTyoryhmaa = true" variant="link" buttonClass="pl-0 mt-2">
                   {{$t('nayta-lisaa')}}
                 </ep-button>
+                <ep-button v-if="naytaLisaaTyoryhmaa" @click="naytaLisaaTyoryhmaa = false" variant="link" buttonClass="pl-0 mt-2">
+                  {{$t('piilota')}}
+                </ep-button>
               </div>
             </div>
           </div>
