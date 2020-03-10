@@ -266,7 +266,7 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/_mixins.scss';
+@import '@shared/styles/_mixins.scss';
 
 $box-size: 350px;
 

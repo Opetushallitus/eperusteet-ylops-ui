@@ -160,7 +160,7 @@ export default class OpsViimeaikainenToiminta extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .container {
     margin-top: 40px;

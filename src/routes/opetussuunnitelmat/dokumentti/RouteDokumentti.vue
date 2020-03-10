@@ -212,7 +212,7 @@ export default class RouteDokumentti extends EpOpsRoute {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .dokumentit {
   margin-top: 4px;

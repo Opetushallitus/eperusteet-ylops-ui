@@ -63,7 +63,7 @@ export default class EpOpintojaksoSelect extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .oj-content {
     border-radius: 24px;

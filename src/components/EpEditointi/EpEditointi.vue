@@ -373,7 +373,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
 
 </script>
 <style scoped lang="scss">
-@import '../../styles/variables';
+@import '@shared/styles/_variables';
 
 .editointikontrolli {
   margin-top: 4px;

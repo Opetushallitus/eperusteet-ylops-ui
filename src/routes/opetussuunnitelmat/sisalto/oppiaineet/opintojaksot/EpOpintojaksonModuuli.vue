@@ -82,7 +82,7 @@ export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .moduulibox {
   background-color: #E6F6FF;

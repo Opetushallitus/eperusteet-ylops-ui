@@ -108,7 +108,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .poistetut {
 

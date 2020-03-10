@@ -81,7 +81,7 @@ export default class OpsAikataulu extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .pohja {
     margin: 10px 0px;

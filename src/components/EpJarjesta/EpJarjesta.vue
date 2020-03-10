@@ -101,7 +101,7 @@ export default class EpJarjesta extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/_variables.scss';
+@import '@shared/styles/_variables.scss';
 
 .flip-move {
   transition: transform 0.5s;

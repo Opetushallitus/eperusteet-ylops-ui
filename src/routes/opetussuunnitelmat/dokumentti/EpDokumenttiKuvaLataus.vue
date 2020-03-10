@@ -136,7 +136,7 @@ export default class EpDokumenttiKuvaLataus extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .dokumentit {
 

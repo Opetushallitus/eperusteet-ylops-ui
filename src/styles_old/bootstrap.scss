@@ -15,7 +15,7 @@ $border-radius: .625rem; // 5px
 // Include Bootstrap and BootstrapVue SCSS files
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap-vue/src/index.scss';
-@import '@/styles/_variables.scss';
+@import '@shared/styles/_variables.scss';
 
 .modal-content {
 

@@ -59,7 +59,7 @@ export default class VirheRoute extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .confirm-buttons::after {
   clear: both;

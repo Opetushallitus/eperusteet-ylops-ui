@@ -124,7 +124,7 @@ export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .box {
     width: 125px;

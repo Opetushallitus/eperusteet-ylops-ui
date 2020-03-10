@@ -402,7 +402,7 @@ export default class RouteTilastot extends Mixins(EpRoute) {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .tilastotyyppi {
     margin-top: 20px;

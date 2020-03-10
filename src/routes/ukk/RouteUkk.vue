@@ -303,7 +303,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   // TODO: tämä voisi olla oma komponentti
   // Modaalin kielivalitsimen metodit
   get sisaltoKieli() {
-    return Kielet.getSisaltoKieli;
+    return Kielet.getSisaltoKieli.value;
   }
 
   get sovelluksenKielet() {

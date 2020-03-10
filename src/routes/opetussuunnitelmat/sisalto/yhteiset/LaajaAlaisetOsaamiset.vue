@@ -118,7 +118,7 @@ export default class LaajaAlaisetOsaamiset extends Vue {
 
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .otsikko {
   margin-top: 1rem;
