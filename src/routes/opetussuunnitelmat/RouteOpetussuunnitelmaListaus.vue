@@ -123,8 +123,8 @@
 import _ from 'lodash';
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 
-import { OpetussuunnitelmaInfoDto } from '@/tyypit';
-import { Opetussuunnitelmat } from '@/api';
+import { OpetussuunnitelmaInfoDto } from '@shared/api/ylops';
+import { Opetussuunnitelmat } from '@shared/api/ylops';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
@@ -179,7 +179,7 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   get jarjestetyt() {
     return _(this.opslista)
       .filter(ops => _.includes(
-        _.toLower(_.get(ops, 'nimi.' + Kielet.getSisaltoKieli)),
+        _.toLower(_.get(ops, 'nimi.' + Kielet.getSisaltoKieli.value)),
         _.toLower(this.rajain)
       ))
       .sortBy('luotu')

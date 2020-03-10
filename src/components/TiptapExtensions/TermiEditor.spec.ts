@@ -1,12 +1,14 @@
 import { createLocalVue, mount } from '@vue/test-utils';
 import TermiEditor from './TermiEditor.vue';
 import { IKasiteHandler } from '@/stores/kuvat';
-import { TermiDto } from '@/tyypit';
+import { TermiDto } from '@shared/api/ylops';
 import _ from 'lodash';
 
-import { KieliStore } from '@shared/stores/kieli';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 import '@/config/bootstrap';
 import '@/config/fontawesome';
+import VueI18n from 'vue-i18n';
+import { Kaannos } from '@shared/plugins/kaannos';
 
 
 function createTestHandler(): IKasiteHandler {
@@ -32,13 +34,16 @@ function createTestHandler(): IKasiteHandler {
 
 describe('Termi plugin', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue, {
+  localVue.use(VueI18n);
+  Kielet.install(localVue, {
     messages: {
       fi: require('@/translations/locale-fi.json'),
       sv: require('@/translations/locale-sv.json'),
     },
   });
-  const i18n = KieliStore.i18n;
+  localVue.use(new Kaannos());
+
+  const i18n = Kielet.i18n;
 
   it('Näyttää editoitavan datan', async () => {
     const handler = createTestHandler();

@@ -1,9 +1,6 @@
 import * as _ from 'lodash';
-import {
-  SideMenuEntry,
-  Lops2019PaikallinenOppiaineDto,
-  Lops2019OppiaineDto,
-} from '@/tyypit';
+import { Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto } from '@shared/api/ylops';
+import { SideMenuEntry } from '@shared/tyypit';
 
 import { koodiNumero, koodiAlku } from '@/utils/perusteet';
 

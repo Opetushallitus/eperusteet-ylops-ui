@@ -54,7 +54,7 @@
 import _ from 'lodash';
 import { Prop, Component, Vue } from 'vue-property-decorator';
 
-import { OpetussuunnitelmaInfoDto } from '../../generated';
+import { OpetussuunnitelmaInfoDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';

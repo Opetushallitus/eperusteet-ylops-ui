@@ -90,7 +90,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Prop, Mixins, Component } from 'vue-property-decorator';
-import { Lops2019ValidointiDto } from '@/tyypit';
+import { Lops2019ValidointiDto } from '@shared/api/ylops';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';

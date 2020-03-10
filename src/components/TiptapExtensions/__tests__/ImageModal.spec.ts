@@ -2,17 +2,22 @@ import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { mount, createLocalVue } from '@vue/test-utils';
 import ImageExtension from '../ImageExtension';
 import ImageModal from '../ImageModal.vue';
-import { KieliStore } from '@shared/stores/kieli';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 import { IAttachmentWrapper } from '@/stores/kuvat';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
+import VueI18n from 'vue-i18n';
+import { Kaannos } from '@shared/plugins/kaannos';
 
 
 describe('Tiptap Image Extension', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue);
-  const i18n = KieliStore.setup(localVue);
+  localVue.use(VueI18n);
+  Kielet.install(localVue);
+  localVue.use(new Kaannos());
+
+  const i18n = Kielet.i18n;
 
   test('Prose mirror extension', async () => {
     const extension = new ImageExtension(13);

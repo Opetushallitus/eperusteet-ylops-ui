@@ -112,14 +112,14 @@ import EpOppiaineSelector from'@/components/EpOppiaineSelector/EpOppiaineSelecto
 import EpPrefixList from'@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019PaikallinenOppiaineDto } from '@/tyypit';
+import { Lops2019PaikallinenOppiaineDto } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { Kielet } from '@shared/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
-import { Opetussuunnitelmat } from '@/api';
+import { Opetussuunnitelmat } from '@shared/api/ylops';
 import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
 import { success } from '@/utils/notifications';
 
@@ -219,7 +219,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
 
   get validator() {
     return oppiaineValidator([
-      Kielet.getSisaltoKieli,
+      Kielet.getSisaltoKieli.value,
     ]);
   }
 

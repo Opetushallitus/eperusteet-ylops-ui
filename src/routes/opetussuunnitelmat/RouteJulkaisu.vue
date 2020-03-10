@@ -114,7 +114,7 @@ import _ from 'lodash';
 import { Component } from 'vue-property-decorator';
 
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@/tyypit';
+import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@shared/api/ylops';
 import { UiKielet } from '@shared/stores/kieli';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';

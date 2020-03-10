@@ -50,7 +50,7 @@ import {
 
 import EpEditorMenuBar from './EpEditorMenuBar.vue';
 import Sticky from 'vue-sticky-directive';
-import { EditorLayout } from '@/tyypit';
+import { EditorLayout } from '@shared/tyypit';
 import EpValidation from '@shared/mixins/EpValidation';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
@@ -97,7 +97,7 @@ export default class EpContent extends Mixins(EpValidation) {
   private focused = false;
 
   get lang() {
-    return this.locale || Kielet.getSisaltoKieli || 'fi';
+    return this.locale || Kielet.getSisaltoKieli.value || 'fi';
   }
 
   get localizedValue() {
@@ -215,7 +215,7 @@ export default class EpContent extends Mixins(EpValidation) {
     else {
       this.$emit('input', {
         ...this.value,
-        [Kielet.getSisaltoKieli as unknown as string]: data,
+        [Kielet.getSisaltoKieli.value as unknown as string]: data,
       });
     }
   }

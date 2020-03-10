@@ -75,9 +75,9 @@
 import _ from 'lodash';
 import { Component, Watch } from 'vue-property-decorator';
 
-import { baseURL, Dokumentit, DokumentitParams } from '@/api';
+import { baseURL, Dokumentit, DokumentitParams } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-import { DokumenttiDto } from '@/generated';
+import { DokumenttiDto, DokumenttiDtoTilaEnum } from '@shared/api/ylops';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -101,7 +101,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   private href: string | null = null;
 
   get kieli() {
-    return Kielet.getSisaltoKieli;
+    return Kielet.getSisaltoKieli.value;
   }
 
   @Watch('kieli')
@@ -116,7 +116,7 @@ export default class RouteDokumentti extends EpOpsRoute {
       });
     }
     else {
-      return this.$t('dokumentti-' + _.kebabCase(DokumenttiDto.TilaEnum.EIOLE));
+      return this.$t('dokumentti-' + _.kebabCase(DokumenttiDtoTilaEnum.EIOLE));
     }
   }
 
@@ -143,18 +143,20 @@ export default class RouteDokumentti extends EpOpsRoute {
     await this.getDokumenttiTila();
   }
 
+  // TODO: tarkista toimiiko tila enummit
+  // *****!!!!!!!!!!**********
   // Haetaan dokumentin tila ja päivitetään muuttujat
   private async getDokumenttiTila() {
     // Päivitetään dokumentin tila
     this.dto = (await Dokumentit.getDokumentti(this.opsId, this.kieli)).data;
 
     // Lopetetaan pollaaminen kun dokumentin luominen on päättynyt
-    if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDto.TilaEnum.EPAONNISTUI)
-      || _.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDto.TilaEnum.VALMIS)) {
+    if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)
+      || _.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
       clearInterval(this.polling);
       this.polling = null;
 
-      if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDto.TilaEnum.VALMIS) && this.dto.id) {
+      if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS) && this.dto.id) {
         this.href = baseURL + DokumentitParams.get(_.toString(this.dto.id)).url;
       }
     }

@@ -47,7 +47,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Prop, Component, Mixins } from 'vue-property-decorator';
-import { RevisionDto } from '@/tyypit';
+import { RevisionDto } from '@shared/api/ylops';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';

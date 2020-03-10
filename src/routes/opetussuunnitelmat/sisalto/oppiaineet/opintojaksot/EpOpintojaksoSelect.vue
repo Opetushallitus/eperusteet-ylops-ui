@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Lops2019OpintojaksoDto } from '@/tyypit';
+import { Lops2019OpintojaksoDto } from '@shared/api/ylops';
 import _ from 'lodash';
 
 @Component

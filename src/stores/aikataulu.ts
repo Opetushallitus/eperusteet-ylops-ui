@@ -1,6 +1,6 @@
 import { State, Store } from '@shared/stores/store';
-import { OpetussuunnitelmanAikatauluDto } from '@/tyypit';
-import { Aikataulu } from '@/api';
+import { OpetussuunnitelmanAikatauluDto } from '@shared/api/ylops';
+import { Aikataulu } from '@shared/api/ylops';
 import _ from 'lodash';
 
 @Store

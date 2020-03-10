@@ -152,10 +152,10 @@ import EpSearch from'@shared/components/forms/EpSearch.vue';
 import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
-import { Opetussuunnitelmat, Ulkopuoliset } from '@/api';
+import { Opetussuunnitelmat, Ulkopuoliset } from '@shared/api/ylops';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-import { OpetussuunnitelmaInfoDto, PerusteInfoDto } from '@/tyypit';
+import { OpetussuunnitelmaInfoDto, PerusteInfoDto } from '@shared/api/ylops';
 import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
@@ -203,7 +203,7 @@ export default class RouteTilastot extends Mixins(EpRoute) {
       .filter(ops => Kielet.search(this.query, ops.nimi))
       .filter(ops => _.isEmpty(this.valitutVoimassaolot) || _.includes(_.map(this.valitutVoimassaolot, 'value'), this.opetussuunnitelmaVoimassaolo(ops)))
       .filter(ops => _.isEmpty(this.valitutPerusteet) || _.includes(_.map(this.valitutPerusteet, 'value') , ops.perusteenId))
-      .sortBy(ops => Kielet.kaanna(ops.nimi!))
+      .sortBy(ops => Kielet.kaanna(ops.nimi))
       .value();
   }
 

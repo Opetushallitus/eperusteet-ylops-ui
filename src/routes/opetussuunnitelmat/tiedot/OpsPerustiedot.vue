@@ -79,7 +79,7 @@
 import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import { OpetussuunnitelmaKevytDto } from '@/tyypit';
+import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';

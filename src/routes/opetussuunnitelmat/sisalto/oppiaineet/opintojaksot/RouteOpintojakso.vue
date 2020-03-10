@@ -333,7 +333,7 @@ import EpList from '@shared/components/forms/EpList.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019OpintojaksonOppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@/tyypit';
+import { Lops2019OpintojaksonOppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@shared/api/ylops';
 import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import * as _ from 'lodash';
@@ -344,7 +344,7 @@ import { Kielet } from '@shared/stores/kieli';
 import * as defaults from '@/defaults';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { KoodistoLops2019LaajaAlaiset, koodiSorters } from '@/utils/perusteet';
-import { Opetussuunnitelmat } from '@/api';
+import { Opetussuunnitelmat } from '@shared/api/ylops';
 import { success } from '@/utils/notifications';
 import { paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 
@@ -450,7 +450,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   get validator() {
     return opintojaksoValidator([
-      Kielet.getSisaltoKieli, // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
     ]);
   }
 

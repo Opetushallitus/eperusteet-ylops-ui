@@ -97,12 +97,12 @@ import EpRoute from '@/mixins/EpRoute';
 
 import {
   Opetussuunnitelmat,
-} from '@/api';
+} from '@shared/api/ylops';
 
 import {
   OpetussuunnitelmaInfoDto,
   OpetussuunnitelmaLuontiDto,
-} from '@/tyypit';
+} from '@shared/api/ylops';
 
 import { opsLuontiValidator } from '@/validators/ops';
 

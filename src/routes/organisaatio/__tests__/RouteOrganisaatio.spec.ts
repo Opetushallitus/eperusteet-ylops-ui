@@ -1,22 +1,26 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import RouteOrganisaatio from '../RouteOrganisaatio.vue';
-import { KieliStore } from '@shared/stores/kieli';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
-import { Kayttajat as KayttajatApi, Opetussuunnitelmat, Ulkopuoliset } from '@/api';
+import { Kayttajat as KayttajatApi, Opetussuunnitelmat, Ulkopuoliset } from '@shared/api/ylops';
 import { genKayttaja, genOikeudet, makeAxiosResponse } from '&/utils/data';
 import { Kayttajat } from '@/stores/kayttaja';
+import VueI18n from 'vue-i18n';
+import { Kaannos } from '@shared/plugins/kaannos';
 
 describe('RouteOrganisaatio', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue, {
+  localVue.use(VueI18n);
+  Kielet.install(localVue, {
     messages: {
       fi: require('@/translations/locale-fi.json'),
       sv: require('@/translations/locale-sv.json'),
     },
   });
-  const i18n = KieliStore.i18n;
+  localVue.use(new Kaannos());
+  const i18n = Kielet.i18n;
 
   async function createMounted() {
     jest.spyOn(KayttajatApi, 'getKayttaja')

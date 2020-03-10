@@ -45,7 +45,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import { Kayttajat } from '@/stores/kayttaja';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { EtusivuDto } from '@/tyypit';
+import { EtusivuDto } from '@shared/api/ylops';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import EpRoute from '@/mixins/EpRoute';

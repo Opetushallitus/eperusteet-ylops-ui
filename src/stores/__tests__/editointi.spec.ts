@@ -1,4 +1,4 @@
-import { RevisionDto } from '@/tyypit';
+import { RevisionDto } from '@shared/api/ylops';
 
 import {
   editointi,

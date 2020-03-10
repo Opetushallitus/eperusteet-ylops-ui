@@ -18,7 +18,7 @@ import { Mixins, Component, Prop } from 'vue-property-decorator';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Opetussuunnitelma, OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import { Lops2019OpintojaksonModuuliDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@/tyypit';
+import { Lops2019OpintojaksonModuuliDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import _ from 'lodash';
 import EpOpsRoute from '@/mixins/EpOpsRoute';

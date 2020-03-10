@@ -43,7 +43,7 @@
 import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import { TekstiKappaleDto, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { TekstiKappaleDto, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 

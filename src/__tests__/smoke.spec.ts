@@ -1,6 +1,6 @@
 import {
   Api,
-} from '@/api';
+} from '@shared/api/ylops';
 
 describe('tests', () => {
   it('should fail on all unmocked requests', async () => {

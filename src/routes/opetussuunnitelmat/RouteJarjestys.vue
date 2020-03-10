@@ -39,7 +39,7 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 
-import { Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { Puu, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpRoute from '@/mixins/EpRoute';

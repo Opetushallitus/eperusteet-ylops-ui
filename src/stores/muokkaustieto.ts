@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { State, Store } from '@shared/stores/store';
-import { MuokkaustietoKayttajallaDto } from '@/tyypit';
-import { Muokkaustieto } from '@/api';
+import { MuokkaustietoKayttajallaDto } from '@shared/api/ylops';
+import { Muokkaustieto } from '@shared/api/ylops';
 
 
 @Store

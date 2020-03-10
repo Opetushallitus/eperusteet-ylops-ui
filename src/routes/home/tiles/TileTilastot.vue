@@ -13,7 +13,7 @@
 import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
 
-import { Ulkopuoliset } from '@/api';
+import { Ulkopuoliset } from '@shared/api/ylops';
 import BaseTile from './BaseTile.vue';
 
 @Component({

@@ -99,7 +99,7 @@ export default class EpNavigation extends Vue {
   }
 
   get sisaltoKieli() {
-    return Kielet.getSisaltoKieli;
+    return Kielet.getSisaltoKieli.value;
   }
 
   get sovelluksenKielet() {

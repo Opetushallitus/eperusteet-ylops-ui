@@ -36,7 +36,7 @@
 
 import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
-import { OpetussuunnitelmaKevytDto, Lops2019OppiaineDto } from '@/tyypit';
+import { OpetussuunnitelmaKevytDto, Lops2019OppiaineDto } from '@shared/api/ylops';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';

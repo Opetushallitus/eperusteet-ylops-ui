@@ -3,7 +3,9 @@ import { Kayttajat } from '@/stores/kayttaja';
 import { router } from '@/router';
 import { expectEventually } from '&/utils/assertions';
 import { getRootConfig } from '@/mainvue';
-import { KieliStore } from '@shared/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
+import VueI18n from 'vue-i18n';
+import { Kaannos } from '@shared/plugins/kaannos';
 import {
   makeAxiosResponse,
   genOikeudet,
@@ -15,14 +17,16 @@ import {
   Kayttajat as KayttajatApi,
   Opetussuunnitelmat,
   Ulkopuoliset,
-} from '@/api';
+} from '@shared/api/ylops';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 
 describe('Router', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue);
+  localVue.use(VueI18n);
+  Kielet.install(localVue);
+  localVue.use(new Kaannos());
 
 
   async function createMounted(

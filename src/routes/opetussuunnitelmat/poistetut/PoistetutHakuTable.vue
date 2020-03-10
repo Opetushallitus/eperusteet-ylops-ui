@@ -9,7 +9,7 @@
 import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import { Lops2019PoistettuDto } from '@/tyypit';
+import { Lops2019PoistettuDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
 import PoistetutTable from './PoistetutTable.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
@@ -31,7 +31,7 @@ export default class PoistetutHakuTable extends Vue {
 
   get rajatut() {
     const hakutermi = _.toLower(this.query);
-    const kieli = Kielet.getSisaltoKieli;
+    const kieli = Kielet.getSisaltoKieli.value;
 
     return _.chain(this.poistetut)
       .filter(p => _.includes(_.toLower(_.get(p, 'nimi.' + kieli)), hakutermi))

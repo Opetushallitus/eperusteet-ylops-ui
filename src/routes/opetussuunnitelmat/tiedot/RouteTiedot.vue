@@ -144,7 +144,7 @@ export default class RouteTiedot extends EpOpsRoute {
 
   get validator() {
     return opsTiedotValidator([
-      Kielet.getSisaltoKieli, // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
     ], !this.isPohja);
   }
 
@@ -163,7 +163,7 @@ export default class RouteTiedot extends EpOpsRoute {
   }
 
   get kieli() {
-    return Kielet.getSisaltoKieli;
+    return Kielet.getSisaltoKieli.value;
   }
 
   private async load() {

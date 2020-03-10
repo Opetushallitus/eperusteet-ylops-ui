@@ -41,7 +41,7 @@ import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { Lops2019PoistettuDto, PoistettuTekstiKappaleDto } from '@/tyypit';
+import { Lops2019PoistettuDto, PoistettuTekstiKappaleDto } from '@shared/api/ylops';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Multiselect from 'vue-multiselect';
 import PoistetutHakuTable from './poistetut/PoistetutHakuTable.vue';

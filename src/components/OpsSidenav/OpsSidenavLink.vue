@@ -9,7 +9,7 @@ import _ from 'lodash';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import { Kielet } from '@shared/stores/kieli';
-import { SideMenuEntry } from '@/tyypit';
+import { SideMenuEntry } from '@shared/tyypit';
 
 
 @Component

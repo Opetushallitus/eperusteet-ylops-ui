@@ -23,11 +23,10 @@ install:
   - echo -en 'travis_fold:end:script.1\\r'
 
   - yarn install --silent
-  - yarn gen:api
 
   - cd eperusteet-frontend-utils/vue
   - yarn install --silent
-  - yarn gen:api # FIXME
+  - yarn gen:api
   - rm -rf node_modules
   - cd ../..
 
