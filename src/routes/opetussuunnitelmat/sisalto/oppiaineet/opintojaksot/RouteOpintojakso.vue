@@ -817,7 +817,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   isModuuliton(oa: OpintojaksonOppiaine) {
-    return !_.isNil(oa.laajuus) && (_.isEmpty(this.oppiaineidenModuulitMap[oa.koodi]) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi].moduulit));
+    return !_.isNil(oa.laajuus) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi]) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi].moduulit);
   }
 
   async save(opintojakso: Lops2019OpintojaksoDto) {
