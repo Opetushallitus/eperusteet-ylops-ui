@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <h3>{{$t('oppiaineet')}}</h3>
+    <h2>{{$t('oppiaineet')}}</h2>
 
     <ep-spinner v-if="!cache"></ep-spinner>
     <div v-else>

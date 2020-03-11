@@ -1,6 +1,6 @@
 <template>
   <div class="content text-left">
-    <h3>{{$t('viimeaikainen-toiminta')}}</h3>
+    <h2>{{$t('viimeaikainen-toiminta')}}</h2>
 
     <ep-spinner v-if="!muokkaustiedot"></ep-spinner>
 

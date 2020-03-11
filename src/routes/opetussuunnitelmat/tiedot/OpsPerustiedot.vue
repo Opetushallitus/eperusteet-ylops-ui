@@ -1,7 +1,7 @@
 <template>
 
   <div class="content">
-    <h3>{{$t('tiedot')}}</h3>
+    <h2>{{$t('tiedot')}}</h2>
 
     <ep-spinner v-if="!ops || !virkailijat"></ep-spinner>
     <div v-else>

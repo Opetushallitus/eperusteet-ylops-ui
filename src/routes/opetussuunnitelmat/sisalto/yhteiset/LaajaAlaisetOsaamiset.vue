@@ -122,7 +122,7 @@ export default class LaajaAlaisetOsaamiset extends Vue {
 
 .otsikko {
   margin-top: 1rem;
-  font-size: 1.15rem;
+  // font-size: 1.15rem;
 }
 
 </style>

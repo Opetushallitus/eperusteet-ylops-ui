@@ -3,7 +3,7 @@
 
     <div class="row">
       <div class="col">
-        <h3>{{$t('aikataulu')}}</h3>
+        <h2>{{$t('aikataulu')}}</h2>
       </div>
       <div class="col text-right">
         <ep-aikataulu-modal ref="aikataulumodal" :rootModel="ops" :aikataulut="aikataulut" @tallenna="tallenna"

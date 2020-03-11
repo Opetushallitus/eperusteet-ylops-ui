@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <h3>{{$t('muokkaamattomat-osiot')}}</h3>
+    <h2>{{$t('muokkaamattomat-osiot')}}</h2>
 
     <ep-spinner v-if="!opetussuunnitelmanTekstikappale"></ep-spinner>
     <div v-else-if="hasMuokkaamattomatTekstikappaleet">
