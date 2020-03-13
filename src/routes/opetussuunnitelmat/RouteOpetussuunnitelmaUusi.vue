@@ -61,10 +61,22 @@
     <div v-if="uusi.pohja">
       <hr/>
       <ep-organizations :validation="$v.uusi.organisaatiot" :koulutustyyppi="koulutustyyppi" v-model="uusi.organisaatiot"></ep-organizations>
-      <ep-form-content name="opintojaksojen-tarkistus">
-        <ep-toggle v-model="uusi.ainepainoitteinen" :is-editing="true" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
-      </ep-form-content>
 
+      <hr/>
+      <ep-form-content name="opintojaksot">
+
+        <ep-form-content name="opintojaksojen-tarkistus" class="no-padding">
+          <b-form-group>
+            <b-form-radio v-model="uusi.opintojaksoTuonti" name="opintojaksoTuonti" value="true">{{$t('kylla')}}</b-form-radio>
+            <b-form-radio v-model="uusi.opintojaksoTuonti" name="opintojaksoTuonti" value="false">{{$t('ei')}}</b-form-radio>
+          </b-form-group>
+        </ep-form-content>
+
+        <ep-form-content name="opintojaksojen-tarkistus">
+          <ep-toggle v-model="uusi.ainepainoitteinen" :is-editing="true" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
+        </ep-form-content>
+
+      </ep-form-content>
       <ep-button :disabled="$v.uusi.$invalid || addingOpetussuunnitelma" @click="luoUusiOpetussuunnitelma" :show-spinner="isLoading">{{ $t('luo-opetussuunnitelma') }}</ep-button>
     </div>
   </div>
@@ -139,6 +151,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       kunnat: [],
     },
     ainepainoitteinen: false,
+    opintojaksoTuonti: false,
   };
 
   @Prop({ required: true })
@@ -237,5 +250,12 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
 <style scoped lang="scss">
 
 @import '@shared/styles/_variables.scss';
+
+  .no-padding {
+    fieldset {
+      margin: 0px;
+      padding: 0px;
+    }
+  }
 
 </style>
