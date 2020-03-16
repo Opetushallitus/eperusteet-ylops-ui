@@ -34,6 +34,9 @@ export class OpetussuunnitelmaStore {
   public opintojaksot: Lops2019OpintojaksoDto[] = [];
 
   @State()
+  public tuodutOpintojaksot: Lops2019OpintojaksoDto[] = [];
+
+  @State()
   public kasitteet: TermiDto[] = [];
 
   @State()
@@ -64,6 +67,7 @@ export class OpetussuunnitelmaStore {
 
     if ((this.opetussuunnitelma.toteutus as any) === 'lops2019') {
       this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
+      this.tuodutOpintojaksot = (await Opintojaksot.getTuodutOpintojaksot(this.opetussuunnitelma!.id!)).data;
       this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
     }
   }
@@ -241,6 +245,14 @@ export class OpetussuunnitelmaStore {
 
   public async getOpintojakso(id: number) {
     return (await Opintojaksot.getOpintojakso(this.opetussuunnitelma!.id!, id)).data;
+  }
+
+  public async getTuotuOpintojakso(id: number) {
+    return (await Opintojaksot.getTuotuOpintojakso(this.opetussuunnitelma!.id!, id)).data;
+  }
+
+  public async getOpintojaksonOpetussuunnitelma(id: number) {
+    return (await Opintojaksot.getOpintojaksonOpetussuunnitelma(this.opetussuunnitelma!.id!, id)).data;
   }
 
   public async getPoistetut() {

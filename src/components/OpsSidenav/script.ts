@@ -97,7 +97,9 @@ export default class OpsSidenav extends EpOpsComponent {
   private query = '';
 
   get opintojaksot() {
-    return this.store.opintojaksot;
+    return _(this.store.opintojaksot)
+      .concat(this.store.tuodutOpintojaksot)
+      .value();
   }
 
   async created() {

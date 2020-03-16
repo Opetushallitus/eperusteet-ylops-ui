@@ -5,35 +5,22 @@
   </template>
   <template slot="header">
     <h1>{{ $t('uusi-opetussuunnitelma') }}</h1>
+    <p>{{ $t('uusi-opetussuunnitelma-ohje') }}</p>
   </template>
-  <fieldset class="form-group">
+  <div class="form-group">
     <div class="row">
-      <legend class="col-form-label col-sm-2 pt-0">{{ $t('opetussuunnitelman-pohjatyyppi') }}:</legend>
+      <legend class="col-form-label col-sm-2">{{ $t('opetussuunnitelman-pohjatyyppi-pakollinen') }}</legend>
       <div class="col-sm-10 mb-4">
-        <div class="form-check">
-          <input class="form-check-input"
-                 id="uusi-ops-pohjavalinta-1"
-                 type="radio"
-                 :value="'opsista'"
-                 v-model="oletuspohjasta" />
-          <label class="form-check-label"
-                 for="uusi-ops-pohjavalinta-1">{{ $t('toinen-opetussuunnitelma') }}</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input"
-                 id="uusi-ops-pohjavalinta-2"
-                 type="radio"
-                 :value="'pohjasta'"
-                 v-model="oletuspohjasta"
-                 checked="checked" />
-          <label class="form-check-label" for="uusi-ops-pohjavalinta-2">{{ $t('oletuspohja') }}</label>
-        </div>
+        <b-form-group class="mt-0">
+          <b-form-radio v-model="oletuspohjasta" name="uusi-ops-pohjavalinta" value="opsista">{{ $t('toinen-opetussuunnitelma') }}</b-form-radio>
+          <b-form-radio v-model="oletuspohjasta" name="uusi-ops-pohjavalinta" value="pohjasta">{{ $t('oletuspohja') }}</b-form-radio>
+        </b-form-group>
       </div>
     </div>
     <div v-if="oletuspohjasta">
       <div class="form-group">
         <div v-if="pohjat">
-          <ep-form-content v-if="pohjat.length > 0" name="uusi-ops-pohja">
+          <ep-form-content v-if="pohjat.length > 0" name="uusi-ops-pohja-pakollinen">
             <ep-select v-model="uusi.pohja"
                        :items="pohjat"
                        :validation="$v.uusi.pohja"
@@ -52,23 +39,24 @@
         <ep-spinner v-else></ep-spinner>
       </div>
     </div>
-  </fieldset>
+  </div>
   <div v-if="oletuspohjasta">
     <hr/>
-    <ep-form-content name="nimi">
+    <ep-form-content name="ops-nimi-pakollinen">
       <ep-field help="ops-nimi-ohje" v-model="uusi.nimi" :validation="$v.uusi.nimi" :is-editing="true"></ep-field>
     </ep-form-content>
     <div v-if="uusi.pohja">
       <hr/>
+      <h2 class="mb-3">{{ $t('organisaatiot') }}</h2>
       <ep-organizations :validation="$v.uusi.organisaatiot" :koulutustyyppi="koulutustyyppi" v-model="uusi.organisaatiot"></ep-organizations>
 
       <hr/>
-      <ep-form-content name="opintojaksot">
-
-        <ep-form-content name="opintojaksojen-tarkistus" class="no-padding">
+      <h2 class="mb-3">{{ $t('opintojaksot') }}</h2>
+      <ep-form-content :showHeader="false" v-if="uusi.pohjanOpintojaksot">
+        <ep-form-content name="ops-opintojakso-tuonti-kysymys" class="no-padding" v-if="uusi.pohjanOpintojaksot.length > 0">
           <b-form-group>
-            <b-form-radio v-model="uusi.opintojaksoTuonti" name="opintojaksoTuonti" value="true">{{$t('kylla')}}</b-form-radio>
-            <b-form-radio v-model="uusi.opintojaksoTuonti" name="opintojaksoTuonti" value="false">{{$t('ei')}}</b-form-radio>
+            <b-form-radio v-model="opintojaksoTuonti" name="opintojaksoTuonti" value="true">{{$t('kylla')}}</b-form-radio>
+            <b-form-radio v-model="opintojaksoTuonti" name="opintojaksoTuonti" value="false">{{$t('ei')}}</b-form-radio>
           </b-form-group>
         </ep-form-content>
 
@@ -77,7 +65,12 @@
         </ep-form-content>
 
       </ep-form-content>
-      <ep-button :disabled="$v.uusi.$invalid || addingOpetussuunnitelma" @click="luoUusiOpetussuunnitelma" :show-spinner="isLoading">{{ $t('luo-opetussuunnitelma') }}</ep-button>
+      <ep-spinner v-else />
+
+      <div class="text-right">
+        <b-button class="mr-4" variant="link" :to="{ name: 'opetussuunnitelmaListaus'}">{{$t('peruuta')}}</b-button>
+        <ep-button :disabled="$v.uusi.$invalid || addingOpetussuunnitelma" @click="luoUusiOpetussuunnitelma" :show-spinner="isLoading">{{ $t('luo-opetussuunnitelma') }}</ep-button>
+      </div>
     </div>
   </div>
 </ep-main-view>
@@ -105,15 +98,13 @@ import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpRoute from '@/mixins/EpRoute';
-
-
 import {
-  Opetussuunnitelmat,
+  Opetussuunnitelmat, Opintojaksot, Oppiaineet
 } from '@shared/api/ylops';
-
 import {
   OpetussuunnitelmaInfoDto,
   OpetussuunnitelmaLuontiDto,
+  Lops2019OpintojaksoDto,
 } from '@shared/api/ylops';
 
 import { opsLuontiValidator } from '@/validators/ops';
@@ -142,6 +133,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   private opetussuunnitelmat: OpetussuunnitelmaInfoDto[] | null = null;
   private oletuspohjasta: 'pohjasta' | 'opsista' | null = null;
   private addingOpetussuunnitelma = false;
+  private opintojaksoTuonti = false;
   private uusi = {
     pohja: null as (OpetussuunnitelmaInfoDto | null),
     nimi: {},
@@ -151,7 +143,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       kunnat: [],
     },
     ainepainoitteinen: false,
-    opintojaksoTuonti: false,
+    pohjanOpintojaksot: null as (Lops2019OpintojaksoDto[] | null),
   };
 
   @Prop({ required: true })
@@ -180,12 +172,22 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   }
 
   @Watch('uusi.pohja')
-  uusiPohjaMuutos() {
-    this.uusi.organisaatiot = {
+  async uusiPohjaMuutos() {
+    this.uusi.organisaatiot= {
       jarjestajat: [],
       oppilaitokset: [],
       kunnat: [],
     };
+
+    if(this.uusi.pohja?.id) {
+      this.uusi.pohjanOpintojaksot = null;
+      const paikalliset = (await Oppiaineet.getAllLops2019PaikallisetOppiainet(this.uusi.pohja.id)).data;
+      const paikallistenKoodit = _.map(paikalliset, 'koodi');
+
+      this.uusi.pohjanOpintojaksot = _.chain((await Opintojaksot.getAllOpintojaksot(this.uusi.pohja.id)).data)
+        .filter(opintojakso => !_.some(opintojakso.oppiaineet, oppiaine => _.includes(paikallistenKoodit, oppiaine.koodi)))
+        .value();;
+    }
   }
 
   protected async init() {
@@ -227,12 +229,17 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       // FIXME: #swagger
       (ops as any)._pohja = '' + this.uusi.pohja!.id;
       try {
-        const luotu = await Opetussuunnitelmat.addOpetussuunnitelma(ops);
+        const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
+
+        if (this.opintojaksoTuonti && _.size(this.uusi.pohjanOpintojaksot) > 0 && luotu.id && this.uusi.pohjanOpintojaksot) {
+          await Opintojaksot.addTuodutOpintojaksot(luotu.id, this.uusi.pohjanOpintojaksot);
+        }
+
         success('lisays-opetussuunnitelma-onnistui');
         this.$router.replace({
           name: 'yleisnakyma',
           params: {
-            id: '' + luotu.data.id,
+            id: '' + luotu.id,
           },
         });
       }

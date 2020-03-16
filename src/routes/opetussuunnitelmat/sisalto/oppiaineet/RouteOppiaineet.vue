@@ -358,6 +358,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
        .flatten()
        .map(oa => {
          const opintojaksot = _(this.store.opintojaksot)
+           .concat(this.store.tuodutOpintojaksot)
            .filter(oj => _.includes(
              _(oj.oppiaineet)
                .map('koodi')

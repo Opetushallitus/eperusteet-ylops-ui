@@ -6,6 +6,23 @@
                   :validator="validator"
                   :versionumero="versionumero"
                   type="opintojakso">
+      <template slot="muokkaa-content" slot-scope="{ data }" v-if="data.tuotuOpintojakso">
+        <div class="muokkaus-esto align-self-center">
+          {{$t('et-voi-muokata-opintojaksoa')}}
+
+          <div class="d-inline" v-if="data.opintojaksonOpetussuunnitelma">
+            <span class="lisainfo" id="muokkaus-esto">{{$t('lue-lisaa')}}</span>
+            <b-popover :target="'muokkaus-esto'" triggers="click" placement="bottom">
+              <template v-slot:title>
+                {{$t('muokkaus-estetty')}}
+              </template>
+
+              {{$t('muokkaus-estetty-opintojakso-selite')}}
+              {{$kaanna(data.opintojaksonOpetussuunnitelma.nimi)}}
+            </b-popover>
+          </div>
+        </div>
+      </template>
       <template slot="ohje" slot-scope="{ }">
         <div class="sidepad">
           <p v-html="$t('ohje-opintojakso')">
@@ -17,7 +34,7 @@
       <template slot="keskustelu" slot-scope="{ }">
       </template>
       <template slot="header" slot-scope="{ data }">
-        <h2 class="nimi">{{ $kaanna(data.nimi) || $t('opintojakso') }}</h2>
+        <h2 class="nimi mb-0">{{ $kaanna(data.nimi) || $t('opintojakso') }}</h2>
       </template>
       <template v-slot="{ data, validation, isEditing }">
         <div class="osio">
@@ -414,7 +431,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   async revisions() {
-    if (await this.isUusi()) {
+    if (await this.isUusi() || !_.includes(_.map(this.store.opintojaksot, 'id'), _.parseInt(this.$route.params.opintojaksoId))) {
       return [];
     }
     else {
@@ -795,13 +812,19 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     }
     else {
       let opintojakso;
-      const revisions = await this.store.getOpintojaksoHistoria(_.parseInt(opintojaksoId));
-      const rev = revisions[revisions.length - this.versionumero];
-      if (this.versionumero && rev) {
-        opintojakso = await this.store.getOpintojaksoVersion(_.parseInt(opintojaksoId), rev.numero as number);
+      if (_.includes(_.map(this.store.opintojaksot, 'id'), _.parseInt(opintojaksoId))) {
+        const revisions = await this.store.getOpintojaksoHistoria(_.parseInt(opintojaksoId));
+        const rev = revisions[revisions.length - this.versionumero];
+        if (this.versionumero && rev) {
+          opintojakso = await this.store.getOpintojaksoVersion(_.parseInt(opintojaksoId), rev.numero as number);
+        }
+        else {
+          opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
+        }
       }
       else {
-        opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
+        opintojakso = await this.store.getTuotuOpintojakso(_.parseInt(opintojaksoId));
+        opintojakso.opintojaksonOpetussuunnitelma = await this.store.getOpintojaksonOpetussuunnitelma(_.parseInt(opintojaksoId));
       }
       _.forEach(opintojakso.oppiaineet, (oa: OpintojaksonOppiaine) => {
         oa.isPaikallinenOppiaine = _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), oa.koodi);
@@ -812,6 +835,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         this.breadcrumb('opintojakso', opintojakso.nimi);
       }
 
+      opintojakso.tuotuOpintojakso = !_.includes(_.map(this.store.opintojaksot, 'id'), _.parseInt(opintojaksoId));
       return opintojakso;
     }
   }
@@ -970,5 +994,16 @@ hr.valiviiva {
     min-width: 6em;
   }
 }
+
+.muokkaus-esto {
+  font-size: 0.8rem;
+  color: $gray-lighten-1;
+
+  .lisainfo {
+    color: $blue-lighten-5;
+    cursor: pointer;
+  }
+}
+
 
 </style>

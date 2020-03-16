@@ -4,7 +4,7 @@
   <div class="editointikontrolli" v-else>
     <div v-sticky sticky-offset="{ top: 50 }" sticky-z-index="500">
       <div class="ylapaneeli">
-        <div class="d-flex align-items-center flex-md-row flex-column justify-content-between">
+        <div class="d-flex align-items-center flex-md-row flex-column justify-content-between align-self-center">
           <div class="d-flex flex-wrap flex-xl-nowrap">
             <div class="headerline">
               <slot name="header"
@@ -17,7 +17,7 @@
               <div>{{ latest.muokkaajaOid }}</div>
             </div>
           </div>
-          <div class="d-flex flex-nowrap align-self-start justify-content-end pt-2 muokkaus-container">
+          <div class="d-flex flex-nowrap align-self-start justify-content-end muokkaus-container">
             <ep-button class="ml-4"
                         v-if="ctrls.isEditing"
                         @click="ctrls.cancel()"
@@ -49,17 +49,19 @@
                 <slot name="poista">{{ poistoteksti }}</slot>
               </b-dropdown-item>
             </b-dropdown>
-            <ep-button id="editointi-muokkaus"
-                        v-tutorial
-                        variant="link"
-                        v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
-                        @click="ctrls.start()"
-                        v-if="!ctrls.isEditing && ctrls.isEditable && !versiohistoriaVisible"
-                        icon="kyna"
-                        :show-spinner="state.isSaving"
-                        :disabled="state.disabled">
-              <slot name="muokkaa">{{ $t('muokkaa') }}</slot>
-            </ep-button>
+            <slot name="muokkaa-content" :data="state.data">
+              <ep-button id="editointi-muokkaus"
+                          v-tutorial
+                          variant="link"
+                          v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
+                          @click="ctrls.start()"
+                          v-if="!ctrls.isEditing && ctrls.isEditable && !versiohistoriaVisible"
+                          icon="kyna"
+                          :show-spinner="state.isSaving"
+                          :disabled="state.disabled">
+                <slot name="muokkaa">{{ $t('muokkaa') }}</slot>
+              </ep-button>
+            </slot>
             <b-dropdown class="mx-4"
                         v-if="katseluDropDownValinnatVisible"
                         size="md"
