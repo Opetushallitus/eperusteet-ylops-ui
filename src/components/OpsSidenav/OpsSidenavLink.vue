@@ -53,7 +53,7 @@ export default class OpsSidenavLink extends Vue {
       name: this.to.name,
       params: {
         ...this.to.params,
-        lang: Kielet.getUiKieli,
+        lang: Kielet.getUiKieli.value,
         id: this.$route.params.id,
       },
       query: this.to.query,
