@@ -90,7 +90,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Prop, Mixins, Component } from 'vue-property-decorator';
-import { Lops2019ValidointiDto } from '@/tyypit';
+import { Lops2019ValidointiDto } from '@shared/api/ylops';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
@@ -191,7 +191,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity .1s;

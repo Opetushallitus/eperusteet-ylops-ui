@@ -203,15 +203,6 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 
 @Component({
-  validations() {
-    return {
-      state: {
-        data: {
-          ...(this as any).validator,
-        },
-      },
-    };
-  },
   directives: {
     Sticky,
     oikeustarkastelu,
@@ -221,8 +212,17 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
     EpRoundButton,
     EpSpinner,
     EpVersioModaali,
-  }
-})
+  },
+  validations() {
+    return {
+      state: {
+        data: {
+          ...(this as any).validator,
+        },
+      },
+    };
+  },
+} as any)
 export default class EpEditointi extends Mixins(validationMixin) {
   @Prop({ required: true })
   private hooks!: EditointiKontrolliConfig;
@@ -305,7 +305,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
   }
 
   get saveHelpText() {
-    const vuelidate = this.$v as any;
+    const vuelidate = (this as any).$v as any;
     if (this.state.disabled) {
       return 'tallenna-kaynnissa';
     }
@@ -373,7 +373,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
 
 </script>
 <style scoped lang="scss">
-@import '../../styles/variables';
+@import '@shared/styles/_variables';
 
 .editointikontrolli {
   margin-top: 4px;

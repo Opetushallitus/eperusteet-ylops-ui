@@ -3,15 +3,17 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuelidate from 'vuelidate';
 import TermiExtension from '../TermiExtension';
 import TermiEditor from '../TermiEditor.vue';
-import { KieliStore } from '@shared/stores/kieli';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 import { IKasiteHandler } from '@/stores/kuvat';
-import { TermiDto } from '@/tyypit';
-import { Termisto } from '@/api';
+import { TermiDto } from '@shared/api/ylops';
+import { Termisto } from '@shared/api/ylops';
 
 import { makeAxiosResponse } from '&/utils/data';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
+import VueI18n from 'vue-i18n';
+import { Kaannos } from '@shared/plugins/kaannos';
 
 
 function mockKasitteet(): IKasiteHandler {
@@ -31,13 +33,16 @@ function mockKasitteet(): IKasiteHandler {
 
 describe('Tiptap Termi Extension', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue, {
+  localVue.use(VueI18n);
+  Kielet.install(localVue, {
     messages: {
       fi: require('@/translations/locale-fi.json'),
       sv: require('@/translations/locale-sv.json'),
     },
   });
-  const i18n = KieliStore.i18n;
+  localVue.use(new Kaannos());
+
+  const i18n = Kielet.i18n;
 
   const kasitteetHandler = mockKasitteet();
 

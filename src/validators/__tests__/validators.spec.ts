@@ -3,7 +3,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import Vuelidate from 'vuelidate';
 
 import EpValidation from '@shared/mixins/EpValidation';
-import { TekstiKappaleDto, Lops2019OpintojaksoDto, TermiDto, KysymysDto, OpetussuunnitelmaLuontiDto, OpetussuunnitelmaDto, Lops2019OppiaineDto } from '@/tyypit';
+import { TekstiKappaleDto, Lops2019OpintojaksoDto, TermiDto, KysymysDto, OpetussuunnitelmaLuontiDto, OpetussuunnitelmaDto, Lops2019OppiaineDto } from '@shared/api/ylops';
 import { kasiteValidator } from '@/validators/kasite';
 import { kysymysValidator } from '@/validators/ukk';
 import { opintojaksoValidator, opintojaksoLuontiValidator } from '@/validators/opintojakso';
@@ -51,7 +51,7 @@ class Dummy extends Mixins(EpValidation) {
 
 describe('Oppiaine validators', () => {
   const localVue = createLocalVue();
-  localVue.use(Vuelidate);
+  localVue.use(Vuelidate as any);
 
   const nimi = {
     fi: 'nimi',
@@ -60,8 +60,8 @@ describe('Oppiaine validators', () => {
   test('Opintojakson validointi', async () => {
     const wrapper = mount(Dummy, { localVue });
     await localVue.nextTick();
-    expect(wrapper.vm.$v.opintojakso!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.opintojaksoLuonti!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.opintojakso!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.opintojaksoLuonti!.$invalid).toBe(true);
 
     wrapper.setData({
       kielet: ['fi'],
@@ -80,27 +80,27 @@ describe('Oppiaine validators', () => {
       },
     });
 
-    expect(wrapper.vm.$v.opintojakso!.$invalid).toBe(false);
-    expect(wrapper.vm.$v.opintojaksoLuonti!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.opintojakso!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.opintojaksoLuonti!.$invalid).toBe(false);
   });
 
   test('Tekstikappale validointi', async () => {
     const wrapper = mount(Dummy, { localVue });
     await localVue.nextTick();
-    expect(wrapper.vm.$v.tekstikappale!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.tekstikappale!.$invalid).toBe(true);
     wrapper.setData({
       kielet: ['fi'],
       tekstikappale: {
         nimi,
       },
     });
-    expect(wrapper.vm.$v.tekstikappale!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.tekstikappale!.$invalid).toBe(false);
   });
 
   test('Käsite validointi', async () => {
     const wrapper = mount(Dummy, { localVue });
     await localVue.nextTick();
-    expect(wrapper.vm.$v.kasite!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.kasite!.$invalid).toBe(true);
     wrapper.setData({
       kielet: ['fi'],
       kasite: {
@@ -108,13 +108,13 @@ describe('Oppiaine validators', () => {
         selitys: nimi,
       },
     });
-    expect(wrapper.vm.$v.kasite!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.kasite!.$invalid).toBe(false);
   });
 
   test('UKK validointi', async () => {
     const wrapper = mount(Dummy, { localVue });
     await localVue.nextTick();
-    expect(wrapper.vm.$v.kysymys!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.kysymys!.$invalid).toBe(true);
     wrapper.setData({
       kysymys: {
         kysymys: nimi,
@@ -124,18 +124,18 @@ describe('Oppiaine validators', () => {
         }],
       },
     });
-    expect(wrapper.vm.$v.kysymys!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.kysymys!.$invalid).toBe(false);
   });
 
   test('Virheellinen validointi', async () => {
     const wrapper = mount(Dummy, { localVue });
     await localVue.nextTick();
-    expect(wrapper.vm.$v.oppiaine!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.oppiaineLuonti!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.pohja!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.ops!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.opsLuonti!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.pohjaLuonti!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.oppiaine!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.oppiaineLuonti!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.pohja!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.ops!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.opsLuonti!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.pohjaLuonti!.$invalid).toBe(true);
   });
 
   test('Oppiaineet', async () => {
@@ -154,15 +154,15 @@ describe('Oppiaine validators', () => {
       },
     });
 
-    expect(wrapper.vm.$v.oppiaine!.$invalid).toBe(false);
-    expect(wrapper.vm.$v.oppiaineLuonti!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.oppiaine!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.oppiaineLuonti!.$invalid).toBe(false);
 
     wrapper.setData({
       kielet: ['fi', 'sv'],
     });
 
-    expect(wrapper.vm.$v.oppiaine!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.oppiaineLuonti!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.oppiaine!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.oppiaineLuonti!.$invalid).toBe(true);
   });
 
   test('Opetussuunnitelmien perustiedot', async () => {
@@ -177,10 +177,10 @@ describe('Oppiaine validators', () => {
       pohjaLuonti: { nimi },
     });
 
-    expect(wrapper.vm.$v.ops!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.opsLuonti!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.pohja!.$invalid).toBe(false);
-    expect(wrapper.vm.$v.pohjaLuonti!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.ops!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.opsLuonti!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.pohja!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.pohjaLuonti!.$invalid).toBe(true);
 
     wrapper.setData({
       kielet: ['fi'],
@@ -189,9 +189,9 @@ describe('Oppiaine validators', () => {
       pohjaLuonti: { nimi, julkaisukielet: ['fi'] },
     });
 
-    expect(wrapper.vm.$v.ops!.$invalid).toBe(false);
-    expect(wrapper.vm.$v.opsLuonti!.$invalid).toBe(true);
-    expect(wrapper.vm.$v.pohjaLuonti!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.ops!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.opsLuonti!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.pohjaLuonti!.$invalid).toBe(true);
 
     wrapper.setData({
       kielet: ['fi'],
@@ -219,8 +219,8 @@ describe('Oppiaine validators', () => {
       } as any,
     });
 
-    expect(wrapper.vm.$v.opsLuonti!.$invalid).toBe(false);
-    expect(wrapper.vm.$v.pohjaLuonti!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.opsLuonti!.$invalid).toBe(false);
+    expect((wrapper.vm as any).$v.pohjaLuonti!.$invalid).toBe(false);
 
   });
 

@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import Vue from 'vue';
 
-import { Lops2019Perusteet } from '@/api';
-import { Lops2019OppiaineDto } from '@/tyypit';
+import { Lops2019Perusteet } from '@shared/api/ylops';
+import { Lops2019OppiaineDto } from '@shared/api/ylops';
 
 function sortedOppiaineet(oppiaineet: Lops2019OppiaineDto[]) {
   return _.chain(oppiaineet)

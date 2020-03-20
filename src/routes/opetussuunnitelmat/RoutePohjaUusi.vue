@@ -32,13 +32,13 @@
 import _ from 'lodash';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 
-import { Ulkopuoliset, Opetussuunnitelmat } from '@/api';
+import { Ulkopuoliset, Opetussuunnitelmat } from '@shared/api/ylops';
 import { pohjaLuontiValidator } from '@/validators/ops';
 import { isPerusteSupported } from '@/utils/perusteet';
 import {
   PerusteInfoDto,
   OpetussuunnitelmaLuontiDto,
-} from '@/tyypit';
+} from '@shared/api/ylops';
 import { createLogger } from '@shared/utils/logger';
 import { success } from '@/utils/notifications';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
@@ -145,6 +145,6 @@ export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
 
 <style scoped lang="scss">
 
-@import '@/styles/_variables.scss';
+@import '@shared/styles/_variables.scss';
 
 </style>

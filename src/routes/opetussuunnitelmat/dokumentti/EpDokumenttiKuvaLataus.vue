@@ -42,9 +42,9 @@
 <script lang="ts">
 import { Vue, Component, Watch, Prop } from 'vue-property-decorator';
 
-import { baseURL, DokumentitParams } from '@/api';
+import { baseURL, DokumentitParams } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-import { DokumenttiDto } from '@/generated';
+import { DokumenttiDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import { fail } from '@/utils/notifications';
@@ -73,7 +73,7 @@ export default class EpDokumenttiKuvaLataus extends Vue {
   }
 
   get kieli() {
-    return Kielet.getSisaltoKieli;
+    return Kielet.getSisaltoKieli.value;
   }
 
   get placeholder() {
@@ -136,7 +136,7 @@ export default class EpDokumenttiKuvaLataus extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .dokumentit {
 

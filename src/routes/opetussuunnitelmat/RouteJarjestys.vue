@@ -39,7 +39,7 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 
-import { Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { Puu, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpRoute from '@/mixins/EpRoute';
@@ -106,7 +106,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/_variables.scss';
+@import '@shared/styles/_variables.scss';
 
 .otsikko {
   margin-bottom: 0;

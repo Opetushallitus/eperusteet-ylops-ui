@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import { Store, Getter, State } from '@shared/stores/store';
-import { KayttajanTietoDto } from '@/tyypit';
+import { KayttajanTietoDto } from '@shared/api/ylops';
 import {
   Kayttajat as KayttajatApi,
   Opetussuunnitelmat,
   Ulkopuoliset,
-} from '@/api';
+} from '@shared/api/ylops';
 import { organizations } from '@/utils/organisaatiot';
 import { createLogger } from '@shared/utils/logger';
 
@@ -92,14 +92,14 @@ class KayttajaStore {
       const organisaatio =  this.organisaatiot[i];
       const orgVirkailijat = res[i];
       _.each(orgVirkailijat, virkailija => {
-        const oid = virkailija.oid;
+        const oid = (virkailija as any).oid;
         if (_.includes(virkailijat, { oid })) {
           const virkailija = _.find(virkailijat, { oid });
           virkailija.organisaatiot.push(organisaatio);
         }
         else {
           virkailijat.push({
-            ...virkailija,
+            ...(virkailija as any),
             organisaatiot: [organisaatio],
           });
         }

@@ -9,24 +9,24 @@
     </h2>
     <div class="collapse-container">
       <ep-collapse v-if="oppiaine.tehtava">
-        <h4 slot="header">{{ isOppiaine ? $t('oppiaineet-tehtava') : $t('oppimaaran-tehtava')}}</h4>
+        <h3 slot="header">{{ isOppiaine ? $t('oppiaineet-tehtava') : $t('oppimaaran-tehtava')}}</h3>
         <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tehtava.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset">
-        <h4 slot="header">{{ $t('laaja-alainen-osaaminen') }}</h4>
+        <h3 slot="header">{{ $t('laaja-alainen-osaaminen') }}</h3>
         <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.tavoitteet">
-        <h4 slot="header">{{ $t('tavoitteet') }}</h4>
+        <h3 slot="header">{{ $t('tavoitteet') }}</h3>
         <ep-content layout="normal" opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tavoitteet.kuvaus"></ep-content>
         <ep-prefix-list :value="oppiaine.tavoitteet.tavoitealueet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.arviointi">
-        <h4 slot="header">{{ $t('arviointi') }}</h4>
+        <h3 slot="header">{{ $t('arviointi') }}</h3>
         <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.arviointi.kuvaus"></ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.oppimaarat && oppiaine.oppimaarat.length > 0">
-        <h4 slot="header">{{ $t('oppimaarat') }}</h4>
+        <h3 slot="header">{{ $t('oppimaarat') }}</h3>
         <div class="oppimaarat-topic">{{ $t('oppiaine-oppimaara-ohje')}}</div>
         <div class="block-container oppimaarat" v-for="oppimaara in oppiaine.oppimaarat" :key="oppimaara.id">
           <router-link class="om-content" :to="{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }">
@@ -35,7 +35,7 @@
         </div>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.moduulit && oppiaine.moduulit.length > 0">
-        <h4 slot="header">{{ $t('moduulit') }}</h4>
+        <h3 slot="header">{{ $t('moduulit') }}</h3>
         <div class="oppimaarat-topic">{{ $t('oppiaine-moduuli-ohje')}}</div>
         <div class="block-container">
           <div class="moduulit">
@@ -52,7 +52,7 @@
         <ep-spinner v-if="!opintojaksot">
         </ep-spinner>
         <ep-collapse else>
-          <h4 slot="header">{{ $t('opintojaksot') }}</h4>
+          <h3 slot="header">{{ $t('opintojaksot') }}</h3>
           <div v-if="opintojaksot.length === 0">
             <div class="alert alert-info">{{ $t('opintojaksoja-ei-lisatty') }}</div>
           </div>
@@ -85,7 +85,7 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
-import { Lops2019OppiaineDto } from '@/tyypit';
+import { Lops2019OppiaineDto } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';

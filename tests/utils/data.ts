@@ -3,7 +3,7 @@ import {
   Oikeus,
   Oikeudet
 } from "@/stores/kayttaja";
-import { KayttajanTietoDto } from "@/tyypit";
+import { KayttajanTietoDto } from "@shared/api/ylops";
 import _ from "lodash";
 
 export type TestiOikeudet = "none" | "luku" | "muokkaus" | "laadinta" | "oph";

@@ -3,17 +3,22 @@ import OpsSidenav from './OpsSidenav.vue';
 
 import { router } from '@/router';
 import { PerusteCache } from '@/stores/peruste';
-import { KieliStore } from '@shared/stores/kieli';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-import { Opetussuunnitelmat, OpetussuunnitelmanSisalto, Termisto } from '@/api';
+import { Opetussuunnitelmat, OpetussuunnitelmanSisalto, Termisto } from '@shared/api/ylops';
 import { makeAxiosResponse } from '&/utils/data';
+import VueI18n from 'vue-i18n';
+import { Kaannos } from '@shared/plugins/kaannos';
 
 
 describe('OpsSidenav component', async () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue);
-  const i18n = KieliStore.i18n;
+  localVue.use(VueI18n);
+  Kielet.install(localVue);
+  localVue.use(new Kaannos());
+
+  const i18n = Kielet.i18n;
 
   jest.spyOn(Termisto, 'getAllTermit')
     .mockImplementation(async (id: number) => {

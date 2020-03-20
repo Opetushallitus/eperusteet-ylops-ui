@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Lops2019OpintojaksoDto } from '@/tyypit';
+import { Lops2019OpintojaksoDto } from '@shared/api/ylops';
 import _ from 'lodash';
 
 @Component
@@ -63,7 +63,7 @@ export default class EpOpintojaksoSelect extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .oj-content {
     border-radius: 24px;

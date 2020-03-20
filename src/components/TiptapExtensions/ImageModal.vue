@@ -53,8 +53,8 @@ import _ from 'lodash';
 import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import VueSelect from 'vue-select';
 import { IAttachmentWrapper } from '@/stores/kuvat';
-import { LiiteDto } from '@/tyypit';
-import { Api } from '@/api';
+import { LiiteDto } from '@shared/api/ylops';
+import { Api } from '@shared/api/ylops';
 import { info } from '@/utils/notifications';
 import EpFormContent from'@shared/components/forms/EpFormContent.vue';
 import EpField from'@shared/components/forms/EpField.vue';
@@ -72,12 +72,12 @@ import { Kielet } from '@shared/stores/kieli';
   },
   validations: {
     kuvateksti: {
-      [Kielet.getSisaltoKieli]: {
+      [Kielet.getSisaltoKieli.value]: {
         required
       },
     },
   },
-})
+} as any)
 export default class ImageModal extends Mixins(validationMixin) {
   @Prop({ required: true })
   private loader!: IAttachmentWrapper;
@@ -99,7 +99,7 @@ export default class ImageModal extends Mixins(validationMixin) {
 
   async mounted() {
     this.kuvateksti = {
-      [Kielet.getSisaltoKieli]: this.kuvatekstiProp
+      [Kielet.getSisaltoKieli.value]: this.kuvatekstiProp
     };
 
     try {
@@ -159,7 +159,7 @@ export default class ImageModal extends Mixins(validationMixin) {
   }
 
   private onKuvatekstichange(kuvateksti){
-    this.$emit('onKuvatekstichange', kuvateksti[Kielet.getSisaltoKieli]);
+    this.$emit('onKuvatekstichange', kuvateksti[Kielet.getSisaltoKieli.value]);
   }
 
   private peruuta() {

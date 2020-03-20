@@ -1,4 +1,4 @@
-import { Opetussuunnitelmat } from '@/api';
+import { Opetussuunnitelmat } from '@shared/api/ylops';
 import axios from 'axios';
 import '@shared/api/common';
 

@@ -36,7 +36,7 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 
-import { Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@/tyypit';
+import { Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@shared/api/ylops';
 import { PerusteCache } from '@/stores/peruste';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';

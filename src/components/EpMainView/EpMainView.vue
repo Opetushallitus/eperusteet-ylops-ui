@@ -44,7 +44,7 @@ export default class EpMainView extends Vue {
 
 <style scoped lang="scss">
 
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .content {
   padding: 20px;

@@ -1,7 +1,7 @@
-import { Termisto } from '@/api';
-import { TermiDto, Lops2019PoistettuDto } from '@/tyypit';
-import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
-import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat } from '@/api';
+import { Termisto } from '@shared/api/ylops';
+import { TermiDto, Lops2019PoistettuDto } from '@shared/api/ylops';
+import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
+import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat } from '@shared/api/ylops';
 import { AxiosResponse } from 'axios';
 import { createLogger } from '@shared/utils/logger';
 import { State, Store } from '@shared/stores/store';

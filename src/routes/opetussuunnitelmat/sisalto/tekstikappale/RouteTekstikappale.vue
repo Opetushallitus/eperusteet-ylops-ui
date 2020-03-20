@@ -83,13 +83,13 @@ import {
   Lops2019Perusteet,
   Ohjeet,
   OpetussuunnitelmanSisalto,
-} from '@/api';
+} from '@shared/api/ylops';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import {
   Puu,
   OhjeDto,
   PerusteTekstiKappaleViiteDto,
-} from '@/tyypit';
+} from '@shared/api/ylops';
 import { success } from '@/utils/notifications';
 
 
@@ -259,7 +259,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 @import '@shared/styles/_mixins.scss';
 
 .badges {

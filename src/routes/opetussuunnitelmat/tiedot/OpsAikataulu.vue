@@ -3,7 +3,7 @@
 
     <div class="row">
       <div class="col">
-        <h3>{{$t('aikataulu')}}</h3>
+        <h2>{{$t('aikataulu')}}</h2>
       </div>
       <div class="col text-right">
         <ep-aikataulu-modal ref="aikataulumodal" :rootModel="ops" :aikataulut="aikataulut" @tallenna="tallenna"
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { OpetussuunnitelmaKevytDto } from '@/tyypit';
+import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpAikataulu from '@shared/components/EpAikataulu/EpAikataulu.vue';
@@ -81,7 +81,7 @@ export default class OpsAikataulu extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .pohja {
     margin: 10px 0px;

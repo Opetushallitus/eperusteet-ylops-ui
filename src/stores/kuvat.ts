@@ -1,6 +1,6 @@
-import { Termisto, Liitetiedostot } from '@/api';
-import { TermiDto, LiiteDto } from '@/tyypit';
-import { Api } from '@/api';
+import { Termisto, Liitetiedostot } from '@shared/api/ylops';
+import { TermiDto, LiiteDto } from '@shared/api/ylops';
+import { Api } from '@shared/api/ylops';
 import _ from 'lodash';
 
 

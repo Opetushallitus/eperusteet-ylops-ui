@@ -1,4 +1,4 @@
-import { OrganisaatioTyyppi } from '@/tyypit';
+import { OrganisaatioTyyppi } from '@shared/tyypit';
 import _ from 'lodash';
 
 export function hasOrganisaatioTyyppi(

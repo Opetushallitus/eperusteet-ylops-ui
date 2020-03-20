@@ -3,8 +3,8 @@ import Vue from 'vue';
 
 import { IKasiteHandler, createKasiteHandler } from '@/stores/kuvat';
 import { domAttrsGetter } from './helpers';
-import { KieliStore } from '@shared/stores/kieli';
-import { TermiDto } from '@/tyypit';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
+import { TermiDto } from '@shared/api/ylops';
 import TermiEditor from './TermiEditor.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 
@@ -67,7 +67,7 @@ export default class TermiExtension extends Mark {
 
           const self = (this as any);
           const h = this.$createElement;
-          const t = (v: string): string => KieliStore.i18n.t(v) as string;
+          const t = (v: string): string => Kielet.i18n.t(v) as string;
           const kasiteTitle = h('div', {}, t('valitse-kasite'));
           const editor = h(TermiEditor, {
             props: {
@@ -96,10 +96,10 @@ export default class TermiExtension extends Mark {
             }
 
             try {
-              this.abbrdata = await handler.getOne(value);
+              (this as any).abbrdata = await handler.getOne(value);
             }
             catch (err) {
-              this.abbrdata = null;
+              (this as any).abbrdata = null;
               throw err;
             }
           },
@@ -118,8 +118,8 @@ export default class TermiExtension extends Mark {
           },
         },
         title() {
-          if (this.abbrdata) {
-            return (this as any).$kaanna(this.abbrdata.selitys);
+          if ((this as any).abbrdata) {
+            return (this as any).$kaanna((this as any).abbrdata.selitys);
           }
           else {
             return (this as any).$t('termia-ei-kuvattu');

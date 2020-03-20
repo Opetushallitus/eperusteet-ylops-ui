@@ -144,7 +144,7 @@ export default class RouteTiedot extends EpOpsRoute {
 
   get validator() {
     return opsTiedotValidator([
-      Kielet.getSisaltoKieli, // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
     ], !this.isPohja);
   }
 
@@ -163,7 +163,7 @@ export default class RouteTiedot extends EpOpsRoute {
   }
 
   get kieli() {
-    return Kielet.getSisaltoKieli;
+    return Kielet.getSisaltoKieli.value;
   }
 
   private async load() {
@@ -180,7 +180,7 @@ export default class RouteTiedot extends EpOpsRoute {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 .otsikko {
     margin-bottom: 0;
 }

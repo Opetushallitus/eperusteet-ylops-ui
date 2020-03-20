@@ -286,7 +286,7 @@ export default class EpEditorMenuBar extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .sub-bar {
   margin-top: 0;

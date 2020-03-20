@@ -71,7 +71,7 @@ import EpSearch from'@shared/components/forms/EpSearch.vue';
 import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 
-import { Ulkopuoliset } from '@/api';
+import { Ulkopuoliset } from '@shared/api/ylops';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
