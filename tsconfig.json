@@ -42,6 +42,8 @@
   "exclude": [
     "node_modules",
     "eperusteet-frontend-utils",
-    "tests/e2e"
+    "tests/e2e",
+	"eperusteet-frontend-utils/vue/src/api/eperusteet.ts",
+	"eperusteet-frontend-utils/vue/src/api/amosaa.ts"
   ]
 }
