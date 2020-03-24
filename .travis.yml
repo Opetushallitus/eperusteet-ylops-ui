@@ -9,17 +9,20 @@ env:
   global:
     - YLOPS_SERVICE_DIR=$PWD/eperusteet-ylops/eperusteet-ylops-service
     - EPERUSTEET_SERVICE_DIR=$PWD/eperusteet/eperusteet/eperusteet-service
+    - AMOSAA_SERVICE_DIR=$PWD/eperusteet-amosaa/eperusteet-amosaa-service
     - secure: BMurlh1XguXVumsVbtnWrhRTewpX3hDIlg3BzCT+vDjBkNIsgMs9vWOTQrt4+1rrxdOPlCEsRiRUO+AxRiVbgK91BJPNlsWzuxQGSeQ0tqRr9BiqZoDBtrnj01c0fcu0Miea/0Pbz0P1BaGzrU6w12FX5M8ooudda5NBrvxpLRuyM5Z3TSVbbqxvhBRppdAa2QPKp3h7KQp6BDjdXSAUZ0QKzManM26rH0doj4AsGpfzriaAdX3u7vwdQWwTWX4Ah/6/wIxY3z+c1Hq0AIl8aON0+i98K48ubOy8K+X32EsWPqeS+Th+BSMDEoLq9ONlTsjrzdzF5movngnQ3FdFfYzoXe5JOTHtR8itNF0C+3nBqCM/47evndMzpw3whb3qeF3SO3EMD8R9VDobCvVAtNDD4TWud8f1YzEbOYp/OAhGkCXpz3jFOoWxwGGhuCLTPCsXXzc+pt0OieBbbtRTeYSTUPS6CNOoERBA6oXPTT5DkurUxsQd1svpXRGAjiNe2S2HVQpyI+Gs0XSWdY8FP68lbYqhgImMuvOahYN6+B6jyRO6+Mx7GUsiSt/oF7xwGHS434MAqVBVSoul3Fg1TgKrnxFn4D7+4wm53KFoLXgHR4ASS0+mp8xYv3TL/YnAN/jrFY6AsqET6I/0/gANLl+J3gZkICLw1PczomzpEgw=
 
 install:
   - nvm install 10.16.3
   - git clone --depth=1 https://github.com/Opetushallitus/eperusteet-ylops
   - git clone --depth=1 https://github.com/Opetushallitus/eperusteet
+  - git clone --depth=1 https://github.com/Opetushallitus/eperusteet-amosaa
   - git submodule update --recursive --init
 
   - echo 'Generate API...' && echo -en 'travis_fold:start:script.1\\r'
   - cd eperusteet/eperusteet && mvn dependency:resolve --batch-mode && cd ../..
   - cd eperusteet-ylops && mvn dependency:resolve --batch-mode && cd ..
+  - cd eperusteet-amosaa && mvn dependency:resolve --batch-mode && cd ..
   - echo -en 'travis_fold:end:script.1\\r'
 
   - yarn install --silent
