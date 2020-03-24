@@ -75,7 +75,7 @@ describe('Oppiaine validators', () => {
       },
     });
 
-    expect(wrapper.vm.$v.opintojakso!.$invalid).toBe(true);
+    expect((wrapper.vm as any).$v.opintojakso!.$invalid).toBe(true);
 
     wrapper.setData({
       kielet: ['fi'],
