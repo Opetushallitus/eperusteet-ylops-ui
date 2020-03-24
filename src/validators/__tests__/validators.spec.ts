@@ -70,6 +70,21 @@ describe('Oppiaine validators', () => {
         koodi: '123',
         oppiaineet: [{
           koodi: '456',
+          laajuus: -1
+        }],
+      },
+    });
+
+    expect((wrapper.vm as any).$v.opintojakso!.$invalid).toBe(true);
+
+    wrapper.setData({
+      kielet: ['fi'],
+      opintojakso: {
+        nimi,
+        koodi: '123',
+        oppiaineet: [{
+          koodi: '456',
+          laajuus: 0,
         }],
       },
       opintojaksoLuonti: {

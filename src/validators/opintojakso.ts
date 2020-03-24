@@ -1,6 +1,6 @@
 import { koodiValidator, nimiValidator, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@shared/tyypit';
-import { minLength, required } from 'vuelidate/lib/validators';
+import { minLength, required, minValue } from 'vuelidate/lib/validators';
 
 export function opintojaksoLuontiValidator(kielet: Kieli[] = []) {
   return {
@@ -8,6 +8,9 @@ export function opintojaksoLuontiValidator(kielet: Kieli[] = []) {
     oppiaineet: {
       required,
       $each: {
+        laajuus: {
+          'min-value': minValue(0),
+        },
         ...koodiValidator(),
       },
     },

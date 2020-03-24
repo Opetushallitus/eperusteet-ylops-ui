@@ -112,6 +112,7 @@
                   <ep-field
                     type="number"
                     help="oppainekohtainen-laajuus-opintojaksossa"
+                    :validation="validation.oppiaineet.$each.$iter[index].laajuus"
                     v-model="oa.laajuus"
                     :is-header="false"
                     :is-editing="isEditing"></ep-field>
