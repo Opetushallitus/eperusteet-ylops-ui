@@ -1,6 +1,6 @@
 <template>
 <div class="organisaatiot">
-  <ep-form-content name="organisaatiot">
+  <ep-form-content :showHeader="false">
     <div class="selectors">
       <div class="form-group required mb-5">
         <label>{{ $t('kunnat') }}*</label>
