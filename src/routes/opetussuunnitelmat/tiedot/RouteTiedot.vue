@@ -45,7 +45,7 @@
             </div>
             <div class="col-md-6" v-if="isOps">
               <ep-form-content name="ops-hyvaksymispvm">
-                <ep-datepicker v-model="data.paatospaivamaara" help="ops-hyvaksymispvm-ohje" :validation="validation.paatospaivamaara" :is-editing="isEditing">
+                <ep-datepicker v-model="data.paatospaivamaara" help="ops-hyvaksymispvm-ohje" :validation="validation.paatospaivamaara" :is-editing="isEditing" :showValidValidation="false">
                 </ep-datepicker>
               </ep-form-content>
             </div>

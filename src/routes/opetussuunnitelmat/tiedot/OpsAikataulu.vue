@@ -43,6 +43,7 @@ import EpAikataulu from '@shared/components/EpAikataulu/EpAikataulu.vue';
 import EpAikatauluModal from '@shared/components/EpAikataulu/EpAikatauluModal.vue';
 import { AikatauluStore } from '@/stores/aikataulu';
 import { success } from '@/utils/notifications';
+import * as _ from 'lodash';
 
 @Component({
   components:{
@@ -73,6 +74,13 @@ export default class OpsAikataulu extends Vue {
   }
 
   async tallenna(aikataulut) {
+    aikataulut = _.map(aikataulut, aikataulu => {
+      return {
+        ...aikataulu,
+        opetussuunnitelmaId: this.ops.id,
+      };
+    });
+
     await this.aikatauluStore.saveAikataulut(aikataulut);
     success('aikataulu-tallennettu');
   }
