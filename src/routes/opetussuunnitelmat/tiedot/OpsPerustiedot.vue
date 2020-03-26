@@ -77,13 +77,13 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 
-import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
+import { parsiEsitysnimi } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpOpsComponent from '../../../mixins/EpOpsComponent';
 
 
 @Component({
@@ -92,24 +92,21 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
     EpButton,
   }
 })
-export default class OpsPerustiedot extends Vue {
+export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
 
   private naytaLisaaTyoryhmaa: boolean = false;
   private tyoryhmaAlkuMaara = 5;
-
-  @Prop({required: true})
-  private ops!: OpetussuunnitelmaKevytDto;
 
   get julkaisukieliet() {
     return _.map(this.ops.julkaisukielet, (kieli) => Kielet.kaannaOlioTaiTeksti(kieli)).join(', ');
   }
 
   async mounted() {
-    await Kayttajat.fetchOrganisaatioVirkailijat();
+    await this.store.fetchOrganisaatioVirkailijat();
   }
 
   private get virkailijat() {
-    return Kayttajat.virkailijat;
+    return this.store.virkailijat;
   }
 
   private get virkailijatFormatted() {
