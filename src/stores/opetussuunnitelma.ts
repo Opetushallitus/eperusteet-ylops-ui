@@ -323,7 +323,7 @@ export class OpetussuunnitelmaStore {
       .filter(org => org.oid !== organizations.oph.oid)
       .map(org => org.oid as string)
       .value();
-    this.virkailijat =  (await Ulkopuoliset.getOrganisaatioVirkailijat(orgOids)).data as any[];
+    this.virkailijat = _.uniqBy((await Ulkopuoliset.getOrganisaatioVirkailijat(orgOids)).data as any[], 'oid');
   }
 }
 
