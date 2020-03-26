@@ -3,7 +3,7 @@
 
     <div class="row">
       <div class="col">
-        <ops-perustiedot :ops="ops" class="info-box" />
+        <ops-perustiedot :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box"/>
         <ops-muokkaamattomat-osiot :opetussuunnitelmanTekstikappale="store.sisalto" class="info-box"/>
         <oppiaineet-statistiikka :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box" />
       </div>

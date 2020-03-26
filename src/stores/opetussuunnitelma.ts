@@ -1,11 +1,12 @@
 import { Termisto } from '@shared/api/ylops';
-import { TermiDto, Lops2019PoistettuDto } from '@shared/api/ylops';
+import { TermiDto, Ulkopuoliset } from '@shared/api/ylops';
 import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
 import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat } from '@shared/api/ylops';
 import { AxiosResponse } from 'axios';
 import { createLogger } from '@shared/utils/logger';
 import { State, Store } from '@shared/stores/store';
 import { success, fail } from '@/utils/notifications';
+import { organizations } from '@/utils/organisaatiot';
 import _ from 'lodash';
 
 interface OpintojaksoQuery {
@@ -41,6 +42,9 @@ export class OpetussuunnitelmaStore {
 
   @State()
   public progress = 0;
+
+  @State()
+  public virkailijat: any[] | null = null;
 
   constructor(opsId: number) {
     this.opsId = opsId;
@@ -312,6 +316,14 @@ export class OpetussuunnitelmaStore {
       ..._.slice(this.opintojaksot, idx + 1),
     ] as Lops2019OpintojaksoDto[];
     return result;
+  }
+
+  public async fetchOrganisaatioVirkailijat() {
+    const orgOids = _(this.opetussuunnitelma?.organisaatiot)
+      .filter(org => org.oid !== organizations.oph.oid)
+      .map(org => org.oid as string)
+      .value();
+    this.virkailijat =  (await Ulkopuoliset.getOrganisaatioVirkailijat(orgOids)).data as any[];
   }
 }
 
