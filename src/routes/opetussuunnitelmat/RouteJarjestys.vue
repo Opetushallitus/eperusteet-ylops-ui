@@ -12,7 +12,8 @@
             :isEditable="isEditing"
             v-model="data.lapset"
             child-field="lapset"
-            group="sisalto">
+            group="sisalto"
+            :sortable="!hasPohja">
           <template #default="{ node }">
             <span v-if="isEditing">
               {{ $kaanna(node.tekstiKappale.nimi) }}
@@ -24,7 +25,7 @@
         </ep-jarjesta>
       </div>
       <ep-button
-        v-if="isEditing"
+        v-if="isEditing && !hasPohja"
         variant="outline-primary"
         @click="lisaaTekstikappale(data.lapset)"
         icon="plussa">
@@ -45,7 +46,7 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpJarjesta from '@/components/EpJarjesta/EpJarjesta.vue';
+import EpJarjesta from '@shared/components/EpJarjesta/EpJarjesta.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 
 function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKappaleViiteKevytDto | null {
@@ -100,6 +101,10 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
 
   async save(data: Puu) {
     await this.store.saveTeksti(data);
+  }
+
+  get hasPohja() {
+    return !_.isEmpty(this.ops.pohja);
   }
 
 }
