@@ -107,10 +107,13 @@ export default class ImageExtension extends Node {
           this.$bvModal.msgBoxConfirm([editor], {
             buttonSize: 'sm',
             centered: true,
-            size: 'sm',
+            size: 'lg',
             noCloseOnBackdrop: true,
             noCloseOnEsc: true,
-            title: [h('div', {}, t('valitse-kuva'))],
+            headerClass: 'pb-0 mb-0',
+            title: [h('h2', {}, t('lisaa-kuva'))],
+            cancelTitle: t('peruuta'),
+            okTitle: t('lisaa-kuva'),
           });
 
           this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
@@ -119,7 +122,7 @@ export default class ImageExtension extends Node {
               self.dataUid = oldDataUid;
             }
             else {
-              if(!_.isEmpty(self.dataUid) && _.isEmpty(self.altText)) {
+              if(_.isEmpty(self.dataUid) || _.isEmpty(self.altText)) {
                 bvEvent.preventDefault();
               }
             }
