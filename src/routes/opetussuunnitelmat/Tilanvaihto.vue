@@ -1,6 +1,6 @@
 <template>
 <div v-if="mahdollisetTilat">
-  <ep-button v-b-modal.tilanvaihtomodal="v-b-modal.tilanvaihtomodal"
+  <ep-button v-b-modal.tilanvaihtomodal
              id="opetussuunnitelma-tilanvaihto"
              v-tutorial>{{ $t('vaihda-tilaa') }}</ep-button>
   <b-modal ref="modal" id="tilanvaihtomodal" size="lg" title="testi">
