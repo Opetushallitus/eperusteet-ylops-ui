@@ -16,6 +16,7 @@
     "eslint": "eslint src/**/*.vue",
     "format": "vue-cli-service lint",
     "gen:api": "./scripts/buildapi.sh",
+    "gen:api:node": "node scripts/buildapi.js",
     "install_cypress": "npx cypress install && npx cypress verify",
     "lint:fix": "vue-cli-service lint",
     "stats": "npm test && $BROWSER mochawesome-report/mochawesome.html coverage/lcov-report/index.html",
@@ -126,6 +127,6 @@
     "vue-styleguidist": "^3.22.2"
   },
   "engines": {
-    "node": "10.x.x"
+    "node": "^10 || ^12"
   }
 }
