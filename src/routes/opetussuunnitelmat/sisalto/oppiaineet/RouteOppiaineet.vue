@@ -381,7 +381,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
             // Vertailua ei voida tehdä arvolla, koska ne voivat olla esim. ÄI ja AI
             if (moduuli.koodi && oa.koodi!.uri) {
               // Käytetään KoodiUrin loppuosaa
-              const mKoodi = _.split(moduuli.koodi!.uri, '_').pop(); // esim. ai1t
+              const mKoodi = _.split(moduuli.koodi!.uri, '_').pop(); // esim. ai1
               const oKoodi = _.split(oa.koodi!.uri, '_').pop(); // esim. ai
               console.log(mKoodi, oKoodi);
               // Poistetaan vielä oppimäärän numerot (käytetään kielten oppimäärissä)
