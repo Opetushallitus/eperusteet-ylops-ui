@@ -184,10 +184,13 @@ export default class EpContent extends Mixins(EpValidation) {
     // HACK: give prose mirror 10 vue ticks.
     for (let count = 0; count < 10; ++count) {
       await this.$nextTick();
-      const pm = (this.$refs.content as any).$el.firstChild;
-      if (pm) {
-        (this.$refs.content as any).$el.firstChild.className = 'ProseMirror ' + c;
-        break;
+      const content = (this.$refs.content as any);
+      if (content) {
+        const pm = content.$el.firstChild;
+        if (pm) {
+          content.$el.firstChild.className = 'ProseMirror ' + c;
+          break;
+        }
       }
     }
   }
