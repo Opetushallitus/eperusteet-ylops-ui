@@ -26,6 +26,8 @@ import {
   TableHeader,
   TableRow,
 } from 'tiptap-extensions';
+import VueI18n from 'vue-i18n';
+import { Kaannos } from '@shared/plugins/kaannos';
 
 function createEditor(config: any) {
   return new Editor({
@@ -55,7 +57,7 @@ function createWrapper(localVue, config: any = {}) {
   const wrapper = mount(EpEditorMenuBar as any, {
     localVue,
     attachToDocument: true,
-    i18n: KieliStore.i18n,
+    i18n: Kielet.i18n,
     propsData: {
       help: '',
       layout: 'simplified',
@@ -80,7 +82,10 @@ describe.only('EpContent component', async () => {
   });
 
   const localVue = createLocalVue();
-  KieliStore.setup(localVue);
+  localVue.use(VueI18n);
+  Kielet.install(localVue);
+  localVue.use(new Kaannos());
+
   const propsData = {
     help: '',
     layout: 'simplified',
@@ -95,7 +100,7 @@ describe.only('EpContent component', async () => {
   const wrapper = mount(EpContent as any, {
     localVue,
     attachToDocument: true,
-    i18n: KieliStore.i18n,
+    i18n: Kielet.i18n,
     propsData,
     stubs: {
       'EditorView': true,
@@ -138,7 +143,10 @@ describe.only('EpContent component', async () => {
 
 describe('EpContentMenu component', () => {
   const localVue = createLocalVue();
-  KieliStore.setup(localVue);
+  localVue.use(VueI18n);
+  Kielet.install(localVue);
+  localVue.use(new Kaannos());
+
 
   it('Hide menu when read only', async () => {
     const wrapper = createWrapper(localVue, {

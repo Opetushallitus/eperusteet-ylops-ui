@@ -1,11 +1,12 @@
-import { Termisto } from '@/api';
-import { TermiDto, Lops2019PoistettuDto } from '@/tyypit';
-import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@/tyypit';
-import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat } from '@/api';
+import { Termisto } from '@shared/api/ylops';
+import { TermiDto, Ulkopuoliset } from '@shared/api/ylops';
+import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
+import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat } from '@shared/api/ylops';
 import { AxiosResponse } from 'axios';
 import { createLogger } from '@shared/utils/logger';
 import { State, Store } from '@shared/stores/store';
 import { success, fail } from '@/utils/notifications';
+import { organizations } from '@/utils/organisaatiot';
 import _ from 'lodash';
 
 interface OpintojaksoQuery {
@@ -34,10 +35,16 @@ export class OpetussuunnitelmaStore {
   public opintojaksot: Lops2019OpintojaksoDto[] = [];
 
   @State()
+  public tuodutOpintojaksot: Lops2019OpintojaksoDto[] = [];
+
+  @State()
   public kasitteet: TermiDto[] = [];
 
   @State()
   public progress = 0;
+
+  @State()
+  public virkailijat: any[] | null = null;
 
   constructor(opsId: number) {
     this.opsId = opsId;
@@ -64,6 +71,7 @@ export class OpetussuunnitelmaStore {
 
     if ((this.opetussuunnitelma.toteutus as any) === 'lops2019') {
       this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
+      this.tuodutOpintojaksot = (await Opintojaksot.getTuodutOpintojaksot(this.opetussuunnitelma!.id!)).data;
       this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
     }
   }
@@ -243,6 +251,14 @@ export class OpetussuunnitelmaStore {
     return (await Opintojaksot.getOpintojakso(this.opetussuunnitelma!.id!, id)).data;
   }
 
+  public async getTuotuOpintojakso(id: number) {
+    return (await Opintojaksot.getTuotuOpintojakso(this.opetussuunnitelma!.id!, id)).data;
+  }
+
+  public async getOpintojaksonOpetussuunnitelma(id: number) {
+    return (await Opintojaksot.getOpintojaksonOpetussuunnitelma(this.opetussuunnitelma!.id!, id)).data;
+  }
+
   public async getPoistetut() {
     return (await Lops2019.getRemoved(this.opetussuunnitelma!.id!)).data;
   }
@@ -300,6 +316,14 @@ export class OpetussuunnitelmaStore {
       ..._.slice(this.opintojaksot, idx + 1),
     ] as Lops2019OpintojaksoDto[];
     return result;
+  }
+
+  public async fetchOrganisaatioVirkailijat() {
+    const orgOids = _(this.opetussuunnitelma?.organisaatiot)
+      .filter(org => org.oid !== organizations.oph.oid)
+      .map(org => org.oid as string)
+      .value();
+    this.virkailijat = _.uniqBy((await Ulkopuoliset.getOrganisaatioVirkailijat(orgOids)).data as any[], 'oid');
   }
 }
 

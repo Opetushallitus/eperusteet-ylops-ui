@@ -1,13 +1,13 @@
 <template>
 
   <div class="content">
-    <h3>{{$t('tiedot')}}</h3>
+    <h2>{{$t('tiedot')}}</h2>
 
-    <ep-spinner v-if="!ops"></ep-spinner>
+    <ep-spinner v-if="!ops || !virkailijat"></ep-spinner>
     <div v-else>
 
       <div class="row">
-        <div class="col w-50">
+        <div class="col-5">
 
           <div class="data-content">
             <div class="row">
@@ -44,7 +44,7 @@
 
         </div>
 
-        <div class="col w-50">
+        <div class="col-7">
 
           <div class="data-content">
             <div class="row">
@@ -54,11 +54,14 @@
             <div class="row justify-content-end">
               <div class="col-1"></div>
               <div class="col">
-                <p v-for="virkailija in virkailijatFormatted" :key="virkailija.oid" class="mb-0">
+                <p v-for="virkailija in virkailijatFormatted" :key="virkailija.oid" class="mb-1">
                   {{ virkailija.esitysnimi }}
                 </p>
                 <ep-button v-if="!naytaLisaaTyoryhmaa && virkailijat.length > tyoryhmaAlkuMaara" @click="naytaLisaaTyoryhmaa = true" variant="link" buttonClass="pl-0 mt-2">
                   {{$t('nayta-lisaa')}}
+                </ep-button>
+                <ep-button v-if="naytaLisaaTyoryhmaa" @click="naytaLisaaTyoryhmaa = false" variant="link" buttonClass="pl-0 mt-2">
+                  {{$t('piilota')}}
                 </ep-button>
               </div>
             </div>
@@ -74,13 +77,13 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 
-import { OpetussuunnitelmaKevytDto } from '@/tyypit';
 import { Kielet } from '@shared/stores/kieli';
-import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
+import { parsiEsitysnimi } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpOpsComponent from '../../../mixins/EpOpsComponent';
 
 
 @Component({
@@ -89,24 +92,21 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
     EpButton,
   }
 })
-export default class OpsPerustiedot extends Vue {
+export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
 
   private naytaLisaaTyoryhmaa: boolean = false;
   private tyoryhmaAlkuMaara = 5;
-
-  @Prop({required: true})
-  private ops!: OpetussuunnitelmaKevytDto;
 
   get julkaisukieliet() {
     return _.map(this.ops.julkaisukielet, (kieli) => Kielet.kaannaOlioTaiTeksti(kieli)).join(', ');
   }
 
   async mounted() {
-    await Kayttajat.fetchOrganisaatioVirkailijat();
+    await this.store.fetchOrganisaatioVirkailijat();
   }
 
   private get virkailijat() {
-    return Kayttajat.virkailijat;
+    return this.store.virkailijat;
   }
 
   private get virkailijatFormatted() {
@@ -125,7 +125,7 @@ export default class OpsPerustiedot extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .content {
 

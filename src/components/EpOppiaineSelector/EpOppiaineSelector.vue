@@ -8,7 +8,8 @@
     :items="selectOptions"
     @input="handleInput"
     :validation="validation"
-    :required="true"/>
+    :required="true"
+    :multiple="multiple"/>
 
 </div>
 <div v-else-if="value">
@@ -53,11 +54,10 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   @Prop({ default: true })
   private multiple!: boolean;
 
-  @Prop()
-  private allowed!: string[] | null;
+  @Prop({ required: true})
+  private oppiaineFilter!: (any) => boolean;
 
   private cache: PerusteCache | null = null;
-  private query = '';
 
   get isArray() {
     return _.isArray(this.value);
@@ -102,7 +102,6 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   }
 
   get oppiaineetJaOppimaarat() {
-    const laajennokset = paikallisestiSallitutLaajennokset();
     return _(this.oppiaineet)
       .map((oa: any) => {
         if (_.isEmpty(oa.oppimaarat)) {
@@ -124,26 +123,13 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
         koodiUri: getUri(oa),
         koodiArvo: getArvo(oa),
       }))
-      .reject(oa =>
-        _.some(laajennokset, (laajennos) =>
-          _.startsWith(oa.koodiUri, laajennos)))
+      .filter(oppiaine => this.oppiaineFilter(oppiaine))
+      .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
       .value();
   }
 
   get oppiaineetMap() {
     return _.keyBy(this.oppiaineetJaOppimaarat, getUri);
-  }
-
-  get filteredOppiaineet() {
-    let pipe = _(this.oppiaineetJaOppimaarat)
-      .filter((org: any) => Kielet.search(this.query, org.nimi))
-      .map(getUri);
-    if (_.isArray(this.allowed) && !_.isEmpty(this.allowed)) {
-      pipe = pipe.filter(uri => _.some(this.allowed, alku => _.startsWith(uri, alku)));
-    }
-    return pipe
-      .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
-      .value();
   }
 
   get selectOptions() {

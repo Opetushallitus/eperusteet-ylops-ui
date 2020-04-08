@@ -3,9 +3,9 @@ import _ from 'lodash';
 import { Component } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { TermiDto } from '@/tyypit';
+import { TermiDto } from '@shared/api/ylops';
 import { kasiteValidator } from '@/validators/kasite';
-import { Termisto } from '@/api';
+import { Termisto } from '@shared/api/ylops';
 import { Kieli } from '@shared/tyypit';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
@@ -145,7 +145,7 @@ export default class RouteKasite extends EpOpsRoute {
 
   get suodatettuTermisto() {
     const hakutermi = _.toLower(this.hakusana);
-    const kieli = Kielet.getSisaltoKieli;
+    const kieli = Kielet.getSisaltoKieli.value;
 
     return this.termisto.filter(termi => _.includes(
       _.toLower(
@@ -157,7 +157,7 @@ export default class RouteKasite extends EpOpsRoute {
 
   get validator() {
     return kasiteValidator([
-      Kielet.getSisaltoKieli, // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
     ]);
   }
 
@@ -166,7 +166,7 @@ export default class RouteKasite extends EpOpsRoute {
   }
 
   get sisaltoKieli() {
-    return Kielet.getSisaltoKieli;
+    return Kielet.getSisaltoKieli.value;
   }
 
   get sovelluksenKielet() {

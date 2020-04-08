@@ -1,4 +1,4 @@
-import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019PaikallinenOppiaineDto } from '@/tyypit';
+import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019PaikallinenOppiaineDto } from '@shared/api/ylops';
 
 export function oppiaine(): Lops2019PaikallinenOppiaineDto {
   const oa = {
@@ -23,5 +23,6 @@ export function opintojakso(oppiaineUri?: string): Lops2019OpintojaksoDto {
     nimi: {},
     oppiaineet: [],
     tavoitteet: [],
+    paikallisetOpintojaksot: [],
   };
 }

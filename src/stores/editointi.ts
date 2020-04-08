@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import Vue from 'vue';
 import VueScrollTo from 'vue-scrollto';
-import { RevisionDto } from '@/tyypit';
+import { RevisionDto } from '@shared/api/ylops';
 import { router } from '@/router';
 import { fail } from '@/utils/notifications';
 import { createLogger } from '@shared/utils/logger';

@@ -19,8 +19,8 @@
     ],
     "paths": {
       "@shared/*": ["./eperusteet-frontend-utils/vue/src/*"],
-      "@/*": ["./src/*"],
-      "&/*": ["./tests/*"]
+      "@/*": ["src/*"],
+      "&/*": ["tests/*"]
     },
     "lib": [
       "esnext",
@@ -31,17 +31,17 @@
     ]
   },
   "include": [
-    "src/**/*.vue",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "eperusteet-frontend-utils/vue/src/**/*.vue",
+    "src/**/*.vue",
     "eperusteet-frontend-utils/vue/src/**/*.ts",
-    "eperusteet-frontend-utils/vue/src/**/*.tsx",
-    "tests/integration/**/*.ts",
-    "tests/integration/**/*.tsx"
+    "eperusteet-frontend-utils/vue/src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
-    "eperusteet-frontend-utils"
+    "eperusteet-frontend-utils",
+    "tests/e2e"
   ]
 }

@@ -44,7 +44,7 @@
               </p>
               <h5 v-html="$kaanna(kysymys.kysymys)"></h5>
               <p class="text-secondary">
-                <ep-content layout="simplified" :value="kysymys.vastaus"></ep-content>
+                <ep-content layout="normal" :value="kysymys.vastaus"></ep-content>
               </p>
               <hr />
             </div>
@@ -74,11 +74,11 @@
           </b-dropdown>
         </template>
         <ep-form-content name="kysymys-nimi">
-          <ep-content v-model="kysymys.kysymys" help="kysymys-nimi-ohje" layout="simplified" :validation="validation.kysymys" :is-editable="true">
+          <ep-content v-model="kysymys.kysymys" help="kysymys-nimi-ohje" layout="normal" :validation="validation.kysymys" :is-editable="true">
           </ep-content>
         </ep-form-content>
         <ep-form-content name="kysymys-vastaus">
-          <ep-content v-model="kysymys.vastaus" help="kysymys-vastaus-ohje" layout="simplified" :validation="validation.vastaus" :is-editable="true">
+          <ep-content v-model="kysymys.vastaus" help="kysymys-vastaus-ohje" layout="normal" :validation="validation.vastaus" :is-editable="true">
           </ep-content>
         </ep-form-content>
         <ep-form-content name="nayta-organisaatioissa">
@@ -106,9 +106,9 @@ import _ from 'lodash';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import { validationMixin } from 'vuelidate';
-import { Kysymykset, Ulkopuoliset } from '@/api';
+import { Kysymykset, Ulkopuoliset } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { KysymysDto } from '@/tyypit';
+import { KysymysDto } from '@shared/api/ylops';
 import { Kieli } from '@shared/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
@@ -154,7 +154,7 @@ export interface KysymysLaajennettuDto extends KysymysDto {
       },
     };
   }
-})
+} as any)
 export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   rajain = '';
   kysymykset: KysymysLaajennettuDto[] = [];
@@ -187,7 +187,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
 
   get validator() {
     return kysymysValidator([
-      Kielet.getSisaltoKieli, // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
     ]);
   }
 
@@ -199,7 +199,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
     return _(this.kysymykset)
       // Suodata kysymyksellä
       .filter((k: any) => _.includes(
-        _.toLower(_.get(k, 'kysymys.' + Kielet.getSisaltoKieli)),
+        _.toLower(_.get(k, 'kysymys.' + Kielet.getSisaltoKieli.value)),
         _.toLower(this.rajain)
       ))
       // Suodata organisaatiolla
@@ -226,11 +226,11 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   }
 
   get organisaatiot() {
-    return _.sortBy(this.orgs, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli));
+    return _.sortBy(this.orgs, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli.value));
   }
 
   get organisaatiotOptions() {
-    return _.map(this.organisaatiot, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli));
+    return _.map(this.organisaatiot, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli.value));
   }
 
   // Luodaan uusi kysymys tai muokataan kysymystä riippuen tilanteesta
@@ -303,7 +303,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   // TODO: tämä voisi olla oma komponentti
   // Modaalin kielivalitsimen metodit
   get sisaltoKieli() {
-    return Kielet.getSisaltoKieli;
+    return Kielet.getSisaltoKieli.value;
   }
 
   get sovelluksenKielet() {

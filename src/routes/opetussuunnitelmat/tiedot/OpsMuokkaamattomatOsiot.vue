@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <h3>{{$t('muokkaamattomat-osiot')}}</h3>
+    <h2>{{$t('muokkaamattomat-osiot')}}</h2>
 
     <ep-spinner v-if="!opetussuunnitelmanTekstikappale"></ep-spinner>
     <div v-else-if="hasMuokkaamattomatTekstikappaleet">
@@ -43,7 +43,7 @@
 import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import { TekstiKappaleDto, TekstiKappaleViiteKevytDto } from '@/tyypit';
+import { TekstiKappaleDto, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 
@@ -118,6 +118,6 @@ export default class OpsMuokkaamattomatOsiot extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 </style>

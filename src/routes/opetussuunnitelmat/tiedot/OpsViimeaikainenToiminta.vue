@@ -1,6 +1,6 @@
 <template>
   <div class="content text-left">
-    <h3>{{$t('viimeaikainen-toiminta')}}</h3>
+    <h2>{{$t('viimeaikainen-toiminta')}}</h2>
 
     <ep-spinner v-if="!muokkaustiedot"></ep-spinner>
 
@@ -160,7 +160,7 @@ export default class OpsViimeaikainenToiminta extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .container {
     margin-top: 40px;

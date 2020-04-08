@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <h3>{{$t('oppiaineet')}}</h3>
+    <h2>{{$t('oppiaineet')}}</h2>
 
     <ep-spinner v-if="!cache"></ep-spinner>
     <div v-else>
@@ -36,7 +36,7 @@
 
 import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
-import { OpetussuunnitelmaKevytDto, Lops2019OppiaineDto } from '@/tyypit';
+import { OpetussuunnitelmaKevytDto, Lops2019OppiaineDto } from '@shared/api/ylops';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
@@ -124,7 +124,7 @@ export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .box {
     width: 125px;

@@ -3,11 +3,8 @@ import { Component } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import { PerusteCache } from '@/stores/peruste';
 
-import {
-  SideMenuEntry,
-  SideMenuItem,
-  Lops2019OppiaineDto,
-} from '@/tyypit';
+import { Lops2019OppiaineDto } from '@shared/api/ylops';
+import { SideMenuEntry, SideMenuItem } from '@shared/tyypit';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
@@ -100,7 +97,9 @@ export default class OpsSidenav extends EpOpsComponent {
   private query = '';
 
   get opintojaksot() {
-    return this.store.opintojaksot;
+    return _(this.store.opintojaksot)
+      .concat(this.store.tuodutOpintojaksot)
+      .value();
   }
 
   async created() {
@@ -172,7 +171,7 @@ export default class OpsSidenav extends EpOpsComponent {
   }
 
   private kaannaHelper(value: SideMenuItem) {
-    const locale = Kielet.getSisaltoKieli;
+    const locale = Kielet.getSisaltoKieli.value;
     const i18key = i18keys[value.type] || 'nimetön';
     return _.get(value.objref, 'nimi.' + locale) || this.$t(i18key);
   }

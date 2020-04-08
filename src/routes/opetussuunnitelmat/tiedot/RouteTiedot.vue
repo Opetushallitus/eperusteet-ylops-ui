@@ -45,7 +45,7 @@
             </div>
             <div class="col-md-6" v-if="isOps">
               <ep-form-content name="ops-hyvaksymispvm">
-                <ep-datepicker v-model="data.paatospaivamaara" help="ops-hyvaksymispvm-ohje" :validation="validation.paatospaivamaara" :is-editing="isEditing">
+                <ep-datepicker v-model="data.paatospaivamaara" help="ops-hyvaksymispvm-ohje" :validation="validation.paatospaivamaara" :is-editing="isEditing" :showValidValidation="false">
                 </ep-datepicker>
               </ep-form-content>
             </div>
@@ -72,9 +72,8 @@
               </ep-form-content>
             </div>
              <div class="col-md-6">
-              <ep-form-content name="ainepainoitteinen">
-                <ep-toggle v-model="data.ainepainoitteinen" :is-editing="false">
-                </ep-toggle>
+              <ep-form-content name="opintojaksojen-tarkistus" v-if="data.ainepainoitteinen">
+                <ep-toggle v-model="data.ainepainoitteinen" :is-editing="false" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
               </ep-form-content>
             </div>
             <div class="col-md-12">
@@ -145,7 +144,7 @@ export default class RouteTiedot extends EpOpsRoute {
 
   get validator() {
     return opsTiedotValidator([
-      Kielet.getSisaltoKieli, // Validoidaan kentät sisältökielen mukaan
+      Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
     ], !this.isPohja);
   }
 
@@ -164,7 +163,7 @@ export default class RouteTiedot extends EpOpsRoute {
   }
 
   get kieli() {
-    return Kielet.getSisaltoKieli;
+    return Kielet.getSisaltoKieli.value;
   }
 
   private async load() {
@@ -181,7 +180,7 @@ export default class RouteTiedot extends EpOpsRoute {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 .otsikko {
     margin-bottom: 0;
 }

@@ -45,7 +45,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import { Kayttajat } from '@/stores/kayttaja';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { EtusivuDto } from '@/tyypit';
+import { EtusivuDto } from '@shared/api/ylops';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import EpRoute from '@/mixins/EpRoute';
@@ -108,7 +108,7 @@ export default class Home extends Mixins(EpRoute) {
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/_variables.scss';
+@import '@shared/styles/_variables.scss';
 
 .home-container {
   background-color: $etusivu-background;

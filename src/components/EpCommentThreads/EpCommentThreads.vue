@@ -376,7 +376,7 @@ export default class EpCommentThreads extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .threadbox {
   min-height: 100vh;

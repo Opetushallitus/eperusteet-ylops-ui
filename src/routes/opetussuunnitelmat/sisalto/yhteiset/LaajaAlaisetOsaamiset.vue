@@ -31,8 +31,8 @@ import * as _ from 'lodash';
 import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
-import { LokalisoituTekstiDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Lops2019PaikallinenLaajaAlainenDto } from '@/tyypit';
-
+import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Lops2019PaikallinenLaajaAlainenDto } from '@shared/api/ylops';
+import {LokalisoituTekstiDto} from '@shared/tyypit';
 
 interface Koodi {
   koodiUri: string;
@@ -118,11 +118,11 @@ export default class LaajaAlaisetOsaamiset extends Vue {
 
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .otsikko {
   margin-top: 1rem;
-  font-size: 1.15rem;
+  // font-size: 1.15rem;
 }
 
 </style>

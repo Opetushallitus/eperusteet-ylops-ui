@@ -26,6 +26,7 @@ import * as _ from 'lodash';
 import ImageExtension from '@/components/TiptapExtensions/ImageExtension';
 import TermiExtension from '@/components/TiptapExtensions/TermiExtension';
 import CommentExtension from '@/components/TiptapExtensions/CommentExtension';
+import CustomLink from '@/components/TiptapExtensions/CustomLink';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import { Editor, EditorContent } from 'tiptap';
 import { Kielet } from '@shared/stores/kieli';
@@ -50,7 +51,7 @@ import {
 
 import EpEditorMenuBar from './EpEditorMenuBar.vue';
 import Sticky from 'vue-sticky-directive';
-import { EditorLayout } from '@/tyypit';
+import { EditorLayout } from '@shared/tyypit';
 import EpValidation from '@shared/mixins/EpValidation';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
@@ -98,7 +99,7 @@ export default class EpContent extends Mixins(EpValidation) {
   private focused = false;
 
   get lang() {
-    return this.locale || Kielet.getSisaltoKieli || 'fi';
+    return this.locale || Kielet.getSisaltoKieli.value || 'fi';
   }
 
   get localizedValue() {
@@ -125,7 +126,7 @@ export default class EpContent extends Mixins(EpValidation) {
       new Italic(),
       new Strike(),
       new Underline(),
-      new Link(),
+      new CustomLink(),
       new BulletList(),
       new OrderedList(),
       new ListItem(),
@@ -186,10 +187,13 @@ export default class EpContent extends Mixins(EpValidation) {
     // HACK: give prose mirror 10 vue ticks.
     for (let count = 0; count < 10; ++count) {
       await this.$nextTick();
-      const pm = (this.$refs.content as any).$el.firstChild;
-      if (pm) {
-        (this.$refs.content as any).$el.firstChild.className = 'ProseMirror ' + c;
-        break;
+      const content = (this.$refs.content as any);
+      if (content) {
+        const pm = content.$el.firstChild;
+        if (pm) {
+          content.$el.firstChild.className = 'ProseMirror ' + c;
+          break;
+        }
       }
     }
   }
@@ -217,7 +221,7 @@ export default class EpContent extends Mixins(EpValidation) {
     else {
       this.$emit('input', {
         ...this.value,
-        [Kielet.getSisaltoKieli as unknown as string]: data,
+        [Kielet.getSisaltoKieli.value as unknown as string]: data,
       });
     }
   }
@@ -235,7 +239,7 @@ export default class EpContent extends Mixins(EpValidation) {
 
 <style scoped lang="scss">
 
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .ep-content {
   padding: 0;

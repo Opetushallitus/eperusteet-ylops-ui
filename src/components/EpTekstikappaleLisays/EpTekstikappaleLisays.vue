@@ -51,7 +51,8 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from'@shared/components/forms/EpFormContent.vue';
-import { LokalisoituTekstiDto, Puu, SideMenuEntry } from '@/tyypit';
+import { Puu } from '@shared/api/ylops';
+import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
 
 @Component({
   components: {

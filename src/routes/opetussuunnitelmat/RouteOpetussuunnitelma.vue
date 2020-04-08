@@ -4,27 +4,37 @@
   <div class="opetussuunnitelma" v-if="ops">
     <div class="header">
       <div class="progress-chart">
-        <ep-progress :slices="slices">
-          <b-button v-if="!isPohja"
+        <ep-progress-popover :slices="slices">
+          <template v-slot:header>
+            <div class="pt-3 row justify-content-center ">
+              <div v-if="validationStats.ok < validationStats.total">
+                {{ validationStats.ok }} / {{ validationStats.total }} {{$t('valmis')}}
+              </div>
+              <div v-else-if="validation">
+                <b-button v-if="!isPohja"
+                    variant="primary"
+                    :to="{ name: 'opsJulkaisu' }">{{ $t('julkaise') }}</b-button>
+              </div>
+            </div>
+          </template>
+          <b-button v-if="!isPohja && validationStats.ok < validationStats.total"
                     variant="primary"
                     :to="{ name: 'opsJulkaisu' }"
                     :class="{ 'mb-2': !isEmptyValidation }">{{ $t('siirry-julkaisunakymaan') }}</b-button>
           <div v-if="validation">
-            <table class="category-table">
-              <tr v-for="c in validationStats.categories" :key="c.category">
-                <td>
-                  <div class="nimi">
-                    {{ $t(c.category) }}
-                  </div>
-                  <div class="arvot">
-                    {{ c.ok }} / {{ c.total }}
-                  </div>
-                </td>
-              </tr>
-            </table>
+            <div class="nimi pb-2 row" v-for="c in validationStats.categories" :key="c.category">
+              <div class="col-1">
+                <fas class="text-success" icon="check-circle" v-if="c.failcount === 0"/>
+                <fas class="text-danger" icon="info-circle" v-if="c.failcount > 0"/>
+              </div>
+              <div class="col">
+                <span v-if="c.failcount === 0">{{ $t(c.category + "-validation-ok") }}</span>
+                <span v-if="c.failcount > 0">{{ $t(c.category + "-validation-error") }}</span>
+              </div>
+            </div>
           </div>
           <ep-spinner v-else />
-        </ep-progress>
+        </ep-progress-popover>
       </div>
       <div class="info">
         <h1>
@@ -80,7 +90,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Prop, Mixins, Component } from 'vue-property-decorator';
-import { Lops2019ValidointiDto } from '@/tyypit';
+import { Lops2019ValidointiDto } from '@shared/api/ylops';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
@@ -91,6 +101,7 @@ import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue
 import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress/EpProgress.vue';
+import EpProgressPopover from '@/components/EpProgress/EpProgressPopover.vue';
 
 
 @Component({
@@ -102,6 +113,7 @@ import EpProgress from '@/components/EpProgress/EpProgress.vue';
     EpSpinner,
     OpsSidenav,
     EpButton,
+    EpProgressPopover,
   },
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
@@ -125,7 +137,9 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   }
 
   get slices() {
-    return _.map(this.validationStats.categories, c => c.ok / c.total);
+    if (this.validation) {
+      return _.map(this.validationStats.categories, c => c.ok < c.total ? 0.4 : 1);
+    }
   }
 
   get isEmptyValidation() {
@@ -147,7 +161,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         })
         .sortBy('category')
         .value();
-      const failed = _.size(_.reject(categories, 'ok'));
+      const failed = _.size(_.reject(categories, (category) => category.ok === category.total));
 
       return {
         categories,
@@ -177,7 +191,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity .1s;
@@ -232,9 +246,6 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 table.category-table {
   width: 100%;
 
-  .nimi {
-    font-weight: 600;
-  }
   .arvot {
     font-size: 70%;
     color: #777;

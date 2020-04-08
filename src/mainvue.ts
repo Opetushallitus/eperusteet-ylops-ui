@@ -14,13 +14,20 @@ import '@/config/fontawesome';
 import 'animate.css/animate.min.css';
 
 import { router } from '@/router';
-import { KieliStore } from '@shared/stores/kieli';
-import { Ulkopuoliset } from '@/api';
+import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
+import Kaannos from '@shared/plugins/kaannos';
+import VueI18n, { IVueI18n } from 'vue-i18n';
+import VueCompositionApi from '@vue/composition-api';
 
 import App from '@/App.vue';
+import aikaleima from '@shared/plugins/aikaleima';
 
+Vue.use(VueI18n);
+Vue.use(VueCompositionApi);
 Vue.use(Notifications);
+Vue.use(Kaannos);
+Vue.use(aikaleima);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);
 Vue.use(PortalVue);
 
@@ -30,35 +37,17 @@ Vue.use(Loading, {
   loader: 'dots',
 });
 
-import VueI18n, { IVueI18n } from 'vue-i18n';
-
-declare module 'vue/types/vue' {
-  interface Vue {
-    readonly $i18n: VueI18n & IVueI18n;
-    $t: typeof VueI18n.prototype.t;
-    $tc: typeof VueI18n.prototype.tc;
-    $te: typeof VueI18n.prototype.te;
-    $d: typeof VueI18n.prototype.d;
-    $n: typeof VueI18n.prototype.n;
-    $kaanna: (localizationObject: object) => string;
-  }
-}
-
-async function getLokalisoinnit() {
-  return (await Ulkopuoliset.getLokalisoinnit()).data as any;
-}
+Vue.use(Kielet, {
+  messages: {
+    fi: require('@/translations/locale-fi.json'),
+    sv: require('@/translations/locale-sv.json'),
+  },
+});
 
 export async function getRootConfig() {
-  KieliStore.setup(Vue, {
-    messages: {
-      fi: require('@/translations/locale-fi.json'),
-      sv: require('@/translations/locale-sv.json'),
-    },
-  });
-  await KieliStore.load(getLokalisoinnit);
 
   return {
-    i18n: KieliStore.i18n,
+    i18n: Kielet.i18n,
     router,
     render: (h: any) => h(App),
   };

@@ -31,7 +31,7 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import {
   SideMenuEntry,
   SideMenuRoute,
-} from '@/tyypit';
+} from '@shared/tyypit';
 
 
 @Component

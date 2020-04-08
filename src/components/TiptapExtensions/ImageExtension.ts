@@ -2,7 +2,7 @@ import { Node, Mark, Plugin } from 'tiptap';
 import Vue from 'vue';
 import VueSelect from 'vue-select';
 
-import { KieliStore } from '@shared/stores/kieli';
+import { KieliStore, Kielet } from '@shared/stores/kieli';
 import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
 import { domAttrsGetter, mapNodeAttrs } from './helpers';
 import ImageModal from './ImageModal.vue';
@@ -83,7 +83,7 @@ export default class ImageExtension extends Node {
 
           const self = (this as any);
           const h = this.$createElement;
-          const t = (v: string): string => KieliStore.i18n.t(v) as string;
+          const t = (v: string): string => Kielet.i18n.t(v) as string;
           const oldAltText = self.altText;
           const oldDataUid = self.dataUid;
           const uidObs = Vue.observable({value: self.dataUid});
@@ -107,10 +107,13 @@ export default class ImageExtension extends Node {
           this.$bvModal.msgBoxConfirm([editor], {
             buttonSize: 'sm',
             centered: true,
-            size: 'sm',
+            size: 'lg',
             noCloseOnBackdrop: true,
             noCloseOnEsc: true,
-            title: [h('div', {}, t('valitse-kuva'))],
+            headerClass: 'pb-0 mb-0',
+            title: [h('h2', {}, t('lisaa-kuva'))],
+            cancelTitle: t('peruuta'),
+            okTitle: t('lisaa-kuva'),
           });
 
           this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
@@ -119,7 +122,7 @@ export default class ImageExtension extends Node {
               self.dataUid = oldDataUid;
             }
             else {
-              if(!_.isEmpty(self.dataUid) && _.isEmpty(self.altText)) {
+              if(_.isEmpty(self.dataUid) || _.isEmpty(self.altText)) {
                 bvEvent.preventDefault();
               }
             }
@@ -149,7 +152,7 @@ export default class ImageExtension extends Node {
           },
         },
         url() {
-          return this.liitteet.url((this as any).dataUid);
+          return (this as any).liitteet.url((this as any).dataUid);
         },
       },
       template: `

@@ -2,46 +2,37 @@
   <div class="imageselector">
     <ep-spinner v-if="isLoading" />
     <div v-else>
-      <div v-if="image">
-        <img class="esikatselukuva" :src="image.preview" alt="esikatselu">
-        <input :placeholder="$t('nimi')" class="form-control" type="text" v-model="nimi">
-        <b-button-group class="buttons">
-          <b-button variant="primary" @click="upload" :disabled="!nimi">
-            {{ $t('lataa-uusi') }}
-          </b-button>
-          <b-button variant="warning" @click="peruuta">
-            {{ $t('peruuta') }}
-          </b-button>
-        </b-button-group>
-      </div>
-      <div v-else>
-        <div class="imgselect">
-          <vue-select
-            v-model="selected"
-            :filter-by="filterBy"
-            :placeholder="$t('valitse-kuva')"
-            :options="options"
-            label="id">
-            <template #selected-option="option">
-              <img class="preview-selected" :src="option.src">
-            </template>
-            <template #option="option">
-              <img class="preview" :src="option.src">
-              {{ option.nimi }}
-            </template>
-          </vue-select>
+      <div>
+        <div class="imgselect" v-if="!imageData">
+          <div class="mb-4">{{$t('kuvalisays-modal-selite')}}</div>
+          <ep-form-content name="valitse-kuva">
+            <vue-select
+              :disabled="options.length === 0"
+              v-model="selected"
+              :filter-by="filterBy"
+              :placeholder="options.length > 0 ? $t('valitse') : $t('ei-lisattyja-kuvia')"
+              :options="options"
+              label="id"
+              :clearable="true">
+              <template #selected-option="option">
+                <img class="preview-selected" :src="option.src">
+              </template>
+              <template #option="option">
+                <img class="preview" :src="option.src">
+                {{ option.nimi }}
+              </template>
+            </vue-select>
+          </ep-form-content>
         </div>
-        <div v-if="selected">
+
+        <div v-if="!selected || imageData">
+          <ep-kuva-lataus v-model="imageData" :saved="imageSaved" @saveImage="saveImage" @cancel="peruuta"></ep-kuva-lataus>
+        </div>
+
+        <div v-if="selected || imageData">
           <ep-form-content name="kuvateksti" class="mt-3">
             <ep-field v-model="kuvateksti" @input="onKuvatekstichange" :is-editing="true" :validation="$v.kuvateksti"/>
           </ep-form-content>
-        </div>
-        <div>
-          <label role="button" class="btn btn-primary uploadbtn">
-            <input style="display: none" ref="imageInput" type="file" @change="onImageInput">
-            <fas icon="upload"></fas>
-            {{ $t('lisaa-kuva') }}
-          </label>
         </div>
       </div>
     </div>
@@ -53,15 +44,16 @@ import _ from 'lodash';
 import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import VueSelect from 'vue-select';
 import { IAttachmentWrapper } from '@/stores/kuvat';
-import { LiiteDto } from '@/tyypit';
-import { Api } from '@/api';
-import { info } from '@/utils/notifications';
+import { LiiteDto } from '@shared/api/ylops';
+import { Api } from '@shared/api/ylops';
 import EpFormContent from'@shared/components/forms/EpFormContent.vue';
 import EpField from'@shared/components/forms/EpField.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 import { Kielet } from '@shared/stores/kieli';
+import EpKuvaLataus, { ImageData } from '@shared/components/EpKuvaLataus/EpKuvaLataus.vue';
+import { DokumenttiDto } from '@shared/api/ylops';
 
 @Component({
   components: {
@@ -69,15 +61,16 @@ import { Kielet } from '@shared/stores/kieli';
     VueSelect,
     EpFormContent,
     EpField,
+    EpKuvaLataus,
   },
   validations: {
     kuvateksti: {
-      [Kielet.getSisaltoKieli]: {
+      [Kielet.getSisaltoKieli.value]: {
         required
       },
     },
   },
-})
+} as any)
 export default class ImageModal extends Mixins(validationMixin) {
   @Prop({ required: true })
   private loader!: IAttachmentWrapper;
@@ -88,18 +81,15 @@ export default class ImageModal extends Mixins(validationMixin) {
   @Prop({ required: true })
   private kuvatekstiProp!: {};
 
-  private isAdding = true;
-  private hasImage: any = false;
-  private image: any = null;
-  private nimi: string = '';
+  private imageSaved: boolean = false;
+  private imageData: ImageData | null = null;
   private isLoading = true;
-  private data: LiiteDto[] = [];
   private files: LiiteDto[] = [];
   private kuvateksti: any = {};
 
   async mounted() {
     this.kuvateksti = {
-      [Kielet.getSisaltoKieli]: this.kuvatekstiProp
+      [Kielet.getSisaltoKieli.value]: this.kuvatekstiProp
     };
 
     try {
@@ -128,27 +118,38 @@ export default class ImageModal extends Mixins(validationMixin) {
       .indexOf(search.toLowerCase()) > -1;
   }
 
-  private async upload() {
-    const formData = new FormData();
-    formData.append('file', this.image.file);
-    formData.append('nimi', this.nimi);
-    formData.append('width', this.image.width);
-    formData.append('height', this.image.height);
-    try {
-      await Api.post(this.loader.endpoint(), formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      info('kuva-lisatty');
-    }
-    catch (err) {
-      err('kuva-lisays-epaonnistui');
+  private async saveImage() {
+    if (this.imageData) {
+      const formData = new FormData();
+      formData.append('file', this.imageData.file);
+      formData.append('nimi', this.imageData.file.name);
+      formData.append('width', _.toString(this.imageData.width));
+      formData.append('height', _.toString(this.imageData.height));
+      try {
+        const tallenettuId = await Api.post(this.loader.endpoint(), formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        this.imageSaved = true;
+        this.files = await this.loader.hae();
+        this.selected = {id: tallenettuId.data};
+
+        (this as any).$success('kuva-tallennettu-onnistuneesti');
+      }
+      catch (err) {
+        (this as any).$fail('kuva-lisays-epaonnistui');
+      }
     }
   }
 
   set selected(liite: any) {
-    this.$emit('input', liite.id);
+    if(liite) {
+      this.$emit('input', liite.id);
+    }
+    else {
+      this.$emit('input', null);
+    }
   }
 
   get selected() {
@@ -159,32 +160,13 @@ export default class ImageModal extends Mixins(validationMixin) {
   }
 
   private onKuvatekstichange(kuvateksti){
-    this.$emit('onKuvatekstichange', kuvateksti[Kielet.getSisaltoKieli]);
+    this.$emit('onKuvatekstichange', kuvateksti[Kielet.getSisaltoKieli.value]);
   }
 
   private peruuta() {
-    this.image = null;
-  }
-
-  private onImageInput() {
-    const imgi = this.$refs.imageInput;
-    const file = (imgi as any).files[0];
-    const reader = new FileReader();
-    reader.addEventListener('load', () => {
-      const img = new Image();
-      img.onload = () => {
-        this.image = {
-          file,
-          width: img.width,
-          height: img.height,
-          preview: reader.result,
-        };
-      };
-      img.src = reader.result as any;
-    });
-    if (file) {
-      reader.readAsDataURL(file);
-    }
+    this.imageData = null;
+    this.selected = null;
+    this.imageSaved = false;
   }
 
 }

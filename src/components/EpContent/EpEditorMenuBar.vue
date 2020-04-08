@@ -129,30 +129,42 @@ export default class EpEditorMenuBar extends Vue {
 
   get linking() {
     if (this.opetussuunnitelmaStore) {
-      return [{
-        icon: 'link',
-        command: 'link',
-        disabled: this.editor.selection.from === this.editor.selection.to,
-        customClick: (data) => {
-          const isNew = !data.isActive.link();
-          const attrs = data.getMarkAttrs('link');
-          if (!isNew && attrs && attrs.href) {
-            this.linkValue = attrs.href;
-          }
-          (this as any).$refs['link-modal'].show();
-        },
-      }, {
-        icon: 'kasitteet',
-        command: 'termi',
-        disabled: this.editor.selection.from === this.editor.selection.to,
-      }, {
-        icon: 'lisaa-kuva',
-        command: 'image',
-      }];
+      return [this.linkki, this.kasitteet, this.lisaaKuva];
     }
     else {
-      return [];
+      return [this.linkki];
     }
+  }
+
+  get linkki() {
+    return {
+      icon: 'link',
+      command: 'link',
+      disabled: this.editor.selection.from === this.editor.selection.to,
+      customClick: (data) => {
+        const isNew = !data.isActive.link();
+        const attrs = data.getMarkAttrs('link');
+        if (!isNew && attrs && attrs.href) {
+          this.linkValue = attrs.href;
+        }
+        (this as any).$refs['link-modal'].show();
+      },
+    };
+  }
+
+  get kasitteet() {
+    return {
+      icon: 'kasitteet',
+      command: 'termi',
+      disabled: this.editor.selection.from === this.editor.selection.to,
+    };
+  }
+
+  get lisaaKuva() {
+    return {
+      icon: 'lisaa-kuva',
+      command: 'image',
+    };
   }
 
   get lists() {
@@ -274,7 +286,7 @@ export default class EpEditorMenuBar extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .sub-bar {
   margin-top: 0;

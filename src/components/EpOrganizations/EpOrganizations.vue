@@ -1,6 +1,6 @@
 <template>
 <div class="organisaatiot">
-  <ep-form-content name="organisaatiot">
+  <ep-form-content :showHeader="false">
     <div class="selectors">
       <div class="form-group required mb-5">
         <label>{{ $t('kunnat') }}*</label>
@@ -48,7 +48,7 @@ import { minLength, required } from 'vuelidate/lib/validators';
 import { Kielet } from '@shared/stores/kieli';
 import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
 import { metadataToTeksti } from '@/utils/organisaatiot';
-import { Ulkopuoliset } from '@/api';
+import { Ulkopuoliset } from '@shared/api/ylops';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';

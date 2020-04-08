@@ -25,7 +25,7 @@ import { Kielet } from '@shared/stores/kieli';
 })
 export default class TileOpetussuunnitelmat extends Vue {
   get kieli() {
-    return Kielet.getUiKieli;
+    return Kielet.getUiKieli.value;
   }
 
   get href() {

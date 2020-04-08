@@ -37,9 +37,9 @@
               <ep-oppiaine-selector
                 :opetussuunnitelma-store="opetussuunnitelmaStore"
                 :is-editable="isEditing"
-                :allowed="allowed"
                 :multiple="false"
                 v-model="data.perusteenOppiaineUri"
+                :oppiaineFilter="oppiaineFilter"
                 :ops-id="$route.params.id" />
             </ep-form-content>
           </b-col>
@@ -112,14 +112,14 @@ import EpOppiaineSelector from'@/components/EpOppiaineSelector/EpOppiaineSelecto
 import EpPrefixList from'@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019PaikallinenOppiaineDto } from '@/tyypit';
+import { Lops2019PaikallinenOppiaineDto } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { Kielet } from '@shared/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
-import { Opetussuunnitelmat } from '@/api';
+import { Opetussuunnitelmat } from '@shared/api/ylops';
 import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
 import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue';
 import { success } from '@/utils/notifications';
@@ -142,9 +142,9 @@ import { success } from '@/utils/notifications';
     LaajaAlaisetOsaamiset,
   },
 })
-export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
+export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   private oppiaineQuery = '';
-  private editable: any = null;
+  private editable: Lops2019PaikallinenOppiaineDto = {};
   private laajaAlaisetKoodit: any = null;
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: this.editAfterLoad,
@@ -222,12 +222,13 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
 
   get validator() {
     return oppiaineValidator([
-      Kielet.getSisaltoKieli,
+      Kielet.getSisaltoKieli.value,
     ]);
   }
 
-  get allowed() {
-    return paikallisestiSallitutLaajennokset();
+  oppiaineFilter(oppiaine) {
+    return _.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
+      _.startsWith(oppiaine.koodiUri, laajennos));
   }
 
   get versionumero() {
@@ -279,7 +280,7 @@ export default class RouteOpintojakso extends Mixins(EpRoute, EpOpsComponent) {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .content {
   padding: 10px;

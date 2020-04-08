@@ -3,7 +3,7 @@
 
     <div class="row">
       <div class="col">
-        <ops-perustiedot :ops="ops" class="info-box" />
+        <ops-perustiedot :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box"/>
         <ops-muokkaamattomat-osiot :opetussuunnitelmanTekstikappale="store.sisalto" class="info-box"/>
         <oppiaineet-statistiikka :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box" />
       </div>
@@ -54,7 +54,7 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
   .hallintapaneeli {
 

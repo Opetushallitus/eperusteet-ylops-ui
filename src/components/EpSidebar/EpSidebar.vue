@@ -53,6 +53,7 @@ export default class EpSidebar extends Vue {
     if (sidenavLocalStorage) {
       this.toggled = sidenavLocalStorage.enabled;
     }
+    this.onResize();
   }
 
   @Watch('toggled')
@@ -69,23 +70,15 @@ export default class EpSidebar extends Vue {
     Kommentit.detach();
   }
 
-  private onResize(data: Event) {
-    const newWidth = window.innerWidth;
-    if (this.width >= 768 && newWidth < 768) {
-      this.toggled = false;
-    }
-    if (this.width < 768 && newWidth >= 768) {
-      this.toggled = true;
-    }
-
-    this.width = newWidth;
+  private onResize() {
+    this.toggled = window.innerWidth > 991;
   }
 }
 </script>
 
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .sidenav {
   @media (min-width: 1443.98px) {
@@ -94,7 +87,7 @@ export default class EpSidebar extends Vue {
     }
   }
 
-  @media only screen and (min-width: 768px) {
+  @media only screen and (min-width: 991px) {
     display: flex;
 
     .bar {

@@ -43,11 +43,11 @@
                 <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
               </div>
             </ep-collapse>
-            <ep-collapse v-if="alkuperainen && alkuperainen.tekstiKappale && (isEditing || data.tov.naytaPohjanTeksti)">
+            <ep-collapse v-if="alkuperaiset && alkuperaiset.length > 0 && (isEditing || data.tov.naytaPohjanTeksti)">
               <h5 slot="header">
                 {{ $t('pohjan-teksti') }}
               </h5>
-              <p class="perusteteksti" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
+              <p class="perusteteksti" v-for="(alkuperainen, index) in alkuperaiset" :key="'alkuperainen'+index" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
               <div v-if="isEditing" class="mb-4">
                 <ep-toggle v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</ep-toggle>
               </div>
@@ -85,13 +85,13 @@ import {
   Lops2019Perusteet,
   Ohjeet,
   OpetussuunnitelmanSisalto,
-} from '@/api';
+} from '@shared/api/ylops';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import {
   Puu,
   OhjeDto,
   PerusteTekstiKappaleViiteDto,
-} from '@/tyypit';
+} from '@shared/api/ylops';
 import { success } from '@/utils/notifications';
 
 
@@ -112,7 +112,7 @@ import { success } from '@/utils/notifications';
 export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) {
   private ohjeet: OhjeDto[] = [];
   private perusteenTeksti: PerusteTekstiKappaleViiteDto | null = null;
-  private alkuperainen: PerusteTekstiKappaleViiteDto | null = null;
+  private alkuperaiset: PerusteTekstiKappaleViiteDto[] | null = null;
   private nimi: any = {};
 
 
@@ -201,8 +201,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       }
       const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
       try {
-        this.alkuperainen = (await OpetussuunnitelmanSisalto
-          .getTekstiKappaleViiteOriginal(this.opsId, this.osaId)).data as PerusteTekstiKappaleViiteDto;
+        this.alkuperaiset = (await OpetussuunnitelmanSisalto
+          .getTekstiKappaleViiteOriginals(this.opsId, this.osaId)).data as PerusteTekstiKappaleViiteDto[];
+        this.alkuperaiset = _.filter(this.alkuperaiset, 'tekstiKappale');
       }
       catch (err) {}
 
@@ -262,7 +263,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 </script>
 
 <style scoped lang="scss">
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 @import '@shared/styles/_mixins.scss';
 
 .badges {

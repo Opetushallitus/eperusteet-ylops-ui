@@ -3,30 +3,34 @@
     class="ep-progress"
     placement="'bottom'"
     id="tila-popover">
-    <div v-if="hasValidation">
-      <svg viewBox="0 0 100 100" class="vaiheet">
-        <circle
-          v-for="(v, idx) in slices" :key="idx"
-          r="50%" cx="50%" cy="50%"
-          :style="'stroke: rgba(91, 202, 19, ' + (v || 0.2) + ');' + 'stroke-dasharray: ' + segmentLength + ' ' + 314.15 + '; stroke-dashoffset: ' + (-idx * gapLength - 2)" />
+
+    <div v-if="!slices">
+      <svg viewBox="0 0 100 100" class="vaiheet animation">
+        <circle r="50%" cx="50%" cy="50%" style="stroke: rgba(91, 202, 19, 1); stroke-dasharray: 72.2566, 314.15; stroke-dashoffset: -2;"></circle>
+        <circle r="50%" cx="50%" cy="50%" style="stroke: rgba(91, 202, 19, 0.4); stroke-dasharray: 72.2566, 314.15; stroke-dashoffset: -80.5398;"></circle>
+        <circle r="50%" cx="50%" cy="50%" style="stroke: rgba(91, 202, 19, 1); stroke-dasharray: 72.2566, 314.15; stroke-dashoffset: -159.08;"></circle>
+        <circle r="50%" cx="50%" cy="50%" style="stroke: rgba(91, 202, 19, 0.4); stroke-dasharray: 72.2566, 314.15; stroke-dashoffset: -237.619;"></circle>
       </svg>
     </div>
-    <div v-else>
+
+    <div v-else-if="done">
+      <div class="done-icon">
+        <fas icon="check"/>
+      </div>
       <svg viewBox="0 0 100 100" class="vaiheet">
         <circle r="50%" cx="50%" cy="50%" stroke="rgba(91, 202, 19, 1)"/>
       </svg>
     </div>
 
-    <b-popover
-      target="tila-popover"
-      triggers="click hover"
-      size="md"
-      placement="bottom"
-      :show.sync="tilaPopupVisible"
-      ref="popover"
-      v-if="$slots.default">
-      <slot></slot>
-    </b-popover>
+    <div v-else-if="hasValidation">
+      <svg viewBox="0 0 100 100" class="vaiheet" style="transform: rotate(-90deg)">
+        <circle
+          v-for="(v, idx) in slices" :key="idx"
+          r="50%" cx="50%" cy="50%"
+          :style="'stroke: rgba(91, 202, 19, ' + (v || 0.4) + ');' + 'stroke-dasharray: ' + segmentLength + ' ' + 314.15 + '; stroke-dashoffset: ' + (-idx * gapLength -2)"/>
+      </svg>
+    </div>
+
   </div>
 </template>
 
@@ -36,12 +40,14 @@ import _ from 'lodash';
 
 @Component
 export default class EpProgress extends Vue {
-  @Prop({
-    default: () => [0.1],
-  })
-  private slices!: number[];
+  @Prop()
+  private slices!: number[] | null;
 
   private tilaPopupVisible = false;
+
+  get done() {
+    return _.size(_.filter(this.slices, (slice) => slice === 1)) === _.size(this.slices);
+  }
 
   get total() {
     return _.size(this.slices);
@@ -52,7 +58,6 @@ export default class EpProgress extends Vue {
   }
 
   get segmentLength() {
-    // 2 * PI * 50% * 100 * <segment length>
     return (this.size - this.gap) * Math.PI * 0.5 * 2 * 100;
   }
 
@@ -72,6 +77,8 @@ export default class EpProgress extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@shared/styles/_variables.scss';
+
 .ep-progress {
 
   /*
@@ -81,6 +88,14 @@ export default class EpProgress extends Vue {
     cursor: pointer;
   }
   */
+
+  .done-icon {
+    font-size: 2rem;
+    position: absolute;
+    margin-left: 35px;
+    margin-top: 25px;
+    color: $white;
+  }
 
   svg.vaiheet {
     margin: 5px;
@@ -101,5 +116,22 @@ export default class EpProgress extends Vue {
     }
 
   }
+
+  svg.animation {
+    animation: rotate 4.5s ease infinite;
+  }
+
+  @keyframes rotate {
+    0% { -webkit-transform: rotate(0deg); }
+    20% { -webkit-transform: rotate(90deg); }
+    25% { -webkit-transform: rotate(90deg); }
+    45% { -webkit-transform: rotate(180deg); }
+    50% { -webkit-transform: rotate(180deg); }
+    70% { -webkit-transform: rotate(270deg); }
+    75% { -webkit-transform: rotate(270deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+
 }
+
 </style>
