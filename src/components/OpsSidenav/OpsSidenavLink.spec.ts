@@ -5,7 +5,6 @@ import { KieliStore, Kielet } from '@shared/stores/kieli';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 
-
 describe('OpsSidenav component', () => {
   const localVue = createLocalVue();
   localVue.use(VueI18n);
@@ -18,7 +17,7 @@ describe('OpsSidenav component', () => {
       routes: [{
         path: '/tiedot',
         name: 'opsTiedot',
-      }]
+      }],
     });
 
     const wrapper = shallowMount(OpsSidenavLink, {

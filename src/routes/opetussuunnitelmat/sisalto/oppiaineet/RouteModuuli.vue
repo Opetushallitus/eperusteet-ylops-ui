@@ -47,7 +47,6 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 
-
 @Component({
   components: {
     EpButton,

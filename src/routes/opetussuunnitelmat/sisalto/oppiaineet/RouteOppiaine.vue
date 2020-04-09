@@ -92,7 +92,6 @@ import { PerusteCache } from '@/stores/peruste';
 import _ from 'lodash';
 import EpOpintojaksonModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/opintojaksot/EpOpintojaksonModuuli.vue';
 
-
 @Component({
   components: {
     EpButton,
@@ -167,7 +166,6 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
       },
     });
   }
-
 }
 </script>
 

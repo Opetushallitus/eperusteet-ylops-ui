@@ -106,9 +106,9 @@ import _ from 'lodash';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import { validationMixin } from 'vuelidate';
-import { Kysymykset, Ulkopuoliset } from '@shared/api/ylops';
+import { Kysymykset, Ulkopuoliset, KysymysDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { KysymysDto } from '@shared/api/ylops';
+
 import { Kieli } from '@shared/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
@@ -116,21 +116,19 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import EpRoute from '@/mixins/EpRoot';
-import EpContent from'@/components/EpContent/EpContent.vue';
-import EpButton from'@shared/components/EpButton/EpButton.vue';
-import EpFormContent from'@shared/components/forms/EpFormContent.vue';
-import EpIcon from'@/components/EpIcon/EpIcon.vue';
-import EpMainView from'@/components/EpMainView/EpMainView.vue';
-import EpSearch from'@shared/components/forms/EpSearch.vue';
-import EpSelect from'@shared/components/forms/EpSelect.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpIcon from '@/components/EpIcon/EpIcon.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
+import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpToggle from'@shared/components/forms/EpToggle.vue';
-
+import EpToggle from '@shared/components/forms/EpToggle.vue';
 
 export interface KysymysLaajennettuDto extends KysymysDto {
   $uusi?: boolean;
 }
-
 
 @Component({
   directives: {
@@ -153,7 +151,7 @@ export interface KysymysLaajennettuDto extends KysymysDto {
         ...(this as any).validator,
       },
     };
-  }
+  },
 } as any)
 export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   rajain = '';
@@ -161,7 +159,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   orgs: any[] = [];
   kysymys: KysymysLaajennettuDto = {
     $uusi: true,
-    organisaatiot: []
+    organisaatiot: [],
   };
 
   @Prop()
@@ -266,7 +264,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
       _.remove(this.kysymykset, k => k.id === this.kysymys.id);
       // Reaktiivisuus täytyy hoitaa käsin tässä tilanteessa
       this.kysymykset = [
-        ...this.kysymykset
+        ...this.kysymykset,
       ];
     }
     catch (e) {
@@ -279,13 +277,13 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
     if (kysymys) {
       this.kysymys = {
         $uusi: false,
-        ..._.cloneDeep(kysymys)
+        ..._.cloneDeep(kysymys),
       };
     }
     else {
       this.kysymys = {
         organisaatiot: [],
-        $uusi: true
+        $uusi: true,
       };
     }
     (this as any).$refs.createUpdateKysymys.show();
@@ -295,7 +293,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
   startRemoveKysymys(kysymys: KysymysLaajennettuDto) {
     this.kysymys = {
       $uusi: false,
-      ..._.cloneDeep(kysymys)
+      ..._.cloneDeep(kysymys),
     };
     (this as any).$refs.removeKysymys.show();
   }

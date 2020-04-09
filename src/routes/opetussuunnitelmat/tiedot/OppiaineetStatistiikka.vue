@@ -42,12 +42,11 @@ import { PerusteCache } from '@/stores/peruste';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 @Component({
-  components:{
+  components: {
     EpSpinner,
-  }
+  },
 })
 export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
-
   private cache: PerusteCache | null = null;
 
   async mounted() {
@@ -78,7 +77,7 @@ export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
   get moduulit() {
     return _.chain(this.oppiaineet)
       .map((oa) => _.map(oa.moduulit, (moduuli) => ({
-        ...moduuli
+        ...moduuli,
       })))
       .flatten()
       .value();
@@ -110,7 +109,7 @@ export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
     if (this.cache) {
       return _.chain(this.cache.peruste.oppiaineet)
         .map((oa) => _.map(oa.oppimaarat, (oppimaarat) => ({
-          ...oppimaarat
+          ...oppimaarat,
         })))
         .flatten()
         .value();
@@ -119,7 +118,6 @@ export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
       return [];
     }
   }
-
 }
 </script>
 
@@ -148,6 +146,5 @@ export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
       padding-top: 10px;
     }
   }
-
 
 </style>

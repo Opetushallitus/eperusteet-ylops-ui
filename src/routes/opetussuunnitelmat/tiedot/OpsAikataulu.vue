@@ -46,7 +46,7 @@ import { success } from '@/utils/notifications';
 import * as _ from 'lodash';
 
 @Component({
-  components:{
+  components: {
     EpSpinner,
     EpButton,
     EpAikataulu,
@@ -54,8 +54,7 @@ import * as _ from 'lodash';
   },
 })
 export default class OpsAikataulu extends Vue {
-
-  @Prop({required: true})
+  @Prop({ required: true })
   private ops!: OpetussuunnitelmaKevytDto;
 
   @Prop({ required: true })
@@ -84,7 +83,6 @@ export default class OpsAikataulu extends Vue {
     await this.aikatauluStore.saveAikataulut(aikataulut);
     success('aikataulu-tallennettu');
   }
-
 }
 </script>
 

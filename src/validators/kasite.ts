@@ -1,7 +1,6 @@
 import { requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@shared/tyypit';
 
-
 export function kasiteValidator(kielet: Kieli[] = []) {
   return {
     termi: {

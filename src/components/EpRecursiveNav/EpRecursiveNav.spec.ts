@@ -52,12 +52,12 @@ const propsData = {
             {
               item: {
                 name: 'testi',
-              }
+              },
             },
           ],
         },
       ],
-    }
+    },
   ],
 };
 

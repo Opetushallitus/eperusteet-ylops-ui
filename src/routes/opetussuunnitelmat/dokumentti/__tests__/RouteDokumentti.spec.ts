@@ -1,7 +1,7 @@
 import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import RouteDokumentti from '../RouteDokumentti.vue';
-import { OpetussuunnitelmaStore  } from '@/stores/opetussuunnitelma';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { KieliStore, Kielet } from '@shared/stores/kieli';
 import _ from 'lodash';
 import { Dokumentit, Opetussuunnitelmat } from '@shared/api/ylops';
@@ -10,7 +10,6 @@ import '@/config/bootstrap';
 import '@/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
-
 
 describe('RouteDokumentti', async () => {
   const localVue = createLocalVue();
@@ -46,7 +45,4 @@ describe('RouteDokumentti', async () => {
 
     await localVue.nextTick();
   });
-
 });
-
-

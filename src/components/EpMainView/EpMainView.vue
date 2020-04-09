@@ -28,17 +28,14 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 
-
 @Component({
   components: {
     EpNavigation,
   },
 })
 export default class EpMainView extends Vue {
-
   @Prop({ required: false })
   private tutoriaalistore!: TutoriaaliStore | undefined;
-
 }
 </script>
 

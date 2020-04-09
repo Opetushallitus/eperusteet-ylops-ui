@@ -6,7 +6,7 @@ import { KieliStore, Kielet } from '@shared/stores/kieli';
 import { IAttachmentWrapper, createLiitetiedostoHandler } from '@/stores/kuvat';
 import { domAttrsGetter, mapNodeAttrs } from './helpers';
 import ImageModal from './ImageModal.vue';
-import EpButton from'@shared/components/EpButton/EpButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import _ from 'lodash';
 
 export default class ImageExtension extends Node {
@@ -71,7 +71,7 @@ export default class ImageExtension extends Node {
         };
       },
       mounted() {
-        if(!(this as any).node.attrs['data-uid']) {
+        if (!(this as any).node.attrs['data-uid']) {
           (this as any).open();
         }
       },
@@ -86,7 +86,7 @@ export default class ImageExtension extends Node {
           const t = (v: string): string => Kielet.i18n.t(v) as string;
           const oldAltText = self.altText;
           const oldDataUid = self.dataUid;
-          const uidObs = Vue.observable({value: self.dataUid});
+          const uidObs = Vue.observable({ value: self.dataUid });
           const editor = h(ImageModal, {
             props: {
               value: uidObs,
@@ -94,7 +94,7 @@ export default class ImageExtension extends Node {
               kuvatekstiProp: self.altText,
             },
             on: {
-              input: (value: string) =>  {
+              input: (value: string) => {
                 self.dataUid = value;
                 uidObs.value = value;
               },
@@ -117,12 +117,12 @@ export default class ImageExtension extends Node {
           });
 
           this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
-            if(bvEvent.trigger === 'cancel') {
+            if (bvEvent.trigger === 'cancel') {
               self.altText = oldAltText;
               self.dataUid = oldDataUid;
             }
             else {
-              if(_.isEmpty(self.dataUid) || _.isEmpty(self.altText)) {
+              if (_.isEmpty(self.dataUid) || _.isEmpty(self.altText)) {
                 bvEvent.preventDefault();
               }
             }

@@ -118,7 +118,7 @@ export default class OpsSidenav extends EpOpsComponent {
       children: [
         ...oppiaineenOpintojaksot,
         oppimaaraUusiLinkki(source),
-      ]
+      ],
     });
     result.push({
       item: {
@@ -207,7 +207,6 @@ export default class OpsSidenav extends EpOpsComponent {
       const arvo = _.get(item, 'objref.koodi', '');
       return _.isString(arvo) ? arvo : '';
     }
-
   }
 
   get valikkoDataBasics() {
@@ -264,7 +263,7 @@ export default class OpsSidenav extends EpOpsComponent {
         ({
           item: child.item,
           route: child.route,
-        }))
+        })),
     ];
   }
 }

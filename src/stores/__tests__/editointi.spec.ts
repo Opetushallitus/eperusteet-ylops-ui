@@ -38,7 +38,7 @@ describe('Editointi', async () => {
         async start() {},
         async remove() {},
         validate: async () => ({
-          valid: true
+          valid: true,
         }),
       };
 

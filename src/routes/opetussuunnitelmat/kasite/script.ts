@@ -3,9 +3,9 @@ import _ from 'lodash';
 import { Component } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { TermiDto } from '@shared/api/ylops';
+import { TermiDto, Termisto } from '@shared/api/ylops';
 import { kasiteValidator } from '@/validators/kasite';
-import { Termisto } from '@shared/api/ylops';
+
 import { Kieli } from '@shared/tyypit';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
@@ -14,13 +14,12 @@ import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
-import EpToggle from'@shared/components/forms/EpToggle.vue';
+import EpToggle from '@shared/components/forms/EpToggle.vue';
 
 interface Kasite {
   kasite: TermiDto;
   closed: boolean;
 }
-
 
 @Component({
   components: {
@@ -37,10 +36,10 @@ interface Kasite {
   validations() {
     return {
       kasite: {
-        ...(this as any).validator
-      }
+        ...(this as any).validator,
+      },
     };
-  }
+  },
 } as any)
 export default class RouteKasite extends EpOpsRoute {
   private termisto: Kasite[] = [];

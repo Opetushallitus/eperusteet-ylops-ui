@@ -50,7 +50,7 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
-import EpFormContent from'@shared/components/forms/EpFormContent.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import { Puu } from '@shared/api/ylops';
 import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
 
@@ -63,11 +63,10 @@ import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
   },
 })
 export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponent) {
-
   private otsikko: LokalisoituTekstiDto = {};
   private valittuTekstikappale: any = {};
 
-  @Prop({required: true})
+  @Prop({ required: true })
   private tekstikappaleet!: SideMenuEntry[];
 
   get okDisabled() {
@@ -96,7 +95,6 @@ export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponen
     this.otsikko = {};
     this.valittuTekstikappale = {};
   }
-
 }
 
 </script>

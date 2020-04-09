@@ -1,8 +1,6 @@
-import { Termisto, Liitetiedostot } from '@shared/api/ylops';
-import { TermiDto, LiiteDto } from '@shared/api/ylops';
-import { Api } from '@shared/api/ylops';
-import _ from 'lodash';
+import { Termisto, Liitetiedostot, TermiDto, LiiteDto, Api } from '@shared/api/ylops';
 
+import _ from 'lodash';
 
 export interface LiiteWithSrc extends LiiteDto {
   src: string,
@@ -52,7 +50,6 @@ export function createLiitetiedostoHandler(opsId: number): IAttachmentWrapper {
     },
   };
 }
-
 
 export function createKasiteHandler(opsId): IKasiteHandler {
   return {

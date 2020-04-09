@@ -166,7 +166,7 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
-import EpToggle from'@shared/components/forms/EpToggle.vue';
+import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
@@ -177,7 +177,6 @@ import _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-
 
 @Component({
   directives: {
@@ -209,7 +208,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
 
   private async load() {
     const result = {
-      ohjeet: [{teksti:'N/A'}],
+      ohjeet: [{ teksti: 'N/A' }],
     } as any;
 
     if (_.isEmpty(result.ohjeet)) {
@@ -282,7 +281,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
             },
             oppiaine: {
               oppiaineId: oa.id,
-            }
+            },
           },
           vieraatModuulit: this.vainPuuttuvat ? [] : oa.vieraatModuulit,
           moduulit: _(oa.moduulit)
@@ -468,7 +467,6 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       },
     });
   }
-
 }
 </script>
 
@@ -495,7 +493,6 @@ table.oppiaineet {
       text-decoration:underline;
     }
   }
-
 
   tr.headerline {
 

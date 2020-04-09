@@ -103,7 +103,6 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpProgressPopover from '@/components/EpProgress/EpProgressPopover.vue';
 
-
 @Component({
   components: {
     EpCommentThreads,
@@ -117,7 +116,6 @@ import EpProgressPopover from '@/components/EpProgress/EpProgressPopover.vue';
   },
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
-
   @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
 

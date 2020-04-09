@@ -5,8 +5,7 @@ import TermiExtension from '../TermiExtension';
 import TermiEditor from '../TermiEditor.vue';
 import { KieliStore, Kielet } from '@shared/stores/kieli';
 import { IKasiteHandler } from '@/stores/kuvat';
-import { TermiDto } from '@shared/api/ylops';
-import { Termisto } from '@shared/api/ylops';
+import { TermiDto, Termisto } from '@shared/api/ylops';
 
 import { makeAxiosResponse } from '&/utils/data';
 
@@ -14,7 +13,6 @@ import '@/config/bootstrap';
 import '@/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
-
 
 function mockKasitteet(): IKasiteHandler {
   return {
@@ -29,7 +27,6 @@ function mockKasitteet(): IKasiteHandler {
     },
   };
 }
-
 
 describe('Tiptap Termi Extension', () => {
   const localVue = createLocalVue();
@@ -74,7 +71,6 @@ describe('Tiptap Termi Extension', () => {
       await localVue.nextTick();
       expect(wrapper.attributes()['data-viite']).toEqual('1234');
     });
-
   });
 
   describe('Termi modal', async () => {
@@ -89,6 +85,4 @@ describe('Tiptap Termi Extension', () => {
     } as any);
     await localVue.nextTick();
   });
-
 });
-

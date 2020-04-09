@@ -30,7 +30,7 @@ describe('RouteOrganisaatio', () => {
       .mockImplementation(async () => makeAxiosResponse([{
         oid: '1234',
         nimi: {
-          fi: 'organisaatio1'
+          fi: 'organisaatio1',
         },
       }]));
 
@@ -90,5 +90,4 @@ describe('RouteOrganisaatio', () => {
     expect(wrapper.html()).toContain('kutsumanimi2 sukunimi2');
     expect(wrapper.html()).toContain('organisaatio1');
   });
-
 });

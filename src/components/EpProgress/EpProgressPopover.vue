@@ -43,14 +43,13 @@ import EpProgress from '@/components/EpProgress/EpProgress.vue';
 @Component({
   components: {
     EpProgress,
-  }
+  },
 })
 export default class EpProgressPopover extends Vue {
   @Prop()
   private slices!: number[];
 
   private tilaPopupVisible = false;
-
 }
 </script>
 

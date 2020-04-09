@@ -10,7 +10,6 @@ import '@/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 
-
 function createTestHandler(): IKasiteHandler {
   let nextAvain = 1;
   const kaikki = {};
@@ -30,7 +29,6 @@ function createTestHandler(): IKasiteHandler {
     },
   };
 }
-
 
 describe('Termi plugin', () => {
   const localVue = createLocalVue();
@@ -84,6 +82,4 @@ describe('Termi plugin', () => {
     expect((inputs.at(0).element as HTMLInputElement).value).toBe('kuvaus');
     expect((inputs.at(1).element as HTMLInputElement).value).toBe('selitys');
   });
-
 });
-

@@ -72,7 +72,6 @@ export default class EpProgress extends Vue {
   get size() {
     return 1 / this.total;
   }
-
 }
 </script>
 

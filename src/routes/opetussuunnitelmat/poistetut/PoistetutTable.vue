@@ -28,14 +28,12 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 
-
 @Component({
   components: {
     EpButton,
   },
 })
 export default class PoistettuTable extends Vue {
-
   @Prop({ required: true })
   private poistetut!: any[];
 

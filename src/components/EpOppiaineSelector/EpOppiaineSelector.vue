@@ -54,7 +54,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   @Prop({ default: true })
   private multiple!: boolean;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   private oppiaineFilter!: (any) => boolean;
 
   private cache: PerusteCache | null = null;
@@ -83,7 +83,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
           ...oa,
           koodi: {
             uri: oa.koodi,
-          }
+          },
         };
       })
       .value();
@@ -113,7 +113,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
             ..._.map(oa.oppimaarat, om => ({
               ...om,
               child: true,
-            }))
+            })),
           ];
         }
       })

@@ -29,7 +29,7 @@ export class TutoriaaliStore {
   @Getter(state => state.index + 1 < _.size(state.avaimet))
   public readonly hasSeuraava!: boolean;
 
-  @Getter(state => state.index > 0 )
+  @Getter(state => state.index > 0)
   public readonly hasEdellinen!: boolean;
 
   public readonly paivitaAvaimet = _.debounce(() => {
@@ -49,9 +49,8 @@ export class TutoriaaliStore {
     this.active = active;
   }
 
-  @Getter(state => state.active )
+  @Getter(state => state.active)
   public readonly isActive!: boolean;
-
 }
 
 export const tutoriaalistore = new TutoriaaliStore();

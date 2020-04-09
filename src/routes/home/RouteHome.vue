@@ -61,7 +61,6 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
-
 @Component({
   components: {
     EpContent,
@@ -80,7 +79,6 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
   },
 })
 export default class Home extends Mixins(EpRoute) {
-
   @Prop()
   private tutoriaalistore!: TutoriaaliStore;
 
@@ -103,7 +101,6 @@ export default class Home extends Mixins(EpRoute) {
   get kayttaja() {
     return Kayttajat.tiedot;
   }
-
 }
 </script>
 

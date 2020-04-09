@@ -62,7 +62,6 @@ import { EditorMenuBar } from 'tiptap';
 import Sticky from 'vue-sticky-directive';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-
 @Component({
   components: {
     EditorMenuBar,
@@ -277,7 +276,7 @@ export default class EpEditorMenuBar extends Vue {
   private editLink(data) {
     if (!_.isEmpty(this.linkValue)) {
       data.commands.link({
-        href: this.linkValue
+        href: this.linkValue,
       } as any);
       this.linkValue = null;
     }

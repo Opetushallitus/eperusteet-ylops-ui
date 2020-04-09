@@ -70,9 +70,7 @@ function createWrapper(localVue, config: any = {}) {
   return wrapper;
 }
 
-
 describe.only('EpContent component', async () => {
-
   beforeAll(() => {
     jest.spyOn(console, 'error').mockImplementation();
   });
@@ -140,13 +138,11 @@ describe.only('EpContent component', async () => {
   return wrapper;
 });
 
-
 describe('EpContentMenu component', () => {
   const localVue = createLocalVue();
   localVue.use(VueI18n);
   Kielet.install(localVue);
   localVue.use(new Kaannos());
-
 
   it('Hide menu when read only', async () => {
     const wrapper = createWrapper(localVue, {
@@ -195,5 +191,4 @@ describe('EpContentMenu component', () => {
     expect(wrapper.find('button[title="Yliviivaus"]').exists()).toBe(true);
     expect(wrapper.find('button[title="Lisää taulukko"]').exists()).toBe(true);
   });
-
 });
