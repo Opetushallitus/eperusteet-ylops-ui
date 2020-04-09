@@ -123,9 +123,9 @@ describe('Router', () => {
       params: {
         lang: 'fi',
       },
+    }).catch(err => {
+      console.log(err);
     });
-  }).catch(err => {
-    console.error(err);
   });
 
   test('App creation', async () => {
@@ -144,7 +144,7 @@ describe('Router', () => {
       name: 'root',
       params: { lang: 'sv' },
     }).catch(err => {
-      console.error(err);
+      console.log(err);
     });
 
     await localVue.nextTick();
