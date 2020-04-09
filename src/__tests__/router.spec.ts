@@ -124,6 +124,8 @@ describe('Router', () => {
         lang: 'fi',
       },
     });
+  }).catch(err => {
+    console.error(err);
   });
 
   test('App creation', async () => {
@@ -141,6 +143,8 @@ describe('Router', () => {
     router.push({
       name: 'root',
       params: { lang: 'sv' },
+    }).catch(err => {
+      console.error(err);
     });
 
     await localVue.nextTick();
