@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
-import { KommenttiDto, KayttajanTietoDto } from '@/tyypit';
+import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
 
 
 @Component({
@@ -115,7 +115,7 @@ export default class ThreadComment extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/_variables.scss";
+@import "@shared/styles/_variables.scss";
 
 .kommentti {
   background: #fff;

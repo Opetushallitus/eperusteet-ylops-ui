@@ -12,7 +12,7 @@
       </div>
       <slot name="bar" class="flex-fill"></slot>
     </div>
-    <div class="view">
+    <div class="view" ref="content">
       <slot name="view"></slot>
     </div>
   </div>

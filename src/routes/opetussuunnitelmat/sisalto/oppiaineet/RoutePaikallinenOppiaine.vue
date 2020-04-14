@@ -129,7 +129,6 @@ import { success } from '@/utils/notifications';
   components: {
     EpButton,
     EpCollapse,
-    EpColorBall,
     EpColorIndicator,
     EpCommentThreads,
     EpContent,

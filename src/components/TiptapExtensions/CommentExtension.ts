@@ -17,9 +17,11 @@ export default class CommentExtension extends Mark {
       },
       parseDOM: [{
         tag: 'span[kommentti]',
-        getAttrs: (dom: any) => ({
-          kommentti: dom.getAttribute('kommentti'),
-        }),
+        getAttrs: (dom: any) => {
+          return {
+            kommentti: dom.getAttribute('kommentti'),
+          };
+        },
       }],
       toDOM: (node: any) => ['span', {
         ...node.attrs,

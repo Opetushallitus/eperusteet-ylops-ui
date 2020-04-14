@@ -2,29 +2,25 @@ import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
 import VueScrollTo from 'vue-scrollto';
 
-Vue.use(VueCompositionApi);
-Vue.use(VueScrollTo);
-
 import Loading from 'vue-loading-overlay';
 import Notifications from 'vue-notification';
 import PortalVue from 'portal-vue';
 
 import '@/config/bootstrap';
 import '@/config/fontawesome';
-import 'animate.css/animate.min.css';
 
 import { router } from '@/router';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Kaannos from '@shared/plugins/kaannos';
-import VueI18n, { IVueI18n } from 'vue-i18n';
-import VueCompositionApi from '@vue/composition-api';
+import VueI18n from 'vue-i18n';
 
 import App from '@/App.vue';
 import aikaleima from '@shared/plugins/aikaleima';
 
-Vue.use(VueI18n);
 Vue.use(VueCompositionApi);
+Vue.use(VueI18n);
+Vue.use(VueScrollTo);
 Vue.use(Notifications);
 Vue.use(Kaannos);
 Vue.use(aikaleima);

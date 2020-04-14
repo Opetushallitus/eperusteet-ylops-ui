@@ -1,12 +1,11 @@
 import _ from 'lodash';
-import { KommenttiDto, KayttajanTietoDto } from '@/tyypit';
+import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
 import Vue from 'vue';
-import { Kayttajat as KayttajatApi, Kommentointi } from '@/api';
+import { Kayttajat as KayttajatApi, Kommentointi } from '@shared/api/ylops';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
-import { Kielet } from '@shared/stores/kieli';
 Vue.use(VueCompositionApi);
 
-import { createLogger } from './logger';
+import { createLogger } from '@shared/utils/logger';
 import { delay } from '@shared/utils/delay';
 const logger = createLogger('Kayttaja');
 

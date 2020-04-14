@@ -32,5 +32,21 @@ export default class App extends Vue {
 }
 </script>
 
-<style lang="scss" src="@shared/styles/app.scss">
+<style lang="scss">
+@import '@shared/styles/app.scss';
+
+span[kommentti] {
+  background: #ffe598;
+  color: #000;
+}
+
+span[kommentti].active {
+  background: #ffd900;
+  color: #000;
+}
+
+span[kommentti="uusi-kommentti"]  {
+  background: #ffd900;
+  color: #000;
+}
 </style>

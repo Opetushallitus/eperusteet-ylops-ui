@@ -78,6 +78,7 @@ describe('Tiptap Image Extension', () => {
     const wrapper = mount(ImageModal as any, {
       propsData: {
         value: '1234',
+        kuvatekstiProp: { fi: 'xyz' },
         loader,
       },
       mocks: {

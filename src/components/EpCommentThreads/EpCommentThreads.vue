@@ -83,15 +83,14 @@
 <script lang="ts">
 import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
 import { Kommentit } from '@/stores/kommentit';
-import { KommenttiDto, KayttajanTietoDto } from '@/tyypit';
+import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
 import { success } from '@/utils/notifications';
-import { delay, unwrap, findIndexWithTagsIncluded } from '@/utils/delay';
+import { delay } from '@shared/utils/delay';
+import { unwrap, findIndexWithTagsIncluded } from '@/utils/utils';
 import * as _ from 'lodash';
 import ThreadComment from './ThreadComment.vue';
 import EpCommentAdd from './EpCommentAdd.vue';
-import { KieliStore } from '@shared/stores/kieli';
-import { Component, Prop, Vue } from 'vue-property-decorator';
 
 
 @Component({
@@ -251,7 +250,7 @@ export default class EpCommentThreads extends Vue {
         el?.appendChild(commentbox);
         const self = this;
         new Vue({
-          i18n: KieliStore.i18n,
+          i18n: Kielet.i18n,
           el: commentbox,
           render: (h: any) => h(EpCommentAdd, {
             props: {
@@ -311,13 +310,13 @@ export default class EpCommentThreads extends Vue {
         const value = (el as any)?.__vue__?.$parent?.value;
         const tekstiId = Number(value?._id);
         if (tekstiId) {
-          const teksti = value[Kielet.getSisaltoKieli];
+          const teksti = value[Kielet.getSisaltoKieli.value];
           const { start, stop } = this.distanceFromParentBegin(selection, el);
 
           this.newKahva = {
             opsId: Number(this.$route.params.id),
             tekstiId: tekstiId,
-            kieli: Kielet.getSisaltoKieli,
+            kieli: Kielet.getSisaltoKieli.value,
             start: findIndexWithTagsIncluded(teksti, start),
             stop: findIndexWithTagsIncluded(teksti, stop),
           };
