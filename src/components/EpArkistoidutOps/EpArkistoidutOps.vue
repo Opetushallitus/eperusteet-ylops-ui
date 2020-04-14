@@ -59,7 +59,6 @@ import { Kielet } from '@shared/stores/kieli';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 
-
 @Component({
   components: {
     EpButton,
@@ -67,7 +66,6 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
   },
 })
 export default class EpArkistoidutOps extends Vue {
-
   @Prop()
   private opetussuunnitelmat!: OpetussuunnitelmaInfoDto[];
 

@@ -99,9 +99,9 @@ import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpRoute from '@/mixins/EpRoute';
 import {
-  Opetussuunnitelmat, Opintojaksot, Oppiaineet
-} from '@shared/api/ylops';
-import {
+  Opetussuunnitelmat,
+  Opintojaksot,
+  Oppiaineet,
   OpetussuunnitelmaInfoDto,
   OpetussuunnitelmaLuontiDto,
   Lops2019OpintojaksoDto,
@@ -173,20 +173,20 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
 
   @Watch('uusi.pohja')
   async uusiPohjaMuutos() {
-    this.uusi.organisaatiot= {
+    this.uusi.organisaatiot = {
       jarjestajat: [],
       oppilaitokset: [],
       kunnat: [],
     };
 
-    if(this.uusi.pohja?.id) {
+    if (this.uusi.pohja?.id) {
       this.uusi.pohjanOpintojaksot = null;
       const paikalliset = (await Oppiaineet.getAllLops2019PaikallisetOppiainet(this.uusi.pohja.id)).data;
       const paikallistenKoodit = _.map(paikalliset, 'koodi');
 
       this.uusi.pohjanOpintojaksot = _.chain((await Opintojaksot.getAllOpintojaksot(this.uusi.pohja.id)).data)
         .filter(opintojakso => !_.some(opintojakso.oppiaineet, oppiaine => _.includes(paikallistenKoodit, oppiaine.koodi)))
-        .value();;
+        .value(); ;
     }
   }
 

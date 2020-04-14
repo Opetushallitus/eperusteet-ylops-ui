@@ -203,7 +203,6 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
-
 @Component({
   directives: {
     Sticky,
@@ -251,7 +250,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
     this.$router.push({
       query: {
         versionumero,
-      }
+      },
     });
   }
 
@@ -260,7 +259,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
   }
 
   get poistoteksti() {
-    if(!this.type) {
+    if (!this.type) {
       return this.$t('poista');
     }
 
@@ -370,7 +369,6 @@ export default class EpEditointi extends Mixins(validationMixin) {
       index: revs.length - index,
     }));
   }
-
 }
 
 </script>

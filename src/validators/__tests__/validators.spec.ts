@@ -11,7 +11,6 @@ import { opsTiedotValidator, pohjaLuontiValidator, opsLuontiValidator } from '@/
 import { tekstikappaleLuontiValidator } from '@/validators/tekstikappaleet';
 import { oppiaineValidator, oppiaineLuontiValidator } from '@/validators/oppiaineet';
 
-
 @Component
 class Dummy extends Mixins(EpValidation) {
   private kielet = [];
@@ -70,7 +69,7 @@ describe('Oppiaine validators', () => {
         koodi: '123',
         oppiaineet: [{
           koodi: '456',
-          laajuus: -1
+          laajuus: -1,
         }],
       },
     });
@@ -236,7 +235,5 @@ describe('Oppiaine validators', () => {
 
     expect((wrapper.vm as any).$v.opsLuonti!.$invalid).toBe(false);
     expect((wrapper.vm as any).$v.pohjaLuonti!.$invalid).toBe(false);
-
   });
-
 });

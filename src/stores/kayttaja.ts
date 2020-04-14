@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import { Store, Getter, State } from '@shared/stores/store';
-import { KayttajanTietoDto } from '@shared/api/ylops';
-import {
+import { KayttajanTietoDto,
   Kayttajat as KayttajatApi,
   Opetussuunnitelmat,
   Ulkopuoliset,
 } from '@shared/api/ylops';
+
 import { organizations } from '@/utils/organisaatiot';
 import { createLogger } from '@shared/utils/logger';
 
@@ -89,7 +89,7 @@ class KayttajaStore {
 
     let virkailijat: any[] = [];
     for (let i = 0; i < res.length; i++) {
-      const organisaatio =  this.organisaatiot[i];
+      const organisaatio = this.organisaatiot[i];
       const orgVirkailijat = res[i];
       _.each(orgVirkailijat, virkailija => {
         const oid = (virkailija as any).oid;

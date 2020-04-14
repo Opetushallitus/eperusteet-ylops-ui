@@ -40,13 +40,13 @@ export function muokkaustietoRoute(id, kohde, tapahtuma) {
       name: 'opsPoistetut',
       params: {
         tabIndex: poistetutTabIndices[kohde],
-      }
+      },
     };
   }
 
   const router = {
     name: kohdereititys[kohde],
-    params: {}
+    params: {},
   };
 
   if (kohdereititysId[kohde]) {

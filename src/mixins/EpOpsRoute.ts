@@ -3,7 +3,6 @@ import EpRoute from './EpRoute';
 import { OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import _ from 'lodash';
 
-
 /**
  * Mixin näkymäkomponenteille mitkä tarvitsevat opetussuunnitelman sisällön
  */
@@ -35,5 +34,4 @@ export default class EpOpsRoute extends EpRoute {
   get isValmisPohja() {
     return this.isPohja && this.ops.tila as any === 'valmis';
   }
-
 }

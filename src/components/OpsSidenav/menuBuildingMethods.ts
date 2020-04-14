@@ -4,11 +4,9 @@ import { SideMenuEntry } from '@shared/tyypit';
 
 import { koodiNumero, koodiAlku } from '@/utils/perusteet';
 
-
 interface Koodi {
   arvo: string;
 }
-
 
 interface Koodillinen {
   koodi: Koodi;
@@ -116,7 +114,7 @@ export function oppimaaraUusiLinkki(oppimaara: Lops2019OppiaineDto): SideMenuEnt
         oppiaineKoodi: oppimaara.koodi!.arvo,
       },
       query: {
-        oppiaineet: oppimaara.koodi!.uri
+        oppiaineet: oppimaara.koodi!.uri,
       },
     },
   };

@@ -34,8 +34,8 @@ export const organizations = Object.freeze({
     nimi: {
       fi: 'Opetushallitus',
       sv: 'Utbildningsstyrelsen',
-      en: 'Finnish National Agency for Education'
+      en: 'Finnish National Agency for Education',
     },
     oid: OphOid,
-  }
+  },
 });

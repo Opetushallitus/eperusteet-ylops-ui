@@ -81,7 +81,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
 
   async validate(data) {
     const uudet = _.filter(data.lapset, '$uusi');
-    return {valid: uudet.length === 0, message: 'ops-rakenne-epavalidi'};
+    return { valid: uudet.length === 0, message: 'ops-rakenne-epavalidi' };
   }
 
   lisaaTekstikappale(data) {
@@ -96,7 +96,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
   }
 
   async load() {
-    return await this.store.getOtsikot();
+    return this.store.getOtsikot();
   }
 
   async save(data: Puu) {
@@ -106,7 +106,6 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
   get hasPohja() {
     return !_.isEmpty(this.ops.pohja);
   }
-
 }
 </script>
 

@@ -28,7 +28,6 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 
-
 @Component({
   name: 'EpFooter',
   components: {
@@ -53,7 +52,7 @@ export default class EpFooter extends Vue {
       seloste: {
         fi: 'https://opintopolku.fi/wp/tietosuojaseloste',
         sv: 'https://studieinfo.fi/wp/dataskyddsbeskrivning/',
-      }
+      },
     };
   }
 }

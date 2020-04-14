@@ -44,16 +44,15 @@ import _ from 'lodash';
 import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import VueSelect from 'vue-select';
 import { IAttachmentWrapper } from '@/stores/kuvat';
-import { LiiteDto } from '@shared/api/ylops';
-import { Api } from '@shared/api/ylops';
-import EpFormContent from'@shared/components/forms/EpFormContent.vue';
-import EpField from'@shared/components/forms/EpField.vue';
+import { LiiteDto, Api, DokumenttiDto } from '@shared/api/ylops';
+
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpField from '@shared/components/forms/EpField.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 import { Kielet } from '@shared/stores/kieli';
 import EpKuvaLataus, { ImageData } from '@shared/components/EpKuvaLataus/EpKuvaLataus.vue';
-import { DokumenttiDto } from '@shared/api/ylops';
 
 @Component({
   components: {
@@ -66,7 +65,7 @@ import { DokumenttiDto } from '@shared/api/ylops';
   validations: {
     kuvateksti: {
       [Kielet.getSisaltoKieli.value]: {
-        required
+        required,
       },
     },
   },
@@ -89,7 +88,7 @@ export default class ImageModal extends Mixins(validationMixin) {
 
   async mounted() {
     this.kuvateksti = {
-      [Kielet.getSisaltoKieli.value]: this.kuvatekstiProp
+      [Kielet.getSisaltoKieli.value]: this.kuvatekstiProp,
     };
 
     try {
@@ -133,7 +132,7 @@ export default class ImageModal extends Mixins(validationMixin) {
         });
         this.imageSaved = true;
         this.files = await this.loader.hae();
-        this.selected = {id: tallenettuId.data};
+        this.selected = { id: tallenettuId.data };
 
         (this as any).$success('kuva-tallennettu-onnistuneesti');
       }
@@ -144,7 +143,7 @@ export default class ImageModal extends Mixins(validationMixin) {
   }
 
   set selected(liite: any) {
-    if(liite) {
+    if (liite) {
       this.$emit('input', liite.id);
     }
     else {
@@ -159,7 +158,7 @@ export default class ImageModal extends Mixins(validationMixin) {
     }
   }
 
-  private onKuvatekstichange(kuvateksti){
+  private onKuvatekstichange(kuvateksti) {
     this.$emit('onKuvatekstichange', kuvateksti[Kielet.getSisaltoKieli.value]);
   }
 
@@ -168,7 +167,6 @@ export default class ImageModal extends Mixins(validationMixin) {
     this.selected = null;
     this.imageSaved = false;
   }
-
 }
 
 </script>

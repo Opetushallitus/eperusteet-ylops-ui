@@ -63,7 +63,6 @@ interface ValueType {
   kunnat: any[];
 }
 
-
 @Component({
   components: {
     EpButton,
@@ -238,7 +237,6 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   mounted() {
     this.update();
   }
-
 }
 
 </script>

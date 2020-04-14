@@ -61,7 +61,6 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 
-
 @Component({
   components: {
     draggable,

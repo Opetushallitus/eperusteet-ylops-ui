@@ -25,14 +25,13 @@
 </div>
 </template>
 
-
 <script lang="ts">
 import * as _ from 'lodash';
 import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Lops2019PaikallinenLaajaAlainenDto } from '@shared/api/ylops';
-import {LokalisoituTekstiDto} from '@shared/tyypit';
+import { LokalisoituTekstiDto } from '@shared/tyypit';
 
 interface Koodi {
   koodiUri: string;
@@ -44,7 +43,6 @@ export interface KoodiKuvaus {
   koodi: string;
   kuvaus: LokalisoituTekstiDto;
 }
-
 
 @Component({
   components: {
@@ -112,10 +110,8 @@ export default class LaajaAlaisetOsaamiset extends Vue {
       kuvaus: {},
     }]);
   }
-
 }
 </script>
-
 
 <style lang="scss" scoped>
 @import "@shared/styles/_variables.scss";

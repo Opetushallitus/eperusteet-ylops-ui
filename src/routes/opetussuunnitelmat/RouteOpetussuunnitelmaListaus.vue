@@ -123,8 +123,8 @@
 import _ from 'lodash';
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 
-import { OpetussuunnitelmaInfoDto } from '@shared/api/ylops';
-import { Opetussuunnitelmat } from '@shared/api/ylops';
+import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
+
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
@@ -142,7 +142,6 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpArkistoidutOps from '@/components/EpArkistoidutOps/EpArkistoidutOps.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
-
 
 @Component({
   directives: {
@@ -206,7 +205,7 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   }
 
   get julkaistut() {
-    return _.filter(this.arkistoimattomat,ops => (ops.tila as any) === this.valmisTila);
+    return _.filter(this.arkistoimattomat, ops => (ops.tila as any) === this.valmisTila);
   }
 
   get vars() {

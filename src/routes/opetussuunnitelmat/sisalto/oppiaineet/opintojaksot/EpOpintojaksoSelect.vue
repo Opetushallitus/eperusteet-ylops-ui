@@ -19,18 +19,17 @@ import _ from 'lodash';
 
 @Component
 export default class EpOpintojaksoSelect extends Vue {
-
-  @Prop({ required: false})
+  @Prop({ required: false })
   private options!: Lops2019OpintojaksoDto[];
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   private value!: Lops2019OpintojaksoDto[];
 
   @Prop({ required: false, default: false })
   private isEditing!: boolean;
 
   get opintojaksot() {
-    if(!this.isEditing) {
+    if (!this.isEditing) {
       return this.value;
     }
 
@@ -53,12 +52,10 @@ export default class EpOpintojaksoSelect extends Vue {
     else {
       this.$emit('input', [
         ...this.value,
-        opintojakso
+        opintojakso,
       ]);
     }
-
   }
-
 }
 </script>
 

@@ -1,7 +1,6 @@
 import { Vue, Prop, Component } from 'vue-property-decorator';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-
 /**
  * Mixin näkymäkomponenteille mitkä tarvitsevat opetussuunnitelman sisällön
  */
@@ -33,6 +32,4 @@ export default class EpOpsComponent extends Vue {
   get isValmisPohja() {
     return this.isPohja && this.ops.tila as any === 'valmis';
   }
-
 }
-

@@ -1,11 +1,10 @@
 import { State, Store } from '@shared/stores/store';
-import { OpetussuunnitelmanAikatauluDto } from '@shared/api/ylops';
-import { Aikataulu } from '@shared/api/ylops';
+import { OpetussuunnitelmanAikatauluDto, Aikataulu } from '@shared/api/ylops';
+
 import _ from 'lodash';
 
 @Store
 export class AikatauluStore {
-
   @State()
   public opsId: number;
 
@@ -34,5 +33,4 @@ export class AikatauluStore {
       ...paivitetyt,
     ];
   }
-
 }

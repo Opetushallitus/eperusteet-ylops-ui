@@ -1,12 +1,9 @@
 import _ from 'lodash';
 import { State, Store } from '@shared/stores/store';
-import { MuokkaustietoKayttajallaDto } from '@shared/api/ylops';
-import { Muokkaustieto } from '@shared/api/ylops';
-
+import { MuokkaustietoKayttajallaDto, Muokkaustieto } from '@shared/api/ylops';
 
 @Store
 export class MuokkaustietoStore {
-
   @State()
   public opsId: number;
 
@@ -30,7 +27,7 @@ export class MuokkaustietoStore {
       if (this.viimeinenHaku) {
         this.muokkaustiedot = [
           ...this.muokkaustiedot,
-          ...this.viimeinenHaku
+          ...this.viimeinenHaku,
         ];
       }
     }
@@ -38,5 +35,4 @@ export class MuokkaustietoStore {
       this.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.opsId, undefined, this.hakuLukumaara) as any).data;
     }
   }
-
 }

@@ -12,7 +12,6 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Kayttajat } from '@/stores/kayttaja';
 import { delay } from '@shared/utils/delay';
 
-
 @Component
 export default class App extends Vue {
   private isInitializing = true;

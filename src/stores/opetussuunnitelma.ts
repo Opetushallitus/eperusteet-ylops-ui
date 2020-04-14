@@ -1,7 +1,5 @@
-import { Termisto } from '@shared/api/ylops';
-import { TermiDto, Ulkopuoliset } from '@shared/api/ylops';
-import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
-import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat } from '@shared/api/ylops';
+import { Termisto, TermiDto, Ulkopuoliset, UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto, Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat } from '@shared/api/ylops';
+
 import { AxiosResponse } from 'axios';
 import { createLogger } from '@shared/utils/logger';
 import { State, Store } from '@shared/stores/store';
@@ -15,7 +13,6 @@ interface OpintojaksoQuery {
 }
 
 const logger = createLogger('Opetussuunnitelma');
-
 
 @Store
 export class OpetussuunnitelmaStore {
@@ -101,8 +98,6 @@ export class OpetussuunnitelmaStore {
     else {
       return {};
     }
-
-    return null;
   }
 
   public async removeTeksti(tov: Puu) {
@@ -124,7 +119,7 @@ export class OpetussuunnitelmaStore {
   }
 
   public static async updateOpsTila(opsId: number, uusiTila: string) {
-    return await Opetussuunnitelmat.updateTila(opsId, uusiTila as any);
+    return Opetussuunnitelmat.updateTila(opsId, uusiTila as any);
   }
 
   public async updateTila(uusiTila: string) {

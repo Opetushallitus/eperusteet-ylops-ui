@@ -8,7 +8,6 @@ import { TermiDto } from '@shared/api/ylops';
 import TermiEditor from './TermiEditor.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 
-
 export default class TermiExtension extends Mark {
   public constructor(private handler: IKasiteHandler) {
     super();
@@ -86,7 +85,7 @@ export default class TermiExtension extends Mark {
             size: 'lg',
             title: [kasiteTitle],
           });
-        }
+        },
       },
       watch: {
         dataViite: {
@@ -131,5 +130,4 @@ export default class TermiExtension extends Mark {
       `,
     });
   }
-
 }

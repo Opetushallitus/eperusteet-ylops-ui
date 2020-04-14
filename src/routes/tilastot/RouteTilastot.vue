@@ -143,19 +143,19 @@
 import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
 import * as _ from 'lodash';
 
-import EpButton from'@shared/components/EpButton/EpButton.vue';
-import EpContent from'@/components/EpContent/EpContent.vue';
-import EpIcon from'@/components/EpIcon/EpIcon.vue';
-import EpMainView from'@/components/EpMainView/EpMainView.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpIcon from '@/components/EpIcon/EpIcon.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpRoute from '@/mixins/EpRoot';
-import EpSearch from'@shared/components/forms/EpSearch.vue';
-import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
-import { Opetussuunnitelmat, Ulkopuoliset } from '@shared/api/ylops';
+import { Opetussuunnitelmat, Ulkopuoliset, OpetussuunnitelmaInfoDto, PerusteInfoDto } from '@shared/api/ylops';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-import { OpetussuunnitelmaInfoDto, PerusteInfoDto } from '@shared/api/ylops';
+
 import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
@@ -177,7 +177,6 @@ import { success, fail } from '@/utils/notifications';
   },
 })
 export default class RouteTilastot extends Mixins(EpRoute) {
-
   @Prop()
   private tutoriaalistore!: TutoriaaliStore;
   private opetussuunnitelmat: OpetussuunnitelmaInfoDto[] = [];
@@ -202,13 +201,13 @@ export default class RouteTilastot extends Mixins(EpRoute) {
       .filter(ops => _.isEmpty(this.valitutKoulutustyypit) || _.includes(_.map(this.valitutKoulutustyypit, 'value'), ops.koulutustyyppi))
       .filter(ops => Kielet.search(this.query, ops.nimi))
       .filter(ops => _.isEmpty(this.valitutVoimassaolot) || _.includes(_.map(this.valitutVoimassaolot, 'value'), this.opetussuunnitelmaVoimassaolo(ops)))
-      .filter(ops => _.isEmpty(this.valitutPerusteet) || _.includes(_.map(this.valitutPerusteet, 'value') , ops.perusteenId))
+      .filter(ops => _.isEmpty(this.valitutPerusteet) || _.includes(_.map(this.valitutPerusteet, 'value'), ops.perusteenId))
       .sortBy(ops => Kielet.kaanna(ops.nimi))
       .value();
   }
 
   opetussuunnitelmaVoimassaolo(ops) {
-    if (ops.perusteenVoimassaoloLoppuu != null && ops.perusteenVoimassaoloLoppuu < new Date()) {
+    if (ops.perusteenVoimassaoloLoppuu && ops.perusteenVoimassaoloLoppuu < new Date()) {
       return 'paattynyt';
     }
 
@@ -266,27 +265,27 @@ export default class RouteTilastot extends Mixins(EpRoute) {
       key: 'koulutustyyppi',
       label: this.$t('koulutustyyppi'),
       sortable: true,
-      thStyle: { width: '20%'},
+      thStyle: { width: '20%' },
     }, {
       key: 'tila',
       label: this.$t('tila'),
       sortable: true,
-      thStyle: { width: '20%'},
+      thStyle: { width: '20%' },
     }, {
       key: 'perusteenVoimassaoloAlkaa',
       label: this.$t('voimassaolo-alkaa'),
       sortable: true,
-      thStyle: { width: '15%'},
+      thStyle: { width: '15%' },
     }, {
       key: 'perusteenVoimassaoloLoppuu',
       label: this.$t('voimassaolo-paattyy'),
       sortable: true,
-      thStyle: { width: '15%'},
+      thStyle: { width: '15%' },
     }];
   }
 
   chartLegends(otsikko) {
-    if(otsikko != 'perusteittain') {
+    if (otsikko !== 'perusteittain') {
       return _.map(_.keys(this.statistiikka![otsikko]), (alaotsikko) => this.$t(alaotsikko));
     }
     else {
@@ -302,11 +301,11 @@ export default class RouteTilastot extends Mixins(EpRoute) {
         enabled: true,
         style: {
           colors: ['#000'],
-          fontWeight: '400'
+          fontWeight: '400',
         },
         dropShadow: {
           enabled: false,
-        }
+        },
       },
       legend: {
         position: 'bottom',
@@ -314,7 +313,7 @@ export default class RouteTilastot extends Mixins(EpRoute) {
         show: (otsikko !== 'perusteittain' || !_.isEmpty(this.valitutPerusteet)),
         formatter: function(seriesName, opts) {
           return [seriesName, ': ', opts.w.globals.series[opts.seriesIndex]];
-        }
+        },
       },
       tooltip: {
         enabled: true,
@@ -327,7 +326,7 @@ export default class RouteTilastot extends Mixins(EpRoute) {
     return _.map(this.statistiikka![avain], (value) => _.size(value));
   }
 
-  get koulutustyyppiItems(){
+  get koulutustyyppiItems() {
     return _.map(YlopsKoulutustyypit, (koulutustyyppi) => {
       return {
         text: this.$t(koulutustyyppi),
@@ -336,30 +335,30 @@ export default class RouteTilastot extends Mixins(EpRoute) {
     });
   }
 
-  get tilaItems(){
+  get tilaItems() {
     return [
-      {text: this.$t('luonnos'), value:'luonnos'},
-      {text: this.$t('valmis'), value:'valmis'},
-      {text: this.$t('julkaistu'), value:'julkaistu'},
-      {text: this.$t('poistettu'), value:'poistettu'},
+      { text: this.$t('luonnos'), value: 'luonnos' },
+      { text: this.$t('valmis'), value: 'valmis' },
+      { text: this.$t('julkaistu'), value: 'julkaistu' },
+      { text: this.$t('poistettu'), value: 'poistettu' },
     ];
   }
 
-  get voimassaoloItems(){
+  get voimassaoloItems() {
     return [
-      {text: this.$t('voimassaolevat'), value:'voimassaoleva'},
-      {text: this.$t('tulevat'), value:'tuleva'},
-      {text: this.$t('paattyneet'), value:'paattynyt'},
+      { text: this.$t('voimassaolevat'), value: 'voimassaoleva' },
+      { text: this.$t('tulevat'), value: 'tuleva' },
+      { text: this.$t('paattyneet'), value: 'paattynyt' },
     ];
   }
 
   get perusteItems() {
-    return _.map(this.perusteet, (peruste => {
+    return _.map(this.perusteet, peruste => {
       return {
         value: peruste.id,
         text: (this as any).$kaanna(peruste.nimi),
       };
-    }));
+    });
   }
 
   get tyhjaGraafiOptions() {
@@ -397,7 +396,6 @@ export default class RouteTilastot extends Mixins(EpRoute) {
       }
     }
   }
-
 }
 </script>
 

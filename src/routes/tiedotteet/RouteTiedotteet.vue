@@ -60,21 +60,20 @@
 import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
-import EpButton from'@shared/components/EpButton/EpButton.vue';
-import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
-import EpContent from'@/components/EpContent/EpContent.vue';
-import EpIcon from'@/components/EpIcon/EpIcon.vue';
-import EpMainView from'@/components/EpMainView/EpMainView.vue';
-import EpNavigation from'@/components/EpNavigation/EpNavigation.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpIcon from '@/components/EpIcon/EpIcon.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpRoute from '@/mixins/EpRoot';
-import EpSearch from'@shared/components/forms/EpSearch.vue';
-import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 
 import { Ulkopuoliset } from '@shared/api/ylops';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-
 
 @Component({
   directives: {

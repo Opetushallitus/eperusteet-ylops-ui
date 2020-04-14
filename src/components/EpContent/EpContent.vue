@@ -54,7 +54,6 @@ import { EditorLayout } from '@shared/tyypit';
 import EpValidation from '@shared/mixins/EpValidation';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-
 @Component({
   components: {
     EditorContent,
@@ -229,7 +228,6 @@ export default class EpContent extends Mixins(EpValidation) {
       this.editor.setContent(this.localizedValue);
     }
   }
-
 }
 
 </script>

@@ -33,7 +33,6 @@ import {
   SideMenuRoute,
 } from '@shared/tyypit';
 
-
 @Component
 export default class EpRecursiveNav extends Vue {
   @Prop({ default: [] })
@@ -190,7 +189,7 @@ export default class EpRecursiveNav extends Vue {
 
       // use defined parent navigation if nothing else is found
       if (this.$route.meta.parentNavigation) {
-        if(menuItem.route && menuItem.route.name === this.$route.meta.parentNavigation) {
+        if (menuItem.route && menuItem.route.name === this.$route.meta.parentNavigation) {
           const retval = this.getEntryDetails(menuItem);
           found = true;
           newTopItem = retval.newTopItem;

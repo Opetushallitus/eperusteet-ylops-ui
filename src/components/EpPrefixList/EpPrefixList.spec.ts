@@ -7,14 +7,14 @@ describe('EpPrefixList', () => {
       propsData: {
         value: {
           kohde: {
-            fi: 'kohde'
+            fi: 'kohde',
           },
           arvot: [{
-            fi: 'arvo 1'
+            fi: 'arvo 1',
           }, {
-            fi: 'arvo 2'
-          }]
-        }
+            fi: 'arvo 2',
+          }],
+        },
       },
     });
     expect(wrapper.html()).toContain('kohde');

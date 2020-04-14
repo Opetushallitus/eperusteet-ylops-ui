@@ -35,7 +35,7 @@ export function fail(title: string, reason?: string) {
   (Vue as any).notify({
     title: Kielet.i18n.t(title),
     type: 'error',
-    text: reason ? Kielet.i18n.t(reason): reason,
+    text: reason ? Kielet.i18n.t(reason) : reason,
   });
 }
 

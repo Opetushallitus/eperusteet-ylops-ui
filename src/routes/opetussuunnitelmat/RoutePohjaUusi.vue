@@ -32,13 +32,13 @@
 import _ from 'lodash';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 
-import { Ulkopuoliset, Opetussuunnitelmat } from '@shared/api/ylops';
-import { pohjaLuontiValidator } from '@/validators/ops';
-import { isPerusteSupported } from '@/utils/perusteet';
-import {
+import { Ulkopuoliset, Opetussuunnitelmat,
   PerusteInfoDto,
   OpetussuunnitelmaLuontiDto,
 } from '@shared/api/ylops';
+import { pohjaLuontiValidator } from '@/validators/ops';
+import { isPerusteSupported } from '@/utils/perusteet';
+
 import { createLogger } from '@shared/utils/logger';
 import { success } from '@/utils/notifications';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
@@ -57,7 +57,6 @@ import EpRoute from '@/mixins/EpRoute';
 import EpValidation from '@shared/mixins/EpValidation';
 
 const logger = createLogger('RoutePohjaUusi');
-
 
 @Component({
   components: {

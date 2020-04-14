@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import { RouteConfig } from 'vue-router';
+
 import _ from 'lodash';
 
 import Root from '@/routes/Root.vue';
@@ -45,7 +45,7 @@ import { AikatauluStore } from './stores/aikataulu';
 import VueApexCharts from 'vue-apexcharts';
 
 Vue.use(Router);
-Vue.use(VueTutorial, {tutoriaalistore});
+Vue.use(VueTutorial, { tutoriaalistore });
 Vue.use(VueApexCharts);
 
 Vue.component('apexchart', VueApexCharts);
@@ -195,7 +195,7 @@ export const router = new Router({
         component: RouteOpintojakso,
         name: 'opintojakso',
         meta: {
-          parentNavigation: 'oppiaineet'
+          parentNavigation: 'oppiaineet',
         },
       }, {
         path: 'opintojaksot/:opintojaksoId/:oppiaineKoodi',

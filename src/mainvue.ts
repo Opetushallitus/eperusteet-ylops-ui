@@ -35,7 +35,6 @@ Vue.use(Kielet, {
 });
 
 export async function getRootConfig() {
-
   return {
     i18n: Kielet.i18n,
     router,

@@ -2,7 +2,6 @@ import { Opetussuunnitelmat } from '@shared/api/ylops';
 import axios from 'axios';
 import '@shared/api/common';
 
-
 describe('Api facade', () => {
   test('contains opetussuunnitelma methods', async () => {
     const spy = jest.spyOn(Opetussuunnitelmat, 'getAll');
@@ -23,5 +22,4 @@ describe('Api facade', () => {
   test('caller-id', async () => {
     expect(axios.defaults.headers.common['Caller-Id']).toBeTruthy();
   });
-
 });

@@ -101,28 +101,27 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 
-import EpButton from'@shared/components/EpButton/EpButton.vue';
-import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
-import EpColorIndicator from'@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import EpContent from'@/components/EpContent/EpContent.vue';
-import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@shared/components/forms/EpField.vue';
-import EpFormContent from'@shared/components/forms/EpFormContent.vue';
-import EpOppiaineSelector from'@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
-import EpPrefixList from'@/components/EpPrefixList/EpPrefixList.vue';
-import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
+import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019PaikallinenOppiaineDto } from '@shared/api/ylops';
+import { Lops2019PaikallinenOppiaineDto, Opetussuunnitelmat } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { Kielet } from '@shared/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
-import { Opetussuunnitelmat } from '@shared/api/ylops';
+
 import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
 import { success } from '@/utils/notifications';
-
 
 @Component({
   components: {
@@ -179,7 +178,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
       return [];
     }
     else {
-      return await this.store.getPaikallinenOppiaineenHistoria(_.parseInt(this.$route.params.paikallinenOppiaineId));
+      return this.store.getPaikallinenOppiaineenHistoria(_.parseInt(this.$route.params.paikallinenOppiaineId));
     }
   }
 

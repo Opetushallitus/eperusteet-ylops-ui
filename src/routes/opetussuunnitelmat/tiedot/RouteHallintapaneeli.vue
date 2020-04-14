@@ -40,16 +40,14 @@ import { AikatauluStore } from '@/stores/aikataulu';
     OpsMuokkaamattomatOsiot,
     OpsViimeaikainenToiminta,
     OpsAikataulu,
-  }
+  },
 })
 export default class RouteHallintapaneeli extends EpOpsRoute {
-
   @Prop({ required: true })
   private muokkaustietoStore!: MuokkaustietoStore;
 
   @Prop({ required: true })
   private aikatauluStore!: AikatauluStore;
-
 }
 </script>
 

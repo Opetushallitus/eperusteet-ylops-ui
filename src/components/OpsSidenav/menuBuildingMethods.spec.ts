@@ -17,7 +17,7 @@ describe('OpsSidenav menubuilder helper', () => {
       lapset: [{
         tekstikappale: null,
         id: 2,
-      }]
+      }],
     }]);
     expect(res1.length).toBe(1);
     expect(res1[0].item.type).toEqual('tekstikappale');
@@ -40,12 +40,12 @@ describe('OpsSidenav menubuilder helper', () => {
       {
         oppiaineet: [{
           koodi: 'testiuri',
-        }]
-      }
+        }],
+      },
     ], {
       koodi: {
         uri: 'testiuri',
-      }
+      },
     }
     );
     expect(res2.length).toBe(1);
@@ -80,5 +80,4 @@ describe('OpsSidenav menubuilder helper', () => {
     expect(_.map(sorted2, 'arvo')).toEqual(['MA1', 'MA11']);
     expect(sorted3).toEqual(['MA1', 'MA11']);
   });
-
 });

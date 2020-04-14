@@ -12,7 +12,6 @@ import {
   genKayttaja,
 } from '&/utils/data';
 
-
 import {
   Kayttajat as KayttajatApi,
   Opetussuunnitelmat,
@@ -28,11 +27,9 @@ describe('Router', () => {
   Kielet.install(localVue);
   localVue.use(new Kaannos());
 
-
   async function createMounted(
     oikeudet = genOikeudet('oph')
   ) {
-
     jest.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
 
@@ -58,15 +55,15 @@ describe('Router', () => {
         {
           oid: '1234',
           nimi: {
-            fi: '1234nimi'
+            fi: '1234nimi',
           },
         },
         {
           oid: '2234',
           nimi: {
-            fi: '2234nimi'
+            fi: '2234nimi',
           },
-        }
+        },
       ]));
 
     jest.spyOn(Ulkopuoliset, 'getOrganisaatioVirkailijat')
@@ -111,7 +108,7 @@ describe('Router', () => {
             sv: 'Tämä on tiedote',
           },
           koulutustyyppi: 'koulutustyyppi_2',
-        }]
+        }],
       }));
 
     await Kayttajat.init();
@@ -126,7 +123,9 @@ describe('Router', () => {
       params: {
         lang: 'fi',
       },
-    }).catch(err => {});
+    }).catch(err => {
+      console.log(err);
+    });
   });
 
   test('App creation', async () => {
@@ -144,7 +143,9 @@ describe('Router', () => {
     router.push({
       name: 'root',
       params: { lang: 'sv' },
-    }).catch(err => {});
+    }).catch(err => {
+      console.log(err);
+    });
 
     await localVue.nextTick();
 
@@ -156,5 +157,4 @@ describe('Router', () => {
     await expectEventually(() => expect(app.find('.tile-content').html()).toContain('42'));
     await expectEventually(() => expect(app.find('.tile-content').html()).toContain('43'));
   });
-
 });

@@ -46,7 +46,6 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Multiselect from 'vue-multiselect';
 import PoistetutHakuTable from './poistetut/PoistetutHakuTable.vue';
 
-
 @Component({
   components: {
     EpButton,
@@ -76,7 +75,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       this.tabIndex = _.parseInt(route.params.tabIndex);
     }
     await this.fetchPoistetut();
-
   }
 
   get oppiaineet() {
@@ -103,7 +101,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     await this.store.palauta(poistettu);
     await this.fetchPoistetut();
   }
-
 }
 </script>
 

@@ -9,7 +9,6 @@ export function domAttrsGetter(...fields: string[]) {
   }, {});
 }
 
-
 export function mapNodeAttrs(...fields: string[]) {
   return _.reduce(fields, (acc: any, field: string) => ({
     ...acc,
@@ -25,4 +24,3 @@ export function mapNodeAttrs(...fields: string[]) {
     },
   }), {});
 }
-

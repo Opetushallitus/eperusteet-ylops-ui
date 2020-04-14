@@ -14,7 +14,6 @@ import { Kielet } from '@shared/stores/kieli';
 import PoistetutTable from './PoistetutTable.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 
-
 @Component({
   components: {
     EpSearch,
@@ -43,7 +42,6 @@ export default class PoistetutHakuTable extends Vue {
   palauta(poistettu) {
     this.$emit('palauta', poistettu);
   }
-
 }
 
 </script>
