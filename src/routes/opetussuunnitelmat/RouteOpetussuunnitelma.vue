@@ -208,6 +208,9 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     background-position: 100% -50px;
     background-repeat: no-repeat;
     height: 190px;
+    @media only screen and (min-width: 2503px)  {
+      background-size: 100%;
+    }
 
     display: flex;
     align-items: center;
