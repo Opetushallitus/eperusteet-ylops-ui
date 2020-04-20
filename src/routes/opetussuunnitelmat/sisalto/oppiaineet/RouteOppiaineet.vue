@@ -158,6 +158,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
@@ -173,7 +174,6 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
 import { koodiAlku, koodiNumero } from '@/utils/perusteet';
 
-import _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
@@ -382,9 +382,8 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
               // Käytetään KoodiUrin loppuosaa
               const mKoodi = _.split(moduuli.koodi!.uri, '_').pop(); // esim. ai1
               const oKoodi = _.split(oa.koodi!.uri, '_').pop(); // esim. ai
-              console.log(mKoodi, oKoodi);
               // Poistetaan vielä oppimäärän numerot (käytetään kielten oppimäärissä)
-              return _.startsWith(mKoodi, oKoodi!.replace(/[0-9]/g, ''));
+              return _.startsWith(mKoodi, oKoodi!.replace(/[0-9]/g, '')) || _.parseInt(moduuli._oppiaine) === oa.id;
             }
             else {
               return false;
