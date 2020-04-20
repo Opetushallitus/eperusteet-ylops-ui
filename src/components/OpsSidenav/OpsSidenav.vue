@@ -1,9 +1,11 @@
 <template>
 <ep-spinner v-if="isLoading" />
 <div v-else class="sidebar d-flex flex-column flex-fill">
+  <!-- Todo: toteutetaan yhteisen navigaatiokomponentin yhteydessä
   <div class="search">
     <ep-search v-model="query"/>
   </div>
+  -->
   <ul class="navigation flex-fill" v-if="valikkoData.length > 0">
 
     <li class="p-0">
