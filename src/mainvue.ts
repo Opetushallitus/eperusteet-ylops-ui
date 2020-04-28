@@ -11,6 +11,7 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Kaannos from '@shared/plugins/kaannos';
 import VueI18n, { IVueI18n } from 'vue-i18n';
 import VueCompositionApi from '@vue/composition-api';
+import { Notifikaatiot } from '@shared/plugins/notifikaatiot';
 
 import App from '@/App.vue';
 import aikaleima from '@shared/plugins/aikaleima';
@@ -20,6 +21,7 @@ Vue.use(VueCompositionApi);
 Vue.use(Notifications);
 Vue.use(Kaannos);
 Vue.use(aikaleima);
+Vue.use(Notifikaatiot);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);
 
 Vue.use(Loading, {
@@ -29,8 +31,14 @@ Vue.use(Loading, {
 });
 Vue.use(Kielet, {
   messages: {
-    fi: require('@/translations/locale-fi.json'),
-    sv: require('@/translations/locale-sv.json'),
+    fi: {
+      ...require('@shared/translations/locale-fi.json'),
+      ...require('@/translations/locale-fi.json'),
+    },
+    sv: {
+      ...require('@shared/translations/locale-sv.json'),
+      ...require('@/translations/locale-sv.json'),
+    },
   },
 });
 

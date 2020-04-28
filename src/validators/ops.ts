@@ -13,6 +13,15 @@ export function pohjaLuontiValidator(kielet: Kieli[] = []) {
   };
 }
 
+export function opsPerusopetusLuontiValidator(kielet: Kieli[] = []) {
+  return {
+    ...opsLuontiValidator(kielet),
+    vuosiluokkakokonaisuudet: {
+      required,
+    },
+  };
+}
+
 export function opsLuontiValidator(kielet: Kieli[] = []) {
   return {
     nimi: {

@@ -28,6 +28,7 @@ import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 import RouteTilastot from '@/routes/tilastot/RouteTilastot.vue';
+import RouteVuosiluokkakokonaisuus from '@/routes/opetussuunnitelmat/sisalto/RouteVuosiluokkakokonaisuus.vue';
 
 import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
@@ -205,6 +206,10 @@ export const router = new Router({
         path: 'tekstikappaleet/:osaId',
         component: RouteTekstikappale,
         name: 'tekstikappale',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId',
+        component: RouteVuosiluokkakokonaisuus,
+        name: 'vuosiluokkakokonaisuus',
       }],
     }],
   }, {
