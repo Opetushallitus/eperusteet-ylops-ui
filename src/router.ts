@@ -29,6 +29,7 @@ import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 import RouteTilastot from '@/routes/tilastot/RouteTilastot.vue';
 import RouteVuosiluokkakokonaisuus from '@/routes/opetussuunnitelmat/sisalto/RouteVuosiluokkakokonaisuus.vue';
+import RoutePerusopetusOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaine.vue';
 
 import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
@@ -210,7 +211,12 @@ export const router = new Router({
         path: 'vuosiluokkakokonaisuus/:vlkId',
         component: RouteVuosiluokkakokonaisuus,
         name: 'vuosiluokkakokonaisuus',
-      }],
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId',
+        component: RoutePerusopetusOppiaine,
+        name: 'perusopetusoppiaine',
+      },
+      ],
     }],
   }, {
     path: '*',
