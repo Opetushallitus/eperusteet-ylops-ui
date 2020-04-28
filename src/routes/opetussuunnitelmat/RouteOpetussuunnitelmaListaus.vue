@@ -46,7 +46,7 @@
               </div>
 
               <div v-for="ops in keskeneraiset" :key="ops.id">
-                <div v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'"
+                <div v-if="ops.tuettu"
                     class="opsbox">
                   <router-link
                     tag="a"
@@ -92,7 +92,7 @@
 
             <div class="opscontainer">
               <div v-for="ops in julkaistut" :key="ops.id">
-                <div class="opsbox julkaistu" v-if="ops.toteutus === 'lops2019' || ops.toteutus === 'yksinkertainen'">
+                <div class="opsbox julkaistu">
                   <router-link
                     tag="a"
                     :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
@@ -123,13 +123,14 @@
 import _ from 'lodash';
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 
-import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
+import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat, OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
 
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { success, fail } from '@/utils/notifications';
 import { Kielet } from '@shared/stores/kieli';
+import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
 
 import EpRoute from '@/mixins/EpRoot';
 import EpContent from '@/components/EpContent/EpContent.vue';
@@ -201,11 +202,22 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   }
 
   get keskeneraiset() {
-    return _.reject(this.arkistoimattomat, ops => (ops.tila as any) === this.valmisTila);
+    return _.chain(this.arkistoimattomat)
+      .reject(ops => (ops.tila as any) === this.valmisTila)
+      .map(ops => {
+        return {
+          ...ops,
+          tuettu: isOpsToteutusSupported(ops),
+        };
+      })
+      .value();
   }
 
   get julkaistut() {
-    return _.filter(this.arkistoimattomat, ops => (ops.tila as any) === this.valmisTila);
+    return _.chain(this.arkistoimattomat)
+      .filter(ops => (ops.tila as any) === this.valmisTila)
+      .filter(ops => isOpsToteutusSupported(ops))
+      .value();
   }
 
   get vars() {
