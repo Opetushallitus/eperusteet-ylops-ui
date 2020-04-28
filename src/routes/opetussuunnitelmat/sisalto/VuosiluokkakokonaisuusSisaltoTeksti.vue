@@ -1,7 +1,7 @@
 <template>
   <div class="mt-4">
     <h3>{{ $kaanna(perusteObject[otsikko]) }}</h3>
-    <ep-collapse :border-bottom="false" :border-top="false" :expandedByDefault="false">
+    <ep-collapse :border-bottom="false" :border-top="false" :expandedByDefault="perusteTekstiAvattu">
       <template v-slot:header><h4>{{$t('perusteen-teksti')}}</h4></template>
       <span v-html="$kaanna(perusteObject[teksti])"></span>
     </ep-collapse>
@@ -44,6 +44,9 @@ export default class VuosiluokkakokonaisuusSisaltoTeksti extends Vue {
 
   @Prop({ default: 'teksti' })
   private teksti!: string;
+
+  @Prop({ default: false })
+  private perusteTekstiAvattu!: boolean;
 
   get hasContent() {
     return this.vlkObject != null && this.vlkObject[this.teksti] != null;
