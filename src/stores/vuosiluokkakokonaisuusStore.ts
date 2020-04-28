@@ -2,8 +2,7 @@ import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
 import { Vuosiluokkakokonaisuudet, Opetussuunnitelmat } from '@shared/api/ylops';
 import * as _ from 'lodash';
-import { KieliStore, Kielet } from '@shared/stores/kieli';
-import { UnwrappedOpsVuosiluokkakokonaisuusDto } from '@shared/generated/ylops';
+import { Kielet } from '@shared/stores/kieli';
 
 export class VuosiluokkakokonaisuusStore implements IEditoitava {
   constructor(private opsId: number, private vlkId: number) {

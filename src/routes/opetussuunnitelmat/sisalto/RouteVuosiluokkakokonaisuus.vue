@@ -4,7 +4,7 @@
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.vlk.nimi) }}</h2>
       </template>
-      <template v-slot:default="{ data, isEditing, validation }">
+      <template v-slot:default="{ data, isEditing }">
         <vuosiluokkakokonaisuus-sisalto-teksti :perusteObject="data.perusteenVlk.tehtava" :vlkObject="data.vlk.tehtava" :isEditing="isEditing" />
 
         <hr/>
