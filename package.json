@@ -96,6 +96,7 @@
     "vue": "^2.6.10",
     "vue-apexcharts": "^1.5.2",
     "vue-axe": "^1.0.7",
+    "vue-clamp": "^0.3.0",
     "vue-class-component": "^7.0.2",
     "vue-docgen-api": "^3.17.0",
     "vue-i18n": "^8.15.3",
