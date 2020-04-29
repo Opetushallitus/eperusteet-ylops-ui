@@ -11,9 +11,25 @@
         <vuosiluokkakokonaisuus-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tehtava" :vlkObject="data.vuosiluokkakokonaisuus.tehtava" :isEditing="isEditing" />
 
         <hr/>
-        <h3>{{ $t('tavoitteet-ja-sisallot-vuosiluokittain') }}</h3>
-        <div class="ei-tavoitteita mt-3 mb-3">{{ $t('tavoitteita-ei-ole-viela-vuosiluokkaistettu')}}</div>
-        <ep-button>{{ $t('vuosiluokkaista-tavoitteet')}}</ep-button>
+        <div class="d-flex justify-content-between align-items-center">
+          <h3 class="mb-0">{{ $t('tavoitteet-ja-sisallot-vuosiluokittain') }}</h3>
+          <router-link v-if="data.vuosiluokkakokonaisuus.vuosiluokat.length > 0" :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}">
+            <ep-button >{{ $t('vuosiluokkaista-tavoitteet')}}</ep-button>
+          </router-link>
+        </div>
+
+        <div v-if="data.vuosiluokkakokonaisuus.vuosiluokat.length === 0">
+          <div class="ei-tavoitteita mt-3 mb-3">{{ $t('tavoitteita-ei-ole-viela-vuosiluokkaistettu')}}</div>
+          <router-link :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}">
+            <ep-button >{{ $t('vuosiluokkaista-tavoitteet')}}</ep-button>
+          </router-link>
+        </div>
+
+        <div v-else v-for="(vuosiluokka,index) in data.vuosiluokkakokonaisuus.vuosiluokat" :key="'vuosiluokka'+index">
+          <router-link :to="{name:''}">
+            <ep-button variant="link">{{ $t('vuosiluokka')}} {{ $t(vuosiluokka.vuosiluokka)}}</ep-button>
+          </router-link>
+        </div>
 
         <hr/>
         <vuosiluokkakokonaisuus-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tyotavat" :vlkObject="data.vuosiluokkakokonaisuus.tyotavat" :isEditing="isEditing" />

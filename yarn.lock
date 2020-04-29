@@ -11120,6 +11120,11 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
+resize-detector@^0.1.10:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/resize-detector/-/resize-detector-0.1.10.tgz#1da3f961aa5f914ccbcfd3752d52fd45beeb692c"
+  integrity sha512-iLcXC8A6Fb0DfA+TRiywrK/0A22bFqkhntjMJMEzXDA4XkcEkfwpNbv7W8iewUiD0xYIaeiXOfiEehTqGKsUFw==
+
 resolve-cwd@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-2.0.0.tgz#00a9f7387556e27038eae232caa372a6a59b665a"
@@ -13134,6 +13139,14 @@ vue-axe@^1.0.7:
   integrity sha512-ktvdhKSRlnW01Pnz9MSpjaQsYgt24Nl5KFCOhkdY9gcRXL3moZ2J9iEEDSPqpyUW0BxVpf3zdnWMw4zOVtQOLQ==
   dependencies:
     axe-core "^3.4.1"
+
+vue-clamp@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/vue-clamp/-/vue-clamp-0.3.0.tgz#5b5377e7c7f11c4d3305542cefdd964ac98fcde5"
+  integrity sha512-QMc98bTde4Ou1dlesnKfrwuOVve66fNlnYL3IBSA1nNC4COuGq2uNq6E2l7tQxSXzobC+DRhT01yBKVE/eaLsg==
+  dependencies:
+    core-js "^3.6.4"
+    resize-detector "^0.1.10"
 
 vue-class-component@^7.0.2, vue-class-component@^7.1.0:
   version "7.2.3"

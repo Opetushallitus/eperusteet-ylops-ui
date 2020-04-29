@@ -57,8 +57,8 @@ export class PerusopetusoppiaineStore implements IEditoitava {
     return null;
   }
 
-  async remove() {
-  }
+  // async remove() {
+  // }
 
   async restore() {
   }
