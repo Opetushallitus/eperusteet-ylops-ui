@@ -117,8 +117,8 @@ import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins(EpRoute, EpOpsComponent) {
   private editointiStore: EditointiStore | null = null;
   private avaaSulje: boolean = true;
-  private kohdealueVarit = ['fbb03b', 'ffd400', '3a8fbe', '89bcd8', '800080', 'b366b3', '0c566e', '6d9aa8', '008000', '8cc63f',
-    '2e3192', '8283be', '663300', 'a38566', '666600', 'a3a366'];
+  private kohdealueVarit = ['#99B3F1', '#9BDCFF', '#B2B2B2', '#002D99', '#FFD900', '#E60895', '#C126B8', '#575757', '#575757', '#575757',
+    '#2e3192', '#8283be', '#663300', '#a38566', '#666600', '#a3a366'];
 
   async init() {
     this.editointiStore = new EditointiStore(new VuosiluokkaistaminenStore(
@@ -195,7 +195,7 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
     const kohdealueVari = _.head(this.kohdealueVarit);
     _.pull(this.kohdealueVarit, kohdealueVari);
 
-    return '#' + kohdealueVari;
+    return kohdealueVari;
   }
 }
 </script>
