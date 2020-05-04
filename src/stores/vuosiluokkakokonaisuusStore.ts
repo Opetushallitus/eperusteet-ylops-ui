@@ -28,7 +28,7 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
     let laajaalaiset;
     [vlk, perusteenVlk, laajaalaiset] = _.map(await (Promise.all([
       Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuus(this.opsId, this.vlkId),
-      Vuosiluokkakokonaisuudet.getPerusteSisalto(this.opsId, this.vlkId),
+      Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuudenPerusteSisalto(this.opsId, this.vlkId),
       Opetussuunnitelmat.getLaajalaisetosamiset(this.opsId),
     ])), 'data');
 

@@ -114,7 +114,7 @@ import EpRoute from '@/mixins/EpRoute';
 import {
   Opetussuunnitelmat,
   Opintojaksot,
-  Oppiaineet,
+  Lops2019Oppiaineet,
   OpetussuunnitelmaInfoDto,
   OpetussuunnitelmaLuontiDto,
   Lops2019OpintojaksoDto,
@@ -205,7 +205,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       this.uusi.pohjanOpintojaksot = null;
 
       if (this.uusi.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.LOPS2019.toLowerCase()) {
-        const paikalliset = (await Oppiaineet.getAllLops2019PaikallisetOppiainet(this.uusi.pohja.id)).data;
+        const paikalliset = (await Lops2019Oppiaineet.getAllLops2019PaikallisetOppiainet(this.uusi.pohja.id)).data;
         const paikallistenKoodit = _.map(paikalliset, 'koodi');
 
         this.uusi.pohjanOpintojaksot = _.chain((await Opintojaksot.getAllOpintojaksot(this.uusi.pohja.id)).data)
