@@ -43,6 +43,7 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
 
     const sisaltoalueetMap = _.keyBy(perusteenOppiaineenVlk.sisaltoalueet, 'tunniste');
     const tavoitteetMap = _.keyBy(perusteenOppiaineenVlk.tavoitteet, 'tunniste');
+    let kohdealueGlobalIndex = 0;
 
     return {
       oppiaine,
@@ -54,6 +55,12 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
             sisaltoalueet: _.sortBy(tavoite.sisaltoalueet, [(sisaltoalue: any) => {
               return sisaltoalueetMap[sisaltoalue].nimi[Kielet.getSisaltoKieli.value];
             }]),
+            kohdealueet: _.map(tavoite.kohdealueet, kohdealue => {
+              return {
+                ...kohdealue,
+                index: kohdealueGlobalIndex++,
+              };
+            }),
           };
         }),
       },

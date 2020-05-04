@@ -5,10 +5,10 @@
         <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}</h2>
       </template>
       <template v-slot:default="{ data, isEditing }">
-        <vuosiluokkakokonaisuus-sisalto-teksti :perusteObject="data.perusteenOppiaine.tehtava" :isEditing="false" :perusteTekstiAvattu="true"/>
+        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenOppiaine.tehtava" :isEditing="false" :perusteTekstiAvattu="true"/>
 
         <hr/>
-        <vuosiluokkakokonaisuus-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tehtava" :vlkObject="data.vuosiluokkakokonaisuus.tehtava" :isEditing="isEditing" />
+        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tehtava" :vlkObject="data.vuosiluokkakokonaisuus.tehtava" :isEditing="isEditing" />
 
         <hr/>
         <div class="d-flex justify-content-between align-items-center">
@@ -26,19 +26,19 @@
         </div>
 
         <div v-else v-for="(vuosiluokka,index) in data.vuosiluokkakokonaisuus.vuosiluokat" :key="'vuosiluokka'+index">
-          <router-link :to="{name:''}">
+          <router-link :to="{name:'perusopetusoppiainevuosiluokka', params: {vlId: vuosiluokka.id}}">
             <ep-button variant="link">{{ $t('vuosiluokka')}} {{ $t(vuosiluokka.vuosiluokka)}}</ep-button>
           </router-link>
         </div>
 
         <hr/>
-        <vuosiluokkakokonaisuus-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tyotavat" :vlkObject="data.vuosiluokkakokonaisuus.tyotavat" :isEditing="isEditing" />
+        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tyotavat" :vlkObject="data.vuosiluokkakokonaisuus.tyotavat" :isEditing="isEditing" />
 
         <hr/>
-        <vuosiluokkakokonaisuus-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.ohjaus" :vlkObject="data.vuosiluokkakokonaisuus.ohjaus" :isEditing="isEditing" />
+        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.ohjaus" :vlkObject="data.vuosiluokkakokonaisuus.ohjaus" :isEditing="isEditing" />
 
         <hr/>
-        <vuosiluokkakokonaisuus-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.arviointi" :vlkObject="data.vuosiluokkakokonaisuus.arviointi" :isEditing="isEditing" />
+        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.arviointi" :vlkObject="data.vuosiluokkakokonaisuus.arviointi" :isEditing="isEditing" />
 
         </template>
     </EpEditointi>
@@ -53,7 +53,7 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
-import VuosiluokkakokonaisuusSisaltoTeksti from '../VuosiluokkakokonaisuusSisaltoTeksti.vue';
+import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { PerusopetusoppiaineStore } from '@/stores/perusopetusoppiaineStore';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
@@ -61,7 +61,7 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 @Component({
   components: {
     EpEditointi,
-    VuosiluokkakokonaisuusSisaltoTeksti,
+    VuosiluokkaSisaltoTeksti,
     EpButton,
   },
 })

@@ -1,6 +1,8 @@
 <template>
   <div class="mt-4">
-    <h3>{{ $kaanna(perusteObject[otsikko]) }}</h3>
+    <slot name="header">
+      <h3>{{ $kaanna(perusteObject[otsikko]) }}</h3>
+    </slot>
     <ep-collapse :border-bottom="false" :border-top="false" :expandedByDefault="perusteTekstiAvattu">
       <template v-slot:header><h4>{{$t('perusteen-teksti')}}</h4></template>
       <span v-html="$kaanna(perusteObject[teksti])"></span>
@@ -29,7 +31,7 @@ import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
     EpAlert,
   },
 })
-export default class VuosiluokkakokonaisuusSisaltoTeksti extends Vue {
+export default class VuosiluokkaSisaltoTeksti extends Vue {
   @Prop({ required: true })
   private perusteObject!: any;
 
