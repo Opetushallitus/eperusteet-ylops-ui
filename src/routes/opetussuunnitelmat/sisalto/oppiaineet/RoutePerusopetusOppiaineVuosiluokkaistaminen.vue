@@ -73,7 +73,7 @@
                       <div class="roskalaatikko">
                         <fas icon="roskalaatikko" />
                       </div>
-                      <v-clamp class="teksti" autoresize :max-lines="4">{{$kaanna(tavoite.tavoite).replace(/<\/?[^>]+(>|$)/g, '')}}" /></v-clamp>
+                      <v-clamp class="teksti" autoresize :max-lines="4">{{ $plaintext($kaanna(tavoite.tavoite)) }}</v-clamp>
                     </div>
                 </draggable>
               </div>
