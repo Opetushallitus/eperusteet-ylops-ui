@@ -15,6 +15,7 @@ import { Notifikaatiot } from '@shared/plugins/notifikaatiot';
 
 import App from '@/App.vue';
 import aikaleima from '@shared/plugins/aikaleima';
+import plaintext from '@shared/plugins/plaintext';
 import Vuelidate from 'vuelidate';
 
 Vue.use(VueI18n);
@@ -22,6 +23,7 @@ Vue.use(VueCompositionApi);
 Vue.use(Notifications);
 Vue.use(Kaannos);
 Vue.use(aikaleima);
+Vue.use(plaintext);
 Vue.use(Notifikaatiot);
 Vue.use(Vuelidate);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);
