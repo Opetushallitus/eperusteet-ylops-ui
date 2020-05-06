@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto } from '@shared/api/ylops';
+import { Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto, OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import { SideMenuEntry } from '@shared/tyypit';
 
 import { koodiNumero, koodiAlku } from '@/utils/perusteet';
@@ -40,6 +40,70 @@ export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
 
     return obj;
   });
+}
+
+export function vuosiluokkaLinkit(ops: OpetussuunnitelmaKevytDto): SideMenuEntry[] {
+  return _.chain(ops.vuosiluokkakokonaisuudet)
+    .map('vuosiluokkakokonaisuus')
+    .map(vlk => {
+      return {
+        item: {
+          type: 'vuosiluokkakokonaisuus',
+          objref: vlk,
+        },
+        route: {
+          name: 'vuosiluokkakokonaisuus',
+          params: {
+            vlkId: vlk?.id,
+          },
+        },
+        children: [
+          ...(perusopetusOppiaineenLapset(_.map(ops.oppiaineet, 'oppiaine'), vlk) as any | []),
+          // perusopetuksenValinnaisetOppiaineetLinkki();
+        ],
+      } as SideMenuEntry;
+    })
+    .value();
+}
+
+function perusopetuksenValinnaisetOppiaineetLinkki() {
+//   arr.push({
+//     depth: 1,
+//     label: "valinnaiset-oppiaineet",
+//     id: "valinnaiset",
+//     vlkId: vlk.vuosiluokkakokonaisuus.id,
+//     url: $state.href("root.opetussuunnitelmat.yksi.opetus.valinnaiset", {
+//         vlkId: vlk.vuosiluokkakokonaisuus.id
+//     })
+// });
+}
+
+function perusopetusOppiaineLinkki(oppiaine, vlk): SideMenuEntry {
+  return {
+    item: {
+      type: oppiaine.koosteinen ? 'koosteinen-oppiaine' : 'perusopetusoppiaine',
+      objref: oppiaine,
+    },
+    route: {
+      name: 'perusopetusoppiaine',
+      params: {
+        vlkId: vlk?.id,
+        oppiaineId: oppiaine?.id,
+      },
+    },
+    children: perusopetusOppiaineenLapset(oppiaine.oppimaarat, vlk),
+  } as SideMenuEntry;
+}
+
+function perusopetusOppiaineenLapset(oppiaineet, vlk) {
+  if (oppiaineet == null || _.size(oppiaineet) === 0) {
+    return null;
+  }
+  return _.chain(oppiaineet)
+    .filter(oppiaine => _.size(oppiaine?.vuosiluokkakokonaisuudet) === 0 || _.includes(_.map(oppiaine?.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk?._tunniste))
+    .sortBy('koodiUri')
+    .map(oppiaine => perusopetusOppiaineLinkki(oppiaine, vlk))
+    .value();
 }
 
 export function oppiaineLinkki(type: string, objref: any, children: SideMenuEntry[]): SideMenuEntry {

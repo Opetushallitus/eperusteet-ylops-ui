@@ -68,6 +68,14 @@
             :tekstikappaleet="tekstikappaleLapset(itemData)"
             v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
         </li>
+
+        <li v-if="itemData.item.type === 'koosteinen-oppiaine'">
+          <ep-oppimaara-lisays
+              :opetussuunnitelmaStore="store"
+              :oppiaine="itemData.item.objref"
+              :resetNavi="reset"
+              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
+        </li>
       </template>
     </ep-recursive-nav>
   </ul>

@@ -16,6 +16,7 @@ import OpsSidenavLink from './OpsSidenavLink.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import Sticky from 'vue-sticky-directive';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
+import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 import {
   oppiaineLinkki,
   oppimaaraModuuliLinkit,
@@ -23,6 +24,7 @@ import {
   opsLapsiLinkit,
   paikallinenOppiaineToMenu,
   oppimaaraUusiLinkki,
+  vuosiluokkaLinkit,
 } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { koodiNumero, koodiAlku } from '@/utils/perusteet';
@@ -89,6 +91,7 @@ const i18keys = {
     EpSpinner,
     OpsSidenavLink,
     EpTekstikappaleLisays,
+    EpOppimaaraLisays,
   },
 })
 export default class OpsSidenav extends EpOpsComponent {
@@ -217,6 +220,7 @@ export default class OpsSidenav extends EpOpsComponent {
     // Valikon rakennus alkaa staattisella sisällöllä ja tekstikappaleiden linkeillä
     let menuOpsData: SideMenuEntry[] = [
       ...opsLapsiLinkit(this.opsLapset),
+      ...vuosiluokkaLinkit(this.ops),
     ];
 
     // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
@@ -243,6 +247,10 @@ export default class OpsSidenav extends EpOpsComponent {
     }
 
     return menuOpsData;
+  }
+
+  reset() {
+    this.store.init();
   }
 
   private get opsLapset() {

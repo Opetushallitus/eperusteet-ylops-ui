@@ -68,6 +68,7 @@ export function getArvo(koodillinen: any) {
     || _.get(koodillinen, 'koodi.uri')
     || _.get(koodillinen, 'uri')
     || _.get(koodillinen, 'koodi')
+    || _.get(koodillinen, 'koodiUri')
     || koodillinen;
 }
 
