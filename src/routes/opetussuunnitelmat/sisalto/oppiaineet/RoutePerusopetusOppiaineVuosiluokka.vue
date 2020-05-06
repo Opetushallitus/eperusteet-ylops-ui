@@ -1,6 +1,6 @@
 <template>
   <div id="scroll-anchor" v-if="editointiStore" >
-    <EpEditointi :store="editointiStore" @preModify="aloitaMuokkaus" @postSave="tallennettu">
+    <EpEditointi :store="editointiStore" :preModify="aloitaMuokkaus" :postSave="tallennettu">
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}, {{$t('vuosiluokka')}} {{$t(data.vuosiluokka.vuosiluokka)}}</h2>
       </template>
@@ -194,7 +194,7 @@ export default class RoutePerusopetusOppiaineVuosiluokka extends Mixins(EpRoute,
     ];
   }
 
-  aloitaMuokkaus() {
+  async aloitaMuokkaus() {
     _.forEach(this.$refs.tavoitecollapse, (collapse: any) => {
       collapse.toggle(true);
     });
@@ -206,7 +206,7 @@ export default class RoutePerusopetusOppiaineVuosiluokka extends Mixins(EpRoute,
     });
   }
 
-  tallennettu() {
+  async tallennettu() {
     _.forEach(this.$refs.tavoitecollapse, (collapse: any) => {
       collapse.toggle(true);
     });
