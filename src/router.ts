@@ -30,6 +30,8 @@ import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 import RouteTilastot from '@/routes/tilastot/RouteTilastot.vue';
 import RouteVuosiluokkakokonaisuus from '@/routes/opetussuunnitelmat/sisalto/RouteVuosiluokkakokonaisuus.vue';
 import RoutePerusopetusOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaine.vue';
+import RoutePerusopetusPaikallinenOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusPaikallinenOppiaine.vue';
+import RoutePerusopetusPaikallinenOppiaineVuosiluokka from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusPaikallinenOppiaineVuosiluokka.vue';
 import RoutePerusopetusOppiaineVuosiluokkaistaminen from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokkaistaminen.vue';
 import RoutePerusopetusOppiaineVuosiluokka from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokka.vue';
 import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusVuosiluokkaValinnaiset.vue';
@@ -218,6 +220,14 @@ export const router = new Router({
         path: 'vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId',
         component: RoutePerusopetusOppiaine,
         name: 'perusopetusoppiaine',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/poppiaine/:oppiaineId',
+        component: RoutePerusopetusPaikallinenOppiaine,
+        name: 'perusopetuspaikallinenoppiaine',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/poppiaine/:oppiaineId/vuosiluokka/:vuosiluokkaId',
+        component: RoutePerusopetusPaikallinenOppiaineVuosiluokka,
+        name: 'perusopetuspaikallinenoppiainevuosiluokka',
       }, {
         path: 'vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId/vuosiluokkaistaminen',
         component: RoutePerusopetusOppiaineVuosiluokkaistaminen,
