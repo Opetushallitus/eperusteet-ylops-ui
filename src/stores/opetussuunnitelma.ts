@@ -320,6 +320,10 @@ export class OpetussuunnitelmaStore {
       .value();
     this.virkailijat = _.uniqBy((await Ulkopuoliset.getOrganisaatioVirkailijat(orgOids)).data as any[], 'oid');
   }
+
+  public async updateOppiainejarjestys(oppiainejarjestys) {
+    await Opetussuunnitelmat.updateOppiainejarjestys(this.opetussuunnitelma!.id!, oppiainejarjestys);
+  }
 }
 
 let opsServiceCache: OpetussuunnitelmaStore | null = null;
