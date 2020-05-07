@@ -9,7 +9,7 @@ import { router } from '@/router';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Kaannos from '@shared/plugins/kaannos';
-import VueI18n, { IVueI18n } from 'vue-i18n';
+import VueI18n from 'vue-i18n';
 import VueCompositionApi from '@vue/composition-api';
 import { Notifikaatiot } from '@shared/plugins/notifikaatiot';
 
