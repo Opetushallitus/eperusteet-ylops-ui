@@ -3,6 +3,7 @@ import { Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto, OpetussuunnitelmaK
 import { SideMenuEntry } from '@shared/tyypit';
 
 import { koodiNumero, koodiAlku } from '@/utils/perusteet';
+import { sortedOppiaineet } from '@/utils/opetussuunnitelmat';
 
 interface Koodi {
   arvo: string;
@@ -58,7 +59,7 @@ export function vuosiluokkaLinkit(ops: OpetussuunnitelmaKevytDto): SideMenuEntry
           },
         },
         children: [
-          ...(perusopetusOppiaineenLapset(_.map(ops.oppiaineet, 'oppiaine'), vlk) as any | []),
+          ...(perusopetusOppiaineenLapset(sortedOppiaineet(ops.oppiaineet), vlk) as any | []),
           // perusopetuksenValinnaisetOppiaineetLinkki();
         ],
       } as SideMenuEntry;
@@ -101,7 +102,6 @@ function perusopetusOppiaineenLapset(oppiaineet, vlk) {
   }
   return _.chain(oppiaineet)
     .filter(oppiaine => _.size(oppiaine?.vuosiluokkakokonaisuudet) === 0 || _.includes(_.map(oppiaine?.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk?._tunniste))
-    .sortBy('koodiUri')
     .map(oppiaine => perusopetusOppiaineLinkki(oppiaine, vlk))
     .value();
 }

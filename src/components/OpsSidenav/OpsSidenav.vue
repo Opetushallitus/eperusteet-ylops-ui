@@ -84,7 +84,7 @@
     <router-link :to="{name: 'jarjesta'}">
       <div class="inner">
         <fas icon="jarjesta" fixed-width />
-        <a class="btn btn-link">{{$t('muokkaa-kappaleita')}}</a>
+        <a class="btn btn-link">{{$t('muokkaa-jarjestysta')}}</a>
       </div>
     </router-link>
   </div>
