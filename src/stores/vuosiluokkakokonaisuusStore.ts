@@ -3,9 +3,10 @@ import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composit
 import { Vuosiluokkakokonaisuudet, Opetussuunnitelmat } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
+import VueScrollTo from 'vue-scrollto';
 
 export class VuosiluokkakokonaisuusStore implements IEditoitava {
-  constructor(private opsId: number, private vlkId: number) {
+  constructor(private opsId: number, private vlkId: number, private scrollId: string | null) {
   }
 
   async acquire() {
@@ -69,7 +70,20 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
     return null;
   }
 
-  async remove() {
+  // async remove() {
+  // }
+
+  async postLoad() {
+    if (this.scrollId) {
+      const target = document.getElementById(this.scrollId);
+      if (target) {
+        VueScrollTo.scrollTo('#' + this.scrollId, {
+          offset: -70,
+          x: false,
+          y: true,
+        });
+      }
+    }
   }
 
   async restore() {

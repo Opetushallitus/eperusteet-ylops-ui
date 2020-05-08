@@ -35,7 +35,7 @@
 
                         <div class="col-5 align-self-end text-right kohdealueet">
                           <div class="kohdealue" v-for="(kohdealue, index) in tavoite.kohdealueet" :key="'kohdealue'+index">
-                            <span :style="kohdealue.vari"><fas icon="circle"/></span>
+                            <ep-order-color-ball class="pr-2" :index="kohdealue.index" />
                             {{$kaanna(kohdealue.nimi)}}
                           </div>
                         </div>
@@ -95,30 +95,29 @@ import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
-import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
-import VuosiluokkakokonaisuusSisaltoTeksti from '../VuosiluokkakokonaisuusSisaltoTeksti.vue';
+import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { VuosiluokkaistaminenStore } from '@/stores/vuosiluokkaistaminenStore';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import draggable from 'vuedraggable';
 import VClamp from 'vue-clamp';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
+import EpOrderColorBall from '@shared/components/EpColorIndicator/EpOrderColorBall.vue';
 
 @Component({
   components: {
     EpEditointi,
-    VuosiluokkakokonaisuusSisaltoTeksti,
+    VuosiluokkaSisaltoTeksti,
     EpButton,
     draggable,
     VClamp,
     EpCollapse,
+    EpOrderColorBall,
   },
 })
 export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins(EpRoute, EpOpsComponent) {
   private editointiStore: EditointiStore | null = null;
   private avaaSulje: boolean = true;
-  private kohdealueVarit = ['#99B3F1', '#9BDCFF', '#B2B2B2', '#002D99', '#FFD900', '#E60895', '#C126B8', '#575757', '#575757', '#575757',
-    '#2e3192', '#8283be', '#663300', '#a38566', '#666600', '#a3a366'];
 
   async init() {
     this.editointiStore = new EditointiStore(new VuosiluokkaistaminenStore(
@@ -181,21 +180,8 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
       return {
         ...tavoite,
         valittu: _.includes(this.valitutTavoitteet, tavoite.tunniste),
-        kohdealueet: _.map(tavoite.kohdealueet, kohdealue => {
-          return {
-            ...kohdealue,
-            vari: 'color: ' + this.seuraavaKohdealueVari(),
-          };
-        }),
       };
     });
-  }
-
-  seuraavaKohdealueVari() {
-    const kohdealueVari = _.head(this.kohdealueVarit);
-    _.pull(this.kohdealueVarit, kohdealueVari);
-
-    return kohdealueVari;
   }
 }
 </script>
