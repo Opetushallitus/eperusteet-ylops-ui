@@ -60,23 +60,26 @@ export function vuosiluokkaLinkit(ops: OpetussuunnitelmaKevytDto): SideMenuEntry
         },
         children: [
           ...(perusopetusOppiaineenLapset(sortedOppiaineet(ops.oppiaineet), vlk) as any | []),
-          // perusopetuksenValinnaisetOppiaineetLinkki();
+          perusopetuksenValinnaisetOppiaineetLinkki(vlk),
         ],
       } as SideMenuEntry;
     })
     .value();
 }
 
-function perusopetuksenValinnaisetOppiaineetLinkki() {
-//   arr.push({
-//     depth: 1,
-//     label: "valinnaiset-oppiaineet",
-//     id: "valinnaiset",
-//     vlkId: vlk.vuosiluokkakokonaisuus.id,
-//     url: $state.href("root.opetussuunnitelmat.yksi.opetus.valinnaiset", {
-//         vlkId: vlk.vuosiluokkakokonaisuus.id
-//     })
-// });
+function perusopetuksenValinnaisetOppiaineetLinkki(vlk) {
+  return {
+    item: {
+      type: 'staticlink',
+      i18key: 'valinnaisuus-perusopetuksessa',
+    },
+    route: {
+      name: 'perusopetusvalinnaiset',
+      params: {
+        vlkId: vlk?.id,
+      },
+    },
+  };
 }
 
 function perusopetusOppiaineLinkki(oppiaine, vlk): SideMenuEntry {

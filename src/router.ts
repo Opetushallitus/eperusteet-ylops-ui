@@ -32,6 +32,7 @@ import RouteVuosiluokkakokonaisuus from '@/routes/opetussuunnitelmat/sisalto/Rou
 import RoutePerusopetusOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaine.vue';
 import RoutePerusopetusOppiaineVuosiluokkaistaminen from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokkaistaminen.vue';
 import RoutePerusopetusOppiaineVuosiluokka from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokka.vue';
+import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusVuosiluokkaValinnaiset.vue';
 
 import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
@@ -225,8 +226,11 @@ export const router = new Router({
         path: 'vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId/vuosiluokka/:vlId',
         component: RoutePerusopetusOppiaineVuosiluokka,
         name: 'perusopetusoppiainevuosiluokka',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/valinnaiset',
+        component: RoutePerusopetusVuosiluokkaValinnaiset,
+        name: 'perusopetusvalinnaiset',
       },
-
       ],
     }],
   }, {
