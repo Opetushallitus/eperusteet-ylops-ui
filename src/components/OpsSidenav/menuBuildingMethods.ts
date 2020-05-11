@@ -83,6 +83,14 @@ function perusopetuksenValinnaisetOppiaineetLinkki(vlk) {
 }
 
 function perusopetusOppiaineLinkki(oppiaine, vlk): SideMenuEntry {
+  let children;
+  if (oppiaine.koosteinen && _.size(oppiaine.oppimaarat) === 0) {
+    children = [];
+  }
+  else {
+    children = perusopetusOppiaineenLapset(oppiaine.oppimaarat, vlk);
+  }
+
   return {
     item: {
       type: oppiaine.koosteinen ? 'koosteinen-oppiaine' : 'perusopetusoppiaine',
@@ -95,7 +103,8 @@ function perusopetusOppiaineLinkki(oppiaine, vlk): SideMenuEntry {
         oppiaineId: oppiaine?.id,
       },
     },
-    children: perusopetusOppiaineenLapset(oppiaine.oppimaarat, vlk),
+    allowEmpty: oppiaine.koosteinen,
+    children,
   } as SideMenuEntry;
 }
 
