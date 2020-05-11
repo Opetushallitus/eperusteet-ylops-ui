@@ -1,13 +1,16 @@
 <template>
   <div id="scroll-anchor" v-if="editointiStore" >
-    <EpEditointi :store="editointiStore">
+    <EpEditointi :store="editointiStore" :versionumero="versionumero">
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}</h2>
       </template>
+      <template v-slot:piilotettu>
+        <div>{{$t('oavlk-on-piilotettu')}}</div>
+      </template>
       <template v-slot:default="{ data, isEditing }">
 
-        <div v-if="data.perusteenOppiaine.tehtava">
-          <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenOppiaine.tehtava" :isEditing="false" :perusteTekstiAvattu="true"/>
+        <div v-if="data.perusteenOppiaine.tehtava || data.oppiaine.tehtava">
+          <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenOppiaine.tehtava" :vlkObject="data.oppiaine.tehtava" :isEditing="isEditing" :perusteTekstiAvattu="true"/>
           <hr/>
         </div>
 
@@ -84,10 +87,12 @@ import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { PerusopetusoppiaineStore } from '@/stores/perusopetusoppiaineStore';
+import { PerusopetusoppiainePoistettavaStore } from '@/stores/perusopetusoppiainePoistettavaStore';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import { isOppiaineUskontoTaiKieli } from '@/utils/opetussuunnitelmat';
 
 @Component({
   components: {
@@ -105,8 +110,29 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
     const vuosiluokkakokonaisuus = _.head(_.filter(this.ops.vuosiluokkakokonaisuudet, vlk =>
       vlk.vuosiluokkakokonaisuus?.id === _.toNumber(this.$route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
 
-    this.editointiStore = new EditointiStore(new PerusopetusoppiaineStore(
-      this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus));
+    const parent = _.chain(this.ops.oppiaineet)
+      .map('oppiaine')
+      .filter(oppiaine => !_.isEmpty(oppiaine?.oppimaarat))
+      .filter(oppiaine => _.some(oppiaine?.oppimaarat, oppimaara => oppimaara.id === _.toNumber(this.$route.params.oppiaineId)))
+      .head()
+      .value();
+
+    if (parent && isOppiaineUskontoTaiKieli(parent)) {
+      this.editointiStore = new EditointiStore(new PerusopetusoppiainePoistettavaStore(
+        this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(this.$route.query.versionumero), parent, this));
+    }
+    else {
+      this.editointiStore = new EditointiStore(new PerusopetusoppiaineStore(
+        this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(this.$route.query.versionumero), parent, this));
+    }
+  }
+
+  get versionumero() {
+    return this.$route.query.versionumero;
+  }
+
+  resetOps() {
+    this.store.init();
   }
 }
 </script>

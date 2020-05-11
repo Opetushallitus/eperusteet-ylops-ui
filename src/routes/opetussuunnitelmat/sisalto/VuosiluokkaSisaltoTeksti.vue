@@ -1,13 +1,12 @@
 <template>
   <div class="mt-4">
-    <slot name="header">
+    <slot name="header" v-if="perusteObject">
       <h3>{{ $kaanna(perusteObject[otsikko]) }}</h3>
     </slot>
-    <ep-collapse :border-bottom="false" :border-top="false" :expandedByDefault="perusteTekstiAvattu">
+    <ep-collapse :border-bottom="false" :border-top="false" :expandedByDefault="perusteTekstiAvattu" v-if="perusteObject && perusteObject[teksti]">
       <template v-slot:header><h4>{{$t('perusteen-teksti')}}</h4></template>
       <span v-html="$kaanna(perusteObject[teksti])"></span>
     </ep-collapse>
-
     <div v-if="vlkObject">
       <h4>{{ $t('paikallinen-teksti') }}</h4>
       <ep-content v-if="isEditing || hasContent" v-model="vlkObject[teksti]"

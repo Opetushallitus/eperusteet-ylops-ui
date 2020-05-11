@@ -112,11 +112,13 @@ export default class EpOppimaaraLisays extends Mixins(EpRoute, EpOpsComponent, v
 
   @Watch('valittuOppimaara')
   valittuOppimaaraChange(val) {
-    if (val.tyhjanimi) {
-      this.nimi = {};
-    }
-    else {
-      this.nimi = val.nimi;
+    if (val) {
+      if (val.tyhjanimi) {
+        this.nimi = {};
+      }
+      else {
+        this.nimi = val.nimi;
+      }
     }
   }
 

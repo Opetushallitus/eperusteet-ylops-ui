@@ -27,3 +27,7 @@ export function sortedOppiaineet(oppianeet) {
     })
     .value();
 }
+
+export function isOppiaineUskontoTaiKieli(oppiaine) {
+  return _.some(['AI', 'KT', 'VK', 'TK'], koodi => _.startsWith(oppiaine.koodiArvo, koodi));
+}
