@@ -33,7 +33,7 @@
                            :is-editing="isEditing"
                            :items="kielet"
                            :multiple="true"
-                           :useCheckboxes="true">
+                           :use-checkboxes="true">
                 </ep-select>
               </ep-form-content>
             </div>
