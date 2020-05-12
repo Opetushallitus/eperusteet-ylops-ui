@@ -117,14 +117,8 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
       .head()
       .value();
 
-    if (parent && isOppiaineUskontoTaiKieli(parent)) {
-      this.editointiStore = new EditointiStore(new PerusopetusoppiainePoistettavaStore(
-        this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(this.$route.query.versionumero), parent, this));
-    }
-    else {
-      this.editointiStore = new EditointiStore(new PerusopetusoppiaineStore(
-        this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(this.$route.query.versionumero), parent, this));
-    }
+    this.editointiStore = new EditointiStore(new PerusopetusoppiaineStore(
+      this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(this.$route.query.versionumero), parent, this));
   }
 
   get versionumero() {
