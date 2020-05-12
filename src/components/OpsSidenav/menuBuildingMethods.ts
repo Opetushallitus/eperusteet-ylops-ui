@@ -89,7 +89,7 @@ function perusopetusOppiaineLinkki(oppiaine, vlk): SideMenuEntry {
       objref: oppiaine,
     },
     route: {
-      name: 'perusopetusoppiaine',
+      name: oppiaine.tyyppi === 'muu_valinnainen' ? 'perusopetuspaikallinenoppiaine' : 'perusopetusoppiaine',
       params: {
         vlkId: vlk?.id,
         oppiaineId: oppiaine?.id,
