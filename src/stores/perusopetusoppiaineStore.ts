@@ -1,4 +1,4 @@
-import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
+import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
 import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OpsOppiaineKevytDto } from '@shared/api/ylops';
 import * as _ from 'lodash';
@@ -106,7 +106,58 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   async start() {
   }
 
+  async remove() {
+    await Oppiaineet.deleteOppiaine(this.opsId, this.oppiaineId);
+
+    this.el.$router.push({
+      name: 'vuosiluokkakokonaisuus',
+      params: {
+        vlkId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id,
+      },
+    });
+
+    await this.el.resetOps();
+  }
+
+  async hide(data) {
+    const piilotettu = {
+      piilotettu: true,
+    };
+
+    await OppiaineenVuosiluokkakokonaisuudet
+      .updateVuosiluokkakokonaisuudenSisalto(
+        this.opsId, this.oppiaineId,
+        data.vuosiluokkakokonaisuus.id,
+        piilotettu);
+  }
+
+  async unHide(data) {
+    const piilotettu = {
+      id: data.vuosiluokkakokonaisuus.id,
+      piilotettu: false,
+    };
+
+    await OppiaineenVuosiluokkakokonaisuudet
+      .updateVuosiluokkakokonaisuudenSisalto(
+        this.opsId, this.oppiaineId,
+        data.vuosiluokkakokonaisuus.id,
+        piilotettu);
+  }
+
   public readonly validator = computed(() => {
     return {};
   });
+
+  public features(data) {
+    return computed(() => {
+      return data ? {
+        editable: true,
+        removable: this.parent && isOppiaineUskontoTaiKieli(this.parent),
+        hideable: this.parent && isOppiaineUskontoTaiKieli(this.parent),
+        isHidden: data.vuosiluokkakokonaisuus.piilotettu,
+        recoverable: true,
+      } as EditoitavaFeatures
+        : {};
+    });
+  }
 }
