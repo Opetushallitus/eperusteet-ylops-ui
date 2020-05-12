@@ -110,7 +110,6 @@ import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
-import VuosiluokkakokonaisuusSisaltoTeksti from '../VuosiluokkakokonaisuusSisaltoTeksti.vue';
 import { PerusopetusPaikallinenOppiaineStore } from '@/stores/perusopetusPaikallinenOppiaineStore';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
@@ -121,7 +120,6 @@ import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 
 @Component({
   components: {
-    VuosiluokkakokonaisuusSisaltoTeksti,
     EpEditointi,
     EpFormContent,
     EpField,
