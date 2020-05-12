@@ -97,7 +97,7 @@ export default class EpRecursiveNav extends Vue {
 
     if (this.$route) {
       let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.valueCopy, this.curTopItem);
-      this.current = (found && ((newTopItem as any).allowEmpty || newCurrent.length > 0)) ? newCurrent : this.valueCopy;
+      this.current = (found && ((newTopItem as any || {}).allowEmpty || newCurrent.length > 0)) ? newCurrent : this.valueCopy;
       this.curTopItem = newTopItem;
     }
     else {
