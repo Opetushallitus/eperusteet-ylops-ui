@@ -2,13 +2,14 @@ import _ from 'lodash';
 import { computed } from '@vue/composition-api';
 
 import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
-import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
+import { Oppiaineet, Vuosiluokkakokonaisuudet, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 
 export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
   constructor(
     private opsId: number,
     private oppiaineId: number,
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
+    private vuosiluokkakokonaisuudet: OpsVuosiluokkakokonaisuusKevytDto[],
   ) {
 
   }
@@ -33,21 +34,39 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
       '_vuosiluokkakokonaisuus',
       this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!['_tunniste'],
     ]);
+
+    const opsVuosiluokkakokonaisuus = _.find(this.vuosiluokkakokonaisuudet, [
+      'vuosiluokkakokonaisuus._tunniste',
+      vuosiluokkakokonaisuus!['_vuosiluokkakokonaisuus'],
+    ]);
+
+    const perusteVuosiluokkakokonaisuus = (await Vuosiluokkakokonaisuudet
+      .getVuosiluokkakokonaisuudenPerusteSisalto(
+        this.opsId,
+        opsVuosiluokkakokonaisuus!.vuosiluokkakokonaisuus!.id!
+      )).data;
+
+    const vuosiluokat = _.orderBy(vuosiluokkakokonaisuus?.vuosiluokat, 'vuosiluokka', 'asc');
+    const perusteVuosiluokat = perusteVuosiluokkakokonaisuus.vuosiluokat;
+
     return {
       oppiaine,
       vuosiluokkakokonaisuus,
-      vuosiluokat: _.orderBy(vuosiluokkakokonaisuus?.vuosiluokat, 'vuosiluokka', 'asc'),
+      vuosiluokat,
+      valitutVuosiluokat: _.map(vuosiluokat, 'vuosiluokka'),
+      perusteVuosiluokat: _(perusteVuosiluokat).sort(),
     };
   }
 
   async save(data) {
+    data.oppiaine.vuosiluokkakokonaisuudet = [data.vuosiluokkakokonaisuus];
     const oppiaineenTallennus = {
       oppiaine: data.oppiaine,
       vuosiluokkakokonaisuusId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!,
-      vuosiluokat: _.map(data.vuosiluokat, 'vuosiluokka'),
+      vuosiluokat: data.valitutVuosiluokat,
       tavoitteet: [],
     };
-    return Oppiaineet.updateValinnainen(this.opsId, this.oppiaineId, oppiaineenTallennus);
+    return Oppiaineet.updateYksinkertainen(this.opsId, this.oppiaineId, oppiaineenTallennus);
   }
 
   async preview() {

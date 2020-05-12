@@ -13,23 +13,30 @@
             </ep-field>
           </ep-form-content>
         </div>
+        <!--
         <div class="col-md-12" v-if="isEditing">
           <ep-form-content name="valinnaisen-oppiaineen-tyyppi">
-            <!--<oppiaine-tyyppi-selector>-->
+
           </ep-form-content>
         </div>
+        -->
         <div class="col-md-6">
           <ep-form-content name="vuosiluokat-joilla-esintyy">
-            <ul v-if="data.vuosiluokat">
+            <ul v-if="!isEditing">
               <li v-for="(vuosiluokka, idx) in data.vuosiluokat" :key="idx">{{ $t(vuosiluokka.vuosiluokka) }}{{ $t('vuosiluokka-paate-lyhyt') }}</li>
             </ul>
+            <b-form-checkbox-group v-else v-model="data.valitutVuosiluokat" stacked>
+              <b-form-checkbox v-for="(vuosiluokka, index) in data.perusteVuosiluokat" :key="'vl' + index" :value="vuosiluokka">
+                {{ $t(vuosiluokka) }}{{ $t('vuosiluokka-paate-lyhyt') }}
+              </b-form-checkbox>
+            </b-form-checkbox-group>
           </ep-form-content>
         </div>
         <div class="col-md-6">
           <ep-form-content name="laajuus">
             <ep-field v-model="data.oppiaine.laajuus"
                       :is-editing="isEditing"
-                      unit="vvh">
+                      unit="vvt">
             </ep-field>
           </ep-form-content>
         </div>
@@ -73,7 +80,7 @@
                       :text="$t('sisaltoa-ei-maaritelty')" />
           </ep-form-content>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus">
+        <div class="col-md-12" v-if="!isEditing && data.vuosiluokkakokonaisuus">
           <ep-form-content name="tavoitteet-ja-sisallot-vuosiluokittain">
             <b-table responsive
                      borderless
@@ -129,7 +136,11 @@ export default class RoutePerusopetusPaikallinenOppiaine extends Mixins(EpRoute,
     const vuosiluokkakokonaisuus = _.head(_.filter(this.ops.vuosiluokkakokonaisuudet, vlk =>
       vlk.vuosiluokkakokonaisuus?.id === _.toNumber(this.$route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
     this.editointiStore = new EditointiStore(new PerusopetusPaikallinenOppiaineStore(
-      this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus));
+      this.opsId,
+      _.toNumber(this.$route.params.oppiaineId),
+      vuosiluokkakokonaisuus,
+      this.ops.vuosiluokkakokonaisuudet!,
+    ));
   }
 }
 </script>
