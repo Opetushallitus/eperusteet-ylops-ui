@@ -12,7 +12,7 @@
           {{$t('valinnaisia-aineita-ei-ole-luotu')}}
         </div>
 
-        <ep-button variant="outline-primary" icon="plussa">{{$t('lisaa-valinnainen-oppiaine')}}</ep-button>
+        <ep-button variant="outline-primary" icon="plussa" @click="lisaaValinnainenOppiaine(data.vuosiluokkakokonaisuus) ">{{ $t('lisaa-valinnainen-oppiaine') }}</ep-button>
 
         <b-table v-if="data.oppiaineet.length > 0"
           :items="data.oppiaineet"
@@ -50,7 +50,7 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusVuosiluokkaValinnaisetStore } from '@/stores/perusopetusvuosiluokkavalinnaisetStore';
-import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
+import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 
 @Component({
@@ -85,6 +85,30 @@ export default class RoutePerusopetusVuosiluokkaValinnaiset extends Mixins(EpRou
       sortable: true,
     },
     ];
+  }
+
+  private async lisaaValinnainenOppiaine(vuosiluokkakokonaisuus) {
+    const oppiaine = (await Oppiaineet.addValinnainen(this.opsId, {
+      oppiaine: {
+        nimi: {
+          fi: 'uusi',
+        },
+        laajuus: '0',
+        vuosiluokkakokonaisuudet: [
+          vuosiluokkakokonaisuus.vuosiluokkakokonaisuus,
+        ],
+      },
+      vuosiluokkakokonaisuusId: vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.id,
+      vuosiluokat: [],
+      tavoitteet: [],
+    })).data;
+
+    this.$router.push({
+      name: 'perusopetuspaikallinenoppiaine',
+      params: {
+        oppiaineId: oppiaine.id!,
+      },
+    } as any);
   }
 }
 </script>

@@ -10,6 +10,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     private oppiaineId: number,
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
     private vuosiluokkakokonaisuudet: OpsVuosiluokkakokonaisuusKevytDto[],
+    private vue,
   ) {
 
   }
@@ -49,6 +50,35 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     const vuosiluokat = _.orderBy(vuosiluokkakokonaisuus?.vuosiluokat, 'vuosiluokka', 'asc');
     const perusteVuosiluokat = perusteVuosiluokkakokonaisuus.vuosiluokat;
 
+    // Todo: Refaktoroi
+    if (_.isNull(vuosiluokkakokonaisuus?.tehtava)) {
+      vuosiluokkakokonaisuus!.tehtava = {
+        otsikko: {
+          fi: 'valinnaisen-tehtava',
+        },
+      } as any;
+    }
+    if (_.isNull(vuosiluokkakokonaisuus?.tyotavat)) {
+      vuosiluokkakokonaisuus!.tyotavat = {
+        otsikko: {
+          fi: 'oppiaine-tyotavat',
+        },
+      } as any;
+    }
+    if (_.isNull(vuosiluokkakokonaisuus?.ohjaus)) {
+      vuosiluokkakokonaisuus!.ohjaus = {
+        otsikko: {
+          fi: 'oppiaine-ohjaus',
+        },
+      } as any;
+    }
+    if (_.isNull(vuosiluokkakokonaisuus?.arviointi)) {
+      vuosiluokkakokonaisuus!.arviointi = {
+        otsikko: {
+          fi: 'oppiaine-arviointi',
+        },
+      } as any;
+    }
     return {
       oppiaine,
       vuosiluokkakokonaisuus,
@@ -67,6 +97,13 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
       tavoitteet: [],
     };
     return Oppiaineet.updateYksinkertainen(this.opsId, this.oppiaineId, oppiaineenTallennus);
+  }
+
+  async remove() {
+    await Oppiaineet.deleteOppiaine(this.opsId, this.oppiaineId);
+    this.vue.$router.push({
+      name: 'perusopetusvalinnaiset',
+    });
   }
 
   async preview() {
