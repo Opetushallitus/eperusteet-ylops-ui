@@ -4,6 +4,7 @@ import { SideMenuEntry } from '@shared/tyypit';
 
 import { koodiNumero, koodiAlku } from '@/utils/perusteet';
 import { sortedOppiaineet } from '@/utils/opetussuunnitelmat';
+import { Kielet } from '@shared/stores/kieli';
 
 interface Koodi {
   arvo: string;
@@ -46,6 +47,9 @@ export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
 export function vuosiluokkaLinkit(ops: OpetussuunnitelmaKevytDto): SideMenuEntry[] {
   return _.chain(ops.vuosiluokkakokonaisuudet)
     .map('vuosiluokkakokonaisuus')
+    .sortBy([(vlk: any) => {
+      return vlk.nimi[Kielet.getSisaltoKieli.value];
+    }])
     .map(vlk => {
       return {
         item: {

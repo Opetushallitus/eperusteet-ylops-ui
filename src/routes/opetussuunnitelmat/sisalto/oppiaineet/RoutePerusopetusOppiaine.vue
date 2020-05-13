@@ -87,7 +87,6 @@ import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { PerusopetusoppiaineStore } from '@/stores/perusopetusoppiaineStore';
-import { PerusopetusoppiainePoistettavaStore } from '@/stores/perusopetusoppiainePoistettavaStore';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
