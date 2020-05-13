@@ -96,8 +96,6 @@
           </ep-form-content>
         </div>
       </div>
-
-      <!--<pre>{{ data }}</pre>-->
     </template>
   </EpEditointi>
 </div>
@@ -138,6 +136,7 @@ export default class RoutePerusopetusPaikallinenOppiaine extends Mixins(EpRoute,
       _.toNumber(this.$route.params.oppiaineId),
       vuosiluokkakokonaisuus,
       this.ops.vuosiluokkakokonaisuudet!,
+      this,
     ));
   }
 }
