@@ -65,7 +65,7 @@
                   :validation="validation.oppiaineet"
                   :value="data.oppiaineet.map(x => x.koodi)"
                   @input="updateOppiaineet"
-                  :oppiaineFilter="oppiaineFilter"/>
+                  :oppiaine-filter="oppiaineFilter"/>
                 <div v-else>
                   <ul>
                     <li v-for="(oa,index) in data.oppiaineet" :key="index+'data.oppiaineet.select'">
