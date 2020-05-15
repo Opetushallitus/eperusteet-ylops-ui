@@ -56,8 +56,8 @@
           <th width="25%">{{ $t('vieraat-moduulit') }}</th>
           <th class="actions" width="5%">
             <button class="btn btn-link" @click="toggleAll()">
-              <fas icon="chevron-down">
-              </fas>
+              <fas icon="chevron-up" v-if="isOpened" />
+              <fas icon="chevron-down" v-else />
             </button>
           </th>
         </tr>
@@ -72,7 +72,7 @@
               </router-link>
             </td>
             <td>
-              <span v-if="oa.oppimaarat && oa.oppimaarat.length === 0">{{ oa.stats.opintojaksot }}</span>
+              <span v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">{{ oa.stats.opintojaksot }}</span>
             </td>
             <td :class="oa.stats.valid ? 'valid' : 'invalid'">
               <span v-if="oa.oppimaarat && oa.oppimaarat.length === 0">{{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}</span>
@@ -80,7 +80,9 @@
             <td>
             </td>
             <td class="actions">
-              <button class="btn btn-link" @click="toggleOppiaine(oa)" v-if="oa.oppimaarat && oa.oppimaarat.length === 0">
+              <button class="btn btn-link"
+                      @click="toggleOppiaine(oa)"
+                      v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">
                 <fas v-if="oa.isOpen" icon="chevron-up">
                 </fas>
                 <fas v-else icon="chevron-down">
@@ -88,7 +90,7 @@
               </button>
             </td>
           </tr>
-          <tr class="dataline" v-if="(!oa.oppimaarat || oa.oppimaarat.length === 0) && oa.isOpen" :key="-idx - 1">
+          <tr class="dataline" v-if="(!oa.oppimaarat || oa.oppimaarat.length === 0) && (oa.opintojaksot.length > 0 || oa.moduulit.length > 0 || oa.vieraatModuulit > 0) && oa.isOpen" :key="-idx - 1">
             <td>
             </td>
             <td>
@@ -323,7 +325,16 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
     }
     return _(this.store.paikallisetOppiaineet)
       .map(oa => {
-        const opintojaksot = [];
+        const opintojaksot = _(this.store.opintojaksot)
+          .concat(this.store.tuodutOpintojaksot)
+          .filter(oj => _.includes(
+            _(oj.oppiaineet)
+              .map('koodi')
+              .filter(_.identity)
+              .value(),
+              oa.koodi!
+          ))
+          .value();
 
         return {
           ...oa,
@@ -332,9 +343,10 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
             uri: oa.koodi,
           },
           isOpen: !this.opened[oa.id!] || !_.isEmpty(this.query),
+          toggleEnabled: _.size(opintojaksot) > 0,
           paikallinen: true,
           vieraatModuulit: [],
-          opintojaksot: [],
+          opintojaksot,
           moduulit: [],
           stats: {
             opintojaksot: _.size(opintojaksot),
@@ -414,7 +426,12 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
   get oppiaineRakenne() {
     return [
       ...this.perusteenOppiaineRakenne,
-      ...this.paikallinenOppiaineRakenne];
+      ...this.paikallinenOppiaineRakenne,
+    ];
+  }
+
+  get isOpened() {
+    return _.isEmpty(this.opened);
   }
 
   async mounted() {
