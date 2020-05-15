@@ -57,6 +57,9 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   @Prop({ required: true })
   private oppiaineFilter!: (any) => boolean;
 
+  @Prop({ default: false })
+  private allowOppiaine!: boolean;
+
   private cache: PerusteCache | null = null;
 
   get isArray() {
@@ -138,7 +141,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
         return {
           value: oppiaine.koodiUri,
           text: `${(this as any).$kaanna(oppiaine.nimi)} (${oppiaine.koodiArvo})`,
-          unselectable: !_.isEmpty(oppiaine.oppimaarat),
+          unselectable: !_.isEmpty(oppiaine.oppimaarat) && !this.allowOppiaine,
           child: oppiaine.child,
         };
       })

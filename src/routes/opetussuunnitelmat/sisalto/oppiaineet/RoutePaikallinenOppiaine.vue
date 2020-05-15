@@ -35,12 +35,12 @@
           <b-col>
             <ep-form-content name="oppiainekoodi">
               <ep-oppiaine-selector
+                v-model="data.perusteenOppiaineUri"
                 :opetussuunnitelma-store="opetussuunnitelmaStore"
                 :is-editable="isEditing"
                 :multiple="false"
-                v-model="data.perusteenOppiaineUri"
-                :oppiaineFilter="oppiaineFilter"
-                :ops-id="$route.params.id" />
+                :allow-oppiaine="true"
+                :oppiaine-filter="oppiaineFilter" />
             </ep-form-content>
           </b-col>
           <b-col>
@@ -120,7 +120,7 @@ import { oppiaineValidator } from '@/validators/oppiaineet';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
 
-import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
+import { KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
 import { success } from '@/utils/notifications';
 
 @Component({
@@ -223,8 +223,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
   }
 
   oppiaineFilter(oppiaine) {
-    return _.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
-      _.startsWith(oppiaine.koodiUri, laajennos));
+    return () => true;
   }
 
   get versionumero() {

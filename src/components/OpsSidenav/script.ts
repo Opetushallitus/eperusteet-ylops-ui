@@ -152,6 +152,10 @@ export default class OpsSidenav extends EpOpsComponent {
     return _.get(this.cache, 'peruste.oppiaineet', null);
   }
 
+  get paikallisetOppiaineet() {
+    return this.store.paikallisetOppiaineet;
+  }
+
   get isLoading() {
     return !this.perusteenOppiaineet;
   }
@@ -163,13 +167,20 @@ export default class OpsSidenav extends EpOpsComponent {
 
     return _.chain(this.perusteenOppiaineet)
       .sortBy(koodiAlku, koodiNumero)
-      .map(oppiaine =>
-        oppiaineLinkki(
+      .map(oppiaine => {
+        const paikallisetOppimaaratLinkit = _(this.paikallisetOppiaineet)
+          .filter(poa => poa.perusteenOppiaineUri === oppiaine.koodi.uri)
+          .map(paikallinenOppiaineToMenu)
+          .value();
+
+        return oppiaineLinkki(
           'oppiaine',
           oppiaine,
-          oppiaine.oppimaarat.length > 0
-            ? this.oppiaineOppimaaraLinkit(oppiaine)
-            : this.opintojaksoModuuliLista(oppiaine)))
+          oppiaine.oppimaarat.length > 0 ? [
+            ...this.oppiaineOppimaaraLinkit(oppiaine),
+            ...paikallisetOppimaaratLinkit,
+          ] : this.opintojaksoModuuliLista(oppiaine));
+      })
       .value();
   }
 
@@ -240,7 +251,10 @@ export default class OpsSidenav extends EpOpsComponent {
           },
           children: [
             ...oppiaineLinkit,
-            ..._.map(paikallisetOppiaineet, paikallinenOppiaineToMenu),
+            ..._(paikallisetOppiaineet)
+              .filter(poa => _.isEmpty(poa.perusteenOppiaineUri))
+              .map(paikallinenOppiaineToMenu)
+              .value(),
           ],
         },
       ];
