@@ -120,7 +120,7 @@ import { oppiaineValidator } from '@/validators/oppiaineet';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
 
-import { KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
+import { KoodistoLops2019LaajaAlaiset, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 import { success } from '@/utils/notifications';
 
 @Component({
@@ -223,7 +223,8 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
   }
 
   oppiaineFilter(oppiaine) {
-    return () => true;
+    return _.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
+      _.startsWith(oppiaine.koodiUri, laajennos));
   }
 
   get versionumero() {

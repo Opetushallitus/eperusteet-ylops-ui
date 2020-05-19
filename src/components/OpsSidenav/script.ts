@@ -169,7 +169,7 @@ export default class OpsSidenav extends EpOpsComponent {
       .sortBy(koodiAlku, koodiNumero)
       .map(oppiaine => {
         const paikallisetOppimaaratLinkit = _(this.paikallisetOppiaineet)
-          .filter(poa => poa.perusteenOppiaineUri === oppiaine.koodi.uri)
+          .filter(poa => poa.perusteenOppiaineUri === oppiaine.koodi.uri || _.includes(_.map(oppiaine.oppimaarat, 'koodi.uri'), poa.perusteenOppiaineUri))
           .map(paikallinenOppiaineToMenu)
           .value();
 
