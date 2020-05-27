@@ -79,17 +79,24 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
         },
       } as any;
     }
+
+    const oppiaineet = _.map(this.vue.opetussuunnitelmaStore.opetussuunnitelma.oppiaineet, 'oppiaine');
+    const liittyvaOppiaine = _.find(oppiaineet, { id: _.toNumber(oppiaine._liittyvaOppiaine) });
+
     return {
       oppiaine,
       vuosiluokkakokonaisuus,
       vuosiluokat,
       valitutVuosiluokat: _.map(vuosiluokat, 'vuosiluokka'),
       perusteVuosiluokat: _(perusteVuosiluokat).sort(),
+      liittyvaOppiaine,
+      oppiaineet,
     };
   }
 
   async save(data) {
     data.oppiaine.vuosiluokkakokonaisuudet = [data.vuosiluokkakokonaisuus];
+    data.oppiaine._liittyvaOppiaine = data.liittyvaOppiaine ? _.toString(data.liittyvaOppiaine.id) : null;
     const oppiaineenTallennus = {
       oppiaine: data.oppiaine,
       vuosiluokkakokonaisuusId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!,
