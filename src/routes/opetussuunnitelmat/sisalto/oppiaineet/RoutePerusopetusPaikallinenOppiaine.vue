@@ -13,13 +13,52 @@
             </ep-field>
           </ep-form-content>
         </div>
-        <!--
         <div class="col-md-12" v-if="isEditing">
           <ep-form-content name="valinnaisen-oppiaineen-tyyppi">
-
+            <b-form-group>
+                <b-form-radio v-model="data.oppiaine.valinnainenTyyppi"
+                              name="valinnaisen-oppiaineen-tyyppi-syventava"
+                              value="syventava"
+                              class="mb-2">{{ $t('syventava') }}</b-form-radio>
+                <ep-form-content name="oppiaine"
+                                 v-if="data.oppiaine.valinnainenTyyppi === 'syventava'"
+                                 class="ml-4">
+                  <ep-multi-select :options="data.oppiaineet"
+                                   v-model="data.liittyvaOppiaine"
+                                   :placeholder="$t('valitse-oppiaine')"
+                                   track-by="id"
+                                   label="text">
+                    <template slot="singleLabel" slot-scope="{ option }">
+                      {{ $kaanna(option.nimi) }}
+                    </template>
+                    <template v-slot:option="{ option }">
+                      {{ $kaanna(option.nimi) }}
+                    </template>
+                  </ep-multi-select>
+                </ep-form-content>
+                <b-form-radio v-model="data.oppiaine.valinnainenTyyppi"
+                              name="valinnaisen-oppiaineen-tyyppi-soveltava"
+                              value="soveltava"
+                              class="mb-2">{{ $t('soveltava') }}</b-form-radio>
+                <ep-form-content name="oppiaine"
+                                 v-if="data.oppiaine.valinnainenTyyppi === 'soveltava'"
+                                 class="ml-4">
+                  <ep-multi-select :options="data.oppiaineet"
+                                   v-model="data.liittyvaOppiaine"
+                                   :placeholder="$t('valitse-oppiaine')"
+                                   track-by="id"
+                                   label="text">
+                    <template slot="singleLabel" slot-scope="{ option }">
+                      {{ $kaanna(option.nimi) }}
+                    </template>
+                    <template v-slot:option="{ option }">
+                      {{ $kaanna(option.nimi) }}
+                    </template>
+                  </ep-multi-select>
+                </ep-form-content>
+            </b-form-group>
           </ep-form-content>
         </div>
-        -->
         <div class="col-md-6">
           <ep-form-content name="vuosiluokat-joilla-esintyy">
             <ul v-if="!isEditing">
@@ -115,6 +154,7 @@ import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 
 @Component({
   components: {
@@ -123,6 +163,7 @@ import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
     EpField,
     EpContent,
     EpAlert,
+    EpMultiSelect,
   },
 })
 export default class RoutePerusopetusPaikallinenOppiaine extends Mixins(EpRoute, EpOpsComponent) {
