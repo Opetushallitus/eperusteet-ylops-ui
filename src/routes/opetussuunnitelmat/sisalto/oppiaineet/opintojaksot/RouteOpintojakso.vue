@@ -237,7 +237,7 @@
          <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header"><h3>{{ $t('laaja-alaiset-sisallot') }}</h3></div>
 
-            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx+'opintojaksonOppiaineet'">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineidenTiedot" :key="idx+'opintojaksonOppiaineet'">
               <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
                 <div class="moduuliotsikko"><h4 v-html="$kaanna(oppiaine.nimi)"></h4></div>
                 <ep-content
@@ -306,7 +306,7 @@
           <ep-collapse tyyppi="opintojakson-arviointi">
             <div class="alueotsikko" slot="header"><h3>{{ $t('opintojakson-arviointi') }}</h3></div>
 
-            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx+'op-arviointi'">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineidenTiedot" :key="idx+'op-arviointi'">
               <div v-if="oppiaine.arviointi && oppiaine.arviointi.kuvaus">
                 <div class="moduuliotsikko"><h4 v-html="$kaanna(oppiaine.nimi)">></h4></div>
                 <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="oppiaine.arviointi.kuvaus"></ep-content>
@@ -637,35 +637,36 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .value() as Lops2019OppiaineDto[];
   }
 
-  get oppiaineidenTavoitteet() {
-    interface Tavoitteet {
-      nimi: any;
-      tavoitteet: any;
+  get opintojaksonOppiaineidenTiedot() {
+    return _.chain(this.editable!.oppiaineet)
+      .map(({ koodi }) => koodi)
+      .sortBy(...koodiSorters() as any[])
+      .uniq()
+      .map((uri: string) => {
+        let oppiaine;
+        if (this.oppiaineetMap[uri].parentUri) {
+          oppiaine = this.oppiaineetMap[this.oppiaineetMap[uri].parentUri!];
+        }
+
+        return {
+          arviointi: this.getOppiaineTieto(this.oppiaineetMap[uri], oppiaine, 'arviointi'),
+          laajaAlaisetOsaamiset: this.getOppiaineTieto(this.oppiaineetMap[uri], oppiaine, 'laajaAlaisetOsaamiset'),
+        };
+      })
+      .value() as Lops2019OppiaineDto[];
+  }
+
+  getOppiaineTieto(oppimaara, oppiaine, tieto) {
+    if (oppimaara[tieto] && oppimaara[tieto].kuvaus) {
+      return oppimaara[tieto];
+    }
+    else if (oppiaine) {
+      if (oppiaine[tieto] && oppiaine[tieto].kuvaus) {
+        return oppiaine[tieto];
+      }
     }
 
-    if (_.isEmpty(this.editable!.moduulit)) {
-      return _.chain(this.opintojaksonOppiaineet)
-        .map(oa => {
-          return {
-            kind: 'oppiaine',
-            nimi: oa.nimi,
-            tavoitteet: oa.tavoitteet,
-          };
-        })
-        .value();
-    }
-    else {
-      return _.chain(this.editable!.moduulit)
-        .map((moduuli: Lops2019ModuuliDto) => {
-          return {
-            kind: 'moduuli',
-            nimi: moduuli.nimi,
-            kuvaus: null,
-            tavoitteet: moduuli.tavoitteet,
-          };
-        })
-        .value();
-    }
+    return {};
   }
 
   get paikallistenOpintojaksojenOppiaineet() {
@@ -723,12 +724,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       })
       .filter(oppiaineOpintojakso => !_.isEmpty(oppiaineOpintojakso.opintojaksot))
       .sortBy(...koodiSorters() as any[])
-      .value();
-  }
-
-  get laajaAlaisetOsaamiset() {
-    return _.chain(this.opintojaksonOppiaineet)
-      .filter((oa: any) => oa.laajaAlaisetOsaamiset && oa.laajaAlaisetOsaamiset.kuvaus)
       .value();
   }
 
