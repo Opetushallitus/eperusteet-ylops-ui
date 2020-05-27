@@ -27,14 +27,8 @@
                                    v-model="data.liittyvaOppiaine"
                                    :placeholder="$t('valitse-oppiaine')"
                                    track-by="id"
-                                   label="text">
-                    <template slot="singleLabel" slot-scope="{ option }">
-                      {{ $kaanna(option.nimi) }}
-                    </template>
-                    <template v-slot:option="{ option }">
-                      {{ $kaanna(option.nimi) }}
-                    </template>
-                  </ep-multi-select>
+                                   label="nimi"
+                                   :custom-label="kaannaNimi" />
                 </ep-form-content>
                 <b-form-radio v-model="data.oppiaine.valinnainenTyyppi"
                               name="valinnaisen-oppiaineen-tyyppi-soveltava"
@@ -47,14 +41,8 @@
                                    v-model="data.liittyvaOppiaine"
                                    :placeholder="$t('valitse-oppiaine')"
                                    track-by="id"
-                                   label="text">
-                    <template slot="singleLabel" slot-scope="{ option }">
-                      {{ $kaanna(option.nimi) }}
-                    </template>
-                    <template v-slot:option="{ option }">
-                      {{ $kaanna(option.nimi) }}
-                    </template>
-                  </ep-multi-select>
+                                   label="nimi"
+                                   :custom-label="kaannaNimi" />
                 </ep-form-content>
             </b-form-group>
           </ep-form-content>
@@ -179,6 +167,10 @@ export default class RoutePerusopetusPaikallinenOppiaine extends Mixins(EpRoute,
       this.ops.vuosiluokkakokonaisuudet!,
       this,
     ));
+  }
+
+  kaannaNimi({ nimi }) {
+    return this.$kaanna(nimi);
   }
 }
 </script>
