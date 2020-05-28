@@ -643,32 +643,36 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .sortBy(...koodiSorters() as any[])
       .uniq()
       .map((uri: string) => {
-        let oppiaine;
+        let oppiaineet = [this.oppiaineetMap[uri]];
         if (this.oppiaineetMap[uri].parentUri) {
-          oppiaine = this.oppiaineetMap[this.oppiaineetMap[uri].parentUri!];
+          oppiaineet = [this.oppiaineetMap[uri], this.oppiaineetMap[this.oppiaineetMap[uri].parentUri!]];
         }
 
-        if (!oppiaine && (this.oppiaineetMap[uri] as any).perusteenOppiaineUri) {
-          oppiaine = this.oppiaineetMap[(this.oppiaineetMap[uri] as any).perusteenOppiaineUri];
+        if ((this.oppiaineetMap[uri] as any).perusteenOppiaineUri) {
+          const perusteenOppiaine = this.oppiaineetMap[(this.oppiaineetMap[uri] as any).perusteenOppiaineUri];
+          let perusteenOppiaineenParent;
+          if (perusteenOppiaine.parentUri) {
+            perusteenOppiaineenParent = this.oppiaineetMap[perusteenOppiaine.parentUri!];
+          }
+          oppiaineet = [this.oppiaineetMap[uri], perusteenOppiaine, perusteenOppiaineenParent];
         }
 
         return {
           nimi: this.oppiaineetMap[uri].nimi,
-          arviointi: this.getOppiaineTieto(this.oppiaineetMap[uri], oppiaine, 'arviointi'),
-          laajaAlaisetOsaamiset: this.getOppiaineTieto(this.oppiaineetMap[uri], oppiaine, 'laajaAlaisetOsaamiset'),
+          arviointi: this.getOppiaineTieto(oppiaineet, 'arviointi'),
+          laajaAlaisetOsaamiset: this.getOppiaineTieto(oppiaineet, 'laajaAlaisetOsaamiset'),
         };
       })
       .value() as Lops2019OppiaineDto[];
   }
 
-  getOppiaineTieto(oppimaara, oppiaine, tieto) {
-    if (oppimaara[tieto] && oppimaara[tieto].kuvaus) {
-      return oppimaara[tieto];
-    }
-    else if (oppiaine) {
-      if (oppiaine[tieto] && oppiaine[tieto].kuvaus) {
-        return oppiaine[tieto];
-      }
+  getOppiaineTieto(oppiaineet, tieto) {
+    if (oppiaineet) {
+      return _.chain(oppiaineet)
+        .filter(oppiaine => oppiaine && oppiaine[tieto] && oppiaine[tieto].kuvaus)
+        .map(oppiaine => oppiaine[tieto])
+        .head()
+        .value();
     }
 
     return {};
