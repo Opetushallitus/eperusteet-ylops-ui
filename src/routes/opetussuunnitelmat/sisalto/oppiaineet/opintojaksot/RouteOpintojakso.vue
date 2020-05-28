@@ -648,6 +648,10 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
           oppiaine = this.oppiaineetMap[this.oppiaineetMap[uri].parentUri!];
         }
 
+        if (!oppiaine && (this.oppiaineetMap[uri] as any).perusteenOppiaineUri) {
+          oppiaine = this.oppiaineetMap[(this.oppiaineetMap[uri] as any).perusteenOppiaineUri];
+        }
+
         return {
           nimi: this.oppiaineetMap[uri].nimi,
           arviointi: this.getOppiaineTieto(this.oppiaineetMap[uri], oppiaine, 'arviointi'),
