@@ -284,7 +284,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
   }
 
   get hasKeskusteluSlot() {
-    return this.$scopedSlots.keskustelu && !this.ctrls.isEditing;
+    return this.$scopedSlots.keskustelu && !this.ctrls?.isEditing;
   }
 
   get isEditing() {
@@ -292,7 +292,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
   }
 
   @Watch('isEditing')
-  onChange(newValue: number, oldValue: number) {
+  onChangeEditing(newValue: number, oldValue: number) {
     Kommentit.setActive(!this.isEditing && this.sidebarState === 1);
   }
 

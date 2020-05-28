@@ -44,6 +44,7 @@
 import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
 import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
 import { Kommentit } from '@/stores/kommentit';
+import _ from 'lodash';
 
 
 @Component({
@@ -77,13 +78,13 @@ export default class CollapsedThreads extends Vue {
   }
 
   showThread() {
-    if (this.first) {
+    if (this.first?.thread) {
       Kommentit.scrollTo(this.first.thread);
     }
   }
 
   activateThread() {
-    if (this.first) {
+    if (this.first?.thread) {
       Kommentit.activateThread(this.first.thread);
     }
   }

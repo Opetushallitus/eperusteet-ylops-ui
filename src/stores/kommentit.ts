@@ -109,7 +109,7 @@ class KommenttiStore {
     }
   }
 
-  private watcher = watch(async () => {
+  private watchVisibleThreads = watch(async () => {
     if (!_.isEmpty(this.visibleThreads.value)) {
       const res = await Promise.all(_.map(this.visibleThreads.value, uuid => Kommentointi.getKommenttiByKetjuUuid(uuid)));
       this.state.activeThreads = _.map(res, 'data');
@@ -126,7 +126,7 @@ class KommenttiStore {
   public async clearThread() {
     this.state.threadUuid = null;
     this.state.thread = null;
-    VueScrollTo.scrollTo(`#keskustelu-sisalto`, 300);
+    VueScrollTo.scrollTo('#keskustelu-sisalto', 300);
   }
 
   private obs: MutationObserver | null = null;

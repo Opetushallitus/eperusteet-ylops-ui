@@ -79,7 +79,7 @@
     </div>
     <div v-else-if="activeThreads.length > 0">
       <div class="thread-comment">
-        <div v-for="root in activeThreads">
+        <div v-for="(root, idx) in activeThreads" :key="'thread' + idx">
           <collapsed-threads :value="root" />
         </div>
       </div>
