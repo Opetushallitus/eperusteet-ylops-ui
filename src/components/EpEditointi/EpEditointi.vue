@@ -161,9 +161,9 @@
             <slot :isEditing="ctrls.isEditing" :data="state.data" :validation="$v.state.data"></slot>
           </div>
         </div>
-        <div class="rightbar rb-keskustelu" v-if="hasKeskusteluSlot && sidebarState === 1">
+        <div class="rightbar rb-keskustelu" v-if="hasKeskusteluSlot && this.sidebarState === 1">
           <div class="rbheader"><b>{{ $t('keskustelu') }}</b></div>
-          <div class="rbcontent">
+          <div class="rbcontent" id="keskustelu-sisalto">
             <slot name="keskustelu" :isEditing="ctrls.isEditing" :data="state.data" :validation="$v.state.data"></slot>
           </div>
         </div>
@@ -200,6 +200,7 @@ import { setItem, getItem } from '@/utils/localstorage';
 import EpVersioModaali from './EpVersioModaali.vue';
 import '@shared/stores/kieli';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
+import { Kommentit } from '@/stores/kommentit';
 import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
@@ -283,7 +284,21 @@ export default class EpEditointi extends Mixins(validationMixin) {
   }
 
   get hasKeskusteluSlot() {
-    return this.$scopedSlots.keskustelu;
+    return this.$scopedSlots.keskustelu && !this.ctrls.isEditing;
+  }
+
+  get isEditing() {
+    return this.ctrls && this.ctrls.isEditing;
+  }
+
+  @Watch('isEditing')
+  onChange(newValue: number, oldValue: number) {
+    Kommentit.setActive(!this.isEditing && this.sidebarState === 1);
+  }
+
+  @Watch('sidebarState')
+  onChange(newValue: number, oldValue: number) {
+    Kommentit.setActive(!this.isEditing && this.sidebarState === 1);
   }
 
   get hasPerusteSlot() {

@@ -64,6 +64,7 @@ library.add(solid.faRecycle);
 library.add(solid.faRedo);
 library.add(solid.faSave);
 library.add(solid.faSearch);
+library.add(solid.faSearchLocation);
 library.add(solid.faSort);
 library.add(solid.faStrikethrough);
 library.add(solid.faTable);

@@ -1,6 +1,6 @@
 <template>
   <div class="threadbox" ref="threadbox">
-    <div v-if="thread">
+    <div v-if="threadUuid && thread">
       <div
         v-if="newThread"
         class="newComment p-3 m-1"
@@ -77,6 +77,16 @@
         </div>
       </div>
     </div>
+    <div v-else-if="activeThreads.length > 0">
+      <div class="thread-comment">
+        <div v-for="root in activeThreads">
+          <collapsed-threads :value="root" />
+        </div>
+      </div>
+    </div>
+    <div v-else class="p-3">
+      <ep-alert :text="$t('ei-lisattyja-kommentteja')"></ep-alert>
+    </div>
   </div>
 </template>
 
@@ -84,22 +94,25 @@
 import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
 import { Kommentit } from '@/stores/kommentit';
 import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
+import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import { Kielet } from '@shared/stores/kieli';
-import { success } from '@/utils/notifications';
+import { fail, success } from '@/utils/notifications';
 import { delay } from '@shared/utils/delay';
 import { unwrap, findIndexWithTagsIncluded } from '@/utils/utils';
 import * as _ from 'lodash';
 import ThreadComment from './ThreadComment.vue';
+import CollapsedThreads from './CollapsedThreads.vue';
 import EpCommentAdd from './EpCommentAdd.vue';
 
 
 @Component({
   components: {
+    EpAlert,
     ThreadComment,
+    CollapsedThreads,
   },
 })
 export default class EpCommentThreads extends Vue {
-
   private isWorking = false;
   private thread: KommenttiDto[] | null = null;
   private newThread: KommenttiDto | null = null;
@@ -113,6 +126,10 @@ export default class EpCommentThreads extends Vue {
     else {
       return Kommentit.threadUuid.value;
     }
+  }
+
+  get activeThreads() {
+    return Kommentit.activeThreads.value || [];
   }
 
   get originalThread() {
@@ -238,11 +255,22 @@ export default class EpCommentThreads extends Vue {
     }
   }
 
-  private onSelectionImpl = _.debounce((val, old) => {
+  private findContentNode(origin: Node | null) {
+    let el = origin;
+    while (el !== null && el !== el.parentNode) {
+      if ((el as any)?.__vue__?.$options?._componentTag === 'editor-content') {
+        return el;
+      }
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  private onSelectionImpl = (val, old) => {
     this.removeAddBox();
     if (val && !old) {
       const selection = document.getSelection();
-      if (selection) {
+      if (selection && this.findContentNode(selection.anchorNode)) {
         const commentbox = document.createElement('div');
         const range = selection.getRangeAt(selection.rangeCount - 1);
         const bound = range.getBoundingClientRect();
@@ -265,7 +293,7 @@ export default class EpCommentThreads extends Vue {
         });
       }
     }
-  }, 300);
+  };
 
   /**
    * Copies the selection range and slides it over the containing parent container and
@@ -299,7 +327,7 @@ export default class EpCommentThreads extends Vue {
     const selection = document.getSelection();
     const node = selection?.anchorNode;
     if (!node || !selection) {
-      console.error('FIXME virheellinen valinta');
+      fail('virheellinen-valinta');
       return;
     }
 

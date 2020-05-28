@@ -3,28 +3,12 @@ import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
 import Vue from 'vue';
 import { Kayttajat as KayttajatApi, Kommentointi } from '@shared/api/ylops';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
+import VueScrollTo from 'vue-scrollto';
 Vue.use(VueCompositionApi);
 
 import { createLogger } from '@shared/utils/logger';
 import { delay } from '@shared/utils/delay';
 const logger = createLogger('Kayttaja');
-
-// FIXME: tyypitä backendiin
-export type Oikeus = 'luku' | 'kommentointi' | 'muokkaus' | 'luonti' | 'poisto' | 'tilanvaihto' | 'hallinta';
-export type OikeusKohde = 'opetussuunnitelma' | 'pohja';
-export interface Oikeudet { [kohde: string]: Oikeus[]; }
-
-function getOikeusArvo(oikeus: Oikeus) {
-  switch (oikeus) {
-  case 'luku': return 1;
-  case 'kommentointi': return 2;
-  case 'muokkaus': return 3;
-  case 'luonti': return 4;
-  case 'poisto': return 5;
-  case 'tilanvaihto': return 6;
-  default: return 0;
-  }
-}
 
 export function parsiEsitysnimi(tiedot: any): string {
   if (tiedot.kutsumanimi && tiedot.sukunimi) {
@@ -62,10 +46,12 @@ class KommenttiStore {
   private state = reactive({
     threadUuid: null as string | null,
     thread: null as any | null,
+    isActive: false,
     isLoading: false,
     selection: false,
     bounds: null as any | null,
-    visibleChains: [] as string[],
+    visibleChains: [] as string[], // List of visible UUIDs
+    activeThreads: [] as any[], // Comments of visible chains
   });
 
   public readonly threadUuid = computed(() => this.state.threadUuid);
@@ -73,6 +59,8 @@ class KommenttiStore {
   public readonly isLoading = computed(() => this.state.isLoading);
   public readonly hasSelection = computed(() => this.state.selection);
   public readonly bounds = computed(() => this.state.bounds);
+  public readonly visibleThreads = computed(() => this.state.visibleChains || []);
+  public readonly activeThreads = computed(() => this.state.activeThreads || []);
 
   public readonly surrounding = computed(() => {
     if (this.state.threadUuid) {
@@ -93,7 +81,7 @@ class KommenttiStore {
   });
 
   constructor() {
-    document.onselectionchange = _.debounce((ev) => {
+    const onChange = (ev) => {
       const selection = document.getSelection();
       this.state.selection = !selection || !selection?.isCollapsed;
       if (selection && this.state.selection) {
@@ -103,8 +91,30 @@ class KommenttiStore {
       else {
         this.state.bounds = null;
       }
-    }, 50);
+    };
+
+    document.onselectionchange = (ev) => {
+      onChange(ev);
+    };
   }
+
+  public setActive(value: boolean) {
+    this.state.isActive = value;
+    if (value) {
+      this.state.activeThreads = [];
+      this.updateVisibleThreads();
+    }
+    else {
+      this.state.activeThreads = [];
+    }
+  }
+
+  private watcher = watch(async () => {
+    if (!_.isEmpty(this.visibleThreads.value)) {
+      const res = await Promise.all(_.map(this.visibleThreads.value, uuid => Kommentointi.getKommenttiByKetjuUuid(uuid)));
+      this.state.activeThreads = _.map(res, 'data');
+    }
+  });
 
   private watcher = watch(async () => {
     if (this.threadUuid.value) {
@@ -116,6 +126,7 @@ class KommenttiStore {
   public async clearThread() {
     this.state.threadUuid = null;
     this.state.thread = null;
+    VueScrollTo.scrollTo(`#keskustelu-sisalto`, 300);
   }
 
   private obs: MutationObserver | null = null;
@@ -189,7 +200,7 @@ class KommenttiStore {
     }
   }
 
-  private updateVisibleThreads = _.debounce(() => {
+  public readonly updateVisibleThreads = _.debounce(() => {
     const chains = [] as string[];
     document.querySelectorAll('[kommentti]').forEach(k => {
       const uuid = k.getAttribute('kommentti');
@@ -229,6 +240,10 @@ class KommenttiStore {
     else {
       return null;
     }
+  }
+
+  scrollTo(uuid: string) {
+    VueScrollTo.scrollTo(`span[kommentti="${uuid}"]`, 300);
   }
 
   attach(el: Element) {
