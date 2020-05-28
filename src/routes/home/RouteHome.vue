@@ -5,8 +5,10 @@
     <div class="container">
       <div class="container-fluid">
         <div class="row">
-          <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
-          <p>{{ $t('tervetuloa-kuvaus') }}</p>
+          <div class="col">
+            <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
+            <p>{{ $t('tervetuloa-kuvaus') }}</p>
+          </div>
         </div>
       </div>
       <!--
