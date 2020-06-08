@@ -75,7 +75,7 @@
               <span v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">{{ oa.stats.opintojaksot }}</span>
             </td>
             <td :class="oa.stats.valid ? 'valid' : 'invalid'">
-              <span v-if="oa.oppimaarat && oa.oppimaarat.length === 0">{{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}</span>
+              <span v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">{{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}</span>
             </td>
             <td>
             </td>
@@ -174,7 +174,7 @@ import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
-import { koodiAlku, koodiNumero } from '@/utils/perusteet';
+import { koodiAlku, koodiNumero, koodiSorters } from '@/utils/perusteet';
 
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
@@ -256,6 +256,32 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       .value();
   }
 
+  get oppiaineetMap() {
+    return _.keyBy(this.oppiaineetJaOppimaarat, 'koodi.uri');
+  }
+
+  get oppiaineidenModuulit() {
+    return _.chain(this.oppiaineetJaOppimaarat)
+      .map((oa: any) => {
+        if (oa.perusteenOppiaineUri) {
+          return {
+            ...oa,
+            moduulit: this.oppiaineetMap[oa.perusteenOppiaineUri].moduulit,
+          };
+        }
+        else {
+          return oa;
+        }
+      })
+      .value();
+  }
+
+  get oppiaineidenModuulitMap() {
+    return _.chain(this.oppiaineidenModuulit)
+      .keyBy('koodi.uri')
+      .value();
+  }
+
   get moduulit() {
     const result = _(this.oppiaineetJaOppimaarat)
       .map('moduulit')
@@ -289,11 +315,11 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           moduulit: _(oa.moduulit)
             .reject((moduuli) => this.vainPuuttuvat && moduuli.used)
             .filter((moduuli) => Kielet.search(this.query, moduuli.nimi))
-            .sortBy(koodiAlku, koodiNumero)
+            .sortBy(...koodiSorters())
             .value(),
           opintojaksot: _(oa.opintojaksot)
             .filter((oj) => Kielet.search(this.query, oj.nimi))
-            .sortBy(koodiAlku, koodiNumero)
+            .sortBy(...koodiSorters())
             .value(),
         };
       })
@@ -325,6 +351,8 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
     }
     return _(this.store.paikallisetOppiaineet)
       .map(oa => {
+        const oppimaaranOmatModuulit = oa.perusteenOppiaineUri ? this.oppiaineidenModuulitMap[oa.perusteenOppiaineUri].moduulit : [];
+
         const opintojaksot = _(this.store.opintojaksot)
           .concat(this.store.tuodutOpintojaksot)
           .filter(oj => _.includes(
@@ -336,6 +364,32 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           ))
           .value();
 
+        const valitutModuulit = _(opintojaksot)
+          .map('moduulit')
+          .flatten()
+          .map(m => {
+            return this.moduulitByKoodi[m.koodiUri];
+          })
+          .value();
+
+        const omatModuulit = _(valitutModuulit)
+          .filter((m: any) => _.includes(_.map(oppimaaranOmatModuulit, 'koodi.uri'), m.koodi.uri))
+          .value();
+
+        const vieraatModuulit = _(opintojaksot)
+          .map('moduulit')
+          .flatten()
+          .map(moduuli => this.moduulitByKoodi[moduuli.koodiUri])
+          .reject(moduuli => _.includes(omatModuulit, moduuli))
+          .value();
+
+        // Käytetään vain esityksessä
+        const opintojaksojenModuulit = _(opintojaksot)
+          .map('moduulit')
+          .flatten()
+          .keyBy('koodiUri')
+          .value();
+
         return {
           ...oa,
           koodi: {
@@ -345,14 +399,14 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           isOpen: !this.opened[oa.id!] || !_.isEmpty(this.query),
           toggleEnabled: _.size(opintojaksot) > 0,
           paikallinen: true,
-          vieraatModuulit: [],
           opintojaksot,
-          moduulit: [],
+          moduulit: _.map(oppimaaranOmatModuulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
+          vieraatModuulit: _.map(vieraatModuulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
           stats: {
             opintojaksot: _.size(opintojaksot),
-            kaytetytModuulit: 0,
-            kaikkiModuulit: 0,
-            valid: !_.isEmpty(opintojaksot),
+            kaytetytModuulit: _.size(omatModuulit),
+            kaikkiModuulit: _.size(oppimaaranOmatModuulit),
+            valid: _.size(omatModuulit) === _.size(oppimaaranOmatModuulit),
           },
         };
       })
@@ -405,6 +459,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           .value();
 
         const kaytetytModuulit = _.size(opintojaksojenModuulit) - _.size(vieraatModuulit);
+
         return {
           ...oa,
           isOpen: !this.opened[oa.id!] || !_.isEmpty(this.query),
