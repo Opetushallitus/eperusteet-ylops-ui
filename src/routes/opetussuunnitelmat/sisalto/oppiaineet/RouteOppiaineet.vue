@@ -234,19 +234,20 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
   }
 
   get total() {
-    return _(this.oppiaineRakenne)
-      .map('stats')
-      .reduce((acc, next) => {
-        return {
-          opintojaksot: acc.opintojaksot + next.opintojaksot,
-          kaytetytModuulit: acc.kaytetytModuulit + next.kaytetytModuulit,
-          kaikkiModuulit: acc.kaikkiModuulit + next.kaikkiModuulit,
-        };
-      }, {
-        opintojaksot: 0,
-        kaytetytModuulit: 0,
-        kaikkiModuulit: 0,
-      });
+    return {
+      ..._(this.oppiaineRakenne)
+        .map('stats')
+        .reduce((acc, next) => {
+          return {
+            kaytetytModuulit: acc.kaytetytModuulit + next.kaytetytModuulit,
+            kaikkiModuulit: acc.kaikkiModuulit + next.kaikkiModuulit,
+          };
+        }, {
+          kaytetytModuulit: 0,
+          kaikkiModuulit: 0,
+        }),
+      opintojaksot: _.size(this.store.opintojaksot),
+    };
   }
 
   get oppiaineetJaOppimaarat() {
