@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
-import { Lops2019PaikallinenOppiaineDto, Lops2019OppiaineDto, OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
-import { SideMenuEntry } from '@shared/tyypit';
+import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
+import { SideMenuEntry, OpintojaksoModuuliSource } from '@shared/tyypit';
 
 import { koodiNumero, koodiAlku } from '@/utils/perusteet';
 import { sortedOppiaineet } from '@/utils/opetussuunnitelmat';
@@ -139,8 +139,8 @@ export function oppiaineLinkki(type: string, objref: any, children: SideMenuEntr
   };
 }
 
-export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
-  const result = _.chain(oppimaara.moduulit)
+export function oppimaaraModuuliLinkit(source: OpintojaksoModuuliSource): SideMenuEntry[] {
+  const result = _.chain(source.moduulit)
     .sortBy(koodiAlku, koodiNumero)
     .map(moduuli => {
       return {
@@ -152,7 +152,7 @@ export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
           name: 'moduuli',
           params: {
             moduuliId: moduuli.id,
-            oppiaineId: oppimaara.id,
+            oppiaineId: source.id,
           },
         },
       };
@@ -161,9 +161,9 @@ export function oppimaaraModuuliLinkit(oppimaara: any): SideMenuEntry[] {
   return result;
 }
 
-export function oppimaaraOpintojaksoLinkit(opintojaksot: any, oppimaara: Lops2019OppiaineDto): SideMenuEntry[] {
+export function oppimaaraOpintojaksoLinkit(opintojaksot: any, source: OpintojaksoModuuliSource): SideMenuEntry[] {
   return _.chain(opintojaksot)
-    .filter((oj) => oj.oppiaineet && oppimaara.koodi && _.map(oj.oppiaineet, 'koodi').indexOf(oppimaara.koodi.uri) > -1)
+    .filter((oj) => oj.oppiaineet && source.koodi && _.map(oj.oppiaineet, 'koodi').indexOf(source.koodi) > -1)
     .sortBy(koodiAlku, koodiNumero)
     .map(oj => {
       return {
@@ -182,7 +182,7 @@ export function oppimaaraOpintojaksoLinkit(opintojaksot: any, oppimaara: Lops201
     .value();
 }
 
-export function oppimaaraUusiLinkki(oppimaara: Lops2019OppiaineDto): SideMenuEntry {
+export function oppimaaraUusiLinkki(source: OpintojaksoModuuliSource): SideMenuEntry {
   return {
     item: {
       type: 'uusi-opintojakso',
@@ -191,27 +191,28 @@ export function oppimaaraUusiLinkki(oppimaara: Lops2019OppiaineDto): SideMenuEnt
       name: 'uusi-opintojakso',
       params: {
         opintojaksoId: 'uusi',
-        oppiaineKoodi: oppimaara.koodi!.arvo,
+        oppiaineKoodi: source.koodi,
       },
       query: {
-        oppiaineet: oppimaara.koodi!.uri,
+        oppiaineet: source.koodi,
       },
     },
   };
 }
 
-export function paikallinenOppiaineToMenu(oppiaine: Lops2019PaikallinenOppiaineDto): SideMenuEntry {
+export function paikallinenOppiaineLinkki(type: string, objref: any, children: SideMenuEntry[]): SideMenuEntry {
   return {
     item: {
-      type: 'oppiaine',
-      objref: oppiaine,
+      type,
+      objref,
       hideChevron: true,
     },
     route: {
       name: 'paikallinenOppiaine',
       params: {
-        paikallinenOppiaineId: oppiaine.id,
+        paikallinenOppiaineId: objref.id,
       },
     },
+    children,
   };
 }

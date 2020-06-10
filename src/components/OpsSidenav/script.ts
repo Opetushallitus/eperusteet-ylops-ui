@@ -4,7 +4,7 @@ import { Kielet } from '@shared/stores/kieli';
 import { PerusteCache } from '@/stores/peruste';
 
 import { Lops2019OppiaineDto } from '@shared/api/ylops';
-import { SideMenuEntry, SideMenuItem } from '@shared/tyypit';
+import { SideMenuEntry, SideMenuItem, OpintojaksoModuuliSource } from '@shared/tyypit';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
@@ -22,7 +22,7 @@ import {
   oppimaaraModuuliLinkit,
   oppimaaraOpintojaksoLinkit,
   opsLapsiLinkit,
-  paikallinenOppiaineToMenu,
+  paikallinenOppiaineLinkki,
   oppimaaraUusiLinkki,
   vuosiluokkaLinkit,
 } from './menuBuildingMethods';
@@ -109,7 +109,7 @@ export default class OpsSidenav extends EpOpsComponent {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
   }
 
-  private opintojaksoModuuliLista(source: Lops2019OppiaineDto) {
+  private opintojaksoModuuliLista(source: OpintojaksoModuuliSource) {
     const result: SideMenuEntry[] = [];
     const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(this.opintojaksot, source);
     result.push({
@@ -123,16 +123,18 @@ export default class OpsSidenav extends EpOpsComponent {
         oppimaaraUusiLinkki(source),
       ],
     });
-    result.push({
-      item: {
-        type: 'staticlink',
-        i18key: 'moduulit',
-      },
-      flatten: true,
-      children: [
-        ...oppimaaraModuuliLinkit(source),
-      ],
-    });
+    if (source.moduulit) {
+      result.push({
+        item: {
+          type: 'staticlink',
+          i18key: 'moduulit',
+        },
+        flatten: true,
+        children: [
+          ...oppimaaraModuuliLinkit(source),
+        ],
+      });
+    }
 
     return result;
   }
@@ -144,7 +146,11 @@ export default class OpsSidenav extends EpOpsComponent {
         oppiaineLinkki(
           'oppimaara',
           oppimaara,
-          this.opintojaksoModuuliLista(oppimaara)))
+          this.opintojaksoModuuliLista({
+            id: oppimaara.id!,
+            koodi: oppimaara.koodi!.uri!,
+            moduulit: oppimaara.moduulit,
+          })))
       .value();
   }
 
@@ -170,7 +176,12 @@ export default class OpsSidenav extends EpOpsComponent {
       .map(oppiaine => {
         const paikallisetOppimaaratLinkit = _(this.paikallisetOppiaineet)
           .filter(poa => poa.perusteenOppiaineUri === oppiaine.koodi.uri || _.includes(_.map(oppiaine.oppimaarat, 'koodi.uri'), poa.perusteenOppiaineUri))
-          .map(paikallinenOppiaineToMenu)
+          .map(poa => paikallinenOppiaineLinkki('oppiaine', poa, this.opintojaksoModuuliLista({
+            id: poa.id!,
+            koodi: poa.koodi!,
+            // todo: Jos halutaan perusteen moduulit, vaatii myös linkkien korjauksen
+            // moduulit: poa.perusteenOppiaineUri ? _.keyBy(oppiaine.oppimaarat, 'koodi.uri')[poa.perusteenOppiaineUri].moduulit : undefined,
+          })))
           .value();
 
         return oppiaineLinkki(
@@ -179,7 +190,11 @@ export default class OpsSidenav extends EpOpsComponent {
           oppiaine.oppimaarat.length > 0 ? [
             ...this.oppiaineOppimaaraLinkit(oppiaine),
             ...paikallisetOppimaaratLinkit,
-          ] : this.opintojaksoModuuliLista(oppiaine));
+          ] : this.opintojaksoModuuliLista({
+            id: oppiaine.id!,
+            koodi: oppiaine.koodi!.uri!,
+            moduulit: oppiaine.moduulit!,
+          }));
       })
       .value();
   }
@@ -235,10 +250,11 @@ export default class OpsSidenav extends EpOpsComponent {
     ];
 
     // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
-    const paikallisetOppiaineet = this.store.paikallisetOppiaineet;
     const oppiaineLinkit = this.opsOppiaineLinkit;
+    const paikallisetOppiaineet = this.store.paikallisetOppiaineet;
 
     if (oppiaineLinkit.length > 0 || paikallisetOppiaineet.length > 0) {
+      const that = this;
       menuOpsData = [
         ...menuOpsData, {
           item: {
@@ -253,7 +269,10 @@ export default class OpsSidenav extends EpOpsComponent {
             ...oppiaineLinkit,
             ..._(paikallisetOppiaineet)
               .filter(poa => _.isEmpty(poa.perusteenOppiaineUri))
-              .map(paikallinenOppiaineToMenu)
+              .map(poa => paikallinenOppiaineLinkki('oppiaine', poa, that.opintojaksoModuuliLista({
+                id: poa.id!,
+                koodi: poa.koodi!,
+              })))
               .value(),
           ],
         },
