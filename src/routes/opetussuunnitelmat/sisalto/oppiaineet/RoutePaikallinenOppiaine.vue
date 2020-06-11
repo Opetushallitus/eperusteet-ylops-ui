@@ -24,7 +24,7 @@
       <div class="content">
         <b-row v-if="isEditing">
           <b-col>
-            <ep-form-content name="oppiaine-nimi-ohje">
+            <ep-form-content :name="data.perusteenOppiaineUri ? 'oppimaara-nimi-ohje' : 'oppiaine-nimi-ohje'">
               <ep-field v-model="data.nimi" :is-header="true" :validation="validation.nimi" :is-editing="isEditing">
               </ep-field>
             </ep-form-content>
@@ -32,9 +32,10 @@
            <b-col />
         </b-row>
         <b-row>
-          <b-col>
+          <b-col v-if="isEditing || data.perusteenOppiaineUri">
             <ep-form-content name="oppiainekoodi">
               <ep-oppiaine-selector
+                help="oppiaine-ohje"
                 v-model="data.perusteenOppiaineUri"
                 :opetussuunnitelma-store="opetussuunnitelmaStore"
                 :is-editable="isEditing"
@@ -45,7 +46,7 @@
           </b-col>
           <b-col>
             <ep-form-content name="koodi">
-              <ep-field help="oppiaine-koodi-ohje" v-model="data.koodi" :validation="validation.koodi" type="string" :is-editing="isEditing" />
+              <ep-field :help="data.perusteenOppiaineUri ? 'oppimaara-koodi-ohje' : 'oppiaine-koodi-ohje'" v-model="data.koodi" :validation="validation.koodi" type="string" :is-editing="isEditing" />
             </ep-form-content>
           </b-col>
         </b-row>

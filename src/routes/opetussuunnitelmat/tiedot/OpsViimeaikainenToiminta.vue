@@ -119,7 +119,7 @@ export default class OpsViimeaikainenToiminta extends Vue {
 
   tapahtumateksti(muokkaustieto) {
     if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
-      return this.$t('tapahtuma-paivitys-opetussuunnitelma_rakenne');
+      return this.$t('tapahtuma-paivitys-opetussuunnitelma-rakenne');
     }
 
     if (muokkaustieto.lisatieto) {
