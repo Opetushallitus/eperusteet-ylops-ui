@@ -67,7 +67,7 @@
             </ep-field>
           </ep-form-content>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus">
+        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.tehtava">
           <ep-form-content :name="$kaanna(data.vuosiluokkakokonaisuus.tehtava.otsikko)">
             <ep-content layout="normal"
                         v-model="data.vuosiluokkakokonaisuus.tehtava.teksti"
@@ -77,7 +77,7 @@
                       :text="$t('sisaltoa-ei-maaritelty')" />
           </ep-form-content>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus">
+        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.tyotavat">
           <ep-form-content :name="$kaanna(data.vuosiluokkakokonaisuus.tyotavat.otsikko)">
             <ep-content layout="normal"
                         v-model="data.vuosiluokkakokonaisuus.tyotavat.teksti"
@@ -87,7 +87,7 @@
                       :text="$t('sisaltoa-ei-maaritelty')" />
           </ep-form-content>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus">
+        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.ohjaus">
           <ep-form-content :name="$kaanna(data.vuosiluokkakokonaisuus.ohjaus.otsikko)">
             <ep-content layout="normal"
                         v-model="data.vuosiluokkakokonaisuus.ohjaus.teksti"
@@ -97,12 +97,22 @@
                       :text="$t('sisaltoa-ei-maaritelty')" />
           </ep-form-content>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus">
+        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.arviointi">
           <ep-form-content :name="$kaanna(data.vuosiluokkakokonaisuus.arviointi.otsikko)">
             <ep-content layout="normal"
                         v-model="data.vuosiluokkakokonaisuus.arviointi.teksti"
                         :is-editable="isEditing"></ep-content>
             <ep-alert v-if="!isEditing && !$kaanna(data.vuosiluokkakokonaisuus.arviointi.teksti)"
+                      :only-text="true"
+                      :text="$t('sisaltoa-ei-maaritelty')" />
+          </ep-form-content>
+        </div>
+        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet">
+          <ep-form-content :name="$kaanna(data.vuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet.otsikko)">
+            <ep-content layout="normal"
+                        v-model="data.vuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet.teksti"
+                        :is-editable="isEditing"></ep-content>
+            <ep-alert v-if="!isEditing && !$kaanna(data.vuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet.teksti)"
                       :only-text="true"
                       :text="$t('sisaltoa-ei-maaritelty')" />
           </ep-form-content>

@@ -79,6 +79,13 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
         },
       } as any;
     }
+    if (_.isNull(vuosiluokkakokonaisuus?.tavoitteistaJohdetutOppimisenTavoitteet)) {
+      vuosiluokkakokonaisuus!.tavoitteistaJohdetutOppimisenTavoitteet = {
+        otsikko: {
+          fi: 'oppiaine-tavoitteista-johdetut-oppimisen-tavoitteet',
+        },
+      } as any;
+    }
 
     const oppiaineet = _.map(this.vue.opetussuunnitelmaStore.opetussuunnitelma.oppiaineet, 'oppiaine');
     const liittyvaOppiaine = _.find(oppiaineet, { id: _.toNumber(oppiaine._liittyvaOppiaine) });
