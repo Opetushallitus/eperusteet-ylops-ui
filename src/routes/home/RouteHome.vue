@@ -4,8 +4,8 @@
     <ep-navigation :sticky="false" :tutoriaalistore="tutoriaalistore"></ep-navigation>
     <div class="container">
       <div class="container-fluid">
-        <div class="row">
-          <div class="col">
+        <div class="row no-gutters">
+          <div class="col my-4 px-3 px-md-0">
             <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
             <p>{{ $t('tervetuloa-kuvaus') }}</p>
           </div>
