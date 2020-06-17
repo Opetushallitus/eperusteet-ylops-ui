@@ -8,7 +8,14 @@
     padding: 0;
 
     li {
-      padding: 0 7px 0 28px;
+      padding: 0 7px 0 38px;
+    }
+
+    .btn-link-nav {
+      text-decoration: none;
+      &:focus {
+        outline: -webkit-focus-ring-color auto 1px;
+      }
     }
 
     .item {
@@ -72,6 +79,8 @@
         width: 30px;
         height: 30px;
         border-radius: 15px;
+        margin-top: 4px;
+        margin-right: 8px;
         background-color: #0041DC;
         color: #fff;
         display: flex;
@@ -148,7 +157,7 @@
     border-width: 0 0 1px 0;
 
     span {
-      padding: 10px 0;
+      padding: 10px;
       color: $black;
       display: block;
     }

@@ -2,7 +2,7 @@
 <div>
   <div class="sidenav d-flex">
     <div class="closed">
-      <button class="btn btn-link" @click="toggled = !toggled" v-if="!toggled">
+      <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="!toggled">
         <span class="bar"><fas icon="bars"></fas></span>
       </button>
     </div>
@@ -77,6 +77,9 @@ export default class EpSidebar extends Vue {
 @import "@shared/styles/_variables.scss";
 
 .sidenav {
+  .menubutton:focus {
+    outline: -webkit-focus-ring-color auto 1px;
+  }
   @media (min-width: 1443.98px) {
     .menubutton {
       display:none;
