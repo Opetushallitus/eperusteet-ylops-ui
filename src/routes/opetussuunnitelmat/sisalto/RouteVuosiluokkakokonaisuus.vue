@@ -5,13 +5,22 @@
         <h2 class="m-0">{{ $kaanna(data.vlk.nimi) }}</h2>
       </template>
       <template v-slot:default="{ data, isEditing }">
-        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.tehtava" :vlkObject="data.vlk.tehtava" :isEditing="isEditing" />
+        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.tehtava"
+                                    :vlkObject="data.vlk.tehtava"
+                                    :isEditing="isEditing"
+                                    :peruste-teksti-avattu="true" />
 
         <hr/>
         <h2>{{$t('siirtymavaiheet')}}</h2>
 
-        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.siirtymaEdellisesta" :vlkObject="data.vlk.siirtymaEdellisesta" :isEditing="isEditing" />
-        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.siirtymaSeuraavaan" :vlkObject="data.vlk.siirtymaSeuraavaan" :isEditing="isEditing" />
+        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.siirtymaEdellisesta"
+                                    :vlkObject="data.vlk.siirtymaEdellisesta"
+                                    :isEditing="isEditing"
+                                    :peruste-teksti-avattu="true" />
+        <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.siirtymaSeuraavaan"
+                                    :vlkObject="data.vlk.siirtymaSeuraavaan"
+                                    :isEditing="isEditing"
+                                    :peruste-teksti-avattu="true" />
 
         <hr/>
         <h2>{{$t('laaja-alainen-osaaminen')}}</h2>
@@ -21,14 +30,15 @@
         <hr/>
         <h2>{{$t('laaja-alaisen-osaamisen-alueet')}}</h2>
 
-        <vuosiluokka-sisalto-teksti v-for="(laajaalainen, index) in data.laajaalaiset" :key="'laajalainen'+index"
-          :perusteObject="laajaalainen"
-          :vlkObject="data.vlk.laajaalaisetosaamiset[index]"
-          :isEditing="isEditing"
-          otsikko="nimi"
-          teksti="kuvaus"
-          :id="'laajaalainen'+laajaalainen.tunniste"
-          />
+        <vuosiluokka-sisalto-teksti v-for="(laajaalainen, index) in data.laajaalaiset"
+                                    :key="index"
+                                    :perusteObject="laajaalainen"
+                                    :vlkObject="data.vlk.laajaalaisetosaamiset[index]"
+                                    :isEditing="isEditing"
+                                    :id="'laajaalainen'+laajaalainen.tunniste"
+                                    :peruste-teksti-avattu="true"
+                                    otsikko="nimi"
+                                    teksti="kuvaus" />
 
         </template>
     </EpEditointi>

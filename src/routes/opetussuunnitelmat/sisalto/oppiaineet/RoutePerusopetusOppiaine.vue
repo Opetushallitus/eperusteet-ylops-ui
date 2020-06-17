@@ -10,14 +10,20 @@
       <template v-slot:default="{ data, isEditing }">
 
         <div v-if="data.perusteenOppiaine.tehtava || data.oppiaine.tehtava">
-          <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenOppiaine.tehtava" :vlkObject="data.oppiaine.tehtava" :isEditing="isEditing" :perusteTekstiAvattu="true"/>
+          <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenOppiaine.tehtava"
+                                      :vlkObject="data.oppiaine.tehtava"
+                                      :isEditing="isEditing"
+                                      :peruste-teksti-avattu="true" />
           <hr/>
         </div>
 
         <div v-if="data.perusteenVuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus">
 
           <div v-if="data.perusteenVuosiluokkakokonaisuus.tehtava">
-            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tehtava" :vlkObject="data.vuosiluokkakokonaisuus.tehtava" :isEditing="isEditing" />
+            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tehtava"
+                                        :vlkObject="data.vuosiluokkakokonaisuus.tehtava"
+                                        :isEditing="isEditing"
+                                        :peruste-teksti-avattu="true" />
             <hr/>
           </div>
 
@@ -59,17 +65,26 @@
           </div>
 
           <div v-if="data.perusteenVuosiluokkakokonaisuus.tyotavat">
-            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tyotavat" :vlkObject="data.vuosiluokkakokonaisuus.tyotavat" :isEditing="isEditing" />
+            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tyotavat"
+                                        :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
+                                        :isEditing="isEditing"
+                                        :peruste-teksti-avattu="true" />
             <hr/>
           </div>
 
           <div v-if="data.perusteenVuosiluokkakokonaisuus.ohjaus">
-            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.ohjaus" :vlkObject="data.vuosiluokkakokonaisuus.ohjaus" :isEditing="isEditing" />
+            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.ohjaus"
+                                        :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
+                                        :isEditing="isEditing"
+                                        :peruste-teksti-avattu="true" />
             <hr/>
           </div>
 
           <div v-if="data.perusteenVuosiluokkakokonaisuus.arviointi">
-            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.arviointi" :vlkObject="data.vuosiluokkakokonaisuus.arviointi" :isEditing="isEditing" />
+            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.arviointi"
+                                        :vlkObject="data.vuosiluokkakokonaisuus.arviointi"
+                                        :isEditing="isEditing"
+                                        :peruste-teksti-avattu="true" />
           </div>
         </div>
         </template>

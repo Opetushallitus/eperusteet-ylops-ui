@@ -3,7 +3,7 @@
     <slot name="header" v-if="perusteObject">
       <h3>{{ $kaanna(perusteObject[otsikko]) }}</h3>
     </slot>
-    <ep-collapse :border-bottom="false" :border-top="false" :expandedByDefault="perusteTekstiAvattu" v-if="perusteObject && perusteObject[teksti]">
+    <ep-collapse :border-bottom="false" :border-top="false" :expanded-by-default="perusteTekstiAvattu" v-if="perusteObject && perusteObject[teksti]">
       <template v-slot:header><h4>{{$t('perusteen-teksti')}}</h4></template>
       <span v-html="$kaanna(perusteObject[teksti])"></span>
     </ep-collapse>
