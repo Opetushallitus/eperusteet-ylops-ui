@@ -1,7 +1,7 @@
 <template>
 <div class="sticky-container" sticky-container="sticky-container">
   <router-view />
-  <ep-footer />
+  <!-- <ep-footer /> -->
   <ep-tutorial :tutoriaalistore="tutoriaalistore" />
 </div>
 </template>

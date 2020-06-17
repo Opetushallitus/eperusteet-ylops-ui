@@ -16,7 +16,8 @@
           </div>
         </div>
       </template>
-      <template slot="keskustelu" slot-scope="{}">
+      <template slot="keskustelu" slot-scope="{ }">
+        <ep-comment-threads />
       </template>
       <template slot="header" slot-scope="{ isEditing, data }">
         <h2>{{ $kaanna(data.tov.tekstiKappale.nimi) }}</h2>
@@ -67,26 +68,26 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
+import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
-import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
+import EpRoute from '@/mixins/EpRoute';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 
 import {
   Lops2019Perusteet,
+  OhjeDto,
   Ohjeet,
   OpetussuunnitelmanSisalto,
-
-  Puu,
-  OhjeDto,
   PerusteTekstiKappaleViiteDto,
+  Puu,
 } from '@shared/api/ylops';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 
@@ -96,10 +97,11 @@ import { success } from '@/utils/notifications';
   components: {
     EpButton,
     EpCollapse,
+    EpCommentThreads,
     EpContent,
     EpEditointi,
-    EpFormContent,
     EpField,
+    EpFormContent,
     EpInput,
     EpAlert,
     EpToggle,

@@ -12,26 +12,59 @@
       </div>
       <slot name="bar" class="flex-fill"></slot>
     </div>
-    <div class="view">
+    <div class="view" ref="content">
       <slot name="view"></slot>
     </div>
   </div>
 </div>
 </template>
-<script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
 
-@Component
+<script lang="ts">
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import Sticky from 'vue-sticky-directive';
+import { Kommentit } from '@/stores/kommentit';
+import { setItem, getItem } from '@/utils/localstorage';
+
+interface SidenavLocalStorage {
+  enabled: boolean;
+}
+
+const SidenavLocalStorageStr = 'sidenav';
+
+@Component({
+  directives: {
+    Sticky,
+  },
+})
 export default class EpSidebar extends Vue {
-  private toggled = true;
+  private width = window.innerWidth;
+  private toggled = false;
 
   public mounted() {
     window.addEventListener('resize', this.onResize);
+    Kommentit.attach(this.$refs.content as Element);
+    const sidenavLocalStorage = getItem<SidenavLocalStorage>(SidenavLocalStorageStr, {
+      enabled: false,
+    });
+
+    if (sidenavLocalStorage) {
+      this.toggled = sidenavLocalStorage.enabled;
+    }
     this.onResize();
   }
 
-  public destroyed() {
+  @Watch('toggled')
+  onToggle(newVal, oldVal) {
+    if (newVal !== oldVal) {
+      setItem(SidenavLocalStorageStr, {
+        enabled: newVal,
+      });
+    }
+  }
+
+  public beforeDestroy() {
     window.removeEventListener('resize', this.onResize);
+    Kommentit.detach();
   }
 
   private onResize() {
@@ -39,6 +72,7 @@ export default class EpSidebar extends Vue {
   }
 }
 </script>
+
 <style scoped lang="scss">
 @import "@shared/styles/_variables.scss";
 

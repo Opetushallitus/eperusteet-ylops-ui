@@ -12,7 +12,7 @@ export function setItem<T>(key: string, value: T) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-export function getItem<T>(key: string): T | null {
+export function getItem<T>(key: string, def: T | null = null): T | null {
   const value = localStorage.getItem(key);
   if (value) {
     const parsed = JSON.parse(value);
@@ -20,6 +20,6 @@ export function getItem<T>(key: string): T | null {
     return parsed;
   }
   else {
-    return null;
+    return def;
   }
 }

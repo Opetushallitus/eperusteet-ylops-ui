@@ -11,7 +11,7 @@ import '@/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 
-describe('RouteDokumentti', async () => {
+describe('RouteDokumentti', () => {
   const localVue = createLocalVue();
   localVue.use(VueI18n);
   Kielet.install(localVue, {

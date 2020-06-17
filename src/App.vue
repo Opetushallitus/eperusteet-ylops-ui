@@ -10,6 +10,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { Kayttajat } from '@/stores/kayttaja';
+import { notify } from '@/utils/notifications';
+import EpComments from '@/components/EpComments/EpComments.vue';
 import { delay } from '@shared/utils/delay';
 
 @Component
@@ -29,5 +31,23 @@ export default class App extends Vue {
 }
 </script>
 
-<style lang="scss" src="@shared/styles/app.scss">
+<style lang="scss">
+@import '@shared/styles/app.scss';
+
+span[kommentti] {
+  background: #ffe598;
+  color: #000;
+  cursor: pointer;
+}
+
+span[kommentti].active {
+  background: #ffd900;
+  color: #000;
+  cursor: pointer;
+}
+
+span[kommentti="uusi-kommentti"]  {
+  background: #ffd900;
+  color: #000;
+}
 </style>

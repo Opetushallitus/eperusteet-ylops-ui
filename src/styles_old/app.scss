@@ -1,4 +1,5 @@
 @import './variables';
+@import '@/components/EpComments/_comments.scss';
 @import '../../node_modules/oph-virkailija-style-guide/oph-styles';
 @import './editorstyle';
 @import 'vue-select/src/scss/vue-select.scss';
@@ -68,3 +69,19 @@ img.content-image {
   }
 }
 
+span[kommentti] {
+  background: #ffe598;
+  color: #000;
+  cursor: pointer;
+}
+
+span[kommentti].active {
+  background: #ffd900;
+  color: #000;
+}
+
+span[kommentti="uusi-kommentti"]  {
+  background: #ffd900;
+  color: #000;
+  cursor: pointer;
+}

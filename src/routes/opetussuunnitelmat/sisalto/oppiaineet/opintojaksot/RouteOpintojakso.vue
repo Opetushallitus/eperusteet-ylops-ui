@@ -32,6 +32,7 @@
         </div>
       </template>
       <template slot="keskustelu" slot-scope="{ }">
+        <ep-comment-threads />
       </template>
       <template slot="header" slot-scope="{ data }">
         <h2 class="nimi mb-0">{{ $kaanna(data.nimi) || $t('opintojakso') }}</h2>
@@ -361,6 +362,8 @@ import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@shared/stores/kieli';
 import * as defaults from '@/defaults';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
+import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
+
 import { KoodistoLops2019LaajaAlaiset, koodiSorters, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 
 import { success } from '@/utils/notifications';
@@ -376,17 +379,18 @@ interface OpintojaksonOppiaine {
   components: {
     EpCollapse,
     EpColorIndicator,
+    EpCommentThreads,
     EpContent,
     EpEditointi,
     EpField,
     EpFormContent,
     EpInput,
     EpList,
+    EpOpintojaksoSelect,
     EpOpintojaksonModuuli,
     EpOppiaineSelector,
     EpPrefixList,
     EpToggle,
-    EpOpintojaksoSelect,
   },
 })
 export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
@@ -920,11 +924,6 @@ hr.valiviiva {
 
 .osio {
   padding: 27px 0 0 0;
-
-  &:not(:first-child) {
-    //margin: 27px 0 27px 0;
-    // border-top: 1px solid #DADADA;
-  }
 
   .paikallinen-laaja-alainen {
     margin-bottom: 20px;

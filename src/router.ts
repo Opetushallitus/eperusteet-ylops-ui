@@ -284,8 +284,7 @@ window.addEventListener('beforeunload', e => {
 router.beforeEach(async (to, from, next) => {
   if (EditointiKontrolli.anyEditing()) {
     const value = await router.app.$bvModal.msgBoxConfirm(
-      Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'),
-      {
+      Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'), {
         title: Kielet.kaannaOlioTaiTeksti('haluatko-poistua-tallentamatta'),
         okTitle: Kielet.kaannaOlioTaiTeksti('poistu-tallentamatta'),
         cancelTitle: Kielet.kaannaOlioTaiTeksti('peruuta'),
