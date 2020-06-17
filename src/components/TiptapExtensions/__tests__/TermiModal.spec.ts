@@ -50,7 +50,7 @@ describe('Tiptap Termi Extension', () => {
     expect(extension.schema.attrs['data-viite']).toBeTruthy();
   });
 
-  describe('Mounted extension component', async () => {
+  describe('Mounted extension component', () => {
     const extension = new TermiExtension(kasitteetHandler);
     const wrapper = shallowMount(extension.view as any, {
       i18n,
@@ -73,7 +73,7 @@ describe('Tiptap Termi Extension', () => {
     });
   });
 
-  describe('Termi modal', async () => {
+  test('Termi modal', async () => {
     const handler = mockKasitteet();
     const wrapper = mount(TermiEditor as any, {
       propsData: {
@@ -85,4 +85,5 @@ describe('Tiptap Termi Extension', () => {
     } as any);
     await localVue.nextTick();
   });
+
 });

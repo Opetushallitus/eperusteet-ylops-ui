@@ -70,7 +70,7 @@ function createWrapper(localVue, config: any = {}) {
   return wrapper;
 }
 
-describe.only('EpContent component', async () => {
+describe('EpContent component', () => {
   beforeAll(() => {
     jest.spyOn(console, 'error').mockImplementation();
   });
@@ -134,8 +134,6 @@ describe.only('EpContent component', async () => {
     expect(wrapper.html()).not.toContain('teksti1234');
     expect(wrapper.html()).toContain('sv');
   });
-
-  return wrapper;
 });
 
 describe('EpContentMenu component', () => {

@@ -25,7 +25,7 @@ describe('Tiptap Image Extension', () => {
     expect(extension.schema.attrs['data-uid']).toBeTruthy();
   });
 
-  describe('Mounted extension component', async () => {
+  describe('Mounted extension component', () => {
     test('Readonly and editable modes', async () => {
       const extension = new ImageExtension(13);
       const wrapper = mount(extension.view as any, {
