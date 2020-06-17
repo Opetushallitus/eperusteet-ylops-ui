@@ -139,10 +139,9 @@ import { oppiaineValidator } from '@/validators/oppiaineet';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
 
-import { paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
+import { KoodistoLops2019LaajaAlaiset, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import { success } from '@/utils/notifications';
-
 import { PerusteCache } from '@/stores/peruste';
 
 @Component({
