@@ -22,7 +22,7 @@
               <div class="inner-collapse mb-4" v-if="tavoite.sisaltoalueet.length > 0">
                 <h4>{{$t('sisaltoalueet')}}</h4>
                 <ep-collapse ref="sisaltoaluecollapse" class="sisaltoalue" v-for="(sisaltoalue, index) in tavoite.sisaltoalueet" :key="'sisaltoalue'+index"
-                  :borderBottom="false" :expandedByDefault="false" chevronLocation="left">
+                  :borderBottom="false" :expanded-by-default="false" chevronLocation="left">
                   <template v-slot:header>
                     <h5 v-html="$kaanna(sisaltoalue.nimi)"></h5>
                   </template>
