@@ -12,7 +12,9 @@
           {{$t('valinnaisia-aineita-ei-ole-luotu')}}
         </div>
 
-        <ep-button variant="outline-primary" icon="plussa" @click="lisaaValinnainenOppiaine(data.vuosiluokkakokonaisuus) ">{{ $t('lisaa-valinnainen-oppiaine') }}</ep-button>
+        <ep-button variant="outline-primary"
+                   icon="plussa"
+                   @click="uusiOppiaine()">{{ $t('lisaa-valinnainen-oppiaine') }}</ep-button>
 
         <b-table v-if="data.oppiaineet.length > 0"
           :items="data.oppiaineet"
@@ -87,28 +89,14 @@ export default class RoutePerusopetusVuosiluokkaValinnaiset extends Mixins(EpRou
     ];
   }
 
-  private async lisaaValinnainenOppiaine(vuosiluokkakokonaisuus) {
-    const oppiaine = (await Oppiaineet.addValinnainen(this.opsId, {
-      oppiaine: {
-        nimi: {
-          fi: 'uusi',
-        },
-        laajuus: '0',
-        vuosiluokkakokonaisuudet: [
-          vuosiluokkakokonaisuus.vuosiluokkakokonaisuus,
-        ],
-      },
-      vuosiluokkakokonaisuusId: vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.id,
-      vuosiluokat: [],
-      tavoitteet: [],
-    })).data;
-
+  uusiOppiaine() {
     this.$router.push({
       name: 'perusopetuspaikallinenoppiaine',
       params: {
-        oppiaineId: oppiaine.id!,
+        ...this.$router.currentRoute.params,
+        oppiaineId: 'uusi',
       },
-    } as any);
+    });
   }
 }
 </script>
