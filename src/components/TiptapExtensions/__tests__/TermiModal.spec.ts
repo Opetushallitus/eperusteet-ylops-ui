@@ -85,5 +85,4 @@ describe('Tiptap Termi Extension', () => {
     } as any);
     await localVue.nextTick();
   });
-
 });
