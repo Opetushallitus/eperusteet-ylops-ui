@@ -311,7 +311,6 @@ export default class EpCommentThreads extends Vue {
     const start = _.size(clone.toString());
     clone.setEnd(range.endContainer, range.endOffset);
     const stop = _.size(clone.toString());
-    console.log('ss', start, stop);
     return { start, stop };
   }
 
