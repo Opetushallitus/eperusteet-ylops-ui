@@ -36,7 +36,6 @@ import { SovellusVirhe } from '@shared/tyypit';
 
 const logger = createLogger('Virhe');
 
-
 @Component({
   components: {
     EpMainView,
@@ -71,6 +70,5 @@ export default class VirheRoute extends Vue {
   }
   padding: 0 10% 0 10%;
 }
-
 
 </style>

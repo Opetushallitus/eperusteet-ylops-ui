@@ -1,9 +1,7 @@
 import { Mark } from 'tiptap';
 import { updateMark, removeMark, toggleMark, markInputRule, markPasteRule } from 'tiptap-commands';
 
-
 export default class CommentExtension extends Mark {
-
   get name() {
     return 'span';
   }

@@ -11,7 +11,7 @@ export const YlopsKoulutustyypit = Object.freeze([
   'koulutustyyppi_23', // LUKIOVALMISTAVAKOULUTUS
   // 'koulutustyyppi_999907', // TPO
   // 'koulutustyyppi_17', // AIKUISTENPERUSOPETUS
-  // 'koulutustyyppi_16', // PERUSOPETUS
+  'koulutustyyppi_16', // PERUSOPETUS
   // 'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
 ]);
 
@@ -42,7 +42,6 @@ export function isPerusteSupported(peruste: any) {
   return _.includes(YlopsKoulutustyypit, koulutustyyppi);
 }
 
-
 export function paikallisestiSallitutLaajennokset() {
   return [
     'oppiaineetjaoppimaaratlops2021_ai12',
@@ -52,12 +51,11 @@ export function paikallisestiSallitutLaajennokset() {
   ];
 }
 
-
 const splitKoodi = _.memoize((arvo: string) => {
   if (_.isString(arvo) && !_.isEmpty(arvo)) {
     const splitattu = arvo.match(/^([^0-9]*?)(\d+$)/);
 
-    if(splitattu && splitattu.length > 2) {
+    if (splitattu && splitattu.length > 2) {
       return [splitattu[1], Number(splitattu[2])];
     }
   }

@@ -3,7 +3,7 @@ import {
   oppimaaraModuuliLinkit,
   oppimaaraOpintojaksoLinkit,
   opsLapsiLinkit,
-  paikallinenOppiaineToMenu,
+  paikallinenOppiaineLinkki,
 } from './menuBuildingMethods';
 
 import * as _ from 'lodash';
@@ -17,7 +17,7 @@ describe('OpsSidenav menubuilder helper', () => {
       lapset: [{
         tekstikappale: null,
         id: 2,
-      }]
+      }],
     }]);
     expect(res1.length).toBe(1);
     expect(res1[0].item.type).toEqual('tekstikappale');
@@ -29,6 +29,7 @@ describe('OpsSidenav menubuilder helper', () => {
   it('runs oppimaaraModuuliLinkit & oppimaaraOpintojaksoLinkit without errors', () => {
     const res1 = oppimaaraModuuliLinkit({
       id: 1,
+      koodi: 'TEST',
       moduulit: [{
         id: 2,
       }],
@@ -40,20 +41,19 @@ describe('OpsSidenav menubuilder helper', () => {
       {
         oppiaineet: [{
           koodi: 'testiuri',
-        }]
-      }
+        }],
+      },
     ], {
-      koodi: {
-        uri: 'testiuri',
-      }
+      id: 1,
+      koodi: 'testiuri',
     }
     );
     expect(res2.length).toBe(1);
     expect(res2[0].item.type).toEqual('opintojakso');
   });
 
-  it('runs paikallinenOppiaineToMenu without errors', () => {
-    const res1 = paikallinenOppiaineToMenu({ id: 1 });
+  it('runs paikallinenOppiaineLinkki without errors', () => {
+    const res1 = paikallinenOppiaineLinkki('oppiaine', { id: 1 }, []);
     expect(res1.item.type).toEqual('oppiaine');
   });
 
@@ -80,5 +80,4 @@ describe('OpsSidenav menubuilder helper', () => {
     expect(_.map(sorted2, 'arvo')).toEqual(['MA1', 'MA11']);
     expect(sorted3).toEqual(['MA1', 'MA11']);
   });
-
 });

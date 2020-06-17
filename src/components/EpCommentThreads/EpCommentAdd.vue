@@ -18,14 +18,12 @@ import _ from 'lodash';
 import { Kommentit } from '@/stores/kommentit';
 import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
 
-
 @Component({
   components: {
     EpRoundButton,
   },
 })
 export default class EpCommentAdd extends Vue {
-
   @Prop({ required: true })
   onAdd!: () => Promise<void>;
 
@@ -44,7 +42,6 @@ export default class EpCommentAdd extends Vue {
   get bounds() {
     return Kommentit.bounds.value;
   }
-
 }
 </script>
 

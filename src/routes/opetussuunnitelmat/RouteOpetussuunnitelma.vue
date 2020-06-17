@@ -103,7 +103,6 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpProgressPopover from '@/components/EpProgress/EpProgressPopover.vue';
 
-
 @Component({
   components: {
     EpCommentThreads,
@@ -117,7 +116,6 @@ import EpProgressPopover from '@/components/EpProgress/EpProgressPopover.vue';
   },
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
-
   @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
 
@@ -210,6 +208,9 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     background-position: 100% -50px;
     background-repeat: no-repeat;
     height: 190px;
+    @media only screen and (min-width: 2503px)  {
+      background-size: 100%;
+    }
 
     display: flex;
     align-items: center;

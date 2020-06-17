@@ -9,6 +9,7 @@
     @input="handleInput"
     :validation="validation"
     :required="true"
+    :help="help"
     :multiple="multiple"/>
 
 </div>
@@ -26,6 +27,11 @@
     <span class="ml-1">({{ oppiaineetMap[value].koodiArvo }})</span>
   </div>
 </div>
+<!--
+<div v-else>
+  <p>{{ $t('oppiainetta-ei-valittu') }}</p>
+</div>
+-->
 </template>
 
 <script lang="ts">
@@ -54,8 +60,14 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
   @Prop({ default: true })
   private multiple!: boolean;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   private oppiaineFilter!: (any) => boolean;
+
+  @Prop({ default: false })
+  private allowOppiaine!: boolean;
+
+  @Prop({ default: '', type: String })
+  private help!: string;
 
   private cache: PerusteCache | null = null;
 
@@ -83,7 +95,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
           ...oa,
           koodi: {
             uri: oa.koodi,
-          }
+          },
         };
       })
       .value();
@@ -113,7 +125,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
             ..._.map(oa.oppimaarat, om => ({
               ...om,
               child: true,
-            }))
+            })),
           ];
         }
       })
@@ -138,7 +150,7 @@ export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsCompon
         return {
           value: oppiaine.koodiUri,
           text: `${(this as any).$kaanna(oppiaine.nimi)} (${oppiaine.koodiArvo})`,
-          unselectable: !_.isEmpty(oppiaine.oppimaarat),
+          unselectable: !_.isEmpty(oppiaine.oppimaarat) && !this.allowOppiaine,
           child: oppiaine.child,
         };
       })

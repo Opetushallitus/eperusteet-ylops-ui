@@ -11,7 +11,6 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import { SideMenuEntry } from '@shared/tyypit';
 
-
 @Component
 export default class OpsSidenavLink extends Vue {
   @Prop()

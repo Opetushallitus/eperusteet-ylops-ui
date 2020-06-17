@@ -14,7 +14,6 @@ import { Vue, Prop, Component } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import EpSearch from '@/components/forms/EpSearch.vue';
 
-
 @Component({
   components: {
     EpSearch,
@@ -26,11 +25,11 @@ export default class RouteHakuBar extends Vue {
 
   // @Prop({ required: true })
   // private opetussuunnitelmaStore!: OpetussuunnitelmaStore;
-  // 
+  //
   // get query() {
   //   return this.hakuStore.query;
   // }
-  // 
+  //
   // set query(value: string) {
   //   this.hakuStore.query = value;
   // }
@@ -50,4 +49,3 @@ export default class RouteHakuBar extends Vue {
 }
 
 </style>
-

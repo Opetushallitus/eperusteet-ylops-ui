@@ -19,20 +19,17 @@
 </div>
 </template>
 
-
 <script lang="ts">
-import { Vue, Component, Prop, Watch} from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import Sticky from 'vue-sticky-directive';
 import { Kommentit } from '@/stores/kommentit';
 import { setItem, getItem } from '@/utils/localstorage';
-
 
 interface SidenavLocalStorage {
   enabled: boolean;
 }
 
 const SidenavLocalStorageStr = 'sidenav';
-
 
 @Component({
   directives: {
@@ -75,7 +72,6 @@ export default class EpSidebar extends Vue {
   }
 }
 </script>
-
 
 <style scoped lang="scss">
 @import "@shared/styles/_variables.scss";

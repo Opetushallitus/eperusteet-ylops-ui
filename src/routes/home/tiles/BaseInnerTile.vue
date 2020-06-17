@@ -21,7 +21,7 @@ import EpIcon from '@/components/EpIcon/EpIcon.vue';
 @Component({
   components: {
     EpIcon,
-  }
+  },
 })
 export default class BaseInnerTile extends Vue {
   @Prop({ required: true })

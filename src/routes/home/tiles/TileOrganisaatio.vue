@@ -28,7 +28,6 @@ import BaseTile from './BaseTile.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
-
 @Component({
   components: {
     BaseTile,

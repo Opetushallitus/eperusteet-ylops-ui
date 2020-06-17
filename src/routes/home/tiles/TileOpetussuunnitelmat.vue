@@ -31,7 +31,6 @@ import BaseTile from './BaseTile.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
-
 @Component({
   components: {
     BaseTile,
@@ -58,7 +57,7 @@ export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
 
   @Prop({
     default: true,
-    type: Boolean
+    type: Boolean,
   })
   private countIsLoading: boolean = true;
 

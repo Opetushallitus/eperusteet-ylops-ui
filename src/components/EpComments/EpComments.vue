@@ -9,7 +9,6 @@ import { Vue, Prop, Watch, Mixins, Component } from 'vue-property-decorator';
 import EpSpinner from '@/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@/components/EpButton/EpButton.vue';
 
-
 @Component({
   components: {
     EpSpinner,
@@ -47,4 +46,3 @@ export default class EpComments extends Vue {
   height: calc(100vh);
 }
 </style>
-

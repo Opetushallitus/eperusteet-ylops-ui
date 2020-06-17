@@ -1,8 +1,6 @@
 import { findIndexWithTagsIncluded } from './utils';
 
-
 describe('Utils', () => {
-
   test('findIndexWithTagsIncluded', () => {
     expect(findIndexWithTagsIncluded('', 0)).toEqual(-1);
     expect(findIndexWithTagsIncluded('123', 2)).toEqual(2);
@@ -15,5 +13,4 @@ describe('Utils', () => {
     expect(findIndexWithTagsIncluded('<p></p>', -1)).toEqual(-1);
     expect(findIndexWithTagsIncluded('<p><em>123<i>456</i><em></p>', 3)).toEqual(13);
   });
-
 });

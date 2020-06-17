@@ -33,7 +33,7 @@
                            :is-editing="isEditing"
                            :items="kielet"
                            :multiple="true"
-                           :useCheckboxes="true">
+                           :use-checkboxes="true">
                 </ep-select>
               </ep-form-content>
             </div>
@@ -94,12 +94,12 @@
 </template>
 
 <script lang="ts">
-import EpContent from'@/components/EpContent/EpContent.vue';
-import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@shared/components/forms/EpField.vue';
-import EpFormContent from'@shared/components/forms/EpFormContent.vue';
-import EpSelect from'@shared/components/forms/EpSelect.vue';
-import EpToggle from'@shared/components/forms/EpToggle.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpSelect from '@shared/components/forms/EpSelect.vue';
+import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
@@ -113,7 +113,6 @@ import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
-
 
 @Component({
   components: {

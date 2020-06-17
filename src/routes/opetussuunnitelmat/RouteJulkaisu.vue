@@ -129,7 +129,6 @@ import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 
-
 @Component({
   components: {
     EpButton,

@@ -66,15 +66,13 @@ import { muokkaustietoRoute, muokkaustietoIcon } from '@/utils/tapahtuma';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 
-
 @Component({
   components: {
     EpSpinner,
     EpButton,
-  }
+  },
 })
 export default class OpsViimeaikainenToiminta extends Vue {
-
   @Prop({ required: true })
   private muokkaustietoStore!: MuokkaustietoStore;
 
@@ -103,7 +101,6 @@ export default class OpsViimeaikainenToiminta extends Vue {
   }
 
   get muokkaustiedotRouted() {
-
     return _.chain(this.muokkaustiedot)
       .map((muokkaustieto) => {
         return {
@@ -122,7 +119,7 @@ export default class OpsViimeaikainenToiminta extends Vue {
 
   tapahtumateksti(muokkaustieto) {
     if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
-      return this.$t('tapahtuma-paivitys-opetussuunnitelma_rakenne');
+      return this.$t('tapahtuma-paivitys-opetussuunnitelma-rakenne');
     }
 
     if (muokkaustieto.lisatieto) {
@@ -134,7 +131,7 @@ export default class OpsViimeaikainenToiminta extends Vue {
 
   tapahtumakaannos(muokkaustieto) {
     if (muokkaustieto.tapahtuma === 'luonti') {
-      return  'tapahtuma-' + muokkaustieto.tapahtuma + '-' + muokkaustieto.kohde;
+      return 'tapahtuma-' + muokkaustieto.tapahtuma + '-' + muokkaustieto.kohde;
     }
 
     return 'tapahtuma-' + muokkaustieto.tapahtuma;
@@ -155,7 +152,6 @@ export default class OpsViimeaikainenToiminta extends Vue {
 
     return muokkaustieto.tapahtuma;
   }
-
 }
 </script>
 

@@ -4,9 +4,11 @@
     <ep-navigation :sticky="false" :tutoriaalistore="tutoriaalistore"></ep-navigation>
     <div class="container">
       <div class="container-fluid">
-        <div class="row">
-          <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
-          <p>{{ $t('tervetuloa-kuvaus') }}</p>
+        <div class="row no-gutters">
+          <div class="col my-4 px-3 px-md-0">
+            <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
+            <p>{{ $t('tervetuloa-kuvaus') }}</p>
+          </div>
         </div>
       </div>
       <!--
@@ -61,7 +63,6 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
-
 @Component({
   components: {
     EpContent,
@@ -80,7 +81,6 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
   },
 })
 export default class Home extends Mixins(EpRoute) {
-
   @Prop()
   private tutoriaalistore!: TutoriaaliStore;
 
@@ -103,7 +103,6 @@ export default class Home extends Mixins(EpRoute) {
   get kayttaja() {
     return Kayttajat.tiedot;
   }
-
 }
 </script>
 
@@ -122,6 +121,9 @@ export default class Home extends Mixins(EpRoute) {
     background-image: url('../../../public/img/banners/header.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
+    @media only screen and (min-width: 2503px)  {
+      background-size: 100%;
+    }
 
     color: white;
   }

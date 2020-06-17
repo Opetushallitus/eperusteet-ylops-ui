@@ -1,9 +1,11 @@
 <template>
 <ep-spinner v-if="isLoading" />
 <div v-else class="sidebar d-flex flex-column flex-fill">
+  <!-- Todo: toteutetaan yhteisen navigaatiokomponentin yhteydessä
   <div class="search">
     <ep-search v-model="query"/>
   </div>
+  -->
   <ul class="navigation flex-fill" v-if="valikkoData.length > 0">
 
     <li class="p-0">
@@ -66,6 +68,14 @@
             :tekstikappaleet="tekstikappaleLapset(itemData)"
             v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
         </li>
+
+        <li v-if="itemData.item.type === 'koosteinen-oppiaine'">
+          <ep-oppimaara-lisays
+              :opetussuunnitelmaStore="store"
+              :oppiaine="itemData.item.objref"
+              :resetNavi="reset"
+              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
+        </li>
       </template>
     </ep-recursive-nav>
   </ul>
@@ -74,7 +84,7 @@
     <router-link :to="{name: 'jarjesta'}">
       <div class="inner">
         <fas icon="jarjesta" fixed-width />
-        <a class="btn btn-link">{{$t('muokkaa-kappaleita')}}</a>
+        <a class="btn btn-link">{{$t('muokkaa-jarjestysta')}}</a>
       </div>
     </router-link>
   </div>

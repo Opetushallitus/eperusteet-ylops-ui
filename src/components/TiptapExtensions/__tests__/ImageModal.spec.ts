@@ -10,7 +10,6 @@ import '@/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 
-
 describe('Tiptap Image Extension', () => {
   const localVue = createLocalVue();
   localVue.use(VueI18n);
@@ -27,7 +26,6 @@ describe('Tiptap Image Extension', () => {
   });
 
   describe('Mounted extension component', async () => {
-
     test('Readonly and editable modes', async () => {
       const extension = new ImageExtension(13);
       const wrapper = mount(extension.view as any, {
@@ -59,7 +57,6 @@ describe('Tiptap Image Extension', () => {
       expect(img.attributes()['data-uid']).toEqual('1234');
       expect(img.attributes()['src']).toEqual('/eperusteet-ylops-service/api/opetussuunnitelmat/13/kuvat/1234');
     });
-
   });
 
   test('Mounting', async () => {

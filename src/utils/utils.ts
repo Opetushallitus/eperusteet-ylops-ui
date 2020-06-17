@@ -9,7 +9,6 @@ export function unwrap(el: HTMLElement | null) {
   el.parentNode.removeChild(el);
 }
 
-
 export function findIndexWithTagsIncluded(innerHtml: string, targetIdx: number) {
   if (targetIdx < 0) {
     return -1;
@@ -32,7 +31,6 @@ export function findIndexWithTagsIncluded(innerHtml: string, targetIdx: number) 
 
     if (innerHtml[idx] === '>') {
       --depth;
-
     }
 
     const ch = innerHtml[idx];

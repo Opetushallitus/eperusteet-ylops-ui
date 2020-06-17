@@ -14,7 +14,7 @@ describe('EpCollapse component', () => {
       },
       propsData: {
         expandedByDefault: true,
-        ...options
+        ...options,
       },
       localVue,
     };
@@ -22,7 +22,7 @@ describe('EpCollapse component', () => {
 
   it('Renders header and content with alternative default state', async () => {
     const options = createOptions({
-      expandedByDefault: false
+      expandedByDefault: false,
     });
     const wrapper = mount(EpCollapse, options);
     await localVue.nextTick();

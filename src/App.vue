@@ -14,7 +14,6 @@ import { notify } from '@/utils/notifications';
 import EpComments from '@/components/EpComments/EpComments.vue';
 import { delay } from '@shared/utils/delay';
 
-
 @Component
 export default class App extends Vue {
   private isInitializing = true;

@@ -68,32 +68,30 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
-import EpButton from'@shared/components/EpButton/EpButton.vue';
-import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
-import EpContent from'@/components/EpContent/EpContent.vue';
-import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@shared/components/forms/EpField.vue';
-import EpFormContent from'@shared/components/forms/EpFormContent.vue';
-import EpInput from'@shared/components/forms/EpInput.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
-import EpToggle from'@shared/components/forms/EpToggle.vue';
-import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpInput from '@shared/components/forms/EpInput.vue';
+import EpOpsComponent from '@/mixins/EpOpsComponent';
+import EpRoute from '@/mixins/EpRoute';
+import EpToggle from '@shared/components/forms/EpToggle.vue';
 
 import {
   Lops2019Perusteet,
+  OhjeDto,
   Ohjeet,
   OpetussuunnitelmanSisalto,
+  PerusteTekstiKappaleViiteDto,
+  Puu,
 } from '@shared/api/ylops';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import {
-  Puu,
-  OhjeDto,
-  PerusteTekstiKappaleViiteDto,
-} from '@shared/api/ylops';
-import { success } from '@/utils/notifications';
 
+import { success } from '@/utils/notifications';
 
 @Component({
   components: {
@@ -114,7 +112,6 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   private perusteenTeksti: PerusteTekstiKappaleViiteDto | null = null;
   private alkuperaiset: PerusteTekstiKappaleViiteDto[] | null = null;
   private nimi: any = {};
-
 
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: async () => this.isUusi(),
@@ -258,7 +255,6 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     const uusi = await this.store.addTeksti({}, parent.id);
     this.$nextTick(() => this.siirry(uusi));
   }
-
 }
 </script>
 

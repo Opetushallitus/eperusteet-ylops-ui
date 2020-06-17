@@ -66,7 +66,7 @@
                   :validation="validation.oppiaineet"
                   :value="data.oppiaineet.map(x => x.koodi)"
                   @input="updateOppiaineet"
-                  :oppiaineFilter="oppiaineFilter"/>
+                  :oppiaine-filter="oppiaineFilter"/>
                 <div v-else>
                   <ul>
                     <li v-for="(oa,index) in data.oppiaineet" :key="index+'data.oppiaineet.select'">
@@ -238,7 +238,7 @@
          <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header"><h3>{{ $t('laaja-alaiset-sisallot') }}</h3></div>
 
-            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx+'opintojaksonOppiaineet'">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineidenTiedot" :key="idx+'opintojaksonOppiaineet'">
               <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
                 <div class="moduuliotsikko"><h4 v-html="$kaanna(oppiaine.nimi)"></h4></div>
                 <ep-content
@@ -307,7 +307,7 @@
           <ep-collapse tyyppi="opintojakson-arviointi">
             <div class="alueotsikko" slot="header"><h3>{{ $t('opintojakson-arviointi') }}</h3></div>
 
-            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineet" :key="idx+'op-arviointi'">
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineidenTiedot" :key="idx+'op-arviointi'">
               <div v-if="oppiaine.arviointi && oppiaine.arviointi.kuvaus">
                 <div class="moduuliotsikko"><h4 v-html="$kaanna(oppiaine.nimi)">></h4></div>
                 <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="oppiaine.arviointi.kuvaus"></ep-content>
@@ -352,7 +352,7 @@ import EpList from '@shared/components/forms/EpList.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019OpintojaksonOppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto } from '@shared/api/ylops';
+import { Lops2019OpintojaksonOppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat } from '@shared/api/ylops';
 import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import * as _ from 'lodash';
@@ -362,11 +362,11 @@ import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@shared/stores/kieli';
 import * as defaults from '@/defaults';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
-import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue';
-import { KoodistoLops2019LaajaAlaiset, koodiSorters } from '@/utils/perusteet';
-import { Opetussuunnitelmat } from '@shared/api/ylops';
+import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
+
+import { KoodistoLops2019LaajaAlaiset, koodiSorters, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
+
 import { success } from '@/utils/notifications';
-import { paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 
 interface OpintojaksonOppiaine {
   koodi: string;
@@ -386,11 +386,11 @@ interface OpintojaksonOppiaine {
     EpFormContent,
     EpInput,
     EpList,
+    EpOpintojaksoSelect,
     EpOpintojaksonModuuli,
     EpOppiaineSelector,
     EpPrefixList,
     EpToggle,
-    EpOpintojaksoSelect,
   },
 })
 export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
@@ -439,7 +439,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return [];
     }
     else {
-      return await this.store.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
+      return this.store.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
     }
   }
 
@@ -505,19 +505,19 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   get oppiaineet() {
     return [
       ...this.cache.peruste.oppiaineet,
-      ...this.paikallisetOppiaineet
+      ...this.paikallisetOppiaineet,
     ] as Lops2019OppiaineDto[];
   }
 
   get laajuusJohdettavusTeksti() {
     if (!_.isEmpty(this.editable!.moduulit) && !_.isEmpty(this.editable!.paikallisetOpintojaksot)) {
-      return `(${ this.$t('johdetaan-moduuleista-ja-opintojaksoista') })`;
+      return `(${this.$t('johdetaan-moduuleista-ja-opintojaksoista')})`;
     }
     else if (!_.isEmpty(this.editable!.moduulit)) {
-      return `(${ this.$t('johdetaan-moduuleista') })`;
+      return `(${this.$t('johdetaan-moduuleista')})`;
     }
     else if (!_.isEmpty(this.editable!.paikallisetOpintojaksot)) {
-      return `(${ this.$t('johdetaan-opintojaksoista') })`;
+      return `(${this.$t('johdetaan-opintojaksoista')})`;
     }
 
     return '';
@@ -525,7 +525,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   get laajuus() {
     let result: number = _.chain(this.editable!.oppiaineet)
-      .filter((oppiaine) => !_.includes(_.map(this.paikallistenOpintojaksojenOppiaineet,'koodi'), oppiaine.koodi))
+      .filter((oppiaine) => !_.includes(_.map(this.paikallistenOpintojaksojenOppiaineet, 'koodi'), oppiaine.koodi))
       .filter('laajuus')
       .map('laajuus')
       .map(_.parseInt)
@@ -554,7 +554,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   get oppiaineidenModuulit() {
     return _.chain(this.oppiaineetJaOppimaarat)
       .map((oa: any) => {
-        if(oa.perusteenOppiaineUri) {
+        if (oa.perusteenOppiaineUri) {
           return {
             ...oa,
             moduulit: this.oppiaineetMap[oa.perusteenOppiaineUri].moduulit,
@@ -641,35 +641,45 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .value() as Lops2019OppiaineDto[];
   }
 
-  get oppiaineidenTavoitteet() {
-    interface Tavoitteet {
-      nimi: any;
-      tavoitteet: any;
+  get opintojaksonOppiaineidenTiedot() {
+    return _.chain(this.editable!.oppiaineet)
+      .map(({ koodi }) => koodi)
+      .sortBy(...koodiSorters() as any[])
+      .uniq()
+      .map((uri: string) => {
+        let oppiaineet = [this.oppiaineetMap[uri]];
+        if (this.oppiaineetMap[uri].parentUri) {
+          oppiaineet = [this.oppiaineetMap[uri], this.oppiaineetMap[this.oppiaineetMap[uri].parentUri!]];
+        }
+
+        if ((this.oppiaineetMap[uri] as any).perusteenOppiaineUri) {
+          const perusteenOppiaine = this.oppiaineetMap[(this.oppiaineetMap[uri] as any).perusteenOppiaineUri];
+          let perusteenOppiaineenParent;
+          if (perusteenOppiaine.parentUri) {
+            perusteenOppiaineenParent = this.oppiaineetMap[perusteenOppiaine.parentUri!];
+          }
+          oppiaineet = [this.oppiaineetMap[uri], perusteenOppiaine, perusteenOppiaineenParent];
+        }
+
+        return {
+          nimi: this.oppiaineetMap[uri].nimi,
+          arviointi: this.getOppiaineTieto(oppiaineet, 'arviointi'),
+          laajaAlaisetOsaamiset: this.getOppiaineTieto(oppiaineet, 'laajaAlaisetOsaamiset'),
+        };
+      })
+      .value() as Lops2019OppiaineDto[];
+  }
+
+  getOppiaineTieto(oppiaineet, tieto) {
+    if (oppiaineet) {
+      return _.chain(oppiaineet)
+        .filter(oppiaine => oppiaine && oppiaine[tieto] && oppiaine[tieto].kuvaus)
+        .map(oppiaine => oppiaine[tieto])
+        .head()
+        .value();
     }
 
-    if (_.isEmpty(this.editable!.moduulit)) {
-      return _.chain(this.opintojaksonOppiaineet)
-        .map(oa => {
-          return {
-            kind: 'oppiaine',
-            nimi: oa.nimi,
-            tavoitteet: oa.tavoitteet,
-          };
-        })
-        .value();
-    }
-    else {
-      return _.chain(this.editable!.moduulit)
-        .map((moduuli: Lops2019ModuuliDto) => {
-          return {
-            kind: 'moduuli',
-            nimi: moduuli.nimi,
-            kuvaus: null,
-            tavoitteet: moduuli.tavoitteet,
-          };
-        })
-        .value();
-    }
+    return {};
   }
 
   get paikallistenOpintojaksojenOppiaineet() {
@@ -680,7 +690,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   get editoitavaOpintojaksoValittuToisessaOpintojaksossa() {
-    return !_.isEmpty(_.filter(this.store.opintojaksot, opintojakso => _.includes(_.map(opintojakso.paikallisetOpintojaksot,'koodi'), this.editable!.koodi)));
+    return !_.isEmpty(_.filter(this.store.opintojaksot, opintojakso => _.includes(_.map(opintojakso.paikallisetOpintojaksot, 'koodi'), this.editable!.koodi)));
   }
 
   get paikallistenOppiaineidenOpintojaksot() {
@@ -727,12 +737,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       })
       .filter(oppiaineOpintojakso => !_.isEmpty(oppiaineOpintojakso.opintojaksot))
       .sortBy(...koodiSorters() as any[])
-      .value();
-  }
-
-  get laajaAlaisetOsaamiset() {
-    return _.chain(this.opintojaksonOppiaineet)
-      .filter((oa: any) => oa.laajaAlaisetOsaamiset && oa.laajaAlaisetOsaamiset.kuvaus)
       .value();
   }
 
@@ -784,7 +788,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         laajuus: 0,
         isPaikallinenOppiaine: _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), koodi),
         isModuuliton: _.isEmpty(this.oppiaineidenModuulitMap[koodi]) || _.isEmpty(this.oppiaineidenModuulitMap[koodi].moduulit),
-      }))
+      })),
     ];
 
     const paikallistenOpintojaksojenOppiaineKoodit = _.chain(this.editable!.paikallisetOpintojaksot)
@@ -794,8 +798,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .value();
 
     this.editable!.paikallisetOpintojaksot = _.filter(this.editable!.paikallisetOpintojaksot, paikallinenopintojakso =>
-      _.some(paikallinenopintojakso.oppiaineet, oppiaine => _.includes(koodit, oppiaine.koodi) ));
-
+      _.some(paikallinenopintojakso.oppiaineet, oppiaine => _.includes(koodit, oppiaine.koodi)));
   }
 
   public async load() {
@@ -871,7 +874,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       await this.store.saveOpintojakso(opintojakso);
     }
   }
-
 }
 </script>
 
@@ -919,7 +921,6 @@ hr.valiviiva {
     border-bottom: 1px solid #ccc;
   }
 }
-
 
 .osio {
   padding: 27px 0 0 0;
@@ -1003,6 +1004,5 @@ hr.valiviiva {
     cursor: pointer;
   }
 }
-
 
 </style>

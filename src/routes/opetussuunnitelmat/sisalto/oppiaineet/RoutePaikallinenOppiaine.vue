@@ -23,7 +23,7 @@
       <div class="content">
         <b-row v-if="isEditing">
           <b-col>
-            <ep-form-content name="oppiaine-nimi-ohje">
+            <ep-form-content :name="data.perusteenOppiaineUri ? 'oppimaara-nimi-ohje' : 'oppiaine-nimi-ohje'">
               <ep-field v-model="data.nimi" :is-header="true" :validation="validation.nimi" :is-editing="isEditing">
               </ep-field>
             </ep-form-content>
@@ -31,39 +31,59 @@
            <b-col />
         </b-row>
         <b-row>
-          <b-col>
+          <b-col v-if="isEditing || data.perusteenOppiaineUri">
             <ep-form-content name="oppiainekoodi">
               <ep-oppiaine-selector
+                help="oppiaine-ohje"
+                v-model="data.perusteenOppiaineUri"
                 :opetussuunnitelma-store="opetussuunnitelmaStore"
                 :is-editable="isEditing"
                 :multiple="false"
-                v-model="data.perusteenOppiaineUri"
-                :oppiaineFilter="oppiaineFilter"
-                :ops-id="$route.params.id" />
+                :allow-oppiaine="true"
+                :oppiaine-filter="oppiaineFilter" />
             </ep-form-content>
           </b-col>
           <b-col>
             <ep-form-content name="koodi">
-              <ep-field help="oppiaine-koodi-ohje" v-model="data.koodi" :validation="validation.koodi" type="string" :is-editing="isEditing" />
+              <ep-field :help="data.perusteenOppiaineUri ? 'oppimaara-koodi-ohje' : 'oppiaine-koodi-ohje'" v-model="data.koodi" :validation="validation.koodi" type="string" :is-editing="isEditing" />
             </ep-form-content>
           </b-col>
         </b-row>
         <div>
           <ep-collapse tyyppi="tehtava" :first="true">
             <h3 class="header" slot="header">{{ $t('tehtava') }}</h3>
+            <ep-content v-if="oppimaara && oppimaara.tehtava" layout="normal" v-model="oppimaara.tehtava.kuvaus"> </ep-content>
+
+            <h4>{{ $t('paikallinen-lisays-tehtavalle') }}</h4>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tehtava.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
           </ep-collapse>
+
           <ep-collapse tyyppi="tavoitteet">
             <h3 class="header" slot="header">{{ $t('tavoitteet') }}</h3>
+            <ep-content v-if="oppimaara && oppimaara.tavoitteet && oppimaara.tavoitteet.kuvaus" v-model="oppimaara.tavoitteet.kuvaus" :is-editable="false" layout="normal"> </ep-content>
+            <div class="tavoitealueet" v-if="oppimaara && oppimaara.tavoitteet">
+              <ep-prefix-list v-model="oppimaara.tavoitteet.tavoitealueet" arvot="tavoitteet" :is-editable="false"></ep-prefix-list>
+            </div>
+
+            <h4>{{ $t('paikallinen-lisays-tavoitteet') }}</h4>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tavoitteet.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
             <div class="tavoitealueet">
-              <ep-prefix-list v-model="data.tavoitteet.tavoitealueet" arvot="tavoitteet" arvo="tavoite" :is-editable="isEditing">
-              </ep-prefix-list>
+              <ep-prefix-list v-model="data.tavoitteet.tavoitealueet" arvot="tavoitteet" arvo="tavoite" :is-editable="isEditing"></ep-prefix-list>
             </div>
+          </ep-collapse>
+
+          <ep-collapse tyyppi="arviointi">
+            <h3 class="header" slot="header">{{ $t('osaamisen-arviointi') }}</h3>
+            <ep-content v-if="oppimaara && oppimaara.arviointi" layout="normal" v-model="oppimaara.arviointi.kuvaus"> </ep-content>
+
+            <h4>{{ $t('paikallinen-lisays-osaamisen-arvioinnille') }}</h4>
+            <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.arviointi.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
           </ep-collapse>
 
           <ep-collapse tyyppi="laajaAlainenOsaaminen">
             <h3 class="header" slot="header">{{ $t('laaja-alaiset-sisallot') }}</h3>
+            <ep-content v-if="oppimaara && oppimaara.laajaAlaisetOsaamiset" v-model="oppimaara.laajaAlaisetOsaamiset.kuvaus" :is-editable="false" layout="normal"> </ep-content>
+
             <laaja-alaiset-osaamiset
               v-model="data.laajaAlainenOsaaminen"
               :koodit="koodit"
@@ -100,29 +120,30 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 
-import EpButton from'@shared/components/EpButton/EpButton.vue';
-import EpCollapse from'@/components/EpCollapse/EpCollapse.vue';
-import EpColorIndicator from'@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import EpContent from'@/components/EpContent/EpContent.vue';
-import EpEditointi from'@/components/EpEditointi/EpEditointi.vue';
-import EpField from'@shared/components/forms/EpField.vue';
-import EpFormContent from'@shared/components/forms/EpFormContent.vue';
-import EpOppiaineSelector from'@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
-import EpPrefixList from'@/components/EpPrefixList/EpPrefixList.vue';
-import EpSpinner from'@shared/components/EpSpinner/EpSpinner.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
+import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpField from '@shared/components/forms/EpField.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
+import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019PaikallinenOppiaineDto } from '@shared/api/ylops';
+import { Lops2019PaikallinenOppiaineDto, Opetussuunnitelmat } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { Kielet } from '@shared/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
-import { Opetussuunnitelmat } from '@shared/api/ylops';
-import { paikallisestiSallitutLaajennokset, KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
-import EpCommentThreads from'@/components/EpCommentThreads/EpCommentThreads.vue';
+
+import { paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
+import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import { success } from '@/utils/notifications';
 
+import { PerusteCache } from '@/stores/peruste';
 
 @Component({
   components: {
@@ -157,6 +178,12 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
     },
   };
 
+  private perusteCache: PerusteCache | null = null;
+
+  async mounted() {
+    this.perusteCache = await PerusteCache.of(this.opsId);
+  }
+
   async remove(data: any) {
     await this.store.removeOppiaine(data.id);
     this.$router.push({
@@ -180,7 +207,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
       return [];
     }
     else {
-      return await this.store.getPaikallinenOppiaineenHistoria(_.parseInt(this.$route.params.paikallinenOppiaineId));
+      return this.store.getPaikallinenOppiaineenHistoria(_.parseInt(this.$route.params.paikallinenOppiaineId));
     }
   }
 
@@ -216,6 +243,22 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
         oppiaineet: this.editable.koodi,
       },
     });
+  }
+
+  get oppimaara() {
+    if (this.editable.perusteenOppiaineUri && this.perusteCache) {
+      return _.chain(this.perusteCache.peruste.oppiaineet)
+        .map(oppiaine => {
+          return [
+            oppiaine,
+            ...oppiaine.oppimaarat,
+          ];
+        })
+        .flatMap()
+        .filter(oppiaineTaiOppimaara => oppiaineTaiOppimaara.koodi.uri === this.editable.perusteenOppiaineUri)
+        .head()
+        .value();
+    }
   }
 
   get validator() {

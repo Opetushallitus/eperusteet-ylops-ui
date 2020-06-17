@@ -42,9 +42,9 @@
 <script lang="ts">
 import { Vue, Component, Watch, Prop } from 'vue-property-decorator';
 
-import { baseURL, DokumentitParams } from '@shared/api/ylops';
+import { baseURL, DokumentitParams, DokumenttiDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-import { DokumenttiDto } from '@shared/api/ylops';
+
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import { fail } from '@/utils/notifications';
@@ -62,14 +62,14 @@ export default class EpDokumenttiKuvaLataus extends Vue {
   private fileMaxSize = 1 * 1024 * 1024;
   private fileTypes: string [] = ['image/jpeg', 'image/png'];
 
-  @Prop({required: true})
+  @Prop({ required: true })
   private tyyppi!: string;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   private dto: DokumenttiDto | null = null;
 
   get kuvaUrl() {
-    return baseURL + DokumentitParams.getImage(this.dto!.opsId!, this.tyyppi, this.kieli).url;;
+    return baseURL + DokumentitParams.getImage(this.dto!.opsId!, this.tyyppi, this.kieli).url; ;
   }
 
   get kieli() {

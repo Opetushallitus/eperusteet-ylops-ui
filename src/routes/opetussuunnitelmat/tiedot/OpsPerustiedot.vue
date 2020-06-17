@@ -85,15 +85,13 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpOpsComponent from '../../../mixins/EpOpsComponent';
 
-
 @Component({
-  components:{
+  components: {
     EpSpinner,
     EpButton,
-  }
+  },
 })
 export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
-
   private naytaLisaaTyoryhmaa: boolean = false;
   private tyoryhmaAlkuMaara = 5;
 
@@ -114,13 +112,12 @@ export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
       .map(virkailija => {
         return {
           oid: virkailija.oid,
-          esitysnimi : parsiEsitysnimi(virkailija),
+          esitysnimi: parsiEsitysnimi(virkailija),
         };
       })
       .take(!this.naytaLisaaTyoryhmaa ? this.tyoryhmaAlkuMaara : _.size(this.virkailijat))
       .value();
   }
-
 }
 </script>
 
@@ -144,7 +141,5 @@ export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
     }
 
   }
-
-
 
 </style>

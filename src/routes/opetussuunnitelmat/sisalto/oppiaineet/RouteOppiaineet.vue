@@ -56,15 +56,15 @@
           <th width="25%">{{ $t('vieraat-moduulit') }}</th>
           <th class="actions" width="5%">
             <button class="btn btn-link" @click="toggleAll()">
-              <fas icon="chevron-down">
-              </fas>
+              <fas icon="chevron-up" v-if="isOpened" />
+              <fas icon="chevron-down" v-else />
             </button>
           </th>
         </tr>
       </thead>
       <tbody>
         <template v-for="(oa, idx) in suodatettuOppiaineRakenne">
-          <tr class="headerline" :class="[oa.isOpen && 'opened', oa._oppiaine ? 'oppimaara': 'oppiaine']" :key="idx">
+          <tr class="headerline" :class="[oa.isOpen && 'opened', oa._oppiaine || oa.perusteenOppiaineUri ? 'oppimaara': 'oppiaine']" :key="idx">
             <td>
               <router-link :to="{ name: oa.route.type, params: oa.route[oa.route.type] }">
                 <span>{{ $kaanna(oa.nimi) }}</span>
@@ -72,15 +72,17 @@
               </router-link>
             </td>
             <td>
-              <span v-if="oa.oppimaarat && oa.oppimaarat.length === 0">{{ oa.stats.opintojaksot }}</span>
+              <span v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">{{ oa.stats.opintojaksot }}</span>
             </td>
             <td :class="oa.stats.valid ? 'valid' : 'invalid'">
-              <span v-if="oa.oppimaarat && oa.oppimaarat.length === 0">{{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}</span>
+              <span v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">{{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}</span>
             </td>
             <td>
             </td>
             <td class="actions">
-              <button class="btn btn-link" @click="toggleOppiaine(oa)" v-if="oa.oppimaarat && oa.oppimaarat.length === 0">
+              <button class="btn btn-link"
+                      @click="toggleOppiaine(oa)"
+                      v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">
                 <fas v-if="oa.isOpen" icon="chevron-up">
                 </fas>
                 <fas v-else icon="chevron-down">
@@ -88,7 +90,7 @@
               </button>
             </td>
           </tr>
-          <tr class="dataline" v-if="(!oa.oppimaarat || oa.oppimaarat.length === 0) && oa.isOpen" :key="-idx - 1">
+          <tr class="dataline" v-if="(!oa.oppimaarat || oa.oppimaarat.length === 0) && (oa.opintojaksot.length > 0 || oa.moduulit.length > 0 || oa.vieraatModuulit > 0) && oa.isOpen" :key="-idx - 1">
             <td>
             </td>
             <td>
@@ -158,6 +160,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
@@ -166,18 +169,16 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
-import EpToggle from'@shared/components/forms/EpToggle.vue';
+import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
-import { koodiAlku, koodiNumero } from '@/utils/perusteet';
+import { koodiAlku, koodiNumero, koodiSorters } from '@/utils/perusteet';
 
-import _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-
 
 @Component({
   directives: {
@@ -209,7 +210,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
 
   private async load() {
     const result = {
-      ohjeet: [{teksti:'N/A'}],
+      ohjeet: [{ teksti: 'N/A' }],
     } as any;
 
     if (_.isEmpty(result.ohjeet)) {
@@ -233,25 +234,52 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
   }
 
   get total() {
-    return _(this.oppiaineRakenne)
-      .map('stats')
-      .reduce((acc, next) => {
-        return {
-          opintojaksot: acc.opintojaksot + next.opintojaksot,
-          kaytetytModuulit: acc.kaytetytModuulit + next.kaytetytModuulit,
-          kaikkiModuulit: acc.kaikkiModuulit + next.kaikkiModuulit,
-        };
-      }, {
-        opintojaksot: 0,
-        kaytetytModuulit: 0,
-        kaikkiModuulit: 0,
-      });
+    return {
+      ..._(this.oppiaineRakenne)
+        .map('stats')
+        .reduce((acc, next) => {
+          return {
+            kaytetytModuulit: acc.kaytetytModuulit + next.kaytetytModuulit,
+            kaikkiModuulit: acc.kaikkiModuulit + next.kaikkiModuulit,
+          };
+        }, {
+          kaytetytModuulit: 0,
+          kaikkiModuulit: 0,
+        }),
+      opintojaksot: _.size(this.store.opintojaksot),
+    };
   }
 
   get oppiaineetJaOppimaarat() {
     return _(this.peruste.oppiaineet as Lops2019OppiaineDto[])
       .map(oa => [oa, ...(oa.oppimaarat || [])])
       .flatten()
+      .value();
+  }
+
+  get oppiaineetMap() {
+    return _.keyBy(this.oppiaineetJaOppimaarat, 'koodi.uri');
+  }
+
+  get oppiaineidenModuulit() {
+    return _.chain(this.oppiaineetJaOppimaarat)
+      .map((oa: any) => {
+        if (oa.perusteenOppiaineUri) {
+          return {
+            ...oa,
+            moduulit: this.oppiaineetMap[oa.perusteenOppiaineUri].moduulit,
+          };
+        }
+        else {
+          return oa;
+        }
+      })
+      .value();
+  }
+
+  get oppiaineidenModuulitMap() {
+    return _.chain(this.oppiaineidenModuulit)
+      .keyBy('koodi.uri')
       .value();
   }
 
@@ -282,24 +310,25 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
             },
             oppiaine: {
               oppiaineId: oa.id,
-            }
+            },
           },
           vieraatModuulit: this.vainPuuttuvat ? [] : oa.vieraatModuulit,
           moduulit: _(oa.moduulit)
             .reject((moduuli) => this.vainPuuttuvat && moduuli.used)
             .filter((moduuli) => Kielet.search(this.query, moduuli.nimi))
-            .sortBy(koodiAlku, koodiNumero)
+            .sortBy(...koodiSorters())
             .value(),
           opintojaksot: _(oa.opintojaksot)
             .filter((oj) => Kielet.search(this.query, oj.nimi))
-            .sortBy(koodiAlku, koodiNumero)
+            .sortBy(...koodiSorters())
             .value(),
         };
       })
       .filter((oa: any) => Kielet.search(this.query, oa.nimi)
         || !_.isEmpty(oa.moduulit)
         || !_.isEmpty(oa.opintojaksot))
-      .sortBy((oa: any) => oa.paikallinen, koodiAlku, koodiNumero)
+      // fixme: Oppimäärät saattavat mennä väärän oppiaineen alle jos koodi on poikkeava
+      // .sortBy((oa: any) => oa.paikallinen, koodiAlku, koodiNumero)
       .value();
   }
 
@@ -323,29 +352,75 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       return [];
     }
     return _(this.store.paikallisetOppiaineet)
-      .map(oa => {
-        const opintojaksot = [];
+      .map(poa => this.mapPaikallinenOppiaine(poa))
+      .value();
+  }
 
-        return {
-          ...oa,
-          koodi: {
-            arvo: oa.koodi,
-            uri: oa.koodi,
-          },
-          isOpen: !this.opened[oa.id!] || !_.isEmpty(this.query),
-          paikallinen: true,
-          vieraatModuulit: [],
-          opintojaksot: [],
-          moduulit: [],
-          stats: {
-            opintojaksot: _.size(opintojaksot),
-            kaytetytModuulit: 0,
-            kaikkiModuulit: 0,
-            valid: !_.isEmpty(opintojaksot),
-          },
-        };
+  get paikallinenOppiaineIlmanOppimaariaRakenne() {
+    return _(this.paikallinenOppiaineRakenne)
+      .reject('perusteenOppiaineUri')
+      .value();
+  }
+
+  private mapPaikallinenOppiaine(poa) {
+    const oppimaaranOmatModuulit = poa.perusteenOppiaineUri ? this.oppiaineidenModuulitMap[poa.perusteenOppiaineUri].moduulit : [];
+
+    const opintojaksot = _(this.store.opintojaksot)
+      .concat(this.store.tuodutOpintojaksot)
+      .filter(oj => _.includes(
+        _(oj.oppiaineet)
+          .map('koodi')
+          .filter(_.identity)
+          .value(),
+          poa.koodi!
+      ))
+      .value();
+
+    const valitutModuulit = _(opintojaksot)
+      .map('moduulit')
+      .flatten()
+      .map(m => {
+        return this.moduulitByKoodi[m.koodiUri];
       })
       .value();
+
+    const omatModuulit = _(valitutModuulit)
+      .filter((m: any) => _.includes(_.map(oppimaaranOmatModuulit, 'koodi.uri'), m.koodi.uri))
+      .value();
+
+    const vieraatModuulit = _(opintojaksot)
+      .map('moduulit')
+      .flatten()
+      .map(moduuli => this.moduulitByKoodi[moduuli.koodiUri])
+      .reject(moduuli => _.includes(omatModuulit, moduuli))
+      .value();
+
+    // Käytetään vain esityksessä
+    const opintojaksojenModuulit = _(opintojaksot)
+      .map('moduulit')
+      .flatten()
+      .keyBy('koodiUri')
+      .value();
+
+    return {
+      ...poa,
+      koodi: {
+        arvo: poa.koodi,
+        uri: poa.koodi,
+      },
+      isOpen: !this.opened[poa.id!] || !_.isEmpty(this.query),
+      toggleEnabled: _.size(opintojaksot) > 0,
+      paikallinen: true,
+      opintojaksot,
+      moduulit: _.map(oppimaaranOmatModuulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
+      vieraatModuulit: _.map(vieraatModuulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
+      stats: {
+        opintojaksot: _.size(opintojaksot),
+        kaytetytModuulit: _.size(omatModuulit),
+        kaikkiModuulit: _.size(oppimaaranOmatModuulit),
+        valid: _.size(omatModuulit) === _.size(oppimaaranOmatModuulit),
+      },
+    };
   }
 
   get perusteenOppiaineRakenne() {
@@ -354,69 +429,148 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
     }
 
     return _(this.peruste.oppiaineet as Lops2019OppiaineDto[])
-      .map(oa => [oa, ...(oa.oppimaarat || [])])
-      .flatten()
       .map(oa => {
-        const opintojaksot = _(this.store.opintojaksot)
-          .concat(this.store.tuodutOpintojaksot)
-          .filter(oj => _.includes(
-            _(oj.oppiaineet)
-              .map('koodi')
-              .filter(_.identity)
-              .value(),
-          oa.koodi!.uri))
+        const oppimaarat = _.sortBy(oa.oppimaarat, om => koodiAlku, koodiNumero);
+        const paikallisetOppimaarat = _(this.paikallinenOppiaineRakenne)
+          .filter(poa => _.includes(_.map(oa.oppimaarat, 'koodi.uri'), poa.perusteenOppiaineUri))
           .value();
 
-        const opintojaksojenModuulit = _(opintojaksot)
-          .map('moduulit')
-          .flatten()
-          .keyBy('koodiUri')
-          .value();
-
-        const vieraatModuulit = _(opintojaksot)
-          .map('moduulit')
-          .flatten()
-          .map(moduuli => this.moduulitByKoodi[moduuli.koodiUri])
-          .reject((moduuli: any) => {
-            // Vertailua ei voida tehdä arvolla, koska ne voivat olla esim. ÄI ja AI
-            if (moduuli.koodi && oa.koodi!.uri) {
-              // Käytetään KoodiUrin loppuosaa
-              const mKoodi = _.split(moduuli.koodi!.uri, '_').pop(); // esim. ai1
-              const oKoodi = _.split(oa.koodi!.uri, '_').pop(); // esim. ai
-              console.log(mKoodi, oKoodi);
-              // Poistetaan vielä oppimäärän numerot (käytetään kielten oppimäärissä)
-              return _.startsWith(mKoodi, oKoodi!.replace(/[0-9]/g, ''));
-            }
-            else {
-              return false;
-            }
-          })
-          .map(moduuli => this.moduuliPresentation(moduuli, opintojaksojenModuulit))
-          .value();
-
-        const kaytetytModuulit = _.size(opintojaksojenModuulit) - _.size(vieraatModuulit);
         return {
           ...oa,
-          isOpen: !this.opened[oa.id!] || !_.isEmpty(this.query),
-          moduulit: _.map(oa.moduulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
-          vieraatModuulit,
-          paikallinen: false,
-          opintojaksot,
-          stats: {
-            opintojaksot: _.size(opintojaksot),
-            kaytetytModuulit,
-            kaikkiModuulit: _.size(oa.moduulit),
-            valid: kaytetytModuulit === _.size(oa.moduulit),
-          },
+          oppimaarat,
+          paikallisetOppimaarat,
         };
       })
+      .map(oa => [
+        oa,
+        ...oa.oppimaarat,
+        ...oa.paikallisetOppimaarat,
+      ])
+      .flatten()
+      .map(oa => oa.paikallinen ? this.mapPaikallinenOppimaara(oa) : this.mapOppiaineet(oa))
       .value();
+  }
+
+  private mapPaikallinenOppimaara(pom) {
+    const oppimaaranOmatModuulit = pom.perusteenOppiaineUri ? this.oppiaineidenModuulitMap[pom.perusteenOppiaineUri].moduulit : [];
+
+    const opintojaksot = _(this.store.opintojaksot)
+      .concat(this.store.tuodutOpintojaksot)
+      .filter(oj => _.includes(
+        _(oj.oppiaineet)
+          .map('koodi')
+          .filter(_.identity)
+          .value(),
+          pom.koodi!.uri
+      ))
+      .value();
+
+    const valitutModuulit = _(opintojaksot)
+      .map('moduulit')
+      .flatten()
+      .map(m => {
+        return this.moduulitByKoodi[m.koodiUri];
+      })
+      .value();
+
+    const omatModuulit = _(valitutModuulit)
+      .filter((m: any) => _.includes(_.map(oppimaaranOmatModuulit, 'koodi.uri'), m.koodi.uri))
+      .value();
+
+    const opintojaksojenModuulit = _(opintojaksot)
+      .map('moduulit')
+      .flatten()
+      .keyBy('koodiUri')
+      .value();
+
+    const vieraatModuulit = _(opintojaksot)
+      .map('moduulit')
+      .flatten()
+      .map(moduuli => this.moduulitByKoodi[moduuli.koodiUri])
+      .reject(moduuli => _.includes(omatModuulit, moduuli))
+      .value();
+
+    return {
+      ...pom,
+      isOpen: !this.opened[pom.id!] || !_.isEmpty(this.query),
+      toggleEnabled: _.size(opintojaksot) > 0,
+      moduulit: _.map(pom.moduulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
+      vieraatModuulit: _.map(vieraatModuulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
+      paikallinen: true,
+      opintojaksot,
+      stats: {
+        opintojaksot: _.size(opintojaksot),
+        kaytetytModuulit: _.size(omatModuulit),
+        kaikkiModuulit: _.size(oppimaaranOmatModuulit),
+        valid: _.size(omatModuulit) === _.size(oppimaaranOmatModuulit),
+      },
+    };
+  }
+
+  private mapOppiaineet(oa) {
+    const opintojaksot = _(this.store.opintojaksot)
+      .concat(this.store.tuodutOpintojaksot)
+      .filter(oj => _.includes(
+        _(oj.oppiaineet)
+          .map('koodi')
+          .filter(_.identity)
+          .value(),
+      oa.koodi!.uri))
+      .value();
+
+    const opintojaksojenModuulit = _(opintojaksot)
+      .map('moduulit')
+      .flatten()
+      .keyBy('koodiUri')
+      .value();
+
+    const vieraatModuulit = _(opintojaksot)
+      .map('moduulit')
+      .flatten()
+      .map(moduuli => this.moduulitByKoodi[moduuli.koodiUri])
+      .reject((moduuli: any) => {
+        // Vertailua ei voida tehdä arvolla, koska ne voivat olla esim. ÄI ja AI
+        if (moduuli.koodi && oa.koodi!.uri) {
+          // Käytetään KoodiUrin loppuosaa
+          const mKoodi = _.split(moduuli.koodi!.uri, '_').pop(); // esim. ai1
+          const oKoodi = _.split(oa.koodi!.uri, '_').pop(); // esim. ai
+          // Poistetaan vielä oppimäärän numerot (käytetään kielten oppimäärissä)
+          return _.startsWith(mKoodi, oKoodi!.replace(/[0-9]/g, '')) || _.parseInt(moduuli._oppiaine) === oa.id;
+        }
+        else {
+          return false;
+        }
+      })
+      .map(moduuli => this.moduuliPresentation(moduuli, opintojaksojenModuulit))
+      .value();
+
+    const kaytetytModuulit = _.size(opintojaksojenModuulit) - _.size(vieraatModuulit);
+
+    return {
+      ...oa,
+      isOpen: !this.opened[oa.id!] || !_.isEmpty(this.query),
+      moduulit: _.map(oa.moduulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
+      vieraatModuulit,
+      paikallinen: false,
+      opintojaksot,
+      stats: {
+        opintojaksot: _.size(opintojaksot),
+        kaytetytModuulit,
+        kaikkiModuulit: _.size(oa.moduulit),
+        valid: kaytetytModuulit === _.size(oa.moduulit),
+      },
+    };
   }
 
   get oppiaineRakenne() {
     return [
       ...this.perusteenOppiaineRakenne,
-      ...this.paikallinenOppiaineRakenne];
+      ...this.paikallinenOppiaineIlmanOppimaariaRakenne,
+    ];
+  }
+
+  get isOpened() {
+    return _.isEmpty(this.opened);
   }
 
   async mounted() {
@@ -468,7 +622,6 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       },
     });
   }
-
 }
 </script>
 
@@ -495,7 +648,6 @@ table.oppiaineet {
       text-decoration:underline;
     }
   }
-
 
   tr.headerline {
 

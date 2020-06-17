@@ -3,17 +3,16 @@ import { makeAxiosResponse } from '&/utils/data';
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import RouteUkk from '../RouteUkk.vue';
 import { KieliStore, Kielet } from '@shared/stores/kieli';
-const i18n = Kielet.i18n;
 
 import _ from 'lodash';
-import { Ulkopuoliset, Kysymykset } from '@shared/api/ylops';
-import { KysymysDto } from '@shared/api/ylops';
+import { Ulkopuoliset, Kysymykset, KysymysDto } from '@shared/api/ylops';
+
 import '@/config/bootstrap';
 import '@/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 import aikaleima from '@shared/plugins/aikaleima';
-
+const i18n = Kielet.i18n;
 
 describe('RouteUkk', () => {
   const localVue = createLocalVue();
@@ -60,7 +59,6 @@ describe('RouteUkk', () => {
     } as any);
   }
 
-
   test('Rendering', async () => {
     const wrapper = await createMounted();
 
@@ -71,5 +69,4 @@ describe('RouteUkk', () => {
     expect(wrapper.html()).toContain('kysymys?');
     expect(wrapper.html()).toContain('vastaus!');
   });
-
 });

@@ -104,7 +104,6 @@ import ThreadComment from './ThreadComment.vue';
 import CollapsedThreads from './CollapsedThreads.vue';
 import EpCommentAdd from './EpCommentAdd.vue';
 
-
 @Component({
   components: {
     EpAlert,
@@ -214,7 +213,9 @@ export default class EpCommentThreads extends Vue {
         aloituskommentti: this.newThread,
       });
       const doc = document.querySelector(`span[kommentti="${UusiKommenttiHandle}"]`);
-      doc?.setAttribute('kommentti', kahva.thread!);
+      if (doc) {
+        doc.setAttribute('kommentti', kahva.thread!);
+      }
       this.newThread = null;
       this.newKahva = null;
       await delay(50);
@@ -275,11 +276,12 @@ export default class EpCommentThreads extends Vue {
         const range = selection.getRangeAt(selection.rangeCount - 1);
         const bound = range.getBoundingClientRect();
         const el = document.querySelector('body');
-        el?.appendChild(commentbox);
+        if (el) {
+          el.appendChild(commentbox);
+        }
         const self = this;
-        new Vue({
+        (new Vue({
           i18n: Kielet.i18n,
-          el: commentbox,
           render: (h: any) => h(EpCommentAdd, {
             props: {
               onAdd: async () => {
@@ -287,10 +289,10 @@ export default class EpCommentThreads extends Vue {
                 await Kommentit.clearThread();
                 await delay(100);
                 await self.addNewComment();
-              }
+              },
             },
           }),
-        });
+        })).$mount(commentbox);
       }
     }
   };
@@ -354,7 +356,9 @@ export default class EpCommentThreads extends Vue {
           kspan.setAttribute('kommentti', UusiKommenttiHandle);
           kspan.className = 'animated jackInTheBox slower';
           selection.getRangeAt(0).surroundContents(kspan);
-          setTimeout(() => kspan.className = '', 1000);
+          setTimeout(() => {
+            kspan.className = '';
+          }, 1000);
         }
         break;
       }
@@ -398,7 +402,6 @@ export default class EpCommentThreads extends Vue {
       this.isWorking = false;
     }
   }
-
 }
 </script>
 
@@ -440,6 +443,5 @@ textarea.editori {
   resize: vertical;
   width: 100%;
 }
-
 
 </style>

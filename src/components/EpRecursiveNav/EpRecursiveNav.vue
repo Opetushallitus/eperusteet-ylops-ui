@@ -33,7 +33,6 @@ import {
   SideMenuRoute,
 } from '@shared/tyypit';
 
-
 @Component
 export default class EpRecursiveNav extends Vue {
   @Prop({ default: [] })
@@ -84,7 +83,7 @@ export default class EpRecursiveNav extends Vue {
   }
 
   private isSubmenu(item: SideMenuEntry) {
-    return (item.children && item.children.length > 0 && !item.flatten);
+    return (item.children && item.children.length > 0 && !item.flatten) || item.allowEmpty;
   }
 
   @Watch('value')
@@ -98,7 +97,7 @@ export default class EpRecursiveNav extends Vue {
 
     if (this.$route) {
       let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.valueCopy, this.curTopItem);
-      this.current = (found && newCurrent.length > 0) ? newCurrent : this.valueCopy;
+      this.current = (found && ((newTopItem as any || {}).allowEmpty || newCurrent.length > 0)) ? newCurrent : this.valueCopy;
       this.curTopItem = newTopItem;
     }
     else {
@@ -190,7 +189,7 @@ export default class EpRecursiveNav extends Vue {
 
       // use defined parent navigation if nothing else is found
       if (this.$route.meta.parentNavigation) {
-        if(menuItem.route && menuItem.route.name === this.$route.meta.parentNavigation) {
+        if (menuItem.route && menuItem.route.name === this.$route.meta.parentNavigation) {
           const retval = this.getEntryDetails(menuItem);
           found = true;
           newTopItem = retval.newTopItem;

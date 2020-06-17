@@ -4,7 +4,7 @@ import { Kielet } from '@shared/stores/kieli';
 import { PerusteCache } from '@/stores/peruste';
 
 import { Lops2019OppiaineDto } from '@shared/api/ylops';
-import { SideMenuEntry, SideMenuItem } from '@shared/tyypit';
+import { SideMenuEntry, SideMenuItem, OpintojaksoModuuliSource } from '@shared/tyypit';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
@@ -16,13 +16,15 @@ import OpsSidenavLink from './OpsSidenavLink.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import Sticky from 'vue-sticky-directive';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
+import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 import {
   oppiaineLinkki,
   oppimaaraModuuliLinkit,
   oppimaaraOpintojaksoLinkit,
   opsLapsiLinkit,
-  paikallinenOppiaineToMenu,
+  paikallinenOppiaineLinkki,
   oppimaaraUusiLinkki,
+  vuosiluokkaLinkit,
 } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { koodiNumero, koodiAlku } from '@/utils/perusteet';
@@ -89,6 +91,7 @@ const i18keys = {
     EpSpinner,
     OpsSidenavLink,
     EpTekstikappaleLisays,
+    EpOppimaaraLisays,
   },
 })
 export default class OpsSidenav extends EpOpsComponent {
@@ -106,7 +109,7 @@ export default class OpsSidenav extends EpOpsComponent {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
   }
 
-  private opintojaksoModuuliLista(source: Lops2019OppiaineDto) {
+  private opintojaksoModuuliLista(source: OpintojaksoModuuliSource) {
     const result: SideMenuEntry[] = [];
     const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(this.opintojaksot, source);
     result.push({
@@ -118,18 +121,20 @@ export default class OpsSidenav extends EpOpsComponent {
       children: [
         ...oppiaineenOpintojaksot,
         oppimaaraUusiLinkki(source),
-      ]
-    });
-    result.push({
-      item: {
-        type: 'staticlink',
-        i18key: 'moduulit',
-      },
-      flatten: true,
-      children: [
-        ...oppimaaraModuuliLinkit(source),
       ],
     });
+    if (source.moduulit) {
+      result.push({
+        item: {
+          type: 'staticlink',
+          i18key: 'moduulit',
+        },
+        flatten: true,
+        children: [
+          ...oppimaaraModuuliLinkit(source),
+        ],
+      });
+    }
 
     return result;
   }
@@ -141,12 +146,20 @@ export default class OpsSidenav extends EpOpsComponent {
         oppiaineLinkki(
           'oppimaara',
           oppimaara,
-          this.opintojaksoModuuliLista(oppimaara)))
+          this.opintojaksoModuuliLista({
+            id: oppimaara.id!,
+            koodi: oppimaara.koodi!.uri!,
+            moduulit: oppimaara.moduulit,
+          })))
       .value();
   }
 
   get perusteenOppiaineet() {
     return _.get(this.cache, 'peruste.oppiaineet', null);
+  }
+
+  get paikallisetOppiaineet() {
+    return this.store.paikallisetOppiaineet;
   }
 
   get isLoading() {
@@ -160,13 +173,29 @@ export default class OpsSidenav extends EpOpsComponent {
 
     return _.chain(this.perusteenOppiaineet)
       .sortBy(koodiAlku, koodiNumero)
-      .map(oppiaine =>
-        oppiaineLinkki(
+      .map(oppiaine => {
+        const paikallisetOppimaaratLinkit = _(this.paikallisetOppiaineet)
+          .filter(poa => poa.perusteenOppiaineUri === oppiaine.koodi.uri || _.includes(_.map(oppiaine.oppimaarat, 'koodi.uri'), poa.perusteenOppiaineUri))
+          .map(poa => paikallinenOppiaineLinkki('oppiaine', poa, this.opintojaksoModuuliLista({
+            id: poa.id!,
+            koodi: poa.koodi!,
+            // todo: Jos halutaan perusteen moduulit, vaatii myös linkkien korjauksen
+            // moduulit: poa.perusteenOppiaineUri ? _.keyBy(oppiaine.oppimaarat, 'koodi.uri')[poa.perusteenOppiaineUri].moduulit : undefined,
+          })))
+          .value();
+
+        return oppiaineLinkki(
           'oppiaine',
           oppiaine,
-          oppiaine.oppimaarat.length > 0
-            ? this.oppiaineOppimaaraLinkit(oppiaine)
-            : this.opintojaksoModuuliLista(oppiaine)))
+          oppiaine.oppimaarat.length > 0 ? [
+            ...this.oppiaineOppimaaraLinkit(oppiaine),
+            ...paikallisetOppimaaratLinkit,
+          ] : this.opintojaksoModuuliLista({
+            id: oppiaine.id!,
+            koodi: oppiaine.koodi!.uri!,
+            moduulit: oppiaine.moduulit!,
+          }));
+      })
       .value();
   }
 
@@ -207,7 +236,6 @@ export default class OpsSidenav extends EpOpsComponent {
       const arvo = _.get(item, 'objref.koodi', '');
       return _.isString(arvo) ? arvo : '';
     }
-
   }
 
   get valikkoDataBasics() {
@@ -218,13 +246,15 @@ export default class OpsSidenav extends EpOpsComponent {
     // Valikon rakennus alkaa staattisella sisällöllä ja tekstikappaleiden linkeillä
     let menuOpsData: SideMenuEntry[] = [
       ...opsLapsiLinkit(this.opsLapset),
+      ...vuosiluokkaLinkit(this.ops),
     ];
 
     // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
-    const paikallisetOppiaineet = this.store.paikallisetOppiaineet;
     const oppiaineLinkit = this.opsOppiaineLinkit;
+    const paikallisetOppiaineet = this.store.paikallisetOppiaineet;
 
     if (oppiaineLinkit.length > 0 || paikallisetOppiaineet.length > 0) {
+      const that = this;
       menuOpsData = [
         ...menuOpsData, {
           item: {
@@ -237,13 +267,23 @@ export default class OpsSidenav extends EpOpsComponent {
           },
           children: [
             ...oppiaineLinkit,
-            ..._.map(paikallisetOppiaineet, paikallinenOppiaineToMenu),
+            ..._(paikallisetOppiaineet)
+              .filter(poa => _.isEmpty(poa.perusteenOppiaineUri))
+              .map(poa => paikallinenOppiaineLinkki('oppiaine', poa, that.opintojaksoModuuliLista({
+                id: poa.id!,
+                koodi: poa.koodi!,
+              })))
+              .value(),
           ],
         },
       ];
     }
 
     return menuOpsData;
+  }
+
+  reset() {
+    this.store.init();
   }
 
   private get opsLapset() {
@@ -264,7 +304,7 @@ export default class OpsSidenav extends EpOpsComponent {
         ({
           item: child.item,
           route: child.route,
-        }))
+        })),
     ];
   }
 }

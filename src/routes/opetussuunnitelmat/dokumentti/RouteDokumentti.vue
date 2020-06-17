@@ -75,9 +75,9 @@
 import _ from 'lodash';
 import { Component, Watch } from 'vue-property-decorator';
 
-import { baseURL, Dokumentit, DokumentitParams } from '@shared/api/ylops';
+import { baseURL, Dokumentit, DokumentitParams, DokumenttiDto, DokumenttiDtoTilaEnum } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-import { DokumenttiDto, DokumenttiDtoTilaEnum } from '@shared/api/ylops';
+
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';

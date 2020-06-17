@@ -51,7 +51,7 @@ import BaseInnerTile from './BaseInnerTile.vue';
   components: {
     EpIcon,
     BaseInnerTile,
-  }
+  },
 })
 export default class BaseTile extends Vue {
   @Prop({ required: true })
@@ -68,7 +68,7 @@ export default class BaseTile extends Vue {
 
   private effects = {
     hover: false,
-    focus: false
+    focus: false,
   };
 }
 </script>

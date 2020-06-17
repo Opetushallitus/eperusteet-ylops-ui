@@ -42,7 +42,18 @@
   </div>
   <div v-if="oletuspohjasta">
     <hr/>
-    <ep-form-content name="ops-nimi-pakollinen">
+
+    <div v-if="uusi.pohja && uusi.pohja.toteutus === 'perusopetus' && vuosiluokkakokonaisuudet">
+      <ep-form-content name="vuosiluokkakokonaisuudet-pakollinen">
+        <b-form-checkbox-group v-model="uusi.vuosiluokkakokonaisuudet" class="mt-2" stacked :validation="$v.uusi.vuosiluokkakokonaisuudet">
+          <b-form-checkbox v-for="(vuosiluokkakokonaisuus, index) in vuosiluokkakokonaisuudet" :key="'vlk'+index" :value="vuosiluokkakokonaisuus">
+            {{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
+          </b-form-checkbox>
+        </b-form-checkbox-group>
+      </ep-form-content>
+    </div>
+
+    <ep-form-content name="ops-nimi-pakollinen" v-if="uusi.pohja">
       <ep-field help="ops-nimi-ohje" v-model="uusi.nimi" :validation="$v.uusi.nimi" :is-editing="true"></ep-field>
     </ep-form-content>
     <div v-if="uusi.pohja">
@@ -50,22 +61,24 @@
       <h2 class="mb-3">{{ $t('organisaatiot') }}</h2>
       <ep-organizations :validation="$v.uusi.organisaatiot" :koulutustyyppi="koulutustyyppi" v-model="uusi.organisaatiot"></ep-organizations>
 
-      <hr/>
-      <h2 class="mb-3">{{ $t('opintojaksot') }}</h2>
-      <ep-form-content :showHeader="false" v-if="uusi.pohjanOpintojaksot">
-        <ep-form-content name="ops-opintojakso-tuonti-kysymys" class="no-padding" v-if="uusi.pohjanOpintojaksot.length > 0">
-          <b-form-group>
-            <b-form-radio v-model="opintojaksoTuonti" name="opintojaksoTuonti" value="true">{{$t('kylla')}}</b-form-radio>
-            <b-form-radio v-model="opintojaksoTuonti" name="opintojaksoTuonti" value="false">{{$t('ei')}}</b-form-radio>
-          </b-form-group>
-        </ep-form-content>
+      <div v-if="uusi.pohja.toteutus === 'lops2019'">
+        <hr/>
+        <h2 class="mb-3">{{ $t('opintojaksot') }}</h2>
+        <ep-form-content :showHeader="false" v-if="uusi.pohjanOpintojaksot">
+          <ep-form-content name="ops-opintojakso-tuonti-kysymys" class="no-padding" v-if="uusi.pohjanOpintojaksot.length > 0">
+            <b-form-group>
+              <b-form-radio v-model="opintojaksoTuonti" name="opintojaksoTuonti" value="true">{{$t('kylla')}}</b-form-radio>
+              <b-form-radio v-model="opintojaksoTuonti" name="opintojaksoTuonti" value="false">{{$t('ei')}}</b-form-radio>
+            </b-form-group>
+          </ep-form-content>
 
-        <ep-form-content name="opintojaksojen-tarkistus">
-          <ep-toggle v-model="uusi.ainepainoitteinen" :is-editing="true" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
-        </ep-form-content>
+          <ep-form-content name="opintojaksojen-tarkistus">
+            <ep-toggle v-model="uusi.ainepainoitteinen" :is-editing="true" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
+          </ep-form-content>
 
-      </ep-form-content>
-      <ep-spinner v-else />
+        </ep-form-content>
+        <ep-spinner v-else />
+      </div>
 
       <div class="text-right">
         <b-button class="mr-4" variant="link" :to="{ name: 'opetussuunnitelmaListaus'}">{{$t('peruuta')}}</b-button>
@@ -99,15 +112,19 @@ import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpRoute from '@/mixins/EpRoute';
 import {
-  Opetussuunnitelmat, Opintojaksot, Oppiaineet
-} from '@shared/api/ylops';
-import {
+  Opetussuunnitelmat,
+  Opintojaksot,
+  Lops2019Oppiaineet,
   OpetussuunnitelmaInfoDto,
   OpetussuunnitelmaLuontiDto,
   Lops2019OpintojaksoDto,
+  OpetussuunnitelmaInfoDtoToteutusEnum,
+  OpsVuosiluokkakokonaisuusKevytDto,
+  OpsVuosiluokkakokonaisuusDto,
 } from '@shared/api/ylops';
 
-import { opsLuontiValidator } from '@/validators/ops';
+import { opsLuontiValidator, opsPerusopetusLuontiValidator } from '@/validators/ops';
+import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
 
 @Component({
   components: {
@@ -124,8 +141,10 @@ import { opsLuontiValidator } from '@/validators/ops';
     EpSpinner,
     EpToggle,
   },
-  validations: {
-    uusi: opsLuontiValidator(),
+  validations() {
+    return {
+      uusi: this.validator,
+    };
   },
 } as any)
 export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, EpRoute) {
@@ -134,6 +153,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   private oletuspohjasta: 'pohjasta' | 'opsista' | null = null;
   private addingOpetussuunnitelma = false;
   private opintojaksoTuonti = false;
+  private vuosiluokkakokonaisuudet: OpsVuosiluokkakokonaisuusKevytDto[] | null = null;
   private uusi = {
     pohja: null as (OpetussuunnitelmaInfoDto | null),
     nimi: {},
@@ -144,6 +164,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     },
     ainepainoitteinen: false,
     pohjanOpintojaksot: null as (Lops2019OpintojaksoDto[] | null),
+    vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
   };
 
   @Prop({ required: true })
@@ -173,20 +194,31 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
 
   @Watch('uusi.pohja')
   async uusiPohjaMuutos() {
-    this.uusi.organisaatiot= {
+    this.uusi.organisaatiot = {
       jarjestajat: [],
       oppilaitokset: [],
       kunnat: [],
     };
+    this.uusi.vuosiluokkakokonaisuudet = [];
 
-    if(this.uusi.pohja?.id) {
+    if (this.uusi.pohja?.id) {
       this.uusi.pohjanOpintojaksot = null;
-      const paikalliset = (await Oppiaineet.getAllLops2019PaikallisetOppiainet(this.uusi.pohja.id)).data;
-      const paikallistenKoodit = _.map(paikalliset, 'koodi');
 
-      this.uusi.pohjanOpintojaksot = _.chain((await Opintojaksot.getAllOpintojaksot(this.uusi.pohja.id)).data)
-        .filter(opintojakso => !_.some(opintojakso.oppiaineet, oppiaine => _.includes(paikallistenKoodit, oppiaine.koodi)))
-        .value();;
+      if (this.uusi.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.LOPS2019.toLowerCase()) {
+        const paikalliset = (await Lops2019Oppiaineet.getAllLops2019PaikallisetOppiainet(this.uusi.pohja.id)).data;
+        const paikallistenKoodit = _.map(paikalliset, 'koodi');
+
+        this.uusi.pohjanOpintojaksot = _.chain((await Opintojaksot.getAllOpintojaksot(this.uusi.pohja.id)).data)
+          .filter(opintojakso => !_.some(opintojakso.oppiaineet, oppiaine => _.includes(paikallistenKoodit, oppiaine.koodi)))
+          .value(); ;
+      }
+
+      if (this.uusi.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase()) {
+        const ops = (await Opetussuunnitelmat.getOpetussuunnitelma(this.uusi.pohja?.id)).data;
+        this.vuosiluokkakokonaisuudet = _.sortBy((ops.vuosiluokkakokonaisuudet as OpsVuosiluokkakokonaisuusKevytDto[]), [(vlk) => {
+          return this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any));
+        }]);
+      }
     }
   }
 
@@ -207,7 +239,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   pohjatFilter(pohjat) {
     return _.chain(pohjat)
       .filter(pohja => pohja.tila !== 'POISTETTU')
-      .filter(pohja => pohja.toteutus === 'lops2019')
+      .filter(pohja => isOpsToteutusSupported(pohja))
       .value();
   }
 
@@ -224,6 +256,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
           ...this.uusi.organisaatiot.oppilaitokset,
         ],
         ainepainoitteinen: this.uusi.ainepainoitteinen,
+        vuosiluokkakokonaisuudet: this.uusi.vuosiluokkakokonaisuudet,
       };
 
       // FIXME: #swagger
@@ -249,6 +282,19 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
         this.addingOpetussuunnitelma = false;
       }
     });
+  }
+
+  get validator() {
+    if (this.uusi && this.uusi.pohja) {
+      if (this.uusi.pohja.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase()) {
+        return opsPerusopetusLuontiValidator();
+      }
+      else {
+        return opsLuontiValidator();
+      }
+    }
+
+    return {};
   }
 }
 

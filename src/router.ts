@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import { RouteConfig } from 'vue-router';
+
 import _ from 'lodash';
 
 import Root from '@/routes/Root.vue';
@@ -28,6 +28,13 @@ import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
 import RouteTilastot from '@/routes/tilastot/RouteTilastot.vue';
+import RouteVuosiluokkakokonaisuus from '@/routes/opetussuunnitelmat/sisalto/RouteVuosiluokkakokonaisuus.vue';
+import RoutePerusopetusOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaine.vue';
+import RoutePerusopetusPaikallinenOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusPaikallinenOppiaine.vue';
+import RoutePerusopetusPaikallinenOppiaineVuosiluokka from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusPaikallinenOppiaineVuosiluokka.vue';
+import RoutePerusopetusOppiaineVuosiluokkaistaminen from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokkaistaminen.vue';
+import RoutePerusopetusOppiaineVuosiluokka from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokka.vue';
+import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusVuosiluokkaValinnaiset.vue';
 
 import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
@@ -45,7 +52,7 @@ import { AikatauluStore } from './stores/aikataulu';
 import VueApexCharts from 'vue-apexcharts';
 
 Vue.use(Router);
-Vue.use(VueTutorial, {tutoriaalistore});
+Vue.use(VueTutorial, { tutoriaalistore });
 Vue.use(VueApexCharts);
 
 Vue.component('apexchart', VueApexCharts);
@@ -195,7 +202,7 @@ export const router = new Router({
         component: RouteOpintojakso,
         name: 'opintojakso',
         meta: {
-          parentNavigation: 'oppiaineet'
+          parentNavigation: 'oppiaineet',
         },
       }, {
         path: 'opintojaksot/:opintojaksoId/:oppiaineKoodi',
@@ -205,7 +212,36 @@ export const router = new Router({
         path: 'tekstikappaleet/:osaId',
         component: RouteTekstikappale,
         name: 'tekstikappale',
-      }],
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId',
+        component: RouteVuosiluokkakokonaisuus,
+        name: 'vuosiluokkakokonaisuus',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId',
+        component: RoutePerusopetusOppiaine,
+        name: 'perusopetusoppiaine',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/poppiaine/:oppiaineId',
+        component: RoutePerusopetusPaikallinenOppiaine,
+        name: 'perusopetuspaikallinenoppiaine',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/poppiaine/:oppiaineId/vuosiluokka/:vuosiluokkaId',
+        component: RoutePerusopetusPaikallinenOppiaineVuosiluokka,
+        name: 'perusopetuspaikallinenoppiainevuosiluokka',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId/vuosiluokkaistaminen',
+        component: RoutePerusopetusOppiaineVuosiluokkaistaminen,
+        name: 'perusopetusoppiainevuosiluokkaistaminen',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId/vuosiluokka/:vlId',
+        component: RoutePerusopetusOppiaineVuosiluokka,
+        name: 'perusopetusoppiainevuosiluokka',
+      }, {
+        path: 'vuosiluokkakokonaisuus/:vlkId/valinnaiset',
+        component: RoutePerusopetusVuosiluokkaValinnaiset,
+        name: 'perusopetusvalinnaiset',
+      },
+      ],
     }],
   }, {
     path: '*',

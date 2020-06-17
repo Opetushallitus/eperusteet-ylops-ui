@@ -39,7 +39,7 @@ import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import EpToggle from'@shared/components/forms/EpToggle.vue';
+import EpToggle from '@shared/components/forms/EpToggle.vue';
 
 @Component({
   components: {
@@ -51,7 +51,6 @@ import EpToggle from'@shared/components/forms/EpToggle.vue';
   },
 })
 export default class RouteOrganisaatio extends Mixins(EpRoute) {
-
   @Prop()
   private tutoriaalistore!: TutoriaaliStore;
 

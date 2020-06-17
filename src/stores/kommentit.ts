@@ -1,10 +1,9 @@
 import _ from 'lodash';
-import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
+import { KommenttiDto, KayttajanTietoDto, Kayttajat as KayttajatApi, Kommentointi } from '@shared/api/ylops';
 import Vue from 'vue';
-import { Kayttajat as KayttajatApi, Kommentointi } from '@shared/api/ylops';
+
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
 import VueScrollTo from 'vue-scrollto';
-Vue.use(VueCompositionApi);
 import { Computed } from '@shared/utils/interfaces';
 import { Kielet } from '@shared/stores/kieli';
 
@@ -12,6 +11,7 @@ import { unwrap } from '@/utils/utils';
 
 import { createLogger } from '@shared/utils/logger';
 import { delay } from '@shared/utils/delay';
+Vue.use(VueCompositionApi);
 const logger = createLogger('Kayttaja');
 
 export const UusiKommenttiHandle = 'uusi-kommentti';
@@ -48,11 +48,9 @@ export function nestedMap<T>(
   };
 }
 
-
 const CommentStyles = document.createElement('style');
 document.head.appendChild(CommentStyles);
 let ActiveCommentStyleIdx = -1;
-
 
 class KommenttiStore {
   private state = reactive({
@@ -78,11 +76,11 @@ class KommenttiStore {
     if (this.state.threadUuid) {
       const idx = _.findIndex(this.state.visibleChains, c => c === this.state.threadUuid);
       if (idx >= 0) {
+        const previousIdx = idx === 0 ? _.size(this.state.visibleChains) - 1 : idx - 1;
+        const nextIdx = (idx + 1) % _.size(this.state.visibleChains);
         return {
-          previous: this.state.visibleChains[idx === 0
-            ? _.size(this.state.visibleChains) - 1
-            : idx - 1],
-          next: this.state.visibleChains[(idx + 1) % _.size(this.state.visibleChains)],
+          previous: this.state.visibleChains[previousIdx],
+          next: this.state.visibleChains[nextIdx],
         };
       }
     }

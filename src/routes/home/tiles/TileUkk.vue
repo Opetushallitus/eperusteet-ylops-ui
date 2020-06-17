@@ -15,7 +15,6 @@ import { Vue, Component } from 'vue-property-decorator';
 import BaseTile from './BaseTile.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
 
-
 @Component({
   components: {
     BaseTile,

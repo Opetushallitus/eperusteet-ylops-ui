@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { Opetussuunnitelma } from './opetussuunnitelma';
 import { Location } from 'vue-router';
 
-
 @Store
 class MurupolkuStore {
   @State()

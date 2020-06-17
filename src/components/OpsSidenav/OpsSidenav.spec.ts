@@ -11,7 +11,6 @@ import { makeAxiosResponse } from '&/utils/data';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 
-
 describe('OpsSidenav component', async () => {
   const localVue = createLocalVue();
   localVue.use(VueI18n);

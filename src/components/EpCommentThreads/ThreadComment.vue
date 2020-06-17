@@ -48,7 +48,6 @@
 import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
 import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
 
-
 @Component({
   name: 'ThreadComment',
 })
@@ -110,7 +109,6 @@ export default class ThreadComment extends Vue {
     });
     this.isEditing = false;
   }
-
 }
 </script>
 
@@ -161,4 +159,3 @@ export default class ThreadComment extends Vue {
 }
 
 </style>
-

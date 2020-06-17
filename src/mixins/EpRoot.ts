@@ -23,8 +23,8 @@ export default class EpRoot extends Vue {
     next();
   }
 
-  public async vahvista(title = 'vahvista-toiminto', msg = 'vahvista-toiminto-viesti', okTitle= 'kylla', config: any = {}) {
-    return await this.$bvModal.msgBoxConfirm(this.$t(msg) as any, {
+  public async vahvista(title = 'vahvista-toiminto', msg = 'vahvista-toiminto-viesti', okTitle = 'kylla', config: any = {}) {
+    return this.$bvModal.msgBoxConfirm(this.$t(msg) as any, {
       title: this.$t(title),
       okVariant: 'primary',
       okTitle: this.$t(okTitle) as any,

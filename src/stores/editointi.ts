@@ -56,10 +56,9 @@ const DefaultConfig = {
   start: async () => {},
   remove: async () => {},
   validate: async () => ({
-    valid: true
+    valid: true,
   }),
 };
-
 
 export class EditointiKontrolli {
   private static allEditingEditors: EditointiKontrolli[] = [];
@@ -83,7 +82,7 @@ export class EditointiKontrolli {
   }
 
   public static async cancelAll() {
-    for(const editor of EditointiKontrolli.allEditingEditors) {
+    for (const editor of EditointiKontrolli.allEditingEditors) {
       await editor.cancel(true);
     }
   }
@@ -162,7 +161,7 @@ export class EditointiKontrolli {
       this.isEditingState = true;
       EditointiKontrolli.allEditingEditors = [
         ...EditointiKontrolli.allEditingEditors,
-        this
+        this,
       ];
     }
     catch (err) {
@@ -199,7 +198,7 @@ export class EditointiKontrolli {
     this.mstate.data = JSON.parse(this.backup);
     // this.config.setData!(JSON.parse(this.backup));
     this.isEditingState = false;
-    _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor == this);
+    _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor === this);
     this.mstate.disabled = false;
 
     if (this.isNew && !skipRedirectBack) {
@@ -216,7 +215,7 @@ export class EditointiKontrolli {
   public async remove() {
     this.mstate.disabled = true;
     this.isEditingState = false;
-    _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor == this);
+    _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor === this);
     try {
       await this.config.remove!(this.mstate.data);
       this.logger.debug('Poistettu');
@@ -245,18 +244,18 @@ export class EditointiKontrolli {
     if (!this.isEditing) {
       this.logger.warn('Ei voi tallentaa ilman editointia');
     }
-    else if(!validation.valid) {
+    else if (!validation.valid) {
       this.logger.debug('Validointi epäonnistui');
       fail(validation.message ? validation.message : 'validointi-epaonnistui');
     }
-    else if (!!(this.config.source.save)) {
+    else if (this.config.source.save) {
       try {
         const after = await this.config.source.save(this.mstate.data);
         this.logger.success('Tallennettu onnistuneesti');
         await this.fetchRevisions();
         await this.init();
         this.isEditingState = false;
-        _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor == this);
+        _.remove(EditointiKontrolli.allEditingEditors, (editor) => editor === this);
         if (after && _.isFunction(after)) {
           await after();
         }

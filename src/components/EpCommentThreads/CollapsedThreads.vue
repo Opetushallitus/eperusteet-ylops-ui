@@ -43,12 +43,10 @@ import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
 import { Kommentit } from '@/stores/kommentit';
 import _ from 'lodash';
 
-
 @Component({
   name: 'CollapsedThreads',
 })
 export default class CollapsedThreads extends Vue {
-
   @Prop({ required: true })
   value!: KommenttiDto[];
 
@@ -85,7 +83,6 @@ export default class CollapsedThreads extends Vue {
       Kommentit.activateThread(this.first.thread);
     }
   }
-
 }
 </script>
 
@@ -145,5 +142,3 @@ export default class CollapsedThreads extends Vue {
 }
 
 </style>
-
-

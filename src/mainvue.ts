@@ -13,10 +13,13 @@ import { router } from '@/router';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Kaannos from '@shared/plugins/kaannos';
-import VueI18n from 'vue-i18n';
+import VueI18n, { IVueI18n } from 'vue-i18n';
+import { Notifikaatiot } from '@shared/plugins/notifikaatiot';
 
 import App from '@/App.vue';
 import aikaleima from '@shared/plugins/aikaleima';
+import plaintext from '@shared/plugins/plaintext';
+import Vuelidate from 'vuelidate';
 
 Vue.use(VueCompositionApi);
 Vue.use(VueI18n);
@@ -24,6 +27,9 @@ Vue.use(VueScrollTo);
 Vue.use(Notifications);
 Vue.use(Kaannos);
 Vue.use(aikaleima);
+Vue.use(plaintext);
+Vue.use(Notifikaatiot);
+Vue.use(Vuelidate);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);
 Vue.use(PortalVue);
 
@@ -35,8 +41,14 @@ Vue.use(Loading, {
 
 Vue.use(Kielet, {
   messages: {
-    fi: require('@/translations/locale-fi.json'),
-    sv: require('@/translations/locale-sv.json'),
+    fi: {
+      ...require('@shared/translations/locale-fi.json'),
+      ...require('@/translations/locale-fi.json'),
+    },
+    sv: {
+      ...require('@shared/translations/locale-sv.json'),
+      ...require('@/translations/locale-sv.json'),
+    },
   },
 });
 

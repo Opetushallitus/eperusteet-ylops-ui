@@ -1,7 +1,5 @@
-import { Termisto } from '@shared/api/ylops';
-import { TermiDto, Ulkopuoliset } from '@shared/api/ylops';
-import { UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
-import { Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Oppiaineet, Opetussuunnitelmat } from '@shared/api/ylops';
+import { Termisto, TermiDto, Ulkopuoliset, UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto, Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Lops2019Oppiaineet, Opetussuunnitelmat } from '@shared/api/ylops';
+
 import { AxiosResponse } from 'axios';
 import { createLogger } from '@shared/utils/logger';
 import { State, Store } from '@shared/stores/store';
@@ -15,7 +13,6 @@ interface OpintojaksoQuery {
 }
 
 const logger = createLogger('Opetussuunnitelma');
-
 
 @Store
 export class OpetussuunnitelmaStore {
@@ -101,8 +98,6 @@ export class OpetussuunnitelmaStore {
     else {
       return {};
     }
-
-    return null;
   }
 
   public async removeTeksti(tov: Puu) {
@@ -124,7 +119,7 @@ export class OpetussuunnitelmaStore {
   }
 
   public static async updateOpsTila(opsId: number, uusiTila: string) {
-    return await Opetussuunnitelmat.updateTila(opsId, uusiTila as any);
+    return Opetussuunnitelmat.updateTila(opsId, uusiTila as any);
   }
 
   public async updateTila(uusiTila: string) {
@@ -169,23 +164,23 @@ export class OpetussuunnitelmaStore {
 
   // Paikalliset oppiaineet
   public async addOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto = {}) {
-    const result = (await Oppiaineet.addLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine)).data;
+    const result = (await Lops2019Oppiaineet.addLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine)).data;
     this.paikallisetOppiaineet = [...this.paikallisetOppiaineet, result];
     success('lisays-onnistui-oppiaine');
     return result;
   }
 
   public async getPaikallinenOppiaine(id: number) {
-    return (await Oppiaineet.getLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id)).data;
+    return (await Lops2019Oppiaineet.getLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id)).data;
   }
 
   public async getPaikallisetOppiaineet() {
-    const paikalliset = (await Oppiaineet.getAllLops2019PaikallisetOppiainet(this.opetussuunnitelma!.id!)).data;
+    const paikalliset = (await Lops2019Oppiaineet.getAllLops2019PaikallisetOppiainet(this.opetussuunnitelma!.id!)).data;
     return paikalliset;
   }
 
   public async savePaikallinenOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto) {
-    const result = (await Oppiaineet.updateLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine.id!, oppiaine)).data;
+    const result = (await Lops2019Oppiaineet.updateLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, oppiaine.id!, oppiaine)).data;
     success('tallennus-onnistui-oppiaine');
     const idx = _.findIndex(this.paikallisetOppiaineet, { id: result.id });
     this.paikallisetOppiaineet = [
@@ -199,15 +194,15 @@ export class OpetussuunnitelmaStore {
   }
 
   public async getPaikallinenOppiaineenHistoria(id: number) {
-    return (await Oppiaineet.getLops2019PaikallinenVersionHistory(this.opetussuunnitelma!.id!, id)).data;
+    return (await Lops2019Oppiaineet.getLops2019PaikallinenVersionHistory(this.opetussuunnitelma!.id!, id)).data;
   }
 
   public async getPaikallinenOppiaineVersion(id: number, versionumero: number) {
-    return (await Oppiaineet.getLops2019PaikallinenVersion(this.opetussuunnitelma!.id!, id, versionumero)).data;
+    return (await Lops2019Oppiaineet.getLops2019PaikallinenVersion(this.opetussuunnitelma!.id!, id, versionumero)).data;
   }
 
   public async revertPaikallinenOppiaineToVersion(id: number, versionumero: number) {
-    await Oppiaineet.revertLops2019PaikallinenToVersion(this.opetussuunnitelma!.id!, id, versionumero);
+    await Lops2019Oppiaineet.revertLops2019PaikallinenToVersion(this.opetussuunnitelma!.id!, id, versionumero);
   }
 
   public async getJulkaisut() {
@@ -287,7 +282,7 @@ export class OpetussuunnitelmaStore {
   }
 
   public async removeOppiaine(id: number) {
-    await Oppiaineet.removeLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id);
+    await Lops2019Oppiaineet.removeLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id);
     success('poisto-onnistui-oppiaineen');
     const idx = _.findIndex(this.paikallisetOppiaineet, { id });
     this.paikallisetOppiaineet = [
@@ -324,6 +319,10 @@ export class OpetussuunnitelmaStore {
       .map(org => org.oid as string)
       .value();
     this.virkailijat = _.uniqBy((await Ulkopuoliset.getOrganisaatioVirkailijat(orgOids)).data as any[], 'oid');
+  }
+
+  public async updateOppiainejarjestys(oppiainejarjestys) {
+    await Opetussuunnitelmat.updateOppiainejarjestys(this.opetussuunnitelma!.id!, oppiainejarjestys);
   }
 }
 
