@@ -92,7 +92,7 @@
 
 <script lang="ts">
 import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
-import { Kommentit } from '@/stores/kommentit';
+import { UusiKommenttiHandle, Kommentit } from '@/stores/kommentit';
 import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import { Kielet } from '@shared/stores/kieli';
@@ -121,7 +121,7 @@ export default class EpCommentThreads extends Vue {
 
   get threadUuid() {
     if (this.newThread) {
-      return 'uusi-kommentti';
+      return UusiKommenttiHandle;
     }
     else {
       return Kommentit.threadUuid.value;
@@ -213,7 +213,7 @@ export default class EpCommentThreads extends Vue {
         ...this.newKahva,
         aloituskommentti: this.newThread,
       });
-      const doc = document.querySelector('span[kommentti="uusi-kommentti"]');
+      const doc = document.querySelector(`span[kommentti="${UusiKommenttiHandle}"]`);
       doc?.setAttribute('kommentti', kahva.thread!);
       this.newThread = null;
       this.newKahva = null;
@@ -232,7 +232,7 @@ export default class EpCommentThreads extends Vue {
   }
 
   async cancelNewThread() {
-    unwrap(document.querySelector('span[kommentti="uusi-kommentti"]'));
+    unwrap(document.querySelector(`span[kommentti="${UusiKommenttiHandle}"]`));
     this.newThread = null;
     this.newKahva = null;
   }
@@ -270,7 +270,7 @@ export default class EpCommentThreads extends Vue {
     this.removeAddBox();
     if (val && !old) {
       const selection = document.getSelection();
-      if (selection && this.findContentNode(selection.anchorNode)) {
+      if (selection && !Kommentit.threadUuid.value && this.findContentNode(selection.anchorNode)) {
         const commentbox = document.createElement('div');
         const range = selection.getRangeAt(selection.rangeCount - 1);
         const bound = range.getBoundingClientRect();
@@ -309,6 +309,7 @@ export default class EpCommentThreads extends Vue {
     const start = _.size(clone.toString());
     clone.setEnd(range.endContainer, range.endOffset);
     const stop = _.size(clone.toString());
+    console.log('ss', start, stop);
     return { start, stop };
   }
 
@@ -350,8 +351,7 @@ export default class EpCommentThreads extends Vue {
           };
 
           const kspan = document.createElement('span');
-          kspan.setAttribute('kommentti', 'uusi-kommentti');
-          // kspan.setAttribute('kommentti', lisattyKahva.thread!);
+          kspan.setAttribute('kommentti', UusiKommenttiHandle);
           kspan.className = 'animated jackInTheBox slower';
           selection.getRangeAt(0).surroundContents(kspan);
           setTimeout(() => kspan.className = '', 1000);

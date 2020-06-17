@@ -29,11 +29,8 @@
     </div>
     <div>
       <div class="kommentti purettu pl-1 text-muted">
-        <b-button variant="link" @click="showThread()">
-          <fas icon="search-location"></fas>
-        </b-button>
         <b-button variant="link" @click="activateThread()">
-          {{ $t('vastaa') }}
+          <fas icon="search-location"></fas>
         </b-button>
       </div>
     </div>
@@ -48,7 +45,7 @@ import _ from 'lodash';
 
 
 @Component({
-  name: 'ThreadComment',
+  name: 'CollapsedThreads',
 })
 export default class CollapsedThreads extends Vue {
 

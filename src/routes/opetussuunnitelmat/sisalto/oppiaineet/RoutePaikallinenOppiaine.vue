@@ -14,10 +14,9 @@
       </div>
     </template>
     <template slot="keskustelu" slot-scope="{ }">
-      <span>
-      </span>
+      <ep-comment-threads />
     </template>
-    <template v-slot:header="{ data, validation, isEditing }">
+    <template v-slot:header="{ data }">
       <h2>{{ $kaanna(data.nimi) }}</h2>
     </template>
     <template v-slot="{ data, validation, isEditing }">

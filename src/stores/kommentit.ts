@@ -5,10 +5,16 @@ import { Kayttajat as KayttajatApi, Kommentointi } from '@shared/api/ylops';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
 import VueScrollTo from 'vue-scrollto';
 Vue.use(VueCompositionApi);
+import { Computed } from '@shared/utils/interfaces';
+import { Kielet } from '@shared/stores/kieli';
+
+import { unwrap } from '@/utils/utils';
 
 import { createLogger } from '@shared/utils/logger';
 import { delay } from '@shared/utils/delay';
 const logger = createLogger('Kayttaja');
+
+export const UusiKommenttiHandle = 'uusi-kommentti';
 
 export function parsiEsitysnimi(tiedot: any): string {
   if (tiedot.kutsumanimi && tiedot.sukunimi) {
@@ -41,6 +47,12 @@ export function nestedMap<T>(
     [nestedField]: _.map(obj[nestedField], mapFn),
   };
 }
+
+
+const CommentStyles = document.createElement('style');
+document.head.appendChild(CommentStyles);
+let ActiveCommentStyleIdx = -1;
+
 
 class KommenttiStore {
   private state = reactive({
@@ -109,21 +121,43 @@ class KommenttiStore {
     }
   }
 
+  private clearCommentStyle() {
+    if (ActiveCommentStyleIdx >= 0) {
+      const sheet = CommentStyles.sheet as CSSStyleSheet;
+      if (sheet) {
+        try {
+          sheet.deleteRule(ActiveCommentStyleIdx);
+        }
+        catch (err) { }
+      }
+    }
+  }
+
   private watchVisibleThreads = watch(async () => {
     if (!_.isEmpty(this.visibleThreads.value)) {
-      const res = await Promise.all(_.map(this.visibleThreads.value, uuid => Kommentointi.getKommenttiByKetjuUuid(uuid)));
+      const res = await Promise.all(_(this.visibleThreads.value)
+        .reject(uuid => uuid === UusiKommenttiHandle)
+        .map(uuid => Kommentointi.getKommenttiByKetjuUuid(uuid))
+        .value());
       this.state.activeThreads = _.map(res, 'data');
     }
   });
 
+  private onLangChange = watch([Kielet.sisaltoKieli], () => {
+    this.state.threadUuid = null;
+    this.state.thread = null;
+    this.clearCommentStyle();
+  });
+
   private watcher = watch(async () => {
-    if (this.threadUuid.value) {
+    if (this.threadUuid.value && this.threadUuid.value !== UusiKommenttiHandle) {
       const thread = await Kommentointi.getKommenttiByKetjuUuid(this.threadUuid.value);
       this.state.thread = thread.data;
     }
   });
 
   public async clearThread() {
+    this.clearCommentStyle();
     this.state.threadUuid = null;
     this.state.thread = null;
     VueScrollTo.scrollTo('#keskustelu-sisalto', 300);
@@ -133,20 +167,31 @@ class KommenttiStore {
 
   public async activateThread(uuid: string) {
     this.state.thread = null;
+
+    if (uuid === UusiKommenttiHandle) {
+      return;
+    }
+
     if (this.state.isLoading) {
       logger.info('Still loading', uuid);
       return;
     }
 
-    if (uuid === 'uusi-kommentti') {
-      this.state.threadUuid = 'uusi-kommentti';
+    if (uuid === UusiKommenttiHandle) {
+      this.state.threadUuid = UusiKommenttiHandle;
       return;
     }
 
     logger.info('activating thread', uuid);
 
+    this.clearCommentStyle();
+    ActiveCommentStyleIdx = (CommentStyles.sheet as CSSStyleSheet).insertRule(`span[kommentti="${uuid}"] {
+      background-color: #ffd900 !important;
+    }`);
+
     this.state.isLoading = true;
     this.state.threadUuid = uuid;
+
     try {
       const thread = await Kommentointi.getKommenttiByKetjuUuid(uuid);
       this.state.thread = thread.data;
@@ -190,6 +235,8 @@ class KommenttiStore {
     logger.info('removing comment', tunniste);
     await Kommentointi.poistaKommenttiKetju2019(tunniste);
     this.state.thread = _.reject(this.state.thread, c => c.tunniste === tunniste);
+    unwrap(document.querySelector(`span[kommentti="${tunniste}"]`));
+    this.clearCommentStyle();
   }
 
   detach() {

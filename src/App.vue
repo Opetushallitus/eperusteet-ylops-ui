@@ -38,11 +38,13 @@ export default class App extends Vue {
 span[kommentti] {
   background: #ffe598;
   color: #000;
+  cursor: pointer;
 }
 
 span[kommentti].active {
   background: #ffd900;
   color: #000;
+  cursor: pointer;
 }
 
 span[kommentti="uusi-kommentti"]  {

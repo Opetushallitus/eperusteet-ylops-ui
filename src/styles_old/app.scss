@@ -72,6 +72,7 @@ img.content-image {
 span[kommentti] {
   background: #ffe598;
   color: #000;
+  cursor: pointer;
 }
 
 span[kommentti].active {
@@ -82,4 +83,5 @@ span[kommentti].active {
 span[kommentti="uusi-kommentti"]  {
   background: #ffd900;
   color: #000;
+  cursor: pointer;
 }
