@@ -9,7 +9,7 @@
         <b-tabs v-model="tabIndex">
           <b-tab :title="$t('tavoitteet')">
 
-            <ep-collapse ref="tavoitecollapse" class="tavoite" v-for="(tavoite, index) in data.perusteenTavoitteet" :key="'tavoite'+index" :border-bottom="false">
+            <ep-collapse ref="tavoitecollapse" class="tavoite" v-for="(tavoite, index) in data.perusteenTavoitteet" :key="'tavoite'+index" :border-bottom="false" tyyppi="perusopetus-vuosiluokka-tavoite">
               <template v-slot:header>
                 <h3 v-html="$kaanna(tavoite.tavoite)"></h3>
               </template>
@@ -22,7 +22,7 @@
               <div class="inner-collapse mb-4" v-if="tavoite.sisaltoalueet.length > 0">
                 <h4>{{$t('sisaltoalueet')}}</h4>
                 <ep-collapse ref="sisaltoaluecollapse" class="sisaltoalue" v-for="(sisaltoalue, index) in tavoite.sisaltoalueet" :key="'sisaltoalue'+index"
-                  :borderBottom="false" :expanded-by-default="false" chevronLocation="left">
+                  :borderBottom="false" :expanded-by-default="false" chevronLocation="left" tyyppi="perusopetus-vuosiluokka-sisaltoalue">
                   <template v-slot:header>
                     <h5 v-html="$kaanna(sisaltoalue.nimi)"></h5>
                   </template>
