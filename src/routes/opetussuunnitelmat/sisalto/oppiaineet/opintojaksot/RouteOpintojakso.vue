@@ -341,7 +341,7 @@
 
 <script lang="ts">
 import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
-import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
