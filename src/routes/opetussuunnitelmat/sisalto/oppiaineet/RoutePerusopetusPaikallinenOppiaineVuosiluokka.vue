@@ -7,7 +7,7 @@
       <template v-slot:default="{ data, isEditing }">
         <h2>{{ $t('tavoitteet') }}</h2>
         <div v-for="(tavoite, idx) in data.vuosiluokka.tavoitteet" :key="idx" :class="{ 'tavoite-editing': isEditing, 'mb-3': isEditing }">
-          <ep-collapse v-if="!isEditing">
+          <ep-collapse v-if="!isEditing" tyyppi="perusopetus-vuosiluokka-tavoite">
             <h3 slot="header">{{ $kaanna(tavoite.tavoite) }}</h3>
             <div v-for="(sa, idx2) in tavoite.sisaltoalueet" :key="idx2">
               <ep-content layout="normal"

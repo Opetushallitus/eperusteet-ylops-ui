@@ -24,7 +24,7 @@
                   <div class="tavoite d-flex" :class="{'valittu': tavoite.valittu}"
                     v-for="(tavoite, index) in tavoitteet" :key="'tavoite'+index">
                     <fas icon="raahaus" class="raahaus"/>
-                    <ep-collapse class="flex-grow-1" ref="sisaltocollapse" :border-bottom="false" :border-top="false" >
+                    <ep-collapse class="flex-grow-1" ref="sisaltocollapse" :border-bottom="false" :border-top="false">
                       <template v-slot:header><h4 v-html="$kaanna(tavoite.tavoite)"></h4></template>
                       <div class="row">
                         <div class="col-7">
