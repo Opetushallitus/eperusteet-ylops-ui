@@ -56,7 +56,7 @@ import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusPaikallinenOppiaineVuosiluokkaStore } from '@/stores/perusopetusPaikallinenOppiaineVuosiluokkaStore';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
-import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';

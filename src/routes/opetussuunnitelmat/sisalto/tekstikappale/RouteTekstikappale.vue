@@ -36,8 +36,7 @@
             </div>
             <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa" :first="isEditing">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
-              <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)">
-              </p>
+              <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)"></p>
               <div class="font-italic text-secondary" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
               <div v-if="isEditing">
                 <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
@@ -52,7 +51,6 @@
                 <ep-toggle v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</ep-toggle>
               </div>
             </ep-collapse>
-
             <h5>{{ $t('paikallinen-teksti') }}</h5>
             <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing"> </ep-content>
             <ep-alert v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)" :ops="false" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
@@ -70,7 +68,7 @@ import { Mixins, Component } from 'vue-property-decorator';
 
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpCollapse from '@/components/EpCollapse/EpCollapse.vue';
+import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
