@@ -2,7 +2,7 @@
   <div id="scroll-anchor" v-if="editointiStore" >
     <EpEditointi :store="editointiStore" :preModify="aloitaMuokkaus" :postSave="tallennettu">
       <template v-slot:header="{ data }">
-        <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}, {{$t('vuosiluokka')}} {{$t(data.vuosiluokka.vuosiluokka)}}</h2>
+        <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}, {{ $t('vuosiluokka') }} {{ $t(data.vuosiluokka.vuosiluokka) }}</h2>
       </template>
       <template v-slot:default="{ data, isEditing }">
 
@@ -15,12 +15,12 @@
               </template>
 
               <div v-if="tavoite.tavoitteistaJohdetutOppimisenTavoitteet">
-                <h4>{{$t('tavoitteista-johdetut-oppimisen-tavoitteet')}}</h4>
+                <h4>{{ $t('tavoitteista-johdetut-oppimisen-tavoitteet') }}</h4>
                 <span v-html="$kaanna(tavoite.tavoitteistaJohdetutOppimisenTavoitteet)"></span>
               </div>
 
               <div class="inner-collapse mb-4" v-if="tavoite.sisaltoalueet.length > 0">
-                <h4>{{$t('sisaltoalueet')}}</h4>
+                <h4>{{ $t('sisaltoalueet') }}</h4>
                 <ep-collapse ref="sisaltoaluecollapse" class="sisaltoalue" v-for="(sisaltoalue, index) in tavoite.sisaltoalueet" :key="'sisaltoalue'+index"
                   :borderBottom="false" :expanded-by-default="false" chevronLocation="left" tyyppi="perusopetus-vuosiluokka-sisaltoalue">
                   <template v-slot:header>
@@ -46,7 +46,7 @@
                         v-html="$kaanna(sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus)"></div>
 
                       <ep-toggle v-model="sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta">
-                        {{$t('kayta-tavoitekohtaista-kuvausta')}}
+                        {{ $t('kayta-tavoitekohtaista-kuvausta') }}
                       </ep-toggle>
                       <ep-content v-if="sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta"
                                   v-model="sisaltoalue.vuosiluokanSisaltoalue.omaKuvaus"
@@ -60,20 +60,19 @@
 
               <b-row class="mb-2">
                 <b-col class="inner-list" v-if="tavoite.laajaalaisetosaamiset.length > 0">
-                  <h4>{{$t('laaja-alaisen-osaamisen-alueet')}}</h4>
+                  <h4>{{ $t('laaja-alaisen-osaamisen-alueet') }}</h4>
                 <ul>
                   <li v-for="(lao, index) in tavoite.laajaalaisetosaamiset" :key="'lao'+index">
-                    <router-link :to="{name:'vuosiluokkakokonaisuus', params: {vlId: $route.params.vlkId}, hash: '#'+lao.tunniste}">
+                    <router-link :to="{ name:'vuosiluokkakokonaisuus', params: {vlId: $route.params.vlkId}, hash: '#'+lao.tunniste }">
                       <span v-html="$kaanna(lao.nimi)"></span>
                     </router-link>
                   </li>
                 </ul>
                 </b-col>
-                <b-col v-if="tavoite.kohdealueet.length > 0">
-                  <h4>{{$t('tavoitealue')}}</h4>
+                <b-col v-if="tavoite.kohdealueet.length > 0 && tavoite.kohdealueet[0].nimi">
                   <div v-for="(kohdealue, index) in tavoite.kohdealueet" :key="'kohdealue'+index">
-                    <ep-order-color-ball class="pr-2" :index="kohdealue.index" />
-                    <span>{{$kaanna(kohdealue.nimi)}}</span>
+                    <ep-order-color-ball class="pr-2" :index="kohdealue.index" v-if="kohdealue.nimi" />
+                    <span>{{ $kaanna(kohdealue.nimi) }}</span>
                   </div>
                 </b-col>
               </b-row>
@@ -84,8 +83,8 @@
                 <span v-else-if="tavoite.arvioinninKuvaus" v-html="$kaanna(tavoite.arvioinninKuvaus)"></span>
               </div>
 
-              <div class="mb-4" v-if="tavoite.arvioinninkohteet">
-                <h4 class="mb-0 pb-0">{{$t('arviointi-vuosiluokan-paatteeksi')}}</h4>
+              <div class="mb-4" v-if="tavoite.arvioinninkohteet && tavoite.arvioinninkohteet.length > 0">
+                <h4 class="mb-0 pb-0">{{ $t('arviointi-vuosiluokan-paatteeksi') }}</h4>
                 <b-table :items="tavoite.arvioinninkohteet" :fields="arvioinninSarakkeet"/>
               </div>
 
@@ -117,10 +116,10 @@
 
                 <template v-slot:header>
                   <h3>{{ $kaanna(sisaltoalue.nimi) }}
-                    <span v-if="sisaltoalue.vuosiluokanSisaltoalue.piilotettu">({{$t('piilotettu-tavoitteista')}})</span>
+                    <span v-if="sisaltoalue.vuosiluokanSisaltoalue.piilotettu">({{ $t('piilotettu-tavoitteista') }})</span>
                   </h3>
                   <ep-toggle v-model="sisaltoalue.vuosiluokanSisaltoalue.piilotettu" v-if="isEditing">
-                    {{$t('piilota-sisaltoalue')}}
+                    {{ $t('piilota-sisaltoalue') }}
                   </ep-toggle>
                 </template>
               </vuosiluokka-sisalto-teksti>
