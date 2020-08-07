@@ -87,6 +87,27 @@
                                         :peruste-teksti-avattu="true" />
           </div>
         </div>
+
+        <div v-if="data.oppiaine.oppimaarat && data.oppiaine.oppimaarat.length > 0">
+
+          <hr class="mt-4 mb-4"/>
+          <h3 class="mb-3">{{$t('oppimaarat')}}</h3>
+          <b-table striped :items="data.oppiaine.oppimaarat" :fields="oppimaaratFields">
+            <template v-slot:cell(nimi)="data">
+              <router-link :to="{ name: 'perusopetusoppiaine', params: {vlkId: vlkId,oppiaineId: data.item.id}}">
+                {{$kaanna(data.item.nimi)}}
+              </router-link>
+            </template>
+          </b-table>
+
+          <ep-oppimaara-lisays
+              :opetussuunnitelmaStore="store"
+              :oppiaine="data.oppiaine"
+              :reset-navi="resetOps"
+              buttonVariant="outline"
+              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
+        </div>
+
         </template>
     </EpEditointi>
   </div>
@@ -107,6 +128,7 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import { isOppiaineUskontoTaiKieli } from '@/utils/opetussuunnitelmat';
+import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 
 @Component({
   components: {
@@ -115,6 +137,7 @@ import { isOppiaineUskontoTaiKieli } from '@/utils/opetussuunnitelmat';
     EpButton,
     EpContent,
     EpAlert,
+    EpOppimaaraLisays,
   },
 })
 export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsComponent) {
@@ -141,6 +164,19 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
 
   resetOps() {
     this.store.init();
+  }
+
+  get oppimaaratFields() {
+    return [{
+      key: 'nimi',
+      thStyle: {
+        display: 'none',
+      },
+    }];
+  }
+
+  get vlkId() {
+    return this.$route.params.vlkId;
   }
 }
 </script>

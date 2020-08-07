@@ -1,7 +1,6 @@
 <template>
 <div>
-  <ep-button v-b-modal.oppimaaralisays variant="link" buttonClass="text-decoration-none">
-    <fas class="mr-2" icon="plussa" />
+  <ep-button @click="openModal()" icon="plussa" :variant="buttonVariant" buttonClass="text-decoration-none">
     <span>{{ $t(addButtonText) }}</span>
   </ep-button>
   <b-modal ref="oppimaaralisaysModal"
@@ -84,6 +83,9 @@ export default class EpOppimaaraLisays extends Mixins(EpRoute, EpOpsComponent, v
   @Prop({ required: true })
   private resetNavi!: Function;
 
+  @Prop({ required: false, default: 'link' })
+  private buttonVariant!: string;
+
   private perusteenOppiaine: PerusteOppiaineDto | null = null;
   private vuosiluokkakokonaisuus: UnwrappedOpsVuosiluokkakokonaisuusDto | null = null;
 
@@ -108,6 +110,10 @@ export default class EpOppimaaraLisays extends Mixins(EpRoute, EpOpsComponent, v
 
   get isKieli() {
     return _.includes(['VK', 'TK'], this.oppiaine.koodiArvo);
+  }
+
+  openModal() {
+    (this.$refs['oppimaaralisaysModal'] as any).show();
   }
 
   @Watch('valittuOppimaara')
