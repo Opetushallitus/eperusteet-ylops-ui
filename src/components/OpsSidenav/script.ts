@@ -211,11 +211,20 @@ export default class OpsSidenav extends EpOpsComponent {
 
   private kaanna(value: SideMenuItem) {
     if (value.type === 'staticlink') {
-      return (value.i18key) ? this.$t(value.i18key) : '';
+      return this.kaannaStaticLink(value.i18key);
     }
 
     const compiled = this.kaannaHelper(value);
     return value.prefix ? value.prefix + ' ' + compiled : compiled;
+  }
+
+  private kaannaStaticLink(i18key: string | string[] | undefined) {
+    if (_.isArray(i18key)) {
+      return _.join(_.map(i18key, key => this.$t(key)), ' ');
+    }
+    else {
+      return (i18key) ? this.$t(i18key) : '';
+    }
   }
 
   private onkoModTaiOj(item: SideMenuItem) {

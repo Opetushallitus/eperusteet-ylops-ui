@@ -88,11 +88,17 @@ function perusopetuksenValinnaisetOppiaineetLinkki(vlk) {
 
 function perusopetusOppiaineLinkki(oppiaine, vlk): SideMenuEntry {
   let children;
+
   if (oppiaine.koosteinen && _.size(oppiaine.oppimaarat) === 0) {
     children = [];
   }
   else {
-    children = perusopetusOppiaineenLapset(oppiaine.oppimaarat, vlk);
+    children = [
+      ...perusopetusoppiaineenVuosiluokat(oppiaine, vlk),
+      ...perusopetusOppiaineenLapset(oppiaine.oppimaarat, vlk),
+    ];
+
+    children = _.size(children) > 0 ? children : null;
   }
 
   return {
@@ -114,12 +120,46 @@ function perusopetusOppiaineLinkki(oppiaine, vlk): SideMenuEntry {
 
 function perusopetusOppiaineenLapset(oppiaineet, vlk) {
   if (oppiaineet == null || _.size(oppiaineet) === 0) {
-    return null;
+    return [];
   }
   return _.chain(oppiaineet)
     .filter(oppiaine => _.size(oppiaine?.vuosiluokkakokonaisuudet) === 0 || _.includes(_.map(oppiaine?.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk?._tunniste))
     .map(oppiaine => perusopetusOppiaineLinkki(oppiaine, vlk))
     .value();
+}
+
+function perusopetusoppiaineenVuosiluokat(oppiaine, vlk) {
+  const oppiaineenVlk = _.head(_.filter(oppiaine.vuosiluokkakokonaisuudet, ovlk => _.get(ovlk, '_vuosiluokkakokonaisuus') === _.get(vlk, '_tunniste')));
+
+  if (oppiaineenVlk && _.size(oppiaineenVlk.vuosiluokat) > 0) {
+    return [{
+      item: {
+        type: 'staticlink',
+        i18key: 'tavoitteet-ja-sisallot',
+      },
+      flatten: true,
+      children: _.chain(oppiaineenVlk.vuosiluokat)
+        .sortBy('vuosiluokka')
+        .map(vuosiluokka => {
+          return {
+            item: {
+              type: 'staticlink',
+              i18key: ['vuosiluokka', vuosiluokka.vuosiluokka],
+            },
+            route: {
+              name: 'perusopetusoppiainevuosiluokka',
+              params: {
+                vlkId: vlk?.id,
+                oppiaineId: oppiaine?.id,
+                vlId: vuosiluokka.id,
+              },
+            },
+          } as SideMenuEntry;
+        })
+        .value(),
+    }];
+  }
+  return [];
 }
 
 export function oppiaineLinkki(type: string, objref: any, children: SideMenuEntry[]): SideMenuEntry {
