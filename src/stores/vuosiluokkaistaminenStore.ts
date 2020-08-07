@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 
 export class VuosiluokkaistaminenStore implements IEditoitava {
-  constructor(private opsId: number, private vlkId: number, private oppiaineId: number, private el) {
+  constructor(private opsId: number, private vlkId: number, private oppiaineId: number, private el, private postSave: Function) {
   }
 
   async acquire() {
@@ -98,6 +98,11 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
       .value();
 
     await OppiaineenVuosiluokkakokonaisuudet.updateVuosiluokkienTavoitteet(this.opsId, this.oppiaineId, data.oppiaineenVlk.id, vuosiluokkatavoitteet);
+
+    if (this.postSave) {
+      await this.postSave();
+    }
+
     return data;
   }
 

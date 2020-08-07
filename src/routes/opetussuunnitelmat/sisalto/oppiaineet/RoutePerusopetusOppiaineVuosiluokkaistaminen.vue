@@ -121,7 +121,11 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
 
   async init() {
     this.editointiStore = new EditointiStore(new VuosiluokkaistaminenStore(
-      this.opsId, _.toNumber(this.$route.params.vlkId), _.toNumber(this.$route.params.oppiaineId), this));
+      this.opsId, _.toNumber(this.$route.params.vlkId), _.toNumber(this.$route.params.oppiaineId), this, this.reset));
+  }
+
+  async reset() {
+    await this.store.init();
   }
 
   get tavoitteetOptions() {

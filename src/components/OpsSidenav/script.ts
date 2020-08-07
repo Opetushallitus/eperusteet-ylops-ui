@@ -299,10 +299,6 @@ export default class OpsSidenav extends EpOpsComponent {
     return _.get(this.store, 'sisalto.lapset', []);
   }
 
-  private get opsSisalto() {
-    return this.store.sisalto;
-  }
-
   tekstikappaleLapset(itemData) {
     return [
       {
