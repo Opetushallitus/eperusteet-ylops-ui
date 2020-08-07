@@ -42,6 +42,7 @@ library.add(solid.faFilePdf);
 library.add(solid.faFileSignature);
 library.add(solid.faFolder);
 library.add(solid.faGlassCheers);
+library.add(solid.faGripVertical);
 library.add(solid.faHeart);
 library.add(solid.faHome);
 library.add(solid.faInfoCircle);

@@ -12,7 +12,7 @@
         <b-tab :title="$t('tekstikappaleet')">
           <div class="tree">
             <ep-jarjesta
-                :isEditable="isEditing"
+                :is-editable="isEditing"
                 v-model="data.tekstikappaleet.lapset"
                 child-field="lapset"
                 group="sisalto"
@@ -36,15 +36,14 @@
           </ep-button>
         </b-tab>
 
-        <b-tab :title="$t('oppiaineet')" v-if="data.oppiaineet.length > 0">
+        <b-tab :title="isLops2019 ? $t('oppiaineet-ja-opintojaksot') : $t('oppiaineet')" v-if="data.oppiaineet.length > 0">
           <div class="tree">
             <ep-jarjesta
                 :isEditable="isEditing"
                 v-model="data.oppiaineet"
-                child-field="oppimaarat"
-                group="oppiaine"
-                :sortable="true"
-                :uniqueChildGroups="true">
+                child-field="lapset"
+                group="oppiaineet"
+                :unique-child-groups="true">
               <template #default="{ node }">
                 <span>
                   {{ $kaanna(node.nimi) }}
@@ -73,6 +72,8 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpJarjesta from '@shared/components/EpJarjesta/EpJarjesta.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import { sortedOppiaineet } from '../../utils/opetussuunnitelmat';
+import { PerusteCache } from '@/stores/peruste';
+import { KoulutustyyppiToteutus } from '@shared/tyypit';
 
 function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKappaleViiteKevytDto | null {
   if (!root) {
@@ -105,6 +106,12 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
   };
 
   private tabIndex: number = 0;
+  private cache: PerusteCache | null = null;
+
+  async init() {
+    this.cache = await PerusteCache.of(this.opsId);
+    await this.store.init();
+  }
 
   async validate(data) {
     const uudet = _.filter(data.tekstikappaleet.lapset, '$uusi');
@@ -122,19 +129,139 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
     data.tekstikappaleet.push(uusiViite);
   }
 
-  async load() {
-    const tekstikappaleet = await this.store.getOtsikot();
-
-    const vuosiluokkakokonaisuudet = _.map(this.ops.vuosiluokkakokonaisuudet, 'vuosiluokkakokonaisuus._tunniste');
-    const oppiaineet = _.chain(sortedOppiaineet(this.ops.oppiaineet))
-      .filter(oppiaine => _.some(vuosiluokkakokonaisuudet, vlk => _.includes(_.map(oppiaine.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk)))
-      .map(oppiaine => {
+  mapPerusteOppimaarat(oa) {
+    return _(oa.oppimaarat)
+      .map(om => {
+        const opintojaksot = _(this.store.opintojaksot)
+          .concat(this.store.tuodutOpintojaksot)
+          .filter(oj => _.includes(_(oj.oppiaineet)
+            .map('koodi')
+            .filter(_.identity)
+            .value(), om.koodi!.uri))
+          .map(oj => {
+            const ojOm: any = _.find(oj.oppiaineet, { koodi: om.koodi.uri });
+            return {
+              id: oj.id,
+              nimi: oj.nimi,
+              jarjestys: ojOm.jarjestys,
+            };
+          })
+          .sortBy('jarjestys')
+          .value();
         return {
-          ...oppiaine,
-          oppimaarat: _.filter(oppiaine.oppimaarat, oppimaara => _.some(vuosiluokkakokonaisuudet, vlk => _.includes(_.map(oppimaara.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk))),
+          id: om.id,
+          nimi: om.nimi,
+          lapset: opintojaksot,
+          group: 'opintojaksot',
         };
       })
       .value();
+  }
+
+  get perusteOppiaineet() {
+    return _(this.cache!.peruste.oppiaineet)
+      .map(oa => {
+        const opintojaksot = _(this.store.opintojaksot)
+          .concat(this.store.tuodutOpintojaksot)
+          .filter(oj => _.includes(_(oj.oppiaineet)
+            .map('koodi')
+            .filter(_.identity)
+            .value(), oa.koodi!.uri))
+          .map(oj => {
+            const ojOa: any = _.find(oj.oppiaineet, { koodi: oa.koodi.uri });
+            return {
+              id: oj.id,
+              nimi: oj.nimi,
+              jarjestys: ojOa.jarjestys,
+            };
+          })
+          .sortBy('jarjestys')
+          .value();
+        return {
+          id: oa.id,
+          nimi: oa.nimi,
+          lapset: [
+            ...this.mapPerusteOppimaarat(oa),
+            ...opintojaksot,
+          ],
+          group: _.isEmpty(oa.oppimaarat) ? 'opintojaksot' : 'oppimaarat',
+          sortable: _.isEmpty(oa.oppimaarat),
+          jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: oa.koodi.uri }), 'jarjestys'),
+        };
+      })
+      .value();
+  }
+
+  get paikallisetOppiaineet() {
+    return _(this.store.paikallisetOppiaineet)
+      .map(poa => {
+        const opintojaksot = _(this.store.opintojaksot)
+          .concat(this.store.tuodutOpintojaksot)
+          .filter(oj => _.includes(
+            _(oj.oppiaineet)
+              .map('koodi')
+              .filter(_.identity)
+              .value(),
+              poa.koodi!
+          ))
+          .map(oj => {
+            const ojOa: any = _.find(oj.oppiaineet, { koodi: poa.koodi });
+            return {
+              id: oj.id,
+              nimi: oj.nimi,
+              jarjestys: ojOa.jarjestys,
+            };
+          })
+          .sortBy('jarjestys')
+          .value();
+        return {
+          id: poa.id,
+          nimi: poa.nimi,
+          lapset: opintojaksot,
+          group: 'opintojaksot',
+          jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: poa.koodi }), 'jarjestys'),
+        };
+      })
+      .value();
+  }
+
+  get oppiaineet() {
+    return _([
+      ...this.perusteOppiaineet,
+      ...this.paikallisetOppiaineet,
+    ])
+      .sortBy('jarjestys')
+      .value();
+  }
+
+  get oppiaineJarjestykset() {
+    return this.store.oppiaineJarjestykset;
+  }
+
+  get isLops2019() {
+    return ((this.ops.toteutus as any) === KoulutustyyppiToteutus.lops2019);
+  }
+
+  async load() {
+    const tekstikappaleet = await this.store.getOtsikot();
+
+    let oppiaineet;
+    if (this.isLops2019) {
+      oppiaineet = this.oppiaineet;
+    }
+    else {
+      // Perusopetus oppiaineet
+      const vuosiluokkakokonaisuudet = _.map(this.ops.vuosiluokkakokonaisuudet, 'vuosiluokkakokonaisuus._tunniste');
+      oppiaineet = _.chain(sortedOppiaineet(this.ops.oppiaineet))
+        .filter(oppiaine => _.some(vuosiluokkakokonaisuudet, vlk => _.includes(_.map(oppiaine.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk)))
+        .map(oppiaine => {
+          return {
+            ...oppiaine,
+            lapset: _.filter(oppiaine.oppimaarat, oppimaara => _.some(vuosiluokkakokonaisuudet, vlk => _.includes(_.map(oppimaara.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk))),
+          };
+        })
+        .value();
+    }
 
     return {
       tekstikappaleet,
@@ -146,25 +273,31 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
     await this.store.saveTeksti(data.tekstikappaleet);
 
     if (_.size(data.oppiaineet) > 0) {
-      let jnro = 0;
-      const oppiainejarjestys = _.chain(data.oppiaineet)
-        .map(oppiaine => {
-          return [
-            oppiaine,
-            ..._.isEmpty(oppiaine.oppimaarat) ? [] : oppiaine.oppimaarat,
-          ];
-        })
-        .flatMap()
-        .map(oppiaine => {
-          return {
-            oppiaineId: oppiaine.id,
-            jnro: jnro++,
-          };
-        })
-        .value();
+      if (this.isLops2019) {
+        await this.store.updateOppiaineJaOpintojaksojarjestys(data.oppiaineet);
+        await this.store.init();
+      }
+      else {
+        let jnro = 0;
+        const oppiainejarjestys = _.chain(data.oppiaineet)
+          .map(oppiaine => {
+            return [
+              oppiaine,
+              ..._.isEmpty(oppiaine.oppimaarat) ? [] : oppiaine.oppimaarat,
+            ];
+          })
+          .flatMap()
+          .map(oppiaine => {
+            return {
+              oppiaineId: oppiaine.id,
+              jnro: jnro++,
+            };
+          })
+          .value();
 
-      await this.store.updateOppiainejarjestys(oppiainejarjestys);
-      await this.store.init();
+        await this.store.updateOppiainejarjestys(oppiainejarjestys);
+        await this.store.init();
+      }
     }
   }
 

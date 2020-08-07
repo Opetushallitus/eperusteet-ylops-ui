@@ -1,4 +1,24 @@
-import { Termisto, TermiDto, Ulkopuoliset, UusiJulkaisuDto, Lops2019PaikallinenOppiaineDto, Matala, Lops2019OpintojaksoDto, OhjeDto, OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, Puu, TekstiKappaleViiteKevytDto, Lops2019, Ohjeet, OpetussuunnitelmanSisalto, Opintojaksot, Lops2019Oppiaineet, Opetussuunnitelmat } from '@shared/api/ylops';
+import {
+  Termisto,
+  TermiDto,
+  Ulkopuoliset,
+  UusiJulkaisuDto,
+  Lops2019PaikallinenOppiaineDto,
+  Matala,
+  Lops2019OpintojaksoDto,
+  OhjeDto,
+  OpetussuunnitelmaDto,
+  OpetussuunnitelmaKevytDto,
+  Puu,
+  TekstiKappaleViiteKevytDto,
+  Lops2019,
+  Ohjeet,
+  OpetussuunnitelmanSisalto,
+  Opintojaksot,
+  Lops2019Oppiaineet,
+  Opetussuunnitelmat,
+  Lops2019OppiaineJarjestysDto,
+} from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
 import { createLogger } from '@shared/utils/logger';
@@ -35,6 +55,9 @@ export class OpetussuunnitelmaStore {
   public tuodutOpintojaksot: Lops2019OpintojaksoDto[] = [];
 
   @State()
+  public oppiaineJarjestykset: Lops2019OppiaineJarjestysDto[] = [];
+
+  @State()
   public kasitteet: TermiDto[] = [];
 
   @State()
@@ -62,7 +85,7 @@ export class OpetussuunnitelmaStore {
   }
 
   public async init() {
-    logger.info('Initing peruste store', this.opsId);
+    logger.info('Initing ops store', this.opsId);
     this.opetussuunnitelma = await this.get();
     await this.updateSisalto();
 
@@ -70,6 +93,7 @@ export class OpetussuunnitelmaStore {
       this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
       this.tuodutOpintojaksot = (await Opintojaksot.getTuodutOpintojaksot(this.opetussuunnitelma!.id!)).data;
       this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
+      this.oppiaineJarjestykset = (await Lops2019Oppiaineet.getLops2019OppiaineJarjestys(this.opetussuunnitelma!.id!)).data;
     }
   }
 
@@ -319,6 +343,10 @@ export class OpetussuunnitelmaStore {
       .map(org => org.oid as string)
       .value();
     this.virkailijat = _.uniqBy((await Ulkopuoliset.getOrganisaatioVirkailijat(orgOids)).data as any[], 'oid');
+  }
+
+  public async updateOppiaineJaOpintojaksojarjestys(oppiaineopintojaksojarjestys) {
+    await Opetussuunnitelmat.updateOppiaineJaOpintojaksojarjestys(this.opetussuunnitelma!.id!, oppiaineopintojaksojarjestys);
   }
 
   public async updateOppiainejarjestys(oppiainejarjestys) {

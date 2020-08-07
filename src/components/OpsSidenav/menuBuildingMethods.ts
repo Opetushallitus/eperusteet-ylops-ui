@@ -204,7 +204,14 @@ export function oppimaaraModuuliLinkit(source: OpintojaksoModuuliSource): SideMe
 export function oppimaaraOpintojaksoLinkit(opintojaksot: any, source: OpintojaksoModuuliSource): SideMenuEntry[] {
   return _.chain(opintojaksot)
     .filter((oj) => oj.oppiaineet && source.koodi && _.map(oj.oppiaineet, 'koodi').indexOf(source.koodi) > -1)
-    .sortBy(koodiAlku, koodiNumero)
+    .map(oj => {
+      const ojOa: any = _.find(oj.oppiaineet, { koodi: source.koodi });
+      return {
+        ...oj,
+        jarjestys: ojOa.jarjestys,
+      };
+    })
+    .sortBy('jarjestys', koodiAlku, koodiNumero)
     .map(oj => {
       return {
         item: {
