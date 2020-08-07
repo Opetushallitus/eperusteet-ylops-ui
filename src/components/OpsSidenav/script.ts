@@ -166,6 +166,10 @@ export default class OpsSidenav extends EpOpsComponent {
     return !this.perusteenOppiaineet;
   }
 
+  get oppiaineJarjestykset() {
+    return this.store.oppiaineJarjestykset;
+  }
+
   get opsOppiaineLinkit() {
     if (!this.perusteenOppiaineet) {
       return [];
@@ -196,6 +200,10 @@ export default class OpsSidenav extends EpOpsComponent {
             moduulit: oppiaine.moduulit!,
           }));
       })
+      .map(el => ({
+        ...el,
+        jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: _.get(el, 'item.objref.koodi.uri') }), 'jarjestys'),
+      }))
       .value();
   }
 
@@ -274,7 +282,7 @@ export default class OpsSidenav extends EpOpsComponent {
             name: 'oppiaineet',
             params: {},
           },
-          children: [
+          children: _([
             ...oppiaineLinkit,
             ..._(paikallisetOppiaineet)
               .filter(poa => _.isEmpty(poa.perusteenOppiaineUri))
@@ -282,8 +290,14 @@ export default class OpsSidenav extends EpOpsComponent {
                 id: poa.id!,
                 koodi: poa.koodi!,
               })))
+              .map(el => ({
+                ...el,
+                jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: _.get(el, 'item.objref.koodi') }), 'jarjestys'),
+              }))
               .value(),
-          ],
+          ])
+            .sortBy('jarjestys')
+            .value(),
         },
       ];
     }
