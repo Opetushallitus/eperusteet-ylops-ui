@@ -58,16 +58,24 @@
                 </ep-collapse>
               </div>
 
-              <b-row class="mb-2">
-                <b-col class="inner-list" v-if="tavoite.laajaalaisetosaamiset.length > 0">
-                  <h4>{{ $t('laaja-alaisen-osaamisen-alueet') }}</h4>
-                <ul>
-                  <li v-for="(lao, index) in tavoite.laajaalaisetosaamiset" :key="'lao'+index">
-                    <router-link :to="{ name:'vuosiluokkakokonaisuus', params: {vlId: $route.params.vlkId}, hash: '#'+lao.tunniste }">
-                      <span v-html="$kaanna(lao.nimi)"></span>
-                    </router-link>
-                  </li>
-                </ul>
+              <b-row>
+                <b-col v-if="tavoite.laajaalaisetosaamiset.length > 0">
+                  <div class="inner-collapse mb-4">
+                    <h4>{{$t('laaja-alaisen-osaamisen-alueet')}}</h4>
+
+                    <ep-collapse v-for="(lao, index) in tavoite.laajaalaisetosaamiset" :key="'lao'+index"
+                      :borderBottom="false" :expanded-by-default="false" chevronLocation="left">
+                      <template v-slot:header>
+                        <h5 v-html="$kaanna(lao.perusteenLao.nimi)"></h5>
+                      </template>
+
+                      <div class="pl-4">
+                        <span v-if="lao.paikallinenLao && lao.paikallinenLao.kuvaus" v-html="$kaanna(lao.paikallinenLao.kuvaus)"></span>
+                        <span v-else v-html="$kaanna(lao.perusteenLao.kuvaus)"></span>
+                      </div>
+                    </ep-collapse>
+                  </div>
+
                 </b-col>
                 <b-col v-if="tavoite.kohdealueet.length > 0 && tavoite.kohdealueet[0].nimi">
                   <div v-for="(kohdealue, index) in tavoite.kohdealueet" :key="'kohdealue'+index">
