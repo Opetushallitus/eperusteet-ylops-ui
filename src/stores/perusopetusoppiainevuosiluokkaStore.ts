@@ -1,6 +1,6 @@
 import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
-import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OppiaineenVuosiluokat, PerusteOppiaineenVuosiluokkakokonaisuusDto, Opetussuunnitelmat } from '@shared/api/ylops';
+import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OppiaineenVuosiluokat, PerusteOppiaineenVuosiluokkakokonaisuusDto, Opetussuunnitelmat, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import { Opetussuunnitelma } from './opetussuunnitelma';
@@ -33,18 +33,21 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
     let vuosiluokka;
     let perusteenOppiaine;
     let laajaalaisetOsaamiset;
-    [oppiaine, vuosiluokka, perusteenOppiaine, laajaalaisetOsaamiset] = _.map(await (Promise.all([
+    let vuosiluokkakokonaisuus;
+    [oppiaine, vuosiluokka, perusteenOppiaine, laajaalaisetOsaamiset, vuosiluokkakokonaisuus] = _.map(await (Promise.all([
       Oppiaineet.getOppiaine(this.opsId, this.oppiaineId),
       OppiaineenVuosiluokat.getOppiaineenvuosiluokka(this.opsId, this.oppiaineId,
         (this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id as number), this.vuosiluokkaId),
       Oppiaineet.getPerusteSisalto(this.opsId, this.oppiaineId),
       Opetussuunnitelmat.getLaajalaisetosamiset(this.opsId),
+      Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuus(this.opsId, (this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id as number)),
     ])), 'data');
 
     const perusteenVlk = _.find(perusteenOppiaine.vuosiluokkakokonaisuudet, vlk =>
       vlk._vuosiluokkakokonaisuus === (this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus as any)._tunniste) as PerusteOppiaineenVuosiluokkakokonaisuusDto;
     const sisaltoalueetMap = _.keyBy(perusteenVlk.sisaltoalueet, 'tunniste');
-    const laajaalaisetOsaamisetMap = _.keyBy(laajaalaisetOsaamiset, 'tunniste');
+    const perusteenLaajaalaisetOsaamisetMap = _.keyBy(laajaalaisetOsaamiset, 'tunniste');
+    const paikallisetLaajaalaisetOsaamisetMap = _.keyBy(vuosiluokkakokonaisuus.laajaalaisetosaamiset, '_laajaalainenosaaminen');
     const vuosiluokanTavoitteet = _.keyBy(vuosiluokka.tavoitteet, 'tunniste');
     const vuosiluokanSisaltoalueet = _.keyBy(vuosiluokka.sisaltoalueet, 'tunniste');
     let kohdealueGlobalIndex = 0;
@@ -87,9 +90,14 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
             }])
             .value(),
           laajaalaisetosaamiset: _.chain(tavoite.laajaalaisetosaamiset)
-            .map((lao: string) => laajaalaisetOsaamisetMap[lao])
+            .map((lao: string) => {
+              return {
+                perusteenLao: perusteenLaajaalaisetOsaamisetMap[lao],
+                paikallinenLao: paikallisetLaajaalaisetOsaamisetMap[lao],
+              };
+            })
             .sortBy([(lao: any) => {
-              return lao.nimi[Kielet.getSisaltoKieli.value];
+              return lao.perusteenLao.nimi[Kielet.getSisaltoKieli.value];
             }])
             .value(),
           kohdealueet: _.map(tavoite.kohdealueet, kohdealue => {
