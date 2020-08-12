@@ -233,6 +233,10 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
     }
   }
 
+  get oppiaineJarjestykset() {
+    return this.store.oppiaineJarjestykset;
+  }
+
   get total() {
     return {
       ..._(this.oppiaineRakenne)
@@ -299,7 +303,9 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
   }
 
   get suodatettuOppiaineRakenne() {
-    return _(this.oppiaineRakenne)
+    const rekursiivinenRakenne = {};
+
+    _(this.oppiaineRakenne)
       .map(oa => {
         return {
           ...oa,
@@ -320,16 +326,44 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
             .value(),
           opintojaksot: _(oa.opintojaksot)
             .filter((oj) => Kielet.search(this.query, oj.nimi))
-            .sortBy(...koodiSorters())
+            .map(oj => {
+              const ojOa: any = _.find(oj.oppiaineet, { koodi: oa.koodi.uri });
+              return {
+                ...oj,
+                jarjestys: ojOa.jarjestys,
+              };
+            })
+            .sortBy('jarjestys', ...koodiSorters())
             .value(),
         };
       })
       .filter((oa: any) => Kielet.search(this.query, oa.nimi)
         || !_.isEmpty(oa.moduulit)
         || !_.isEmpty(oa.opintojaksot))
-      // fixme: Oppimäärät saattavat mennä väärän oppiaineen alle jos koodi on poikkeava
-      // .sortBy((oa: any) => oa.paikallinen, koodiAlku, koodiNumero)
+      .forEach(oa => {
+        if (oa._oppiaine) {
+          rekursiivinenRakenne[oa._oppiaine].oppimaaratHandled.push(oa);
+        }
+        else {
+          oa.oppimaaratHandled = [];
+          rekursiivinenRakenne[oa.id] = (oa);
+        }
+
+        return oa;
+      });
+
+    const sortedRakenne = _(rekursiivinenRakenne)
+      .sortBy('jarjestys', (oa: any) => oa.paikallinen, koodiAlku, koodiNumero)
       .value();
+
+    const flatten = item => {
+      return [
+        item,
+        _.flatMapDeep(item.oppimaaratHandled, flatten),
+      ];
+    };
+
+    return _.flatMapDeep(sortedRakenne, flatten);
   }
 
   private moduuliPresentation(moduuli: any, opintojaksojenModuulit: any) {
@@ -359,6 +393,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
   get paikallinenOppiaineIlmanOppimaariaRakenne() {
     return _(this.paikallinenOppiaineRakenne)
       .reject('perusteenOppiaineUri')
+      .map(poa => ({ ...poa, jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: _.get(poa, 'koodi.uri') }), 'jarjestys') }))
       .value();
   }
 
@@ -374,6 +409,14 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           .value(),
           poa.koodi!
       ))
+      .map(oj => {
+        const ojOa: any = _.find(oj.oppiaineet, { koodi: poa.koodi });
+        return {
+          ...oj,
+          jarjestys: ojOa.jarjestys,
+        };
+      })
+      .sortBy('jarjestys', ...koodiSorters())
       .value();
 
     const valitutModuulit = _(opintojaksot)
@@ -448,6 +491,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       ])
       .flatten()
       .map(oa => oa.paikallinen ? this.mapPaikallinenOppimaara(oa) : this.mapOppiaineet(oa))
+      .map(oa => ({ ...oa, jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: _.get(oa, 'koodi.uri') }), 'jarjestys') }))
       .value();
   }
 
