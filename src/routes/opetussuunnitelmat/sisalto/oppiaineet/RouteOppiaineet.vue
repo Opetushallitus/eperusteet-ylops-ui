@@ -246,7 +246,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           kaytetytModuulit: 0,
           kaikkiModuulit: 0,
         }),
-      opintojaksot: _.size(this.store.opintojaksot),
+      opintojaksot: _.size(this.store.opintojaksot) + _.size(this.store.tuodutOpintojaksot),
     };
   }
 
