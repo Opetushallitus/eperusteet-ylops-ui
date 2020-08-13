@@ -6,8 +6,8 @@ import Loading from 'vue-loading-overlay';
 import Notifications from 'vue-notification';
 import PortalVue from 'portal-vue';
 
-import '@/config/bootstrap';
-import '@/config/fontawesome';
+import '@shared/config/bootstrap';
+import '@shared/config/fontawesome';
 
 import { router } from '@/router';
 import { Kielet } from '@shared/stores/kieli';

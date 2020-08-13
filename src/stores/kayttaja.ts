@@ -39,8 +39,6 @@ const logger = createLogger('Kayttaja');
 
 @Store
 class KayttajaStore {
-  @State()
-  public organisaatiot: any[] = [];
 
   @State()
   public tiedot: KayttajanTietoDto = { };
@@ -58,38 +56,38 @@ class KayttajaStore {
   public readonly nimi!: string;
 
   public async init() {
-    try {
-      logger.info('Haetaan käyttäjän tiedot');
-      this.tiedot = (await KayttajatApi.getKayttaja()).data;
-      this.organisaatiot = (await Ulkopuoliset.getUserOrganisations()).data;
-      const oikeudet = (await Opetussuunnitelmat.getOikeudet()).data;
-      this.oikeudet = (oikeudet as any);
-      logger.info('Käyttäjän tiedot', this.tiedot);
-      logger.info('Käyttäjän oikeudet', this.oikeudet);
-    }
-    catch (err) {
-      logger.error('Käyttäjän tietojen lataus epäonnistui', err.message);
-    }
+    logger.info('Haetaan käyttäjän tiedot');
+    const res = _.map(await Promise.all([
+      KayttajatApi.getKayttaja(),
+      Opetussuunnitelmat.getOikeudet(),
+    ]), 'data');
+    this.tiedot = res[0] as any;
+    this.oikeudet = res[1] as any;
+
+    logger.info('Käyttäjän tiedot', this.tiedot);
+    logger.info('Käyttäjän oikeudet', this.oikeudet);
   }
 
   public async fetchOrganisaatioVirkailijat() {
-    const orgIds = _(this.organisaatiot)
-      .filter(org => org.oid !== organizations.oph.oid)
-      .map(org => org.oid)
+    const organisaatiot = (await Ulkopuoliset.getUserOrganisations()).data;
+    const orgIds = _(organisaatiot)
+      .filter((org: any) => org.oid !== organizations.oph.oid)
+      .map((org: any) => org.oid)
       .value();
     this.virkailijat = (await Ulkopuoliset.getOrganisaatioVirkailijat(orgIds)).data as any[];
   }
 
   public async fetchVirkailijatByOrganisaatio() {
-    const res = _.map(await Promise.all(_(this.organisaatiot)
-      .filter(org => org.oid !== organizations.oph.oid)
-      .map(org => org.oid)
+    const organisaatiot = (await Ulkopuoliset.getUserOrganisations()).data;
+    const res = _.map(await Promise.all(_(organisaatiot)
+      .filter((org: any) => org.oid !== organizations.oph.oid)
+      .map((org: any) => org.oid)
       .map(oid => Ulkopuoliset.getOrganisaatioVirkailijat([oid]))
       .value()), 'data');
 
     let virkailijat: any[] = [];
     for (let i = 0; i < res.length; i++) {
-      const organisaatio = this.organisaatiot[i];
+      const organisaatio = organisaatiot[i];
       const orgVirkailijat = res[i];
       _.each(orgVirkailijat, virkailija => {
         const oid = (virkailija as any).oid;
@@ -108,7 +106,7 @@ class KayttajaStore {
     this.virkailijat = virkailijat;
   }
 
-  public async hasOikeus(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {
+  public hasOikeus(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {
     if (!oikeus) {
       return false;
     }
