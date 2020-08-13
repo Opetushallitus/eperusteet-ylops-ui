@@ -4,7 +4,9 @@
     <span>{{ $t('ops-tilastot') }}</span>
   </template>
   <template slot="content">
-    <p>{{ $t('tilastot-kuvaus') }}</p>
+    <div class="kuvaus">
+      <p>{{ $t('tilastot-kuvaus') }}</p>
+    </div>
   </template>
 </base-tile>
 </template>
@@ -27,5 +29,7 @@ export default class TileTilastot extends Vue {
 </script>
 
 <style scoped lang="scss">
-
+.kuvaus {
+  padding: 1rem;
+}
 </style>

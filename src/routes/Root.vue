@@ -15,6 +15,7 @@ import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpFooter from '@/components/EpFooter/EpFooter.vue';
 import EpTutorial from '@shared/components/EpTutorial/EpTutorial.vue';
 
+
 @Component({
   directives: {
     Sticky,

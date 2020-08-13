@@ -18,7 +18,7 @@ export default class EpOpsComponent extends Vue {
   }
 
   get isLops2019() {
-    return this.ops.toteutus === 'lops2019';
+    return this.ops.toteutus as string === 'lops2019';
   }
 
   get opsId() {
