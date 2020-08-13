@@ -7,8 +7,8 @@ import { KieliStore, Kielet } from '@shared/stores/kieli';
 import _ from 'lodash';
 import { Ulkopuoliset, Kysymykset, KysymysDto } from '@shared/api/ylops';
 
-import '@/config/bootstrap';
-import '@/config/fontawesome';
+import '@shared/config/bootstrap';
+import '@shared/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 import aikaleima from '@shared/plugins/aikaleima';

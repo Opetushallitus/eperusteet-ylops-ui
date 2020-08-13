@@ -108,7 +108,7 @@ import { success } from '@/utils/notifications';
 })
 export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) {
   private ohjeet: OhjeDto[] = [];
-  private perusteenTeksti: PerusteTekstiKappaleViiteDto | TekstiKappaleViiteDto |  null = null;
+  private perusteenTeksti: PerusteTekstiKappaleViiteDto | TekstiKappaleViiteDto | null = null;
   private alkuperaiset: PerusteTekstiKappaleViiteDto[] | null = null;
   private nimi: any = {};
 
@@ -215,8 +215,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       if (teksti.perusteTekstikappaleId) {
         if (this.isLops2019) {
           this.perusteenTeksti = (await Lops2019Perusteet
-          .getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId))
-          .data as PerusteTekstiKappaleViiteDto;
+            .getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId))
+            .data as PerusteTekstiKappaleViiteDto;
         }
         else {
           this.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;

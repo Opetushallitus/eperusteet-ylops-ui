@@ -2,11 +2,10 @@ import { createLocalVue, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import EpEditorMenuBar from './EpEditorMenuBar.vue';
 import EpContent from './EpContent.vue';
-import { KieliStore, Kielet } from '@shared/stores/kieli';
-import { Kieli } from '@shared/tyypit';
+import { Kielet } from '@shared/stores/kieli';
 import { Editor } from 'tiptap';
-import '@/config/bootstrap';
-import '@/config/fontawesome';
+import '@shared/config/bootstrap';
+import '@shared/config/fontawesome';
 
 import {
   Blockquote,

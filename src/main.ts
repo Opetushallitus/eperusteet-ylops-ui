@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import '@/config/styles';
+import '@shared/config/styles';
 import { getRootConfig } from '@/mainvue';
 import { createLogger } from '@shared/utils/logger';
 import { Ulkopuoliset } from '@shared/api/ylops';
