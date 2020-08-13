@@ -344,6 +344,15 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
         if (oa._oppiaine) {
           rekursiivinenRakenne[oa._oppiaine].oppimaaratHandled.push(oa);
         }
+        else if (oa.perusteenOppiaineUri) {
+          const parentOa = _.find(this.oppiaineRakenne, { koodi: { uri: oa.perusteenOppiaineUri } });
+          if (parentOa && parentOa._oppiaine) {
+            rekursiivinenRakenne[parentOa._oppiaine].oppimaaratHandled.push(oa);
+          }
+          else if (parentOa && rekursiivinenRakenne[parentOa.id]) {
+            rekursiivinenRakenne[parentOa.id].oppimaaratHandled.push(oa);
+          }
+        }
         else {
           oa.oppimaaratHandled = [];
           rekursiivinenRakenne[oa.id] = (oa);

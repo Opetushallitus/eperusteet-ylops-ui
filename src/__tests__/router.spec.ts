@@ -18,8 +18,8 @@ import {
   Ulkopuoliset,
 } from '@shared/api/ylops';
 
-import '@/config/bootstrap';
-import '@/config/fontawesome';
+import '@shared/config/bootstrap';
+import '@shared/config/fontawesome';
 
 describe('Router', () => {
   const localVue = createLocalVue();

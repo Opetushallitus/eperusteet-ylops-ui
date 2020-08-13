@@ -1,14 +1,15 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import RouteOrganisaatio from '../RouteOrganisaatio.vue';
-import { KieliStore, Kielet } from '@shared/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 
-import '@/config/bootstrap';
-import '@/config/fontawesome';
+import '@shared/config/bootstrap';
+import '@shared/config/fontawesome';
 import { Kayttajat as KayttajatApi, Opetussuunnitelmat, Ulkopuoliset } from '@shared/api/ylops';
 import { genKayttaja, genOikeudet, makeAxiosResponse } from '&/utils/data';
 import { Kayttajat } from '@/stores/kayttaja';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
+import { delay } from '@shared/utils/delay';
 
 describe('RouteOrganisaatio', () => {
   const localVue = createLocalVue();
@@ -69,9 +70,7 @@ describe('RouteOrganisaatio', () => {
   test('Renders virkailijat', async () => {
     const wrapper = await createMounted();
 
-    await localVue.nextTick();
-    await localVue.nextTick();
-    await localVue.nextTick();
+    await delay();
 
     expect(wrapper.html()).toContain('kutsumanimi1 sukunimi1');
     expect(wrapper.html()).toContain('kutsumanimi2 sukunimi2');
@@ -82,9 +81,7 @@ describe('RouteOrganisaatio', () => {
 
     wrapper.setData({ showOrganizations: true });
 
-    await localVue.nextTick();
-    await localVue.nextTick();
-    await localVue.nextTick();
+    await delay();
 
     expect(wrapper.html()).toContain('kutsumanimi1 sukunimi1');
     expect(wrapper.html()).toContain('kutsumanimi2 sukunimi2');

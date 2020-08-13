@@ -39,7 +39,6 @@ const logger = createLogger('Kayttaja');
 
 @Store
 class KayttajaStore {
-
   @State()
   public tiedot: KayttajanTietoDto = { };
 

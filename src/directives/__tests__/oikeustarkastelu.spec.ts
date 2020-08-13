@@ -1,6 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import { oikeustarkastelu } from '../oikeustarkastelu';
 import { Kayttajat } from '@/stores/kayttaja';
+import { delay } from '@shared/utils/delay';
 
 jest.mock('@/stores/kayttaja');
 
@@ -45,8 +46,6 @@ describe('Directive oikeustarkastelu', () => {
   });
 
   test('piilottaa elementin kun oikeudet eivät riitä', async () => {
-    // Kayttajat.oikeudet = eiOikeuksia;
-
     const wrapper = mount({
       template: '<div v-oikeustarkastelu>Hello</div>',
     }, { localVue });
@@ -62,7 +61,7 @@ describe('Directive oikeustarkastelu', () => {
     }, { localVue });
 
     expect(wrapper.element.style.display).toEqual('none');
-    await localVue.nextTick();
+    await delay();
     expect((wrapper.element as HTMLInputElement).disabled).toEqual(true);
     expect(wrapper.element.style.display).toEqual('');
   });

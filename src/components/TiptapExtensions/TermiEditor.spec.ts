@@ -4,9 +4,9 @@ import { IKasiteHandler } from '@/stores/kuvat';
 import { TermiDto } from '@shared/api/ylops';
 import _ from 'lodash';
 
-import { KieliStore, Kielet } from '@shared/stores/kieli';
-import '@/config/bootstrap';
-import '@/config/fontawesome';
+import { Kielet } from '@shared/stores/kieli';
+import '@shared/config/bootstrap';
+import '@shared/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 

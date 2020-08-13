@@ -1,14 +1,13 @@
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import _ from 'lodash';
+import { mount, createLocalVue } from '@vue/test-utils';
+import VueI18n from 'vue-i18n';
 import RouteDokumentti from '../RouteDokumentti.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { KieliStore, Kielet } from '@shared/stores/kieli';
-import _ from 'lodash';
-import { Dokumentit, Opetussuunnitelmat } from '@shared/api/ylops';
+import { Kielet } from '@shared/stores/kieli';
+import { Dokumentit } from '@shared/api/ylops';
 
-import '@/config/bootstrap';
-import '@/config/fontawesome';
-import VueI18n from 'vue-i18n';
+import '@shared/config/bootstrap';
+import '@shared/config/fontawesome';
 import { Kaannos } from '@shared/plugins/kaannos';
 
 describe('RouteDokumentti', () => {

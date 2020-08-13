@@ -182,6 +182,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
           nimi: oa.nimi,
           lapset: [
             ...this.mapPerusteOppimaarat(oa),
+            ...this.mapPaikallisetOppimaarat(oa),
             ...opintojaksot,
           ],
           group: _.isEmpty(oa.oppimaarat) ? 'opintojaksot' : 'oppimaarat',
@@ -192,8 +193,61 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
       .value();
   }
 
+  get perusteOppiaineetJaOppimaarat() {
+    return _(this.cache!.peruste.oppiaineet)
+      .map(oa => [
+        oa,
+        ...oa.oppimaarat,
+      ])
+      .flatten()
+      .value();
+  }
+
+  mapPaikallisetOppimaarat(oa) {
+    return _(this.store.paikallisetOppiaineet)
+      .filter(poa => {
+        const parentOm = _.find(this.perusteOppiaineetJaOppimaarat, { koodi: { uri: poa.perusteenOppiaineUri } });
+        if (parentOm && parentOm._oppiaine) {
+          const parentOa = _.find(this.cache!.peruste.oppiaineet, { id: _.toNumber(parentOm._oppiaine) });
+          return parentOa && _.get(parentOa, 'koodi.uri') === _.get(oa, 'koodi.uri');
+        }
+
+        return false;
+      })
+      .map(poa => {
+        const opintojaksot = _(this.store.opintojaksot)
+          .concat(this.store.tuodutOpintojaksot)
+          .filter(oj => _.includes(
+            _(oj.oppiaineet)
+              .map('koodi')
+              .filter(_.identity)
+              .value(),
+              poa.koodi!
+          ))
+          .map(oj => {
+            const ojOa: any = _.find(oj.oppiaineet, { koodi: poa.koodi });
+            return {
+              id: oj.id,
+              nimi: oj.nimi,
+              jarjestys: ojOa.jarjestys,
+            };
+          })
+          .sortBy('jarjestys')
+          .value();
+        return {
+          id: poa.id,
+          nimi: poa.nimi,
+          lapset: opintojaksot,
+          group: 'opintojaksot',
+          jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: poa.koodi }), 'jarjestys'),
+        };
+      })
+      .value();
+  }
+
   get paikallisetOppiaineet() {
     return _(this.store.paikallisetOppiaineet)
+      .filter(poa => !poa.perusteenOppiaineUri)
       .map(poa => {
         const opintojaksot = _(this.store.opintojaksot)
           .concat(this.store.tuodutOpintojaksot)
