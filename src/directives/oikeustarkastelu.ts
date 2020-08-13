@@ -15,8 +15,8 @@ export const oikeustarkastelu: Vue.DirectiveOptions = {
       kohde = (value as any).kohde;
       value = (value as any).oikeus;
     }
-
-    if (await Kayttajat.hasOikeus(value, kohde)) {
+    
+    if (Kayttajat.hasOikeus(value, kohde)) {
       el.style.display = old;
     }
     else {

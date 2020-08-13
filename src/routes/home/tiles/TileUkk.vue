@@ -4,7 +4,9 @@
     <span>{{ $t('ukk') }}</span>
   </template>
   <template slot="content">
-    <p>{{ $t('ukk-kuvaus') }}</p>
+    <div class="kuvaus">
+      <p>{{ $t('ukk-kuvaus') }}</p>
+    </div>
   </template>
 </base-tile>
 </template>
@@ -25,3 +27,8 @@ export default class TileUkk extends Vue {
 
 }
 </script>
+<style scoped lang="scss">
+.kuvaus {
+  padding: 1rem;
+}
+</style>

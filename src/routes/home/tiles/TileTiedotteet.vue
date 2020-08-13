@@ -67,6 +67,7 @@ export default class TileTiedotteet extends Vue {
 
 <style scoped lang="scss">
 .tiedotteet {
+  padding: 1rem;
   text-align: left;
   display: grid;
 

@@ -36,6 +36,6 @@ export default class TileOpetussuunnitelmat extends Vue {
 
 <style scoped lang="scss">
 .kuvaus {
-  padding: 0 30px 0 30px;
+  padding: 1rem;
 }
 </style>
