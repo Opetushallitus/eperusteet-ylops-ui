@@ -5,6 +5,7 @@ import { getRootConfig } from '@/mainvue';
 import { createLogger } from '@shared/utils/logger';
 import { Ulkopuoliset } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
+import { Kayttajat } from '@/stores/kayttaja';
 
 const logger = createLogger('Main');
 
@@ -17,6 +18,7 @@ async function getLokalisoinnit() {
 async function main() {
   try {
     logger.info('Mounting #app');
+    await Kayttajat.init();
     (new Vue(await getRootConfig())).$mount('#app');
     await Kielet.load(await getLokalisoinnit());
   }
