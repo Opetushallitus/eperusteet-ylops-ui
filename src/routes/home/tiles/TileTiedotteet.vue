@@ -36,7 +36,7 @@ export default class TileTiedotteet extends Vue {
   private isLoading = true;
   private tiedotteet: any[] = [];
   private sivu = 1;
-  private sivukoko = 5;
+  private sivukoko = 4;
 
   async mounted() {
     try {
@@ -68,6 +68,7 @@ export default class TileTiedotteet extends Vue {
 <style scoped lang="scss">
 .tiedotteet {
   padding: 1rem;
+  padding-bottom: 0;
   text-align: left;
   display: grid;
 

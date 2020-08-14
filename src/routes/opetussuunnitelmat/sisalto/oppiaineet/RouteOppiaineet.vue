@@ -482,7 +482,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
 
     return _(this.peruste.oppiaineet as Lops2019OppiaineDto[])
       .map(oa => {
-        const oppimaarat = _.sortBy(oa.oppimaarat, om => koodiAlku, koodiNumero);
+        const oppimaarat = oa.oppimaarat || [];
         const paikallisetOppimaarat = _(this.paikallinenOppiaineRakenne)
           .filter(poa => _.includes(_.map(oa.oppimaarat, 'koodi.uri'), poa.perusteenOppiaineUri))
           .value();
