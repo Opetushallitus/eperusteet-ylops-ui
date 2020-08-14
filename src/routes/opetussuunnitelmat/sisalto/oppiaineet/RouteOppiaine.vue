@@ -25,11 +25,11 @@
         <h3 slot="header">{{ $t('arviointi') }}</h3>
         <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.arviointi.kuvaus"></ep-content>
       </ep-collapse>
-      <ep-collapse v-if="oppiaine.oppimaarat && oppiaine.oppimaarat.length > 0">
+      <ep-collapse v-if="perusteJaPaikallisetOppimaarat && perusteJaPaikallisetOppimaarat.length > 0">
         <h3 slot="header">{{ $t('oppimaarat') }}</h3>
         <div class="oppimaarat-topic">{{ $t('oppiaine-oppimaara-ohje')}}</div>
-        <div class="block-container oppimaarat" v-for="oppimaara in oppiaine.oppimaarat" :key="oppimaara.id">
-          <router-link class="om-content" :to="{ name: 'oppiaine', params: { oppiaineId: oppimaara.id } }">
+        <div class="block-container oppimaarat" v-for="oppimaara in perusteJaPaikallisetOppimaarat" :key="oppimaara.id">
+          <router-link class="om-content" :to="oppimaara.route">
             <span class="nimi">{{ $kaanna(oppimaara.nimi) }}</span>
           </router-link>
         </div>
@@ -85,7 +85,7 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
-import { Lops2019OppiaineDto } from '@shared/api/ylops';
+import { Lops2019OppiaineDto, Lops2019OppiaineKaikkiDto } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
@@ -110,6 +110,50 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   async init() {
     this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
     this.oppiaine = await this.cache.getOppiaine(_.parseInt(this.$route.params.oppiaineId));
+  }
+
+  get perusteJaPaikallisetOppimaarat() {
+    return [
+      ...this.oppimaarat,
+      ...this.paikallisetOppimaarat,
+    ];
+  }
+
+  get oppimaarat() {
+    if (this.oppiaine) {
+      return _.map(this.oppiaine.oppimaarat, om => ({
+        ...om,
+        route: { name: 'oppiaine', params: { oppiaineId: om.id } },
+      })) || [];
+    }
+    else {
+      return [];
+    }
+  }
+
+  get paikallisetOppimaarat() {
+    return _(this.store.paikallisetOppiaineet)
+      .filter(poa => {
+        const parentKoodi = poa.perusteenOppiaineUri;
+        if (_.get(this.oppiaine, 'koodi.uri') === parentKoodi) {
+          return true;
+        }
+        else {
+          // Voi olla myös perusteen oppimäärän alla
+          if (this.oppiaine) {
+            const parentOm = _.find(this.oppiaine.oppimaarat, { koodi: { uri: parentKoodi } });
+            if (parentOm) {
+              return true;
+            }
+          }
+        }
+        return false;
+      })
+      .map(poa => ({
+        ...poa,
+        route: { name: 'paikallinenOppiaine', params: { paikallinenOppiaineId: _.toString(poa.id) } },
+      }))
+      .value();
   }
 
   get opintojaksot() {

@@ -14,7 +14,7 @@
           <span>{{ virkailija.esitysnimi }}</span>
         </b-col>
       </b-row>
-      <p class="mt-3" v-if="virkailijat && virkailijat.length > previewSize">{{ $t('nayta-lisaa') }}</p>
+      <p class="mt-3 mb-0" v-if="virkailijat && virkailijat.length > previewSize">{{ $t('nayta-lisaa') }}</p>
     </div>
   </template>
 </base-tile>
