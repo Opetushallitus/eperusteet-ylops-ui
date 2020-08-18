@@ -142,7 +142,7 @@ export default class EpCommentThreads extends Vue {
   centerpos() {
     const rect = document.querySelector(`span[kommentti="${this.threadUuid}"]`)?.getBoundingClientRect();
     const parentBox = (this.$refs.threadbox as any)?.getBoundingClientRect();
-    if (rect) {
+    if (rect && parentBox) {
       return Math.max(0, rect.top - parentBox.top) + 'px';
     }
     return '0';
