@@ -6,6 +6,7 @@ import { createLogger } from '@shared/utils/logger';
 import { Ulkopuoliset } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
 import { Kayttajat } from '@/stores/kayttaja';
+import { registerIconColorSchemeChange } from '@shared/utils/icon';
 
 const logger = createLogger('Main');
 
@@ -19,6 +20,7 @@ async function main() {
   try {
     logger.info('Mounting #app');
     await Kayttajat.init();
+    registerIconColorSchemeChange();
     (new Vue(await getRootConfig())).$mount('#app');
     await Kielet.load(await getLokalisoinnit());
   }

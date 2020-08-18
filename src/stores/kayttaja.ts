@@ -90,7 +90,7 @@ class KayttajaStore {
       const orgVirkailijat = res[i];
       _.each(orgVirkailijat, virkailija => {
         const oid = (virkailija as any).oid;
-        if (_.includes(virkailijat, { oid })) {
+        if (_.find(virkailijat, { oid })) {
           const virkailija = _.find(virkailijat, { oid });
           virkailija.organisaatiot.push(organisaatio);
         }
