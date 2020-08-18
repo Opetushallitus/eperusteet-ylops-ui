@@ -89,8 +89,11 @@ import {
   Puu,
 } from '@shared/api/ylops';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
+import { createLogger } from '@shared/utils/logger';
 
 import { success } from '@/utils/notifications';
+
+const logger = createLogger('RouteTekstikappale');
 
 @Component({
   components: {
@@ -201,7 +204,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
           .getTekstiKappaleViiteOriginals(this.opsId, this.osaId)).data as PerusteTekstiKappaleViiteDto[];
         this.alkuperaiset = _.filter(this.alkuperaiset, 'tekstiKappale');
       }
-      catch (err) {}
+      catch (err) {
+        logger.warn('Alkuperäisen tekstikappaleen hakeminen epäonnistui:', err);
+      }
 
       const result = {
         tov: _.omit(_.cloneDeep(teksti), 'lapset'),

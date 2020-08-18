@@ -1,7 +1,7 @@
+import _ from 'lodash';
 import Vue from 'vue';
 import Router from 'vue-router';
-
-import _ from 'lodash';
+import VueMeta from 'vue-meta';
 
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/RouteHome.vue';
@@ -38,10 +38,9 @@ import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/
 
 import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
-import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { Kieli, SovellusVirhe } from '@shared/tyypit';
+import { Kielet } from '@shared/stores/kieli';
+import { SovellusVirhe } from '@shared/tyypit';
 import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
-import { info } from '@/utils/notifications';
 import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@shared/utils/logger';
@@ -54,6 +53,9 @@ import VueApexCharts from 'vue-apexcharts';
 Vue.use(Router);
 Vue.use(VueTutorial, { tutoriaalistore });
 Vue.use(VueApexCharts);
+Vue.use(VueMeta, {
+  refreshOnceOnNavigation: true,
+});
 
 Vue.component('apexchart', VueApexCharts);
 

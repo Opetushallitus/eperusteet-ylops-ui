@@ -1,5 +1,7 @@
+import _ from 'lodash';
 import { Vue, Prop, Component } from 'vue-property-decorator';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { Meta } from '@shared/utils/decorators';
 
 /**
  * Mixin näkymäkomponenteille mitkä tarvitsevat opetussuunnitelman sisällön
@@ -8,6 +10,22 @@ import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 export default class EpOpsComponent extends Vue {
   @Prop({ required: true })
   private opetussuunnitelmaStore!: OpetussuunnitelmaStore;
+
+  @Meta
+  getMetaInfo() {
+    if (this.ops && this.ops.nimi && !_.isEmpty(this.$kaanna(this.ops.nimi))) {
+      return {
+        title: this.$kaanna(this.ops.nimi),
+        titleTemplate: '%s - ' + this.$t('eperusteet-ops-tyokalu'),
+      };
+    }
+    else {
+      return {
+        title: this.$t('eperusteet-ops-tyokalu'),
+        titleTemplate: null,
+      };
+    }
+  }
 
   get store() {
     return this.opetussuunnitelmaStore!;
