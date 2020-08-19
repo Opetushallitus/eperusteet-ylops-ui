@@ -4,13 +4,11 @@ import Vue from 'vue';
 
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
 import VueScrollTo from 'vue-scrollto';
-import { Computed } from '@shared/utils/interfaces';
 import { Kielet } from '@shared/stores/kieli';
 
 import { unwrap } from '@/utils/utils';
 
 import { createLogger } from '@shared/utils/logger';
-import { delay } from '@shared/utils/delay';
 Vue.use(VueCompositionApi);
 const logger = createLogger('Kayttaja');
 
