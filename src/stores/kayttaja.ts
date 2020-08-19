@@ -8,6 +8,7 @@ import { KayttajanTietoDto,
 
 import { organizations } from '@/utils/organisaatiot';
 import { createLogger } from '@shared/utils/logger';
+import { delay } from '@shared/utils/delay';
 
 // FIXME: tyypitä backendiin
 export type Oikeus = 'luku' | 'kommentointi' | 'muokkaus' | 'luonti' | 'poisto' | 'tilanvaihto' | 'hallinta';
@@ -56,14 +57,10 @@ class KayttajaStore {
 
   public async init() {
     logger.info('Haetaan käyttäjän tiedot');
-    const res = _.map(await Promise.all([
-      KayttajatApi.getKayttaja(),
-      Opetussuunnitelmat.getOikeudet(),
-    ]), 'data');
-    this.tiedot = res[0] as any;
-    this.oikeudet = res[1] as any;
-
+    this.tiedot = (await KayttajatApi.getKayttaja()).data;
     logger.info('Käyttäjän tiedot', this.tiedot);
+    await delay(1000); // EP-2371
+    this.oikeudet = ((await Opetussuunnitelmat.getOikeudet()).data as any);
     logger.info('Käyttäjän oikeudet', this.oikeudet);
   }
 
