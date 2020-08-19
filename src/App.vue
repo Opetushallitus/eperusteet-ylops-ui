@@ -10,6 +10,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { notify } from '@/utils/notifications';
+import { Kayttajat } from '@/stores/kayttaja';
+import { Ulkopuoliset } from '@shared/api/ylops';
+import { Kielet } from '@shared/stores/kieli';
+
+async function getLokalisoinnit() {
+  return (await Ulkopuoliset.getLokalisoinnit()).data as any;
+}
 
 @Component
 export default class App extends Vue {
@@ -19,6 +26,8 @@ export default class App extends Vue {
     const loader = (this as any).$loading.show({
       color: '#2E5FD1',
     });
+    await Kayttajat.init();
+    await Kielet.load(await getLokalisoinnit());
     this.isInitializing = false;
     loader.hide();
   }
