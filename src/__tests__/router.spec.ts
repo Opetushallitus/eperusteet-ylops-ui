@@ -136,7 +136,7 @@ describe('Router', () => {
     expect(spyWarn).not.toBeCalled();
   });
 
-  test('Navigaatio - Etusivu', async () => {
+  test.skip('Navigaatio - Etusivu', async () => {
     const app = await createMounted();
     expect(router.currentRoute.name).toEqual('root');
     expect(router.currentRoute.params).toEqual({ lang: 'fi' });
