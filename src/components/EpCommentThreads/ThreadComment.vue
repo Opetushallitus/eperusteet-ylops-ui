@@ -19,7 +19,7 @@
         </b-dropdown>
       </div>
     </div>
-    <div class="nimi">{{ innerValue.luoja }}</div>
+    <div class="nimi">{{ nimi }}</div>
     <div class="viesti mt-1">
       <div v-if="editable">
         <textarea
@@ -71,6 +71,10 @@ export default class ThreadComment extends Vue {
   @Watch('value', { immediate: true })
   updateValue(val) {
     this.innerValue = { ...this.value };
+  }
+
+  get nimi() {
+    return this.innerValue?.nimi || this.innerValue?.muokkaaja || null;
   }
 
   get editable() {
