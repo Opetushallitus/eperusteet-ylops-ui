@@ -48,6 +48,7 @@ import { tutoriaalistore } from './stores/tutoriaaliStore';
 import { VueTutorial } from './directives/tutoriaali';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from './stores/aikataulu';
+import { Kommentit } from '@/stores/kommentit';
 import VueApexCharts from 'vue-apexcharts';
 
 Vue.use(Router);
@@ -314,5 +315,6 @@ router.beforeEach((to, from, next) => {
 
 router.beforeEach(async (to, from, next) => {
   await resolveRouterMetaProps(to);
+  await Kommentit.clearThread();
   next();
 });
