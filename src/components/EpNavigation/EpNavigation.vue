@@ -49,7 +49,7 @@
         </div>
       </b-nav-item-dropdown>
 
-      <ep-kayttaja :tiedot="tiedot" />
+      <ep-kayttaja :tiedot="tiedot" logout-href="/eperusteet-ylops-service/api/logout" />
 
     </b-navbar-nav>
   </b-navbar>
