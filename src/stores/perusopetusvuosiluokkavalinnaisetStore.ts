@@ -1,4 +1,4 @@
-import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
+import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import { computed } from '@vue/composition-api';
 import { OpsVuosiluokkakokonaisuusKevytDto, OpetussuunnitelmaKevytDto, OppiaineSuppeaDtoTyyppiEnum } from '@shared/api/ylops';
 import * as _ from 'lodash';
@@ -71,4 +71,15 @@ export class PerusopetusVuosiluokkaValinnaisetStore implements IEditoitava {
   public readonly validator = computed(() => {
     return {};
   });
+
+  public features() {
+    return computed(() => {
+      return {
+        editable: true,
+        removable: false,
+        hideable: false,
+        recoverable: false,
+      } as EditoitavaFeatures;
+    });
+  }
 }

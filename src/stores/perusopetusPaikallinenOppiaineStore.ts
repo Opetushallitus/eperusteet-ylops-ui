@@ -1,11 +1,12 @@
 import _ from 'lodash';
 import { computed } from '@vue/composition-api';
 
-import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
+import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import { Oppiaineet,
   Vuosiluokkakokonaisuudet,
   OpsVuosiluokkakokonaisuusKevytDto,
 } from '@shared/api/ylops';
+import { Revision } from '@shared/tyypit';
 
 export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
   private isUusi: boolean;
@@ -14,6 +15,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     private opsId: number,
     private oppiaineId: string,
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
+    private versionumero: number,
     private vue,
   ) {
     this.isUusi = oppiaineId === 'uusi';
@@ -34,7 +36,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
   }
 
   async load() {
-    const oppiaine = this.isUusi ? { vuosiluokkakokonaisuudet: [], _liittyvaOppiaine: null } : (await Oppiaineet.getOppiaine(this.opsId, _.toNumber(this.oppiaineId))).data;
+    const oppiaine = this.isUusi ? { vuosiluokkakokonaisuudet: [], _liittyvaOppiaine: null } : (await this.getOppiaineVersion()).data;
     const vuosiluokkakokonaisuus = _.find(oppiaine.vuosiluokkakokonaisuudet, [
       '_vuosiluokkakokonaisuus',
       this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!['_tunniste'],
@@ -66,6 +68,17 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
       liittyvaOppiaine,
       oppiaineet,
     };
+  }
+
+  async getOppiaineVersion() {
+    if (this.versionumero) {
+      const revisions = (await Oppiaineet.getOppiaineVersionHistory(this.opsId, _.toNumber(this.oppiaineId))).data as Revision[];
+      const rev = revisions[revisions.length - this.versionumero];
+      return Oppiaineet.getOppiaineVersion(this.opsId, _.toNumber(this.oppiaineId), rev.numero);
+    }
+    else {
+      return Oppiaineet.getOppiaine(this.opsId, _.toNumber(this.oppiaineId));
+    }
   }
 
   async save(data) {
@@ -109,6 +122,23 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     });
   }
 
+  async restore(rev) {
+    await Oppiaineet.revertOppiaineToVersion(this.opsId, _.toNumber(this.oppiaineId), rev);
+  }
+
+  async revisions() {
+    if (this.oppiaineId !== 'uusi') {
+      const data = (await Oppiaineet.getOppiaineVersionHistory(this.opsId, _.toNumber(this.oppiaineId))).data;
+      return data as Revision[];
+    }
+    else {
+      return [];
+    }
+  }
+
+  async start() {
+  }
+
   async preview() {
     return null;
   }
@@ -120,17 +150,18 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     return null;
   }
 
-  async restore() {
-  }
-
-  async revisions() {
-    return [];
-  }
-
-  async start() {
-  }
-
   public readonly validator = computed(() => {
     return {};
   });
+
+  public features() {
+    return computed(() => {
+      return {
+        editable: true,
+        removable: false,
+        hideable: false,
+        recoverable: true,
+      } as EditoitavaFeatures;
+    });
+  }
 }

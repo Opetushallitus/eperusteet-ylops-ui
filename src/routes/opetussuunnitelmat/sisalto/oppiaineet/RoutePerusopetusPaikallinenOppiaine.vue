@@ -1,6 +1,6 @@
 <template>
 <div id="scroll-anchor" v-if="editointiStore">
-  <EpEditointi :store="editointiStore">
+  <EpEditointi :store="editointiStore" :versionumero="versionumero">
     <template v-slot:header="{ data }">
       <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}</h2>
     </template>
@@ -180,8 +180,13 @@ export default class RoutePerusopetusPaikallinenOppiaine extends Mixins(EpRoute,
       this.opsId,
       this.$route.params.oppiaineId,
       vuosiluokkakokonaisuus,
+      _.toNumber(this.versionumero),
       this,
     ));
+  }
+
+  get versionumero() {
+    return this.$route.query.versionumero;
   }
 
   kaannaNimi({ nimi }) {
