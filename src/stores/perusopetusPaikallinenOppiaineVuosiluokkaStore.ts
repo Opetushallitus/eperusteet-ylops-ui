@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { computed } from '@vue/composition-api';
 
-import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
+import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokat, OppiaineenVuosiluokkaDto } from '@shared/api/ylops';
 
 export class PerusopetusPaikallinenOppiaineVuosiluokkaStore implements IEditoitava {
@@ -87,4 +87,15 @@ export class PerusopetusPaikallinenOppiaineVuosiluokkaStore implements IEditoita
   public readonly validator = computed(() => {
     return {};
   });
+
+  public features() {
+    return computed(() => {
+      return {
+        editable: true,
+        removable: false,
+        hideable: false,
+        recoverable: false,
+      } as EditoitavaFeatures;
+    });
+  }
 }

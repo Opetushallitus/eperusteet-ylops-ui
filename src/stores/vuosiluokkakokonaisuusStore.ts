@@ -1,4 +1,4 @@
-import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
+import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
 import { Vuosiluokkakokonaisuudet, Opetussuunnitelmat } from '@shared/api/ylops';
 import * as _ from 'lodash';
@@ -70,9 +70,6 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
     return null;
   }
 
-  // async remove() {
-  // }
-
   async postLoad() {
     if (this.scrollId) {
       const target = document.getElementById(this.scrollId);
@@ -99,4 +96,15 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
   public readonly validator = computed(() => {
     return {};
   });
+
+  public features() {
+    return computed(() => {
+      return {
+        editable: true,
+        removable: false,
+        hideable: false,
+        recoverable: false,
+      } as EditoitavaFeatures;
+    });
+  }
 }

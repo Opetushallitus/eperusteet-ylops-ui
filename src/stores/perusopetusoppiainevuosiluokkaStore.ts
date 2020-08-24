@@ -1,9 +1,8 @@
-import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
+import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
-import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OppiaineenVuosiluokat, PerusteOppiaineenVuosiluokkakokonaisuusDto, Opetussuunnitelmat, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
+import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokat, PerusteOppiaineenVuosiluokkakokonaisuusDto, Opetussuunnitelmat, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
-import { Opetussuunnitelma } from './opetussuunnitelma';
 
 export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
   constructor(
@@ -150,9 +149,6 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
     return null;
   }
 
-  // async remove() {
-  // }
-
   async restore() {
   }
 
@@ -166,4 +162,15 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
   public readonly validator = computed(() => {
     return {};
   });
+
+  public features() {
+    return computed(() => {
+      return {
+        editable: true,
+        removable: false,
+        hideable: false,
+        recoverable: false,
+      } as EditoitavaFeatures;
+    });
+  }
 }
