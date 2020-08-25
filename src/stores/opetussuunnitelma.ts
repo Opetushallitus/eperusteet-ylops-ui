@@ -18,6 +18,8 @@ import {
   Lops2019Oppiaineet,
   Opetussuunnitelmat,
   Lops2019OppiaineJarjestysDto,
+  Oppiaineet,
+  OppiaineDto,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -66,6 +68,9 @@ export class OpetussuunnitelmaStore {
   @State()
   public virkailijat: any[] | null = null;
 
+  @State()
+  public valinnaisetOppiaineet: OppiaineDto[] = [];
+
   constructor(opsId: number) {
     this.opsId = opsId;
   }
@@ -94,6 +99,9 @@ export class OpetussuunnitelmaStore {
       this.tuodutOpintojaksot = (await Opintojaksot.getTuodutOpintojaksot(this.opetussuunnitelma!.id!)).data;
       this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
       this.oppiaineJarjestykset = (await Lops2019Oppiaineet.getLops2019OppiaineJarjestys(this.opetussuunnitelma!.id!)).data;
+    }
+    else {
+      this.valinnaisetOppiaineet = (await Oppiaineet.getValinnaiset(this.opetussuunnitelma!.id!)).data;
     }
   }
 
