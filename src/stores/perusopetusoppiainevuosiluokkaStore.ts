@@ -52,6 +52,8 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
     const vuosiluokanSisaltoalueet = _.keyBy(vuosiluokka.sisaltoalueet, 'tunniste');
     let kohdealueGlobalIndex = 0;
 
+    console.log(vuosiluokka);
+
     return {
       oppiaine,
       vuosiluokka,
@@ -64,52 +66,55 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
           };
         }),
       },
-      perusteenTavoitteet: _.map(perusteenVlk.tavoitteet, tavoite => {
-        return {
-          ...tavoite,
-          sisaltoalueet: _.chain(tavoite.sisaltoalueet)
-            .map((sisaltoalue: string) => sisaltoalueetMap[sisaltoalue])
-            .map((sisaltoalue: any) => {
+      perusteenTavoitteet: _.chain(perusteenVlk.tavoitteet)
+        .map(tavoite => {
+          return {
+            ...tavoite,
+            sisaltoalueet: _.chain(tavoite.sisaltoalueet)
+              .map((sisaltoalue: string) => sisaltoalueetMap[sisaltoalue])
+              .map((sisaltoalue: any) => {
+                return {
+                  ...sisaltoalue,
+                  vuosiluokanSisaltoalue: _.chain(_.get(vuosiluokanTavoitteet[tavoite.tunniste as string], 'sisaltoalueet'))
+                    .filter(vlSisaltoalue => vlSisaltoalue.sisaltoalueet.tunniste === sisaltoalue.tunniste)
+                    .map(vlSisaltoalue => {
+                      return {
+                        ...vlSisaltoalue,
+                        kaytaOmaaKuvausta: vlSisaltoalue.omaKuvaus !== null,
+                      } as any;
+                    })
+                    .head()
+                    .value(),
+                };
+              })
+              .filter(sisaltoalue => sisaltoalue.vuosiluokanSisaltoalue && !sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.piilotettu)
+              .sortBy([(sisaltoalue: any) => {
+                return sisaltoalue.nimi[Kielet.getSisaltoKieli.value];
+              }])
+              .value(),
+            laajaalaisetosaamiset: _.chain(tavoite.laajaalaisetosaamiset)
+              .map((lao: string) => {
+                return {
+                  perusteenLao: perusteenLaajaalaisetOsaamisetMap[lao],
+                  paikallinenLao: paikallisetLaajaalaisetOsaamisetMap[lao],
+                };
+              })
+              .sortBy([(lao: any) => {
+                return lao.perusteenLao.nimi[Kielet.getSisaltoKieli.value];
+              }])
+              .value(),
+            kohdealueet: _.map(tavoite.kohdealueet, kohdealue => {
               return {
-                ...sisaltoalue,
-                vuosiluokanSisaltoalue: _.chain(_.get(vuosiluokanTavoitteet[tavoite.tunniste as string], 'sisaltoalueet'))
-                  .filter(vlSisaltoalue => vlSisaltoalue.sisaltoalueet.tunniste === sisaltoalue.tunniste)
-                  .map(vlSisaltoalue => {
-                    return {
-                      ...vlSisaltoalue,
-                      kaytaOmaaKuvausta: vlSisaltoalue.omaKuvaus !== null,
-                    } as any;
-                  })
-                  .head()
-                  .value(),
+                ...kohdealue,
+                index: kohdealueGlobalIndex++,
               };
-            })
-            .filter(sisaltoalue => sisaltoalue.vuosiluokanSisaltoalue && !sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.piilotettu)
-            .sortBy([(sisaltoalue: any) => {
-              return sisaltoalue.nimi[Kielet.getSisaltoKieli.value];
-            }])
-            .value(),
-          laajaalaisetosaamiset: _.chain(tavoite.laajaalaisetosaamiset)
-            .map((lao: string) => {
-              return {
-                perusteenLao: perusteenLaajaalaisetOsaamisetMap[lao],
-                paikallinenLao: paikallisetLaajaalaisetOsaamisetMap[lao],
-              };
-            })
-            .sortBy([(lao: any) => {
-              return lao.perusteenLao.nimi[Kielet.getSisaltoKieli.value];
-            }])
-            .value(),
-          kohdealueet: _.map(tavoite.kohdealueet, kohdealue => {
-            return {
-              ...kohdealue,
-              index: kohdealueGlobalIndex++,
-            };
-          }),
-          vuosiluokanTavoite: vuosiluokanTavoitteet[(tavoite.tunniste as string)],
-          hyvanOsaamisenKuvaus: _.find(tavoite.arvioinninkohteet, kohde => kohde.arvosana === 8),
-        };
-      }),
+            }),
+            vuosiluokanTavoite: vuosiluokanTavoitteet[(tavoite.tunniste as string)],
+            hyvanOsaamisenKuvaus: _.find(tavoite.arvioinninkohteet, kohde => kohde.arvosana === 8),
+          };
+        })
+        .filter(tavoite => _.size(tavoite.sisaltoalueet) > 0)
+        .value(),
     };
   }
 
