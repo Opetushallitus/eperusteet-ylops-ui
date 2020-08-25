@@ -1,8 +1,9 @@
-import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
+import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import { computed } from '@vue/composition-api';
 import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
+import { required, maxValue, minValue } from 'vuelidate/lib/validators';
 
 export class VuosiluokkaistaminenStore implements IEditoitava {
   constructor(private opsId: number, private vlkId: number, private oppiaineId: number, private el, private postSave: Function) {
@@ -87,6 +88,7 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
         })
         .sortBy('vuosiluokka')
         .value(),
+      asettamattomatTavoitteet: 0,
     };
   }
 
@@ -124,9 +126,6 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
     return null;
   }
 
-  // async remove() {
-  // }
-
   async restore() {
   }
 
@@ -138,6 +137,22 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
   }
 
   public readonly validator = computed(() => {
-    return {};
+    return {
+      asettamattomatTavoitteet: {
+        'max-value': maxValue(0),
+      },
+    };
   });
+
+  public features() {
+    return computed(() => {
+      return {
+        editable: true,
+        removable: false,
+        hideable: false,
+        recoverable: false,
+        validated: true,
+      } as EditoitavaFeatures;
+    });
+  }
 }

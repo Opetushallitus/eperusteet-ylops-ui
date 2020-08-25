@@ -90,7 +90,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
+import { Mixins, Component, Watch } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
@@ -180,12 +180,27 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
   }
 
   get tavoitteet() {
-    return _.map(this.editointiStore?.data.value.perusteenOppiaineenVlk.tavoitteet, tavoite => {
+    return _.map(this.editointiStore?.data.value?.perusteenOppiaineenVlk.tavoitteet || [], tavoite => {
       return {
         ...tavoite,
         valittu: _.includes(this.valitutTavoitteet, tavoite.tunniste),
       };
     });
+  }
+
+  get asettamattomatTavoitteet() {
+    return _.size(this.tavoitteet) - _.size(_.filter(this.tavoitteet, 'valittu'));
+  }
+
+  @Watch('asettamattomatTavoitteet')
+  valittuTavoiteChange() {
+    if (this.editointiStore) {
+      this.editointiStore.setData(
+        {
+          ...this.editointiStore.data.value,
+          asettamattomatTavoitteet: _.size(this.tavoitteet) - _.size(_.filter(this.tavoitteet, 'valittu')),
+        });
+    }
   }
 }
 </script>

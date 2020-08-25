@@ -51,17 +51,19 @@
                   <ep-button variant="link">{{ $t('vuosiluokka')}} {{ $t(vuosiluokka.vuosiluokka)}}</ep-button>
                 </router-link>
               </div>
+
+              <hr/>
             </div>
 
-            <div v-if="data.vuosiluokkakokonaisuus.vuosiluokat.length === 0">
+            <div v-if="data.vuosiluokkakokonaisuus.vuosiluokat.length === 0 && !isEditing">
               <div class="ei-tavoitteita mt-3 mb-3">{{ $t('tavoitteita-ei-ole-viela-vuosiluokkaistettu')}}</div>
               <router-link :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}"
                   v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }">
                 <ep-button >{{ $t('vuosiluokkaista-tavoitteet')}}</ep-button>
               </router-link>
-            </div>
 
-            <hr/>
+              <hr/>
+            </div>
           </div>
 
           <div v-if="data.perusteenVuosiluokkakokonaisuus.tyotavat">
