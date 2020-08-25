@@ -41,7 +41,7 @@
             <div v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.vuosiluokat.length > 0">
               <div class="d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">{{ $t('tavoitteet-ja-sisallot-vuosiluokittain') }}</h3>
-                <router-link :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}">
+                <router-link :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}" v-if="!isEditing">
                   <ep-button >{{ $t('vuosiluokkaista-tavoitteet')}}</ep-button>
                 </router-link>
               </div>

@@ -72,7 +72,7 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
             .map((sisaltoalue: any) => {
               return {
                 ...sisaltoalue,
-                vuosiluokanSisaltoalue: _.chain(vuosiluokanTavoitteet[(tavoite.tunniste as string)].sisaltoalueet)
+                vuosiluokanSisaltoalue: _.chain(_.get(vuosiluokanTavoitteet[tavoite.tunniste as string], 'sisaltoalueet'))
                   .filter(vlSisaltoalue => vlSisaltoalue.sisaltoalueet.tunniste === sisaltoalue.tunniste)
                   .map(vlSisaltoalue => {
                     return {
@@ -84,7 +84,7 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
                   .value(),
               };
             })
-            .filter(sisaltoalue => !sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.piilotettu)
+            .filter(sisaltoalue => sisaltoalue.vuosiluokanSisaltoalue && !sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.piilotettu)
             .sortBy([(sisaltoalue: any) => {
               return sisaltoalue.nimi[Kielet.getSisaltoKieli.value];
             }])
