@@ -5,12 +5,12 @@
     <ep-spinner v-if="!cache"></ep-spinner>
     <div v-else>
 
-      <div class="box d-inline-flex align-items-center flex-column">
+      <div class="box d-inline-flex align-items-center flex-column" v-if="isLops2019">
         <div class="count">{{luodutOpintojaksot}}</div>
         <div class="topic text-center">{{ $t('luotuja-opintojaksoja') }}</div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column">
+      <div class="box d-inline-flex align-items-center flex-column" v-if="isLops2019">
         <div class="count">
           <span>{{liitetytModuulitLukumaara}}</span>
           <span class="secondary">/ {{moduulitLukumaara}}</span>
@@ -18,13 +18,19 @@
         <div class="topic text-center">{{ $t('moduulia-liitetty') }}</div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column">
+      <div class="box d-inline-flex align-items-center flex-column" v-if="isLops2019">
         <div class="count">{{useanOppiaineenOpintojaksot}}</div>
         <div class="topic text-center">{{$t('usean-oppiaineen-opintojaksoa')}}</div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column">
-        <div class="count">{{paikallisetOppiaineet}}</div>
+      <div class="box d-inline-flex align-items-center flex-column" v-if="!isLops2019">
+        <div class="count">{{oppimaarat}}</div>
+        <div class="topic text-center">{{$t('luotua-oppimaaraa')}}</div>
+      </div>
+
+      <div class="box d-inline-flex align-items-center flex-column" >
+        <div class="count" v-if="isLops2019">{{paikallisetOppiaineet}}</div>
+        <div class="count" v-if="!isLops2019">{{valinnaisetOppiaineet}}</div>
         <div class="topic text-center">{{$t('paikallista-oppiainetta')}}</div>
       </div>
 
@@ -95,6 +101,10 @@ export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
     return _.size(this.store.paikallisetOppiaineet);
   }
 
+  get valinnaisetOppiaineet() {
+    return _.size(this.store.valinnaisetOppiaineet);
+  }
+
   get oppiaineet() {
     if (this.cache) {
       return [
@@ -117,6 +127,10 @@ export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
     else {
       return [];
     }
+  }
+
+  get oppimaarat() {
+    return _.sum(_.map(this.store.opetussuunnitelma?.oppiaineet || [], oppiaine => _.size(oppiaine.oppiaine!.oppimaarat)));
   }
 }
 </script>

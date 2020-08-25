@@ -39,6 +39,16 @@ export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
         ],
       };
     }
+    else {
+      obj = {
+        ...obj,
+        children: [{
+          item: {
+            type: 'staticlink',
+          },
+        }],
+      };
+    }
 
     return obj;
   });

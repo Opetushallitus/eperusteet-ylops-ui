@@ -49,7 +49,7 @@
               </div>
           </a>
         </ops-sidenav-link>
-        <li class="subheader" v-if="!isSubmenu && !itemRoute">
+        <li class="subheader" v-if="!isSubmenu && !itemRoute && kaanna(itemData.item)">
           <span>{{ kaanna(itemData.item) }}</span>
         </li>
         <ops-sidenav-link class="submenu" v-if="isSubmenu" :itemData="itemData" :to="itemRoute" :click="navigate">
