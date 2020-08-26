@@ -52,8 +52,6 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
     const vuosiluokanSisaltoalueet = _.keyBy(vuosiluokka.sisaltoalueet, 'tunniste');
     let kohdealueGlobalIndex = 0;
 
-    console.log(vuosiluokka);
-
     return {
       oppiaine,
       vuosiluokka,
