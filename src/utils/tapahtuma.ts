@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 const kohdereititys = {
   viite: 'tekstikappale',
   opetussuunnitelma: 'opsTiedot',
@@ -5,12 +7,19 @@ const kohdereititys = {
   poppiaine: 'paikallinenOppiaine',
   opintojakso: 'opintojakso',
   termi: 'opsKasitteet',
+  perusopetusoppiaine: 'perusopetusoppiaine',
+  vuosiluokkakokonaisuus: 'vuosiluokkakokonaisuus',
+  oppiaineenvuosiluokka: 'perusopetusoppiainevuosiluokka',
 };
 
 const kohdereititysId = {
   viite: 'osaId',
   poppiaine: 'paikallinenOppiaineId',
   opintojakso: 'opintojaksoId',
+  perusopetusoppiaine: 'oppiaineId',
+  vuosiluokkakokonaisuus: 'vlkId',
+  oppiaineenvuosiluokka: 'vlId',
+
 };
 
 const kohdeIcon = {
@@ -34,7 +43,7 @@ const poistetutTabIndices = {
   viite: 2,
 };
 
-export function muokkaustietoRoute(id, kohde, tapahtuma) {
+export function muokkaustietoRoute(id, kohde, tapahtuma, lisaparametrit?) {
   if (tapahtuma === 'poisto') {
     return {
       name: 'opsPoistetut',
@@ -51,6 +60,12 @@ export function muokkaustietoRoute(id, kohde, tapahtuma) {
 
   if (kohdereititysId[kohde]) {
     router.params[kohdereititysId[kohde]] = id;
+  }
+
+  if (lisaparametrit) {
+    _.forEach(lisaparametrit, lisaparametri => {
+      router.params[kohdereititysId[lisaparametri.kohde]] = lisaparametri.kohdeId;
+    });
   }
 
   return router;
