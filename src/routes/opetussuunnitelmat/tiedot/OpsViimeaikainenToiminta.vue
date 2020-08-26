@@ -105,7 +105,7 @@ export default class OpsViimeaikainenToiminta extends Vue {
       .map((muokkaustieto) => {
         return {
           ...muokkaustieto,
-          route: muokkaustietoRoute(muokkaustieto.kohdeId, muokkaustieto.kohde, muokkaustieto.tapahtuma),
+          route: muokkaustietoRoute(muokkaustieto.kohdeId, muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisaparametrit),
           icon: muokkaustietoIcon(muokkaustieto.kohde, muokkaustieto.tapahtuma),
           iconClass: this.muokkaustietoIconClass(muokkaustieto),
           kayttajaNimi: muokkaustieto.kayttajanTieto ? parsiEsitysnimi(muokkaustieto.kayttajanTieto) : muokkaustieto.muokkaaja,
@@ -120,6 +120,10 @@ export default class OpsViimeaikainenToiminta extends Vue {
   tapahtumateksti(muokkaustieto) {
     if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
       return this.$t('tapahtuma-paivitys-opetussuunnitelma-rakenne');
+    }
+
+    if (muokkaustieto.kohde === 'oppiaineenvuosiluokka') {
+      return this.$t(this.tapahtumakaannos(muokkaustieto)) + ': ' + this.$t('vuosiluokka') + ' ' + this.$t(muokkaustieto.lisatieto);
     }
 
     if (muokkaustieto.lisatieto) {

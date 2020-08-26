@@ -76,7 +76,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async save(data: any) {
-    data.oppiaine = (await Oppiaineet.updateOppiaine(this.opsId, this.oppiaineId, data.oppiaine)).data;
+    data.oppiaine = (await Oppiaineet.updateOppiaineWithVlk(this.opsId, this.vuosiluokkakokonaisuus!.vuosiluokkakokonaisuus!.id!, this.oppiaineId, data.oppiaine)).data;
 
     data.vuosiluokkakokonaisuus = (await OppiaineenVuosiluokkakokonaisuudet
       .updateVuosiluokkakokonaisuudenSisalto(this.opsId, this.oppiaineId, data.vuosiluokkakokonaisuus.id, data.vuosiluokkakokonaisuus)).data;
