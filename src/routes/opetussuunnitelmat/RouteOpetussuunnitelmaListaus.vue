@@ -13,7 +13,16 @@
                           class="float-right"
                           @restore="palauta"/>
       <p>{{ $t(vars.kuvaus) }}</p>
-      <ep-search v-model="rajain" :placeholder="$t(vars.etsi)"></ep-search>
+
+      <div class="d-flex">
+        <b-form-group :label="$t('nimi')">
+          <ep-search v-model="rajain" :placeholder="$t(vars.etsi)"></ep-search>
+        </b-form-group>
+
+        <b-form-group :label="$t('koulutustyyppi')" class="w-40">
+          <koulutustyyppi-select v-model="koulutustyyppi" :isEditing="true" :koulutustyypit="yleissivistavatKoulutustyypit"/>
+        </b-form-group>
+      </div>
     </template>
 
     <ep-spinner v-if="isLoading"></ep-spinner>
@@ -52,7 +61,7 @@
                     tag="a"
                     :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
                     :key="ops.id">
-                    <div class="chart">
+                    <div class="chart" :style="ops.tileStyle">
                       <div class="progress-clamper">
                         <ep-progress :slices="[0.2, 0.5, 1]" />
                       </div>
@@ -137,12 +146,14 @@ import EpContent from '@/components/EpContent/EpContent.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpProgress from '@/components/EpProgress/EpProgress.vue';
+import EpProgress from '@shared/components/EpProgressPopover/EpProgress.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpArkistoidutOps from '@/components/EpArkistoidutOps/EpArkistoidutOps.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
+import KoulutustyyppiSelect from '@shared/components/forms/EpKoulutustyyppiSelect.vue';
+import { yleissivistavatKoulutustyypit, themes, tileColors } from '@shared/utils/perusteet';
 
 @Component({
   directives: {
@@ -159,6 +170,7 @@ import EpSearch from '@shared/components/forms/EpSearch.vue';
     EpAlert,
     EpArkistoidutOps,
     EpSearch,
+    KoulutustyyppiSelect,
   },
 })
 export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
@@ -171,6 +183,7 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   private opslista: OpetussuunnitelmaInfoDto[] = [];
 
   private rajain = '';
+  private koulutustyyppi = '';
 
   get hasRajain() {
     return !_.isEmpty(this.rajain);
@@ -182,6 +195,14 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
         _.toLower(_.get(ops, 'nimi.' + Kielet.getSisaltoKieli.value)),
         _.toLower(this.rajain)
       ))
+      .filter(ops => _.isEmpty(this.koulutustyyppi) || this.koulutustyyppi === ops.koulutustyyppi)
+      .map(ops => {
+        const themeType = themes[ops.koulutustyyppi!];
+        return {
+          ...ops,
+          tileStyle: 'background: linear-gradient(180deg, ' + tileColors[themeType][0] + ' 0%, ' + tileColors[themeType][0] + ' 100%)',
+        };
+      })
       .sortBy('luotu')
       .reverse()
       .value();
@@ -272,6 +293,10 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   protected async init() {
     const res = await Opetussuunnitelmat.getAll(this.tyyppi === 'pohjat' ? 'POHJA' : 'OPS');
     this.opslista = res.data;
+  }
+
+  get yleissivistavatKoulutustyypit() {
+    return yleissivistavatKoulutustyypit;
   }
 }
 </script>
@@ -377,7 +402,6 @@ h2 {
         width: 192px;
         border-radius: $box-radius $box-radius 0 0;
         height: 138px;
-        background: linear-gradient(180deg, #1E49CF 0%, #0f3284 100%);
         background-size: contain;
         margin: 0 auto;
         text-align: center;
