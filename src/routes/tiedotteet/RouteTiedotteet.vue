@@ -7,7 +7,8 @@
   <template slot="header">
     <h1>{{ $t('tiedotteet') }}</h1>
 
-    <ep-linkki url="/eperusteet-app/#/fi/admin/tiedotteet"
+    <ep-linkki v-if="url"
+               :url="url"
                v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
       {{ $t('siirry-muokkaamaan-tiedotteita') }}
     </ep-linkki>
@@ -31,15 +32,14 @@
           <p>{{ $t('ei-hakutuloksia') }}</p>
         </div>
       </div>
-      <div class="row" v-for="tiedote in tiedotteet" :key="tiedote.id">
+      <div class="row mt-3" v-for="(tiedote, idx) in tiedotteet" :key="tiedote.id">
         <div class="col">
           <div>
-            <p class="text-secondary">{{ $sd(tiedote.luotu) }}</p>
-            <ep-collapse class="mb-2" :default-state="false">
-              <h5 slot="header">{{ $kaanna(tiedote.otsikko) }}</h5>
-              <span :class="{ preview: !tiedote.$nayta }">{{ $kaanna(tiedote.sisalto) }}</span>
+            <p class="text-secondary m-0">{{ $sd(tiedote.luotu) }}</p>
+            <ep-collapse class="mb-2" :default-state="false" :border-bottom="!(idx === tiedotteet.length - 1)" :use-padding="false">
+              <div slot="header"><h2>{{ $kaanna(tiedote.otsikko) }}</h2></div>
+              <div v-if="$kaanna(tiedote.sisalto)" v-html="$kaanna(tiedote.sisalto)"></div>
             </ep-collapse>
-            <hr />
           </div>
         </div>
       </div>
@@ -60,6 +60,12 @@
 import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
+import { Tiedotteet } from '@shared/api/eperusteet';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
+import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
+import { Kielet } from '@shared/stores/kieli';
+import { julkaisupaikka } from '@shared/utils/tiedote';
+
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
@@ -70,10 +76,6 @@ import EpRoute from '@/mixins/EpRoot';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
-
-import { Ulkopuoliset } from '@shared/api/ylops';
-import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 @Component({
   directives: {
@@ -108,6 +110,14 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
     await this.update();
   }
 
+  get kieli() {
+    return Kielet.getSisaltoKieli.value;
+  }
+
+  get url() {
+    return `/eperusteet-app/uusi/#/${this.kieli}/admin/tiedotteet`;
+  }
+
   private get hasTiedotteet() {
     return this.tiedotteet && this.tiedotteet.length > 0;
   }
@@ -118,23 +128,26 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
   }
 
   async update() {
-    const res = (await Ulkopuoliset.getTiedotteetHaku(
+    const tiedotteetHaku = ((await Tiedotteet.findTiedotteetBy(
       this.sivu - 1,
       this.sivukoko,
-      undefined, // kieli
-      this.rajain, // nimi
-      undefined, // perusteId
-      true, // perusteeton
-      true, // julkinen
-      true // yleinen
-    )).data as any;
-
-    this.kokonaismaara = res.kokonaismäärä;
-    this.tiedotteet = res.data;
+      [_.toUpper(this.kieli)],
+      this.rajain,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      [julkaisupaikka.ops, julkaisupaikka.lops],
+    )).data as any);
+    this.tiedotteet = tiedotteetHaku.data;
+    this.kokonaismaara = tiedotteetHaku.kokonaismäärä;
   }
 }
 </script>
 
 <style scoped lang="scss">
-
+h2 {
+  font-size: 1rem;
+  font-weight: 500;
+}
 </style>

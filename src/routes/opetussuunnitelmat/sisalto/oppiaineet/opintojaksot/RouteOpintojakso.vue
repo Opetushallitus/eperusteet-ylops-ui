@@ -327,7 +327,7 @@
         </div>
 
         <div class="osio">
-          <ep-collapse tyyppi="opintojakson-vapaa-kuvaus">
+          <ep-collapse tyyppi="opintojakson-vapaa-kuvaus" :border-bottom="false">
             <div class="alueotsikko" slot="header"><h3>{{ $t('opintojakson-vapaa-kuvaus') }}</h3></div>
             <div class="alert alert-info" v-if="!isEditing && !data.kuvaus">{{ $t('ei-kuvausta') }}</div>
             <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.kuvaus" :is-editable="isEditing" help="ohje-lyhyt-vapaa-kuvaus" ></ep-content>

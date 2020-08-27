@@ -22,7 +22,10 @@
 import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
 
-import { Ulkopuoliset } from '@shared/api/ylops';
+import { Tiedotteet } from '@shared/api/eperusteet';
+import { julkaisupaikka, onkoUusi } from '@shared/utils/tiedote';
+import { Kielet } from '@shared/stores/kieli';
+
 import BaseTile from './BaseTile.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
@@ -35,25 +38,25 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 export default class TileTiedotteet extends Vue {
   private isLoading = true;
   private tiedotteet: any[] = [];
-  private sivu = 1;
-  private sivukoko = 4;
+
+  get kieli() {
+    return Kielet.getSisaltoKieli.value;
+  }
 
   async mounted() {
     try {
-      const tiedoteHaku = (await Ulkopuoliset.getTiedotteetHaku(
-        this.sivu - 1,
-        this.sivukoko,
-        undefined, // kieli
-        undefined, // nimi
-        undefined, // perusteId
-        true, // perusteeton
-        true, // julkinen
-        true // yleinen
-      )).data as any;
-      this.tiedotteet = _(tiedoteHaku.data)
-        .sortBy('luotu')
-        .reverse()
-        .value();
+      this.isLoading = true;
+      this.tiedotteet = ((await Tiedotteet.findTiedotteetBy(
+        0,
+        4,
+        [_.toUpper(this.kieli)],
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        [julkaisupaikka.ops, julkaisupaikka.lops],
+      )).data as any).data;
     }
     catch (err) {
       throw err;
