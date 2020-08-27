@@ -115,7 +115,7 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
   }
 
   get url() {
-    return `/eperusteet-app/uusi/#/${this.kieli}/admin/tiedotteet`;
+    return `/eperusteet-app/uusi/#/${this.kieli}/tiedotteet`;
   }
 
   private get hasTiedotteet() {
