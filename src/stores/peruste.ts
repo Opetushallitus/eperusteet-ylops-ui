@@ -8,7 +8,7 @@ function sortedOppiaineet(oppiaineet: Lops2019OppiaineDto[]) {
     .map(oa => {
       return {
         ...oa,
-        oppimaarat: sortedOppiaineet(oa.oppimaarat || []),
+        oppimaarat: (oa.oppimaarat || []),
         moduulit: _.sortBy(oa.moduulit || [], 'koodi.arvo'),
       };
     })

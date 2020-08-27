@@ -141,7 +141,6 @@ export default class OpsSidenav extends EpOpsComponent {
 
   private oppiaineOppimaaraLinkit(oppiaine: Lops2019OppiaineDto) {
     return _.chain(oppiaine.oppimaarat)
-      .sortBy(koodiAlku, koodiNumero)
       .map(oppimaara =>
         oppiaineLinkki(
           'oppimaara',
