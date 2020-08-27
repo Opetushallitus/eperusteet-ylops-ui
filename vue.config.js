@@ -1,3 +1,4 @@
+const eperusteetServicePort = process.env.EPERUSTEET_SERVICE_PORT || 8080;
 const servicePort = process.env.YLOPS_SERVICE_PORT || 8081;
 const webpack = require('webpack');
 const path = require('path');
@@ -28,6 +29,10 @@ module.exports = {
     host: '0.0.0.0',
     port: 9040,
     proxy: {
+      '/eperusteet-service': {
+        target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:' + eperusteetServicePort,
+        secure: false,
+      },
       '/eperusteet-ylops-service': {
         target: process.env.NODE_ENV === 'e2e' ? 'http://app:8080' : 'http://localhost:' + servicePort,
         secure: false,
