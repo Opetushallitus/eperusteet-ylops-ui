@@ -46,7 +46,6 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-  Underline,
 } from 'tiptap-extensions';
 
 import EpEditorMenuBar from './EpEditorMenuBar.vue';
@@ -124,7 +123,6 @@ export default class EpContent extends Mixins(EpValidation) {
       new Bold(),
       new Italic(),
       new Strike(),
-      new Underline(),
       new CustomLink(),
       new BulletList(),
       new OrderedList(),
