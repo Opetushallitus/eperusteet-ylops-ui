@@ -4,7 +4,7 @@
   <div class="opetussuunnitelma" v-if="ops">
     <div class="header">
       <div class="progress-chart">
-        <ep-progress-popover :slices="slices">
+        <ep-progress-popover :slices="slices" :height="90" :width="90">
           <template v-slot:header>
             <div class="pt-3 row justify-content-center ">
               <div v-if="validationStats.ok < validationStats.total">
@@ -101,7 +101,7 @@ import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue
 import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress/EpProgress.vue';
-import EpProgressPopover from '@/components/EpProgress/EpProgressPopover.vue';
+import EpProgressPopover from '@shared/components/EpProgressPopover/EpProgressPopover.vue';
 
 @Component({
   components: {
