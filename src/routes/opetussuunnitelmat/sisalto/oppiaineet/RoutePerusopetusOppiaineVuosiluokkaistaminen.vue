@@ -63,12 +63,9 @@
                 <draggable
                   class="d-flex flex-wrap sisalto"
                   :class="{'tyhja': vuosiluokka.tavoitteet.length === 0}"
-                  v-bind="defaultOptions"
+                  v-bind="vuosiluokatOptions"
                   tag="div"
                   v-model="vuosiluokka.tavoitteet">
-                    <div v-if="vuosiluokka.tavoitteet.length === 0" class="tyhja">
-                      {{$t('lisaa-tavoitteet-tahan')}}
-                    </div>
                     <div class="tavoite" v-for="(tavoite, index) in vuosiluokka.tavoitteet" :key="'vlktavoite'+index" @click="poistaTavoite(vuosiluokka, tavoite)">
                       <div class="roskalaatikko">
                         <fas icon="roskalaatikko" />
@@ -140,6 +137,14 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
     };
   }
 
+  get vuosiluokatOptions() {
+    return {
+      ...this.defaultOptions,
+      draggable: false,
+      emptyInsertThreshold: 0,
+    };
+  }
+
   get defaultOptions() {
     return {
       animation: 300,
@@ -149,6 +154,7 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
       },
       disabled: false,
       forceFallback: true,
+      sort: false,
     };
   }
 
@@ -239,6 +245,10 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
             color: $gray-lighten-1;
           }
 
+        }
+
+        .tavoite:hover {
+          cursor: pointer;
         }
 
         .kohdealueet {
