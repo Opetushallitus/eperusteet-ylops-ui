@@ -1,10 +1,10 @@
 <template>
 <div>
-  <ep-navigation tyyli="ops" :tutoriaalistore="tutoriaalistore"></ep-navigation>
-  <div class="opetussuunnitelma" v-if="ops">
-    <div class="header">
+  <ep-navigation tyyli="ops" :tutoriaalistore="tutoriaalistore" :headerStyle="headerStyle" :headerClass="headerClass"></ep-navigation>
+  <div class="opetussuunnitelma" v-if="ops" :class="headerClass">
+    <div class="header" :style="headerStyle">
       <div class="progress-chart">
-        <ep-progress-popover :slices="slices" :height="90" :width="90">
+        <ep-progress-popover :slices="slices" :height="90" :width="90" :popupStyle="progressPopoverStyle">
           <template v-slot:header>
             <div class="pt-3 row justify-content-center ">
               <div v-if="validationStats.ok < validationStats.total">
@@ -102,6 +102,7 @@ import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpProgressPopover from '@shared/components/EpProgressPopover/EpProgressPopover.vue';
+import { themes, tileBackgroundColor } from '@shared/utils/perusteet';
 
 @Component({
   components: {
@@ -185,6 +186,32 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
       });
     }
   }
+
+  get headerStyle() {
+    if (this.ops) {
+      const themeType = themes[this.ops.koulutustyyppi!];
+      const imgUrl = require(`@shared/../public/img/banners/banner_${themeType}.svg`);
+      return { 'background-image': `url('${imgUrl}')` };
+    }
+
+    return '';
+  }
+
+  get headerClass() {
+    if (this.ops && themes[this.ops.koulutustyyppi!] !== 'lukio') {
+      return 'light';
+    }
+
+    return 'dark';
+  }
+
+  get progressPopoverStyle() {
+    if (this.ops) {
+      return tileBackgroundColor(this.ops.koulutustyyppi!);
+    }
+
+    return '';
+  }
 }
 </script>
 
@@ -202,9 +229,13 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
 .opetussuunnitelma {
   background: white;
+  color: $color-ops-header-text;
+
+  &.light {
+    color: $color-ops-header-black-text;
+  }
 
   .header {
-    background-image: url('../../../public/img/banners/header.svg');
     background-position: 100% -50px;
     background-repeat: no-repeat;
     height: 190px;
@@ -214,10 +245,9 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
     display: flex;
     align-items: center;
-    color: $color-ops-header-text;
 
     h1 /deep/ button {
-      color: $color-ops-header-text;
+      color: inherit;
     }
 
     .progress-chart {
