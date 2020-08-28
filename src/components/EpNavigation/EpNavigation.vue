@@ -1,11 +1,11 @@
 <template>
-<div class="topbar" v-sticky="sticky" sticky-z-index="600">
+<div class="topbar" v-sticky="sticky" sticky-z-index="600" :class="headerClass">
   <b-navbar id="navigation-bar"
             class="ep-navbar"
-            type="dark"
+            :type="headerClass"
             toggleable="md"
             :class="'navbar-style-' + tyyli"
-            :style="{ 'background-attachment': sticky ? 'fixed' : '' }">
+            :style="{ 'background-attachment': sticky ? 'fixed' : '', ...headerStyle }">
     <b-navbar-nav>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -68,6 +68,7 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kayttajat } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
+import { themes } from '@shared/utils/perusteet';
 
 @Component({
   directives: {
@@ -88,6 +89,12 @@ export default class EpNavigation extends Vue {
 
   @Prop({ required: false })
   private tutoriaalistore!: TutoriaaliStore | undefined;
+
+  @Prop({ default: '' })
+  private headerStyle!: string;
+
+  @Prop({ default: 'dark' })
+  private headerClass!: string;
 
   get tiedot() {
     return Kayttajat.tiedot;
@@ -138,25 +145,36 @@ export default class EpNavigation extends Vue {
 @import '@shared/styles/_variables.scss';
 
 .topbar {
+  color: $color-ops-header-text;
+
+  &.light {
+    color: $color-ops-header-black-text;
+
+    ::v-deep .kayttaja .kayttaja-valikko {
+      color: $color-ops-header-black-text;
+    }
+
+    .kielivalitsin {
+      color: $color-ops-header-black-text;
+    }
+
+  }
+
+  .kielivalitsin {
+    color: $color-ops-header-text;
+  }
+
   .navbar {
     top: 0;
     font-weight: 600;
-
-    .kielivalitsin {
-      color: white;
-    }
 
     .breadcrumb {
       margin-bottom: 0;
       background: rgba(0, 0, 0, 0);
 
       .breadcrumb-item {
-        color: white;
-        &::before {
-          color: white;
-        }
         a {
-          color: white;
+          color: inherit;
         }
       }
     }
@@ -165,7 +183,6 @@ export default class EpNavigation extends Vue {
   .ep-navbar {
     height: 50px;
     background-color: $etusivu-header-background;
-    background-image: url('../../../public/img/banners/header.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
     @media only screen and (min-width: 2503px)  {
@@ -173,7 +190,6 @@ export default class EpNavigation extends Vue {
     }
 
     .kysymysmerkki {
-      color: white;
       cursor: pointer;
     }
 
@@ -202,6 +218,7 @@ export default class EpNavigation extends Vue {
     }
 
   }
+
 }
 
 </style>

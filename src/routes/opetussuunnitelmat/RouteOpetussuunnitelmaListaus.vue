@@ -101,19 +101,22 @@
 
             <div class="opscontainer">
               <div v-for="ops in julkaistut" :key="ops.id">
-                <div class="opsbox julkaistu">
+                <div class="opsbox julkaistu" :style="ops.bannerImage">
                   <router-link
                     tag="a"
                     :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
                     :key="ops.id">
-                    <div class="chart">
-                      <div class="progress-clamper">
-                        <ep-progress :slices="[0.2, 0.5, 1]" />
-                      </div>
+                    <div class="julkaistu">
                     </div>
-                    <div class="info">
+                    <div class="info d-flex flex-column justify-content-between">
                       <div class="nimi">
                         {{ $kaanna(ops.nimi) }}
+                      </div>
+                      <div v-if="ops.julkaisu" class="nimi">
+                        <hr />
+                        <div class="julkaisu">
+                          {{ $t('julkaistu') }} {{$sd(ops.julkaisu.luotu)}}
+                        </div>
                       </div>
                     </div>
                   </router-link>
@@ -153,7 +156,7 @@ import EpArkistoidutOps from '@/components/EpArkistoidutOps/EpArkistoidutOps.vue
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import KoulutustyyppiSelect from '@shared/components/forms/EpKoulutustyyppiSelect.vue';
-import { yleissivistavatKoulutustyypit, themes, tileColors } from '@shared/utils/perusteet';
+import { yleissivistavatKoulutustyypit, themes, tileColors, tileBackgroundColor } from '@shared/utils/perusteet';
 
 @Component({
   directives: {
@@ -197,10 +200,9 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
       ))
       .filter(ops => _.isEmpty(this.koulutustyyppi) || this.koulutustyyppi === ops.koulutustyyppi)
       .map(ops => {
-        const themeType = themes[ops.koulutustyyppi!];
         return {
           ...ops,
-          tileStyle: 'background: linear-gradient(180deg, ' + tileColors[themeType][0] + ' 0%, ' + tileColors[themeType][0] + ' 100%)',
+          tileStyle: tileBackgroundColor(ops.koulutustyyppi!),
         };
       })
       .sortBy('luotu')
@@ -238,6 +240,14 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
     return _.chain(this.arkistoimattomat)
       .filter(ops => (ops.tila as any) === this.valmisTila)
       .filter(ops => isOpsToteutusSupported(ops))
+      .map(ops => {
+        const themeType = themes[ops.koulutustyyppi!];
+        const imgUrl = require(`@shared/../public/img/banners/tile_ops_${themeType}.svg`);
+        return {
+          ...ops,
+          bannerImage: `background-image: url('${imgUrl}')`,
+        };
+      })
       .value();
   }
 
@@ -292,7 +302,24 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
 
   protected async init() {
     const res = await Opetussuunnitelmat.getAll(this.tyyppi === 'pohjat' ? 'POHJA' : 'OPS');
-    this.opslista = res.data;
+    const julkaistut = _.filter(res.data, ops => ops.tila as string === 'julkaistu');
+    const julkaisutiedot = await Promise.all(_.map(julkaistut, async (julkaistu) => {
+      return {
+        opsId: julkaistu.id!,
+        julkaisu: _.chain((await Opetussuunnitelmat.getJulkaisutKevyt(julkaistu.id!)).data)
+          .sortBy('luotu')
+          .reverse()
+          .head()
+          .value(),
+      };
+    }));
+
+    this.opslista = _.map(res.data, ops => {
+      return {
+        ...ops,
+        julkaisu: _.get(_.keyBy(julkaisutiedot, 'opsId')[ops.id!], 'julkaisu'),
+      };
+    });
   }
 
   get yleissivistavatKoulutustyypit() {
@@ -334,10 +361,6 @@ h2 {
       margin: 10px;
       border-radius: $box-radius;
       @include tile-background-shadow;
-
-      .julkaistu {
-        background: linear-gradient(180deg, #e7eefe 0%, #f3f6fe 100%);
-      }
 
       .poistettu {
         background-size: contain;
@@ -398,13 +421,31 @@ h2 {
         }
       }
 
-      .chart {
+      &.julkaistu {
+        height: 230px;
+        background-repeat: no-repeat;
+
+        .info {
+          height: 150px;
+        }
+      }
+
+      .julkaistu, .chart {
         width: 192px;
         border-radius: $box-radius $box-radius 0 0;
-        height: 138px;
         background-size: contain;
         margin: 0 auto;
         text-align: center;
+      }
+
+      .julkaistu {
+        height: 80px;
+        border: 1px solid #E7E7E7;
+        border-bottom-width: 0;
+      }
+
+      .chart {
+        height: 138px;
         padding-top: 28px;
 
         .progress-clamper {
