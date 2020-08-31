@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ep-navigation tyyli="ops" :tutoriaalistore="tutoriaalistore" :headerStyle="headerStyle" :headerClass="headerClass"></ep-navigation>
+  <ep-navigation tyyli="ops" :tutoriaalistore="tutoriaalistore" :koulutustyyppi="ops.koulutustyyppi" :headerClass="headerClass"></ep-navigation>
   <div class="opetussuunnitelma" v-if="ops" :class="headerClass">
     <div class="header" :style="headerStyle">
       <div class="progress-chart">

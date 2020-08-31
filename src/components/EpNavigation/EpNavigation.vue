@@ -90,8 +90,8 @@ export default class EpNavigation extends Vue {
   @Prop({ required: false })
   private tutoriaalistore!: TutoriaaliStore | undefined;
 
-  @Prop({ default: '' })
-  private headerStyle!: string;
+  @Prop({ required: false })
+  private koulutustyyppi!: string;
 
   @Prop({ default: 'dark' })
   private headerClass!: string;
@@ -137,6 +137,16 @@ export default class EpNavigation extends Vue {
 
   private valitseSisaltoKieli(kieli: Kieli) {
     Kielet.setSisaltoKieli(kieli);
+  }
+
+  get headerStyle() {
+    let themeType = 'lukio';
+    if (this.koulutustyyppi) {
+      themeType = themes[this.koulutustyyppi!];
+    }
+
+    const imgUrl = require(`@shared/../public/img/banners/banner_${themeType}.svg`);
+    return { 'background-image': `url('${imgUrl}')` };
   }
 }
 </script>
