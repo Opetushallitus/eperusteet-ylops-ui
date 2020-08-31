@@ -233,7 +233,6 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
 .opetussuunnitelma {
   background: white;
-  
   &.light {
     .header {
       color: $color-ops-header-black-text;
