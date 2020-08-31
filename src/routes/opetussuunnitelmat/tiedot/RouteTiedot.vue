@@ -19,6 +19,13 @@
                 <ep-external-link :url="data.perusteUrl">{{data.perusteenDiaarinumero}}</ep-external-link>
               </ep-form-content>
             </div>
+            <div class="col-md-6" v-if="data.pohja && data.pohja.id && data.pohja.tyyppi === 'ops'">
+              <ep-form-content name="pohja">
+                <router-link :to="{ name:'opsTiedot', params: { id: data.pohja.id } }" target="_blank" rel="noopener noreferrer">
+                  <span>{{ $kaanna(data.pohja.nimi) || data.pohja.id }}</span>
+                </router-link>
+              </ep-form-content>
+            </div>
             <div class="col-md-6">
               <ep-form-content name="tila">
                 <ep-field v-model="data.tila">
@@ -94,6 +101,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
@@ -114,7 +122,6 @@ import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 import { OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
-import _ from 'lodash';
 
 @Component({
   components: {
