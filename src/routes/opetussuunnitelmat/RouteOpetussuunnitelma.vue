@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ep-navigation tyyli="ops" :tutoriaalistore="tutoriaalistore" :koulutustyyppi="ops.koulutustyyppi" :headerClass="headerClass"></ep-navigation>
+  <ep-navigation tyyli="ops" :tutoriaalistore="tutoriaalistore" :koulutustyyppi="koulutustyyppi" :headerClass="headerClass"></ep-navigation>
   <div class="opetussuunnitelma" v-if="ops" :class="headerClass">
     <div class="header" :style="headerStyle">
       <div class="progress-chart">
@@ -64,7 +64,7 @@
             </b-dropdown-item>
           </b-dropdown>
         </h1>
-        <h4 v-if="ops.koulutustyyppi" class="secondary">{{ $t(ops.koulutustyyppi) }}</h4>
+        <h4 v-if="koulutustyyppi" class="secondary">{{ $t(koulutustyyppi) }}</h4>
         <h6 class="secondary">{{ ops.perusteenDiaarinumero }}</h6>
       </div>
     </div>
@@ -128,6 +128,12 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
     if (this.store.opetussuunnitelma) {
       this.breadcrumb('opetussuunnitelma', this.store.opetussuunnitelma.nimi, { name: 'yleisnakyma' });
+    }
+  }
+
+  get koulutustyyppi() {
+    if (this.ops) {
+      return this.ops.koulutustyyppi;
     }
   }
 
@@ -227,13 +233,15 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
 .opetussuunnitelma {
   background: white;
-  color: $color-ops-header-text;
-
+  
   &.light {
-    color: $color-ops-header-black-text;
+    .header {
+      color: $color-ops-header-black-text;
+    }
   }
 
   .header {
+    color: $color-ops-header-text;
     background-position: 100% -50px;
     background-repeat: no-repeat;
     height: 190px;

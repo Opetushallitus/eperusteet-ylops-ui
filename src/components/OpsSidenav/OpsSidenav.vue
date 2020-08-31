@@ -6,7 +6,7 @@
     <ep-search v-model="query"/>
   </div>
   -->
-  <ul class="navigation flex-fill" v-if="valikkoData.length > 0">
+  <ul class="navigation flex-fill">
 
     <li class="p-0">
       <router-link :to="{name: 'yleisnakyma'}">
