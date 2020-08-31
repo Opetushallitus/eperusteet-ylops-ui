@@ -1,5 +1,5 @@
 <template>
-<base-tile icon="ryhma" :route="{ name: 'organisaatio' }">
+<ep-home-tile icon="ryhma" :route="{ name: 'organisaatio' }">
   <template slot="header">
     <span>{{ $t('tile-organisaatio') }}</span>
   </template>
@@ -17,22 +17,22 @@
       <p class="mt-3 mb-0" v-if="virkailijat && virkailijat.length > previewSize">{{ $t('nayta-lisaa') }}</p>
     </div>
   </template>
-</base-tile>
+</ep-home-tile>
 </template>
 
 <script lang="ts">
 import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
-import BaseTile from './BaseTile.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
 @Component({
   components: {
-    BaseTile,
     EpColorIndicator,
     EpSpinner,
+    EpHomeTile,
   },
 })
 export default class TileOrganisaatio extends Vue {

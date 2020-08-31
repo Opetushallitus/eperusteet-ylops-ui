@@ -1,5 +1,5 @@
 <template>
-  <base-tile icon="opetussuunnitelma" :route="vars.route">
+  <ep-home-tile icon="opetussuunnitelma" :route="vars.route">
     <template slot="header">
       <span>{{ $t(vars.header) }}</span>
     </template>
@@ -20,22 +20,22 @@
         </table>
       </div>
     </template>
-  </base-tile>
+  </ep-home-tile>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 
 import EpRoot from '@/mixins/EpRoot';
-import BaseTile from './BaseTile.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
 @Component({
   components: {
-    BaseTile,
     EpContent,
     EpSpinner,
+    EpHomeTile,
   },
   mixins: [EpRoot],
 })
