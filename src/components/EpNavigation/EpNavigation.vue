@@ -68,7 +68,7 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kayttajat } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
-import { themes } from '@shared/utils/perusteet';
+import { themes, koulutustyyppiBanner } from '@shared/utils/perusteet';
 
 @Component({
   directives: {
@@ -145,8 +145,7 @@ export default class EpNavigation extends Vue {
       themeType = themes[this.koulutustyyppi!];
     }
 
-    const imgUrl = require(`@shared/../public/img/banners/banner_${themeType}.svg`);
-    return { 'background-image': `url('${imgUrl}')` };
+    return koulutustyyppiBanner(themeType);
   }
 }
 </script>
