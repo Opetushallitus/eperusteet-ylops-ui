@@ -1,5 +1,5 @@
 <template>
-<base-tile icon="faq" :route="{ name: 'useinkysytyt' }">
+<ep-home-tile icon="faq" :route="{ name: 'useinkysytyt' }">
   <template slot="header">
     <span>{{ $t('ukk') }}</span>
   </template>
@@ -8,18 +8,18 @@
       <p>{{ $t('ukk-kuvaus') }}</p>
     </div>
   </template>
-</base-tile>
+</ep-home-tile>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 
-import BaseTile from './BaseTile.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
+import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
 @Component({
   components: {
-    BaseTile,
+    EpHomeTile,
     EpIcon,
   },
 })

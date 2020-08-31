@@ -1,5 +1,5 @@
 <template>
-<base-tile icon="tilasto" :route="{ name: 'tilastot' }">
+<ep-home-tile icon="tilasto" :route="{ name: 'tilastot' }">
   <template slot="header">
     <span>{{ $t('ops-tilastot') }}</span>
   </template>
@@ -8,7 +8,7 @@
       <p>{{ $t('tilastot-kuvaus') }}</p>
     </div>
   </template>
-</base-tile>
+</ep-home-tile>
 </template>
 
 <script lang="ts">
@@ -16,11 +16,11 @@ import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
 
 import { Ulkopuoliset } from '@shared/api/ylops';
-import BaseTile from './BaseTile.vue';
+import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
 @Component({
   components: {
-    BaseTile,
+    EpHomeTile,
   },
 })
 export default class TileTilastot extends Vue {

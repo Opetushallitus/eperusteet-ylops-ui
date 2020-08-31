@@ -1,5 +1,5 @@
 <template>
-  <base-tile
+  <ep-home-tile
     icon="hallitus"
     :href="href">
     <template slot="header">
@@ -10,17 +10,17 @@
         <p>{{ $t('tile-perusteet-kuvaus') }}</p>
       </div>
     </template>
-  </base-tile>
+  </ep-home-tile>
 </template>
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'vue-property-decorator';
-import BaseTile from './BaseTile.vue';
 import { Kielet } from '@shared/stores/kieli';
+import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
 @Component({
   components: {
-    BaseTile,
+    EpHomeTile,
   },
 })
 export default class TileOpetussuunnitelmat extends Vue {
