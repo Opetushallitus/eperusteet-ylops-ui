@@ -70,7 +70,7 @@ import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
-import EpContent from '@shared/components/EpContent/EpContent.vue';
+import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
