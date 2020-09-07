@@ -156,7 +156,8 @@ import EpArkistoidutOps from '@/components/EpArkistoidutOps/EpArkistoidutOps.vue
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import KoulutustyyppiSelect from '@shared/components/forms/EpKoulutustyyppiSelect.vue';
-import { yleissivistavatKoulutustyypit, themes, tileColors, tileBackgroundColor } from '@shared/utils/perusteet';
+import { yleissivistavatKoulutustyypit, themes } from '@shared/utils/perusteet';
+import { tileBackgroundColor, koulutusTyyppiTile } from '@shared/utils/bannerIcons';
 
 @Component({
   directives: {
@@ -241,11 +242,9 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
       .filter(ops => (ops.tila as any) === this.valmisTila)
       .filter(ops => isOpsToteutusSupported(ops))
       .map(ops => {
-        const themeType = themes[ops.koulutustyyppi!];
-        const imgUrl = require(`@shared/../public/img/banners/tile_ops_${themeType}.svg`);
         return {
           ...ops,
-          bannerImage: `background-image: url('${imgUrl}')`,
+          bannerImage: koulutusTyyppiTile(ops.koulutustyyppi),
         };
       })
       .value();
