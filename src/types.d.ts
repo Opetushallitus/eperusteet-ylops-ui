@@ -3,6 +3,11 @@ declare module '*.vue' {
   export default Vue;
 }
 
+declare module '*.svg' {
+  const value: any;
+  export = value;
+}
+
 type Ref = any;
 
 declare module 'vue-loading-overlay';

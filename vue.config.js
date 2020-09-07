@@ -14,6 +14,8 @@ module.exports = {
         'vue$': 'vue/dist/vue.esm.js',
         'vue-i18n$': path.resolve(__dirname, 'node_modules/vue-i18n'),
         '@shared': path.resolve(__dirname, 'eperusteet-frontend-utils/vue/src'),
+        '@assets': path.resolve(__dirname, 'eperusteet-frontend-utils/vue/public'),
+
       },
     },
     plugins: [
