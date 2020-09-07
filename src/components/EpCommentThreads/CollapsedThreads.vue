@@ -5,7 +5,7 @@
         <div class="topbar d-flex align-items-center justify-content-between">
           <div class="pvm">{{ $ago(first.luotu || new Date()) }}</div>
         </div>
-        <div class="nimi">{{ first.luoja }}</div>
+        <div class="nimi">{{ first.nimi }}</div>
         <div class="viesti mt-1">
           {{ first.sisalto }}
         </div>
@@ -49,6 +49,13 @@ import _ from 'lodash';
 export default class CollapsedThreads extends Vue {
   @Prop({ required: true })
   value!: KommenttiDto[];
+
+  get nimi() {
+    if (!this.first) {
+      return null;
+    }
+    return this.first?.nimi || this.first?.muokkaaja || this.$t('tuntematon-kayttaja');
+  }
 
   get first() {
     if (this.value) {

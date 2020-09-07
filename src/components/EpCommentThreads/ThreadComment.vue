@@ -74,7 +74,7 @@ export default class ThreadComment extends Vue {
   }
 
   get nimi() {
-    return this.innerValue?.nimi || this.innerValue?.muokkaaja || null;
+    return this.innerValue?.nimi || this.innerValue?.muokkaaja || this.$t('tuntematon-kayttaja');
   }
 
   get editable() {

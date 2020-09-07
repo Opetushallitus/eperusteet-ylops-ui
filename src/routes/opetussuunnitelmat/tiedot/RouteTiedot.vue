@@ -27,10 +27,18 @@
               </ep-form-content>
             </div>
             <div class="col-md-6">
-              <ep-form-content name="tila">
-                <ep-field v-model="data.tila">
-                </ep-field>
-              </ep-form-content>
+              <div class="d-flex align-items-center">
+                <div>
+                  <ep-form-content name="tila">
+                    <ep-field v-model="data.tila">
+                    </ep-field>
+                  </ep-form-content>
+                </div>
+                <div class="ml-4" v-if="!isEditing && !isOps && !isValmisPohja">
+                  <tilanvaihto v-model="data.tila" :onSave="tryTilanvaihto" :is-pohja="true">
+                  </tilanvaihto>
+                </div>
+              </div>
             </div>
             <div class="col-md-6">
               <ep-form-content name="julkaisukielet">
@@ -78,8 +86,17 @@
                 </ul>
               </ep-form-content>
             </div>
-             <div class="col-md-6">
-              <ep-form-content name="opintojaksojen-tarkistus" v-if="data.ainepainoitteinen">
+             <div class="col-md-6" v-if="hasContentFilters">
+              <ep-form-content name="sisallon-tuonti" v-if="features.opintojaksot">
+                <div>
+                  <ep-toggle v-model="data.tuoPohjanOpintojaksot" :is-editing="isEditing">
+                    {{ $t('tuo-pohjan-organisaation-opintojaksot') }}
+                  </ep-toggle>
+                </div>
+              </ep-form-content>
+            </div>
+             <div class="col-md-6" v-if="data.ainepainoitteinen">
+              <ep-form-content name="opintojaksojen-tarkistus">
                 <ep-toggle v-model="data.ainepainoitteinen" :is-editing="false" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
               </ep-form-content>
             </div>
@@ -89,10 +106,6 @@
               </ep-form-content>
             </div>
           </div>
-        </div>
-        <div v-if="!isEditing && !isOps && !isValmisPohja">
-          <tilanvaihto v-model="data.tila" :onSave="tryTilanvaihto" :is-pohja="true">
-          </tilanvaihto>
         </div>
       </template>
     </ep-editointi>
@@ -121,6 +134,7 @@ import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
+import { isLukio } from '@shared/utils/perusteet';
 import { OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
 
 @Component({
@@ -164,6 +178,17 @@ export default class RouteTiedot extends EpOpsRoute {
     catch (err) {
       return false;
     }
+  }
+
+  get hasContentFilters() {
+    return this.features.opintojaksot;
+  }
+
+  get features() {
+    const koulutustyyppi = this.ops?.koulutustyyppi;
+    return {
+      opintojaksot: koulutustyyppi && isLukio(koulutustyyppi),
+    };
   }
 
   private get kielet() {
