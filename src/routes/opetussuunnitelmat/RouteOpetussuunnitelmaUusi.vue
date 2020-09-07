@@ -67,8 +67,8 @@
         <ep-form-content :showHeader="false" v-if="uusi.pohjanOpintojaksot">
           <ep-form-content name="ops-opintojakso-tuonti-kysymys" class="no-padding" v-if="uusi.pohjanOpintojaksot.length > 0">
             <b-form-group>
-              <b-form-radio v-model="opintojaksoTuonti" name="opintojaksoTuonti" value="true">{{$t('kylla')}}</b-form-radio>
-              <b-form-radio v-model="opintojaksoTuonti" name="opintojaksoTuonti" value="false">{{$t('ei')}}</b-form-radio>
+              <b-form-radio v-model="uusi.tuoPohjanOpintojaksot" name="opintojaksoTuonti" :value="true">{{$t('kylla')}}</b-form-radio>
+              <b-form-radio v-model="uusi.tuoPohjanOpintojaksot" name="opintojaksoTuonti" :value="false">{{$t('ei')}}</b-form-radio>
             </b-form-group>
           </ep-form-content>
 
@@ -152,7 +152,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   private opetussuunnitelmat: OpetussuunnitelmaInfoDto[] | null = null;
   private oletuspohjasta: 'pohjasta' | 'opsista' | null = null;
   private addingOpetussuunnitelma = false;
-  private opintojaksoTuonti = false;
   private vuosiluokkakokonaisuudet: OpsVuosiluokkakokonaisuusKevytDto[] | null = null;
   private uusi = {
     pohja: null as (OpetussuunnitelmaInfoDto | null),
@@ -263,11 +262,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       (ops as any)._pohja = '' + this.uusi.pohja!.id;
       try {
         const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
-
-        if (this.opintojaksoTuonti && _.size(this.uusi.pohjanOpintojaksot) > 0 && luotu.id && this.uusi.pohjanOpintojaksot) {
-          await Opintojaksot.addTuodutOpintojaksot(luotu.id, this.uusi.pohjanOpintojaksot);
-        }
-
         success('lisays-opetussuunnitelma-onnistui');
         this.$router.replace({
           name: 'yleisnakyma',
