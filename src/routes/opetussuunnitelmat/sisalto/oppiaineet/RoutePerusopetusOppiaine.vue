@@ -9,86 +9,75 @@
       </template>
       <template v-slot:default="{ data, isEditing }">
 
-        <div v-if="data.perusteenOppiaine.tehtava || data.oppiaine.tehtava">
-          <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenOppiaine.tehtava"
-                                      :vlkObject="data.oppiaine.tehtava"
-                                      :isEditing="isEditing"
-                                      :peruste-teksti-avattu="true" />
+        <div v-if="!data.perusteenOppiaine" class="alert alert-danger">{{$t('ei-perustetta-info')}}</div>
+
+        <vuosiluokka-sisalto-teksti :perusteObject="perusteenOppiaine.tehtava"
+                                    :vlkObject="data.oppiaine.tehtava"
+                                    :isEditing="isEditing"
+                                    :peruste-teksti-avattu="true" />
+        <hr/>
+
+        <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tehtava"
+                                    :vlkObject="data.vuosiluokkakokonaisuus.tehtava"
+                                    :isEditing="isEditing"
+                                    :peruste-teksti-avattu="true" />
+        <hr/>
+
+        <div v-if="data.oppiaine.tyyppi === 'yhteinen' && data.vuosiluokkakokonaisuus.yleistavoitteet">
+          <h4>{{ $t('tavoitteet-ja-sisallot') }}</h4>
+          <ep-content v-if="isEditing || data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
+                        v-model="data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
+                        layout="normal"
+                        :is-editable="isEditing"></ep-content>
+          <ep-alert v-if="!isEditing && !data.vuosiluokkakokonaisuus.yleistavoitteet.teksti" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
           <hr/>
         </div>
 
-        <div v-if="data.perusteenVuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus">
-
-          <div v-if="data.perusteenVuosiluokkakokonaisuus.tehtava">
-            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tehtava"
-                                        :vlkObject="data.vuosiluokkakokonaisuus.tehtava"
-                                        :isEditing="isEditing"
-                                        :peruste-teksti-avattu="true" />
-            <hr/>
-          </div>
-
-          <div v-if="data.oppiaine.tyyppi === 'yhteinen' && data.vuosiluokkakokonaisuus.yleistavoitteet">
-            <h4>{{ $t('tavoitteet-ja-sisallot') }}</h4>
-            <ep-content v-if="isEditing || data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
-                          v-model="data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
-                          layout="normal"
-                          :is-editable="isEditing"></ep-content>
-            <ep-alert v-if="!isEditing && !data.vuosiluokkakokonaisuus.yleistavoitteet.teksti" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
-            <hr/>
-          </div>
-
-          <div v-if="!data.oppiaine.koosteinen">
-            <div v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.vuosiluokat.length > 0">
-              <div class="d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">{{ $t('tavoitteet-ja-sisallot-vuosiluokittain') }}</h3>
-                <router-link :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}" v-if="!isEditing">
-                  <ep-button >{{ $t('vuosiluokkaista-tavoitteet')}}</ep-button>
-                </router-link>
-              </div>
-
-               <div v-for="(vuosiluokka,index) in data.vuosiluokkakokonaisuus.vuosiluokat" :key="'vuosiluokka'+index">
-                <router-link :to="{name:'perusopetusoppiainevuosiluokka', params: {vlId: vuosiluokka.id}}">
-                  <ep-button variant="link">{{ $t('vuosiluokka')}} {{ $t(vuosiluokka.vuosiluokka)}}</ep-button>
-                </router-link>
-              </div>
-
-              <hr/>
-            </div>
-
-            <div v-if="data.vuosiluokkakokonaisuus.vuosiluokat.length === 0 && !isEditing">
-              <div class="ei-tavoitteita mt-3 mb-3">{{ $t('tavoitteita-ei-ole-viela-vuosiluokkaistettu')}}</div>
-              <router-link :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}"
-                  v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }">
+        <div v-if="!data.oppiaine.koosteinen">
+          <div v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.vuosiluokat.length > 0">
+            <div class="d-flex justify-content-between align-items-center">
+              <h3 class="mb-0">{{ $t('tavoitteet-ja-sisallot-vuosiluokittain') }}</h3>
+              <router-link :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}" v-if="!isEditing">
                 <ep-button >{{ $t('vuosiluokkaista-tavoitteet')}}</ep-button>
               </router-link>
-
-              <hr/>
             </div>
-          </div>
 
-          <div v-if="data.perusteenVuosiluokkakokonaisuus.tyotavat">
-            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.tyotavat"
-                                        :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
-                                        :isEditing="isEditing"
-                                        :peruste-teksti-avattu="true" />
+              <div v-for="(vuosiluokka,index) in data.vuosiluokkakokonaisuus.vuosiluokat" :key="'vuosiluokka'+index">
+              <router-link :to="{name:'perusopetusoppiainevuosiluokka', params: {vlId: vuosiluokka.id}}">
+                <ep-button variant="link">{{ $t('vuosiluokka')}} {{ $t(vuosiluokka.vuosiluokka)}}</ep-button>
+              </router-link>
+            </div>
+
             <hr/>
           </div>
 
-          <div v-if="data.perusteenVuosiluokkakokonaisuus.ohjaus">
-            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.ohjaus"
-                                        :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
-                                        :isEditing="isEditing"
-                                        :peruste-teksti-avattu="true" />
-            <hr/>
-          </div>
+          <div v-if="data.vuosiluokkakokonaisuus.vuosiluokat.length === 0 && !isEditing">
+            <div class="ei-tavoitteita mt-3 mb-3">{{ $t('tavoitteita-ei-ole-viela-vuosiluokkaistettu')}}</div>
+            <router-link :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}"
+                v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }">
+              <ep-button >{{ $t('vuosiluokkaista-tavoitteet')}}</ep-button>
+            </router-link>
 
-          <div v-if="data.perusteenVuosiluokkakokonaisuus.arviointi">
-            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVuosiluokkakokonaisuus.arviointi"
-                                        :vlkObject="data.vuosiluokkakokonaisuus.arviointi"
-                                        :isEditing="isEditing"
-                                        :peruste-teksti-avattu="true" />
+            <hr/>
           </div>
         </div>
+
+        <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tyotavat"
+                                    :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
+                                    :isEditing="isEditing"
+                                    :peruste-teksti-avattu="true" />
+        <hr/>
+
+        <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.ohjaus"
+                                    :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
+                                    :isEditing="isEditing"
+                                    :peruste-teksti-avattu="true" />
+        <hr/>
+
+        <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.arviointi"
+                                    :vlkObject="data.vuosiluokkakokonaisuus.arviointi"
+                                    :isEditing="isEditing"
+                                    :peruste-teksti-avattu="true" />
 
         <div v-if="data.oppiaine.oppimaarat && data.oppiaine.oppimaarat.length > 0">
 
@@ -110,7 +99,7 @@
               v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
         </div>
 
-        </template>
+      </template>
     </EpEditointi>
   </div>
 </template>
@@ -179,6 +168,14 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
 
   get vlkId() {
     return this.$route.params.vlkId;
+  }
+
+  get perusteenOppiaine() {
+    return this.editointiStore?.data.value.perusteenOppiaine || {};
+  }
+
+  get perusteenVuosiluokkakokonaisuus() {
+    return this.editointiStore?.data.value.perusteenVuosiluokkakokonaisuus || {};
   }
 }
 </script>

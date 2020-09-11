@@ -5,6 +5,9 @@ import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import { Revision } from '@shared/tyypit';
 import { isOppiaineUskontoTaiKieli } from '@/utils/opetussuunnitelmat';
+import { createLogger } from '@shared/utils/logger';
+
+const logger = createLogger('PerusopetusoppiaineStore');
 
 export class PerusopetusoppiaineStore implements IEditoitava {
   constructor(
@@ -31,12 +34,14 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async load() {
-    let oppiaine;
+    const oppiaine = (await this.getOppiaineVersion()).data;
     let perusteenOppiaine;
-    [oppiaine, perusteenOppiaine] = _.map(await (Promise.all([
-      this.getOppiaineVersion(),
-      Oppiaineet.getPerusteSisalto(this.opsId, this.oppiaineId),
-    ])), 'data');
+    try {
+      perusteenOppiaine = (await Oppiaineet.getPerusteSisalto(this.opsId, this.oppiaineId)).data;
+    }
+    catch (e) {
+      logger.error(e);
+    }
 
     if (!_.isObject(oppiaine.tehtava) && this.isOppiaineTaiOppimaaraUskontoTaiKieli(oppiaine)) {
       oppiaine.tehtava = {};
@@ -45,10 +50,10 @@ export class PerusopetusoppiaineStore implements IEditoitava {
     return {
       oppiaine,
       perusteenOppiaine,
-      perusteenVuosiluokkakokonaisuus: _.head(_.filter(perusteenOppiaine.vuosiluokkakokonaisuudet, vlk =>
+      perusteenVuosiluokkakokonaisuus: _.head(_.filter(_.get(perusteenOppiaine, 'vuosiluokkakokonaisuudet'), vlk =>
         vlk._vuosiluokkakokonaisuus === (this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus as any)._tunniste)),
       vuosiluokkakokonaisuus: _.chain(oppiaine.vuosiluokkakokonaisuudet)
-        .filter(vlk => vlk._vuosiluokkakokonaisuus === (this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus as any)._tunniste)
+        .filter(vlk => _.get(vlk, '_vuosiluokkakokonaisuus') === (this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus as any)._tunniste)
         .map(vlk => {
           return {
             ...vlk,
@@ -151,7 +156,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   public features(data) {
     return computed(() => {
       return data ? {
-        editable: true,
+        editable: data.perusteenOppiaine,
         removable: this.parent && isOppiaineUskontoTaiKieli(this.parent),
         hideable: this.parent && isOppiaineUskontoTaiKieli(this.parent),
         isHidden: data.vuosiluokkakokonaisuus.piilotettu,
