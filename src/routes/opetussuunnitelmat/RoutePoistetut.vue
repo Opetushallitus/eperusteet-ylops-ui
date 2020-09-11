@@ -5,23 +5,15 @@
     </div>
     <div class="sisalto">
       <b-tabs content-class="mt-4" v-model="tabIndex">
-        <b-tab :title="$t('opintojaksot')">
+        <b-tab v-for="(tab, index) in tabs" :key="'tab'+index" :title="$t(tab.otsikko)">
           <ep-spinner v-if="isLoading" />
           <poistetut-haku-table v-else
-                                :poistetut="opintojaksot"
-                                @palauta="palauta" />
-        </b-tab>
-        <b-tab :title="$t('oppiaineet')">
-          <ep-spinner v-if="isLoading" />
-          <poistetut-haku-table v-else :poistetut="oppiaineet" @palauta="palauta" />
-        </b-tab>
-        <b-tab :title="$t('tekstikappaleet')">
-          <ep-spinner v-if="isLoading" />
-          <poistetut-haku-table v-else
-                                :poistetut="tekstikappaleet"
+                                :poistetut="tab.poistetut"
                                 @palauta="palauta" />
         </b-tab>
       </b-tabs>
+
+      <div v-if="!isLoading && tabs.length === 0">{{$t('ei-poistettuja-sisaltoja')}}</div>
     </div>
   </div>
 </template>
@@ -63,7 +55,7 @@ import PoistetutHakuTable from './poistetut/PoistetutHakuTable.vue';
     PoistetutHakuTable,
   },
 })
-export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
+export default class RoutePoistetut extends Mixins(EpOpsRoute) {
   private poistetut: Lops2019PoistettuDto[] = [];
   private poistetutTekstikappaleet: PoistettuTekstiKappaleDto[] = [];
   private tabIndex = 0;
@@ -77,8 +69,33 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     await this.fetchPoistetut();
   }
 
-  get oppiaineet() {
+  get tabs() {
+    return _.filter([
+      {
+        otsikko: 'opintojakso',
+        poistetut: this.opintojaksot,
+      },
+      {
+        otsikko: 'oppiaine',
+        poistetut: this.lops2019oppiaineet,
+      },
+      {
+        otsikko: 'oppiaine',
+        poistetut: this.oppiaineet,
+      },
+      {
+        otsikko: 'tekstikappaleet',
+        poistetut: this.tekstikappaleet,
+      },
+    ], tab => _.size(tab.poistetut) > 0);
+  }
+
+  get lops2019oppiaineet() {
     return _.filter(this.poistetut, p => p.tyyppi as string === 'lops2019oppiaine');
+  }
+
+  get oppiaineet() {
+    return _.filter(this.poistetut, p => p.tyyppi as string === 'oppiaine');
   }
 
   get tekstikappaleet() {
