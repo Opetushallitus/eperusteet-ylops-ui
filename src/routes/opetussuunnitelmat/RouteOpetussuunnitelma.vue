@@ -12,8 +12,10 @@
               </div>
               <div v-else-if="validation">
                 <b-button v-if="!isPohja"
-                    variant="primary"
-                    :to="{ name: 'opsJulkaisu' }">{{ $t('julkaise') }}</b-button>
+                          variant="primary"
+                          :to="{ name: 'opsJulkaisu' }">
+                  {{ $t('julkaise') }}
+                </b-button>
               </div>
             </div>
           </template>
