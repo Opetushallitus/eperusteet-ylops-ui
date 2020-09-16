@@ -12,8 +12,16 @@
       <legend class="col-form-label col-sm-2">{{ $t('opetussuunnitelman-pohjatyyppi-pakollinen') }}</legend>
       <div class="col-sm-10 mb-4">
         <b-form-group class="mt-0">
-          <b-form-radio v-model="oletuspohjasta" name="uusi-ops-pohjavalinta" value="opsista">{{ $t('toinen-opetussuunnitelma') }}</b-form-radio>
-          <b-form-radio v-model="oletuspohjasta" name="uusi-ops-pohjavalinta" value="pohjasta">{{ $t('oletuspohja') }}</b-form-radio>
+          <b-form-radio
+            :value="oletuspohjasta"
+            @change="updateOletuspohja"
+            name="uusi-ops-pohjavalinta"
+            value="opsista">{{ $t('toinen-opetussuunnitelma') }}</b-form-radio>
+          <b-form-radio
+            :value="oletuspohjasta"
+            @change="updateOletuspohja"
+            name="uusi-ops-pohjavalinta"
+            value="pohjasta">{{ $t('oletuspohja') }}</b-form-radio>
         </b-form-group>
       </div>
     </div>
@@ -59,13 +67,15 @@
     <div v-if="uusi.pohja">
       <hr/>
       <h2 class="mb-3">{{ $t('organisaatiot') }}</h2>
-      <ep-organizations :validation="$v.uusi.organisaatiot" :koulutustyyppi="koulutustyyppi" v-model="uusi.organisaatiot"></ep-organizations>
+      <ep-organizations :validation="$v.uusi.organisaatiot"
+                        :koulutustyyppi="koulutustyyppi"
+                        v-model="uusi.organisaatiot"></ep-organizations>
 
       <div v-if="uusi.pohja.toteutus === 'lops2019'">
         <hr/>
         <h2 class="mb-3">{{ $t('opintojaksot') }}</h2>
-        <ep-form-content :showHeader="false" v-if="uusi.pohjanOpintojaksot">
-          <ep-form-content name="ops-opintojakso-tuonti-kysymys" class="no-padding" v-if="uusi.pohjanOpintojaksot.length > 0">
+        <ep-form-content :showHeader="false">
+          <ep-form-content name="ops-opintojakso-tuonti-kysymys" class="no-padding">
             <b-form-group>
               <b-form-radio v-model="uusi.tuoPohjanOpintojaksot" name="opintojaksoTuonti" :value="true">{{$t('kylla')}}</b-form-radio>
               <b-form-radio v-model="uusi.tuoPohjanOpintojaksot" name="opintojaksoTuonti" :value="false">{{$t('ei')}}</b-form-radio>
@@ -77,7 +87,6 @@
           </ep-form-content>
 
         </ep-form-content>
-        <ep-spinner v-else />
       </div>
 
       <div class="text-right">
@@ -126,6 +135,9 @@ import {
 import { opsLuontiValidator, opsPerusopetusLuontiValidator } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
 
+type PohjaTyyppi = 'pohjasta' | 'opsista';
+
+
 @Component({
   components: {
     EpButton,
@@ -150,7 +162,7 @@ import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
 export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, EpRoute) {
   private oletuspohjat: OpetussuunnitelmaInfoDto[] | null = null;
   private opetussuunnitelmat: OpetussuunnitelmaInfoDto[] | null = null;
-  private oletuspohjasta: 'pohjasta' | 'opsista' | null = null;
+  private oletuspohjasta: PohjaTyyppi | null = null;
   private addingOpetussuunnitelma = false;
   private vuosiluokkakokonaisuudet: OpsVuosiluokkakokonaisuusKevytDto[] | null = null;
   private uusi = {
@@ -161,10 +173,14 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       oppilaitokset: [],
       kunnat: [],
     },
+    tuoPohjanOpintojaksot: null,
     ainepainoitteinen: false,
-    pohjanOpintojaksot: null as (Lops2019OpintojaksoDto[] | null),
     vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
   };
+
+  initUusi() {
+    this.uusi.pohja = null;
+  }
 
   @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
@@ -186,11 +202,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     return _.get(this.uusi, 'pohja.koulutustyyppi');
   }
 
-  @Watch('oletuspohjasta')
-  oletuspohjavalintaMuutos() {
-    this.uusi.pohja = null;
-  }
-
   @Watch('uusi.pohja')
   async uusiPohjaMuutos() {
     this.uusi.organisaatiot = {
@@ -201,17 +212,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     this.uusi.vuosiluokkakokonaisuudet = [];
 
     if (this.uusi.pohja?.id) {
-      this.uusi.pohjanOpintojaksot = null;
-
-      if (this.uusi.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.LOPS2019.toLowerCase()) {
-        const paikalliset = (await Lops2019Oppiaineet.getAllLops2019PaikallisetOppiainet(this.uusi.pohja.id)).data;
-        const paikallistenKoodit = _.map(paikalliset, 'koodi');
-
-        this.uusi.pohjanOpintojaksot = _.chain((await Opintojaksot.getAllOpintojaksot(this.uusi.pohja.id)).data)
-          .filter(opintojakso => !_.some(opintojakso.oppiaineet, oppiaine => _.includes(paikallistenKoodit, oppiaine.koodi)))
-          .value(); ;
-      }
-
       if (this.uusi.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase()) {
         const ops = (await Opetussuunnitelmat.getOpetussuunnitelma(this.uusi.pohja?.id)).data;
         this.vuosiluokkakokonaisuudet = _.sortBy((ops.vuosiluokkakokonaisuudet as OpsVuosiluokkakokonaisuusKevytDto[]), [(vlk) => {
@@ -240,6 +240,11 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       .filter(pohja => pohja.tila !== 'POISTETTU')
       .filter(pohja => isOpsToteutusSupported(pohja))
       .value();
+  }
+
+  updateOletuspohja(value: PohjaTyyppi) {
+    this.oletuspohjasta = value;
+    this.initUusi();
   }
 
   public async luoUusiOpetussuunnitelma() {
