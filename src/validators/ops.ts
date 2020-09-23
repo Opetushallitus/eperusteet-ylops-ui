@@ -27,6 +27,9 @@ export function opsLuontiValidator(kielet: Kieli[] = []) {
     nimi: {
       ...requiredLokalisoituTeksti(kielet),
     },
+    tuoPohjanOpintojaksot: {
+      required,
+    },
     pohja: {
       ...notNull(),
     },
