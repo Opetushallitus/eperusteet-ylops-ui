@@ -22,12 +22,12 @@
 import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
 
-import { Tiedotteet } from '@shared/api/eperusteet';
 import { julkaisupaikka, onkoUusi } from '@shared/utils/tiedote';
 import { Kielet } from '@shared/stores/kieli';
 
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
+import { Ulkopuoliset } from '@shared/api/ylops';
 
 @Component({
   components: {
@@ -46,7 +46,7 @@ export default class TileTiedotteet extends Vue {
   async mounted() {
     try {
       this.isLoading = true;
-      this.tiedotteet = ((await Tiedotteet.findTiedotteetBy(
+      this.tiedotteet = ((await Ulkopuoliset.getTiedotteetHaku(
         0,
         4,
         [_.toUpper(this.kieli)],

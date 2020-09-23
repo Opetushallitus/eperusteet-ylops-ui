@@ -60,7 +60,6 @@
 import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
-import { Tiedotteet } from '@shared/api/eperusteet';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kielet } from '@shared/stores/kieli';
@@ -76,6 +75,7 @@ import EpRoute from '@/mixins/EpRoot';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
+import { Ulkopuoliset } from '@shared/api/ylops';
 
 @Component({
   directives: {
@@ -128,7 +128,7 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
   }
 
   async update() {
-    const tiedotteetHaku = ((await Tiedotteet.findTiedotteetBy(
+    const tiedotteetHaku = ((await Ulkopuoliset.getTiedotteetHaku(
       this.sivu - 1,
       this.sivukoko,
       [_.toUpper(this.kieli)],
