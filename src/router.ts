@@ -50,6 +50,7 @@ import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from './stores/aikataulu';
 import { Kommentit } from '@/stores/kommentit';
 import VueApexCharts from 'vue-apexcharts';
+import { getCasKayttajaKieli } from '@shared/api/common';
 
 Vue.use(Router);
 Vue.use(VueTutorial, { tutoriaalistore });
@@ -66,7 +67,6 @@ export const router = new Router({
   scrollBehavior: () => ({ x: 0, y: 0 }),
   routes: [{
     path: '/',
-    redirect: () => '/fi',
   }, {
     path: '/:lang',
     component: Root,
@@ -306,6 +306,14 @@ router.beforeEach(async (to, from, next) => {
   else {
     next();
   }
+});
+
+router.beforeEach(async (to, from, next) => {
+  if (!_.get(to.params, 'lang')) {
+    router.push({ path: '/' + await getCasKayttajaKieli() });
+  }
+
+  next();
 });
 
 router.beforeEach((to, from, next) => {
