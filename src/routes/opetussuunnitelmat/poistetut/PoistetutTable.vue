@@ -61,6 +61,7 @@ export default class PoistettuTable extends Vue {
       {
         key: 'actions',
         label: '',
+        thStyle: { borderBottom: '0px' },
       },
     ];
   }
