@@ -20,7 +20,7 @@
                               name="valinnaisen-oppiaineen-tyyppi-syventava"
                               value="syventava"
                               class="mb-2">{{ $t('syventava') }}</b-form-radio>
-                <ep-form-content name="oppiaine"
+                <ep-form-content name="oppiaine-pakollinen"
                                  v-if="data.oppiaine.valinnainenTyyppi === 'syventava'"
                                  class="ml-4">
                   <ep-multi-select :options="data.oppiaineet"

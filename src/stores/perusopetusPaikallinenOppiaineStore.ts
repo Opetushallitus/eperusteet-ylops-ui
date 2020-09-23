@@ -7,6 +7,8 @@ import { Oppiaineet,
   OpsVuosiluokkakokonaisuusKevytDto,
 } from '@shared/api/ylops';
 import { Revision } from '@shared/tyypit';
+import { nimiValidator } from '@/validators/required';
+import { required, requiredIf } from 'vuelidate/lib/validators';
 
 export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
   private isUusi: boolean;
@@ -151,7 +153,19 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
   }
 
   public readonly validator = computed(() => {
-    return {};
+    return {
+      oppiaine: {
+        ...nimiValidator([]),
+        valinnainenTyyppi: {
+          required,
+        },
+      },
+      liittyvaOppiaine: {
+        required: requiredIf(function(data) {
+          return data.oppiaine.valinnainenTyyppi === 'syventava';
+        }),
+      },
+    };
   });
 
   public features() {
