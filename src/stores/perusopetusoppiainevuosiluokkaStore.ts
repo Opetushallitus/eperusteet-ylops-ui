@@ -110,7 +110,6 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
             hyvanOsaamisenKuvaus: _.find(tavoite.arvioinninkohteet, kohde => kohde.arvosana === 8),
           };
         })
-        .filter(tavoite => _.size(tavoite.sisaltoalueet) > 0)
         .value(),
     };
   }
