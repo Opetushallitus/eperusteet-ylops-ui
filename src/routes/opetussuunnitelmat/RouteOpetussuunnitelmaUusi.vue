@@ -13,13 +13,15 @@
       <div class="col-sm-10 mb-4">
         <b-form-group class="mt-0">
           <b-form-radio
-            :value="oletuspohjasta"
-            @change="updateOletuspohja('opsista')"
-            name="uusi-ops-pohjavalinta">{{ $t('toinen-opetussuunnitelma') }}</b-form-radio>
+            v-model="oletuspohjasta"
+            @change="updateOletuspohja"
+            name="uusi-ops-pohjavalinta"
+            value="opsista">{{ $t('toinen-opetussuunnitelma') }}</b-form-radio>
           <b-form-radio
-            :value="oletuspohjasta"
-            @change="updateOletuspohja('pohjasta')"
-            name="uusi-ops-pohjavalinta">{{ $t('oletuspohja') }}</b-form-radio>
+            v-model="oletuspohjasta"
+            @change="updateOletuspohja"
+            name="uusi-ops-pohjavalinta"
+            value="pohjasta">{{ $t('oletuspohja') }}</b-form-radio>
         </b-form-group>
       </div>
     </div>

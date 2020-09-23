@@ -104,7 +104,8 @@ import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpProgressPopover from '@shared/components/EpProgressPopover/EpProgressPopover.vue';
-import { themes, tileBackgroundColor, koulutustyyppiBanner } from '@shared/utils/perusteet';
+import { tileBackgroundColor, koulutustyyppiBanner } from '@shared/utils/bannerIcons';
+import { themes } from '@shared/utils/perusteet';
 
 @Component({
   components: {
@@ -197,7 +198,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
   get headerStyle() {
     if (this.ops) {
-      return koulutustyyppiBanner(themes[this.ops.koulutustyyppi!]);
+      return koulutustyyppiBanner(this.ops.koulutustyyppi!);
     }
 
     return '';

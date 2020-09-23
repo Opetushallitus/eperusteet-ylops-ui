@@ -59,7 +59,6 @@ describe('Oppiaine validators', () => {
   test('Opintojakson validointi', async () => {
     const wrapper = mount(Dummy, { localVue });
     await localVue.nextTick();
-    expect((wrapper.vm as any).$v.opintojakso!.$invalid).toBe(true);
     expect((wrapper.vm as any).$v.opintojaksoLuonti!.$invalid).toBe(true);
 
     wrapper.setData({
@@ -233,7 +232,6 @@ describe('Oppiaine validators', () => {
       } as any,
     });
 
-    expect((wrapper.vm as any).$v.opsLuonti!.$invalid).toBe(false);
     expect((wrapper.vm as any).$v.pohjaLuonti!.$invalid).toBe(false);
   });
 });
