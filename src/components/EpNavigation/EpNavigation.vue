@@ -68,7 +68,7 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kayttajat } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
-import { themes, koulutustyyppiBanner } from '@shared/utils/perusteet';
+import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 
 @Component({
   directives: {
@@ -140,12 +140,7 @@ export default class EpNavigation extends Vue {
   }
 
   get headerStyle() {
-    let themeType = 'lukio';
-    if (this.koulutustyyppi) {
-      themeType = themes[this.koulutustyyppi!];
-    }
-
-    return koulutustyyppiBanner(themeType);
+    return koulutustyyppiBanner(this.koulutustyyppi!);
   }
 }
 </script>
