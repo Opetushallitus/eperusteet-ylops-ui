@@ -1,6 +1,7 @@
 import { notNull, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@shared/tyypit';
 import { minLength, required } from 'vuelidate/lib/validators';
+import { OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
 
 export function pohjaLuontiValidator(kielet: Kieli[] = []) {
   return {
@@ -13,22 +14,26 @@ export function pohjaLuontiValidator(kielet: Kieli[] = []) {
   };
 }
 
-export function opsPerusopetusLuontiValidator(kielet: Kieli[] = []) {
+export function opsPerusopetusLuontiValidators() {
   return {
-    ...opsLuontiValidator(kielet),
     vuosiluokkakokonaisuudet: {
       required,
     },
   };
 }
 
-export function opsLuontiValidator(kielet: Kieli[] = []) {
+export function lops2019Validators() {
   return {
-    nimi: {
-      ...requiredLokalisoituTeksti(kielet),
-    },
     tuoPohjanOpintojaksot: {
       required,
+    },
+  };
+}
+
+export function opsLuontiValidator(kielet: Kieli[] = [], toteutus?: OpetussuunnitelmaInfoDtoToteutusEnum) {
+  let opsValidators = {
+    nimi: {
+      ...requiredLokalisoituTeksti(kielet),
     },
     pohja: {
       ...notNull(),
@@ -42,6 +47,22 @@ export function opsLuontiValidator(kielet: Kieli[] = []) {
       },
     },
   };
+
+  if (toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase()) {
+    opsValidators = {
+      ...opsValidators,
+      ...opsPerusopetusLuontiValidators(),
+    };
+  }
+
+  if (toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.LOPS2019.toLowerCase()) {
+    opsValidators = {
+      ...opsValidators,
+      ...lops2019Validators(),
+    };
+  }
+
+  return opsValidators;
 }
 
 export function opsTiedotValidator(kielet: Kieli[] = [], isOps = true) {
