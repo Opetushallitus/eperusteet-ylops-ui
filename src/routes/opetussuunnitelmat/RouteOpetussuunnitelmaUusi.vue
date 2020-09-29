@@ -132,7 +132,7 @@ import {
   OpsVuosiluokkakokonaisuusDto,
 } from '@shared/api/ylops';
 
-import { opsLuontiValidator, opsPerusopetusLuontiValidator } from '@/validators/ops';
+import { opsLuontiValidator } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
 
 type PohjaTyyppi = 'pohjasta' | 'opsista';
@@ -284,12 +284,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
 
   get validator() {
     if (this.uusi && this.uusi.pohja) {
-      if (this.uusi.pohja.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase()) {
-        return opsPerusopetusLuontiValidator();
-      }
-      else {
-        return opsLuontiValidator();
-      }
+      return opsLuontiValidator([], this.uusi.pohja.toteutus);
     }
 
     return {};
