@@ -93,7 +93,7 @@
 
               <div class="mb-4" v-if="tavoite.arvioinninkohteet && tavoite.arvioinninkohteet.length > 0">
                 <h4 class="mb-0 pb-0">{{ $t('arviointi-vuosiluokan-paatteeksi') }}</h4>
-                <b-table :items="tavoite.arvioinninkohteet" :fields="arvioinninSarakkeet"/>
+                <ep-arvioinninkohteet-table :arvioinninkohteet="tavoite.arvioinninkohteet" />
               </div>
 
               <div class="mb-4" v-if="tavoite.vuosiluokanTavoite ">
@@ -158,6 +158,7 @@ import EpOrderColorBall from '@shared/components/EpColorIndicator/EpOrderColorBa
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
+import EpArvioinninkohteetTable from '@shared/components/EpArvioinninkohteetTable/EpArvioinninkohteetTable.vue';
 
 @Component({
   components: {
@@ -169,6 +170,7 @@ import EpToggle from '@shared/components/forms/EpToggle.vue';
     EpAlert,
     EpContent,
     EpToggle,
+    EpArvioinninkohteetTable,
   },
 })
 export default class RoutePerusopetusOppiaineVuosiluokka extends Mixins(EpRoute, EpOpsComponent) {
