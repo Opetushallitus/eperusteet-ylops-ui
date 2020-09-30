@@ -30,8 +30,7 @@
               <div class="d-flex align-items-center">
                 <div>
                   <ep-form-content name="tila">
-                    <ep-field v-model="data.tila">
-                    </ep-field>
+                    {{$t(tila)}}
                   </ep-form-content>
                 </div>
                 <div class="ml-4" v-if="!isEditing && !isOps && !isValmisPohja">
@@ -49,6 +48,9 @@
                            :items="kielet"
                            :multiple="true"
                            :use-checkboxes="true">
+                  <template v-slot:default="{item}">
+                    {{$t(item)}}
+                  </template>
                 </ep-select>
               </ep-form-content>
             </div>
@@ -168,6 +170,10 @@ export default class RouteTiedot extends EpOpsRoute {
     return opsTiedotValidator([
       Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
     ], !this.isPohja);
+  }
+
+  get tila() {
+    return this.ops.tila;
   }
 
   public async tryTilanvaihto(tila: string) {
