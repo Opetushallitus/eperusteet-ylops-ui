@@ -44,7 +44,7 @@
             </ep-collapse>
             <ep-collapse v-if="alkuperaiset && alkuperaiset.length > 0 && (isEditing || data.tov.naytaPohjanTeksti)">
               <h5 slot="header">
-                {{ $t('pohjan-teksti') }}
+                {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{$kaanna(pohjaNimi)}})</span>
               </h5>
               <p class="perusteteksti" v-for="(alkuperainen, index) in alkuperaiset" :key="'alkuperainen'+index" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
               <div v-if="isEditing" class="mb-4">
@@ -152,6 +152,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
   get osaId(): number {
     return _.parseInt(this.$route.params.osaId);
+  }
+
+  get pohjaNimi() {
+    return this.ops.pohja?.nimi;
   }
 
   async isUusi() {
