@@ -42,28 +42,27 @@ export default class PoistettuTable extends Vue {
   }
 
   get fields() {
-    return [
-      {
-        label: this.$t('nimi'),
-        key: 'nimi',
-        sortable: true,
-      },
-      {
-        label: this.$t('poistoajankohta'),
-        key: 'muokattu',
-        sortable: true,
-      },
-      {
-        label: this.$t('poistaja'),
-        key: 'muokkaaja',
-        sortable: true,
-      },
-      {
-        key: 'actions',
-        label: '',
-        thStyle: { borderBottom: '0px' },
-      },
-    ];
+    return [{
+      label: this.$t('nimi'),
+      key: 'nimi',
+      sortable: true,
+      class: 'align-middle',
+    }, {
+      label: this.$t('poistoajankohta'),
+      key: 'muokattu',
+      sortable: true,
+      class: 'align-middle',
+    }, {
+      label: this.$t('poistaja'),
+      key: 'muokkaaja',
+      sortable: true,
+      class: 'align-middle',
+    }, {
+      key: 'actions',
+      label: '',
+      thStyle: { borderBottom: '0px' },
+      class: 'align-middle',
+    }];
   }
 
   palauta(poistettu) {

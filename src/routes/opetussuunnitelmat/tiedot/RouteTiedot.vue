@@ -104,7 +104,12 @@
             </div>
             <div class="col-md-12">
               <ep-form-content name="ops-kuvaus">
-                <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.kuvaus" help="ops-kuvaus-ohje" :validation="validation.kuvaus" :is-editable="isEditing"> </ep-content>
+                <ep-content layout="normal"
+                            :opetussuunnitelma-store="opetussuunnitelmaStore"
+                            v-model="data.kuvaus"
+                            help="ops-kuvaus-ohje"
+                            :validation="validation.kuvaus"
+                            :is-editable="isEditing"> </ep-content>
               </ep-form-content>
             </div>
           </div>

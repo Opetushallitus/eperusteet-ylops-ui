@@ -8,18 +8,11 @@
                   type="opintojakso">
       <template slot="muokkaa-content" slot-scope="{ data }" v-if="data.tuotuOpintojakso">
         <div class="muokkaus-esto align-self-center">
-          {{$t('et-voi-muokata-opintojaksoa')}}
-
+          {{$t('et-voi-muokata-pohjan-opintojaksoa')}}
           <div class="d-inline" v-if="data.opintojaksonOpetussuunnitelma">
-            <span class="lisainfo" id="muokkaus-esto">{{$t('lue-lisaa')}}</span>
-            <b-popover :target="'muokkaus-esto'" triggers="click" placement="bottom">
-              <template v-slot:title>
-                {{$t('muokkaus-estetty')}}
-              </template>
-
-              {{$t('muokkaus-estetty-opintojakso-selite')}}
-              {{$kaanna(data.opintojaksonOpetussuunnitelma.nimi)}}
-            </b-popover>
+            <b-button @click="remove(data)" variant="link" id="muokkaus-esto">
+              {{ $t('poista-opintojakso') }}
+            </b-button>
           </div>
         </div>
       </template>
@@ -419,7 +412,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   async remove(data: any) {
-    if (await this.vahvista()) {
+    if (await this.vahvista('vahvista-poisto', 'poistetaanko-opintojakso')) {
       await this.store.removeOpintojakso(data.id);
       this.$router.push({
         name: 'opsPoistetut',
