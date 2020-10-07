@@ -70,23 +70,22 @@ export default class RoutePoistetut extends Mixins(EpOpsRoute) {
   }
 
   get tabs() {
-    return _.filter([
-      {
-        otsikko: 'opintojakso',
-        poistetut: this.opintojaksot,
-      },
-      {
-        otsikko: 'oppiaine',
-        poistetut: this.lops2019oppiaineet,
-      },
-      {
-        otsikko: 'oppiaine',
-        poistetut: this.oppiaineet,
-      },
-      {
-        otsikko: 'tekstikappaleet',
-        poistetut: this.tekstikappaleet,
-      },
+    return _.filter([{
+      otsikko: 'opintojakso',
+      poistetut: this.opintojaksot,
+    }, {
+      otsikko: 'tuodut-opintojakso',
+      poistetut: this.tuodutOpintojaksot,
+    }, {
+      otsikko: 'oppiaine',
+      poistetut: this.lops2019oppiaineet,
+    }, {
+      otsikko: 'oppiaine',
+      poistetut: this.oppiaineet,
+    }, {
+      otsikko: 'tekstikappaleet',
+      poistetut: this.tekstikappaleet,
+    },
     ], tab => _.size(tab.poistetut) > 0);
   }
 
@@ -100,6 +99,10 @@ export default class RoutePoistetut extends Mixins(EpOpsRoute) {
 
   get tekstikappaleet() {
     return this.poistetutTekstikappaleet;
+  }
+
+  get tuodutOpintojaksot() {
+    return _.filter(this.poistetut, p => p.tyyppi as string === 'tuotu_opintojakso');
   }
 
   get opintojaksot() {
