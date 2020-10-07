@@ -71,21 +71,21 @@ export default class RoutePoistetut extends Mixins(EpOpsRoute) {
 
   get tabs() {
     return _.filter([{
-        otsikko: 'opintojakso',
-        poistetut: this.opintojaksot,
-      }, {
-        otsikko: 'tuodut-opintojakso',
-        poistetut: this.tuodutOpintojaksot,
-      }, {
-        otsikko: 'oppiaine',
-        poistetut: this.lops2019oppiaineet,
-      }, {
-        otsikko: 'oppiaine',
-        poistetut: this.oppiaineet,
-      }, {
-        otsikko: 'tekstikappaleet',
-        poistetut: this.tekstikappaleet,
-      },
+      otsikko: 'opintojakso',
+      poistetut: this.opintojaksot,
+    }, {
+      otsikko: 'tuodut-opintojakso',
+      poistetut: this.tuodutOpintojaksot,
+    }, {
+      otsikko: 'oppiaine',
+      poistetut: this.lops2019oppiaineet,
+    }, {
+      otsikko: 'oppiaine',
+      poistetut: this.oppiaineet,
+    }, {
+      otsikko: 'tekstikappaleet',
+      poistetut: this.tekstikappaleet,
+    },
     ], tab => _.size(tab.poistetut) > 0);
   }
 
