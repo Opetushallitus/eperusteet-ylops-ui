@@ -56,12 +56,12 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
       vuosiluokka,
       perusteenVlk: {
         ...perusteenVlk,
-        sisaltoalueet: _.map(perusteenVlk.sisaltoalueet, (sisaltoalue: any) => {
+        sisaltoalueet: _.filter(_.map(perusteenVlk.sisaltoalueet, (sisaltoalue: any) => {
           return {
             ...sisaltoalue,
             vuosiluokanSisaltoalue: vuosiluokanSisaltoalueet[sisaltoalue.tunniste],
           };
-        }),
+        }), 'vuosiluokanSisaltoalue'),
       },
       perusteenTavoitteet: _.chain(perusteenVlk.tavoitteet)
         .map(tavoite => {
