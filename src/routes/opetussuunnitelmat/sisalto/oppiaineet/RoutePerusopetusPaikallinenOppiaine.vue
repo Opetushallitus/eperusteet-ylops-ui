@@ -150,7 +150,6 @@ import { Component, Mixins, Prop } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
-import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
 import { PerusopetusPaikallinenOppiaineStore } from '@/stores/perusopetusPaikallinenOppiaineStore';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';

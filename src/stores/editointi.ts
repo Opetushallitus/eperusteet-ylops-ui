@@ -44,6 +44,8 @@ export interface EditointiKontrolliConfig {
   remove?: (data: any) => Promise<void>;
   validate?: (data: any) => Promise<EditointiKontrolliValidation>;
   preview?: () => Promise<void>;
+  copy?: (data: any) => Promise<void>;
+  copyable?: () => Promise<boolean>;
 }
 
 export interface EditointiKontrolliRestore {
@@ -58,6 +60,7 @@ const DefaultConfig = {
   validate: async () => ({
     valid: true,
   }),
+  copy: async () => {},
 };
 
 export class EditointiKontrolli {
@@ -66,6 +69,7 @@ export class EditointiKontrolli {
   private isEditingState = false;
   private isRemoved = false;
   private isNew = false;
+  private isCopyable = false;
 
   private readonly features: EditointiKontrolliFeatures;
   private mstate = Vue.observable({
@@ -133,6 +137,10 @@ export class EditointiKontrolli {
     this.mstate.disabled = false;
     if (this.isNew) {
       await this.start();
+    }
+
+    if (this.config.copyable) {
+      this.isCopyable = await this.config.copyable();
     }
   }
 
@@ -317,6 +325,12 @@ export class EditointiKontrolli {
     }
     else {
       throw new Error('Source must be an object or an array');
+    }
+  }
+
+  public async copy() {
+    if (this.config.copy) {
+      await this.config.copy(this.mstate.data);
     }
   }
 }

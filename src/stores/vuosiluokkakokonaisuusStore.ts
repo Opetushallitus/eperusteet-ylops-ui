@@ -6,7 +6,7 @@ import { Kielet } from '@shared/stores/kieli';
 import VueScrollTo from 'vue-scrollto';
 
 export class VuosiluokkakokonaisuusStore implements IEditoitava {
-  constructor(private opsId: number, private vlkId: number, private scrollId: string | null) {
+  constructor(private opsId: number, private vlkId: number, private scrollId: string | null, private el: any) {
   }
 
   async acquire() {
@@ -97,14 +97,27 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
     return {};
   });
 
-  public features() {
+  async copy(data) {
+    const kopioituVlk = await Vuosiluokkakokonaisuudet.kopioiVuosiluokkakokonaisuusMuokattavaksi(this.opsId, this.vlkId);
+    await this.el.resetOps();
+    this.el.$router.push({
+      name: 'vuosiluokkakokonaisuus',
+      params: {
+        vlkId: kopioituVlk.data.id!,
+      },
+    });
+  }
+
+  public features(data) {
     return computed(() => {
-      return {
-        editable: true,
+      return data ? {
+        editable: data.vlk.oma,
         removable: false,
         hideable: false,
         recoverable: false,
-      } as EditoitavaFeatures;
+        copyable: !data.vlk.oma,
+      } as EditoitavaFeatures
+        : {};
     });
   }
 }

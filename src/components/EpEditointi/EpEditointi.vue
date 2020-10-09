@@ -54,15 +54,26 @@
                           variant="link"
                           v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
                           @click="ctrls.start()"
-                          v-if="!ctrls.isEditing && ctrls.isEditable && !versiohistoriaVisible"
+                          v-if="!ctrls.isEditing && ctrls.isEditable && !versiohistoriaVisible && !ctrls.isCopyable"
                           icon="kyna"
                           :show-spinner="state.isSaving"
                           :disabled="state.disabled">
                 <slot name="muokkaa">{{ $t('muokkaa') }}</slot>
               </ep-button>
             </slot>
+            <ep-button id="editointi-kopiointi"
+                      v-tutorial
+                      variant="link"
+                      v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
+                      @click="copy()"
+                      v-if="!ctrls.isEditing && ctrls.isCopyable"
+                      icon="kyna"
+                      :show-spinner="state.isSaving"
+                      :disabled="state.disabled">
+              <slot name="kopioi-teksti">{{ $t('kopioi-muokattavaksi') }}</slot>
+            </ep-button>
             <b-dropdown class="mx-4"
-                        v-if="katseluDropDownValinnatVisible"
+                        v-if="katseluDropDownValinnatVisible && !ctrls.isCopyable"
                         size="md"
                         variant="link"
                         :disabled="state.disabled"
@@ -389,6 +400,35 @@ export default class EpEditointi extends Mixins(validationMixin) {
       ...rev,
       index: revs.length - index,
     }));
+  }
+
+  async copy() {
+    try {
+      if (await this.vahvistaKopio()) {
+        await this.ctrls!.copy();
+      }
+    }
+    catch (err) {
+      this.$fail(this.$t('kopion-luonti-epaonnistui') as string);
+    }
+  }
+
+  public async vahvistaKopio() {
+    const vahvistusSisalto = this.$createElement('div', {},
+      [
+        this.$createElement('strong', this.$t('tata-toimintoa-ei-voida-perua') as string),
+      ]
+    ).children;
+
+    return this.$bvModal.msgBoxConfirm((vahvistusSisalto as any), {
+      title: this.$t('varmista-kopiointi'),
+      okVariant: 'primary',
+      okTitle: this.$t('kopioi') as any,
+      cancelVariant: 'link',
+      cancelTitle: this.$t('peruuta') as any,
+      centered: true,
+      ...{} as any,
+    });
   }
 }
 

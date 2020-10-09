@@ -1,6 +1,6 @@
 <template>
   <div id="scroll-anchor" v-if="editointiStore" >
-    <EpEditointi :store="editointiStore">
+    <EpEditointi :store="editointiStore" label-copy-confirm="vuosiluokkakokonaisuus-kopiointi-varmistus">
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.vlk.nimi) }}</h2>
       </template>
@@ -66,7 +66,11 @@ export default class RouteVuosiluokkakokonaisuus extends Mixins(EpRoute, EpOpsCo
 
   async init() {
     const scrollId = this.$route.hash ? 'laajaalainen' + this.$route.hash.replace('#', '') : null;
-    this.editointiStore = new EditointiStore(new VuosiluokkakokonaisuusStore(this.opsId, _.toNumber(this.$route.params.vlkId), scrollId));
+    this.editointiStore = new EditointiStore(new VuosiluokkakokonaisuusStore(this.opsId, _.toNumber(this.$route.params.vlkId), scrollId, this));
+  }
+
+  async resetOps() {
+    await this.store.init();
   }
 }
 </script>

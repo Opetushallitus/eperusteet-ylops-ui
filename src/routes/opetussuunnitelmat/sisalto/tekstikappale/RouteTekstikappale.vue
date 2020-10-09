@@ -114,6 +114,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   private perusteenTeksti: PerusteTekstiKappaleViiteDto | TekstiKappaleViiteDto | null = null;
   private alkuperaiset: PerusteTekstiKappaleViiteDto[] | null = null;
   private nimi: any = {};
+  private kopioitava = false;
 
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: async () => this.isUusi(),
@@ -126,6 +127,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       revisions: this.revisions,
       restore: this.restore,
     },
+    copy: this.copy,
+    copyable: this.copyable,
   };
 
   async remove(data: any) {
@@ -234,6 +237,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       if (teksti.tekstiKappale) {
         this.breadcrumb('tekstikappale', teksti.tekstiKappale.nimi);
       }
+
+      this.kopioitava = result.tov.omistussuhde === 'lainattu';
+
       return result;
     }
   }
@@ -267,6 +273,15 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   async addAlikappale(parent: Puu) {
     const uusi = await this.store.addTeksti({}, parent.id);
     this.$nextTick(() => this.siirry(uusi));
+  }
+
+  async copy(kopioitava) {
+    await this.store.kopioiTeksti(kopioitava.tov);
+    this.$router.go(0);
+  }
+
+  async copyable() {
+    return this.kopioitava;
   }
 }
 </script>
