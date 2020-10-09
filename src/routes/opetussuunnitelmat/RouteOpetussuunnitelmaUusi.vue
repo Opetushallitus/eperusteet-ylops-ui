@@ -30,7 +30,7 @@
         <div v-if="pohjat">
           <ep-form-content v-if="pohjat.length > 0" name="uusi-ops-pohja-pakollinen">
             <ep-select v-model="uusi.pohja"
-                       :items="pohjat"
+                       :items="pohjatSortedByName"
                        :validation="$v.uusi.pohja"
                        :is-editing="true"
                        help="uusi-ops-pohja-ohje"
@@ -134,6 +134,7 @@ import {
 
 import { opsLuontiValidator } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
+import { Kielet } from '@shared/stores/kieli';
 
 type PohjaTyyppi = 'pohjasta' | 'opsista';
 
@@ -223,6 +224,10 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   protected async init() {
     this.oletuspohjat = (await Opetussuunnitelmat.getAll('POHJA', 'VALMIS')).data;
     this.opetussuunnitelmat = (await Opetussuunnitelmat.getOpetussuunnitelmienOpsPohjat()).data;
+  }
+
+  get pohjatSortedByName() {
+    return _.sortBy(this.pohjat, pohja => _.toLower(Kielet.kaanna(pohja.nimi)));
   }
 
   get pohjat() {
