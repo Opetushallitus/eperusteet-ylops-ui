@@ -149,32 +149,39 @@ export default class OpsSidenav extends EpOpsComponent {
 
   private oppiaineOppimaaraLinkit(oppiaine: Lops2019OppiaineDto) {
     return _.chain(oppiaine.oppimaarat)
-      .map(oppimaara =>
-        oppiaineLinkki(
+      .map(oppimaara => {
+        const sideMenuEntries: SideMenuEntry[] = [
+          ...this.opintojaksoModuuliLista({
+            id: oppimaara.id!,
+            koodi: oppimaara.koodi!.uri!,
+            moduulit: oppimaara.moduulit,
+          }),
+        ];
+
+        if (Object.keys(this.paikallisetOppiaineetByPerusteenOppiaineenKoodi).includes(oppimaara.koodi?.uri!)) {
+          sideMenuEntries.unshift({
+            item: {
+              type: 'staticlink',
+              i18key: 'oppimaarat',
+            },
+            flatten: true,
+            children: _.map(this.paikallisetOppiaineetByPerusteenOppiaineenKoodi[oppimaara.koodi?.uri!], poa => paikallinenOppiaineLinkki(
+              'oppimaara',
+              poa,
+              this.opintojaksoModuuliLista({
+                id: poa.id!,
+                koodi: poa.koodi!,
+              })
+            )),
+          });
+        }
+
+        return oppiaineLinkki(
           'oppimaara',
           oppimaara,
-          [
-            {
-              item: {
-                type: 'staticlink',
-                i18key: 'oppimaarat',
-              },
-              flatten: true,
-              children: _.map(this.paikallisetOppiaineetByPerusteenOppiaineenKoodi[oppimaara.koodi?.uri!], poa => paikallinenOppiaineLinkki(
-                'oppimaara',
-                poa,
-                this.opintojaksoModuuliLista({
-                  id: poa.id!,
-                  koodi: poa.koodi!,
-                })
-              )),
-            },
-            ...this.opintojaksoModuuliLista({
-              id: oppimaara.id!,
-              koodi: oppimaara.koodi!.uri!,
-              moduulit: oppimaara.moduulit,
-            })]
-        )
+          sideMenuEntries
+        );
+      }
       )
       .value();
   }
