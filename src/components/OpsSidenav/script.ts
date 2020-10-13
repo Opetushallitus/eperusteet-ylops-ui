@@ -31,7 +31,7 @@ import {
   vuosiluokkaLinkit,
 } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { koodiNumero, koodiAlku } from '@/utils/perusteet';
+import { koodiNumero, koodiAlku, isPaikallisestiSallittuLaajennos } from '@/utils/perusteet';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -121,18 +121,21 @@ export default class OpsSidenav extends EpOpsComponent {
 
   private opintojaksoModuuliLista(source: OpintojaksoModuuliSource) {
     const result: SideMenuEntry[] = [];
-    const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(
-      this.opintojaksot,
-      source
-    );
-    result.push({
-      item: {
-        type: 'staticlink',
-        i18key: 'opintojaksot',
-      },
-      flatten: true,
-      children: [...oppiaineenOpintojaksot, oppimaaraUusiLinkki(source)],
-    });
+    const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(this.opintojaksot, source);
+    if (!isPaikallisestiSallittuLaajennos(source.koodi)) {
+      result.push({
+        item: {
+          type: 'staticlink',
+          i18key: 'opintojaksot',
+        },
+        flatten: true,
+        children: [
+          ...oppiaineenOpintojaksot,
+          oppimaaraUusiLinkki(source),
+        ],
+      });
+    }
+
     if (source.moduulit) {
       result.push({
         item: {
