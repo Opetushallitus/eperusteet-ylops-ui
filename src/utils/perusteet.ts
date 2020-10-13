@@ -51,6 +51,11 @@ export function paikallisestiSallitutLaajennokset() {
   ];
 }
 
+export function isPaikallisestiSallittuLaajennos(koodi: string): boolean {
+  return _.some(paikallisestiSallitutLaajennokset(), laajennos =>
+    _.startsWith(koodi, laajennos));
+}
+
 const splitKoodi = _.memoize((arvo: string) => {
   if (_.isString(arvo) && !_.isEmpty(arvo)) {
     const splitattu = arvo.match(/^([^0-9]*?)(\d+$)/);
