@@ -290,6 +290,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
     }
 
     const { id } = this.$route.params;
+    const { oppiaine } = this.$route.query;
     this.laajaAlaisetKoodit = (await Opetussuunnitelmat.getKoodistonKoodit(_.parseInt(id), KoodistoLops2019LaajaAlaiset)).data;
 
     paikallinen.tehtava = paikallinen.tehtava || {};
@@ -297,6 +298,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
     paikallinen.tavoitteet = paikallinen.tavoitteet || {
       tavoitealueet: [],
     };
+    paikallinen.perusteenOppiaineUri = oppiaine as string || '';
     return paikallinen;
   }
 

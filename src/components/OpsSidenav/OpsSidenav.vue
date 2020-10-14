@@ -29,8 +29,8 @@
              </a>
           </ops-sidenav-link>
         </li>
-        <ops-sidenav-link v-if="isUusiPaikallinenOppiaineSallittu(itemData.item)">
-          <a @click="uusiPaikallinenOppiaine()" class="btn btn-link btn-link-nav">
+        <ops-sidenav-link :to="uusiPaikallinenOppiaine(itemData.item)" v-if="isUusiPaikallinenOppiaineSallittu(itemData.item)">
+          <a class="btn btn-link btn-link-nav">
             <fas class="mr-2" icon="plussa" />
             <span>{{ $t('luo-uusi-paikallinen-oppiaine') }}</span>
           </a>

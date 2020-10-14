@@ -414,12 +414,15 @@ export default class OpsSidenav extends EpOpsComponent {
     return isPaikallisestiSallittuLaajennos((item.objref as any)?.koodi.uri);
   }
 
-  uusiPaikallinenOppiaine() {
-    this.$router.push({
+  uusiPaikallinenOppiaine(item: SideMenuItem) {
+    return {
       name: 'paikallinenOppiaine',
       params: {
         paikallinenOppiaineId: 'uusi',
       },
-    });
+      query: {
+        oppiaine: (item.objref as any)?.koodi.uri,
+      },
+    };
   }
 }
