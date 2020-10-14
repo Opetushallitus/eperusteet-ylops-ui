@@ -409,4 +409,17 @@ export default class OpsSidenav extends EpOpsComponent {
       })),
     ];
   }
+
+  isUusiPaikallinenOppiaineSallittu(item: SideMenuItem): boolean {
+    return isPaikallisestiSallittuLaajennos((item.objref as any)?.koodi.uri);
+  }
+
+  uusiPaikallinenOppiaine() {
+    this.$router.push({
+      name: 'paikallinenOppiaine',
+      params: {
+        paikallinenOppiaineId: 'uusi',
+      },
+    });
+  }
 }
