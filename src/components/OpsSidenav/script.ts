@@ -423,20 +423,4 @@ export default class OpsSidenav extends EpOpsComponent {
       })),
     ];
   }
-
-  isUusiPaikallinenOppiaineSallittu(item: SideMenuItem): boolean {
-    return isPaikallisestiSallittuLaajennos((item.objref as any)?.koodi.uri);
-  }
-
-  uusiPaikallinenOppiaine(item: SideMenuItem) {
-    return {
-      name: 'paikallinenOppiaine',
-      params: {
-        paikallinenOppiaineId: 'uusi',
-      },
-      query: {
-        oppiaine: (item.objref as any)?.koodi.uri,
-      },
-    };
-  }
 }
