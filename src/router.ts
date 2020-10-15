@@ -201,6 +201,10 @@ export const router = new Router({
           parentNavigation: 'oppiaineet',
         },
       }, {
+        path: 'poppiaineet/uusi/',
+        component: RoutePaikallinenOppiaine,
+        name: 'uusi-paikallinen-oppiaine',
+      }, {
         path: 'opintojaksot/:opintojaksoId',
         component: RouteOpintojakso,
         name: 'opintojakso',

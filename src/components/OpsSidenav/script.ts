@@ -135,6 +135,20 @@ export default class OpsSidenav extends EpOpsComponent {
         ],
       });
     }
+    else {
+      result.push({
+        item: {
+          type: 'uusi-paikallinen-oppiaine',
+        },
+        route: {
+          name: 'uusi-paikallinen-oppiaine',
+          params: {},
+          query: {
+            oppiaine: source.koodi,
+          },
+        },
+      });
+    }
 
     if (source.moduulit) {
       result.push({

@@ -29,18 +29,16 @@
              </a>
           </ops-sidenav-link>
         </li>
-        <ops-sidenav-link :to="uusiPaikallinenOppiaine(itemData.item)" v-if="isUusiPaikallinenOppiaineSallittu(itemData.item)">
-          <a class="btn btn-link btn-link-nav">
-            <fas class="mr-2" icon="plussa" />
-            <span>{{ $t('luo-uusi-paikallinen-oppiaine') }}</span>
-          </a>
-        </ops-sidenav-link>
       </template>
       <template v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
         <ops-sidenav-link :to="itemRoute" :class="{ 'module-link': onkoModTaiOj(itemData.item) }" v-if="!isSubmenu && itemRoute">
           <a class="btn btn-link btn-link-nav" v-if="itemData.item.type === 'uusi-opintojakso'">
             <fas class="mr-2" icon="plussa" />
             <span>{{ $t('luo-uusi-opintojakso') }}</span>
+          </a>
+          <a class="btn btn-link btn-link-nav" v-else-if="itemData.item.type === 'uusi-paikallinen-oppiaine'">
+            <fas class="mr-2" icon="plussa" />
+            <span>{{ $t('luo-uusi-paikallinen-oppiaine') }}</span>
           </a>
           <a v-else class="btn btn-link btn-link-nav">
             <div class="d-inline-flex">
