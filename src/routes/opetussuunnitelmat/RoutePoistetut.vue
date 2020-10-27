@@ -74,7 +74,7 @@ export default class RoutePoistetut extends Mixins(EpOpsRoute) {
       otsikko: 'opintojakso',
       poistetut: this.opintojaksot,
     }, {
-      otsikko: 'tuodut-opintojakso',
+      otsikko: 'tuodut-opintojaksot',
       poistetut: this.tuodutOpintojaksot,
     }, {
       otsikko: 'oppiaine',

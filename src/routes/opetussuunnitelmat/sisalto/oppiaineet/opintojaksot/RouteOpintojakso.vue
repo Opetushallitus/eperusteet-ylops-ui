@@ -811,8 +811,9 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return result;
     }
     else {
-      let opintojakso;
-      if (_.includes(_.map(this.store.opintojaksot, 'id'), _.parseInt(opintojaksoId))) {
+      let opintojakso: any = await this.store.getTuotuOpintojakso(_.parseInt(opintojaksoId));
+
+      if (!opintojakso) {
         const revisions = await this.store.getOpintojaksoHistoria(_.parseInt(opintojaksoId));
         const rev = revisions[revisions.length - this.versionumero];
         if (this.versionumero && rev) {
@@ -823,9 +824,10 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         }
       }
       else {
-        opintojakso = await this.store.getTuotuOpintojakso(_.parseInt(opintojaksoId));
+        opintojakso.tuotuOpintojakso = true;
         opintojakso.opintojaksonOpetussuunnitelma = await this.store.getOpintojaksonOpetussuunnitelma(_.parseInt(opintojaksoId));
       }
+
       _.forEach(opintojakso.oppiaineet, (oa: OpintojaksonOppiaine) => {
         oa.isPaikallinenOppiaine = _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), oa.koodi);
         oa.isModuuliton = this.isModuuliton(oa);
@@ -835,7 +837,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         this.breadcrumb('opintojakso', opintojakso.nimi);
       }
 
-      opintojakso.tuotuOpintojakso = !_.includes(_.map(this.store.opintojaksot, 'id'), _.parseInt(opintojaksoId));
       return opintojakso;
     }
   }
