@@ -78,7 +78,7 @@
                   layout="simplified"
                   :is-editable="true"
                   class="mb-4" />
-      <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'">{{ $t('julkaise') }}</ep-button>
+      <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'" :showSpinner="julkaisuLoading" :disabled="!uusiJulkaisu.julkaisutiedote[sisaltoKieli]">{{ $t('julkaise') }}</ep-button>
     </ep-collapse>
   </div>
   <div class="vaihe">
@@ -115,14 +115,14 @@ import { Component } from 'vue-property-decorator';
 
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@shared/api/ylops';
-import { UiKielet } from '@shared/stores/kieli';
+import { Kielet, UiKielet } from '@shared/stores/kieli';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
 
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -148,7 +148,10 @@ export default class RouteJulkaisu extends EpOpsRoute {
   private isOpen: { [key: string]: boolean } = {};
   private showKooste = false;
   private julkaisut: any[] = [];
-  private uusiJulkaisu: UusiJulkaisuDto = {};
+  private uusiJulkaisu: UusiJulkaisuDto = {
+    julkaisutiedote: {},
+  };
+  private julkaisuLoading = false;
 
   get graph() {
     return {
@@ -163,6 +166,10 @@ export default class RouteJulkaisu extends EpOpsRoute {
 
   get kielet() {
     return UiKielet;
+  }
+
+  get sisaltoKieli() {
+    return Kielet.getSisaltoKieli.value;
   }
 
   get julkaisuhistoria() {
@@ -199,8 +206,10 @@ export default class RouteJulkaisu extends EpOpsRoute {
   }
 
   async julkaise() {
+    this.julkaisuLoading = true;
     const julkaisu = await this.store.julkaise(this.uusiJulkaisu);
     this.julkaisut.unshift(julkaisu);
+    this.julkaisuLoading = false;
   }
 }
 </script>
