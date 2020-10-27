@@ -68,7 +68,6 @@ export default class RoutePerusopetusVuosiluokkaValinnaiset extends Mixins(EpRou
   async init() {
     const vuosiluokkakokonaisuus = _.head(_.filter(this.ops.vuosiluokkakokonaisuudet, vlk =>
       vlk.vuosiluokkakokonaisuus?.id === _.toNumber(this.$route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
-
     this.editointiStore = new EditointiStore(new PerusopetusVuosiluokkaValinnaisetStore(this.ops, vuosiluokkakokonaisuus));
   }
 
