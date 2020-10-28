@@ -19,12 +19,12 @@
       <ep-field class="mb-5" v-model="otsikko" :is-editing="true" />
     </ep-form-content>
 
-    <ep-form-content name="ylaotsikko">
+    <ep-form-content name="ylaotsikko" v-if="tekstikappaleet.length > 0">
       <ep-select class="mb-5"
                  v-model="valittuTekstikappale"
                  :items="tekstikappaleet"
                  :is-editing="true"
-                 :enable-empty-option="false">
+                 :enable-empty-option="tyhjaValinta">
         <template slot-scope="{ item }">
           {{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}
         </template>
@@ -69,8 +69,11 @@ export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponen
   @Prop({ required: true })
   private tekstikappaleet!: SideMenuEntry[];
 
+  @Prop({ required: false, type: Boolean, default: false })
+  private tyhjaValinta!: boolean;
+
   get okDisabled() {
-    return _.isEmpty(this.otsikko) || _.isEmpty(this.valittuTekstikappale);
+    return _.isEmpty(this.otsikko);
   }
 
   async save() {
@@ -80,7 +83,7 @@ export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponen
       },
     };
 
-    const uusi = await this.store.addTeksti(newTekstikappale as Puu, this.valittuTekstikappale.route.params.osaId);
+    const uusi = await this.store.addTeksti(newTekstikappale as Puu, this.valittuTekstikappale?.route?.params?.osaId);
 
     this.$router.push({
       name: 'tekstikappale',

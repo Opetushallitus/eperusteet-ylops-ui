@@ -8,9 +8,10 @@
     <p>{{ $t('uusi-opetussuunnitelma-ohje') }}</p>
   </template>
   <div class="form-group">
-    <div class="row">
-      <legend class="col-form-label col-sm-2">{{ $t('opetussuunnitelman-pohjatyyppi-pakollinen') }}</legend>
-      <div class="col-sm-10 mb-4">
+    <!-- <div class="row"> -->
+      <!-- <legend class="col-form-label col-12 font-weight-bold">{{ $t('opetussuunnitelman-pohjatyyppi-pakollinen') }}</legend> -->
+      <ep-form-content name="opetussuunnitelman-pohjatyyppi-pakollinen">
+      <!-- <div class="col-sm-10 mb-4"> -->
         <b-form-group class="mt-0">
           <b-form-radio
             v-model="oletuspohjasta"
@@ -23,8 +24,9 @@
             name="uusi-ops-pohjavalinta"
             value="pohjasta">{{ $t('oletuspohja') }}</b-form-radio>
         </b-form-group>
-      </div>
-    </div>
+      </ep-form-content>
+      <!-- </div> -->
+    <!-- </div> -->
     <div v-if="oletuspohjasta">
       <div class="form-group">
         <div v-if="pohjat">
@@ -172,6 +174,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       jarjestajat: [],
       oppilaitokset: [],
       kunnat: [],
+      ryhmat: [],
     },
     tuoPohjanOpintojaksot: null,
     ainepainoitteinen: false,
@@ -208,6 +211,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       jarjestajat: [],
       oppilaitokset: [],
       kunnat: [],
+      ryhmat: [],
     };
     this.uusi.vuosiluokkakokonaisuudet = [];
 
@@ -262,6 +266,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
         organisaatiot: [
           ...this.uusi.organisaatiot.jarjestajat,
           ...this.uusi.organisaatiot.oppilaitokset,
+          ...this.uusi.organisaatiot.ryhmat,
         ],
         ainepainoitteinen: this.uusi.ainepainoitteinen,
         vuosiluokkakokonaisuudet: this.uusi.vuosiluokkakokonaisuudet,
