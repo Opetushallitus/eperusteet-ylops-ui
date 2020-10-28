@@ -1,7 +1,8 @@
 import { notNull, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@shared/tyypit';
-import { minLength, required } from 'vuelidate/lib/validators';
+import { minLength, required, requiredIf } from 'vuelidate/lib/validators';
 import { OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
+import * as _ from 'lodash';
 
 export function pohjaLuontiValidator(kielet: Kieli[] = []) {
   return {
@@ -42,8 +43,15 @@ export function opsLuontiValidator(kielet: Kieli[] = [], toteutus?: Opetussuunni
       kunnat: {
         required,
       },
+      ryhmat: {
+        required: requiredIf((form) => {
+          return _.size(form.jarjestajat) === 0;
+        }),
+      },
       jarjestajat: {
-        required,
+        required: requiredIf((form) => {
+          return _.size(form.ryhmat) === 0;
+        }),
       },
     },
   };
