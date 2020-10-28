@@ -7,10 +7,7 @@
         <ep-progress-popover :slices="slices" :height="90" :width="90" :popupStyle="progressPopoverStyle">
           <template v-slot:header>
             <div class="pt-3 row justify-content-center ">
-              <div v-if="validationStats.ok < validationStats.total">
-                {{ validationStats.ok }} / {{ validationStats.total }} {{$t('valmis')}}
-              </div>
-              <div v-else-if="validation">
+              <div v-if="validationStats.ok === validationStats.total && validation">
                 <b-button v-if="!isPohja"
                           variant="primary"
                           :to="{ name: 'opsJulkaisu' }">
