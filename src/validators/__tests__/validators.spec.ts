@@ -233,5 +233,33 @@ describe('Oppiaine validators', () => {
     });
 
     expect((wrapper.vm as any).$v.pohjaLuonti!.$invalid).toBe(false);
+
+    wrapper.setData({
+      kielet: ['fi'],
+      opsLuonti: {
+        nimi,
+        julkaisukielet: ['fi'],
+        pohja: {
+          id: 42,
+          pohja: '42',
+        },
+        organisaatiot: {
+          kunnat: [{
+            oid: 'y',
+          }],
+          ryhmat: [{
+            oid: 'x',
+          }],
+        },
+      },
+      pohjaLuonti: {
+        nimi,
+        valittuPeruste: {
+          id: 1,
+        },
+      } as any,
+    });
+
+    expect((wrapper.vm as any).$v.pohjaLuonti!.$invalid).toBe(false);
   });
 });

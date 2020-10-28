@@ -66,7 +66,7 @@
         </ops-sidenav-link>
       </template>
       <template v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
-        <li v-if="itemData.item.type === 'tekstikappale'">
+        <li v-if="itemData.item.type === 'tekstikappale' && !isPohja">
           <ep-tekstikappale-lisays
             :opetussuunnitelmaStore="store"
             :tekstikappaleet="tekstikappaleLapset(itemData)"
@@ -82,6 +82,15 @@
         </li>
       </template>
     </ep-recursive-nav>
+
+    <li v-if="isPohja">
+      <ep-tekstikappale-lisays
+        :opetussuunnitelmaStore="store"
+        :tekstikappaleet="tekstikappaleet"
+        v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+        tyhja-valinta/>
+    </li>
+
   </ul>
 
   <div class="muokkaa-kappaleita" v-sticky sticky-side="bottom" sticky-z-index="500">

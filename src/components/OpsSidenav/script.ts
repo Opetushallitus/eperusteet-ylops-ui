@@ -411,8 +411,24 @@ export default class OpsSidenav extends EpOpsComponent {
     return _.get(this.store, 'sisalto.lapset', []);
   }
 
+  get tekstikappaleet() {
+    return _.filter(this.tekstikappaleRec(this.valikkoData), item => item.item.type === 'tekstikappale');
+  }
+
+  tekstikappaleRec(itemData) {
+    return _.flatMap(_.map(itemData, item => {
+      return _.flatMap([
+        {
+          item: item.item,
+          route: item.route,
+        },
+        ...this.tekstikappaleRec(item.children),
+      ]);
+    }));
+  }
+
   tekstikappaleLapset(itemData) {
-    return [
+    return _.filter([
       {
         item: itemData.item,
         route: itemData.route,
@@ -421,6 +437,6 @@ export default class OpsSidenav extends EpOpsComponent {
         item: child.item,
         route: child.route,
       })),
-    ];
+    ], tk => tk.item.type === 'tekstikappale');
   }
 }
