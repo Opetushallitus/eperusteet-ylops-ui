@@ -1059,7 +1059,7 @@
   "vaihda-tilaa": "Vaihda tilaa",
   "vain-liittamattomat-moduulit": "Vain liittämättömät moduulit",
   "validation-category-moduuli": "Opintojaksojen moduulit",
-  "validation-category-moduuli-validation-error": "Kaikki moduulit eivät ole käytössä",
+  "validation-category-moduuli-validation-error": "Tarkista moduulit",
   "validation-category-moduuli-validation-ok": "Kaikki moduulit käytössä",
   "validation-category-opetussuunnitelma": "Opetussuunnitelman tiedot",
   "validation-category-opetussuunnitelma-validation-error": "Opetussuunnitelman tiedoissa on puutteita",
