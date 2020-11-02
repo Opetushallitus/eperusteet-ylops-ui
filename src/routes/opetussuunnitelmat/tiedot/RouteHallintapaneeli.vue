@@ -1,6 +1,8 @@
 <template>
   <div class="hallintapaneeli">
 
+    <ep-ops-peruste-tekstikappale-import :opetussuunnitelmaStore="opetussuunnitelmaStore" v-if="perustepaivitys"/>
+
     <div class="row">
       <div class="col">
         <ops-perustiedot :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box"/>
@@ -32,6 +34,7 @@ import OpsViimeaikainenToiminta from './OpsViimeaikainenToiminta.vue';
 import OpsAikataulu from './OpsAikataulu.vue';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from '@/stores/aikataulu';
+import EpOpsPerusteTekstikappaleImport from './EpOpsPerusteTekstikappaleImport.vue';
 
 @Component({
   components: {
@@ -40,6 +43,7 @@ import { AikatauluStore } from '@/stores/aikataulu';
     OpsMuokkaamattomatOsiot,
     OpsViimeaikainenToiminta,
     OpsAikataulu,
+    EpOpsPerusteTekstikappaleImport,
   },
 })
 export default class RouteHallintapaneeli extends EpOpsRoute {
@@ -48,6 +52,10 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 
   @Prop({ required: true })
   private aikatauluStore!: AikatauluStore;
+
+  get perustepaivitys() {
+    return !this.ops.perusteDataTuontiPvm;
+  }
 }
 </script>
 

@@ -366,6 +366,10 @@ export class OpetussuunnitelmaStore {
   public async updateOppiainejarjestys(oppiainejarjestys) {
     await Opetussuunnitelmat.updateOppiainejarjestys(this.opetussuunnitelma!.id!, oppiainejarjestys);
   }
+
+  public async importPerusteTekstit() {
+    await Opetussuunnitelmat.importPerusteTekstit(this.opetussuunnitelma!.id!);
+  }
 }
 
 let opsServiceCache: OpetussuunnitelmaStore | null = null;
