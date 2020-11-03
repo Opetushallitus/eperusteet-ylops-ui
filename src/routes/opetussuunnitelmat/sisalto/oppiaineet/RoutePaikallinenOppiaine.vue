@@ -298,7 +298,10 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
     paikallinen.tavoitteet = paikallinen.tavoitteet || {
       tavoitealueet: [],
     };
-    paikallinen.perusteenOppiaineUri = oppiaine as string || '';
+
+    if (oppiaine) {
+      paikallinen.perusteenOppiaineUri = oppiaine as string;
+    }
     return paikallinen;
   }
 
