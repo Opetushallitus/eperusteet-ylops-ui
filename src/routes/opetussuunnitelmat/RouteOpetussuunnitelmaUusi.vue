@@ -176,7 +176,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       kunnat: [],
       ryhmat: [],
     },
-    tuoPohjanOpintojaksot: null,
+    tuoPohjanOpintojaksot: null as (boolean | null),
     ainepainoitteinen: false,
     vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
   };
@@ -270,6 +270,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
         ],
         ainepainoitteinen: this.uusi.ainepainoitteinen,
         vuosiluokkakokonaisuudet: this.uusi.vuosiluokkakokonaisuudet,
+        tuoPohjanOpintojaksot: this.uusi.tuoPohjanOpintojaksot ? this.uusi.tuoPohjanOpintojaksot : false,
       };
 
       // FIXME: #swagger
