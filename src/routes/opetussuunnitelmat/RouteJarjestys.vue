@@ -74,7 +74,7 @@ import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import { sortedOppiaineet } from '../../utils/opetussuunnitelmat';
 import { PerusteCache } from '@/stores/peruste';
 import { KoulutustyyppiToteutus } from '@shared/tyypit';
-import { koodiSorters } from '@shared/utils/perusteet';
+import { koodiAlku, koodiNumero, koodiSorters } from '@shared/utils/perusteet';
 
 function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKappaleViiteKevytDto | null {
   if (!root) {
@@ -153,10 +153,13 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
         return {
           id: om.id,
           nimi: om.nimi,
+          koodi: om.koodi.arvo,
           lapset: opintojaksot,
           group: 'opintojaksot',
+          jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: om.koodi.uri }), 'jarjestys'),
         };
       })
+      .sortBy('jarjestys', ...koodiSorters())
       .value();
   }
 
@@ -180,16 +183,19 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
           })
           .sortBy('jarjestys', ...koodiSorters())
           .value();
+        const oppimaarat = _.chain([...this.mapPerusteOppimaarat(oa), ...this.mapPaikallisetOppimaarat(oa)])
+          .sortBy('jarjestys', ...koodiSorters())
+          .value();
+
         return {
           id: oa.id,
           nimi: oa.nimi,
           lapset: [
-            ...this.mapPerusteOppimaarat(oa),
-            ...this.mapPaikallisetOppimaarat(oa),
+            ...oppimaarat,
             ...opintojaksot,
           ],
           group: _.isEmpty(oa.oppimaarat) ? 'opintojaksot' : 'oppimaarat',
-          sortable: _.isEmpty(oa.oppimaarat),
+          sortable: true,
           jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: oa.koodi.uri }), 'jarjestys'),
         };
       })
@@ -241,6 +247,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
         return {
           id: poa.id,
           nimi: poa.nimi,
+          koodi: poa.koodi,
           lapset: opintojaksot,
           group: 'opintojaksot',
           jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: poa.koodi }), 'jarjestys'),
