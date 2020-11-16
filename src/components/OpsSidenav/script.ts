@@ -31,7 +31,7 @@ import {
   vuosiluokkaLinkit,
 } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { koodiNumero, koodiAlku, isPaikallisestiSallittuLaajennos } from '@/utils/perusteet';
+import { koodiNumero, koodiAlku, isPaikallisestiSallittuLaajennos, koodiSorters } from '@/utils/perusteet';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -267,10 +267,22 @@ export default class OpsSidenav extends EpOpsComponent {
           'oppiaine',
           oppiaine,
           oppiaine.oppimaarat.length > 0
-            ? [
-              ...this.oppiaineOppimaaraLinkit(oppiaine),
-              ...paikallisetOppimaaratLinkit,
-            ]
+            ? _.chain([...this.oppiaineOppimaaraLinkit(oppiaine), ...paikallisetOppimaaratLinkit])
+              .map(oppimaara => {
+                return {
+                  ...oppimaara,
+                  koodi: _.get(oppimaara, 'item.objref.koodi.uri') || _.get(oppimaara, 'item.objref.koodi'),
+                  paikallinen: oppimaara.route?.name === 'paikallinenOppiaine',
+                  jarjestys: _.get(
+                    _.find(this.oppiaineJarjestykset, {
+                      koodi: _.get(oppimaara, 'item.objref.koodi.uri') || _.get(oppimaara, 'item.objref.koodi'),
+                    }),
+                    'jarjestys'
+                  ),
+                };
+              })
+              .sortBy('jarjestys', 'paikallinen', ...koodiSorters())
+              .value()
             : this.opintojaksoModuuliLista({
               id: oppiaine.id!,
               koodi: oppiaine.koodi!.uri!,
