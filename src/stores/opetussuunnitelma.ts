@@ -370,6 +370,10 @@ export class OpetussuunnitelmaStore {
   public async importPerusteTekstit() {
     await Opetussuunnitelmat.importPerusteTekstit(this.opetussuunnitelma!.id!);
   }
+
+  public async synkronisoiPohja() {
+    await Opetussuunnitelmat.sync(this.opetussuunnitelma!.id!);
+  }
 }
 
 let opsServiceCache: OpetussuunnitelmaStore | null = null;
