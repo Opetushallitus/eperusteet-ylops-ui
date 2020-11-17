@@ -1,11 +1,12 @@
 <template>
   <div class="content">
-    <h2>{{$t('paivita-opetussuunnitelma')}}</h2>
-    <div v-html="$t('paivita-opetussuunnitelma-huomioteksti')" />
+    <h2>{{$t(topic)}}</h2>
+    <div v-html="$t(text)" />
 
-    <div class="text-right">
-      <ep-button @click="paivita" :showSpinner="paivitys">
-        {{$t('paivita-opetussuunnitelma')}}
+    <div class="d-flex justify-content-end">
+      <slot name="footertext" />
+      <ep-button @click="sync" :showSpinner="paivitys">
+        {{$t(buttonText)}}
       </ep-button>
     </div>
 
@@ -24,22 +25,40 @@ import { createLogger } from '@shared/utils/logger';
     EpButton,
   },
 })
-export default class EpOpsPerusteTekstikappaleImport extends Vue {
+export default class EpOpsUpdateConfirmBox extends Vue {
   @Prop({ required: true })
   private opetussuunnitelmaStore!: OpetussuunnitelmaStore;
 
+  @Prop({ required: true })
+  private successText!: string;
+
+  @Prop({ required: true })
+  private failText!: string;
+
+  @Prop({ required: true })
+  private topic!: string;
+
+  @Prop({ required: true })
+  private text!: string;
+
+  @Prop({ required: true })
+  private buttonText!: string;
+
+  @Prop({ required: true })
+  private function!: Function;
+
   private paivitys = false;
 
-  async paivita() {
+  async sync() {
     this.paivitys = true;
     try {
-      await this.opetussuunnitelmaStore.importPerusteTekstit();
-      this.$success(this.$t('perusteen-tekstikappaleet-tuotu-opetussuunitelmaan') as string);
+      await this.function();
+      this.$success(this.$t(this.successText) as string);
       await this.opetussuunnitelmaStore.init();
     }
     catch (e) {
-      this.$fail(this.$t('perusteen-tekstikappaleet-tuotu-opetussuunitelmaan-virhe') as string);
-      createLogger('EpOpsPerusteTekstikappaleImport').error(e);
+      this.$fail(this.$t(this.failText) as string);
+      createLogger('EpOpsUpdateConfirmBox').error(e);
     }
     this.paivitys = false;
   }
@@ -52,7 +71,6 @@ export default class EpOpsPerusteTekstikappaleImport extends Vue {
   .content{
     margin-left: 10px;
     padding: 20px;
-    background-color: $blue-lighten-4;
     border-radius: 0.5rem;
  }
 </style>
