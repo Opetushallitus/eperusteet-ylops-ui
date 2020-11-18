@@ -46,7 +46,7 @@
                 :unique-child-groups="true">
               <template #default="{ node }">
                 <span>
-                  {{ $kaanna(node.nimi) }}
+                  {{ $kaanna(node.nimi) }} <span v-if="node.koodi">({{node.koodi}})</span>
                 </span>
               </template>
             </ep-jarjesta>
@@ -74,6 +74,7 @@ import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import { sortedOppiaineet } from '../../utils/opetussuunnitelmat';
 import { PerusteCache } from '@/stores/peruste';
 import { KoulutustyyppiToteutus } from '@shared/tyypit';
+import { koodiSorters } from '@shared/utils/perusteet';
 
 function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKappaleViiteKevytDto | null {
   if (!root) {
@@ -144,9 +145,10 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
               id: oj.id,
               nimi: oj.nimi,
               jarjestys: ojOm.jarjestys,
+              koodi: oj.koodi,
             };
           })
-          .sortBy('jarjestys')
+          .sortBy('jarjestys', ...koodiSorters())
           .value();
         return {
           id: om.id,
@@ -173,9 +175,10 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
               id: oj.id,
               nimi: oj.nimi,
               jarjestys: ojOa.jarjestys,
+              koodi: oj.koodi,
             };
           })
-          .sortBy('jarjestys')
+          .sortBy('jarjestys', ...koodiSorters())
           .value();
         return {
           id: oa.id,
@@ -230,9 +233,10 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
               id: oj.id,
               nimi: oj.nimi,
               jarjestys: ojOa.jarjestys,
+              koodi: oj.koodi,
             };
           })
-          .sortBy('jarjestys')
+          .sortBy('jarjestys', ...koodiSorters())
           .value();
         return {
           id: poa.id,
@@ -264,9 +268,10 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
               id: oj.id,
               nimi: oj.nimi,
               jarjestys: ojOa.jarjestys,
+              koodi: oj.koodi,
             };
           })
-          .sortBy('jarjestys')
+          .sortBy('jarjestys', ...koodiSorters())
           .value();
         return {
           id: poa.id,
