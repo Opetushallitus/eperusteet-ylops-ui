@@ -239,6 +239,7 @@ export default class EpContent extends Mixins(EpValidation) {
 
 .ep-content {
   padding: 0;
+  word-break: break-word;
 
   /deep/ abbr {
     text-decoration: none !important;
