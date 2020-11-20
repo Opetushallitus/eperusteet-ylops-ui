@@ -367,8 +367,8 @@ export class OpetussuunnitelmaStore {
     await Opetussuunnitelmat.updateOppiainejarjestys(this.opetussuunnitelma!.id!, oppiainejarjestys);
   }
 
-  public async importPerusteTekstit() {
-    await Opetussuunnitelmat.importPerusteTekstit(this.opetussuunnitelma!.id!);
+  public async importPerusteTekstit(skip) {
+    await Opetussuunnitelmat.importPerusteTekstit(this.opetussuunnitelma!.id!, skip);
   }
 
   public async synkronisoiPohja() {
