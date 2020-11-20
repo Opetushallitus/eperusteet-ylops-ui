@@ -3,8 +3,12 @@ import { Component } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import { PerusteCache } from '@/stores/peruste';
 
-import { Lops2019OppiaineDto } from '@shared/api/ylops';
-import { SideMenuEntry, SideMenuItem, OpintojaksoModuuliSource } from '@shared/tyypit';
+import { Lops2019OppiaineDto, Lops2019PaikallinenOppiaineDto } from '@shared/api/ylops';
+import {
+  SideMenuEntry,
+  SideMenuItem,
+  OpintojaksoModuuliSource,
+} from '@shared/tyypit';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpRecursiveNav from '@/components/EpRecursiveNav/EpRecursiveNav.vue';
@@ -27,48 +31,54 @@ import {
   vuosiluokkaLinkit,
 } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { koodiNumero, koodiAlku } from '@/utils/perusteet';
+import { koodiNumero, koodiAlku, isPaikallisestiSallittuLaajennos } from '@/utils/perusteet';
 
 // Static content for menu
-const menuBaseData: SideMenuEntry[] = [{
-  item: {
-    type: 'staticlink',
-    i18key: 'tiedot',
+const menuBaseData: SideMenuEntry[] = [
+  {
+    item: {
+      type: 'staticlink',
+      i18key: 'tiedot',
+    },
+    route: {
+      name: 'opsTiedot',
+      params: {},
+    },
+    flatten: true,
+    children: [
+      {
+        item: {
+          type: 'staticlink',
+          i18key: 'dokumentit',
+        },
+        route: {
+          name: 'opsDokumentti',
+          params: {},
+        },
+      },
+      {
+        item: {
+          type: 'staticlink',
+          i18key: 'poistetut',
+        },
+        route: {
+          name: 'opsPoistetut',
+          params: {},
+        },
+      },
+      {
+        item: {
+          type: 'staticlink',
+          i18key: 'kasitteet',
+        },
+        route: {
+          name: 'opsKasitteet',
+          params: {},
+        },
+      },
+    ],
   },
-  route: {
-    name: 'opsTiedot',
-    params: {},
-  },
-  flatten: true,
-  children: [{
-    item: {
-      type: 'staticlink',
-      i18key: 'dokumentit',
-    },
-    route: {
-      name: 'opsDokumentti',
-      params: {},
-    },
-  }, {
-    item: {
-      type: 'staticlink',
-      i18key: 'poistetut',
-    },
-    route: {
-      name: 'opsPoistetut',
-      params: {},
-    },
-  }, {
-    item: {
-      type: 'staticlink',
-      i18key: 'kasitteet',
-    },
-    route: {
-      name: 'opsKasitteet',
-      params: {},
-    },
-  }],
-}];
+];
 
 const i18keys = {
   moduuli: 'nimetön-moduuli',
@@ -112,17 +122,34 @@ export default class OpsSidenav extends EpOpsComponent {
   private opintojaksoModuuliLista(source: OpintojaksoModuuliSource) {
     const result: SideMenuEntry[] = [];
     const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(this.opintojaksot, source);
-    result.push({
-      item: {
-        type: 'staticlink',
-        i18key: 'opintojaksot',
-      },
-      flatten: true,
-      children: [
-        ...oppiaineenOpintojaksot,
-        oppimaaraUusiLinkki(source),
-      ],
-    });
+    if (!isPaikallisestiSallittuLaajennos(source.koodi)) {
+      result.push({
+        item: {
+          type: 'staticlink',
+          i18key: 'opintojaksot',
+        },
+        flatten: true,
+        children: [
+          ...oppiaineenOpintojaksot,
+          oppimaaraUusiLinkki(source),
+        ],
+      });
+    }
+    else {
+      result.push({
+        item: {
+          type: 'uusi-paikallinen-oppiaine',
+        },
+        route: {
+          name: 'uusi-paikallinen-oppiaine',
+          params: {},
+          query: {
+            oppiaine: source.koodi,
+          },
+        },
+      });
+    }
+
     if (source.moduulit) {
       result.push({
         item: {
@@ -130,9 +157,7 @@ export default class OpsSidenav extends EpOpsComponent {
           i18key: 'moduulit',
         },
         flatten: true,
-        children: [
-          ...oppimaaraModuuliLinkit(source),
-        ],
+        children: [...oppimaaraModuuliLinkit(source)],
       });
     }
 
@@ -141,15 +166,40 @@ export default class OpsSidenav extends EpOpsComponent {
 
   private oppiaineOppimaaraLinkit(oppiaine: Lops2019OppiaineDto) {
     return _.chain(oppiaine.oppimaarat)
-      .map(oppimaara =>
-        oppiaineLinkki(
-          'oppimaara',
-          oppimaara,
-          this.opintojaksoModuuliLista({
+      .map(oppimaara => {
+        const sideMenuEntries: SideMenuEntry[] = [
+          ...this.opintojaksoModuuliLista({
             id: oppimaara.id!,
             koodi: oppimaara.koodi!.uri!,
             moduulit: oppimaara.moduulit,
-          })))
+          }),
+        ];
+
+        if (Object.keys(this.paikallisetOppiaineetByPerusteenOppiaineenKoodi).includes(oppimaara.koodi?.uri!)) {
+          sideMenuEntries.unshift({
+            item: {
+              type: 'staticlink',
+              i18key: 'oppimaarat',
+            },
+            flatten: true,
+            children: _.map(this.paikallisetOppiaineetByPerusteenOppiaineenKoodi[oppimaara.koodi?.uri!], poa => paikallinenOppiaineLinkki(
+              'oppimaara',
+              poa,
+              this.opintojaksoModuuliLista({
+                id: poa.id!,
+                koodi: poa.koodi!,
+              })
+            )),
+          });
+        }
+
+        return oppiaineLinkki(
+          'oppimaara',
+          oppimaara,
+          sideMenuEntries
+        );
+      }
+      )
       .value();
   }
 
@@ -159,6 +209,20 @@ export default class OpsSidenav extends EpOpsComponent {
 
   get paikallisetOppiaineet() {
     return this.store.paikallisetOppiaineet;
+  }
+
+  get paikallisetOppiaineetByPerusteenOppiaineenKoodi() {
+    const obj: { [key: string]: Lops2019PaikallinenOppiaineDto[] } = {};
+
+    for (const val of this.paikallisetOppiaineet) {
+      if (val.perusteenOppiaineUri) {
+        obj[val.perusteenOppiaineUri] = [
+          ...(obj[val.perusteenOppiaineUri] || []),
+          val,
+        ];
+      }
+    }
+    return obj;
   }
 
   get isLoading() {
@@ -173,35 +237,55 @@ export default class OpsSidenav extends EpOpsComponent {
     if (!this.perusteenOppiaineet) {
       return [];
     }
-
     return _.chain(this.perusteenOppiaineet)
       .sortBy(koodiAlku, koodiNumero)
       .map(oppiaine => {
         const paikallisetOppimaaratLinkit = _(this.paikallisetOppiaineet)
-          .filter(poa => poa.perusteenOppiaineUri === oppiaine.koodi.uri || _.includes(_.map(oppiaine.oppimaarat, 'koodi.uri'), poa.perusteenOppiaineUri))
-          .map(poa => paikallinenOppiaineLinkki('oppiaine', poa, this.opintojaksoModuuliLista({
-            id: poa.id!,
-            koodi: poa.koodi!,
-            // todo: Jos halutaan perusteen moduulit, vaatii myös linkkien korjauksen
-            // moduulit: poa.perusteenOppiaineUri ? _.keyBy(oppiaine.oppimaarat, 'koodi.uri')[poa.perusteenOppiaineUri].moduulit : undefined,
-          })))
+          .filter(
+            poa =>
+              poa.perusteenOppiaineUri === oppiaine.koodi.uri
+              || _.includes(
+                _.map(oppiaine.oppimaarat, 'koodi.uri'),
+                poa.perusteenOppiaineUri
+              )
+          )
+          .map(poa =>
+            paikallinenOppiaineLinkki(
+              'oppiaine',
+              poa,
+              this.opintojaksoModuuliLista({
+                id: poa.id!,
+                koodi: poa.koodi!,
+                // todo: Jos halutaan perusteen moduulit, vaatii myös linkkien korjauksen
+                // moduulit: poa.perusteenOppiaineUri ? _.keyBy(oppiaine.oppimaarat, 'koodi.uri')[poa.perusteenOppiaineUri].moduulit : undefined,
+              })
+            )
+          )
           .value();
 
         return oppiaineLinkki(
           'oppiaine',
           oppiaine,
-          oppiaine.oppimaarat.length > 0 ? [
-            ...this.oppiaineOppimaaraLinkit(oppiaine),
-            ...paikallisetOppimaaratLinkit,
-          ] : this.opintojaksoModuuliLista({
-            id: oppiaine.id!,
-            koodi: oppiaine.koodi!.uri!,
-            moduulit: oppiaine.moduulit!,
-          }));
+          oppiaine.oppimaarat.length > 0
+            ? [
+              ...this.oppiaineOppimaaraLinkit(oppiaine),
+              ...paikallisetOppimaaratLinkit,
+            ]
+            : this.opintojaksoModuuliLista({
+              id: oppiaine.id!,
+              koodi: oppiaine.koodi!.uri!,
+              moduulit: oppiaine.moduulit!,
+            })
+        );
       })
       .map(el => ({
         ...el,
-        jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: _.get(el, 'item.objref.koodi.uri') }), 'jarjestys'),
+        jarjestys: _.get(
+          _.find(this.oppiaineJarjestykset, {
+            koodi: _.get(el, 'item.objref.koodi.uri'),
+          }),
+          'jarjestys'
+        ),
       }))
       .value();
   }
@@ -227,15 +311,18 @@ export default class OpsSidenav extends EpOpsComponent {
 
   private kaannaStaticLink(i18key: string | string[] | undefined) {
     if (_.isArray(i18key)) {
-      return _.join(_.map(i18key, key => this.$t(key)), ' ');
+      return _.join(
+        _.map(i18key, key => this.$t(key)),
+        ' '
+      );
     }
     else {
-      return (i18key) ? this.$t(i18key) : '';
+      return i18key ? this.$t(i18key) : '';
     }
   }
 
   private onkoModTaiOj(item: SideMenuItem) {
-    return (item.type === 'moduuli' || item.type === 'opintojakso');
+    return item.type === 'moduuli' || item.type === 'opintojakso';
   }
 
   private onModuuli(item) {
@@ -272,7 +359,8 @@ export default class OpsSidenav extends EpOpsComponent {
     if (oppiaineLinkit.length > 0 || paikallisetOppiaineet.length > 0) {
       const that = this;
       menuOpsData = [
-        ...menuOpsData, {
+        ...menuOpsData,
+        {
           item: {
             type: 'staticlink',
             i18key: 'oppiaineet',
@@ -285,13 +373,24 @@ export default class OpsSidenav extends EpOpsComponent {
             ...oppiaineLinkit,
             ..._(paikallisetOppiaineet)
               .filter(poa => _.isEmpty(poa.perusteenOppiaineUri))
-              .map(poa => paikallinenOppiaineLinkki('oppiaine', poa, that.opintojaksoModuuliLista({
-                id: poa.id!,
-                koodi: poa.koodi!,
-              })))
+              .map(poa =>
+                paikallinenOppiaineLinkki(
+                  'oppiaine',
+                  poa,
+                  that.opintojaksoModuuliLista({
+                    id: poa.id!,
+                    koodi: poa.koodi!,
+                  })
+                )
+              )
               .map(el => ({
                 ...el,
-                jarjestys: _.get(_.find(this.oppiaineJarjestykset, { koodi: _.get(el, 'item.objref.koodi') }), 'jarjestys'),
+                jarjestys: _.get(
+                  _.find(this.oppiaineJarjestykset, {
+                    koodi: _.get(el, 'item.objref.koodi'),
+                  }),
+                  'jarjestys'
+                ),
               }))
               .value(),
           ])
@@ -312,17 +411,32 @@ export default class OpsSidenav extends EpOpsComponent {
     return _.get(this.store, 'sisalto.lapset', []);
   }
 
+  get tekstikappaleet() {
+    return _.filter(this.tekstikappaleRec(this.valikkoData), item => item.item.type === 'tekstikappale');
+  }
+
+  tekstikappaleRec(itemData) {
+    return _.flatMap(_.map(itemData, item => {
+      return _.flatMap([
+        {
+          item: item.item,
+          route: item.route,
+        },
+        ...this.tekstikappaleRec(item.children),
+      ]);
+    }));
+  }
+
   tekstikappaleLapset(itemData) {
-    return [
+    return _.filter([
       {
         item: itemData.item,
         route: itemData.route,
       },
-      ..._.map(itemData.children, (child) =>
-        ({
-          item: child.item,
-          route: child.route,
-        })),
-    ];
+      ..._.map(itemData.children, child => ({
+        item: child.item,
+        route: child.route,
+      })),
+    ], tk => tk.item.type === 'tekstikappale');
   }
 }

@@ -1,13 +1,13 @@
 <template>
   <div id="scroll-anchor" v-if="editointiStore" >
-    <EpEditointi :store="editointiStore" :versionumero="versionumero">
+    <EpEditointi :store="editointiStore" :versionumero="versionumero" label-copy-confirm="oppiaine-kopiointi-varmistus">
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}</h2>
       </template>
       <template v-slot:piilotettu>
         <div>{{$t('oavlk-on-piilotettu')}}</div>
       </template>
-      <template v-slot:default="{ data, isEditing }">
+      <template v-slot:default="{ data, isEditing, isCopyable }">
 
         <div v-if="!data.perusteenOppiaine" class="alert alert-danger">{{$t('ei-perustetta-info')}}</div>
 
@@ -17,13 +17,15 @@
                                     :peruste-teksti-avattu="true" />
         <hr/>
 
-        <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tehtava"
-                                    :vlkObject="data.vuosiluokkakokonaisuus.tehtava"
-                                    :isEditing="isEditing"
-                                    :peruste-teksti-avattu="true" />
-        <hr/>
+        <div v-if="data.vuosiluokkakokonaisuus">
+          <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tehtava"
+                                      :vlkObject="data.vuosiluokkakokonaisuus.tehtava"
+                                      :isEditing="isEditing"
+                                      :peruste-teksti-avattu="true" />
+          <hr/>
+        </div>
 
-        <div v-if="data.oppiaine.tyyppi === 'yhteinen' && data.vuosiluokkakokonaisuus.yleistavoitteet">
+        <div v-if="data.oppiaine.tyyppi === 'yhteinen' && data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.yleistavoitteet">
           <h4>{{ $t('tavoitteet-ja-sisallot') }}</h4>
           <ep-content v-if="isEditing || data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
                         v-model="data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
@@ -33,7 +35,7 @@
           <hr/>
         </div>
 
-        <div v-if="!data.oppiaine.koosteinen">
+        <div v-if="!data.oppiaine.koosteinen && data.vuosiluokkakokonaisuus && !isCopyable">
           <div v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.vuosiluokat.length > 0">
             <div class="d-flex justify-content-between align-items-center">
               <h3 class="mb-0">{{ $t('tavoitteet-ja-sisallot-vuosiluokittain') }}</h3>
@@ -62,22 +64,24 @@
           </div>
         </div>
 
-        <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tyotavat"
-                                    :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
-                                    :isEditing="isEditing"
-                                    :peruste-teksti-avattu="true" />
-        <hr/>
+        <div v-if="data.vuosiluokkakokonaisuus">
+          <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tyotavat"
+                                      :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
+                                      :isEditing="isEditing"
+                                      :peruste-teksti-avattu="true" />
+          <hr/>
 
-        <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.ohjaus"
-                                    :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
-                                    :isEditing="isEditing"
-                                    :peruste-teksti-avattu="true" />
-        <hr/>
+          <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.ohjaus"
+                                      :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
+                                      :isEditing="isEditing"
+                                      :peruste-teksti-avattu="true" />
+          <hr/>
 
-        <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.arviointi"
-                                    :vlkObject="data.vuosiluokkakokonaisuus.arviointi"
-                                    :isEditing="isEditing"
-                                    :peruste-teksti-avattu="true" />
+          <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.arviointi"
+                                      :vlkObject="data.vuosiluokkakokonaisuus.arviointi"
+                                      :isEditing="isEditing"
+                                      :peruste-teksti-avattu="true" />
+        </div>
 
         <div v-if="data.oppiaine.oppimaarat && data.oppiaine.oppimaarat.length > 0">
 
@@ -111,7 +115,6 @@ import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
-import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { PerusopetusoppiaineStore } from '@/stores/perusopetusoppiaineStore';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
@@ -153,8 +156,8 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
     return this.$route.query.versionumero;
   }
 
-  resetOps() {
-    this.store.init();
+  async resetOps() {
+    await this.store.init();
   }
 
   get oppimaaratFields() {

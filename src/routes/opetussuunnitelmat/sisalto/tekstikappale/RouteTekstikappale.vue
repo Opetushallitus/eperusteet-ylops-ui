@@ -44,7 +44,7 @@
             </ep-collapse>
             <ep-collapse v-if="alkuperaiset && alkuperaiset.length > 0 && (isEditing || data.tov.naytaPohjanTeksti)">
               <h5 slot="header">
-                {{ $t('pohjan-teksti') }}
+                {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{$kaanna(pohjaNimi)}})</span>
               </h5>
               <p class="perusteteksti" v-for="(alkuperainen, index) in alkuperaiset" :key="'alkuperainen'+index" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
               <div v-if="isEditing" class="mb-4">
@@ -114,6 +114,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   private perusteenTeksti: PerusteTekstiKappaleViiteDto | TekstiKappaleViiteDto | null = null;
   private alkuperaiset: PerusteTekstiKappaleViiteDto[] | null = null;
   private nimi: any = {};
+  private kopioitava = false;
 
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: async () => this.isUusi(),
@@ -126,6 +127,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       revisions: this.revisions,
       restore: this.restore,
     },
+    copy: this.copy,
+    copyable: this.copyable,
   };
 
   async remove(data: any) {
@@ -152,6 +155,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
   get osaId(): number {
     return _.parseInt(this.$route.params.osaId);
+  }
+
+  get pohjaNimi() {
+    return this.ops.pohja?.nimi;
   }
 
   async isUusi() {
@@ -230,6 +237,9 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       if (teksti.tekstiKappale) {
         this.breadcrumb('tekstikappale', teksti.tekstiKappale.nimi);
       }
+
+      this.kopioitava = result.tov.omistussuhde === 'lainattu';
+
       return result;
     }
   }
@@ -263,6 +273,15 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   async addAlikappale(parent: Puu) {
     const uusi = await this.store.addTeksti({}, parent.id);
     this.$nextTick(() => this.siirry(uusi));
+  }
+
+  async copy(kopioitava) {
+    await this.store.kopioiTeksti(kopioitava.tov);
+    this.$router.go(0);
+  }
+
+  async copyable() {
+    return this.kopioitava;
   }
 }
 </script>

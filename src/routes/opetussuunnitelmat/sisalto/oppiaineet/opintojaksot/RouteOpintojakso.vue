@@ -8,18 +8,11 @@
                   type="opintojakso">
       <template slot="muokkaa-content" slot-scope="{ data }" v-if="data.tuotuOpintojakso">
         <div class="muokkaus-esto align-self-center">
-          {{$t('et-voi-muokata-opintojaksoa')}}
-
+          {{$t('et-voi-muokata-pohjan-opintojaksoa')}}
           <div class="d-inline" v-if="data.opintojaksonOpetussuunnitelma">
-            <span class="lisainfo" id="muokkaus-esto">{{$t('lue-lisaa')}}</span>
-            <b-popover :target="'muokkaus-esto'" triggers="click" placement="bottom">
-              <template v-slot:title>
-                {{$t('muokkaus-estetty')}}
-              </template>
-
-              {{$t('muokkaus-estetty-opintojakso-selite')}}
-              {{$kaanna(data.opintojaksonOpetussuunnitelma.nimi)}}
-            </b-popover>
+            <b-button @click="remove(data)" variant="link" id="muokkaus-esto">
+              {{ $t('poista-opintojakso') }}
+            </b-button>
           </div>
         </div>
       </template>
@@ -419,7 +412,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   async remove(data: any) {
-    if (await this.vahvista()) {
+    if (await this.vahvista('vahvista-poisto', 'poistetaanko-opintojakso')) {
       await this.store.removeOpintojakso(data.id);
       this.$router.push({
         name: 'opsPoistetut',
@@ -818,8 +811,9 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return result;
     }
     else {
-      let opintojakso;
-      if (_.includes(_.map(this.store.opintojaksot, 'id'), _.parseInt(opintojaksoId))) {
+      let opintojakso: any = await this.store.getTuotuOpintojakso(_.parseInt(opintojaksoId));
+
+      if (!opintojakso) {
         const revisions = await this.store.getOpintojaksoHistoria(_.parseInt(opintojaksoId));
         const rev = revisions[revisions.length - this.versionumero];
         if (this.versionumero && rev) {
@@ -830,9 +824,10 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         }
       }
       else {
-        opintojakso = await this.store.getTuotuOpintojakso(_.parseInt(opintojaksoId));
+        opintojakso.tuotuOpintojakso = true;
         opintojakso.opintojaksonOpetussuunnitelma = await this.store.getOpintojaksonOpetussuunnitelma(_.parseInt(opintojaksoId));
       }
+
       _.forEach(opintojakso.oppiaineet, (oa: OpintojaksonOppiaine) => {
         oa.isPaikallinenOppiaine = _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), oa.koodi);
         oa.isModuuliton = this.isModuuliton(oa);
@@ -842,7 +837,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
         this.breadcrumb('opintojakso', opintojakso.nimi);
       }
 
-      opintojakso.tuotuOpintojakso = !_.includes(_.map(this.store.opintojaksot, 'id'), _.parseInt(opintojaksoId));
       return opintojakso;
     }
   }

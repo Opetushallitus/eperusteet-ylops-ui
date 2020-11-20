@@ -9,13 +9,13 @@ export const YlopsKoulutustyypit = Object.freeze([
   'koulutustyyppi_6', // LISAOPETUS
   'koulutustyyppi_14', // AIKUISLUKIOKOULUTUS
   'koulutustyyppi_23', // LUKIOVALMISTAVAKOULUTUS
-  // 'koulutustyyppi_999907', // TPO
+  'koulutustyyppi_999907', // TPO
   // 'koulutustyyppi_17', // AIKUISTENPERUSOPETUS
   'koulutustyyppi_16', // PERUSOPETUS
   // 'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
 ]);
 
-const Perusoppilaitokset = [11, 19, 21, 63, 64];
+const Perusoppilaitokset = [11, 12, 19, 21, 63, 64];
 const koulutustyyppiToOppilaitos = {
   'koulutustyyppi_15': Perusoppilaitokset,
   'koulutustyyppi_2': [...Perusoppilaitokset, 15],
@@ -49,6 +49,11 @@ export function paikallisestiSallitutLaajennokset() {
     'oppiaineetjaoppimaaratlops2021_vka',
     'oppiaineetjaoppimaaratlops2021_vkb',
   ];
+}
+
+export function isPaikallisestiSallittuLaajennos(koodi: string): boolean {
+  return _.some(paikallisestiSallitutLaajennokset(), laajennos =>
+    _.startsWith(koodi, laajennos));
 }
 
 const splitKoodi = _.memoize((arvo: string) => {

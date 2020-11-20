@@ -33,20 +33,24 @@
       <template v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
         <ops-sidenav-link :to="itemRoute" :class="{ 'module-link': onkoModTaiOj(itemData.item) }" v-if="!isSubmenu && itemRoute">
           <a class="btn btn-link btn-link-nav" v-if="itemData.item.type === 'uusi-opintojakso'">
-             <fas class="mr-2" icon="plussa" />
+            <fas class="mr-2" icon="plussa" />
             <span>{{ $t('luo-uusi-opintojakso') }}</span>
           </a>
+          <a class="btn btn-link btn-link-nav" v-else-if="itemData.item.type === 'uusi-paikallinen-oppiaine'">
+            <fas class="mr-2" icon="plussa" />
+            <span>{{ $t('luo-uusi-paikallinen-oppiaine') }}</span>
+          </a>
           <a v-else class="btn btn-link btn-link-nav">
-              <div class="d-inline-flex">
-                <div v-if="onModuuli(itemData.item)">
-                  <ep-color-indicator class="mr-2" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
-                  </ep-color-indicator>
-                </div>
-                <div>
-                  <span>{{ kaanna(itemData.item) }}</span>
-                  <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
-                </div>
+            <div class="d-inline-flex">
+              <div v-if="onModuuli(itemData.item)">
+                <ep-color-indicator class="mr-2" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
+                </ep-color-indicator>
               </div>
+              <div>
+                <span>{{ kaanna(itemData.item) }}</span>
+                <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
+              </div>
+            </div>
           </a>
         </ops-sidenav-link>
         <li class="subheader" v-if="!isSubmenu && !itemRoute && kaanna(itemData.item)">
@@ -62,7 +66,7 @@
         </ops-sidenav-link>
       </template>
       <template v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
-        <li v-if="itemData.item.type === 'tekstikappale'">
+        <li v-if="itemData.item.type === 'tekstikappale' && !isPohja">
           <ep-tekstikappale-lisays
             :opetussuunnitelmaStore="store"
             :tekstikappaleet="tekstikappaleLapset(itemData)"
@@ -78,6 +82,15 @@
         </li>
       </template>
     </ep-recursive-nav>
+
+    <li v-if="isPohja">
+      <ep-tekstikappale-lisays
+        :opetussuunnitelmaStore="store"
+        :tekstikappaleet="tekstikappaleet"
+        v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+        tyhja-valinta/>
+    </li>
+
   </ul>
 
   <div class="muokkaa-kappaleita" v-sticky sticky-side="bottom" sticky-z-index="500">

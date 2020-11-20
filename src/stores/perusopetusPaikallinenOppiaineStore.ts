@@ -118,7 +118,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
 
   async remove() {
     await Oppiaineet.deleteOppiaine(this.opsId, _.toNumber(this.oppiaineId));
-    this.vue.store.init(); // Päivitetään sivunavigaatio
+    await this.vue.store.init(); // Päivitetään sivunavigaatio
     this.vue.$router.push({
       name: 'perusopetusvalinnaiset',
     });
@@ -172,7 +172,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     return computed(() => {
       return {
         editable: true,
-        removable: false,
+        removable: true,
         hideable: false,
         recoverable: true,
       } as EditoitavaFeatures;

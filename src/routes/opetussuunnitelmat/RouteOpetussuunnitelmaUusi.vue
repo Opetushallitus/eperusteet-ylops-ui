@@ -8,9 +8,10 @@
     <p>{{ $t('uusi-opetussuunnitelma-ohje') }}</p>
   </template>
   <div class="form-group">
-    <div class="row">
-      <legend class="col-form-label col-sm-2">{{ $t('opetussuunnitelman-pohjatyyppi-pakollinen') }}</legend>
-      <div class="col-sm-10 mb-4">
+    <!-- <div class="row"> -->
+      <!-- <legend class="col-form-label col-12 font-weight-bold">{{ $t('opetussuunnitelman-pohjatyyppi-pakollinen') }}</legend> -->
+      <ep-form-content name="opetussuunnitelman-pohjatyyppi-pakollinen">
+      <!-- <div class="col-sm-10 mb-4"> -->
         <b-form-group class="mt-0">
           <b-form-radio
             v-model="oletuspohjasta"
@@ -23,14 +24,15 @@
             name="uusi-ops-pohjavalinta"
             value="pohjasta">{{ $t('oletuspohja') }}</b-form-radio>
         </b-form-group>
-      </div>
-    </div>
+      </ep-form-content>
+      <!-- </div> -->
+    <!-- </div> -->
     <div v-if="oletuspohjasta">
       <div class="form-group">
         <div v-if="pohjat">
           <ep-form-content v-if="pohjat.length > 0" name="uusi-ops-pohja-pakollinen">
             <ep-select v-model="uusi.pohja"
-                       :items="pohjat"
+                       :items="pohjatSortedByName"
                        :validation="$v.uusi.pohja"
                        :is-editing="true"
                        help="uusi-ops-pohja-ohje"
@@ -132,8 +134,9 @@ import {
   OpsVuosiluokkakokonaisuusDto,
 } from '@shared/api/ylops';
 
-import { opsLuontiValidator, opsPerusopetusLuontiValidator } from '@/validators/ops';
+import { opsLuontiValidator } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
+import { Kielet } from '@shared/stores/kieli';
 
 type PohjaTyyppi = 'pohjasta' | 'opsista';
 
@@ -171,8 +174,9 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       jarjestajat: [],
       oppilaitokset: [],
       kunnat: [],
+      ryhmat: [],
     },
-    tuoPohjanOpintojaksot: null,
+    tuoPohjanOpintojaksot: null as (boolean | null),
     ainepainoitteinen: false,
     vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
   };
@@ -207,6 +211,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       jarjestajat: [],
       oppilaitokset: [],
       kunnat: [],
+      ryhmat: [],
     };
     this.uusi.vuosiluokkakokonaisuudet = [];
 
@@ -223,6 +228,10 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   protected async init() {
     this.oletuspohjat = (await Opetussuunnitelmat.getAll('POHJA', 'VALMIS')).data;
     this.opetussuunnitelmat = (await Opetussuunnitelmat.getOpetussuunnitelmienOpsPohjat()).data;
+  }
+
+  get pohjatSortedByName() {
+    return _.sortBy(this.pohjat, pohja => _.toLower(Kielet.kaanna(pohja.nimi)));
   }
 
   get pohjat() {
@@ -257,9 +266,11 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
         organisaatiot: [
           ...this.uusi.organisaatiot.jarjestajat,
           ...this.uusi.organisaatiot.oppilaitokset,
+          ...this.uusi.organisaatiot.ryhmat,
         ],
         ainepainoitteinen: this.uusi.ainepainoitteinen,
         vuosiluokkakokonaisuudet: this.uusi.vuosiluokkakokonaisuudet,
+        tuoPohjanOpintojaksot: this.uusi.tuoPohjanOpintojaksot ? this.uusi.tuoPohjanOpintojaksot : false,
       };
 
       // FIXME: #swagger
@@ -284,12 +295,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
 
   get validator() {
     if (this.uusi && this.uusi.pohja) {
-      if (this.uusi.pohja.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase()) {
-        return opsPerusopetusLuontiValidator();
-      }
-      else {
-        return opsLuontiValidator();
-      }
+      return opsLuontiValidator([], this.uusi.pohja.toteutus);
     }
 
     return {};

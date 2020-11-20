@@ -2,109 +2,115 @@
 <div class="content">
   <div v-html="$t('julkaisuohje')">
   </div>
-  <div class="vaihe" v-if="kooste && kooste.length > 0">
-    <h3>{{ $t('validointi') }}</h3>
-    <div class="kategoriat">
-      <div class="kategoria" v-for="(category, idx) in kooste" :key="idx">
-        <ep-collapse :expanded-by-default="false">
-          <h4 slot="header">
-            <span class="iconspan mr-2">
-              <fas class="warning" v-if="category.hasFatal" icon="huutomerkki-ympyra" fixed-width>
-              </fas>
-              <fas v-else :class="category.hasWarning ? 'warning' : 'success'" icon="checkmark-ympyra" fixed-width>
-              </fas>
-            </span>
-            <span class="saanto">{{ $t(category.key) }}</span>
-          </h4>
-          <div class="validointi" v-for="(validation, vidx) in category.value" :key="vidx + (idx + 1) * 1000">
-            <span>{{ $t(validation.kuvaus) }} ({{ $kaanna(validation.nimi) }})</span>
+  <ep-spinner v-if="!validointi" />
+  <div v-else>
+    <div class="vaihe" v-if="kooste && kooste.length > 0">
+      <h3>{{ $t('validointi') }}</h3>
+      <div class="kategoriat">
+        <div class="kategoria" v-for="(category, idx) in kooste" :key="idx">
+          <ep-collapse :expanded-by-default="false">
+            <h4 slot="header">
+              <span class="iconspan mr-2">
+                <fas class="warning" v-if="category.hasFatal" icon="huutomerkki-ympyra" fixed-width>
+                </fas>
+                <fas v-else :class="category.hasWarning ? 'warning' : 'success'" icon="checkmark-ympyra" fixed-width>
+                </fas>
+              </span>
+              <span class="saanto">{{ $t(category.key) }}</span>
+            </h4>
+            <div class="validointi" v-for="(validation, vidx) in category.value" :key="vidx + (idx + 1) * 1000">
+              <router-link v-if="validation.meta" :to="{name: validation.meta.route.type, params: validation.meta.route.meta}">
+                <span>{{ $t(validation.kuvaus) }} ({{ $kaanna(validation.nimi) }})</span>
+              </router-link>
+              <span v-else>{{ $t(validation.kuvaus) }} ({{ $kaanna(validation.nimi) }})</span>
+            </div>
+          </ep-collapse>
+        </div>
+      </div>
+    </div>
+    <div class="vaihe" v-if="isValid">
+      <h3>{{ $t('tiedot') }}</h3>
+      <div>
+        <div class="row">
+          <div class="col-md-6">
+            <ep-form-content name="ops-nimi">
+              <ep-field help="ops-nimi-ohje" v-model="ops.nimi">
+              </ep-field>
+            </ep-form-content>
           </div>
-        </ep-collapse>
-      </div>
-    </div>
-  </div>
-  <div class="vaihe" v-if="isValid">
-    <h3>{{ $t('tiedot') }}</h3>
-    <div>
-      <div class="row">
-        <div class="col-md-6">
-          <ep-form-content name="ops-nimi">
-            <ep-field help="ops-nimi-ohje" v-model="ops.nimi">
-            </ep-field>
-          </ep-form-content>
-        </div>
-        <div class="col-md-6">
-          <ep-form-content name="peruste">
-            <ep-field v-model="ops.perusteenDiaarinumero">
-            </ep-field>
-          </ep-form-content>
-        </div>
-        <div class="col-md-6">
-          <ep-form-content name="julkaisukielet">
-            <ep-select help="ops-julkaisukielet-ohje" v-model="ops.julkaisukielet" :items="kielet" :multiple="true">
-            </ep-select>
-          </ep-form-content>
-        </div>
-        <div class="col-md-6" v-if="isOps">
-          <ep-form-content name="ops-hyvaksyjataho">
-            <ep-field help="ops-hyvaksyjataho-ohje" v-model="ops.hyvaksyjataho" type="string">
-            </ep-field>
-          </ep-form-content>
-        </div>
-        <div class="col-md-6" v-if="isOps">
-          <ep-form-content name="ops-hyvaksymispvm">
-            <ep-datepicker v-model="ops.paatospaivamaara" help="ops-hyvaksymispvm-ohje">
-            </ep-datepicker>
-          </ep-form-content>
-        </div>
-        <div class="col-md-12">
-          <ep-form-content name="ops-kuvaus">
-            <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
-                        layout="simplified"
-                        v-model="ops.kuvaus"
-                        help="ops-kuvaus-ohje">
-            </ep-content>
-          </ep-form-content>
+          <div class="col-md-6">
+            <ep-form-content name="peruste">
+              <ep-field v-model="ops.perusteenDiaarinumero">
+              </ep-field>
+            </ep-form-content>
+          </div>
+          <div class="col-md-6">
+            <ep-form-content name="julkaisukielet">
+              <ep-select help="ops-julkaisukielet-ohje" v-model="ops.julkaisukielet" :items="kielet" :multiple="true">
+              </ep-select>
+            </ep-form-content>
+          </div>
+          <div class="col-md-6" v-if="isOps">
+            <ep-form-content name="ops-hyvaksyjataho">
+              <ep-field help="ops-hyvaksyjataho-ohje" v-model="ops.hyvaksyjataho" type="string">
+              </ep-field>
+            </ep-form-content>
+          </div>
+          <div class="col-md-6" v-if="isOps">
+            <ep-form-content name="ops-hyvaksymispvm">
+              <ep-datepicker v-model="ops.paatospaivamaara" help="ops-hyvaksymispvm-ohje">
+              </ep-datepicker>
+            </ep-form-content>
+          </div>
+          <div class="col-md-12">
+            <ep-form-content name="ops-kuvaus">
+              <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
+                          layout="simplified"
+                          v-model="ops.kuvaus"
+                          help="ops-kuvaus-ohje">
+              </ep-content>
+            </ep-form-content>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="vaihe" v-if="isValid">
-    <ep-collapse tyyppi="uusi-julkaisu">
-      <h3 slot="header"> {{ $t('uusi-julkaisu') }}</h3>
-      <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
-                  v-model="uusiJulkaisu.julkaisutiedote"
-                  help="uuden-julkaisun-tiedote"
-                  layout="simplified"
-                  :is-editable="true"
-                  class="mb-4" />
-      <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'">{{ $t('julkaise') }}</ep-button>
-    </ep-collapse>
-  </div>
-  <div class="vaihe">
-    <ep-collapse tyyppi="julkaisuhistoria">
-      <h3 slot="header">{{ $t('julkaisuhistoria') }}</h3>
-      <div class="alert alert-info" v-if="julkaisuhistoria.length === 0">{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
-      <div v-else>
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>{{ $t('versio') }}</th>
-              <th>{{ $t('luontihetki') }}</th>
-              <th>{{ $t('tiedote') }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(julkaisu, idx) in julkaisuhistoria" :key="idx">
-              <td>{{ julkaisu.revision }}</td>
-              <td>{{ $ago(julkaisu.luotu) }}</td>
-              <td v-html="$kaanna(julkaisu.tiedote)">
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </ep-collapse>
+    <div class="vaihe" v-if="isValid">
+      <ep-collapse tyyppi="uusi-julkaisu">
+        <h3 slot="header"> {{ $t('uusi-julkaisu') }}</h3>
+        <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
+                    v-model="uusiJulkaisu.julkaisutiedote"
+                    help="uuden-julkaisun-tiedote"
+                    layout="simplified"
+                    :is-editable="true"
+                    class="mb-4" />
+        <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'" :showSpinner="julkaisuLoading" :disabled="!uusiJulkaisu.julkaisutiedote[sisaltoKieli]">{{ $t('julkaise') }}</ep-button>
+      </ep-collapse>
+    </div>
+    <div class="vaihe">
+      <ep-collapse tyyppi="julkaisuhistoria">
+        <h3 slot="header">{{ $t('julkaisuhistoria') }}</h3>
+        <div class="alert alert-info" v-if="julkaisuhistoria.length === 0">{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
+        <div v-else>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>{{ $t('versio') }}</th>
+                <th>{{ $t('luontihetki') }}</th>
+                <th>{{ $t('tiedote') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(julkaisu, idx) in julkaisuhistoria" :key="idx">
+                <td>{{ julkaisu.revision }}</td>
+                <td>{{ $ago(julkaisu.luotu) }}</td>
+                <td v-html="$kaanna(julkaisu.tiedote)">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ep-collapse>
+    </div>
   </div>
 </div>
 </template>
@@ -115,19 +121,20 @@ import { Component } from 'vue-property-decorator';
 
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@shared/api/ylops';
-import { UiKielet } from '@shared/stores/kieli';
+import { Kielet, UiKielet } from '@shared/stores/kieli';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
 
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 @Component({
   components: {
@@ -140,6 +147,7 @@ import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
     EpFormContent,
     EpSelect,
     Tilanvaihto,
+    EpSpinner,
   },
 })
 export default class RouteJulkaisu extends EpOpsRoute {
@@ -148,7 +156,10 @@ export default class RouteJulkaisu extends EpOpsRoute {
   private isOpen: { [key: string]: boolean } = {};
   private showKooste = false;
   private julkaisut: any[] = [];
-  private uusiJulkaisu: UusiJulkaisuDto = {};
+  private uusiJulkaisu: UusiJulkaisuDto = {
+    julkaisutiedote: {},
+  };
+  private julkaisuLoading = false;
 
   get graph() {
     return {
@@ -163,6 +174,10 @@ export default class RouteJulkaisu extends EpOpsRoute {
 
   get kielet() {
     return UiKielet;
+  }
+
+  get sisaltoKieli() {
+    return Kielet.getSisaltoKieli.value;
   }
 
   get julkaisuhistoria() {
@@ -199,8 +214,10 @@ export default class RouteJulkaisu extends EpOpsRoute {
   }
 
   async julkaise() {
+    this.julkaisuLoading = true;
     const julkaisu = await this.store.julkaise(this.uusiJulkaisu);
     this.julkaisut.unshift(julkaisu);
+    this.julkaisuLoading = false;
   }
 }
 </script>

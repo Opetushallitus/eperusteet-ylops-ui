@@ -149,6 +149,17 @@ export class PerusopetusoppiaineStore implements IEditoitava {
         piilotettu);
   }
 
+  async copy(data) {
+    const kopioituOppiaine = await Oppiaineet.kopioiMuokattavaksi(this.opsId, this.oppiaineId);
+    await this.el.resetOps();
+    this.el.$router.push({
+      name: 'perusopetusoppiaine',
+      params: {
+        oppiaineId: kopioituOppiaine.data.id!,
+      },
+    });
+  }
+
   public readonly validator = computed(() => {
     return {};
   });
@@ -156,11 +167,12 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   public features(data) {
     return computed(() => {
       return data ? {
-        editable: data.perusteenOppiaine,
+        editable: data.perusteenOppiaine && data.oppiaine.oma,
         removable: this.parent && isOppiaineUskontoTaiKieli(this.parent),
         hideable: this.parent && isOppiaineUskontoTaiKieli(this.parent),
-        isHidden: data.vuosiluokkakokonaisuus.piilotettu,
-        recoverable: true,
+        isHidden: data.vuosiluokkakokonaisuus?.piilotettu || false,
+        recoverable: data.oppiaine.oma,
+        copyable: !data.oppiaine.oma,
       } as EditoitavaFeatures
         : {};
     });

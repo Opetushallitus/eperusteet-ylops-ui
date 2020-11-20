@@ -48,7 +48,7 @@
           </div>
         </div>
       </ep-collapse>
-      <div v-if="!(isOppiaine && isOppimaaria)">
+      <div v-if="!(isOppiaine && isOppimaaria) && isAllowedOppiaine">
         <ep-spinner v-if="!opintojaksot">
         </ep-spinner>
         <ep-collapse else>
@@ -91,6 +91,7 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
 import _ from 'lodash';
 import EpOpintojaksonModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/opintojaksot/EpOpintojaksonModuuli.vue';
+import { isPaikallisestiSallittuLaajennos } from '@/utils/perusteet';
 
 @Component({
   components: {
@@ -196,6 +197,10 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
 
   get isOppimaaria() {
     return this.oppiaine!.oppimaarat && this.oppiaine!.oppimaarat.length > 0;
+  }
+
+  get isAllowedOppiaine() {
+    return !isPaikallisestiSallittuLaajennos(this.oppiaine!.koodi!.uri as string);
   }
 
   public uusiOpintojakso() {

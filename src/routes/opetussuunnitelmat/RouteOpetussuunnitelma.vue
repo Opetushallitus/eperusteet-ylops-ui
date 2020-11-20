@@ -4,25 +4,22 @@
   <div class="opetussuunnitelma" v-if="ops" :class="headerClass">
     <div class="header" :style="headerStyle">
       <div class="progress-chart">
-        <ep-progress-popover :slices="slices" :height="90" :width="90" :popupStyle="progressPopoverStyle">
+        <ep-progress-popover :slices="slices" :popupStyle="progressPopoverStyle">
           <template v-slot:header>
-            <div class="pt-3 row justify-content-center ">
-              <div v-if="validationStats.ok < validationStats.total">
-                {{ validationStats.ok }} / {{ validationStats.total }} {{$t('valmis')}}
-              </div>
-              <div v-else-if="validation">
-                <b-button v-if="!isPohja"
-                          variant="primary"
-                          :to="{ name: 'opsJulkaisu' }">
-                  {{ $t('julkaise') }}
-                </b-button>
-              </div>
+            <div class="pt-3 row justify-content-center" v-if="validation && !isPohja">
+              <b-button v-if="validationStats.ok === validationStats.total"
+                        variant="primary"
+                        :to="{ name: 'opsJulkaisu' }">
+                {{ $t('julkaise') }}
+              </b-button>
+              <b-button v-if="validationStats.ok < validationStats.total"
+                        variant="primary"
+                        :to="{ name: 'opsJulkaisu' }"
+                        :class="{ 'mb-2': !isEmptyValidation }">
+                {{ $t('siirry-julkaisunakymaan') }}
+              </b-button>
             </div>
           </template>
-          <b-button v-if="!isPohja && validationStats.ok < validationStats.total"
-                    variant="primary"
-                    :to="{ name: 'opsJulkaisu' }"
-                    :class="{ 'mb-2': !isEmptyValidation }">{{ $t('siirry-julkaisunakymaan') }}</b-button>
           <div v-if="validation">
             <div class="nimi pb-2 row" v-for="c in validationStats.categories" :key="c.category">
               <div class="col-1">
@@ -268,7 +265,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     }
 
     .progress-chart > div {
-      width: 130px;
+      width: 100%;
       margin: 0 auto;
     }
 

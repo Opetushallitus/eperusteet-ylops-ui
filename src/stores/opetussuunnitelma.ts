@@ -150,6 +150,12 @@ export class OpetussuunnitelmaStore {
     return osa.data;
   }
 
+  public async kopioiTeksti(tov: Puu) {
+    const kopioitu = await OpetussuunnitelmanSisalto.kloonaaTekstiKappale(this.opetussuunnitelma!.id!, tov.id!);
+    success('kopiointi-onnistui-tekstikappale');
+    return kopioitu;
+  }
+
   public static async updateOpsTila(opsId: number, uusiTila: string) {
     return Opetussuunnitelmat.updateTila(opsId, uusiTila as any);
   }
@@ -359,6 +365,14 @@ export class OpetussuunnitelmaStore {
 
   public async updateOppiainejarjestys(oppiainejarjestys) {
     await Opetussuunnitelmat.updateOppiainejarjestys(this.opetussuunnitelma!.id!, oppiainejarjestys);
+  }
+
+  public async importPerusteTekstit() {
+    await Opetussuunnitelmat.importPerusteTekstit(this.opetussuunnitelma!.id!);
+  }
+
+  public async synkronisoiPohja() {
+    await Opetussuunnitelmat.sync(this.opetussuunnitelma!.id!);
   }
 }
 
