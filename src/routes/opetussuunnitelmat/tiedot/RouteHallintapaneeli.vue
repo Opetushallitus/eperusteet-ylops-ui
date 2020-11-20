@@ -1,31 +1,34 @@
 <template>
   <div class="hallintapaneeli">
 
-    <EpOpsUpdateConfirmBox
-      class="importbox"
-      v-if="!isPohja && perustepaivitys"
-      :opetussuunnitelmaStore="opetussuunnitelmaStore"
-      :function="importPerusteTekstit"
-      topic="paivita-opetussuunnitelma"
-      text="paivita-opetussuunnitelma-huomioteksti"
-      buttonText="paivita-opetussuunnitelma"
-      successText="perusteen-tekstikappaleet-tuotu-opetussuunitelmaan"
-      failText="perusteen-tekstikappaleet-tuotu-opetussuunitelmaan-virhe" />
+    <div class="info-box import-box" v-if="!isPohja && perustepaivitys">
+      <h2>{{$t('paivita-opetussuunnitelma')}}</h2>
+      <div v-html="$t('paivita-opetussuunnitelma-huomioteksti')" />
 
-    <EpOpsUpdateConfirmBox
-      class="syncBox"
-      v-if="isPohja"
-      :opetussuunnitelmaStore="opetussuunnitelmaStore"
-      :function="synkronisoiPohja"
-      topic="paivita-muutokset-opetussuunnitelmiin"
-      text="paivita-muutokset-opetussuunnitelmiin-huomioteksti"
-      buttonText="paivita-muutokset-opetussuunnitelmiin"
-      successText="muutokset-paivitetty-opetussuunnitelmiin"
-      failText="muutokset-paivitetty-opetussuunnitelmiin-virhe">
-      <div slot="footertext" class="d-flex align-items-end mr-3 disabled-text font-size-08" v-if="ops.viimeisinSyncPvm">
-        {{$t('viimeisin-synkronisointi-pvm')}} {{$sd(ops.viimeisinSyncPvm)}}
+      <div class="d-flex justify-content-end">
+        <ep-button variant="link" class="mr-4" @click="importPerusteTekstit(true)" :disabled="importing">
+          {{$t('ohita')}}
+        </ep-button>
+        <ep-button @click="importPerusteTekstit(false)" :disabled="importing">
+          {{$t('paivita-opetussuunnitelma')}}
+        </ep-button>
+        <ep-spinner v-if="importing" />
       </div>
-    </EpOpsUpdateConfirmBox>
+    </div>
+
+    <div class="info-box sync-box" v-if="isPohja">
+      <h2>{{$t('paivita-muutokset-opetussuunnitelmiin')}}</h2>
+      <div v-html="$t('paivita-muutokset-opetussuunnitelmiin-huomioteksti')" />
+
+      <div class="d-flex justify-content-end">
+        <div class="d-flex align-items-end mr-3 disabled-text font-size-08" v-if="ops.viimeisinSyncPvm">
+          {{$t('viimeisin-synkronisointi-pvm')}} {{$sd(ops.viimeisinSyncPvm)}}
+        </div>
+        <ep-button @click="synkronisoiPohja" :showSpinner="syncing">
+          {{$t('paivita-muutokset-opetussuunnitelmiin')}}
+        </ep-button>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col">
@@ -58,7 +61,9 @@ import OpsViimeaikainenToiminta from './OpsViimeaikainenToiminta.vue';
 import OpsAikataulu from './OpsAikataulu.vue';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from '@/stores/aikataulu';
-import EpOpsUpdateConfirmBox from './EpOpsUpdateConfirmBox.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import { createLogger } from '@shared/utils/logger';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 @Component({
   components: {
@@ -67,7 +72,8 @@ import EpOpsUpdateConfirmBox from './EpOpsUpdateConfirmBox.vue';
     OpsMuokkaamattomatOsiot,
     OpsViimeaikainenToiminta,
     OpsAikataulu,
-    EpOpsUpdateConfirmBox,
+    EpButton,
+    EpSpinner,
   },
 })
 export default class RouteHallintapaneeli extends EpOpsRoute {
@@ -77,16 +83,41 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
   @Prop({ required: true })
   private aikatauluStore!: AikatauluStore;
 
+  private importing = false;
+  private syncing = false;
+
   get perustepaivitys() {
     return !this.ops.perusteDataTuontiPvm;
   }
 
-  async importPerusteTekstit() {
-    await this.store.importPerusteTekstit();
+  async importPerusteTekstit(ohita) {
+    this.importing = true;
+    try {
+      await this.store.importPerusteTekstit(ohita);
+      if (!ohita) {
+        this.$success(this.$t('perusteen-tekstikappaleet-tuotu-opetussuunitelmaan') as string);
+      }
+      await this.store.init();
+    }
+    catch (e) {
+      this.$fail(this.$t('perusteen-tekstikappaleet-tuotu-opetussuunitelmaan-virhe') as string);
+      createLogger('RouteHallintapaneeli').error(e);
+    }
+    this.importing = false;
   }
 
   async synkronisoiPohja() {
-    await this.store.synkronisoiPohja();
+    this.syncing = true;
+    try {
+      await this.store.synkronisoiPohja();
+      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmiin') as string);
+      await this.store.init();
+    }
+    catch (e) {
+      this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmiin-virhe') as string);
+      createLogger('RouteHallintapaneeli').error(e);
+    }
+    this.syncing = false;
   }
 }
 </script>
@@ -117,14 +148,15 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
       border-radius: 0.5rem;
       box-shadow: 1px 1px 5px 0px rgba(0,26,88,0.1);
       min-width: 370px;
-    }
 
-    .syncBox {
-      background-color: $white;
-    }
+      &.sync-box {
+        margin-left: 10px;
+      }
 
-    .importbox {
-      background-color: $blue-lighten-4;
+      &.import-box {
+        margin-left: 10px;
+        background-color: $blue-lighten-4;
+      }
     }
 
   }
