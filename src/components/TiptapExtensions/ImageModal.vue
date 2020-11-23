@@ -145,6 +145,7 @@ export default class ImageModal extends Mixins(validationMixin) {
   set selected(liite: any) {
     if (liite) {
       this.$emit('input', liite.id);
+      this.$v.$touch();
     }
     else {
       this.$emit('input', null);

@@ -9,13 +9,16 @@
         <h5>{{ $t('luo-ja-lataa-pdf') }}</h5>
         <p>{{ $t('luo-pdf-selite')}}</p>
 
-        <div class="row pdf-box align-items-center justify-content-between" :class="dto && href ? 'luotu': 'ei-luotu'">
+        <div class="row pdf-box align-items-center justify-content-between" :class="infoClass">
           <div class="col col-auto ikoni">
             <img src="../../../../public/img/icons/pdfkuva_lataus.svg" />
           </div>
           <div class="col-lg teksti">
             <span  v-if="dto && href">
               {{$kaanna(opetussuunnitelmanimi)}}.pdf
+            </span>
+            <span v-else-if="dto && dto.tila === 'epaonnistui'">
+              {{$t('pdf-tiedosto-luonti-epaonnistui')}}: {{$t('pdf-virhe-' + dto.virhekoodi)}}
             </span>
             <span v-else>
               {{$t('pdf-tiedostoa-ei-ole-viela-luotu')}}
@@ -109,6 +112,18 @@ export default class RouteDokumentti extends EpOpsRoute {
     this.init();
   }
 
+  get infoClass() {
+    if (this.dto && this.href) {
+      return 'luotu';
+    }
+
+    if (this.dto && this.dto.tila === _.toLower(DokumenttiDtoTilaEnum.EPAONNISTUI)) {
+      return 'epaonnistui';
+    }
+
+    return 'ei-luotu';
+  }
+
   get tilaFormatted() {
     if (this.dto) {
       return this.$t('dokumentti-' + _.kebabCase(this.dto.tila), {
@@ -175,8 +190,8 @@ export default class RouteDokumentti extends EpOpsRoute {
     // Ohitetaan ensimmäinen pollaus, koska paluuarvossa on jo tämänhetkinen tila
     setTimeout(() => {
       // Aloitetaan tilan pollaaminen
-      this.polling = setInterval(() => {
-        this.getDokumenttiTila();
+      this.polling = setInterval(async () => {
+        await this.getDokumenttiTila();
       }, this.pollingFrequency);
     }, this.pollingFrequency);
   }
@@ -265,6 +280,11 @@ export default class RouteDokumentti extends EpOpsRoute {
         border: 1px solid $gray-lighten-9;
         color: $gray-lighten-2;
         font-style: italic;
+      }
+
+      &.epaonnistui {
+        border: 1px solid $gray-lighten-9;
+        color: $red;
       }
 
     }
