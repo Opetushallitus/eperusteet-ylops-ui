@@ -142,7 +142,7 @@ import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 import { isLukio } from '@shared/utils/perusteet';
-import { OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
+import { OpetussuunnitelmaInfoDtoToteutusEnum, OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 
 @Component({
   components: {
@@ -165,7 +165,7 @@ export default class RouteTiedot extends EpOpsRoute {
   async mounted() {
     this.hooks = {
       source: {
-        save: this.store.save,
+        save: this.save,
         load: this.load,
       },
     };
@@ -219,6 +219,10 @@ export default class RouteTiedot extends EpOpsRoute {
         opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}/${this.opintopolkuOhjausUrl[_.toString(ops.toteutus)]}/tiedot`),
       };
     }
+  }
+
+  private async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
+    await this.store.save(opetussuunnitelma);
   }
 
   get opintopolkuOhjausUrl() {

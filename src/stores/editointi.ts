@@ -269,6 +269,7 @@ export class EditointiKontrolli {
         }
       }
       catch (err) {
+        console.log(err);
         fail('tallennus-epaonnistui', err.response.data.syy);
         this.isEditingState = true;
       }

@@ -20,6 +20,8 @@ import {
   Lops2019OppiaineJarjestysDto,
   Oppiaineet,
   OppiaineDto,
+  OpetussuunnitelmanJulkaisuDto,
+  Lops2019ValidointiDto,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -71,6 +73,12 @@ export class OpetussuunnitelmaStore {
   @State()
   public valinnaisetOppiaineet: OppiaineDto[] = [];
 
+  @State()
+  public julkaisut: OpetussuunnitelmanJulkaisuDto[] | null = null;
+
+  @State()
+  public validation: Lops2019ValidointiDto | null = null;
+
   constructor(opsId: number) {
     this.opsId = opsId;
   }
@@ -93,6 +101,8 @@ export class OpetussuunnitelmaStore {
     logger.info('Initing ops store', this.opsId);
     this.opetussuunnitelma = await this.get();
     await this.updateSisalto();
+    this.julkaisut = (await Opetussuunnitelmat.getJulkaisut(this.opetussuunnitelma!.id!)).data;
+    await this.updateValidation();
 
     if ((this.opetussuunnitelma.toteutus as any) === 'lops2019') {
       this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
@@ -113,6 +123,12 @@ export class OpetussuunnitelmaStore {
     const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma as OpetussuunnitelmaDto);
     success('tallennus-onnistui-opetussuunnitelma');
     this.opetussuunnitelma = res.data as OpetussuunnitelmaKevytDto;
+    await this.updateValidation();
+  }
+
+  public async updateValidation() {
+    this.validation = null;
+    this.validation = await this.validate();
   }
 
   public async validate() {
@@ -190,7 +206,8 @@ export class OpetussuunnitelmaStore {
   // Julkaisut
   public async julkaise(julkaisu: UusiJulkaisuDto) {
     try {
-      return (await Opetussuunnitelmat.julkaise(this.opetussuunnitelma!.id!, julkaisu)).data;
+      const tallennettuJulkaisu = (await Opetussuunnitelmat.julkaise(this.opetussuunnitelma!.id!, julkaisu)).data;
+      this.julkaisut!.unshift(tallennettuJulkaisu);
     }
     catch (err) {
       fail('julkaisu-epaonnistui', err.response.data.syy);
