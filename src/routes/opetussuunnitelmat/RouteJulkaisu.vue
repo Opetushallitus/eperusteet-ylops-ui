@@ -155,7 +155,6 @@ export default class RouteJulkaisu extends EpOpsRoute {
   private validointi: Lops2019ValidointiDto | null = null;
   private isOpen: { [key: string]: boolean } = {};
   private showKooste = false;
-  private julkaisut: any[] = [];
   private uusiJulkaisu: UusiJulkaisuDto = {
     julkaisutiedote: {},
   };
@@ -210,13 +209,15 @@ export default class RouteJulkaisu extends EpOpsRoute {
 
   async init() {
     this.validointi = await this.store.validate();
-    this.julkaisut = await this.store.getJulkaisut();
+  }
+
+  get julkaisut() {
+    return this.store.julkaisut;
   }
 
   async julkaise() {
     this.julkaisuLoading = true;
     const julkaisu = await this.store.julkaise(this.uusiJulkaisu);
-    this.julkaisut.unshift(julkaisu);
     this.julkaisuLoading = false;
   }
 }

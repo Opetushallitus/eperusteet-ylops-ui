@@ -6,33 +6,44 @@
       <div class="progress-chart">
         <ep-progress-popover :slices="slices" :popupStyle="progressPopoverStyle">
           <template v-slot:header>
-            <div class="pt-3 row justify-content-center" v-if="validation && !isPohja">
-              <b-button v-if="validationStats.ok === validationStats.total"
+            <div class="d-flex flex-column align-items-center" v-if="validation">
+              <div class="mb-1">{{$t(tila)}}</div>
+              <b-button v-if="isLuonnos && !isPohja"
                         variant="primary"
                         :to="{ name: 'opsJulkaisu' }">
-                {{ $t('julkaise') }}
-              </b-button>
-              <b-button v-if="validationStats.ok < validationStats.total"
-                        variant="primary"
-                        :to="{ name: 'opsJulkaisu' }"
-                        :class="{ 'mb-2': !isEmptyValidation }">
                 {{ $t('siirry-julkaisunakymaan') }}
               </b-button>
             </div>
           </template>
-          <div v-if="validation">
-            <div class="nimi pb-2 row" v-for="c in validationStats.categories" :key="c.category">
-              <div class="col-1">
-                <fas class="text-success" icon="check-circle" v-if="c.failcount === 0"/>
-                <fas class="text-danger" icon="info-circle" v-if="c.failcount > 0"/>
-              </div>
-              <div class="col">
-                <span v-if="c.failcount === 0">{{ $t(c.category + "-validation-ok") }}</span>
-                <span v-if="c.failcount > 0">{{ $t(c.category + "-validation-error") }}</span>
+
+          <b-button v-if="isJulkaistu"
+                    variant="primary"
+                    :to="{ name: 'opsJulkaisu' }">
+            {{ $t('siirry-julkaisunakymaan') }}
+          </b-button>
+
+          <div v-if="isArkistoitu" class="d-flex flex-column align-items-center text-center">
+            <b-button class="px-3 py-1" variant="primary" @click="palauta">
+              {{ $t('palauta') }}
+            </b-button>
+            <div class="font-size-08 mt-1">{{$t(arkistoituTyyppiTeksti)}}</div>
+          </div>
+
+          <div v-if="!isArkistoitu">
+            <div v-if="validation">
+              <div class="nimi pb-2 row" v-for="c in validationStats.categories" :key="c.category">
+                <div class="col-1">
+                  <fas class="text-success" icon="check-circle" v-if="c.failcount === 0"/>
+                  <fas class="text-danger" icon="info-circle" v-if="c.failcount > 0"/>
+                </div>
+                <div class="col">
+                  <span v-if="c.failcount === 0">{{ $t(c.category + "-validation-ok") }}</span>
+                  <span v-if="c.failcount > 0">{{ $t(c.category + "-validation-error") }}</span>
+                </div>
               </div>
             </div>
+            <ep-spinner v-else />
           </div>
-          <ep-spinner v-else />
         </ep-progress-popover>
       </div>
       <div class="info">
@@ -89,7 +100,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Prop, Mixins, Component } from 'vue-property-decorator';
-import { Lops2019ValidointiDto } from '@shared/api/ylops';
+import { Lops2019ValidointiDto, OpetussuunnitelmaKevytDtoTilaEnum } from '@shared/api/ylops';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
@@ -120,11 +131,8 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
 
-  private validation: Lops2019ValidointiDto | null = null;
-
   protected async init() {
     await this.store.init();
-    this.validation = await this.store.validate();
 
     if (this.store.opetussuunnitelma) {
       this.breadcrumb('opetussuunnitelma', this.store.opetussuunnitelma.nimi, { name: 'yleisnakyma' });
@@ -142,8 +150,13 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   }
 
   get slices() {
-    if (this.validation) {
-      return _.map(this.validationStats.categories, c => c.ok < c.total ? 0.4 : 1);
+    if (this.tila) {
+      if (this.isArkistoitu) {
+        return [0];
+      }
+      if (this.validation) {
+        return _.map(this.validationStats.categories, c => c.ok < c.total ? 0.4 : 1);
+      }
     }
   }
 
@@ -187,6 +200,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   async arkistoiOps() {
     if (await this.vahvista('arkistoi-' + this.tyyppi, 'arkistoi-kuvaus-' + this.tyyppi)) {
       await this.store.updateTila('poistettu');
+      this.$success(this.$t('tilan-vaihto-poistettu-onnistui') as string);
       this.$router.push({
         name: this.tyyppi + 'Listaus',
       });
@@ -215,6 +229,51 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     }
 
     return '';
+  }
+
+  get tila() {
+    if (this.julkaisut) {
+      if (this.isJulkaistu) {
+        return _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.JULKAISTU);
+      }
+
+      return _.toLower(this.ops?.tila);
+    }
+  }
+
+  get isLuonnos() {
+    return this.tila === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.LUONNOS);
+  }
+
+  get isJulkaistu() {
+    return (_.size(this.julkaisut) > 0 || this.ops?.tila === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.JULKAISTU)) && !this.isArkistoitu;
+  }
+
+  get isArkistoitu() {
+    return this.ops?.tila === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.POISTETTU);
+  }
+
+  get julkaisut() {
+    return this.store.julkaisut;
+  }
+
+  get validation() {
+    return this.store.validation;
+  }
+
+  async palauta() {
+    if (await this.vahvista('palauta-' + this.tyyppi, 'palauta-' + this.tyyppi + '-vahvistus')) {
+      await this.store.updateTila('luonnos');
+      this.$success(this.$t('tilan-vaihto-luonnos-onnistui') as string);
+    }
+  }
+
+  get arkistoituTyyppiTeksti() {
+    if (this.tyyppi === 'pohja') {
+      return 'voit-palauttaa-arkistoidun-pohjan-luonnostilaan';
+    }
+
+    return 'voit-palauttaa-arkistoidun-opetussuunnitelman-luonnostilaan';
   }
 }
 </script>
