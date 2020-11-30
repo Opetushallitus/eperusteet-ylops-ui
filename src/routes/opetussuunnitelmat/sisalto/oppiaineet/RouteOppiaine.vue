@@ -92,6 +92,7 @@ import { PerusteCache } from '@/stores/peruste';
 import _ from 'lodash';
 import EpOpintojaksonModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/opintojaksot/EpOpintojaksonModuuli.vue';
 import { isPaikallisestiSallittuLaajennos } from '@/utils/perusteet';
+import { koodiSorters } from '@shared/utils/perusteet';
 
 @Component({
   components: {
@@ -158,10 +159,20 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   }
 
   get opintojaksot() {
-    return _.filter(this.store.opintojaksot, (oj) => _(oj.oppiaineet)
-      .sortBy('koodi')
-      .map('koodi')
-      .includes(this.oppiaine!.koodi!.uri));
+    return _.chain(this.store.opintojaksot)
+      .filter(oj => _(oj.oppiaineet)
+        .sortBy('koodi')
+        .map('koodi')
+        .includes(this.oppiaine!.koodi!.uri))
+      .map(opintojakso => {
+        const ojOm: any = _.find(opintojakso.oppiaineet, { koodi: this.oppiaine!.koodi!.uri });
+        return {
+          ...opintojakso,
+          jarjestys: ojOm.jarjestys,
+        };
+      })
+      .sortBy('jarjestys', ...koodiSorters())
+      .value();
   }
 
   get pakollisetModuulit() {
