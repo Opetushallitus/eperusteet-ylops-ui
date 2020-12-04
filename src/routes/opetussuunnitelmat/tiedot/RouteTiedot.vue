@@ -89,10 +89,13 @@
               </ep-form-content>
             </div>
              <div class="col-md-6" v-if="hasContentFilters">
-              <ep-form-content name="sisallon-tuonti" v-if="features.opintojaksot">
+              <ep-form-content name="sisallon-tuonti" v-if="features.opintojaksot || features.oppimaarat">
                 <div>
-                  <ep-toggle v-model="data.tuoPohjanOpintojaksot" :is-editing="isEditing">
+                  <ep-toggle v-model="data.tuoPohjanOpintojaksot" :is-editing="isEditing" v-if="features.opintojaksot">
                     {{ $t('tuo-pohjan-organisaation-opintojaksot') }}
+                  </ep-toggle>
+                  <ep-toggle v-model="data.tuoPohjanOppimaarat" :is-editing="isEditing" v-if="features.oppimaarat">
+                    {{ $t('tuo-pohjan-organisaation-oppimaarat') }}
                   </ep-toggle>
                 </div>
               </ep-form-content>
@@ -199,6 +202,7 @@ export default class RouteTiedot extends EpOpsRoute {
     const koulutustyyppi = this.ops?.koulutustyyppi;
     return {
       opintojaksot: koulutustyyppi && isLukio(koulutustyyppi),
+      oppimaarat: koulutustyyppi && isLukio(koulutustyyppi),
     };
   }
 

@@ -188,7 +188,6 @@ export class OpetussuunnitelmaStore {
 
   public async saveTeksti(tov: Puu) {
     await OpetussuunnitelmanSisalto.updateTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!, tov);
-    success('tallennus-onnistui-tekstikappale');
     await this.updateSisalto();
   }
 
@@ -227,6 +226,10 @@ export class OpetussuunnitelmaStore {
 
   public async getPaikallinenOppiaine(id: number) {
     return (await Lops2019Oppiaineet.getLops2019PaikallinenOppiaine(this.opetussuunnitelma!.id!, id)).data;
+  }
+
+  public async getPaikallinenOppiaineTuotu(id: number) {
+    return (await Lops2019Oppiaineet.getLops2019PaikallinenOppiaineTuotu(this.opetussuunnitelma!.id!, id)).data;
   }
 
   public async getPaikallisetOppiaineet() {

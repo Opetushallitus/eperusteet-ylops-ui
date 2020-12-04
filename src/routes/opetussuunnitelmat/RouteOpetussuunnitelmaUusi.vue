@@ -89,6 +89,14 @@
           </ep-form-content>
 
         </ep-form-content>
+
+        <h2 class="mb-3">{{ $t('oppimaarat') }}</h2>
+        <ep-form-content name="ops-oppimaara-tuonti-kysymys" class="no-padding">
+          <b-form-group>
+            <b-form-radio v-model="uusi.tuoPohjanOppimaarat" name="oppimaaraTuonti" :value="true">{{$t('kylla')}}</b-form-radio>
+            <b-form-radio v-model="uusi.tuoPohjanOppimaarat" name="oppimaaraTuonti" :value="false">{{$t('ei')}}</b-form-radio>
+          </b-form-group>
+        </ep-form-content>
       </div>
 
       <div class="text-right">
@@ -177,6 +185,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       ryhmat: [],
     },
     tuoPohjanOpintojaksot: null as (boolean | null),
+    tuoPohjanOppimaarat: null as (boolean | null),
     ainepainoitteinen: false,
     vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
   };
@@ -244,6 +253,10 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   }
 
   pohjatFilter(pohjat) {
+    if (!pohjat) {
+      return undefined;
+    }
+
     return _.chain(pohjat)
       .filter(pohja => pohja.tila !== 'POISTETTU')
       .filter(pohja => isOpsToteutusSupported(pohja))
@@ -271,6 +284,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
         ainepainoitteinen: this.uusi.ainepainoitteinen,
         vuosiluokkakokonaisuudet: this.uusi.vuosiluokkakokonaisuudet,
         tuoPohjanOpintojaksot: this.uusi.tuoPohjanOpintojaksot ? this.uusi.tuoPohjanOpintojaksot : false,
+        tuoPohjanOppimaarat: this.uusi.tuoPohjanOppimaarat ? this.uusi.tuoPohjanOppimaarat : false,
       };
 
       // FIXME: #swagger
