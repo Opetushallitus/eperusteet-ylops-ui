@@ -182,14 +182,28 @@ export default class OpsSidenav extends EpOpsComponent {
               i18key: 'oppimaarat',
             },
             flatten: true,
-            children: _.map(this.paikallisetOppiaineetByPerusteenOppiaineenKoodi[oppimaara.koodi?.uri!], poa => paikallinenOppiaineLinkki(
-              'oppimaara',
-              poa,
-              this.opintojaksoModuuliLista({
-                id: poa.id!,
-                koodi: poa.koodi!,
+            children: _.chain(this.paikallisetOppiaineetByPerusteenOppiaineenKoodi[oppimaara.koodi?.uri!])
+              .map(poa => paikallinenOppiaineLinkki(
+                'oppimaara',
+                poa,
+                this.opintojaksoModuuliLista({
+                  id: poa.id!,
+                  koodi: poa.koodi!,
+                })
+              ))
+              .map(item => {
+                return {
+                  ...item,
+                  jarjestys: _.get(
+                    _.find(this.oppiaineJarjestykset, {
+                      koodi: _.get(item, 'item.objref.koodi.uri') || _.get(item, 'item.objref.koodi'),
+                    }),
+                    'jarjestys'
+                  ),
+                };
               })
-            )),
+              .sortBy('jarjestys', ...koodiSorters())
+              .value(),
           });
         }
 

@@ -28,6 +28,9 @@ export function lops2019Validators() {
     tuoPohjanOpintojaksot: {
       required,
     },
+    tuoPohjanOppimaarat: {
+      required,
+    },
   };
 }
 

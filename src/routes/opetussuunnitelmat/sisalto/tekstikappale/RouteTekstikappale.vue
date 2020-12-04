@@ -267,6 +267,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
         ...ohje,
         kohde: tov.tekstiKappale.tunniste,
       })));
+      success('tallennus-onnistui-tekstikappale');
     }
   }
 

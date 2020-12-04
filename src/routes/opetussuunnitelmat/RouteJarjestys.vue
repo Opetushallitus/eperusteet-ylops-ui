@@ -75,6 +75,7 @@ import { sortedOppiaineet } from '../../utils/opetussuunnitelmat';
 import { PerusteCache } from '@/stores/peruste';
 import { KoulutustyyppiToteutus } from '@shared/tyypit';
 import { koodiAlku, koodiNumero, koodiSorters } from '@shared/utils/perusteet';
+import { success } from '@/utils/notifications';
 
 function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKappaleViiteKevytDto | null {
   if (!root) {
@@ -365,6 +366,8 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
         await this.store.init();
       }
     }
+
+    success('tallennus-onnistui-jarjestys');
   }
 
   get hasPohja() {

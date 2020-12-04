@@ -5,6 +5,16 @@
                 :validator="validator"
                 :versionumero="versionumero"
                 type="paikallinen-oppiaine">
+    <template slot="muokkaa-content" slot-scope="{ data }" v-if="tuotuOppimaara">
+      <div class="muokkaus-esto align-self-center">
+        {{$t('et-voi-muokata-pohjan-oppimaaraa')}}
+        <div class="d-inline">
+          <b-button @click="remove(data)" variant="link" id="muokkaus-esto">
+            {{ $t('poista-oppimaara') }}
+          </b-button>
+        </div>
+      </div>
+    </template>
     <template slot="header" slot-scope="{ data, }">
       <h2>{{ $kaanna(data.nimi) }}</h2>
     </template>
@@ -178,6 +188,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
   };
 
   private perusteCache: PerusteCache | null = null;
+  private tuotuOppimaara = false;
 
   async mounted() {
     this.perusteCache = await PerusteCache.of(this.opsId);
@@ -202,7 +213,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
   }
 
   async revisions() {
-    if (await this.isUusi()) {
+    if (await this.isUusi() || this.tuotuOppimaara) {
       return [];
     }
     else {
@@ -279,13 +290,21 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
     let paikallinen = defaults.oppiaine();
     if (!await this.isUusi()) {
       const { paikallinenOppiaineId } = this.$route.params;
-      const revisions = await this.store.getPaikallinenOppiaineenHistoria(_.parseInt(paikallinenOppiaineId));
-      const rev = revisions[revisions.length - this.versionumero];
-      if (this.versionumero && rev) {
-        paikallinen = await this.store.getPaikallinenOppiaineVersion(_.parseInt(paikallinenOppiaineId), rev.numero as number);
+
+      const tuotu = await this.store.getPaikallinenOppiaineTuotu(_.parseInt(paikallinenOppiaineId));
+      if (tuotu) {
+        paikallinen = tuotu;
+        this.tuotuOppimaara = true;
       }
       else {
-        paikallinen = await this.store.getPaikallinenOppiaine(_.parseInt(paikallinenOppiaineId));
+        const revisions = await this.store.getPaikallinenOppiaineenHistoria(_.parseInt(paikallinenOppiaineId));
+        const rev = revisions[revisions.length - this.versionumero];
+        if (this.versionumero && rev) {
+          paikallinen = await this.store.getPaikallinenOppiaineVersion(_.parseInt(paikallinenOppiaineId), rev.numero as number);
+        }
+        else {
+          paikallinen = await this.store.getPaikallinenOppiaine(_.parseInt(paikallinenOppiaineId));
+        }
       }
     }
 
@@ -362,6 +381,16 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
 }
 
 .block-container {
+}
+
+.muokkaus-esto {
+  font-size: 0.8rem;
+  color: $gray-lighten-1;
+
+  .lisainfo {
+    color: $blue-lighten-5;
+    cursor: pointer;
+  }
 }
 
 </style>

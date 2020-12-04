@@ -85,6 +85,9 @@ export default class RoutePoistetut extends Mixins(EpOpsRoute) {
     }, {
       otsikko: 'tekstikappaleet',
       poistetut: this.tekstikappaleet,
+    }, {
+      otsikko: 'tuodut-oppimaarat',
+      poistetut: this.tuodutOppimaarat,
     },
     ], tab => _.size(tab.poistetut) > 0);
   }
@@ -107,6 +110,10 @@ export default class RoutePoistetut extends Mixins(EpOpsRoute) {
 
   get opintojaksot() {
     return _.filter(this.poistetut, p => p.tyyppi as string === 'opintojakso');
+  }
+
+  get tuodutOppimaarat() {
+    return _.filter(this.poistetut, p => p.tyyppi as string === 'tuotu_oppimaara');
   }
 
   async fetchPoistetut() {

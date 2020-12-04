@@ -68,7 +68,8 @@ const splitKoodi = _.memoize((arvo: string) => {
 });
 
 export function getArvo(koodillinen: any) {
-  return _.get(koodillinen, 'koodi.arvo')
+  return _.get(koodillinen, 'item.objref.koodi')
+    || _.get(koodillinen, 'koodi.arvo')
     || _.get(koodillinen, 'arvo')
     || _.get(koodillinen, 'koodi.uri')
     || _.get(koodillinen, 'uri')
