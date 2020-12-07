@@ -262,6 +262,7 @@ export default class EpContent extends Mixins(EpValidation) {
     width: 100%;
 
     td, th {
+      vertical-align: top;
       border: 1px solid #ddd;
       padding: 4px;
     }
@@ -292,6 +293,7 @@ export default class EpContent extends Mixins(EpValidation) {
   .content-valid /deep/ .form-control {
     border-color: $valid;
   }
+
 }
 
 // Piilotettu Bootstrapissa oletuksena
