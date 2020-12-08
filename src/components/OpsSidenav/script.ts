@@ -426,6 +426,8 @@ export default class OpsSidenav extends EpOpsComponent {
       ];
     }
 
+    menuOpsData = _.sortBy(menuOpsData, data => data.item.order ? data.item.order : '0');
+
     return menuOpsData;
   }
 

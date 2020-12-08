@@ -21,7 +21,8 @@ export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
       item: {
         type: 'tekstikappale',
         objref: lapsi.tekstiKappale,
-        prefix: chapter,
+        prefix: lapsi.liite ? '' : chapter,
+        order: lapsi.liite ? '99' : '0',
       },
       route: {
         name: 'tekstikappale',
