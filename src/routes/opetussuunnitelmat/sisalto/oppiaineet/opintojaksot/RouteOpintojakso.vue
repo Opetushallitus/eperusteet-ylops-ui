@@ -101,27 +101,27 @@
                   </span>
                 </ep-toggle>
               </div>
-              <div v-if="oa.isModuuliton">
-                <ep-form-content name="laajuus">
+              <div class="moduulit" v-if="!oa.isModuuliton">
+                <div class="moduuli" v-for="(moduuli, index) in oppiaineidenModuulitMap[oa.koodi].moduulit" :key="index+'oppiaineetMap.moduulit'">
+                  <ep-opintojakson-moduuli
+                    :moduuli="moduuli"
+                    :is-editing="true"
+                    v-model="data.moduulit"
+                    :opetussuunnitelmaStore="opetussuunnitelmaStore"/>
+                </div>
+              </div>
+              <div class="col-md-4 mt-3 px-0">
+                <ep-form-content :name="oa.isModuuliton ? 'laajuus' : 'lisalaajuus'">
                   <ep-field
                     type="number"
-                    help="oppainekohtainen-laajuus-opintojaksossa"
+                    :help="oa.isModuuliton ? 'oppainekohtainen-laajuus-opintojaksossa' : 'oppainekohtainen-lisalaajuus-opintojaksossa'"
                     :validation="validation.oppiaineet.$each.$iter[index].laajuus"
                     v-model="oa.laajuus"
                     :is-header="false"
-                    :is-editing="isEditing"></ep-field>
+                    :is-editing="isEditing">
+                    {{ $t('op') }}
+                  </ep-field>
                 </ep-form-content>
-              </div>
-              <div v-else>
-                <div class="moduulit">
-                  <div class="moduuli" v-for="(moduuli, index) in oppiaineidenModuulitMap[oa.koodi].moduulit" :key="index+'oppiaineetMap.moduulit'">
-                    <ep-opintojakson-moduuli
-                      :moduuli="moduuli"
-                      :is-editing="true"
-                      v-model="data.moduulit"
-                      :opetussuunnitelmaStore="opetussuunnitelmaStore"/>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -345,7 +345,7 @@ import EpList from '@shared/components/forms/EpList.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019OpintojaksonOppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat } from '@shared/api/ylops';
+import { Lops2019OpintojaksonOppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat, Lops2019OpintojaksonModuuliDto } from '@shared/api/ylops';
 import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import * as _ from 'lodash';
@@ -406,6 +406,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       restore: this.restore,
     },
   };
+  private tempModules: Lops2019OpintojaksonModuuliDto[] | undefined = undefined;
 
   get laajaAlaisetSorted() {
     return _.sortBy(this.laajaAlaisetKoodit, 'koodiArvo');
@@ -736,13 +737,14 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private toggleLaajuus(oa, value) {
     oa.isModuuliton = value;
     if (value) {
+      this.tempModules = this.editable!.moduulit!.length > 0 ? this.editable?.moduulit : undefined;
       this.editable!.moduulit = _.reject(this.editable!.moduulit, moduuli => {
         const moduulikoodit = _.map(this.oppiaineidenModuulitMap[oa.koodi].moduulit, 'koodi.uri');
         return _.includes(moduulikoodit, moduuli.koodiUri);
       }) as any[];
     }
-    else {
-      oa.laajuus = 0;
+    else if (this.tempModules) {
+      this.editable!.moduulit = this.tempModules;
     }
   }
 
@@ -842,16 +844,10 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   isModuuliton(oa: OpintojaksonOppiaine) {
-    return !_.isNil(oa.laajuus) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi]) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi].moduulit);
+    return _.isEmpty(this.editable?.moduulit) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi]) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi].moduulit);
   }
 
   async save(opintojakso: Lops2019OpintojaksoDto) {
-    _.forEach(opintojakso.oppiaineet, oa => {
-      if (!(oa as any).isModuuliton) {
-        oa.laajuus = null as any;
-      }
-    });
-
     if (await this.isUusi()) {
       const uusi = await this.store.addOpintojakso(opintojakso);
       return () => {
@@ -867,6 +863,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     else {
       await this.store.saveOpintojakso(opintojakso);
     }
+    this.tempModules = undefined;
   }
 }
 </script>
