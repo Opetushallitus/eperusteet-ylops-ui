@@ -118,8 +118,9 @@
                     :validation="validation.oppiaineet.$each.$iter[index].laajuus"
                     v-model="oa.laajuus"
                     :is-header="false"
-                    :is-editing="isEditing"
-                    :suffix="'op'" />
+                    :is-editing="isEditing">
+                    {{ $t('op') }}
+                  </ep-field>
                 </ep-form-content>
               </div>
             </div>
