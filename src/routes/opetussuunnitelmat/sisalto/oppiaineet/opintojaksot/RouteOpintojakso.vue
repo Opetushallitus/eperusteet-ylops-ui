@@ -148,6 +148,11 @@
                 </div>
               </div>
             </div>
+            <div class="mt-3" v-if="!isEditing">
+              <ep-form-content name="lisalaajuus">
+                <span>{{ lisaLaajuus }} {{ $t('op') }}</span>
+              </ep-form-content>
+            </div>
           </div>
         </div>
         <div class="osio" v-if="editable.paikallisetOpintojaksot.length > 0 || (isEditing && paikallistenOppiaineidenOpintojaksot.length > 0)">
@@ -732,6 +737,10 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .filter(oppiaineOpintojakso => !_.isEmpty(oppiaineOpintojakso.opintojaksot))
       .sortBy(...koodiSorters() as any[])
       .value();
+  }
+
+  get lisaLaajuus() {
+    return this.editable!.oppiaineet!.reduce((acc, { laajuus }) => acc + laajuus!, 0);
   }
 
   private toggleLaajuus(oa, value) {
