@@ -16,7 +16,7 @@
                 v-model="data.tekstikappaleet.lapset"
                 child-field="lapset"
                 group="sisalto"
-                :sortable="!hasPohja">
+                :sortable="true">
               <template #default="{ node }">
                 <span v-if="isEditing">
                   {{ $kaanna(node.tekstiKappale.nimi) }}
