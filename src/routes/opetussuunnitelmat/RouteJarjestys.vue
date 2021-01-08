@@ -15,6 +15,7 @@
                 :is-editable="isEditing"
                 v-model="data.tekstikappaleet.lapset"
                 child-field="lapset"
+                rootGroup="root"
                 group="sisalto"
                 :sortable="true">
               <template #default="{ node }">
