@@ -68,7 +68,7 @@
                     </div>
                     <div class="info">
                       <div class="nimi">
-                        {{ $kaanna(ops.nimi, true) }}
+                        {{ $kaanna(ops.nimi, false, false) }}
                       </div>
                     </div>
                   </router-link>
@@ -81,7 +81,7 @@
                   </div>
                   <div class="info">
                     <div class="nimi">
-                      {{ $kaanna(ops.nimi) }}
+                      {{ $kaanna(ops.nimi, false, false) }}
                     </div>
                   </div>
                 </div>
@@ -110,7 +110,7 @@
                     </div>
                     <div class="info d-flex flex-column justify-content-between">
                       <div class="nimi">
-                        {{ $kaanna(ops.nimi) }}
+                        {{ $kaanna(ops.nimi, false, false) }}
                       </div>
                       <div v-if="ops.julkaisu" class="nimi">
                         <hr />
