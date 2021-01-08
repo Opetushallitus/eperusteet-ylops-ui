@@ -150,7 +150,7 @@
             </div>
             <div class="mt-3" v-if="!isEditing">
               <ep-form-content name="lisalaajuus">
-                <span>{{ lisaLaajuus }} {{ $t('op') }}</span>
+                <span>{{ lisalaajuus }} {{ $t('op') }}</span>
               </ep-form-content>
             </div>
           </div>
@@ -512,6 +512,9 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     if (!_.isEmpty(this.editable!.moduulit) && !_.isEmpty(this.editable!.paikallisetOpintojaksot)) {
       return `(${this.$t('johdetaan-moduuleista-ja-opintojaksoista')})`;
     }
+    else if (!_.isEmpty(this.editable!.moduulit) && this.lisalaajuus > 0) {
+      return `(${_.toLower(this.$t('moduulit') as string)} ${this.laajuusModuuleista} ${this.$t('op')}, ${_.toLower(this.$t('lisalaajuus') as string)} ${this.lisalaajuus} ${this.$t('op')})`;
+    }
     else if (!_.isEmpty(this.editable!.moduulit)) {
       return `(${this.$t('johdetaan-moduuleista')})`;
     }
@@ -739,8 +742,12 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .value();
   }
 
-  get lisaLaajuus() {
+  get lisalaajuus() {
     return this.editable!.oppiaineet!.reduce((acc, { laajuus }) => acc + laajuus!, 0);
+  }
+
+  get laajuusModuuleista(): number {
+    return this.laajuus - this.lisalaajuus;
   }
 
   private toggleLaajuus(oa, value) {
