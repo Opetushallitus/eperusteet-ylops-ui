@@ -51,6 +51,7 @@ import { AikatauluStore } from './stores/aikataulu';
 import { Kommentit } from '@/stores/kommentit';
 import VueApexCharts from 'vue-apexcharts';
 import { getCasKayttajaKieli } from '@shared/api/common';
+import { Opetussuunnitelmat } from '@shared/api/ylops';
 
 Vue.use(Router);
 Vue.use(VueTutorial, { tutoriaalistore });
@@ -82,6 +83,23 @@ export const router = new Router({
       },
     },
     children: [{
+      name: 'vaihdapohja',
+      path: 'admin/vaihdapohja/:opsId/:pohjaId',
+      redirect: async (to) => {
+        const opsId = Number(to.params.opsId);
+        const pohjaId = Number(to.params.pohjaId);
+        try {
+          await Opetussuunnitelmat.vaihdaPohja(opsId, pohjaId);
+          console.log('pohja vaihdettu');
+        }
+        catch (err) {
+          console.error(err);
+        }
+        return {
+          name: 'root',
+        };
+      },
+    }, {
       path: '',
       name: 'root',
       component: Home,
