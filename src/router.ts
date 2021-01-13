@@ -85,16 +85,10 @@ export const router = new Router({
     children: [{
       name: 'vaihdapohja',
       path: 'admin/vaihdapohja/:opsId/:pohjaId',
-      redirect: async (to) => {
+      redirect: (to) => {
         const opsId = Number(to.params.opsId);
         const pohjaId = Number(to.params.pohjaId);
-        try {
-          await Opetussuunnitelmat.vaihdaPohja(opsId, pohjaId);
-          console.log('pohja vaihdettu');
-        }
-        catch (err) {
-          console.error(err);
-        }
+        Opetussuunnitelmat.vaihdaPohja(opsId, pohjaId);
         return {
           name: 'root',
         };
