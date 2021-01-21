@@ -122,7 +122,7 @@ export default class OpsSidenav extends EpOpsComponent {
   private opintojaksoModuuliLista(source: OpintojaksoModuuliSource) {
     const result: SideMenuEntry[] = [];
     const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(this.opintojaksot, source);
-    if (!isPaikallisestiSallittuLaajennos(source.koodi)) {
+    if (!isPaikallisestiSallittuLaajennos(source.koodi) || _.size(oppiaineenOpintojaksot) > 0) {
       result.push({
         item: {
           type: 'staticlink',
@@ -131,11 +131,12 @@ export default class OpsSidenav extends EpOpsComponent {
         flatten: true,
         children: [
           ...oppiaineenOpintojaksot,
-          oppimaaraUusiLinkki(source),
+          ...(!isPaikallisestiSallittuLaajennos(source.koodi) ? [oppimaaraUusiLinkki(source)] : []),
         ],
       });
     }
-    else {
+
+    if (isPaikallisestiSallittuLaajennos(source.koodi)) {
       result.push({
         item: {
           type: 'uusi-paikallinen-oppiaine',
