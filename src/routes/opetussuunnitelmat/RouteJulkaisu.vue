@@ -83,7 +83,7 @@
                     layout="simplified"
                     :is-editable="true"
                     class="mb-4" />
-        <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'" :showSpinner="julkaisuLoading" :disabled="!uusiJulkaisu.julkaisutiedote[sisaltoKieli]">{{ $t('julkaise') }}</ep-button>
+        <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'" :showSpinner="julkaisuLoading">{{ $t('julkaise') }}</ep-button>
       </ep-collapse>
     </div>
     <div class="vaihe">
