@@ -1,59 +1,66 @@
 <template>
-<ep-main-view :tutoriaalistore="tutoriaalistore">
-  <template slot="icon">
-    <ep-icon class="float-right" icon="tiedotteet" background-color="#000000">
-    </ep-icon>
-  </template>
-  <template slot="header">
-    <h1>{{ $t('tiedotteet') }}</h1>
-
-    <ep-linkki v-if="url"
-               :url="url"
-               v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
-      {{ $t('siirry-muokkaamaan-tiedotteita') }}
-    </ep-linkki>
-
-    <p>{{ $t('tiedotteet-kuvaus-nakyma') }}</p>
-  </template>
-  <template slot="custom-content">
-    <ep-spinner v-if="isLoading">
-    </ep-spinner>
-    <div v-else>
-      <!-- Rajaimet-->
-      <div class="row">
-        <div class="col">
-          <ep-search class="mb-3" v-model="rajain" @input="updateSearch">
-          </ep-search>
-        </div>
+  <ep-main-view :tutoriaalistore="tutoriaalistore" :container="true">
+    <template slot="header">
+      <div class="d-flex justify-content-between mt-5">
+        <h1>{{ $t('tiedotteet') }}</h1>
+        <ep-linkki
+          :url="url"
+          v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
+          <div class="d-flex">
+            <span class="icon">
+              <fas icon="plussa"></fas>
+            </span>
+            <span class="ml-2 link-text">{{ $t('lisaa-tiedote') }}</span>
+          </div>
+        </ep-linkki>
       </div>
-      <!-- Tiedotteet-->
-      <div class="row" v-if="!hasTiedotteet">
-        <div class="col">
-          <p>{{ $t('ei-hakutuloksia') }}</p>
+    </template>
+    <template>
+      <ep-spinner v-if="isLoading">
+      </ep-spinner>
+      <div v-else>
+        <!-- Rajaimet-->
+        <div class="row">
+          <div class="col">
+            <ep-search class="mb-3" v-model="rajain" @input="updateSearch">
+            </ep-search>
+          </div>
         </div>
-      </div>
-      <div class="row mt-3" v-for="(tiedote, idx) in tiedotteet" :key="tiedote.id">
-        <div class="col">
-          <div>
-            <p class="text-secondary m-0">{{ $sd(tiedote.luotu) }}</p>
-            <ep-collapse class="mb-2" :default-state="false" :border-bottom="!(idx === tiedotteet.length - 1)" :use-padding="false">
-              <div slot="header"><h2>{{ $kaanna(tiedote.otsikko) }}</h2></div>
-              <div v-if="$kaanna(tiedote.sisalto)" v-html="$kaanna(tiedote.sisalto)"></div>
-            </ep-collapse>
+        <!-- Tiedotteet-->
+        <div class="row" v-if="!hasTiedotteet">
+          <div class="col">
+            <p>{{ $t('ei-hakutuloksia') }}</p>
+          </div>
+        </div>
+        <ep-content-read-more
+          v-for="tiedote in tiedotteet"
+          :key="tiedote.id"
+          :content="tiedote.sisalto">
+          <template #preHeading>
+            <p>{{ $sdt(tiedote.luotu) }}</p>
+          </template>
+          <template #heading>
+            <h2 class="font-weight-normal">{{ $kaanna(tiedote.otsikko) }}</h2>
+          </template>
+        </ep-content-read-more>
+        <!-- Paginaatio-->
+        <div class="row" v-if="hasTiedotteet">
+          <!--div.col.col-fixed-->
+          <div class="col">
+            <b-pagination
+              class="justify-content-center"
+              v-model="sivu"
+              :per-page="sivukoko"
+              :total-rows="kokonaismaara"
+              :limit="10"
+              @input="update"
+              aria-controls="tiedotteet">
+            </b-pagination>
           </div>
         </div>
       </div>
-      <!-- Paginaatio-->
-      <div class="row" v-if="hasTiedotteet">
-        <!--div.col.col-fixed-->
-        <div class="col">
-          <b-pagination class="justify-content-center" v-model="sivu" :per-page="sivukoko" :total-rows="kokonaismaara" :limit="10" @input="update" aria-controls="tiedotteet">
-          </b-pagination>
-        </div>
-      </div>
-    </div>
-  </template>
-</ep-main-view>
+    </template>
+  </ep-main-view>
 </template>
 
 <script lang="ts">
@@ -75,6 +82,7 @@ import EpRoute from '@/mixins/EpRoot';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
+import EpContentReadMore from '@shared/components/EpContentReadMore/EpContentReadMore.vue';
 import { Ulkopuoliset } from '@shared/api/ylops';
 
 @Component({
@@ -91,6 +99,7 @@ import { Ulkopuoliset } from '@shared/api/ylops';
     EpNavigation,
     EpSearch,
     EpSpinner,
+    EpContentReadMore,
   },
 })
 export default class RouteTiedotteet extends Mixins(EpRoute) {
@@ -146,8 +155,22 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
 </script>
 
 <style scoped lang="scss">
-h2 {
+@import '@shared/styles/_variables.scss';
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 24px;
+  width: 24px;
+  border-radius: 100%;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  background-color: #3367E3;
+}
+
+.link-text {
   font-size: 1rem;
-  font-weight: 500;
+  color: $black;
 }
 </style>
