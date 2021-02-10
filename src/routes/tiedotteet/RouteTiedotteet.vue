@@ -26,6 +26,7 @@ import _ from 'lodash';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kielet } from '@shared/stores/kieli';
 import { julkaisupaikka } from '@shared/utils/tiedote';
+import { Debounced } from '@shared/utils/delay';
 
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpTiedoteView from '@shared/components/EpTiedoteView/EpTiedoteView.vue';
@@ -47,9 +48,6 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
   private sivu = 1;
   private sivukoko = 5;
   private kokonaismaara = 0;
-  private debounceUpdateSearch = _.debounce(() => {
-    this.update();
-  }, 300);
 
   @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
@@ -62,9 +60,10 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
     return Kielet.getSisaltoKieli.value;
   }
 
-  private updateSearch() {
+  @Debounced(300)
+  async updateSearch() {
     this.sivu = 1;
-    this.debounceUpdateSearch();
+    this.update();
   }
 
   async update() {
