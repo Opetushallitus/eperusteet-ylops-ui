@@ -38,7 +38,7 @@ module.exports = {
     '^.+\\.jsx?$': 'babel-jest',
   },
   'transformIgnorePatterns': [
-    '/node_modules/(?!(@katex|vue-masonry|lodash-es|bootstrap-vue)/)',
+    '/node_modules/(?!(@katex|vue-masonry|lodash-es|bootstrap-vue|vuelidate-property-decorators)/)',
   ],
   moduleNameMapper: {
     '^@shared/(.*)$': '<rootDir>/eperusteet-frontend-utils/vue/src/$1',
