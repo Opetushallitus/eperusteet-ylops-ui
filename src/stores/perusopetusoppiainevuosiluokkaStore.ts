@@ -64,6 +64,7 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
         }), 'vuosiluokanSisaltoalue'),
       },
       perusteenTavoitteet: _.chain(perusteenVlk.tavoitteet)
+        .filter(tavoite => !!vuosiluokanTavoitteet[tavoite.tunniste as string])
         .map(tavoite => {
           return {
             ...tavoite,
