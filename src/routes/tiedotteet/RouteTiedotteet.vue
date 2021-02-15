@@ -44,9 +44,9 @@ import { Ulkopuoliset } from '@shared/api/ylops';
 })
 export default class RouteTiedotteet extends Mixins(EpRoute) {
   private rajain = '';
-  private tiedotteet: any[] = [];
+  private tiedotteet: any[] | null = null;
   private sivu = 1;
-  private sivukoko = 5;
+  private sivukoko = 10;
   private kokonaismaara = 0;
 
   @Prop({ required: true })
@@ -67,6 +67,7 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
   }
 
   async update() {
+    this.tiedotteet = null;
     const tiedotteetHaku = ((await Ulkopuoliset.getTiedotteetHaku(
       this.sivu - 1,
       this.sivukoko,
