@@ -81,6 +81,7 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
                         kaytaOmaaKuvausta: vlSisaltoalue.omaKuvaus !== null,
                       } as any;
                     })
+                    .sortBy('id')
                     .head()
                     .value(),
                 };
