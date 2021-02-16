@@ -7,9 +7,18 @@
       <template v-slot:piilotettu>
         <div>{{$t('oavlk-on-piilotettu')}}</div>
       </template>
-      <template v-slot:default="{ data, isEditing, isCopyable }">
+      <template v-slot:default="{ data, isEditing, isCopyable, validation }">
 
         <div v-if="!data.perusteenOppiaine" class="alert alert-danger">{{$t('ei-perustetta-info')}}</div>
+
+        <ep-form-content :name="'oppimaaran-nimi'" v-if="isOppiaineUskontoTaiVierasKieli && isEditing">
+          <ep-field
+            v-model="data.oppiaine.nimi"
+            :is-header="true"
+            :is-editing="isEditing"
+            :validation="validation.oppiaine.nimi"
+            :showValidValidation="false"/>
+        </ep-form-content>
 
         <vuosiluokka-sisalto-teksti :perusteObject="perusteenOppiaine.tehtava"
                                     :vlkObject="data.oppiaine.tehtava"
@@ -121,8 +130,10 @@ import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
-import { isOppiaineUskontoTaiKieli } from '@/utils/opetussuunnitelmat';
+import { isOppiaineUskontoTaiVierasKieli } from '@/utils/opetussuunnitelmat';
 import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpField from '@shared/components/forms/EpField.vue';
 
 @Component({
   components: {
@@ -132,6 +143,8 @@ import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.
     EpContent,
     EpAlert,
     EpOppimaaraLisays,
+    EpFormContent,
+    EpField,
   },
 })
 export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsComponent) {
@@ -179,6 +192,23 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
 
   get perusteenVuosiluokkakokonaisuus() {
     return this.editointiStore?.data.value.perusteenVuosiluokkakokonaisuus || {};
+  }
+
+  get oppiaine() {
+    return this.editointiStore?.data.value.oppiaine;
+  }
+
+  get oppimaaranOppiaine() {
+    return _.get(
+      _.find(this.ops.oppiaineet, oppiaine =>
+        _.includes(_.map(oppiaine.oppiaine?.oppimaarat, 'tunniste'), this.oppiaine.tunniste)),
+      'oppiaine');
+  }
+
+  get isOppiaineUskontoTaiVierasKieli() {
+    if (this.oppimaaranOppiaine) {
+      return isOppiaineUskontoTaiVierasKieli(this.oppimaaranOppiaine);
+    }
   }
 }
 </script>
