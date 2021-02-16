@@ -6,6 +6,7 @@ import { Kielet } from '@shared/stores/kieli';
 import { Revision } from '@shared/tyypit';
 import { isOppiaineUskontoTaiKieli } from '@/utils/opetussuunnitelmat';
 import { createLogger } from '@shared/utils/logger';
+import { requiredLokalisoituTeksti } from '@shared/validators/required';
 
 const logger = createLogger('PerusopetusoppiaineStore');
 
@@ -85,6 +86,8 @@ export class PerusopetusoppiaineStore implements IEditoitava {
 
     data.vuosiluokkakokonaisuus = (await OppiaineenVuosiluokkakokonaisuudet
       .updateVuosiluokkakokonaisuudenSisalto(this.opsId, this.oppiaineId, data.vuosiluokkakokonaisuus.id, data.vuosiluokkakokonaisuus)).data;
+
+    await this.el.resetOps();
     return data;
   }
 
@@ -161,7 +164,13 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   public readonly validator = computed(() => {
-    return {};
+    return {
+      oppiaine: {
+        nimi: {
+          ...requiredLokalisoituTeksti(),
+        },
+      },
+    };
   });
 
   public features(data) {
