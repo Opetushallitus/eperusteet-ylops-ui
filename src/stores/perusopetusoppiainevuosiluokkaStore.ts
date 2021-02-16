@@ -86,9 +86,7 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
                     .value(),
                 };
               })
-              .filter(sisaltoalue => sisaltoalue.sisaltoalueet
-                  && vuosiluokanSisaltoalueet[sisaltoalue.sisaltoalueet.tunniste]
-                  && vuosiluokanSisaltoalueet[sisaltoalue.sisaltoalueet.tunniste].piilotettu)
+              .filter(sisaltoalue => vuosiluokanSisaltoalueet[sisaltoalue.tunniste] && !vuosiluokanSisaltoalueet[sisaltoalue.tunniste].piilotettu)
               .sortBy([(sisaltoalue: any) => {
                 return sisaltoalue.nimi[Kielet.getSisaltoKieli.value];
               }])
