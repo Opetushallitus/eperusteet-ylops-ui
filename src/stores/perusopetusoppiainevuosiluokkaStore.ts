@@ -81,11 +81,12 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
                         kaytaOmaaKuvausta: vlSisaltoalue.omaKuvaus !== null,
                       } as any;
                     })
+                    .sortBy('id')
                     .head()
                     .value(),
                 };
               })
-              .filter(sisaltoalue => sisaltoalue.vuosiluokanSisaltoalue && !sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.piilotettu)
+              .filter(sisaltoalue => vuosiluokanSisaltoalueet[sisaltoalue.sisaltoalueet.tunniste] && vuosiluokanSisaltoalueet[sisaltoalue.sisaltoalueet.tunniste].piilotettu)
               .sortBy([(sisaltoalue: any) => {
                 return sisaltoalue.nimi[Kielet.getSisaltoKieli.value];
               }])
