@@ -144,7 +144,7 @@ import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
-import { isLukio } from '@shared/utils/perusteet';
+import { isLukio, koulutustyyppiTheme } from '@shared/utils/perusteet';
 import { OpetussuunnitelmaInfoDtoToteutusEnum, OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 
 @Component({
@@ -219,21 +219,14 @@ export default class RouteTiedot extends EpOpsRoute {
       const ops = await this.store.get();
       return {
         ...ops,
-        perusteUrl: buildEsikatseluUrl(this.kieli, `/${this.opintopolkuOhjausUrl[_.toString(ops.toteutus)]}/${ops.perusteenId}/tiedot`),
-        opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}/${this.opintopolkuOhjausUrl[_.toString(ops.toteutus)]}/tiedot`),
+        perusteUrl: buildEsikatseluUrl(this.kieli, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/${ops.perusteenId}/tiedot`),
+        opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}/${koulutustyyppiTheme(ops.koulutustyyppi!)}/tiedot`),
       };
     }
   }
 
   private async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
     await this.store.save(opetussuunnitelma);
-  }
-
-  get opintopolkuOhjausUrl() {
-    return {
-      'perusopetus': 'perusopetus',
-      'lops2019': 'lukiokoulutus',
-    };
   }
 }
 </script>
