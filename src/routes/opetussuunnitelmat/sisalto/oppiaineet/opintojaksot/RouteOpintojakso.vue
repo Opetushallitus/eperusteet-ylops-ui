@@ -114,7 +114,7 @@
                 <ep-form-content :name="oa.isModuuliton ? 'laajuus' : 'lisalaajuus'">
                   <ep-field
                     type="number"
-                    :help="oa.isModuuliton ? 'oppainekohtainen-laajuus-opintojaksossa' : 'oppainekohtainen-lisalaajuus-opintojaksossa'"
+                    :help="oa.isModuuliton ? 'oppiainekohtainen-laajuus-opintojaksossa' : 'oppiainekohtainen-lisalaajuus-opintojaksossa-kuvaus'"
                     :validation="validation.oppiaineet.$each.$iter[index].laajuus"
                     v-model="oa.laajuus"
                     :is-header="false"
