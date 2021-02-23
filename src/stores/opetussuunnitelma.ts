@@ -206,7 +206,7 @@ export class OpetussuunnitelmaStore {
   public async julkaise(julkaisu: UusiJulkaisuDto) {
     try {
       const tallennettuJulkaisu = (await Opetussuunnitelmat.julkaise(this.opetussuunnitelma!.id!, julkaisu)).data;
-      this.julkaisut!.unshift(tallennettuJulkaisu);
+      this.julkaisut = [tallennettuJulkaisu, ...this.julkaisut!];
     }
     catch (err) {
       fail('julkaisu-epaonnistui', err.response.data.syy);
