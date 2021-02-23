@@ -62,6 +62,11 @@
               </ep-datepicker>
             </ep-form-content>
           </div>
+          <div class="col-md-6" v-if="isOps && julkaisuhistoria && julkaisuhistoria.length > 0">
+            <ep-form-content name="esikatsele-opetussuunnitelmaa">
+              <ep-external-link :url="esikatseluUrl"></ep-external-link>
+            </ep-form-content>
+          </div>
           <div class="col-md-12">
             <ep-form-content name="ops-kuvaus">
               <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
@@ -86,31 +91,11 @@
         <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'" :showSpinner="julkaisuLoading">{{ $t('julkaise') }}</ep-button>
       </ep-collapse>
     </div>
-    <div class="vaihe">
-      <ep-collapse tyyppi="julkaisuhistoria">
-        <h3 slot="header">{{ $t('julkaisuhistoria') }}</h3>
-        <div class="alert alert-info" v-if="julkaisuhistoria.length === 0">{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
-        <div v-else>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>{{ $t('versio') }}</th>
-                <th>{{ $t('luontihetki') }}</th>
-                <th>{{ $t('tiedote') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(julkaisu, idx) in julkaisuhistoria" :key="idx">
-                <td>{{ julkaisu.revision }}</td>
-                <td>{{ $ago(julkaisu.luotu) }}</td>
-                <td v-html="$kaanna(julkaisu.tiedote)">
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </ep-collapse>
-    </div>
+
+    <EpJulkaisuHistoria :julkaisut="julkaisuhistoria">
+      <div slot="empty">{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
+    </EpJulkaisuHistoria>
+
   </div>
 </div>
 </template>
@@ -118,14 +103,11 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component } from 'vue-property-decorator';
-
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
-
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
@@ -135,6 +117,10 @@ import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpJulkaisuHistoria from '@shared/components/EpJulkaisuHistoria/EpJulkaisuHistoria.vue';
+import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
+import { koulutustyyppiTheme } from '@shared/utils/perusteet';
+import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 
 @Component({
   components: {
@@ -148,6 +134,8 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
     EpSelect,
     Tilanvaihto,
     EpSpinner,
+    EpJulkaisuHistoria,
+    EpExternalLink,
   },
 })
 export default class RouteJulkaisu extends EpOpsRoute {
@@ -217,8 +205,23 @@ export default class RouteJulkaisu extends EpOpsRoute {
 
   async julkaise() {
     this.julkaisuLoading = true;
-    const julkaisu = await this.store.julkaise(this.uusiJulkaisu);
+    try {
+      const julkaisu = await this.store.julkaise(this.uusiJulkaisu);
+      this.uusiJulkaisu.julkaisutiedote = {};
+      this.$success(this.$t('julkaistu') as string);
+    }
+    catch (err) {
+      this.$fail(this.$t('julkaisu-epaonnistui-' + err.response?.data?.syy) as string);
+    }
     this.julkaisuLoading = false;
+  }
+
+  get esikatseluUrl() {
+    return buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${this.ops.id}/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/tiedot`);
+  }
+
+  get kieli() {
+    return Kielet.getSisaltoKieli.value;
   }
 }
 </script>
