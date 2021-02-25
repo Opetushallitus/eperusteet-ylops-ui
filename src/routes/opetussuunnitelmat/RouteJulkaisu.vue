@@ -79,17 +79,20 @@
         </div>
       </div>
     </div>
-    <div class="vaihe" v-if="isValid">
-      <ep-collapse tyyppi="uusi-julkaisu">
-        <h3 slot="header"> {{ $t('uusi-julkaisu') }}</h3>
-        <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
-                    v-model="uusiJulkaisu.julkaisutiedote"
-                    help="uuden-julkaisun-tiedote"
+
+    <div v-if="isValid">
+      <h3>{{ $t('uusi-julkaisu') }}</h3>
+      <b-form-group :label="$t('julkaisun-tiedote')">
+        <div class="font-size-08 mb-2">{{$t('tiedote-naytetaan-tyoryhmalle-taman-sivun-julkaisuhistoriassa')}}</div>
+        <ep-content v-model="uusiJulkaisu.julkaisutiedote"
                     layout="simplified"
-                    :is-editable="true"
-                    class="mb-4" />
-        <ep-button @click="julkaise()" v-oikeustarkastelu="'hallinta'" :showSpinner="julkaisuLoading">{{ $t('julkaise') }}</ep-button>
-      </ep-collapse>
+                    :is-editable="true" />
+        <ep-button class="mt-3"
+          @click="julkaise()"
+          v-oikeustarkastelu="'hallinta'" :showSpinner="julkaisuLoading">
+          {{ $t('julkaise') }}
+        </ep-button>
+      </b-form-group>
     </div>
 
     <EpJulkaisuHistoria :julkaisut="julkaisuhistoria">
