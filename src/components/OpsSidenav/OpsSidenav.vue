@@ -38,16 +38,14 @@
             <fas class="mr-2" icon="plussa" />
             <span>{{ $t('luo-uusi-paikallinen-oppiaine') }}</span>
           </div>
-          <div v-else class="ml-2">
-            <div class="d-inline-flex">
-              <div v-if="onModuuli(itemData.item)">
-                <ep-color-indicator class="mr-2" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
-                </ep-color-indicator>
-              </div>
-              <div>
-                <span>{{ kaanna(itemData.item) }}</span>
-                <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
-              </div>
+          <div v-else class="d-inline-flex">
+            <div v-if="onModuuli(itemData.item)">
+              <ep-color-indicator class="mr-2" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
+              </ep-color-indicator>
+            </div>
+            <div>
+              <span>{{ kaanna(itemData.item) }}</span>
+              <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
             </div>
           </div>
         </ops-sidenav-link>
