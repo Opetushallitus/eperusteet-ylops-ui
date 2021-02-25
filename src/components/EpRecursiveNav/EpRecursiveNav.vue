@@ -71,15 +71,6 @@ export default class EpRecursiveNav extends Vue {
 
     this.current = item.children;
     this.curTopItem = item;
-
-    if (item.route) {
-      this.$router.replace({
-        name: item.route.name,
-        params: {
-          ...item.route.params,
-        },
-      });
-    }
   }
 
   private isSubmenu(item: SideMenuEntry) {
