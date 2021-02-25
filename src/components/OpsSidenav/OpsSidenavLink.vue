@@ -1,7 +1,12 @@
 <template>
-<component :is="tag" @click="handleClick" :class="{ 'router-link-exact-active': isExactRoute }">
-  <slot />
-</component>
+  <component :is="tag" @click="handleClick" :class="{ 'router-link-exact-active': isExactRoute }">
+    <div class="menu-item w-100" v-if="to">
+      <router-link :to="to">
+        <slot />
+      </router-link>
+    </div>
+    <slot v-else/>
+  </component>
 </template>
 
 <script lang="ts">
@@ -91,3 +96,20 @@ export default class OpsSidenavLink extends Vue {
   }
 }
 </script>
+
+<style scoped lang="scss">
+@import "@shared/styles/_variables.scss";
+  .menu-item {
+    font-size: 14px;
+    padding-top: 0px;
+    padding-bottom: 14px;
+    a {
+      color: #000;
+
+      &.router-link-exact-active {
+        font-weight: 700;
+        color: #0041DC;
+      }
+    }
+  }
+</style>

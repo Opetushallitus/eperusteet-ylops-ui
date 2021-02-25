@@ -218,3 +218,10 @@ export default class EpRecursiveNav extends Vue {
   }
 }
 </script>
+
+<style scoped lang="scss">
+@import "@shared/styles/_variables.scss";
+.valikko {
+  margin-top: 15px;
+}
+</style>
