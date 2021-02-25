@@ -209,7 +209,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
   }
 
   isUusi() {
-    return this.$route.params.paikallinenOppiaineId === 'uusi';
+    return this.$route.params.paikallinenOppiaineId === 'uusi' || this.$route.name === 'uusi-paikallinen-oppiaine';
   }
 
   async revisions() {
