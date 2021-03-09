@@ -12,7 +12,7 @@
     <div class="kasitelista">
       <div class="kasite" v-for="(k, idx) in suodatettuTermisto" :key="idx">
         <ep-content class="termi" :class="{ closed: k.closed, open: !k.closed }" :value="k.kasite.termi" layout="simplified"></ep-content>
-        <ep-content class="selitys" :class="{ closed: k.closed, open: !k.closed }" :value="k.kasite.selitys" layout="simplified"></ep-content>
+        <ep-content class="selitys" :class="{ closed: k.closed, open: !k.closed }" :value="k.kasite.selitys" layout="normal"></ep-content>
         <div class="toiminnot"><button class="btn btn-link" @click="avaaPoistoModal(k.kasite)"><fas :icon="['far','trash-alt']" fixed-width="fixed-width"></fas></button><button class="btn btn-link" @click="avaaMuokkausModal(k.kasite)"><fas icon="pen" fixed-width></fas></button>
           <button class="btn btn-link" @click="k.closed = !k.closed">
             <fas icon="chevron-down" v-if="k.closed" fixed-width></fas>
@@ -34,7 +34,7 @@
       <ep-input v-model="kasite.termi" type="localized" help="kasite-termi-ohje" :validation="validation.termi" :is-editing="true"></ep-input>
     </ep-form-content>
     <ep-form-content name="kasite-selitys">
-      <ep-content v-model="kasite.selitys" help="kasite-selitys-ohje" :validation="validation.selitys" :is-editable="true" layout="simplified"></ep-content>
+      <ep-content v-model="kasite.selitys" help="kasite-selitys-ohje" :validation="validation.selitys" :is-editable="true" layout="normal"></ep-content>
     </ep-form-content>
     <ep-form-content name="alaviite">
       <ep-toggle v-model="kasite.alaviite">{{ $t('merkitse-kasite-alaviitteeksi') }}</ep-toggle>
