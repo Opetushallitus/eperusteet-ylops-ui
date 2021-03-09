@@ -9,7 +9,7 @@ import { kasiteValidator } from '@/validators/kasite';
 import { Kieli } from '@shared/tyypit';
 
 import EpOpsRoute from '@/mixins/EpOpsRoute';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
