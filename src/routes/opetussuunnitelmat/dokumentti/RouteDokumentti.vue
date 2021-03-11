@@ -18,7 +18,7 @@
               {{$kaanna(opetussuunnitelmanimi)}}.pdf
             </span>
             <span v-else-if="dto && dto.tila === 'epaonnistui'">
-              {{$t('pdf-tiedosto-luonti-epaonnistui')}}: {{$t('pdf-virhe-' + dto.virhekoodi)}}
+              {{$t('pdf-tiedosto-luonti-epaonnistui')}}
             </span>
             <span v-else>
               {{$t('pdf-tiedostoa-ei-ole-viela-luotu')}}
