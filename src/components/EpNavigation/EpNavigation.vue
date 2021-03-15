@@ -49,7 +49,7 @@
         </div>
       </b-nav-item-dropdown>
 
-      <ep-kayttaja :tiedot="tiedot" logout-href="/eperusteet-ylops-service/api/logout" />
+      <ep-kayttaja :tiedot="tiedot" :sovellusOikeudet="sovellusOikeudet"/>
 
     </b-navbar-nav>
   </b-navbar>
@@ -98,6 +98,10 @@ export default class EpNavigation extends Vue {
 
   get tiedot() {
     return Kayttajat.tiedot;
+  }
+
+  get sovellusOikeudet() {
+    return Kayttajat.sovellusOikeudet;
   }
 
   get murut() {

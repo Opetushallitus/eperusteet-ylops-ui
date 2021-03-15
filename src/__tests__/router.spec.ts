@@ -20,6 +20,7 @@ import {
 
 import '@shared/config/bootstrap';
 import '@shared/config/fontawesome';
+import axios from 'axios';
 
 describe('Router', () => {
   const localVue = createLocalVue();
@@ -110,6 +111,8 @@ describe('Router', () => {
           koulutustyyppi: 'koulutustyyppi_2',
         }],
       }));
+    jest.spyOn(axios, 'get')
+      .mockImplementation(async () => makeAxiosResponse({}));
 
     await Kayttajat.init();
     return mount(await getRootConfig(), {

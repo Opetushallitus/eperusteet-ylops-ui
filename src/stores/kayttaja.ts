@@ -9,6 +9,8 @@ import { KayttajanTietoDto,
 import { organizations } from '@/utils/organisaatiot';
 import { createLogger } from '@shared/utils/logger';
 import { delay } from '@shared/utils/delay';
+import { getCasKayttaja } from '@shared/api/common';
+import { getSovellusoikeudet } from '@shared/plugins/oikeustarkastelu';
 
 // FIXME: tyypitä backendiin
 export type Oikeus = 'luku' | 'kommentointi' | 'muokkaus' | 'luonti' | 'poisto' | 'tilanvaihto' | 'hallinta';
@@ -52,12 +54,19 @@ class KayttajaStore {
     pohja: [],
   };
 
+  @State()
+  public casKayttaja: any | null = null;
+
   @Getter(state => parsiEsitysnimi(state.tiedot))
   public readonly nimi!: string;
+
+  @Getter(state => getSovellusoikeudet(state.casKayttaja?.groups, 'APP_EPERUSTEET_YLOPS'))
+  public readonly sovellusOikeudet!: any[];
 
   public async init() {
     logger.info('Haetaan käyttäjän tiedot');
     this.tiedot = (await KayttajatApi.getKayttaja()).data;
+    this.casKayttaja = await getCasKayttaja();
     logger.info('Käyttäjän tiedot', this.tiedot);
     await delay(1000); // EP-2371
     this.oikeudet = ((await Opetussuunnitelmat.getOikeudet()).data as any);
