@@ -28,7 +28,8 @@
                 v-model="valitutKoulutustyypit"
                 :placeholder="$t('kaikki')"
                 track-by="value"
-                label="text">
+                label="text"
+                :search-identity="(obj) => obj.text">
               </ep-multi-select>
             </ep-form-content>
           </div>
@@ -41,7 +42,8 @@
                 v-model="valitutTilat"
                 :placeholder="$t('kaikki')"
                 track-by="value"
-                label="text">
+                label="text"
+                :search-identity="(obj) => obj.text">
               </ep-multi-select>
             </ep-form-content>
           </div>
@@ -54,7 +56,8 @@
                 v-model="valitutVoimassaolot"
                 :placeholder="$t('kaikki')"
                 track-by="value"
-                label="text">
+                label="text"
+                :search-identity="(obj) => obj.text">
               </ep-multi-select>
             </ep-form-content>
           </div>
@@ -67,7 +70,8 @@
                 v-model="valitutPerusteet"
                 :placeholder="$t('kaikki')"
                 track-by="value"
-                label="text">
+                label="text"
+                :search-identity="(obj) => obj.text">
               </ep-multi-select>
             </ep-form-content>
           </div>
