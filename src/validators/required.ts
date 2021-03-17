@@ -37,12 +37,3 @@ export function nimiValidator(kielet: Kieli[]) {
     },
   };
 }
-
-export function koodiValidator(min = 3) {
-  return {
-    koodi: {
-      required,
-      'min-length': minLength(min),
-    },
-  };
-}

@@ -1,6 +1,7 @@
-import { koodiValidator, nimiValidator, requiredLokalisoituTeksti } from '@/validators/required';
+import { nimiValidator, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@shared/tyypit';
 import { minLength, required, minValue } from 'vuelidate/lib/validators';
+import { koodiValidator } from '@shared/validators/required';
 
 export function opintojaksoLuontiValidator(kielet: Kieli[] = []) {
   return {
