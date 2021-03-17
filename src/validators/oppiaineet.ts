@@ -1,5 +1,6 @@
-import { koodiValidator, nimiValidator } from '@/validators/required';
+import { nimiValidator } from '@/validators/required';
 import { Kieli } from '@shared/tyypit';
+import { koodiValidator } from '@shared/validators/required';
 
 export function oppiaineLuontiValidator(kielet: Kieli[] = []) {
   return {
