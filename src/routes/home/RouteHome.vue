@@ -39,6 +39,8 @@
       <tile-tilastot v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }"/>
     </div>
   </div>
+
+  <EpFeedbackModal :palauteProvider="palautteetStore"/>
 </div>
 </template>
 
@@ -62,6 +64,8 @@ import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpFeedbackModal from '@shared/components/EpFeedback/EpFeedbackModal.vue';
+import { PalautteetStore } from '@/stores/PalautteetStore';
 
 @Component({
   components: {
@@ -75,6 +79,7 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
     TileUkk,
     TileValtakunnallisetPerusteet,
     TileTilastot,
+    EpFeedbackModal,
   },
   directives: {
     oikeustarkastelu,
@@ -91,6 +96,7 @@ export default class Home extends Mixins(EpRoute) {
     pohjatKeskeneraiset: 0,
     pohjatJulkaistut: 0,
   };
+  private palautteetStore = new PalautteetStore();
 
   async init() {
     this.etusivu = await Kayttajat.getEtusivu();
