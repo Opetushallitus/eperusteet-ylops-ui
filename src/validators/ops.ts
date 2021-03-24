@@ -90,6 +90,21 @@ export function opsTiedotValidator(kielet: Kieli[] = [], isOps = true) {
         required,
         'min-length': minLength(1),
       },
+      kaikkiOrganisaatiot: {
+        kunnat: {
+          required,
+        },
+        ryhmat: {
+          required: requiredIf((form) => {
+            return _.size(form.jarjestajat) === 0;
+          }),
+        },
+        jarjestajat: {
+          required: requiredIf((form) => {
+            return _.size(form.ryhmat) === 0;
+          }),
+        },
+      },
     };
   }
   else {

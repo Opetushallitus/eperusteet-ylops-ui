@@ -197,7 +197,18 @@ describe('Oppiaine validators', () => {
 
     wrapper.setData({
       kielet: ['fi'],
-      ops: { nimi, julkaisukielet: ['fi'] },
+      ops: {
+        nimi,
+        julkaisukielet: ['fi'],
+        kaikkiOrganisaatiot: {
+          kunnat: [{
+            oid: 'y',
+          }],
+          jarjestajat: [{
+            oid: 'x',
+          }],
+        },
+      },
       opsLuonti: { nimi, julkaisukielet: ['fi'] },
       pohjaLuonti: { nimi, julkaisukielet: ['fi'] },
     });
