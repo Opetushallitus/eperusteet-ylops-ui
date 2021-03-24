@@ -5,16 +5,17 @@
       <div class="form-group required mb-4">
         <label>{{ $t('kunnat') }} *</label>
         <ep-multi-list-select
-          :value="valitutKunnat"
+          v-model="valitutKunnat"
           tyyppi="kunta"
           :items="kunnatSelectOptions"
           @input="updateKunnat"
           :validation="$v.valitutKunnat"
-          :required="true"/>
+          :required="true"
+          :equality="kuntaEquals"/>
       </div>
     </div>
 
-    <div v-if="taiteenperusopetus">
+    <div v-if="taiteenperusopetus && showRyhmaValinta">
       <label>{{ $t('organisaation-tyyppi') }} *</label>
       <b-form-group class="mt-0">
         <b-form-radio
@@ -33,36 +34,39 @@
     <div class="selectors mb-4" v-if="kouluryhma === 'ryhma'">
       <label>{{ $t('ryhmat') }} *</label>
       <ep-multi-list-select
-          :value="valitutRyhmat"
+          v-model="valitutRyhmat"
           tyyppi="ryhma"
           :items="ryhmaSelectOptions"
           :validation="$v.valitutRyhmat"
           :is-loading="!ryhmat"
           @input="updateRyhmat"
-          :required="true"/>
+          :required="true"
+          :equality="jarjestajaEquals"/>
     </div>
 
     <div v-else-if="kouluryhma === 'koulu'">
       <div class="selectors mb-4">
         <label>{{ $t('jarjestajat') }} *</label>
         <ep-multi-list-select
-            :value="valitutJarjestajat"
+            v-model="valitutJarjestajat"
             tyyppi="koulutuksen-jarjestaja"
             :items="jarjestajatSelectOptions"
             @input="updateJarjestajat"
             :validation="$v.valitutJarjestajat"
             :is-loading="kunnatLoading"
-            :required="true"/>
+            :required="true"
+            :equality="jarjestajaEquals"/>
       </div>
 
       <div class="selectors mb-4">
         <label>{{ $t('oppilaitokset') }}</label>
         <ep-multi-list-select
-            :value="valitutOppilaitokset"
+            v-model="valitutOppilaitokset"
             tyyppi="oppilaitos"
             :items="oppilaitoksetSelectOptions"
             @input="updateOppilaitokset"
-            :is-loading="jarjestajatLoading || kunnatLoading"/>
+            :is-loading="jarjestajatLoading || kunnatLoading"
+            :equality="jarjestajaEquals"/>
       </div>
     </div>
 
@@ -125,6 +129,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   kunnatLoading: boolean = false;
   jarjestajatLoading: boolean = false;
   ryhmatLoading: boolean = false;
+  showRyhmaValinta: boolean = true;
 
   kouluryhmaModel: 'koulu' | 'ryhma' | null = null;
 
@@ -273,8 +278,14 @@ export default class EpOrganizations extends Mixins(EpValidation) {
       .sortBy((org: any) => Kielet.kaanna(org.nimi))
       .value();
     const jarjestajaOids = _.map(this.valitutJarjestajat, 'oid');
-    this.valitutOppilaitokset = _.filter(this.valitutOppilaitokset,
-      ol => _.includes(jarjestajaOids, ol.parentOid));
+
+    this.valitutOppilaitokset = _.chain(this.valitutOppilaitokset)
+      .filter(valittuOppilaitos => _.find(this.oppilaitokset, oppilaitos => this.jarjestajaEquals(oppilaitos, valittuOppilaitos)))
+      .map(valittuOppilaitos => _.find(this.oppilaitokset, oppilaitos => this.jarjestajaEquals(oppilaitos, valittuOppilaitos)))
+      .filter(valittuOppilaitos => _.includes(jarjestajaOids, valittuOppilaitos.parentOid))
+      .value();
+
+    this.updateOppilaitokset(this.valitutOppilaitokset);
     this.updateInput();
     this.jarjestajatLoading = false;
   }
@@ -289,9 +300,12 @@ export default class EpOrganizations extends Mixins(EpValidation) {
       .value();
 
     const kuntaUris = _.map(kunnat, 'koodiUri');
+
     this.valitutJarjestajat = _.filter(
       this.valitutJarjestajat,
-      jarjestaja => _.includes(kuntaUris, jarjestaja.kotipaikkaUri));
+      valittuJarjestaja => _.some(this.jarjestajat, jarjestaja => this.jarjestajaEquals(jarjestaja, valittuJarjestaja))
+    );
+
     this.updateJarjestajat(this.valitutJarjestajat);
     this.kunnatLoading = false;
   }
@@ -305,11 +319,6 @@ export default class EpOrganizations extends Mixins(EpValidation) {
       }))
       .sortBy(org => Kielet.kaanna(org.nimi))
       .value();
-
-    this.kayttajanOrganisaatiot = _.chain((await Ulkopuoliset.getUserOrganisations()).data)
-      .reject(_.isNull)
-      .keyBy('oid')
-      .value();
   }
 
   @Watch('value', { immediate: true })
@@ -320,8 +329,15 @@ export default class EpOrganizations extends Mixins(EpValidation) {
     this.valitutRyhmat = value.ryhmat;
   }
 
-  mounted() {
-    this.update();
+  async mounted() {
+    if (_.find(this.value.jarjestajat, jarjestaja => _.includes(jarjestaja.tyypit, 'Ryhma'))) {
+      this.kouluryhma = 'ryhma';
+      this.showRyhmaValinta = false;
+      this.ryhmat = (await Ulkopuoliset.getOrganisaatioRyhmat()).data;
+      this.updateRyhmat(this.value.jarjestajat);
+    }
+
+    await this.update();
   }
 
   async kouluryhmaChange() {
@@ -332,6 +348,14 @@ export default class EpOrganizations extends Mixins(EpValidation) {
     this.valitutJarjestajat = [];
     this.valitutOppilaitokset = [];
     this.valitutRyhmat = [];
+  }
+
+  get kuntaEquals() {
+    return (val1, val2) => _.isEqual(_.get(val1, 'koodiUri'), _.get(val2, 'koodiUri'));
+  }
+
+  get jarjestajaEquals() {
+    return (val1, val2) => _.isEqual(_.get(val1, 'oid'), _.get(val2, 'oid'));
   }
 }
 

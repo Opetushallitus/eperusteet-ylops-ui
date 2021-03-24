@@ -115,6 +115,14 @@
                             :is-editable="isEditing"> </ep-content>
               </ep-form-content>
             </div>
+            <div class="col-md-6" v-if="isEditing && data.pohja" >
+              <hr/>
+              <h3>{{$t('organisaatiot')}}</h3>
+              <ep-organizations
+                :validation="validation.organisaatiot"
+                :koulutustyyppi="data.koulutustyyppi"
+                v-model="data.kaikkiOrganisaatiot"/>
+            </div>
           </div>
         </div>
       </template>
@@ -145,7 +153,8 @@ import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 import { isLukio, koulutustyyppiTheme } from '@shared/utils/perusteet';
-import { OpetussuunnitelmaInfoDtoToteutusEnum, OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
+import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
+import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
 
 @Component({
   components: {
@@ -160,6 +169,7 @@ import { OpetussuunnitelmaInfoDtoToteutusEnum, OpetussuunnitelmaKevytDto } from 
     EpLinkki,
     Tilanvaihto,
     EpExternalLink,
+    EpOrganizations,
   },
 })
 export default class RouteTiedot extends EpOpsRoute {
@@ -221,11 +231,27 @@ export default class RouteTiedot extends EpOpsRoute {
         ...ops,
         perusteUrl: buildEsikatseluUrl(this.kieli, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/${ops.perusteenId}/tiedot`),
         opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}/${koulutustyyppiTheme(ops.koulutustyyppi!)}/tiedot`),
+        kaikkiOrganisaatiot: {
+          kunnat: ops.kunnat,
+          jarjestajat: ops.organisaatiot,
+          oppilaitokset: ops.organisaatiot,
+          ryhmat: [],
+        },
       };
     }
   }
 
-  private async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
+  private async save(opetussuunnitelma: any) {
+    opetussuunnitelma = {
+      ...opetussuunnitelma,
+      kunnat: opetussuunnitelma.kaikkiOrganisaatiot.kunnat,
+      organisaatiot: [
+        ...opetussuunnitelma.kaikkiOrganisaatiot.jarjestajat,
+        ...opetussuunnitelma.kaikkiOrganisaatiot.oppilaitokset,
+        ...opetussuunnitelma.kaikkiOrganisaatiot.ryhmat,
+      ],
+
+    };
     await this.store.save(opetussuunnitelma);
   }
 }
