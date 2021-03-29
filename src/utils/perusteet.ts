@@ -12,7 +12,7 @@ export const YlopsKoulutustyypit = Object.freeze([
   'koulutustyyppi_999907', // TPO
   // 'koulutustyyppi_17', // AIKUISTENPERUSOPETUS
   'koulutustyyppi_16', // PERUSOPETUS
-  // 'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
+  'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
 ]);
 
 const Perusoppilaitokset = [11, 12, 19, 21, 63, 64];
