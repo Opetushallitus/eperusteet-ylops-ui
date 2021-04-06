@@ -108,7 +108,6 @@
             <div class="col-md-12">
               <ep-form-content name="ops-kuvaus">
                 <ep-content layout="normal"
-                            :opetussuunnitelma-store="opetussuunnitelmaStore"
                             v-model="data.kuvaus"
                             help="ops-kuvaus-ohje"
                             :validation="validation.kuvaus"
@@ -133,7 +132,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';

@@ -45,7 +45,6 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kieli } from '@shared/tyypit';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
@@ -61,7 +60,6 @@ const logger = createLogger('RoutePohjaUusi');
 @Component({
   components: {
     EpButton,
-    EpContent,
     EpField,
     EpFormContent,
     EpIcon,

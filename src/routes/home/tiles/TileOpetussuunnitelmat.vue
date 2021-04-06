@@ -27,13 +27,11 @@
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 
 import EpRoot from '@/mixins/EpRoot';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
 @Component({
   components: {
-    EpContent,
     EpSpinner,
     EpHomeTile,
   },

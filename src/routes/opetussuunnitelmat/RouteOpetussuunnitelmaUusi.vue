@@ -118,7 +118,6 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { delay } from '@shared/utils/delay';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
@@ -151,7 +150,6 @@ type PohjaTyyppi = 'pohjasta' | 'opsista';
 @Component({
   components: {
     EpButton,
-    EpContent,
     EpField,
     EpFormContent,
     EpIcon,

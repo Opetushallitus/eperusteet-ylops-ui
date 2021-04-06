@@ -148,7 +148,6 @@ import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
 import * as _ from 'lodash';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpRoute from '@/mixins/EpRoot';
@@ -171,7 +170,6 @@ import { success, fail } from '@/utils/notifications';
   },
   components: {
     EpButton,
-    EpContent,
     EpIcon,
     EpMainView,
     EpSearch,

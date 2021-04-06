@@ -61,7 +61,6 @@ import TileOrganisaatio from './tiles/TileOrganisaatio.vue';
 import TileTiedotteet from './tiles/TileTiedotteet.vue';
 import TileTilastot from './tiles/TileTilastot.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpFeedbackModal from '@shared/components/EpFeedback/EpFeedbackModal.vue';
@@ -69,7 +68,6 @@ import { PalautteetStore } from '@/stores/PalautteetStore';
 
 @Component({
   components: {
-    EpContent,
     EpNavigation,
     EpSearch,
     EpSpinner,

@@ -2,6 +2,10 @@ import _ from 'lodash';
 import { Vue, Prop, Component } from 'vue-property-decorator';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { Meta } from '@shared/utils/decorators';
+import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
+import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
+import { TermitStore } from '@/stores/TermitStore';
+import { KuvaStore } from '@/stores/KuvaStore';
 
 /**
  * Mixin näkymäkomponenteille mitkä tarvitsevat opetussuunnitelman sisällön
@@ -53,5 +57,13 @@ export default class EpOpsComponent extends Vue {
 
   get isValmisPohja() {
     return this.isPohja && this.ops.tila as any === 'valmis';
+  }
+
+  get kasiteHandler() {
+    return createKasiteHandler(new TermitStore(this.opsId!));
+  }
+
+  get kuvaHandler() {
+    return createKuvaHandler(new KuvaStore(this.opsId!));
   }
 }

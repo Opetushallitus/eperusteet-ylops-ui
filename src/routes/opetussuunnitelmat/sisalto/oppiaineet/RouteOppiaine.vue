@@ -10,20 +10,36 @@
     <div class="collapse-container">
       <ep-collapse v-if="oppiaine.tehtava">
         <h3 slot="header">{{ isOppiaine ? $t('oppiaineet-tehtava') : $t('oppimaaran-tehtava')}}</h3>
-        <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tehtava.kuvaus"> </ep-content>
+        <ep-content
+          layout="normal"
+          :kasiteHandler="kasiteHandler"
+          :kuvaHandler="kuvaHandler"
+          v-model="oppiaine.tehtava.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset">
         <h3 slot="header">{{ $t('laaja-alainen-osaaminen') }}</h3>
-        <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus"> </ep-content>
+        <ep-content
+          layout="normal"
+          :kasiteHandler="kasiteHandler"
+          :kuvaHandler="kuvaHandler"
+          v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.tavoitteet">
         <h3 slot="header">{{ $t('tavoitteet') }}</h3>
-        <ep-content layout="normal" opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.tavoitteet.kuvaus"></ep-content>
+        <ep-content
+          layout="normal"
+          :kasiteHandler="kasiteHandler"
+          :kuvaHandler="kuvaHandler"
+          v-model="oppiaine.tavoitteet.kuvaus"></ep-content>
         <ep-prefix-list :value="oppiaine.tavoitteet.tavoitealueet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.arviointi">
         <h3 slot="header">{{ $t('arviointi') }}</h3>
-        <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="oppiaine.arviointi.kuvaus"></ep-content>
+        <ep-content
+          layout="normal"
+          :kasiteHandler="kasiteHandler"
+          :kuvaHandler="kuvaHandler"
+          v-model="oppiaine.arviointi.kuvaus"></ep-content>
       </ep-collapse>
       <ep-collapse v-if="perusteJaPaikallisetOppimaarat && perusteJaPaikallisetOppimaarat.length > 0">
         <h3 slot="header">{{ $t('oppimaarat') }}</h3>
@@ -81,7 +97,7 @@
 import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
