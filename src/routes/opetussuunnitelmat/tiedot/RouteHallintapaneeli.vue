@@ -34,7 +34,7 @@
       <div class="col">
         <ops-perustiedot :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box"/>
         <ops-muokkaamattomat-osiot :opetussuunnitelmanTekstikappale="store.sisalto" class="info-box"/>
-        <oppiaineet-statistiikka :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box" />
+        <oppiaineet-statistiikka v-if="!yksinkertainen" :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box" />
       </div>
       <div class="col">
         <ops-viimeaikainen-toiminta :muokkaustietoStore="muokkaustietoStore" class="info-box"/>
@@ -64,6 +64,7 @@ import { AikatauluStore } from '@/stores/aikataulu';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { createLogger } from '@shared/utils/logger';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import { KoulutustyyppiToteutus } from '@shared/tyypit';
 
 @Component({
   components: {
@@ -118,6 +119,10 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
       createLogger('RouteHallintapaneeli').error(e);
     }
     this.syncing = false;
+  }
+
+  get yksinkertainen() {
+    return (this.ops?.toteutus as any) === KoulutustyyppiToteutus.yksinkertainen;
   }
 }
 </script>
