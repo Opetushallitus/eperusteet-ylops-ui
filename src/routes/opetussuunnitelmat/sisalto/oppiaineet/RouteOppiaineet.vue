@@ -165,7 +165,6 @@ import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
@@ -188,7 +187,6 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
     EpButton,
     EpCollapse,
     EpColorIndicator,
-    EpContent,
     EpEditointi,
     EpSearch,
     EpSpinner,

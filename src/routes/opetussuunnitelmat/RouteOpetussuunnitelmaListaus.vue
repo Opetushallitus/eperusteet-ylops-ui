@@ -145,7 +145,6 @@ import { Kielet } from '@shared/stores/kieli';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
 
 import EpRoute from '@/mixins/EpRoot';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
@@ -165,7 +164,6 @@ import { tileBackgroundColor, koulutusTyyppiTile } from '@shared/utils/bannerIco
   },
   components: {
     EpButton,
-    EpContent,
     EpIcon,
     EpMainView,
     EpNavigation,

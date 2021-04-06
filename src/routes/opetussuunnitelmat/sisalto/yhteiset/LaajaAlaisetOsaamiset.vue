@@ -29,7 +29,7 @@
 import * as _ from 'lodash';
 import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Lops2019PaikallinenLaajaAlainenDto } from '@shared/api/ylops';
 import { LokalisoituTekstiDto } from '@shared/tyypit';
 

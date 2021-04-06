@@ -9,8 +9,9 @@
           <div class="ohjeet" v-if="data.ohjeet.length > 0">
             <div class="ohje" v-for="ohje in data.ohjeet" :key="ohje.id">
               <ep-content layout="normal"
-                          :opetussuunnitelma-store="opetussuunnitelmaStore"
                           v-model="ohje.teksti"
+                          :kasiteHandler="kasiteHandler"
+                          :kuvaHandler="kuvaHandler"
                           :is-editable="allowOhjeEdit && isEditing"></ep-content>
             </div>
           </div>
@@ -54,7 +55,12 @@
               </div>
             </ep-collapse>
             <h5>{{ $t('paikallinen-teksti') }}</h5>
-            <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tov.tekstiKappale.teksti" :is-editable="isEditing"> </ep-content>
+            <ep-content
+              layout="normal"
+              v-model="data.tov.tekstiKappale.teksti"
+              :is-editable="isEditing"
+              :kasiteHandler="kasiteHandler"
+              :kuvaHandler="kuvaHandler"> </ep-content>
             <ep-alert v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)" :ops="false" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
           </span>
         </div>
@@ -72,7 +78,7 @@ import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -80,6 +86,8 @@ import EpInput from '@shared/components/forms/EpInput.vue';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpRoute from '@/mixins/EpRoute';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
+import { TermitStore } from '@/stores/TermitStore';
+import { KuvaStore } from '@/stores/KuvaStore';
 
 import {
   Lops2019Perusteet,
@@ -94,6 +102,8 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { createLogger } from '@shared/utils/logger';
 
 import { success } from '@/utils/notifications';
+import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
+import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
 
 const logger = createLogger('RouteTekstikappale');
 

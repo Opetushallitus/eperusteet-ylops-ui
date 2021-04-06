@@ -76,7 +76,12 @@
             </div>
 
             <h4>{{ $t('paikallinen-lisays-tavoitteet') }}</h4>
-            <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.tavoitteet.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
+            <ep-content
+              :kasiteHandler="kasiteHandler"
+              :kuvaHandler="kuvaHandler"
+              v-model="data.tavoitteet.kuvaus"
+              :is-editable="isEditing"
+              layout="normal"> </ep-content>
             <div class="tavoitealueet">
               <ep-prefix-list v-model="data.tavoitteet.tavoitealueet" arvot="tavoitteet" arvo="tavoite" :is-editable="isEditing"></ep-prefix-list>
             </div>
@@ -87,7 +92,12 @@
             <ep-content v-if="oppimaara && oppimaara.arviointi" layout="normal" v-model="oppimaara.arviointi.kuvaus"> </ep-content>
 
             <h4>{{ $t('paikallinen-lisays-osaamisen-arvioinnille') }}</h4>
-            <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.arviointi.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
+            <ep-content
+              :kasiteHandler="kasiteHandler"
+              :kuvaHandler="kuvaHandler"
+              v-model="data.arviointi.kuvaus"
+              :is-editable="isEditing"
+              layout="normal"> </ep-content>
           </ep-collapse>
 
           <ep-collapse tyyppi="laajaAlainenOsaaminen">
@@ -133,7 +143,7 @@ import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';

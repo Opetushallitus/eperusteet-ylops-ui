@@ -116,7 +116,7 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 import EpRoute from '@/mixins/EpRoot';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';

@@ -241,7 +241,8 @@
                 <div class="moduuliotsikko"><h4 v-html="$kaanna(oppiaine.nimi)"></h4></div>
                 <ep-content
                   layout="normal"
-                  :opetussuunnitelma-store="opetussuunnitelmaStore"
+                  :kasiteHandler="kasiteHandler"
+                  :kuvaHandler="kuvaHandler"
                   :value="oppiaine.laajaAlaisetOsaamiset.kuvaus"
                   help="ohje-lyhyt-laaja-alainen"></ep-content>
               </div>
@@ -249,7 +250,10 @@
               <div v-else-if="oppiaine.laajaAlainenOsaaminen">
                 <div class="moduuliotsikko"><h4 v-html="$kaanna(oppiaine.nimi)"></h4></div>
                 <ep-content v-for="(laajalainenosaaminen, index) in oppiaine.laajaAlainenOsaaminen" :key="index+'oppiaine.laajaAlainenOsaaminen'"
-                    layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="laajalainenosaaminen.kuvaus"></ep-content>
+                    layout="normal"
+                    :kasiteHandler="kasiteHandler"
+                    :kuvaHandler="kuvaHandler"
+                    :value="laajalainenosaaminen.kuvaus"></ep-content>
               </div>
             </div>
 
@@ -308,17 +312,31 @@
             <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineidenTiedot" :key="idx+'op-arviointi'">
               <div v-if="oppiaine.arviointi && oppiaine.arviointi.kuvaus">
                 <div class="moduuliotsikko"><h4 v-html="$kaanna(oppiaine.nimi)">></h4></div>
-                <ep-content layout="normal" :opetussuunnitelma-store="opetussuunnitelmaStore" :value="oppiaine.arviointi.kuvaus"></ep-content>
+                <ep-content
+                  layout="normal"
+                  :kasiteHandler="kasiteHandler"
+                  :kuvaHandler="kuvaHandler"
+                  :value="oppiaine.arviointi.kuvaus"></ep-content>
               </div>
             </div>
             <div class="moduuliotsikko"><h4>{{ $t('paikallinen-lisays-opintojakso-arviointi') }}</h4></div>
             <div class="alert alert-info" v-if="!isEditing && !data.arviointi">{{ $t('ei-paikallista-tarkennusta') }}</div>
-            <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.arviointi" :is-editable="isEditing"></ep-content>
+            <ep-content
+              :kasiteHandler="kasiteHandler"
+              :kuvaHandler="kuvaHandler"
+              layout="normal"
+              v-model="data.arviointi"
+              :is-editable="isEditing"></ep-content>
 
             <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'paik-arviointi'" class="mt-4">
               <div v-if="paikallinenOpintojakso.arviointi">
                 <div class="moduuliotsikko"><h4>{{ $kaanna(paikallinenOpintojakso.nimi) }}</h4></div>
-                <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="paikallinenOpintojakso.arviointi" :is-editable="false"></ep-content>
+                <ep-content
+                  :kasiteHandler="kasiteHandler"
+                  :kuvaHandler="kuvaHandler"
+                  layout="normal"
+                  v-model="paikallinenOpintojakso.arviointi"
+                  :is-editable="false"></ep-content>
               </div>
             </div>
           </ep-collapse>
@@ -328,7 +346,13 @@
           <ep-collapse tyyppi="opintojakson-vapaa-kuvaus" :border-bottom="false">
             <div class="alueotsikko" slot="header"><h3>{{ $t('opintojakson-vapaa-kuvaus') }}</h3></div>
             <div class="alert alert-info" v-if="!isEditing && !data.kuvaus">{{ $t('ei-kuvausta') }}</div>
-            <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" layout="normal" v-model="data.kuvaus" :is-editable="isEditing" help="ohje-lyhyt-vapaa-kuvaus" ></ep-content>
+            <ep-content
+              :kasiteHandler="kasiteHandler"
+              :kuvaHandler="kuvaHandler"
+              layout="normal"
+              v-model="data.kuvaus"
+              :is-editable="isEditing"
+              help="ohje-lyhyt-vapaa-kuvaus" ></ep-content>
           </ep-collapse>
         </div>
       </template>
@@ -341,7 +365,7 @@
 import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';

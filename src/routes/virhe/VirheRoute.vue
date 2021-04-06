@@ -28,7 +28,6 @@ import { Component, Vue } from 'vue-property-decorator';
 import { createLogger } from '@shared/utils/logger';
 
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpContent from '@/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
@@ -40,7 +39,6 @@ const logger = createLogger('Virhe');
   components: {
     EpMainView,
     EpField,
-    EpContent,
     EpFormContent,
     EpButton,
   },
