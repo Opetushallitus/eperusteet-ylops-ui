@@ -232,7 +232,7 @@
           </ep-collapse>
         </div>
 
-        <div class="osio">
+        <div class="osio" v-if="!isLuva">
          <ep-collapse tyyppi="opintojakson-laaja-alaiset">
             <div class="alueotsikko" slot="header"><h3>{{ $t('laaja-alaiset-sisallot') }}</h3></div>
 
@@ -336,6 +336,43 @@
                   :kuvaHandler="kuvaHandler"
                   layout="normal"
                   v-model="paikallinenOpintojakso.arviointi"
+                  :is-editable="false"></ep-content>
+              </div>
+            </div>
+          </ep-collapse>
+        </div>
+
+        <div class="osio" v-if="isLuva">
+          <ep-collapse tyyppi="opiskeluymparisto-ja-tyotavat">
+            <div class="alueotsikko" slot="header"><h3>{{ $t('opiskeluymparisto-ja-tyotavat') }}</h3></div>
+
+            <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineidenTiedot" :key="idx+'op-opiskeluymparistoTyotavat'">
+              <div v-if="oppiaine.opiskeluymparistoTyotavat && oppiaine.opiskeluymparistoTyotavat.kuvaus">
+                <div class="moduuliotsikko"><h4 v-html="$kaanna(oppiaine.nimi)">></h4></div>
+                <ep-content
+                  layout="normal"
+                  :kasiteHandler="kasiteHandler"
+                  :kuvaHandler="kuvaHandler"
+                  :value="oppiaine.opiskeluymparistoTyotavat.kuvaus"></ep-content>
+              </div>
+            </div>
+            <div class="moduuliotsikko"><h4>{{ $t('paikallinen-lisays-opintojakso-opiskeluymparisto-ja-tyotavat') }}</h4></div>
+            <div class="alert alert-info" v-if="!isEditing && !data.opiskeluymparistoTyotavat">{{ $t('ei-paikallista-tarkennusta') }}</div>
+            <ep-content
+              :kasiteHandler="kasiteHandler"
+              :kuvaHandler="kuvaHandler"
+              layout="normal"
+              v-model="data.opiskeluymparistoTyotavat"
+              :is-editable="isEditing"></ep-content>
+
+            <div v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot" :key="index+'paik-opiskeluymparistoTyotavat'" class="mt-4">
+              <div v-if="paikallinenOpintojakso.opiskeluymparistoTyotavat">
+                <div class="moduuliotsikko"><h4>{{ $kaanna(paikallinenOpintojakso.nimi) }}</h4></div>
+                <ep-content
+                  :kasiteHandler="kasiteHandler"
+                  :kuvaHandler="kuvaHandler"
+                  layout="normal"
+                  v-model="paikallinenOpintojakso.opiskeluymparistoTyotavat"
                   :is-editable="false"></ep-content>
               </div>
             </div>
@@ -691,6 +728,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
           nimi: this.oppiaineetMap[uri].nimi,
           arviointi: this.getOppiaineTieto(oppiaineet, 'arviointi'),
           laajaAlaisetOsaamiset: this.getOppiaineTieto(oppiaineet, 'laajaAlaisetOsaamiset'),
+          opiskeluymparistoTyotavat: this.getOppiaineTieto(oppiaineet, 'opiskeluymparistoTyotavat'),
         };
       })
       .value() as Lops2019OppiaineDto[];
