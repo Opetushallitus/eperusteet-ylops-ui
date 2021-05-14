@@ -269,7 +269,7 @@ export class EditointiKontrolli {
         }
       }
       catch (err) {
-        fail('tallennus-epaonnistui', err.response.data.syy);
+        fail('tallennus-epaonnistui', err?.response?.data?.syy || err);
         this.isEditingState = true;
       }
     }

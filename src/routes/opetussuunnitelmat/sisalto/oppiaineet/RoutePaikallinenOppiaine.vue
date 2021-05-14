@@ -100,7 +100,16 @@
               layout="normal"> </ep-content>
           </ep-collapse>
 
-          <ep-collapse tyyppi="laajaAlainenOsaaminen">
+          <ep-collapse tyyppi="opiskeluymparistoTyotavat" v-if="isLuva">
+            <h3 class="header" slot="header">{{ $t('opiskeluymparisto-ja-tyotavat') }}</h3>
+            <ep-content v-if="oppimaara && oppimaara.opiskeluymparistoTyotavat" v-model="oppimaara.opiskeluymparistoTyotavat.kuvaus" :is-editable="false" layout="normal"> </ep-content>
+
+            <h4>{{ $t('paikallinen-lisays-opiskeluymparisto-ja-tyotavat') }}</h4>
+            <ep-content :opetussuunnitelma-store="opetussuunnitelmaStore" v-model="data.opiskeluymparistoTyotavat.kuvaus" :is-editable="isEditing" layout="normal"> </ep-content>
+
+          </ep-collapse>
+
+          <ep-collapse tyyppi="laajaAlainenOsaaminen" v-else>
             <h3 class="header" slot="header">{{ $t('laaja-alaiset-sisallot') }}</h3>
             <ep-content v-if="oppimaara && oppimaara.laajaAlaisetOsaamiset" v-model="oppimaara.laajaAlaisetOsaamiset.kuvaus" :is-editable="false" layout="normal"> </ep-content>
 
@@ -163,6 +172,7 @@ import { KoodistoLops2019LaajaAlaiset, paikallisestiSallitutLaajennokset } from 
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import { success } from '@/utils/notifications';
 import { PerusteCache } from '@/stores/peruste';
+import { Koulutustyyppi } from '@shared/tyypit';
 
 @Component({
   components: {
@@ -327,6 +337,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
     paikallinen.tavoitteet = paikallinen.tavoitteet || {
       tavoitealueet: [],
     };
+    paikallinen.opiskeluymparistoTyotavat = paikallinen.opiskeluymparistoTyotavat || {};
 
     if (oppiaine) {
       paikallinen.perusteenOppiaineUri = oppiaine as string;

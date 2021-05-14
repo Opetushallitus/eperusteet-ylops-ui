@@ -9,6 +9,7 @@ export function oppiaine(): Lops2019PaikallinenOppiaineDto {
     tavoitteet: {
       tavoitealueet: [],
     },
+    opiskeluymparistoTyotavat: {},
   };
   return oa;
 }
@@ -24,5 +25,6 @@ export function opintojakso(oppiaineUri?: string): Lops2019OpintojaksoDto {
     oppiaineet: [],
     tavoitteet: [],
     paikallisetOpintojaksot: [],
+    opiskeluymparistoTyotavat: {},
   };
 }

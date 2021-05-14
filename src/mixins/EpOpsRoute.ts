@@ -6,6 +6,7 @@ import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler'
 import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
 import { TermitStore } from '@/stores/TermitStore';
 import { KuvaStore } from '@/stores/KuvaStore';
+import { Koulutustyyppi } from '@shared/tyypit';
 
 /**
  * Mixin näkymäkomponenteille mitkä tarvitsevat opetussuunnitelman sisällön
@@ -45,5 +46,9 @@ export default class EpOpsRoute extends EpRoute {
 
   get kuvaHandler() {
     return createKuvaHandler(new KuvaStore(this.opsId!));
+  }
+
+  get isLuva() {
+    return this.ops?.koulutustyyppi as string === Koulutustyyppi.lukiovalmistavakoulutus;
   }
 }
