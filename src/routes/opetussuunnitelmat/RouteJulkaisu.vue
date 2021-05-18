@@ -87,11 +87,7 @@
         <ep-content v-model="uusiJulkaisu.julkaisutiedote"
                     layout="simplified"
                     :is-editable="true" />
-        <ep-button class="mt-3"
-          @click="julkaise()"
-          v-oikeustarkastelu="'hallinta'" :showSpinner="julkaisuLoading">
-          {{ $t('julkaise') }}
-        </ep-button>
+        <EpJulkaisuButton class="mt-3" :julkaise="julkaise" v-oikeustarkastelu="'hallinta'"/>
       </b-form-group>
     </div>
 
@@ -124,6 +120,7 @@ import EpJulkaisuHistoria from '@shared/components/EpJulkaisuHistoria/EpJulkaisu
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
+import EpJulkaisuButton from '@shared/components/EpJulkaisuButton/EpJulkaisuButton.vue';
 
 @Component({
   components: {
@@ -139,6 +136,7 @@ import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue
     EpSpinner,
     EpJulkaisuHistoria,
     EpExternalLink,
+    EpJulkaisuButton,
   },
 })
 export default class RouteJulkaisu extends EpOpsRoute {
@@ -149,7 +147,6 @@ export default class RouteJulkaisu extends EpOpsRoute {
   private uusiJulkaisu: UusiJulkaisuDto = {
     julkaisutiedote: {},
   };
-  private julkaisuLoading = false;
 
   get graph() {
     return {
@@ -207,7 +204,6 @@ export default class RouteJulkaisu extends EpOpsRoute {
   }
 
   async julkaise() {
-    this.julkaisuLoading = true;
     try {
       const julkaisu = await this.store.julkaise(this.uusiJulkaisu);
       this.uusiJulkaisu.julkaisutiedote = {};
@@ -216,7 +212,6 @@ export default class RouteJulkaisu extends EpOpsRoute {
     catch (err) {
       this.$fail(this.$t('julkaisu-epaonnistui-' + err.response?.data?.syy) as string);
     }
-    this.julkaisuLoading = false;
   }
 
   get esikatseluUrl() {
