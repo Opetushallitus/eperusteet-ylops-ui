@@ -16,7 +16,7 @@
           :kuvaHandler="kuvaHandler"
           v-model="oppiaine.tehtava.kuvaus"> </ep-content>
       </ep-collapse>
-      <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset">
+      <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset && !isLuva">
         <h3 slot="header">{{ $t('laaja-alainen-osaaminen') }}</h3>
         <ep-content
           layout="normal"
@@ -24,7 +24,7 @@
           :kuvaHandler="kuvaHandler"
           v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus"> </ep-content>
       </ep-collapse>
-      <ep-collapse v-if="oppiaine.opiskeluymparistoTyotavat">
+      <ep-collapse v-if="oppiaine.opiskeluymparistoTyotavat && isLuva">
         <h3 slot="header">{{ $t('opiskeluymparisto-ja-tyotavat')}}</h3>
         <ep-content
           layout="normal"
