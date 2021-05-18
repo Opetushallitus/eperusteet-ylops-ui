@@ -39,7 +39,12 @@
             <div v-else-if="data.tov.piilotettu" class="disabled-text mb-4">{{$t('tekstikappale-piilotettu-julkisesta-opetussuunnitelmasta')}}</div>
             <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa" :first="isEditing">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
-              <p class="perusteteksti" v-html="$kaanna(perusteenTeksti.perusteenOsa.teksti)"></p>
+              <ep-content
+                layout="normal"
+                v-model="perusteenTeksti.perusteenOsa.teksti"
+                :is-editable="false"
+                :kasiteHandler="kasiteHandler"
+                :kuvaHandler="kuvaHandler"/>
               <div class="font-italic text-secondary" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
               <div v-if="isEditing">
                 <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
@@ -49,7 +54,13 @@
               <h5 slot="header">
                 {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{$kaanna(pohjaNimi)}})</span>
               </h5>
-              <p class="perusteteksti" v-for="(alkuperainen, index) in alkuperaiset" :key="'alkuperainen'+index" v-html="$kaanna(alkuperainen.tekstiKappale.teksti)" />
+              <ep-content
+                v-for="(alkuperainen, index) in alkuperaiset" :key="'alkuperainen'+index"
+                layout="normal"
+                v-model="alkuperainen.tekstiKappale.teksti"
+                :is-editable="false"
+                :kasiteHandler="kasiteHandler"
+                :kuvaHandler="kuvaHandler"/>
               <div v-if="isEditing" class="mb-4">
                 <ep-toggle v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</ep-toggle>
               </div>
