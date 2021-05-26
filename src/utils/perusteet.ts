@@ -46,8 +46,10 @@ export function paikallisestiSallitutLaajennokset() {
   return [
     'oppiaineetjaoppimaaratlops2021_ai12',
     'oppiaineetjaoppimaaratlops2021_ux',
-    'oppiaineetjaoppimaaratlops2021_vka',
+    'oppiaineetjaoppimaaratlops2021_vka1',
+    'oppiaineetjaoppimaaratlops2021_vkaab3',
     'oppiaineetjaoppimaaratlops2021_vkb',
+    'oppiaineetjaoppimaaratlops2021_vksk',
   ];
 }
 
