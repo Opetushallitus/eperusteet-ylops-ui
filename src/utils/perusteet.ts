@@ -44,6 +44,7 @@ export function isPerusteSupported(peruste: any) {
 
 export function paikallisestiSallitutLaajennokset() {
   return [
+    'oppiaineetjaoppimaaratlops2021_ai3',
     'oppiaineetjaoppimaaratlops2021_ai12',
     'oppiaineetjaoppimaaratlops2021_ux',
     'oppiaineetjaoppimaaratlops2021_vka1',
