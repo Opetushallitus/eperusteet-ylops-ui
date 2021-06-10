@@ -247,16 +247,22 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
         result.ohjeet.push({});
       }
 
-      if (teksti.perusteTekstikappaleId) {
-        if (this.isLops2019) {
-          this.perusteenTeksti = (await Lops2019Perusteet
-            .getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId))
-            .data as PerusteTekstiKappaleViiteDto;
-        }
-        else {
-          this.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;
+      try {
+        if (teksti.perusteTekstikappaleId) {
+          if (this.isLops2019) {
+            this.perusteenTeksti = (await Lops2019Perusteet
+              .getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId))
+              .data as PerusteTekstiKappaleViiteDto;
+          }
+          else {
+            this.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;
+          }
         }
       }
+      catch (err) {
+        console.error(err);
+      }
+
       if (teksti.tekstiKappale) {
         this.breadcrumb('tekstikappale', teksti.tekstiKappale.nimi);
       }
