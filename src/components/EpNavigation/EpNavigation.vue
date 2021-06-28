@@ -81,7 +81,7 @@ import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
   },
 })
 export default class EpNavigation extends Vue {
-  @Prop({ default: true })
+  @Prop({ default: false })
   private sticky!: boolean;
 
   @Prop({ default: 'normaali' })
