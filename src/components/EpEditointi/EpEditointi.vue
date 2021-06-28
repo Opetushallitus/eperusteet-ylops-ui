@@ -2,7 +2,7 @@
 <div>
   <ep-spinner v-if="!isInitialized"></ep-spinner>
   <div class="editointikontrolli" v-else>
-    <div v-sticky sticky-offset="{ top: 50 }" sticky-z-index="500">
+    <div v-sticky sticky-z-index="500">
       <div class="ylapaneeli">
         <div class="d-flex align-items-center flex-md-row flex-column justify-content-between align-self-center">
           <div class="d-flex flex-wrap flex-xl-nowrap">
