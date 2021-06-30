@@ -135,7 +135,7 @@ export const router = new Router({
       name: 'pohjaListaus',
       component: RouteOpetussuunnitelmaListaus,
       props: {
-        tyyppi: 'pohjat',
+        tyyppi: 'pohja',
       },
     }, {
       path: 'opetussuunnitelmat',
