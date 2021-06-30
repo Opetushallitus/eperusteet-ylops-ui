@@ -207,6 +207,10 @@ export default class OpsViimeaikainenToiminta extends Vue {
             color: $blue-darken-1;
           }
 
+          .julkaisu {
+            color: $green-lighten-2;
+          }
+
         }
 
         .aikajana {

@@ -35,6 +35,7 @@ const tapahtumaIcon = {
   luonti: 'plussa',
   poisto: 'roskalaatikko',
   palautus: 'peruuta',
+  julkaisu: 'julkaisu',
 };
 
 const poistetutTabIndices = {
