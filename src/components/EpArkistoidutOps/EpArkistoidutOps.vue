@@ -1,86 +1,109 @@
 <template>
 <div>
-  <ep-button v-b-modal.arkistoidutopetussuunnitelmatmodal variant="link">
+  <ep-button @click="open" variant="link">
     <fas class="mr-2" :icon="['far', 'folder']" >
     </fas>
-    <span>{{ $t(title) }}</span>
+    <span>{{ $t(title) }} </span>
   </ep-button>
   <b-modal ref="arkistoidutOpsModal"
            id="arkistoidutopetussuunnitelmatmodal"
            size="lg"
-           :title="$t(title) + ' (' + arkistoidut.length + ')'"
+           :title="modalTitle"
            :hide-footer="true">
     <div class="search">
       <ep-search v-model="query" />
     </div>
-    <b-table responsive
-             borderless
-             striped
-             :items="arkistoidut"
-             :fields="fields"
-             :current-page="currentPage"
-             :per-page="perPage">
+    <EpSpinner v-if="!opetussuunnitelmat" />
 
-      <template v-slot:cell(nimi)="data">
-        {{ $kaanna(data.value) }}
-      </template>
+    <template v-else>
+      <b-table
+              responsive
+              borderless
+              striped
+              :items="opetussuunnitelmat.data"
+              :fields="fields">
 
-      <template v-slot:cell(muokattu)="data">
-        {{ $sdt(data.value) }}
-      </template>
+        <template v-slot:cell(nimi)="data">
+          {{ $kaanna(data.value) }}
+        </template>
 
-      <template v-slot:cell(siirtyminen)="data">
-        <ep-button variant="link"
-                   icon="peruuta"
-                   @click="$emit('restore', data.item)">
-          {{ $t('palauta') }}
-        </ep-button>
-      </template>
+        <template v-slot:cell(muokattu)="data">
+          {{ $sdt(data.value) }}
+        </template>
 
-    </b-table>
+        <template v-slot:cell(siirtyminen)="data">
+          <ep-button variant="link"
+                    icon="peruuta"
+                    @click="$emit('restore', data.item)">
+            {{ $t('palauta') }}
+          </ep-button>
+        </template>
 
-    <b-pagination
-      v-model="currentPage"
-      :total-rows="arkistoidut.length"
-      :per-page="perPage"
-      aria-controls="arkistoidut-opetussuunnitelmat"
-      align="center">
-    </b-pagination>
+      </b-table>
+
+      <b-pagination
+        v-model="opsSivu"
+        :total-rows="opetussuunnitelmat['kokonaismäärä']"
+        :per-page="10"
+        aria-controls="arkistoidut-opetussuunnitelmat"
+        align="center">
+      </b-pagination>
+    </template>
   </b-modal>
 </div>
 </template>
 
 <script lang="ts">
 import _ from 'lodash';
-import { Prop, Component, Vue } from 'vue-property-decorator';
+import { Prop, Component, Vue, Watch } from 'vue-property-decorator';
 
-import { OpetussuunnitelmaInfoDto } from '@shared/api/ylops';
+import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import { Debounced } from '@shared/utils/delay';
+import { Page } from '@shared/tyypit';
 
 @Component({
   components: {
     EpButton,
     EpSearch,
+    EpSpinner,
   },
 })
 export default class EpArkistoidutOps extends Vue {
-  @Prop()
-  private opetussuunnitelmat!: OpetussuunnitelmaInfoDto[];
+  @Prop({ default: 'ops' })
+  private tyyppi!: 'ops' | 'pohja';
 
   @Prop()
   private title!: string;
 
-  private query = '';
-  private currentPage = 1;
-  private perPage = 10;
+  private opetussuunnitelmat: Page<OpetussuunnitelmaInfoDto> | null = null;
 
-  get arkistoidut() {
-    return _.chain(this.opetussuunnitelmat)
-      .filter(ops => Kielet.search(this.query, ops.nimi))
-      .orderBy('muokattu', 'desc')
-      .value();
+  private query = '';
+  private lisaHaku = false;
+  private opsSivu = 1;
+
+  protected async fetch() {
+    this.opetussuunnitelmat = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, 'poistettu', undefined, this.query, this.opsSivu - 1, 10)).data as Page<OpetussuunnitelmaInfoDto>;
+  }
+
+  get modalTitle() {
+    return this.$t(this.title) + (this.opetussuunnitelmat ? '(' + this.opetussuunnitelmat['kokonaismäärä'] + ')' : '');
+  }
+
+  @Watch('query')
+  @Debounced()
+  async queryChange() {
+    this.opsSivu = 1;
+    this.opetussuunnitelmat = null;
+    await this.fetch();
+  }
+
+  @Watch('opsSivu')
+  async opsSivuChange() {
+    await this.fetch();
   }
 
   get fields() {
@@ -90,15 +113,24 @@ export default class EpArkistoidutOps extends Vue {
     }, {
       key: 'muokattu',
       label: this.$t('poistettu'),
-      sortable: true,
+      sortable: false,
     }, {
       key: 'arkistoija',
       label: this.$t('arkistoija'),
-      sortable: true,
+      sortable: false,
     }, {
       key: 'siirtyminen',
       label: '',
     }];
+  }
+
+  async open() {
+    (this.$refs['arkistoidutOpsModal'] as any).show();
+    await this.fetch();
+  }
+
+  close() {
+    (this.$refs['arkistoidutOpsModal'] as any).hide();
   }
 }
 

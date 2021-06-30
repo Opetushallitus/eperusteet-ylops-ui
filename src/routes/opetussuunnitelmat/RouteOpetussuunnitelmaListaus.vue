@@ -7,8 +7,8 @@
     </template>
     <template slot="header">
       <h1>{{ $t(tyyppi) }}</h1>
-      <ep-arkistoidut-ops v-if="poistetut.length > 0"
-                          :opetussuunnitelmat="poistetut"
+      <ep-arkistoidut-ops ref="arkistoidutPopup"
+                          :tyyppi="tyyppi"
                           :title="vars.poistetut"
                           class="float-right"
                           @restore="palauta"/>
@@ -25,102 +25,129 @@
       </div>
     </template>
 
-    <ep-spinner v-if="isLoading"></ep-spinner>
-    <b-container fluid v-else class="pl-0">
+    <b-container fluid class="pl-0">
       <b-row>
         <b-col>
           <div class="opslistaus">
-            <h2>{{ $t(vars.keskeneraiset) }}</h2>
+            <h2>{{ $t(vars.keskeneraiset) }} <span v-if="opslista">({{opslista['kokonaismäärä']}})</span></h2>
 
-            <div class="info" v-if="keskeneraiset.length === 0">
-              <div v-if="hasRajain">
-                {{ $t('ei-hakutuloksia') }}
-              </div>
-            </div>
+            <ep-spinner v-if="!opslista"></ep-spinner>
 
-            <div class="opscontainer">
-              <div v-if="!hasRajain"
-                   class="opsbox"
-                   v-oikeustarkastelu="{ oikeus: 'luonti', kohde: 'opetussuunnitelma' }">
-                <router-link tag="a" :to="{ name: vars.uusiRoute }">
-                  <div class="uusi">
-                    <div class="plus">
-                      <fas icon="plussa"></fas>
-                    </div>
-                    <div class="text">
-                      {{ $t('luo-uusi') }}
-                    </div>
-                  </div>
-                </router-link>
+            <div v-else>
+              <div class="info" v-if="opetussuunnitelmat.length === 0">
+                <div v-if="hasRajain">
+                  {{ $t('ei-hakutuloksia') }}
+                </div>
               </div>
 
-              <div v-for="ops in keskeneraiset" :key="ops.id">
-                <div v-if="ops.tuettu"
-                    class="opsbox">
-                  <router-link
-                    tag="a"
-                    :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
-                    :key="ops.id">
-                    <div class="chart" :style="ops.tileStyle">
-                      <div class="progress-clamper">
-                        <ep-progress :slices="[0.2, 0.5, 1]" />
+              <div class="opscontainer" :class="{'disabled-events': opsHaku}">
+                <div class="opsbox"
+                    v-oikeustarkastelu="{ oikeus: 'luonti', kohde: 'opetussuunnitelma' }">
+                  <router-link tag="a" :to="{ name: vars.uusiRoute }">
+                    <div class="uusi">
+                      <div class="plus">
+                        <fas icon="plussa"></fas>
                       </div>
+                      <div class="text">
+                        {{ $t('luo-uusi') }}
+                      </div>
+                    </div>
+                  </router-link>
+                </div>
+
+                <div v-for="ops in opetussuunnitelmat" :key="ops.id">
+                  <div v-if="ops.tuettu"
+                      class="opsbox">
+                    <router-link
+                      tag="a"
+                      :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
+                      :key="ops.id">
+                      <div class="chart" :style="ops.tileStyle">
+                        <div class="progress-clamper">
+                          <ep-progress :slices="[0.2, 0.5, 1]" />
+                        </div>
+                      </div>
+                      <div class="info">
+                        <div class="nimi">
+                          {{ $kaanna(ops.nimi, false, false) }}
+                        </div>
+                      </div>
+                    </router-link>
+                  </div>
+                  <div v-else
+                      ref="disabled"
+                      class="opsbox disabled">
+                    <div class="info-top">
+                      <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
                     </div>
                     <div class="info">
                       <div class="nimi">
                         {{ $kaanna(ops.nimi, false, false) }}
                       </div>
                     </div>
-                  </router-link>
-                </div>
-                <div v-else
-                    ref="disabled"
-                    class="opsbox disabled">
-                  <div class="info-top">
-                    <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
-                  </div>
-                  <div class="info">
-                    <div class="nimi">
-                      {{ $kaanna(ops.nimi, false, false) }}
-                    </div>
                   </div>
                 </div>
+
+              </div>
+
+              <div class="paginating">
+                <b-pagination
+                  v-model="opsSivu"
+                  :total-rows="opslista['kokonaismäärä']"
+                  :per-page="10"
+                  aria-controls="opetussuunnitelmat"
+                  align="center">
+                </b-pagination>
               </div>
             </div>
           </div>
 
           <div class="opslistaus">
-            <h2 class="mt-4">{{ $t(vars.julkaistut) }}</h2>
+            <h2 class="mt-4">{{ $t(vars.julkaistut) }} <span v-if="julkaistutLista">({{julkaistutLista['kokonaismäärä']}})</span></h2>
 
-            <div class="info" v-if="julkaistut.length === 0">
-              <div v-if="hasRajain">
-                {{ $t('ei-hakutuloksia') }}
+            <ep-spinner v-if="!julkaistutLista"></ep-spinner>
+
+            <div v-else>
+              <div class="info" v-if="julkaistut.length === 0">
+                <div v-if="hasRajain">
+                  {{ $t('ei-hakutuloksia') }}
+                </div>
+                <ep-alert v-else :ops="true" :text="$t(vars.eivalmiita)" />
               </div>
-              <ep-alert v-else :ops="true" :text="$t(vars.eivalmiita)" />
-            </div>
 
-            <div class="opscontainer">
-              <div v-for="ops in julkaistut" :key="ops.id">
-                <div class="opsbox julkaistu" :style="ops.bannerImage">
-                  <router-link
-                    tag="a"
-                    :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
-                    :key="ops.id">
-                    <div class="julkaistu">
-                    </div>
-                    <div class="info d-flex flex-column justify-content-between">
-                      <div class="nimi">
-                        {{ $kaanna(ops.nimi, false, false) }}
+              <div class="opscontainer" :class="{'disabled-events': julkaistutHaku}">
+                <div v-for="ops in julkaistut" :key="ops.id">
+                  <div class="opsbox julkaistu" :style="ops.bannerImage">
+                    <router-link
+                      tag="a"
+                      :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
+                      :key="ops.id">
+                      <div class="julkaistu">
                       </div>
-                      <div v-if="ops.julkaisu" class="nimi">
-                        <hr />
-                        <div class="julkaisu">
-                          {{ $t('julkaistu') }} {{$sd(ops.julkaisu.luotu)}}
+                      <div class="info d-flex flex-column justify-content-between">
+                        <div class="nimi">
+                          {{ $kaanna(ops.nimi, false, false) }}
+                        </div>
+                        <div v-if="ops.julkaistu" class="nimi">
+                          <hr />
+                          <div class="julkaisu">
+                            {{ $t('julkaistu') }} {{$sd(ops.julkaistu)}}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </router-link>
+                    </router-link>
+                  </div>
                 </div>
+
+              </div>
+              <div class="paginating">
+                <b-pagination
+                  v-model="julkaistutSivu"
+                  :total-rows="julkaistutLista['kokonaismäärä']"
+                  :per-page="10"
+                  aria-controls="julkaistut-opetussuunnitelmat"
+                  align="center">
+                </b-pagination>
               </div>
             </div>
           </div>
@@ -133,7 +160,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Prop, Component, Mixins } from 'vue-property-decorator';
+import { Prop, Component, Mixins, Watch } from 'vue-property-decorator';
 
 import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat, OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
 
@@ -157,6 +184,8 @@ import EpSearch from '@shared/components/forms/EpSearch.vue';
 import KoulutustyyppiSelect from '@shared/components/forms/EpKoulutustyyppiSelect.vue';
 import { yleissivistavatKoulutustyypit, themes } from '@shared/utils/perusteet';
 import { tileBackgroundColor, koulutusTyyppiTile } from '@shared/utils/bannerIcons';
+import { Debounced } from '@shared/utils/delay';
+import { Page } from '@shared/tyypit';
 
 @Component({
   directives: {
@@ -176,69 +205,46 @@ import { tileBackgroundColor, koulutusTyyppiTile } from '@shared/utils/bannerIco
   },
 })
 export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
-  @Prop({ default: 'opetussuunnitelmat' })
-  private tyyppi!: 'opetussuunnitelmat' | 'pohjat';
+  @Prop({ default: 'ops' })
+  private tyyppi!: 'ops' | 'pohja';
 
   @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
 
-  private opslista: OpetussuunnitelmaInfoDto[] = [];
+  private opslista: Page<OpetussuunnitelmaInfoDto> | null = null;
+  private julkaistutLista: Page<OpetussuunnitelmaInfoDto> | null = null;
 
   private rajain = '';
   private koulutustyyppi = '';
+  private opsSivu = 1;
+  private julkaistutSivu = 1;
+  private opsHaku = false;
+  private julkaistutHaku = false;
 
   get hasRajain() {
     return !_.isEmpty(this.rajain);
   }
 
-  get jarjestetyt() {
-    return _(this.opslista)
-      .filter(ops => _.includes(
-        _.toLower(_.get(ops, 'nimi.' + Kielet.getSisaltoKieli.value)),
-        _.toLower(this.rajain)
-      ))
-      .filter(ops => _.isEmpty(this.koulutustyyppi) || this.koulutustyyppi === ops.koulutustyyppi)
-      .map(ops => {
-        return {
-          ...ops,
-          tileStyle: tileBackgroundColor(ops.koulutustyyppi!),
-        };
-      })
-      .sortBy('luotu')
-      .reverse()
-      .value();
-  }
-
-  get arkistoimattomat() {
-    return _.reject(this.jarjestetyt, ops => (ops.tila as any) === 'poistettu');
-  }
-
-  get poistetut() {
-    return _.filter(this.jarjestetyt, ops => (ops.tila as any) === 'poistettu');
-  }
-
   get valmisTila() {
-    return this.tyyppi === 'pohjat'
+    return this.tyyppi === 'pohja'
       ? 'valmis'
       : 'julkaistu';
   }
 
-  get keskeneraiset() {
-    return _.chain(this.arkistoimattomat)
-      .reject(ops => (ops.tila as any) === this.valmisTila)
+  get opetussuunnitelmat() {
+    return _.chain(this.opslista?.data)
       .map(ops => {
         return {
           ...ops,
           tuettu: isOpsToteutusSupported(ops),
+          tileStyle: tileBackgroundColor(ops.koulutustyyppi!),
         };
       })
       .value();
   }
 
   get julkaistut() {
-    return _.chain(this.arkistoimattomat)
-      .filter(ops => (ops.tila as any) === this.valmisTila)
-      .filter(ops => isOpsToteutusSupported(ops))
+    return _.chain(this.julkaistutLista?.data)
       .map(ops => {
         return {
           ...ops,
@@ -249,7 +255,7 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   }
 
   get vars() {
-    if (this.tyyppi === 'pohjat') {
+    if (this.tyyppi === 'pohja') {
       return {
         eiarkistoituja: 'ei-arkistoituja-pohjia',
         eivalmiita: 'ei-valmiita-pohjia',
@@ -285,11 +291,8 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
     if (await this.vahvista(this.vars.palautaOps, this.vars.palautaOpsKuvaus)) {
       try {
         await OpetussuunnitelmaStore.updateOpsTila(ops.id!, 'luonnos');
-        const idx = _.findIndex(this.opslista, { id: ops.id });
-        if (idx > -1) {
-          this.opslista[idx].tila = 'luonnos' as any;
-        }
         success('palautus-onnistui');
+        (this.$refs['arkistoidutPopup'] as any).close();
       }
       catch (err) {
         fail('palautus-epaonnistui');
@@ -297,26 +300,50 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
     }
   }
 
-  protected async init() {
-    const res = await Opetussuunnitelmat.getAll(this.tyyppi === 'pohjat' ? 'POHJA' : 'OPS');
-    const julkaistut = _.filter(res.data, ops => ops.tila as string === 'julkaistu');
-    const julkaisutiedot = await Promise.all(_.map(julkaistut, async (julkaistu) => {
-      return {
-        opsId: julkaistu.id!,
-        julkaisu: _.chain((await Opetussuunnitelmat.getJulkaisutKevyt(julkaistu.id!)).data)
-          .sortBy('luotu')
-          .reverse()
-          .head()
-          .value(),
-      };
-    }));
+  @Watch('koulutustyyppi')
+  async koulutustyyppiChange() {
+    this.opsSivu = 1;
+    this.julkaistutSivu = 1;
+    this.opslista = null;
+    this.julkaistutLista = null;
+    await this.init();
+  }
 
-    this.opslista = _.map(res.data, ops => {
-      return {
-        ...ops,
-        julkaisu: _.get(_.keyBy(julkaisutiedot, 'opsId')[ops.id!], 'julkaisu'),
-      };
-    });
+  @Watch('rajain')
+  @Debounced()
+  async rajainChange() {
+    this.opsSivu = 1;
+    this.julkaistutSivu = 1;
+    this.opslista = null;
+    this.julkaistutLista = null;
+    await this.init();
+  }
+
+  @Watch('opsSivu')
+  async opsSivuChange() {
+    await this.fetchOps();
+  }
+
+  @Watch('julkaistutSivu')
+  async julkaistutSivuChange() {
+    await this.fetchJulkaisut();
+  }
+
+  protected async init() {
+    await this.fetchOps();
+    await this.fetchJulkaisut();
+  }
+
+  protected async fetchOps() {
+    this.opsHaku = true;
+    this.opslista = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, 'luonnos', this.koulutustyyppi, this.rajain, this.opsSivu - 1, 14)).data as Page<OpetussuunnitelmaInfoDto>;
+    this.opsHaku = false;
+  }
+
+  protected async fetchJulkaisut() {
+    this.julkaistutHaku = true;
+    this.julkaistutLista = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, this.valmisTila, this.koulutustyyppi, this.rajain, this.julkaistutSivu - 1, 10)).data as Page<OpetussuunnitelmaInfoDto>;
+    this.julkaistutHaku = false;
   }
 
   get yleissivistavatKoulutustyypit() {
@@ -347,6 +374,10 @@ h2 {
 
   .info {
     padding: 10px 0;
+  }
+
+  .paginating {
+    margin-right: 15%;
   }
 
   .opscontainer {
