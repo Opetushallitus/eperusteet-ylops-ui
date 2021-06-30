@@ -91,7 +91,7 @@
       </b-form-group>
     </div>
 
-    <EpJulkaisuHistoria :julkaisut="julkaisuhistoria">
+    <EpJulkaisuHistoria :julkaisut="julkaisuhistoria" :palauta="palautaJulkaisu">
       <div slot="empty">{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
     </EpJulkaisuHistoria>
 
@@ -220,6 +220,16 @@ export default class RouteJulkaisu extends EpOpsRoute {
 
   get kieli() {
     return Kielet.getSisaltoKieli.value;
+  }
+
+  async palautaJulkaisu(julkaisu) {
+    try {
+      await this.store.palautaJulkaisu(julkaisu);
+      this.$success(this.$t('opetussuunnitelman-julkaisuversio-palautettu-julkiseksi') as string);
+    }
+    catch (err) {
+      this.$fail(this.$t('palautus-epaonnistui') as string);
+    }
   }
 }
 </script>

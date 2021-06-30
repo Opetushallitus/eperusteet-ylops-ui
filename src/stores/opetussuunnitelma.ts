@@ -208,6 +208,11 @@ export class OpetussuunnitelmaStore {
     this.julkaisut = [tallennettuJulkaisu, ...this.julkaisut!];
   }
 
+  public async palautaJulkaisu(julkaisu) {
+    const tallennettuJulkaisu = (await Opetussuunnitelmat.aktivoiJulkaisu(this.opetussuunnitelma!.id!, julkaisu.revision)).data;
+    this.julkaisut = [tallennettuJulkaisu, ...this.julkaisut!];
+  }
+
   // Lops 2021
   // Pilko omiin moduuleihin
 
