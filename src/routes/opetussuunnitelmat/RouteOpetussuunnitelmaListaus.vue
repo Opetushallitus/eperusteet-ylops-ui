@@ -94,7 +94,7 @@
                 <b-pagination
                   v-model="opsSivu"
                   :total-rows="opslista['kokonaismäärä']"
-                  :per-page="10"
+                  :per-page="14"
                   aria-controls="opetussuunnitelmat"
                   align="center">
                 </b-pagination>
