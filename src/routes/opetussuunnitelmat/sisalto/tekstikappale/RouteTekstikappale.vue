@@ -50,6 +50,10 @@
                 <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
               </div>
             </ep-collapse>
+            <div class="mb-4" v-if="data.tov.perusteTekstikappaleId && !perusteenTeksti">
+              <h5>{{ $t('perusteen-teksti') }}</h5>
+              <div class="font-italic text-secondary">{{$t('perusteen-tekstia-ei-loydy')}}</div>
+            </div>
             <ep-collapse v-if="alkuperaiset && alkuperaiset.length > 0 && (isEditing || data.tov.naytaPohjanTeksti)">
               <h5 slot="header">
                 {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{$kaanna(pohjaNimi)}})</span>
