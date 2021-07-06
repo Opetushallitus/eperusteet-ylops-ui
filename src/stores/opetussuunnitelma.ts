@@ -144,7 +144,9 @@ export class OpetussuunnitelmaStore {
       return result;
     }
     else {
-      return {};
+      return {
+        valid: true,
+      };
     }
   }
 
