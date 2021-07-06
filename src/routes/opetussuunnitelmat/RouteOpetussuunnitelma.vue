@@ -13,6 +13,11 @@
                         :to="{ name: 'opsJulkaisu' }">
                 {{ $t('siirry-julkaisunakymaan') }}
               </b-button>
+
+               <b-button v-if="isLuonnos && isPohja && validation && validation.valid"
+                        variant="primary" @click="valmistaPohja">
+                {{ $t('aseta-valmiiksi') }}
+              </b-button>
             </div>
           </template>
 
@@ -274,6 +279,27 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     }
 
     return 'voit-palauttaa-arkistoidun-opetussuunnitelman-luonnostilaan';
+  }
+
+  public async valmistaPohja() {
+    const valmista = await this.$bvModal.msgBoxConfirm(this.$t('pohja-valmis-varmistus') as any, {
+      title: this.$t('aseta-pohja-valmiiksi') as any,
+      okVariant: 'primary',
+      okTitle: this.$t('aseta-valmiiksi') as any,
+      cancelVariant: 'link',
+      cancelTitle: this.$t('peruuta') as any,
+      centered: true,
+    });
+
+    if (valmista) {
+      try {
+        await this.store.updateTila('valmis');
+        this.$success(this.$t('tilan-vaihto-valmis-onnistui') as any);
+      }
+      catch (err) {
+        this.$fail(this.$t('tilan-vaihto-valmis-epaonnistui') as any);
+      }
+    }
   }
 }
 </script>
