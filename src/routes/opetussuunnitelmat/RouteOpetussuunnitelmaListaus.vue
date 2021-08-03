@@ -90,7 +90,7 @@
 
               </div>
 
-              <div class="paginating">
+              <div class="paginating mt-2">
                 <b-pagination
                   v-model="opsSivu"
                   :total-rows="opslista['kokonaismäärä']"
@@ -140,7 +140,7 @@
                 </div>
 
               </div>
-              <div class="paginating">
+              <div class="paginating mt-2">
                 <b-pagination
                   v-model="julkaistutSivu"
                   :total-rows="julkaistutLista['kokonaismäärä']"
