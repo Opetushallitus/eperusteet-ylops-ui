@@ -1,29 +1,17 @@
 <template>
 <div class="content">
+  <h2>{{ $t('julkaisunakyma') }}</h2>
   <div v-html="$t('julkaisuohje')">
   </div>
   <ep-spinner v-if="!validointi" />
   <div v-else>
-    <div class="vaihe" v-if="kooste && kooste.length > 0">
+    <div class="mt-5" v-if="validoinnit && validoinnit.length > 0">
       <h3>{{ $t('validointi') }}</h3>
-      <div class="kategoriat">
-        <div class="kategoria" v-for="(category, idx) in kooste" :key="idx">
-          <ep-collapse :expanded-by-default="false">
-            <h4 slot="header">
-              <span class="iconspan mr-2">
-                <fas class="warning" v-if="category.hasFatal" icon="huutomerkki-ympyra" fixed-width>
-                </fas>
-                <fas v-else :class="category.hasWarning ? 'warning' : 'success'" icon="checkmark-ympyra" fixed-width>
-                </fas>
-              </span>
-              <span class="saanto">{{ $t(category.key) }}</span>
-            </h4>
-            <div class="validointi" v-for="(validation, vidx) in category.value" :key="vidx + (idx + 1) * 1000">
-              <router-link v-if="validation.meta" :to="{name: validation.meta.route.type, params: validation.meta.route.meta}">
-                <span>{{ $t(validation.kuvaus) }} ({{ $kaanna(validation.nimi) }})</span>
-              </router-link>
-              <span v-else>{{ $t(validation.kuvaus) }} ({{ $kaanna(validation.nimi) }})</span>
-            </div>
+      <div class="kategoriat mt-4">
+        <div class="kategoria" v-for="(validointi, idx) in validoinnit" :key="'validointi'+idx">
+          <ep-collapse :borderTop="true" :borderBottom="idx === validoinnit.length - 1" :expanded-by-default="true" :collapsable="validointi.virheet.length > 0 || validointi.huomautukset.length > 0">
+            <h3 slot="header">{{$t(validointi.kategoria)}}</h3>
+            <EpJulkaisuValidointi :validointi="validointi" />
           </ep-collapse>
         </div>
       </div>
@@ -80,20 +68,22 @@
       </div>
     </div>
 
-    <div v-if="isValid">
-      <h3>{{ $t('uusi-julkaisu') }}</h3>
-      <b-form-group :label="$t('julkaisun-tiedote')">
-        <div class="font-size-08 mb-2">{{$t('tiedote-naytetaan-tyoryhmalle-taman-sivun-julkaisuhistoriassa')}}</div>
-        <ep-content v-model="uusiJulkaisu.julkaisutiedote"
-                    layout="simplified"
-                    :is-editable="true" />
-        <EpJulkaisuButton class="mt-3" :julkaise="julkaise" v-oikeustarkastelu="'hallinta'"/>
-      </b-form-group>
-    </div>
+    <div class="mt-4">
+      <div v-if="isValid">
+        <h3>{{ $t('uusi-julkaisu') }}</h3>
+        <b-form-group :label="$t('julkaisun-tiedote')">
+          <div class="font-size-08 mb-2">{{$t('tiedote-naytetaan-tyoryhmalle-taman-sivun-julkaisuhistoriassa')}}</div>
+          <ep-content v-model="uusiJulkaisu.julkaisutiedote"
+                      layout="simplified"
+                      :is-editable="true" />
+          <EpJulkaisuButton class="mt-3" :julkaise="julkaise" v-oikeustarkastelu="'hallinta'"/>
+        </b-form-group>
+      </div>
 
-    <EpJulkaisuHistoria :julkaisut="julkaisuhistoria" :palauta="palautaJulkaisu">
-      <div slot="empty">{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
-    </EpJulkaisuHistoria>
+      <EpJulkaisuHistoria :julkaisut="julkaisuhistoria" :palauta="palautaJulkaisu">
+        <div slot="empty">{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
+      </EpJulkaisuHistoria>
+    </div>
 
   </div>
 </div>
@@ -121,6 +111,7 @@ import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import EpJulkaisuButton from '@shared/components/EpJulkaisuButton/EpJulkaisuButton.vue';
+import EpJulkaisuValidointi from '@shared/components/EpJulkaisuValidointi/EpJulkaisuValidointi.vue';
 
 @Component({
   components: {
@@ -137,13 +128,13 @@ import EpJulkaisuButton from '@shared/components/EpJulkaisuButton/EpJulkaisuButt
     EpJulkaisuHistoria,
     EpExternalLink,
     EpJulkaisuButton,
+    EpJulkaisuValidointi,
   },
 })
 export default class RouteJulkaisu extends EpOpsRoute {
   private hooks: EditointiKontrolliConfig | null = null;
   private validointi: Lops2019ValidointiDto | null = null;
   private isOpen: { [key: string]: boolean } = {};
-  private showKooste = false;
   private uusiJulkaisu: UusiJulkaisuDto = {
     julkaisutiedote: {},
   };
@@ -172,27 +163,42 @@ export default class RouteJulkaisu extends EpOpsRoute {
   }
 
   get isValid() {
-    return _.every(this.kooste, v => !v.hasFatal);
+    return _.every(this.validoinnit, validointi => _.isEmpty(validointi.virheet));
   }
 
-  get kooste() {
-    if (this.validointi) {
-      return _(this.validointi.validoinnit)
-        .map((value, key) => ({
-          key,
-          hasFatal: _.some(value, v => v.fatal && v.failed),
-          hasWarning: _.some(value, v => v.failed),
-          value: _.filter(value, v => v.failed),
-        }))
-        .value();
-    }
-    else {
-      return [];
-    }
+  get validoinnit() {
+    return _(this.validointi?.validoinnit)
+      .map((value, key) => ({
+        kategoria: key,
+        virheet: _.chain(value as any[])
+          .filter((rivi) => rivi.fatal && rivi.failed)
+          .map(rivi => {
+            return {
+              ...rivi,
+              ...this.mapValidointiRoute(rivi),
+            };
+          })
+          .value(),
+        huomautukset: _.chain(value as any[])
+          .filter((rivi) => !rivi.fatal && rivi.failed)
+          .map(rivi => {
+            return {
+              ...rivi,
+              ...this.mapValidointiRoute(rivi),
+            };
+          })
+          .value(),
+      }))
+      .value();
   }
 
-  avaaKooste() {
-    this.showKooste = true;
+  mapValidointiRoute(validointi) {
+    return {
+      route: {
+        name: _.get(validointi, 'meta.route.type'),
+        params: _.get(validointi, 'meta.route.meta'),
+      },
+    };
   }
 
   async init() {
@@ -239,11 +245,6 @@ export default class RouteJulkaisu extends EpOpsRoute {
 .content {
   padding: 15px 50px 50px 50px;
 
-  .vaihe {
-    margin-top: 60px;
-    padding-top: 20px;
-  }
-
   .actions {
     margin-top: 40px;
   }
@@ -264,30 +265,9 @@ export default class RouteJulkaisu extends EpOpsRoute {
     text-align: center;
   }
 
-  span.iconspan {
-    min-width: 20px;
-    display: inline-block;
-    text-align: center;
-
-    .failed {
-      color: #ff6b27;
-    }
-
-    .warning {
-      color: #ff6b27;
-    }
-
-    .success {
-      color: #449013;
-    }
-  }
-
   .kategoriat {
-    margin-top: 40px;
 
     .kategoria {
-      margin-top: 20px;
-      font-size: 120%;
 
       .otsikko {
         user-select: none;
@@ -297,9 +277,8 @@ export default class RouteJulkaisu extends EpOpsRoute {
       }
 
       .validointi {
-        font-size: 80%;
-        padding: 6px;
-        padding-left: 32px;
+        // font-size: 80%;
+        //padding: 6px;
       }
     }
   }
