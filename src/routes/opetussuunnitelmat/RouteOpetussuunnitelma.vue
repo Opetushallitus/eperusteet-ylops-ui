@@ -88,7 +88,8 @@
         <template slot="bar">
           <ops-sidenav
             :opetussuunnitelma-store="store"
-            :key="$route.fullPath" />
+            :key="$route.fullPath"
+            v-model="valikkoData"/>
         </template>
         <template slot="view">
           <transition name="fade" mode="out-in">
@@ -104,7 +105,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Prop, Mixins, Component } from 'vue-property-decorator';
+import { Prop, Mixins, Component, ProvideReactive } from 'vue-property-decorator';
 import { Lops2019ValidointiDto, OpetussuunnitelmaKevytDtoTilaEnum } from '@shared/api/ylops';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
@@ -119,6 +120,8 @@ import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpProgressPopover from '@shared/components/EpProgressPopover/EpProgressPopover.vue';
 import { tileBackgroundColor, koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import { themes } from '@shared/utils/perusteet';
+import { LinkkiHandler, routeToNode } from '@/utils/routing';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {
@@ -131,10 +134,12 @@ import { themes } from '@shared/utils/perusteet';
     EpButton,
     EpProgressPopover,
   },
+  inject: [],
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
+  private valikkoData: any | null = null;
 
   protected async init() {
     await this.store.init();
@@ -300,6 +305,32 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         this.$fail(this.$t('tilan-vaihto-valmis-epaonnistui') as any);
       }
     }
+  }
+
+  @ProvideReactive('navigation')
+  get navigation(): any {
+    return {
+      type: 'root',
+      children: this.navigationToNode(this.valikkoData),
+    };
+  }
+
+  navigationToNode(items: any[]): any[] {
+    return _.chain(items)
+      .filter(item => !!item.item.objref?.nimi || !!item.item.i18key)
+      .map(item => {
+        return {
+          label: item.item.objref?.nimi || { [Kielet.getUiKieli.value]: _.isArray(item.item.i18key) ? _.join(_.map(item.item.i18key, key => this.$t(key)), ', ') : this.$t(item.item.i18key) },
+          children: this.navigationToNode(item.children),
+          ...routeToNode(item.route),
+        };
+      })
+      .value();
+  }
+
+  @ProvideReactive('linkkiHandler')
+  get linkkiHandler() {
+    return new LinkkiHandler();
   }
 }
 </script>
