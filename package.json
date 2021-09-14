@@ -70,6 +70,7 @@
     "core-js": "^3.4.4",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "deepdash-es": "^5.3.9",
     "file-loader": "^5.0.2",
     "he": "^1.2.0",
     "html-loader": "^0.5.5",

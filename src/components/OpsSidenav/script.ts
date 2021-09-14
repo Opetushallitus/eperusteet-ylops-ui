@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Component } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import { PerusteCache } from '@/stores/peruste';
 
@@ -370,6 +370,11 @@ export default class OpsSidenav extends EpOpsComponent {
 
   get valikkoDataBasics() {
     return menuBaseData;
+  }
+
+  @Watch('valikkoData')
+  valikkoDataChange() {
+    this.$emit('input', this.valikkoData);
   }
 
   get valikkoData() {

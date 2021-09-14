@@ -56,7 +56,7 @@ export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
 }
 
 export function vuosiluokkaLinkit(ops: OpetussuunnitelmaKevytDto): SideMenuEntry[] {
-  return _.chain(ops.vuosiluokkakokonaisuudet)
+  return _.chain(ops?.vuosiluokkakokonaisuudet)
     .map('vuosiluokkakokonaisuus')
     .sortBy([(vlk: any) => {
       return vlk.nimi[Kielet.getSisaltoKieli.value];
@@ -140,7 +140,7 @@ function perusopetusOppiaineenLapset(oppiaineet, vlk) {
 }
 
 function perusopetusoppiaineenVuosiluokat(oppiaine, vlk) {
-  const oppiaineenVlk = _.head(_.filter(oppiaine.vuosiluokkakokonaisuudet, ovlk => _.get(ovlk, '_vuosiluokkakokonaisuus') === _.get(vlk, '_tunniste')));
+  const oppiaineenVlk = _.head(_.filter(oppiaine?.vuosiluokkakokonaisuudet, ovlk => _.get(ovlk, '_vuosiluokkakokonaisuus') === _.get(vlk, '_tunniste')));
 
   if (oppiaineenVlk && _.size(oppiaineenVlk.vuosiluokat) > 0) {
     return [{
