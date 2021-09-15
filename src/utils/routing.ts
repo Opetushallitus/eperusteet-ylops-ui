@@ -13,7 +13,7 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
   switch (route.name) {
   case 'tekstikappale':
     return {
-      type: 'tekstikappale',
+      type: 'viite',
       id: Number(route.params?.osaId!),
     };
   case 'opintojakso':
@@ -84,7 +84,7 @@ export function nodeToRoute(node: NavigationNodeDto): Location | null {
   }
 
   switch (node.type) {
-  case 'tekstikappale':
+  case 'viite':
     return {
       name: 'tekstikappale',
       params: {
