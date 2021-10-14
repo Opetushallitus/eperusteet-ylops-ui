@@ -1252,10 +1252,10 @@
   resolved "https://registry.yarnpkg.com/@types/katex/-/katex-0.10.2.tgz#322afa83aba5cca4edcea014ebf0be997135dbd9"
   integrity sha512-QYTNuhuDU22gouVoL5kLmBTguu2rPvtp7wL5U5fTFsQkM1ojfUgxFPMFrqOSUofrdWwnZEmblcobdlLXj1lVOw==
 
-"@types/lodash@^4.14.149":
-  version "4.14.155"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.155.tgz#e2b4514f46a261fd11542e47519c20ebce7bc23a"
-  integrity sha512-vEcX7S7aPhsBCivxMwAANQburHBtfN9RdyXFk84IJmu2Z4Hkg1tOFgaslRiEqqvoLtbCBi6ika1EMspE+NZ9Lg==
+"@types/lodash@4.14.160":
+  version "4.14.160"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.160.tgz#2f1bba6500bc3cb9a732c6d66a083378fb0b0b29"
+  integrity sha512-aP03BShJoO+WVndoVj/WNcB/YBPt+CIU1mvaao2GRAHy2yg4pT/XS4XnVHEQBjPJGycWf/9seKEO9vopTJGkvA==
 
 "@types/minimatch@*":
   version "3.0.3"
