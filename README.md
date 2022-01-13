@@ -10,45 +10,35 @@
 ### Kehitysympäristön vaatimukset
 
 ```
-Node.js 10 LTS
+Node.js 14 LTS
+```
+
+### Rajapintojen generoiminen
+
+Rajapintojen generointiin käytetään oletuksena eperusteisiin generoitua [apikuvausta](https://raw.githubusercontent.com/Opetushallitus/eperusteet-ylops/master/generated/ylops.spec.json)
+Tiedoston voi ylikirjoittaa ympäristömuuttujalla ``EPERUSTEET\_SPECFILE`` osoittamaan hakemistoon.
+
+```sh
+$ git submodule update --init --recursive
+$ cd eperusteet-frontend-utils/vue
+$ yarn install
+$ yarn gen:api:eperusteet
+$ yarn gen:api:eperusteet-ylops
+$ rm -rf node_modules # Tarvitaan vain rajapintojen generointia varten
+$ cd ../.. # Palataan takaisin projektiin
 ```
 
 ### Riippuvuuksien asentaminen
 
 ```sh
-
-git submodule update --init --recursive
-yarn install
-
-cd eperusteet-frontend-utils/vue
-yarn install
-yarn gen:api
-
-```
-
-### Rajapintojen generoiminen
-
-Aseta ympäristömuuttuja YLOPS\_SERVICE\_DIR osoittamaan
-[eperusteet-ylops](https://github.com/Opetushallitus/eperusteet-ylops)\/eperusteet-ylops-service
-hakemistoon.
-
-```sh
-
-# Generointi väliaikaisella apuskriptilla
-yarn gen:api
-
-# Generointi ilman
-mkdir -p src/generated
-cd src/generated
-openapi-generator generate -i <specfile> -g typescript-axios
-
+$ yarn install
 ```
 
 ### Kehitysympäristön käynnistäminen
 
 ```sh
 
-yarn serve
+$ yarn serve
 
 ```
 
@@ -56,7 +46,7 @@ yarn serve
 
 ```sh
 
-yarn build
+$ yarn build
 
 ```
 
@@ -65,16 +55,16 @@ yarn build
 ```sh
 
 # Run all tests
-yarn test
+$ yarn test
 
 # Run unit tests only
-yarn test:unit
+$ yarn test:unit
 
 # Run e2e tests
-yarn test:e2e
+$ yarn test:e2e
 
 # Edit e2e tests
-yarn dev:e2e
+$ yarn dev:e2e
 
 ```
 
@@ -82,7 +72,8 @@ yarn dev:e2e
 
 ```sh
 
-yarn lint
+$ yarn lint
+$ yarn lint:fix # Korjaus automaattisesti
 
 ```
 
@@ -90,8 +81,8 @@ yarn lint
 
 ```sh
 
-yarn test:unit
-yarn test:unit:dev # Pitää testit käynnissä
+$ yarn test:unit
+$ yarn test:unit:dev # Pitää testit käynnissä
 
 ```
 
