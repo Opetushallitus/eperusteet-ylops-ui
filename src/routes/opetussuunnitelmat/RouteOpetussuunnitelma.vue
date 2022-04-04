@@ -1,7 +1,8 @@
 <template>
 <div>
   <ep-navigation tyyli="ops" :tutoriaalistore="tutoriaalistore" :koulutustyyppi="koulutustyyppi" :headerClass="headerClass"></ep-navigation>
-  <div class="opetussuunnitelma" v-if="ops" :class="headerClass">
+  <ep-spinner class="center-loading" v-if="!ops"/>
+  <div class="opetussuunnitelma" :class="headerClass" v-else>
     <div class="header" :style="headerStyle">
       <div class="progress-chart">
         <ep-progress-popover :slices="slices" :popupStyle="progressPopoverStyle">
@@ -337,6 +338,13 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
 <style scoped lang="scss">
 @import "@shared/styles/_variables.scss";
+
+.center-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -50px;
+}
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity .1s;
