@@ -31,7 +31,10 @@ export class PerusopetusVuosiluokkaValinnaisetStore implements IEditoitava {
       vuosiluokkakokonaisuus: this.vuosiluokkakokonaisuus,
       oppiaineet: _.chain(this.ops.oppiaineet)
         .map('oppiaine')
-        .filter(oppiaine => oppiaine?.tyyppi !== OppiaineSuppeaDtoTyyppiEnum.YHTEINEN.toLowerCase())
+        .filter(oppiaine => oppiaine?.tyyppi !== OppiaineSuppeaDtoTyyppiEnum.YHTEINEN.toLowerCase()
+          && _.includes(
+            _.map(oppiaine?.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'),
+            _.get(this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus, '_tunniste')))
         .map(oppiaine => {
           return {
             ...oppiaine,

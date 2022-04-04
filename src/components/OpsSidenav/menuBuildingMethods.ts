@@ -158,11 +158,12 @@ function perusopetusoppiaineenVuosiluokat(oppiaine, vlk) {
               i18key: ['vuosiluokka', vuosiluokka.vuosiluokka],
             },
             route: {
-              name: 'perusopetusoppiainevuosiluokka',
+              name: oppiaine.tyyppi === 'muu_valinnainen' ? 'perusopetuspaikallinenoppiainevuosiluokka' : 'perusopetusoppiainevuosiluokka',
               params: {
                 vlkId: vlk?.id,
                 oppiaineId: oppiaine?.id,
                 vlId: vuosiluokka.id,
+                vuosiluokkaId: vuosiluokka.id,
               },
             },
           } as SideMenuEntry;
