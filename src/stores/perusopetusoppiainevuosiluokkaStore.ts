@@ -164,10 +164,10 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
     return {};
   });
 
-  public features() {
+  public features(data) {
     return computed(() => {
       return {
-        editable: true,
+        editable: data.oppiaine.oma,
         removable: false,
         hideable: false,
         recoverable: false,

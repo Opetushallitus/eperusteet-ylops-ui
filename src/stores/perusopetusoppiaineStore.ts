@@ -179,11 +179,11 @@ export class PerusopetusoppiaineStore implements IEditoitava {
     return computed(() => {
       return data ? {
         editable: data.perusteenOppiaine && data.oppiaine.oma,
-        removable: this.parent && isOppiaineUskontoTaiKieli(this.parent),
-        hideable: this.parent && isOppiaineUskontoTaiKieli(this.parent),
+        removable: this.parent && isOppiaineUskontoTaiKieli(this.parent) && data.oppiaine.oma,
+        hideable: this.parent && isOppiaineUskontoTaiKieli(this.parent) && data.oppiaine.oma,
         isHidden: data.vuosiluokkakokonaisuus?.piilotettu || false,
         recoverable: data.oppiaine.oma,
-        copyable: !data.oppiaine.oma,
+        copyable: !data.oppiaine.oma && !this.parent,
       } as EditoitavaFeatures
         : {};
     });
