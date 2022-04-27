@@ -53,7 +53,6 @@ import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import { OppiaineSuppeaDto, Oppiaineet, PerusteOppiaineDto, KopioOppimaaraDto, UnwrappedOpsVuosiluokkakokonaisuusDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
-import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
@@ -176,17 +175,23 @@ export default class EpOppimaaraLisays extends Mixins(EpRoute, EpOpsComponent, v
       tunniste: this.valittuOppimaara?.tunniste,
     } as KopioOppimaaraDto;
 
-    const uusi = (await Oppiaineet.addOppimaara((this.ops.id as number), (this.oppiaine.id as number), kopio)).data;
+    try {
+      const uusi = (await Oppiaineet.addOppimaara((this.ops.id as number), (this.oppiaine.id as number), kopio)).data;
 
-    await this.resetNavi();
+      await this.resetNavi();
 
-    this.$router.push({
-      name: 'perusopetusoppiaine',
-      params: {
-        ...this.$route.params,
-        oppiaineId: '' + uusi.id,
-      },
-    });
+      this.$router.push({
+        name: 'perusopetusoppiaine',
+        params: {
+          ...this.$route.params,
+          oppiaineId: '' + uusi.id,
+        },
+      });
+    }
+    catch (err) {
+      this.$fail(this.$t('tallennus-epaonnistui') as string);
+      this.$fail(err.response.data.syy);
+    }
   }
 
   clear() {
