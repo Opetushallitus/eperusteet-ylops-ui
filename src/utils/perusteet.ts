@@ -10,7 +10,7 @@ export const YlopsKoulutustyypit = Object.freeze([
   'koulutustyyppi_14', // AIKUISLUKIOKOULUTUS
   'koulutustyyppi_23', // LUKIOVALMISTAVAKOULUTUS
   'koulutustyyppi_999907', // TPO
-  // 'koulutustyyppi_17', // AIKUISTENPERUSOPETUS
+  'koulutustyyppi_17', // AIKUISTENPERUSOPETUS
   'koulutustyyppi_16', // PERUSOPETUS
   'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
 ]);

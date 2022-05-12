@@ -101,7 +101,7 @@ export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
   private get valittavat() {
     return _(this.perusteet)
       .filter((peruste) => isPerusteSupported(peruste))
-      .sortBy((peruste) => (this as any).$kaanna(peruste.nimi))
+      .sortBy((peruste) => _.toLower((this as any).$kaanna(peruste.nimi)))
       .value();
   }
 
