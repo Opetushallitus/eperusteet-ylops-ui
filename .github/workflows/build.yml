@@ -60,7 +60,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Build eperusteet-ui
+      - name: Build eperusteet-ylops-ui
         run: |
           yarn install --silent
           git submodule update --recursive --init
