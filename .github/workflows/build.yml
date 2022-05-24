@@ -9,10 +9,8 @@ on:
     paths-ignore:
       - '**.md'
 
-#env:
-#  YLOPS_SERVICE_DIR: ${{ github.workspace }}/eperusteet/eperusteet-service
-#  EPERUSTEET_SERVICE_DIR: ${{ github.workspace }}/eperusteet/eperusteet/eperusteet-service
-#  AMOSAA_SERVICE_DIR: ${{ github.workspace }}/eperusteet-amosaa/eperusteet-amosaa-service
+env:
+  CC_TEST_REPORTER_ID: eperusteet-ylops-ui
 
 jobs:
   build-and-test-eperusteet-ylops-ui:
