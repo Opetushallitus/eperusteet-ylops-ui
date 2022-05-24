@@ -68,6 +68,7 @@ jobs:
       - name: Build eperusteet-ui
         run: |
           yarn install --silent
+          git submodule update --recursive --init
           cd eperusteet-frontend-utils/vue
           yarn install --silent
           yarn gen:api
@@ -81,3 +82,7 @@ jobs:
           yarn lint
           yarn build
           yarn test:unit
+          
+          ./cc-test-reporter format-coverage -t lcov ./coverage/lcov.info
+          ./cc-test-reporter upload-coverage
+          ./cc-test-reporter after-build
