@@ -16,6 +16,17 @@
       </div>
     </div>
 
+    <div class="info-box import-box" v-if="!isPohja && pohjallaPuuttuviaTeksteja && isLops2019">
+      <h2>{{$t('paivita-opetussuunnitelma')}}</h2>
+      <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
+
+      <div class="d-flex justify-content-end">
+        <ep-button @click="syncTekstitPohjasta()">
+          {{$t('paivita-opetussuunnitelma')}}
+        </ep-button>
+      </div>
+    </div>
+
     <div class="info-box sync-box" v-if="isPohja">
       <h2>{{$t('paivita-muutokset-opetussuunnitelmiin')}}</h2>
       <div v-html="$t('paivita-muutokset-opetussuunnitelmiin-huomioteksti')" />
@@ -107,6 +118,18 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
     this.importing = false;
   }
 
+  async syncTekstitPohjasta() {
+    try {
+      await this.store.syncTekstitPohjasta();
+      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
+      await this.store.init();
+    }
+    catch (e) {
+      this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
+      createLogger('RouteHallintapaneeli').error(e);
+    }
+  }
+
   async synkronisoiPohja() {
     this.syncing = true;
     try {
@@ -123,6 +146,14 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 
   get yksinkertainen() {
     return (this.ops?.toteutus as any) === KoulutustyyppiToteutus.yksinkertainen;
+  }
+
+  get pohjallaPuuttuviaTeksteja() {
+    return this.store.pohjallaPuuttuviaTeksteja;
+  }
+
+  get isLops2019() {
+    return ((this.ops.toteutus as any) === KoulutustyyppiToteutus.lops2019);
   }
 }
 </script>

@@ -79,6 +79,9 @@ export class OpetussuunnitelmaStore {
   @State()
   public validation: Lops2019ValidointiDto | null = null;
 
+  @State()
+  public pohjallaPuuttuviaTeksteja: boolean | null = null;
+
   constructor(opsId: number) {
     this.opsId = opsId;
   }
@@ -113,6 +116,8 @@ export class OpetussuunnitelmaStore {
     else {
       this.valinnaisetOppiaineet = (await Oppiaineet.getValinnaiset(this.opetussuunnitelma!.id!)).data;
     }
+
+    this.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.opetussuunnitelma!.id!)).data;
   }
 
   public async get() {
@@ -391,6 +396,10 @@ export class OpetussuunnitelmaStore {
 
   public async importPerusteTekstit(skip) {
     await Opetussuunnitelmat.importPerusteTekstit(this.opetussuunnitelma!.id!, skip);
+  }
+
+  public async syncTekstitPohjasta() {
+    await Opetussuunnitelmat.syncTekstitPohjasta(this.opetussuunnitelma!.id!);
   }
 
   public async synkronisoiPohja() {
