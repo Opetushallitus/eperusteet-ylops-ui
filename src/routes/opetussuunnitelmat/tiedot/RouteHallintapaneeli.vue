@@ -9,10 +9,9 @@
         <ep-button variant="link" class="mr-4" @click="importPerusteTekstit(true)" :disabled="importing">
           {{$t('ohita')}}
         </ep-button>
-        <ep-button @click="importPerusteTekstit(false)" :disabled="importing">
+        <ep-button @click="importPerusteTekstit(false)" :showSpinner="importing">
           {{$t('paivita-opetussuunnitelma')}}
         </ep-button>
-        <ep-spinner v-if="importing" />
       </div>
     </div>
 
@@ -21,7 +20,7 @@
       <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
 
       <div class="d-flex justify-content-end">
-        <ep-button @click="syncTekstitPohjasta()">
+        <ep-button @click="syncTekstitPohjasta()" :showSpinner="syncPohja">
           {{$t('paivita-opetussuunnitelma')}}
         </ep-button>
       </div>
@@ -97,6 +96,7 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 
   private importing = false;
   private syncing = false;
+  private syncPohja = false;
 
   get perustepaivitys() {
     return !this.ops.perusteDataTuontiPvm;
@@ -119,6 +119,7 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
   }
 
   async syncTekstitPohjasta() {
+    this.syncPohja = true;
     try {
       await this.store.syncTekstitPohjasta();
       this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
@@ -128,6 +129,7 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
       this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
       createLogger('RouteHallintapaneeli').error(e);
     }
+    this.syncPohja = false;
   }
 
   async synkronisoiPohja() {
