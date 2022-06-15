@@ -317,6 +317,14 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   async copyable() {
     return this.kopioitava;
   }
+
+  get kasiteHandler() {
+    return createKasiteHandler(new TermitStore(this.opsId!));
+  }
+
+  get kuvaHandler() {
+    return createKuvaHandler(new KuvaStore(this.opsId!));
+  }
 }
 </script>
 
