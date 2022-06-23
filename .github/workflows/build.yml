@@ -38,6 +38,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Get backend branch file http status
+        id: spec_file_http_status
+        run: |
+          if [ "$(curl -s -o /dev/null -I -w '%{http_code}' https://raw.githubusercontent.com/Opetushallitus/eperusteet-ylops/${{ github.ref_name }}/generated/ylops.spec.json)" == "200" ] 
+          then
+            echo spec file found
+            echo "EPERUSTEET_YLOPS_SPECFILE=https://raw.githubusercontent.com/Opetushallitus/eperusteet-ylops/${{ github.ref_name }}/generated/ylops.spec.json" >> $GITHUB_ENV
+          else
+            echo spec file not found
+          fi
+
       - name: Build eperusteet-ylops-ui
         run: |
           yarn install --silent
