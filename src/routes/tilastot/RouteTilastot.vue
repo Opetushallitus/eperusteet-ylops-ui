@@ -199,6 +199,7 @@ export default class RouteTilastot extends Mixins(EpRoute) {
 
   get opetussuunnitelmatFiltered() {
     return _.chain(this.opetussuunnitelmat)
+      .map(ops => ({ ...ops, tila: ops.julkaistu ? 'julkaistu' : ops.tila }))
       .filter(ops => _.isEmpty(this.valitutTilat) || _.includes(_.map(this.valitutTilat, 'value'), ops.tila))
       .filter(ops => _.isEmpty(this.valitutKoulutustyypit) || _.includes(_.map(this.valitutKoulutustyypit, 'value'), ops.koulutustyyppi))
       .filter(ops => Kielet.search(this.query, ops.nimi))
