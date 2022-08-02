@@ -35,7 +35,7 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Lops2019PoistettuDto, PoistettuTekstiKappaleDto } from '@shared/api/ylops';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Multiselect from 'vue-multiselect';
-import PoistetutHakuTable from './poistetut/PoistetutHakuTable.vue';
+import PoistetutHakuTable from '@shared/components/EpPoistettuTable/PoistetutHakuTable.vue';
 
 @Component({
   components: {
