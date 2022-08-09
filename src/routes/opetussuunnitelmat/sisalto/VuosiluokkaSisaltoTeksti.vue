@@ -7,6 +7,12 @@
       <template v-slot:header><h4>{{$t('perusteen-teksti')}}</h4></template>
       <span v-html="$kaanna(perusteObject[teksti])"></span>
     </ep-collapse>
+
+    <ep-collapse class="mb-4" :use-padding="false" tyyppi="pohjateksti" :border-bottom="false" :border-top="false" :expanded-by-default="perusteTekstiAvattu" v-if="pohjaObject && pohjaObject[teksti]">
+      <template v-slot:header><h4>{{$t('pohjan-teksti')}}</h4></template>
+      <span v-html="$kaanna(pohjaObject[teksti])"></span>
+    </ep-collapse>
+
     <div v-if="vlkObject">
       <h4>{{ $t('paikallinen-teksti') }}</h4>
       <ep-content v-if="isEditing || hasContent" v-model="vlkObject[teksti]"
@@ -33,6 +39,9 @@ import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 export default class VuosiluokkaSisaltoTeksti extends Vue {
   @Prop({ required: true })
   private perusteObject!: any;
+
+  @Prop({ required: true })
+  private pohjaObject!: any;
 
   @Prop({ required: false })
   private vlkObject!: any;

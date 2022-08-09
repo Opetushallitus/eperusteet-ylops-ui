@@ -21,6 +21,7 @@
         </ep-form-content>
 
         <vuosiluokka-sisalto-teksti :perusteObject="perusteenOppiaine.tehtava"
+                                    :pohjaObject="pohjanOppiaine.tehtava"
                                     :vlkObject="data.oppiaine.tehtava"
                                     :isEditing="isEditing"
                                     :peruste-teksti-avattu="true" />
@@ -28,6 +29,7 @@
 
         <div v-if="data.vuosiluokkakokonaisuus">
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tehtava"
+                                      :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.tehtava"
                                       :vlkObject="data.vuosiluokkakokonaisuus.tehtava"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" />
@@ -75,18 +77,21 @@
 
         <div v-if="data.vuosiluokkakokonaisuus">
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tyotavat"
+                                      :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.tyotavat"
                                       :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" />
           <hr/>
 
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.ohjaus"
+                                      :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.ohjaus"
                                       :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" />
           <hr/>
 
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.arviointi"
+                                      :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.arviointi"
                                       :vlkObject="data.vuosiluokkakokonaisuus.arviointi"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" />
@@ -190,8 +195,16 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
     return this.editointiStore?.data.value.perusteenOppiaine || {};
   }
 
+  get pohjanOppiaine() {
+    return this.editointiStore?.data.value.oppiaine.pohjanOppiaine || {};
+  }
+
   get perusteenVuosiluokkakokonaisuus() {
     return this.editointiStore?.data.value.perusteenVuosiluokkakokonaisuus || {};
+  }
+
+  get pohjaOppiaineenVuosiluokkakokonaisuus() {
+    return this.editointiStore?.data.value.pohjaOppiaineenVuosiluokkakokonaisuus || {};
   }
 
   get oppiaine() {
