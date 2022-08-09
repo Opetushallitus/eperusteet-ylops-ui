@@ -165,7 +165,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async copy(data) {
-    const kopioituOppiaine = await Oppiaineet.kopioiMuokattavaksi(this.opsId, this.oppiaineId);
+    const kopioituOppiaine = await Oppiaineet.kopioiMuokattavaksi(this.opsId, this.oppiaineId, true);
     await this.el.resetOps();
     this.el.$router.push({
       name: 'perusopetusoppiaine',
