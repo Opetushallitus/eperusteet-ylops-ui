@@ -187,14 +187,13 @@ export default class EpDokumenttiKuvaLataus extends Vue {
         margin-left: 30px;
         height: 50px;
         background-color: inherit;
-        padding-top: 10px;
+        padding-top: 0px;
         padding-left: 60px;
         position: relative;
         border-radius: 0;
       }
 
       .custom-file-label::after {
-        padding: 60px 310px 0px 0px;
         text-decoration: underline;
         color: blue;
         padding: 0;

@@ -63,6 +63,16 @@ export class PerusopetusoppiaineStore implements IEditoitava {
         })
         .head()
         .value(),
+      pohjaOppiaineenVuosiluokkakokonaisuus: _.chain(oppiaine.pohjanOppiaine?.vuosiluokkakokonaisuudet)
+        .filter(vlk => _.get(vlk, '_vuosiluokkakokonaisuus') === (this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus as any)._tunniste)
+        .map(vlk => {
+          return {
+            ...vlk,
+            vuosiluokat: _.sortBy(vlk.vuosiluokat, 'vuosiluokka'),
+          };
+        })
+        .head()
+        .value(),
     };
   }
 
