@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <!-- <div class="info-box import-box" v-if="!isPohja && pohjallaPuuttuviaTeksteja && isLops2019">
+    <div class="info-box import-box" v-if="!isPohja && pohjallaPuuttuviaTeksteja && isLops2019">
       <h2>{{$t('paivita-opetussuunnitelma')}}</h2>
       <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
 
@@ -24,7 +24,7 @@
           {{$t('paivita-opetussuunnitelma')}}
         </ep-button>
       </div>
-    </div> -->
+    </div>
 
     <div class="info-box sync-box" v-if="isPohja">
       <h2>{{$t('paivita-muutokset-opetussuunnitelmiin')}}</h2>
