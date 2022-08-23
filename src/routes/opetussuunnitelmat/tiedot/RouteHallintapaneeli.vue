@@ -1,7 +1,10 @@
 <template>
   <div class="hallintapaneeli">
 
-    <div class="info-box import-box" v-if="!isPohja && perustepaivitys">
+    <div
+      class="info-box import-box"
+      v-if="!isPohja && perustepaivitys"
+      v-oikeustarkastelu="oikeustarkastelu">
       <h2>{{$t('paivita-opetussuunnitelma')}}</h2>
       <div v-html="$t('paivita-opetussuunnitelma-huomioteksti')" />
 
@@ -15,7 +18,10 @@
       </div>
     </div>
 
-    <div class="info-box import-box" v-if="!isPohja && pohjallaPuuttuviaTeksteja && isLops2019">
+    <div
+      class="info-box import-box"
+      v-if="!isPohja && pohjallaPuuttuviaTeksteja && isLops2019"
+      v-oikeustarkastelu="oikeustarkastelu">
       <h2>{{$t('paivita-opetussuunnitelma')}}</h2>
       <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
 
@@ -26,7 +32,10 @@
       </div>
     </div>
 
-    <div class="info-box sync-box" v-if="isPohja">
+    <div
+      class="info-box sync-box"
+      v-if="isPohja"
+      v-oikeustarkastelu="oikeustarkastelu">
       <h2>{{$t('paivita-muutokset-opetussuunnitelmiin')}}</h2>
       <div v-html="$t('paivita-muutokset-opetussuunnitelmiin-huomioteksti')" />
 
@@ -156,6 +165,10 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 
   get isLops2019() {
     return ((this.ops.toteutus as any) === KoulutustyyppiToteutus.lops2019);
+  }
+
+  get oikeustarkastelu() {
+    return { oikeus: 'hallinta', kohde: this.isPohja ? 'pohja' : 'opetussuunnitelma' };
   }
 }
 </script>
