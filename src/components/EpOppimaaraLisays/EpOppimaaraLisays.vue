@@ -10,7 +10,8 @@
            :ok-disabled="okDisabled"
            @hidden="clear"
            @show="show"
-           @ok="save">
+           @ok="save"
+           static lazy>
     <template v-slot:modal-title>
       {{ $t(addText) }}
     </template>
