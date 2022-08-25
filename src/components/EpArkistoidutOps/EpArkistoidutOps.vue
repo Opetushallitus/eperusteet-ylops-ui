@@ -86,7 +86,7 @@ export default class EpArkistoidutOps extends Vue {
   private opsSivu = 1;
 
   protected async fetch() {
-    this.opetussuunnitelmat = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, 'poistettu', undefined, this.query, this.opsSivu - 1, 10)).data as Page<OpetussuunnitelmaInfoDto>;
+    this.opetussuunnitelmat = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, 'poistettu', undefined, this.query, undefined, undefined, this.opsSivu - 1, 10)).data as Page<OpetussuunnitelmaInfoDto>;
   }
 
   get modalTitle() {
