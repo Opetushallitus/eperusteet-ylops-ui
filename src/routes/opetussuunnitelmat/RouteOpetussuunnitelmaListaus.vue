@@ -14,13 +14,28 @@
                           @restore="palauta"/>
       <p>{{ $t(vars.kuvaus) }}</p>
 
-      <div class="d-flex">
+      <div class="d-flex flex-lg-row flex-column">
         <b-form-group :label="$t('nimi')">
           <ep-search v-model="rajain" :placeholder="$t(vars.etsi)"></ep-search>
         </b-form-group>
 
         <b-form-group :label="$t('koulutustyyppi')" class="w-40">
           <koulutustyyppi-select v-model="koulutustyyppi" :isEditing="true" :koulutustyypit="yleissivistavatKoulutustyypit"/>
+        </b-form-group>
+
+        <b-form-group :label="$t('jarjestys')">
+          <EpMultiSelect
+            class="jarjestys-select"
+            v-model="jarjestys"
+            :is-editing="true"
+            :options="jarjestysOptions">
+            <template slot="singleLabel" slot-scope="{ option }">
+              {{ $t(option.label) }}
+            </template>
+            <template slot="option" slot-scope="{ option }">
+              {{ $t(option.label) }}
+            </template>
+          </EpMultiSelect>
         </b-form-group>
       </div>
     </template>
@@ -186,6 +201,13 @@ import { yleissivistavatKoulutustyypit, themes } from '@shared/utils/perusteet';
 import { tileBackgroundColor, koulutusTyyppiTile } from '@shared/utils/bannerIcons';
 import { Debounced } from '@shared/utils/delay';
 import { Page } from '@shared/tyypit';
+import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
+
+interface Jarjestys {
+  jarjestys: string;
+  jarjestysSuunta: string;
+  label: string;
+}
 
 @Component({
   directives: {
@@ -202,6 +224,7 @@ import { Page } from '@shared/tyypit';
     EpArkistoidutOps,
     EpSearch,
     KoulutustyyppiSelect,
+    EpMultiSelect,
   },
 })
 export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
@@ -220,6 +243,7 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   private julkaistutSivu = 1;
   private opsHaku = false;
   private julkaistutHaku = false;
+  private jarjestys: Jarjestys = this.jarjestysOptions[2];
 
   get hasRajain() {
     return !_.isEmpty(this.rajain);
@@ -329,6 +353,11 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
     await this.fetchJulkaisut();
   }
 
+  @Watch('kieli')
+  async kieliChange() {
+    await this.init();
+  }
+
   protected async init() {
     await this.fetchOps();
     await this.fetchJulkaisut();
@@ -336,18 +365,45 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
 
   protected async fetchOps() {
     this.opsHaku = true;
-    this.opslista = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, 'luonnos', this.koulutustyyppi, this.rajain, this.opsSivu - 1, 14)).data as Page<OpetussuunnitelmaInfoDto>;
+    this.opslista = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, 'luonnos', this.koulutustyyppi, this.rajain, this.jarjestys.jarjestys, this.jarjestys.jarjestysSuunta, this.opsSivu - 1, 14, this.kieli)).data as Page<OpetussuunnitelmaInfoDto>;
     this.opsHaku = false;
   }
 
   protected async fetchJulkaisut() {
     this.julkaistutHaku = true;
-    this.julkaistutLista = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, this.valmisTila, this.koulutustyyppi, this.rajain, this.julkaistutSivu - 1, 10)).data as Page<OpetussuunnitelmaInfoDto>;
+    this.julkaistutLista = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, this.valmisTila, this.koulutustyyppi, this.rajain, this.jarjestys.jarjestys, this.jarjestys.jarjestysSuunta, this.julkaistutSivu - 1, 10, this.kieli)).data as Page<OpetussuunnitelmaInfoDto>;
     this.julkaistutHaku = false;
+  }
+
+  get kieli() {
+    return Kielet.getSisaltoKieli.value;
   }
 
   get yleissivistavatKoulutustyypit() {
     return yleissivistavatKoulutustyypit;
+  }
+
+  @Watch('jarjestys')
+  async jarjestysChange() {
+    await this.init();
+  }
+
+  get jarjestysOptions() {
+    return [
+      {
+        jarjestys: 'teksti.teksti',
+        jarjestysSuunta: 'ASC',
+        label: 'aakkosittain-a-o',
+      }, {
+        jarjestys: 'teksti.teksti',
+        jarjestysSuunta: 'DESC',
+        label: 'aakkosittain-o-a',
+      }, {
+        jarjestys: 'luotu',
+        jarjestysSuunta: 'DESC',
+        label: 'uusin',
+      },
+    ];
   }
 }
 </script>
@@ -368,6 +424,10 @@ h1 {
 h2 {
   font-size: 1.1111111111111112rem;
   font-weight: 400;
+}
+
+.jarjestys-select {
+  width: 300px;
 }
 
 .opslistaus {
