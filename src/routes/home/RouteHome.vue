@@ -6,7 +6,7 @@
       <div class="container-fluid">
         <div class="row no-gutters">
           <div class="col my-4 px-3 px-md-0">
-            <h1>{{ $t('tervetuloa', { nimi }) }}</h1>
+            <h1>{{ $t('lops-tyokalu-tervetuloa', { nimi }) }}</h1>
             <p>{{ $t('tervetuloa-kuvaus') }}</p>
           </div>
         </div>
