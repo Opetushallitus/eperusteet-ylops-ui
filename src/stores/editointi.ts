@@ -28,6 +28,7 @@ export interface EditointiKontrolliData {
   load: () => Promise<unknown>;
   save?: (data: any) => Promise<any>;
   cancel?: () => Promise<void>;
+  confirm?: (data: any) => Promise<boolean>;
 }
 
 export interface EditointiKontrolliLocks {
@@ -258,6 +259,15 @@ export class EditointiKontrolli {
     }
     else if (this.config.source.save) {
       try {
+        if (this.config.source.confirm) {
+          const peruuta = await this.config.source.confirm(this.mstate.data);
+          if (!peruuta) {
+            this.mstate.disabled = false;
+            this.mstate.isSaving = false;
+            return;
+          }
+        }
+
         const after = await this.config.source.save(this.mstate.data);
         this.logger.success('Tallennettu onnistuneesti');
         await this.fetchRevisions();

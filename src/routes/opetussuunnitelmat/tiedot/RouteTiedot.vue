@@ -106,6 +106,22 @@
               </ep-form-content>
             </div>
             <div class="col-md-12">
+
+            <div v-if="data.pohja && data.toteutus === 'perusopetus' && data.valittavatVuosiluokkakokonaisuudet">
+              <ep-form-content name="vuosiluokkakokonaisuudet">
+                <b-form-checkbox-group v-model="data.vuosiluokkakokonaisuudet" class="mt-2" stacked v-if="isEditing">
+                  <b-form-checkbox v-for="(vuosiluokkakokonaisuus, index) in data.valittavatVuosiluokkakokonaisuudet" :key="'vlk'+index" :value="vuosiluokkakokonaisuus">
+                    {{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
+                  </b-form-checkbox>
+                </b-form-checkbox-group>
+                <span v-else v-for="(vuosiluokkakokonaisuus, index) in data.vuosiluokkakokonaisuudet" :key="'vlk'+index" >
+                  <span v-if="index > 0">, </span>{{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
+                </span>
+              </ep-form-content>
+            </div>
+
+            </div>
+            <div class="col-md-12">
               <ep-form-content name="ops-kuvaus">
                 <ep-content layout="normal"
                             v-model="data.kuvaus"
@@ -152,7 +168,7 @@ import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 import { isLukio, koulutustyyppiTheme } from '@shared/utils/perusteet';
-import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
+import { OpetussuunnitelmaKevytDto, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
 
 @Component({
@@ -179,6 +195,7 @@ export default class RouteTiedot extends EpOpsRoute {
       source: {
         save: this.save,
         load: this.load,
+        confirm: this.confirm,
       },
     };
   }
@@ -226,6 +243,8 @@ export default class RouteTiedot extends EpOpsRoute {
   private async load() {
     if (this.$route.params.id) {
       const ops = await this.store.get();
+      const pohja = await this.store.getPohja(ops);
+
       return {
         ...ops,
         perusteUrl: buildEsikatseluUrl(this.kieli, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/${ops.perusteenId}/tiedot`),
@@ -236,6 +255,15 @@ export default class RouteTiedot extends EpOpsRoute {
           oppilaitokset: ops.organisaatiot,
           ryhmat: [],
         },
+        vuosiluokkakokonaisuudet: _.sortBy(ops.vuosiluokkakokonaisuudet, vlk => this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any))),
+        valittavatVuosiluokkakokonaisuudet: _.chain([
+          ...ops.vuosiluokkakokonaisuudet as Array<any>,
+          ...(_.filter(pohja?.vuosiluokkakokonaisuudet,
+            pohjaVlk => !_.includes(_.map(ops.vuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste')), _.get(pohjaVlk.vuosiluokkakokonaisuus, '_tunniste')))),
+        ])
+          .sortBy(vlk => this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any)))
+          .value(),
+        oldVuosiluokkakokonaisuudet: ops.vuosiluokkakokonaisuudet,
       };
     }
   }
@@ -252,6 +280,27 @@ export default class RouteTiedot extends EpOpsRoute {
 
     };
     await this.store.save(opetussuunnitelma);
+  }
+
+  private async confirm(opetussuunnitelma: any) {
+    if (opetussuunnitelma.toteutus === 'perusopetus') {
+      const vanhatVlkTunnisteet = _.map(opetussuunnitelma.oldVuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste'));
+      const uudetVlkTunnisteet = _.map(opetussuunnitelma.vuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste'));
+
+      if (!_.every(vanhatVlkTunnisteet, vanhaTunniste => _.includes(uudetVlkTunnisteet, vanhaTunniste))) {
+        return this.$bvModal.msgBoxConfirm((this.$t('vahvista-vuosiluokkakokonaisuudet-muokkaus-teksti') as any), {
+          title: this.$t('vahvista-vuosiluokkakokonaisuudet-muokkaus-otsikko'),
+          okVariant: 'primary',
+          okTitle: this.$t('tallenna') as any,
+          cancelVariant: 'link',
+          cancelTitle: this.$t('peruuta') as any,
+          centered: true,
+          ...{} as any,
+        });
+      }
+    }
+
+    return true;
   }
 }
 </script>
