@@ -124,6 +124,14 @@ export class OpetussuunnitelmaStore {
     return (await Opetussuunnitelmat.getOpetussuunnitelma(this.opsId)).data;
   }
 
+  public async getPohja(ops) {
+    if (ops.pohja) {
+      return (await Opetussuunnitelmat.getOpetussuunnitelma(ops.pohja.id)).data;
+    }
+
+    return null;
+  }
+
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
     const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma as OpetussuunnitelmaDto);
     success('tallennus-onnistui-opetussuunnitelma');
