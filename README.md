@@ -25,6 +25,6 @@ kanssa, joten ylläpidetään ohjeita vain yhdessä paikassa.
 
 ### 3.1. Continuous integration
 
-https://app.travis-ci.com/github/Opetushallitus/eperusteet-ylops-ui
+https://github.com/Opetushallitus/eperusteet-ylops-ui/actions
 
 
