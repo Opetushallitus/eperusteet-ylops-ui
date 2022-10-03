@@ -1,7 +1,7 @@
 <template>
 <div id="scroll-anchor" class="content">
   <div v-if="hooks">
-    <ep-editointi :hooks="hooks" :validator="validator" type="opetussuunnitelma">
+    <ep-editointi :hooks="hooks" :validator="validator" type="opetussuunnitelma" ref="opstietoeditointi">
       <h2 class="otsikko" slot="header">{{ $t('tiedot') }}</h2>
       <template v-slot="{ data, validation, isEditing }">
         <div>
@@ -79,11 +79,8 @@
             <div class="col-md-6">
               <ep-form-content name="ops-organisaatiot">
                 <ul>
-                  <li v-for="(kunta, idx) in data.kunnat" :key="idx + 1">
-                    {{ $kaanna(kunta.nimi) }}
-                  </li>
-                  <li v-for="(organisaatio, idx) in data.organisaatiot" :key="idx * 1000">
-                    {{ $kaanna(organisaatio.nimi) }}
+                  <li v-for="(org, idx) in kunnatJaOrganisaatiotSorted" :key="idx + 1">
+                    {{ $kaanna(org.nimi) }}
                   </li>
                 </ul>
               </ep-form-content>
@@ -238,6 +235,19 @@ export default class RouteTiedot extends EpOpsRoute {
 
   get kieli() {
     return Kielet.getSisaltoKieli.value;
+  }
+
+  get fetchedData() {
+    return (this.$refs?.opstietoeditointi as any).stateData;
+  }
+
+  get kunnatJaOrganisaatiotSorted() {
+    return _.sortBy(
+      [
+        ...(this.fetchedData?.kunnat ? this.fetchedData.kunnat : []),
+        ...(this.fetchedData?.organisaatiot ? this.fetchedData.organisaatiot : []),
+      ], (org: any) => this.$kaanna(org.nimi)
+    );
   }
 
   private async load() {

@@ -318,6 +318,10 @@ export default class EpEditointi extends Mixins(validationMixin) {
     return this.$scopedSlots.ohje;
   }
 
+  get stateData() {
+    return this.ctrls?.state?.data;
+  }
+
   private toggleSidebarState(val: number) {
     if (val === this.sidebarState) {
       this.sidebarState = 0;
