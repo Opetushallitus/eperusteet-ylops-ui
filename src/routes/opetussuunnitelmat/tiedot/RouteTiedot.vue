@@ -165,7 +165,7 @@ import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 import { isLukio, koulutustyyppiTheme } from '@shared/utils/perusteet';
-import { OpetussuunnitelmaKevytDto, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
+import { OpetussuunnitelmaKevytDtoToteutusEnum, OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
 
 @Component({
@@ -253,7 +253,10 @@ export default class RouteTiedot extends EpOpsRoute {
   private async load() {
     if (this.$route.params.id) {
       const ops = await this.store.get();
-      const pohja = await this.store.getPohja(ops);
+      let pohja: OpetussuunnitelmaKevytDto | null = null;
+      if (ops.toteutus === _.toLower(OpetussuunnitelmaKevytDtoToteutusEnum.PERUSOPETUS)) {
+        pohja = await this.store.getPohja(ops);
+      }
 
       return {
         ...ops,
