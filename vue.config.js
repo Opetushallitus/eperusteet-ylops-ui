@@ -22,6 +22,20 @@ module.exports = {
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ],
   },
+  chainWebpack: config => {
+    // enabloidaan sourcemap ja nimetään "oikeat" vuen scirpti-tiedostot uudelleen, jotta löytyy selaimen devtoolsissa helpommin
+    // esim. RouteRoot.vue?bf9d -> RouteRoot.vue?script
+    if (process.env.USE_SOURCEMAP) {
+      config.devtool('source-map');
+      config.output.devtoolModuleFilenameTemplate(info => {
+        if (info.resourcePath.endsWith('.vue')) {
+          if (info.query.startsWith('?vue&type=script') && !info.allLoaders.includes('babel')) {
+            return `src://${info.resourcePath}?script`;
+          }
+        }
+      });
+    }
+  },
   devServer: {
     overlay: {
       warnings: false,
