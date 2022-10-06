@@ -251,33 +251,38 @@ export default class RouteTiedot extends EpOpsRoute {
   }
 
   private async load() {
-    if (this.$route.params.id) {
-      const ops = await this.store.get();
-      let pohja: OpetussuunnitelmaKevytDto | null = null;
-      if (ops.toteutus === _.toLower(OpetussuunnitelmaKevytDtoToteutusEnum.PERUSOPETUS)) {
-        pohja = await this.store.getPohja(ops);
-      }
+    try {
+      if (this.$route.params.id) {
+        const ops = await this.store.get();
+        let pohja: OpetussuunnitelmaKevytDto | null = null;
+        if (ops.toteutus === _.toLower(OpetussuunnitelmaKevytDtoToteutusEnum.PERUSOPETUS)) {
+          pohja = await this.store.getPohja(ops);
+        }
 
-      return {
-        ...ops,
-        perusteUrl: buildEsikatseluUrl(this.kieli, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/${ops.perusteenId}/tiedot`),
-        opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}/${koulutustyyppiTheme(ops.koulutustyyppi!)}/tiedot`),
-        kaikkiOrganisaatiot: {
-          kunnat: ops.kunnat,
-          jarjestajat: ops.organisaatiot,
-          oppilaitokset: ops.organisaatiot,
-          ryhmat: [],
-        },
-        vuosiluokkakokonaisuudet: _.sortBy(ops.vuosiluokkakokonaisuudet, vlk => this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any))),
-        valittavatVuosiluokkakokonaisuudet: _.chain([
-          ...ops.vuosiluokkakokonaisuudet as Array<any>,
-          ...(_.filter(pohja?.vuosiluokkakokonaisuudet,
-            pohjaVlk => !_.includes(_.map(ops.vuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste')), _.get(pohjaVlk.vuosiluokkakokonaisuus, '_tunniste')))),
-        ])
-          .sortBy(vlk => this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any)))
-          .value(),
-        oldVuosiluokkakokonaisuudet: ops.vuosiluokkakokonaisuudet,
-      };
+        return {
+          ...ops,
+          perusteUrl: buildEsikatseluUrl(this.kieli, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/${ops.perusteenId}/tiedot`),
+          opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}/${koulutustyyppiTheme(ops.koulutustyyppi!)}/tiedot`),
+          kaikkiOrganisaatiot: {
+            kunnat: ops.kunnat,
+            jarjestajat: ops.organisaatiot,
+            oppilaitokset: ops.organisaatiot,
+            ryhmat: [],
+          },
+          vuosiluokkakokonaisuudet: _.sortBy(ops.vuosiluokkakokonaisuudet, vlk => this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any))),
+          valittavatVuosiluokkakokonaisuudet: _.chain([
+            ...ops.vuosiluokkakokonaisuudet as Array<any>,
+            ...(_.filter(pohja?.vuosiluokkakokonaisuudet,
+              pohjaVlk => !_.includes(_.map(ops.vuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste')), _.get(pohjaVlk.vuosiluokkakokonaisuus, '_tunniste')))),
+          ])
+            .sortBy(vlk => this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any)))
+            .value(),
+          oldVuosiluokkakokonaisuudet: ops.vuosiluokkakokonaisuudet,
+        };
+      }
+    }
+    catch (e) {
+      this.$fail(this.$t('virhe-palvelu-virhe') as string);
     }
   }
 

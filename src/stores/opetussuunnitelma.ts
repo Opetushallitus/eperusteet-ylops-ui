@@ -126,7 +126,7 @@ export class OpetussuunnitelmaStore {
 
   public async getPohja(ops) {
     if (ops.pohja) {
-      return (await Opetussuunnitelmat.getOpetussuunnitelma(ops.pohja.id)).data;
+      return (await Opetussuunnitelmat.getOpetussuunnitelmaOrganisaatiotarkistuksella(ops.pohja.id)).data;
     }
 
     return null;

@@ -53,9 +53,10 @@
   <div v-if="oletuspohjasta">
     <hr/>
 
-    <div v-if="uusi.pohja && uusi.pohja.toteutus === 'perusopetus' && vuosiluokkakokonaisuudet">
+    <div v-if="uusi.pohja && uusi.pohja.toteutus === 'perusopetus'">
       <ep-form-content name="vuosiluokkakokonaisuudet-pakollinen">
-        <b-form-checkbox-group v-model="uusi.vuosiluokkakokonaisuudet" class="mt-2" stacked :validation="$v.uusi.vuosiluokkakokonaisuudet">
+        <EpSpinner v-if="!vuosiluokkakokonaisuudet" />
+        <b-form-checkbox-group v-else v-model="uusi.vuosiluokkakokonaisuudet" class="mt-2" stacked :validation="$v.uusi.vuosiluokkakokonaisuudet">
           <b-form-checkbox v-for="(vuosiluokkakokonaisuus, index) in vuosiluokkakokonaisuudet" :key="'vlk'+index" :value="vuosiluokkakokonaisuus">
             {{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
           </b-form-checkbox>
@@ -224,7 +225,8 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
 
     if (this.uusi.pohja?.id) {
       if (this.uusi.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase()) {
-        const ops = (await Opetussuunnitelmat.getOpetussuunnitelma(this.uusi.pohja?.id)).data;
+        this.vuosiluokkakokonaisuudet = null;
+        const ops = (await Opetussuunnitelmat.getOpetussuunnitelmaOrganisaatiotarkistuksella(this.uusi.pohja?.id)).data;
         this.vuosiluokkakokonaisuudet = _.sortBy((ops.vuosiluokkakokonaisuudet as OpsVuosiluokkakokonaisuusKevytDto[]), [(vlk) => {
           return this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any));
         }]);
