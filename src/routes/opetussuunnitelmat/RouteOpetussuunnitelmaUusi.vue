@@ -72,7 +72,11 @@
       <h2 class="mb-3">{{ $t('organisaatiot') }}</h2>
       <ep-organizations :validation="$v.uusi.organisaatiot"
                         :koulutustyyppi="koulutustyyppi"
-                        v-model="uusi.organisaatiot"></ep-organizations>
+                        v-model="uusi.organisaatiot">
+        <div slot="oppilaitokset-label-suffix" class="ml-2">
+          <EpInfoPopover>{{$t('organisaatio-valinta-oppilaitos-huomio')}}</EpInfoPopover>
+        </div>
+      </ep-organizations>
 
       <div v-if="uusi.pohja.toteutus === 'lops2019'">
         <hr/>
@@ -130,6 +134,7 @@ import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpRoute from '@/mixins/EpRoute';
+import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
 import {
   Opetussuunnitelmat,
   Opintojaksot,
@@ -161,6 +166,7 @@ type PohjaTyyppi = 'pohjasta' | 'opsista';
     EpSelect,
     EpSpinner,
     EpToggle,
+    EpInfoPopover,
   },
   validations() {
     return {

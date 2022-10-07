@@ -59,7 +59,10 @@
       </div>
 
       <div class="selectors mb-4">
-        <label>{{ $t('oppilaitokset') }}</label>
+        <div class="d-flex">
+          <label>{{ $t('oppilaitokset') }}</label>
+          <slot name="oppilaitokset-label-suffix" />
+        </div>
         <ep-multi-list-select
             v-model="valitutOppilaitokset"
             tyyppi="oppilaitos"
