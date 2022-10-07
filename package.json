@@ -84,7 +84,7 @@
     "material-icons": "^1.2.0",
     "mocha": "^6.2.0",
     "mocha-multi-reporters": "^1.1.7",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "mutationobserver-shim": "^0.3.3",
     "node-sass": "^4.12.0",
     "oph-virkailija-style-guide": "github:Opetushallitus/virkailija-styles",
