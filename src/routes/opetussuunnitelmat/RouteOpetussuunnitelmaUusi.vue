@@ -31,16 +31,22 @@
       <div class="form-group">
         <div v-if="pohjat">
           <ep-form-content v-if="pohjat.length > 0" name="uusi-ops-pohja-pakollinen">
-            <ep-select v-model="uusi.pohja"
-                       :items="pohjatSortedByName"
-                       :validation="$v.uusi.pohja"
-                       :is-editing="true"
-                       help="uusi-ops-pohja-ohje"
-                       placeholder="valitse-opetussuunnitelman-pohja">
-              <template slot-scope="{ item }">
-                <span>{{ $kaanna(item.nimi) }} ({{ item.perusteenDiaarinumero }})</span>
+            <EpMultiSelect :value="uusi.pohja"
+                           track-by="value"
+                           @input="valitsePohja($event)"
+                           :placeholder="$t('valitse-opetussuunnitelman-pohja')"
+                           :options="pohjatSortedByName"
+                           :search-identity="nimiSearchIdentity"
+                           :maxHeight="500"
+                           :is-editing="true"
+                           help="uusi-ops-pohja-ohje">
+              <template slot="singleLabel" slot-scope="{ option }">
+                <span>{{ $kaanna(option.nimi) }} ({{ option.perusteenDiaarinumero }})</span>
               </template>
-            </ep-select>
+              <template slot="option" slot-scope="{ option }">
+                <span>{{ $kaanna(option.nimi) }} ({{ option.perusteenDiaarinumero }})</span>
+              </template>
+            </EpMultiSelect>
           </ep-form-content>
           <div v-else>
             <div class="alert alert-info">{{ $t('ei-opetussuunnitelmia') }}</div>
@@ -135,13 +141,11 @@ import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpRoute from '@/mixins/EpRoute';
 import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
+import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import {
   Opetussuunnitelmat,
-  Opintojaksot,
-  Lops2019Oppiaineet,
   OpetussuunnitelmaInfoDto,
   OpetussuunnitelmaLuontiDto,
-  Lops2019OpintojaksoDto,
   OpetussuunnitelmaInfoDtoToteutusEnum,
   OpsVuosiluokkakokonaisuusKevytDto,
   OpsVuosiluokkakokonaisuusDto,
@@ -167,6 +171,7 @@ type PohjaTyyppi = 'pohjasta' | 'opsista';
     EpSpinner,
     EpToggle,
     EpInfoPopover,
+    EpMultiSelect,
   },
   validations() {
     return {
@@ -272,6 +277,14 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   updateOletuspohja(value: PohjaTyyppi) {
     this.oletuspohjasta = value;
     this.initUusi();
+  }
+
+  valitsePohja(event) {
+    this.uusi.pohja = event;
+  }
+
+  nimiSearchIdentity(obj: any) {
+    return _.toLower(this.$kaanna(obj.nimi));
   }
 
   public async luoUusiOpetussuunnitelma() {
