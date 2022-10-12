@@ -31,8 +31,8 @@
       <div class="form-group">
         <div v-if="pohjat">
           <ep-form-content v-if="pohjat.length > 0" name="uusi-ops-pohja-pakollinen">
-            <EpMultiSelect :value="uusi.pohja"
-                           track-by="value"
+            <EpMultiSelect v-model="uusi.pohja"
+                           track-by="id"
                            @input="valitsePohja($event)"
                            :placeholder="$t('valitse-opetussuunnitelman-pohja')"
                            :options="pohjatSortedByName"
