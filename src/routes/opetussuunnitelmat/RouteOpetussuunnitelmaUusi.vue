@@ -33,7 +33,6 @@
           <ep-form-content v-if="pohjat.length > 0" name="uusi-ops-pohja-pakollinen">
             <EpMultiSelect v-model="uusi.pohja"
                            track-by="id"
-                           @input="valitsePohja($event)"
                            :placeholder="$t('valitse-opetussuunnitelman-pohja')"
                            :options="pohjatSortedByName"
                            :search-identity="nimiSearchIdentity"
@@ -277,10 +276,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   updateOletuspohja(value: PohjaTyyppi) {
     this.oletuspohjasta = value;
     this.initUusi();
-  }
-
-  valitsePohja(event) {
-    this.uusi.pohja = event;
   }
 
   nimiSearchIdentity(obj: any) {
