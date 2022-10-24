@@ -5,52 +5,15 @@
   <div class="opetussuunnitelma" :class="headerClass" v-else>
     <div class="header" :style="headerStyle">
       <div class="progress-chart">
-        <ep-progress-popover :slices="slices" :popupStyle="progressPopoverStyle">
-          <template v-slot:header>
-            <div class="d-flex flex-column align-items-center" v-if="validation">
-              <div class="mb-1">{{$t(tila)}}</div>
-              <b-button v-if="isLuonnos && !isPohja"
-                        variant="primary"
-                        :to="{ name: 'opsJulkaisu' }">
-                {{ $t('siirry-julkaisunakymaan') }}
-              </b-button>
-
-               <b-button v-if="isLuonnos && isPohja && validation && validation.valid"
-                        variant="primary" @click="valmistaPohja">
-                {{ $t('aseta-valmiiksi') }}
-              </b-button>
-            </div>
-          </template>
-
-          <b-button v-if="isJulkaistu"
-                    variant="primary"
-                    :to="{ name: 'opsJulkaisu' }">
-            {{ $t('siirry-julkaisunakymaan') }}
-          </b-button>
-
-          <div v-if="isArkistoitu" class="d-flex flex-column align-items-center text-center">
-            <b-button class="px-3 py-1" variant="primary" @click="palauta">
-              {{ $t('palauta') }}
-            </b-button>
-            <div class="font-size-08 mt-1">{{$t(arkistoituTyyppiTeksti)}}</div>
-          </div>
-
-          <div v-if="!isArkistoitu">
-            <div v-if="validation">
-              <div class="nimi pb-2 row" v-for="c in validationStats.categories" :key="c.category">
-                <div class="col-1">
-                  <fas class="text-success" icon="check-circle" v-if="c.failcount === 0"/>
-                  <fas class="text-danger" icon="info-circle" v-if="c.failcount > 0"/>
-                </div>
-                <div class="col">
-                  <span v-if="c.failcount === 0">{{ $t(c.category + "-validation-ok") }}</span>
-                  <span v-if="c.failcount > 0">{{ $t(c.category + "-validation-error") }}</span>
-                </div>
-              </div>
-            </div>
-            <ep-spinner v-else />
-          </div>
-        </ep-progress-popover>
+        <EpValidPopover
+            :validoitava="ops"
+            :validoinnit="validoinnit"
+            :julkaisemattomiaMuutoksia="onkoJulkaisemattomiaMuutoksia"
+            :julkaistava="!isPohja"
+            @asetaValmiiksi="valmistaPohja"
+            @palauta="palauta"
+            tyyppi="opetussuunnitelma"
+          />
       </div>
       <div class="info">
         <h1>
@@ -123,6 +86,7 @@ import { tileBackgroundColor, koulutustyyppiBanner } from '@shared/utils/bannerI
 import { themes } from '@shared/utils/perusteet';
 import { LinkkiHandler, routeToNode } from '@/utils/routing';
 import { Kielet } from '@shared/stores/kieli';
+import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue';
 
 @Component({
   components: {
@@ -134,6 +98,7 @@ import { Kielet } from '@shared/stores/kieli';
     OpsSidenav,
     EpButton,
     EpProgressPopover,
+    EpValidPopover,
   },
   inject: [],
 })
@@ -158,54 +123,6 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
   get tyyppi() {
     return this.isPohja ? 'pohja' : 'opetussuunnitelma';
-  }
-
-  get slices() {
-    if (this.tila) {
-      if (this.isArkistoitu) {
-        return [0];
-      }
-      if (this.validation) {
-        return _.map(this.validationStats.categories, c => c.ok < c.total ? 0.4 : 1);
-      }
-    }
-  }
-
-  get isEmptyValidation() {
-    return _.isEmpty(this.validationStats.categories);
-  }
-
-  get validationStats() {
-    if (this.validation) {
-      const categories = _(this.validation.validoinnit)
-        .map((validations, category) => {
-          const failcount = _.size(_.filter(validations, v => v.failed && v.fatal));
-          const total = _.size(validations);
-          return {
-            category,
-            ok: total - failcount,
-            failcount,
-            total,
-          };
-        })
-        .sortBy('category')
-        .value();
-      const failed = _.size(_.reject(categories, (category) => category.ok === category.total));
-
-      return {
-        categories,
-        failed,
-        total: _.size(categories),
-        ok: _.size(categories) - failed,
-      };
-    }
-    else {
-      return {
-        categories: [],
-        failed: 0,
-        ok: 0,
-      };
-    }
   }
 
   async arkistoiOps() {
@@ -234,14 +151,6 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     return 'dark';
   }
 
-  get progressPopoverStyle() {
-    if (this.ops) {
-      return tileBackgroundColor(this.ops.koulutustyyppi!);
-    }
-
-    return '';
-  }
-
   get tila() {
     if (this.julkaisut) {
       if (this.isJulkaistu) {
@@ -268,8 +177,45 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     return this.store.julkaisut;
   }
 
+  get validoinnit() {
+    if ((this.ops!.toteutus as any) === 'lops2019' && this.store.lops2019Validation?.validoinnit) {
+      return this.lops2019Validation;
+    }
+
+    if (this.store.validointi) {
+      return this.validation;
+    }
+  }
+
   get validation() {
-    return this.store.validation;
+    return {
+      virheet: _.chain(this.store.validointi)
+        .map('virheet')
+        .flatMap()
+        .map('syy')
+        .value(),
+    };
+  }
+
+  get lops2019Validation() {
+    return {
+      virheet: _.chain(this.store.lops2019Validation?.validoinnit)
+        .keys()
+        .filter(key => _.some(this.store.lops2019Validation?.validoinnit![key], info => info.failed && info.fatal))
+        .value(),
+      huomautukset: _.chain(this.store.lops2019Validation?.validoinnit)
+        .keys()
+        .filter(key => _.some(this.store.lops2019Validation?.validoinnit![key], info => info.failed && !info.fatal))
+        .value(),
+      ok: _.chain(this.store.lops2019Validation?.validoinnit)
+        .keys()
+        .filter(key => !_.some(this.store.lops2019Validation?.validoinnit![key], info => info.failed && info.fatal))
+        .value(),
+    };
+  }
+
+  get onkoJulkaisemattomiaMuutoksia() {
+    return this.store.julkaisemattomiaMuutoksia;
   }
 
   async palauta() {
@@ -358,7 +304,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 .opetussuunnitelma {
   background: white;
   &.light {
-    .header {
+    .header, .progress-chart {
       color: $color-ops-header-black-text;
     }
   }

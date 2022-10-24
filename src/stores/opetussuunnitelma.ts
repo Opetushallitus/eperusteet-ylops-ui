@@ -22,6 +22,8 @@ import {
   OppiaineDto,
   OpetussuunnitelmanJulkaisuDto,
   Lops2019ValidointiDto,
+  Validointi,
+  Julkaisut,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -77,10 +79,16 @@ export class OpetussuunnitelmaStore {
   public julkaisut: OpetussuunnitelmanJulkaisuDto[] | null = null;
 
   @State()
-  public validation: Lops2019ValidointiDto | null = null;
+  public lops2019Validation: Lops2019ValidointiDto | null = null;
+
+  @State()
+  public validointi: Array<Validointi> | null = null;
 
   @State()
   public pohjallaPuuttuviaTeksteja: boolean | null = null;
+
+  @State()
+  public julkaisemattomiaMuutoksia: boolean | null = null;
 
   constructor(opsId: number) {
     this.opsId = opsId;
@@ -118,6 +126,12 @@ export class OpetussuunnitelmaStore {
     }
 
     this.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.opetussuunnitelma!.id!)).data;
+    await this.fetchJulkaisemattomiaMuutoksia();
+  }
+
+  public async fetchJulkaisemattomiaMuutoksia() {
+    this.julkaisemattomiaMuutoksia = null;
+    this.julkaisemattomiaMuutoksia = (await Julkaisut.onkoMuutoksia(this.opetussuunnitelma!.id!)).data;
   }
 
   public async get() {
@@ -140,8 +154,10 @@ export class OpetussuunnitelmaStore {
   }
 
   public async updateValidation() {
-    this.validation = null;
-    this.validation = await this.validate();
+    this.lops2019Validation = null;
+    this.lops2019Validation = await this.validate();
+    this.validointi = null;
+    this.validointi = (await Opetussuunnitelmat.validoiOpetussuunnitelma(this.opetussuunnitelma!.id!)).data;
   }
 
   public async validate() {
@@ -160,7 +176,7 @@ export class OpetussuunnitelmaStore {
       return {
         valid: true,
       };
-    }
+    } ;
   }
 
   public async removeTeksti(tov: Puu) {
@@ -221,6 +237,8 @@ export class OpetussuunnitelmaStore {
   public async julkaise(julkaisu: UusiJulkaisuDto) {
     const tallennettuJulkaisu = (await Opetussuunnitelmat.julkaise(this.opetussuunnitelma!.id!, julkaisu)).data;
     this.julkaisut = [tallennettuJulkaisu, ...this.julkaisut!];
+
+    await this.fetchJulkaisemattomiaMuutoksia();
   }
 
   public async palautaJulkaisu(julkaisu) {
