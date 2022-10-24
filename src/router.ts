@@ -181,7 +181,7 @@ export const router = new Router({
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,
-        name: 'opsJulkaisu',
+        name: 'julkaise',
       }, {
         path: 'jarjesta',
         component: RouteJarjestys,
