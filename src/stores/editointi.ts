@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import Vue from 'vue';
 import VueScrollTo from 'vue-scrollto';
-import { RevisionDto } from '@shared/api/ylops';
+import { RevisionKayttajaDto } from '@shared/api/ylops';
 import { router } from '@/router';
 import { fail } from '@/utils/notifications';
 import { createLogger } from '@shared/utils/logger';
@@ -15,7 +15,7 @@ interface EditointiKontrolliFeatures {
 }
 
 export interface EditointiKontrolliHistory {
-  revisions: (data) => Promise<RevisionDto[]>;
+  revisions: (data) => Promise<RevisionKayttajaDto[]>;
   restore?: (data, rev: number) => Promise<void>;
 }
 
@@ -75,7 +75,7 @@ export class EditointiKontrolli {
   private readonly features: EditointiKontrolliFeatures;
   private mstate = Vue.observable({
     data: null,
-    revisions: [] as RevisionDto[],
+    revisions: [] as RevisionKayttajaDto[],
     backup: null,
     disabled: true,
     isSaving: false,
