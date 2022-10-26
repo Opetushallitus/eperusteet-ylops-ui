@@ -133,7 +133,6 @@ import EpJulkaisuValidointi from '@shared/components/EpJulkaisuValidointi/EpJulk
 })
 export default class RouteJulkaisu extends EpOpsRoute {
   private hooks: EditointiKontrolliConfig | null = null;
-  private validointi: Lops2019ValidointiDto | null = null;
   private isOpen: { [key: string]: boolean } = {};
   private uusiJulkaisu: UusiJulkaisuDto = {
     julkaisutiedote: {},
@@ -201,8 +200,8 @@ export default class RouteJulkaisu extends EpOpsRoute {
     };
   }
 
-  async init() {
-    this.validointi = await this.store.validate();
+  get validointi() {
+    return this.store.validate();
   }
 
   get julkaisut() {
