@@ -194,18 +194,14 @@
   </div>
 </div>
 </template>
+
 <script lang="ts">
 import _ from 'lodash';
 import { Watch, Component, Mixins, Prop } from 'vue-property-decorator';
 import { validationMixin } from 'vuelidate';
 import Sticky from 'vue-sticky-directive';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-
-import {
-  editointi,
-  EditointiKontrolli,
-  EditointiKontrolliConfig,
-} from '@/stores/editointi';
+import { editointi, EditointiKontrolli, EditointiKontrolliConfig } from '@/stores/editointi';
 import { setItem, getItem } from '@/utils/localstorage';
 import EpVersioModaali from './EpVersioModaali.vue';
 import '@shared/stores/kieli';
@@ -213,6 +209,7 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { Kommentit } from '@/stores/kommentit';
 import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import { parsiEsitysnimi } from '@shared/utils/kayttaja';
 
 @Component({
   directives: {
@@ -254,8 +251,6 @@ export default class EpEditointi extends Mixins(validationMixin) {
   private ctrls: EditointiKontrolli | null = null;
   private state: any = null;
   private isInitialized = false;
-
-  private currentPage = 1;
 
   private updateVersionumero(versionumero) {
     this.$router.push({
@@ -368,8 +363,8 @@ export default class EpEditointi extends Mixins(validationMixin) {
   }
 
   get nimi() {
-    if (this.latest?.nimi) {
-      return this.latest?.nimi;
+    if (this.latest?.kayttajanTieto) {
+      return parsiEsitysnimi(this.latest?.kayttajanTieto);
     }
     return this.latest?.muokkaajaOid || '';
   }
