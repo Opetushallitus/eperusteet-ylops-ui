@@ -67,9 +67,6 @@ export class OpetussuunnitelmaStore {
   public kasitteet: TermiDto[] = [];
 
   @State()
-  public progress = 0;
-
-  @State()
   public virkailijat: any[] | null = null;
 
   @State()
@@ -155,28 +152,40 @@ export class OpetussuunnitelmaStore {
 
   public async updateValidation() {
     this.lops2019Validation = null;
-    this.lops2019Validation = await this.validate();
     this.validointi = null;
-    this.validointi = (await Opetussuunnitelmat.validoiOpetussuunnitelma(this.opetussuunnitelma!.id!)).data;
-  }
 
-  public async validate() {
     if ((this.opetussuunnitelma!.toteutus as any) === 'lops2019') {
-      const result = (await Lops2019.getValidointi(this.opetussuunnitelma!.id!)).data;
-      if (result) {
-        const onnistuneet = result.onnistuneetValidoinnit;
-        const kaikki = result.kaikkiValidoinnit;
-        if (onnistuneet && kaikki) {
-          this.progress = Math.floor(onnistuneet / kaikki * 100);
-        }
-      }
-      return result;
+      this.lops2019Validation = (await Lops2019.getValidointi(this.opetussuunnitelma!.id!)).data;
     }
     else {
+      this.validointi = (await Opetussuunnitelmat.validoiOpetussuunnitelma(this.opetussuunnitelma!.id!)).data;
+    }
+  }
+
+  public validate() {
+    if ((this.opetussuunnitelma!.toteutus as any) === 'lops2019' && this.lops2019Validation) {
+      return this.lops2019Validation;
+    }
+    else if (this.validointi) {
       return {
-        valid: true,
+        validoinnit: {
+          'validation-category-opetussuunnitelma': _.chain(this.validointi)
+            .map('virheet')
+            .flatMap()
+            .map('syy')
+            .map(virhe => {
+              return {
+                failed: true,
+                fatal: true,
+                kuvaus: virhe,
+                nimi: this.opetussuunnitelma?.nimi,
+                id: this.opetussuunnitelma?.id,
+              };
+            })
+            .value(),
+        },
       };
-    } ;
+    }
   }
 
   public async removeTeksti(tov: Puu) {
