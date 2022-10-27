@@ -123,7 +123,6 @@ export class OpetussuunnitelmaStore {
     }
 
     this.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.opetussuunnitelma!.id!)).data;
-    await this.fetchJulkaisemattomiaMuutoksia();
   }
 
   public async fetchJulkaisemattomiaMuutoksia() {
@@ -160,6 +159,8 @@ export class OpetussuunnitelmaStore {
     else {
       this.validointi = (await Opetussuunnitelmat.validoiOpetussuunnitelma(this.opetussuunnitelma!.id!)).data;
     }
+
+    await this.fetchJulkaisemattomiaMuutoksia();
   }
 
   public validate() {
