@@ -76,7 +76,7 @@
           <ep-content v-model="uusiJulkaisu.julkaisutiedote"
                       layout="simplified"
                       :is-editable="true" />
-          <EpJulkaisuButton class="mt-3" :julkaise="julkaise" v-oikeustarkastelu="'hallinta'"/>
+          <EpJulkaisuButton class="mt-3" :julkaise="julkaise" v-oikeustarkastelu="'hallinta'" :julkaisuKesken="julkaisuKesken"/>
         </b-form-group>
       </div>
 
@@ -158,7 +158,7 @@ export default class RouteJulkaisu extends EpOpsRoute {
   }
 
   get julkaisuhistoria() {
-    return _.reverse(_.sortBy(this.julkaisut, 'revision'));
+    return this.julkaisut;
   }
 
   get isValid() {
@@ -212,7 +212,7 @@ export default class RouteJulkaisu extends EpOpsRoute {
     try {
       const julkaisu = await this.store.julkaise(this.uusiJulkaisu);
       this.uusiJulkaisu.julkaisutiedote = {};
-      this.$success(this.$t('julkaistu') as string);
+      this.$success(this.$t('julkaisu-kaynnistetty') as string);
     }
     catch (err) {
       this.$fail(this.$t('julkaisu-epaonnistui-' + err.response?.data?.syy) as string);
@@ -235,6 +235,10 @@ export default class RouteJulkaisu extends EpOpsRoute {
     catch (err) {
       this.$fail(this.$t('palautus-epaonnistui') as string);
     }
+  }
+
+  get julkaisuKesken() {
+    return this.store?.viimeisinJulkaisuTila === 'KESKEN';
   }
 }
 </script>
