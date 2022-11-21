@@ -87,6 +87,12 @@ export class OpetussuunnitelmaStore {
   @State()
   public julkaisemattomiaMuutoksia: boolean | null = null;
 
+  @State()
+  public viimeisinJulkaisuTila: string | null = null;
+
+  @State()
+  public tilaPolling: any | null = null;
+
   constructor(opsId: number) {
     this.opsId = opsId;
   }
@@ -109,8 +115,8 @@ export class OpetussuunnitelmaStore {
     logger.info('Initing ops store', this.opsId);
     this.opetussuunnitelma = await this.get();
     await this.updateSisalto();
-    this.julkaisut = (await Opetussuunnitelmat.getJulkaisut(this.opetussuunnitelma!.id!)).data;
     await this.updateValidation();
+    await this.fetchJulkaisut();
 
     if ((this.opetussuunnitelma.toteutus as any) === 'lops2019') {
       this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
@@ -123,6 +129,30 @@ export class OpetussuunnitelmaStore {
     }
 
     this.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.opetussuunnitelma!.id!)).data;
+  }
+
+  async fetchJulkaisut() {
+    this.julkaisut = (await Julkaisut.getJulkaisut(this.opetussuunnitelma!.id!)).data;
+    await this.fetchViimeisinJulkaisuTila();
+    await this.pollTila();
+  }
+
+  async fetchViimeisinJulkaisuTila() {
+    this.viimeisinJulkaisuTila = (await Julkaisut.viimeisinJulkaisuTila(this.opetussuunnitelma!.id!)).data;
+
+    if (this.viimeisinJulkaisuTila !== 'KESKEN' && this.tilaPolling !== null) {
+      clearInterval(this.tilaPolling);
+      this.tilaPolling = null;
+      this.julkaisut = (await Julkaisut.getJulkaisut(this.opetussuunnitelma!.id!)).data;
+      this.opetussuunnitelma = await this.get();
+      await this.fetchJulkaisemattomiaMuutoksia();
+    }
+  }
+
+  async pollTila() {
+    if (this.viimeisinJulkaisuTila === 'KESKEN') {
+      this.tilaPolling = setInterval(() => this.fetchViimeisinJulkaisuTila(), 2500);
+    }
   }
 
   public async fetchJulkaisemattomiaMuutoksia() {
@@ -245,14 +275,12 @@ export class OpetussuunnitelmaStore {
 
   // Julkaisut
   public async julkaise(julkaisu: UusiJulkaisuDto) {
-    const tallennettuJulkaisu = (await Opetussuunnitelmat.julkaise(this.opetussuunnitelma!.id!, julkaisu)).data;
-    this.julkaisut = [tallennettuJulkaisu, ...this.julkaisut!];
-
-    await this.fetchJulkaisemattomiaMuutoksia();
+    const tallennettuJulkaisu = (await Julkaisut.julkaise(this.opetussuunnitelma!.id!, julkaisu)).data;
+    await this.fetchJulkaisut();
   }
 
   public async palautaJulkaisu(julkaisu) {
-    const tallennettuJulkaisu = (await Opetussuunnitelmat.aktivoiJulkaisu(this.opetussuunnitelma!.id!, julkaisu.revision)).data;
+    const tallennettuJulkaisu = (await Julkaisut.aktivoiJulkaisu(this.opetussuunnitelma!.id!, julkaisu.revision)).data;
     this.julkaisut = [tallennettuJulkaisu, ...this.julkaisut!];
   }
 
@@ -307,7 +335,7 @@ export class OpetussuunnitelmaStore {
   }
 
   public async getJulkaisut() {
-    return (await Opetussuunnitelmat.getJulkaisut(this.opetussuunnitelma!.id!)).data;
+    return (await Julkaisut.getJulkaisut(this.opetussuunnitelma!.id!)).data;
   }
 
   // Opintojaksot
