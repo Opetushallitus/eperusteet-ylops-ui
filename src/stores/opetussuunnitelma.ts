@@ -24,6 +24,7 @@ import {
   Lops2019ValidointiDto,
   Validointi,
   Julkaisut,
+  OpetussuunnitelmanJulkaisuDtoTilaEnum,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -133,14 +134,16 @@ export class OpetussuunnitelmaStore {
 
   async fetchJulkaisut() {
     this.julkaisut = (await Julkaisut.getJulkaisut(this.opetussuunnitelma!.id!)).data;
-    await this.fetchViimeisinJulkaisuTila();
-    await this.pollTila();
+    if (_.includes(_.map(this.julkaisut, 'tila'), OpetussuunnitelmanJulkaisuDtoTilaEnum.KESKEN)) {
+      await this.fetchViimeisinJulkaisuTila();
+      await this.pollTila();
+    }
   }
 
   async fetchViimeisinJulkaisuTila() {
     this.viimeisinJulkaisuTila = (await Julkaisut.viimeisinJulkaisuTila(this.opetussuunnitelma!.id!)).data;
 
-    if (this.viimeisinJulkaisuTila !== 'KESKEN' && this.tilaPolling !== null) {
+    if (this.viimeisinJulkaisuTila !== OpetussuunnitelmanJulkaisuDtoTilaEnum.KESKEN) {
       clearInterval(this.tilaPolling);
       this.tilaPolling = null;
       this.julkaisut = (await Julkaisut.getJulkaisut(this.opetussuunnitelma!.id!)).data;
@@ -150,7 +153,7 @@ export class OpetussuunnitelmaStore {
   }
 
   async pollTila() {
-    if (this.viimeisinJulkaisuTila === 'KESKEN') {
+    if (this.viimeisinJulkaisuTila === OpetussuunnitelmanJulkaisuDtoTilaEnum.KESKEN) {
       this.tilaPolling = setInterval(() => this.fetchViimeisinJulkaisuTila(), 2500);
     }
   }
