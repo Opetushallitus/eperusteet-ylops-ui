@@ -278,8 +278,12 @@ export class OpetussuunnitelmaStore {
 
   // Julkaisut
   public async julkaise(julkaisu: UusiJulkaisuDto) {
-    const tallennettuJulkaisu = (await Julkaisut.julkaise(this.opetussuunnitelma!.id!, julkaisu)).data;
+    await Julkaisut.julkaise(this.opetussuunnitelma!.id!, julkaisu);
     await this.fetchJulkaisut();
+    if (!_.includes(_.map(this.julkaisut, 'tila'), OpetussuunnitelmanJulkaisuDtoTilaEnum.KESKEN)) {
+      this.opetussuunnitelma = await this.get();
+      await this.fetchJulkaisemattomiaMuutoksia();
+    }
   }
 
   public async palautaJulkaisu(julkaisu) {
