@@ -42,8 +42,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
-
-import { TekstiKappaleDto, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
+import { TekstiKappaleViitePerusteTekstillaDto, TekstiKappaleKevytDto } from '@shared/api/ylops';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 @Component({
@@ -53,7 +52,7 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 })
 export default class OpsMuokkaamattomatOsiot extends Vue {
   @Prop({ required: true })
-  private opetussuunnitelmanTekstikappale!: TekstiKappaleDto;
+  private opetussuunnitelmanTekstikappale!: TekstiKappaleViitePerusteTekstillaDto;
 
   private currentPage = 1;
   private perPage = 5;
@@ -66,7 +65,7 @@ export default class OpsMuokkaamattomatOsiot extends Vue {
     return _.filter(this.kaikkiOpetussuunnitelmanTekstikappaleet, (tekstikappale) => _.eq(tekstikappale.luotu, tekstikappale.muokattu));
   }
 
-  get kaikkiOpetussuunnitelmanTekstikappaleet(): TekstiKappaleDto[] {
+  get kaikkiOpetussuunnitelmanTekstikappaleet(): TekstiKappaleKevytDto[] {
     if (this.opetussuunnitelmanTekstikappale) {
       return this.tekstikappaleetRecursive(this.opetussuunnitelmanTekstikappale);
     }
@@ -74,8 +73,8 @@ export default class OpsMuokkaamattomatOsiot extends Vue {
     return [];
   }
 
-  tekstikappaleetRecursive(tekstikappaleItem: TekstiKappaleViiteKevytDto) {
-    let tekstikappaleet: TekstiKappaleViiteKevytDto[] = [];
+  tekstikappaleetRecursive(tekstikappaleItem: TekstiKappaleViitePerusteTekstillaDto) {
+    let tekstikappaleet: TekstiKappaleViitePerusteTekstillaDto[] = [];
 
     if (tekstikappaleItem.tekstiKappale) {
       const tekstikappale = {

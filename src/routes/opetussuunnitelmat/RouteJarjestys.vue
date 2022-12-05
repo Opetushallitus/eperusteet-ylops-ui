@@ -64,7 +64,6 @@
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
 
-import { Puu, TekstiKappaleViiteKevytDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpRoute from '@/mixins/EpRoute';
@@ -77,19 +76,6 @@ import { PerusteCache } from '@/stores/peruste';
 import { KoulutustyyppiToteutus } from '@shared/tyypit';
 import { koodiAlku, koodiNumero, koodiSorters } from '@shared/utils/perusteet';
 import { success } from '@/utils/notifications';
-
-function mapTekstikappaleet(root: TekstiKappaleViiteKevytDto | null): TekstiKappaleViiteKevytDto | null {
-  if (!root) {
-    return null;
-  }
-  else {
-    return {
-      ..._.pick(root, ['id', 'pakollinen']),
-      tekstiKappale: root.tekstiKappale && _.pick(root.tekstiKappale, ['id', 'nimi']),
-      lapset: _.map(root.lapset, mapTekstikappaleet),
-    } as TekstiKappaleViiteKevytDto;
-  }
-}
 
 @Component({
   components: {

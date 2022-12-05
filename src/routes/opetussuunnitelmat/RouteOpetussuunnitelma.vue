@@ -105,6 +105,7 @@ import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   @Prop({ required: true })
   private tutoriaalistore!: TutoriaaliStore;
+
   private valikkoData: any | null = null;
 
   protected async init() {

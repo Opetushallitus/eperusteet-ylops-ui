@@ -18,9 +18,13 @@
       </div>
     </div>
 
+    <div v-if="!isPohja && pohjallaPuuttuviaTeksteja === null" class="d-flex justify-content-center">
+      {{$t('tarkistetaan-perustetekstimuutokset')}}
+      <EpSpinner />
+    </div>
     <div
       class="info-box import-box"
-      v-if="!isPohja && pohjallaPuuttuviaTeksteja && isLops2019"
+      v-if="!isPohja && pohjallaPuuttuviaTeksteja"
       v-oikeustarkastelu="oikeustarkastelu">
       <h2>{{$t('paivita-opetussuunnitelma')}}</h2>
       <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />

@@ -20,7 +20,7 @@ export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
     let obj: SideMenuEntry = {
       item: {
         type: 'tekstikappale',
-        objref: lapsi.tekstiKappale,
+        objref: lapsi.perusteenTekstikappale || lapsi.tekstiKappale,
         prefix: lapsi.liite ? '' : chapter,
         order: lapsi.liite ? '99' : '0',
       },
