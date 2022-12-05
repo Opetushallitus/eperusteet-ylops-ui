@@ -10,7 +10,6 @@ import {
   OpetussuunnitelmaDto,
   OpetussuunnitelmaKevytDto,
   Puu,
-  TekstiKappaleViiteKevytDto,
   Lops2019,
   Ohjeet,
   OpetussuunnitelmanSisalto,
@@ -25,6 +24,7 @@ import {
   Validointi,
   Julkaisut,
   OpetussuunnitelmanJulkaisuDtoTilaEnum,
+  TekstiKappaleViitePerusteTekstillaDto,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -47,7 +47,7 @@ export class OpetussuunnitelmaStore {
   public opsId: number;
 
   @State()
-  public sisalto: TekstiKappaleViiteKevytDto | null = null;
+  public sisalto: TekstiKappaleViitePerusteTekstillaDto | null = null;
 
   @State()
   public opetussuunnitelma: OpetussuunnitelmaKevytDto | null = null;

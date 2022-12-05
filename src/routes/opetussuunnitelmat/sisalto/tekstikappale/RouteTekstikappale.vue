@@ -21,7 +21,7 @@
         <ep-comment-threads />
       </template>
       <template slot="header" slot-scope="{ isEditing, data }">
-        <h2>{{ $kaanna(data.tov.tekstiKappale.nimi) }}</h2>
+        <h2>{{ $kaanna(perusteTekstinOtsikko || data.tov.tekstiKappale.nimi) }}</h2>
       </template>
       <template slot-scope="{ isEditing, data }">
         <div class="teksti">
@@ -109,9 +109,9 @@ import {
   OhjeDto,
   Ohjeet,
   OpetussuunnitelmanSisalto,
-  PerusteTekstiKappaleViiteDto,
   TekstiKappaleViiteDto,
   Puu,
+  Matala,
 } from '@shared/api/ylops';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { createLogger } from '@shared/utils/logger';
@@ -138,8 +138,8 @@ const logger = createLogger('RouteTekstikappale');
 })
 export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) {
   private ohjeet: OhjeDto[] = [];
-  private perusteenTeksti: PerusteTekstiKappaleViiteDto | TekstiKappaleViiteDto | null = null;
-  private alkuperaiset: PerusteTekstiKappaleViiteDto[] | null = null;
+  private perusteenTeksti: TekstiKappaleViiteDto | null = null;
+  private alkuperaiset: Matala[] | null = null;
   private nimi: any = {};
   private kopioitava = false;
 
@@ -235,7 +235,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
       try {
         this.alkuperaiset = (await OpetussuunnitelmanSisalto
-          .getTekstiKappaleViiteOriginals(this.opsId, this.osaId)).data as PerusteTekstiKappaleViiteDto[];
+          .getTekstiKappaleViiteOriginals(this.opsId, this.osaId)).data as Matala[];
         this.alkuperaiset = _.filter(this.alkuperaiset, 'tekstiKappale');
       }
       catch (err) {
@@ -253,14 +253,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
       try {
         if (teksti.perusteTekstikappaleId) {
-          if (this.isLops2019) {
-            this.perusteenTeksti = (await Lops2019Perusteet
-              .getAllLops2019PerusteTekstikappale(this.opsId, teksti.perusteTekstikappaleId))
-              .data as PerusteTekstiKappaleViiteDto;
-          }
-          else {
-            this.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;
-          }
+          this.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;
         }
       }
       catch (err) {
@@ -275,6 +268,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
       return result;
     }
+  }
+
+  get perusteTekstinOtsikko() {
+    return this.perusteenTeksti?.perusteenOsa?.nimi;
   }
 
   siirry(uusi) {
