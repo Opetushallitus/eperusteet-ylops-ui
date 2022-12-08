@@ -41,7 +41,9 @@
                         toggle-class="text-decoration-none"
                         no-caret="no-caret"
                         right>
-              <template slot="button-content"><fas icon="menu-vaaka"></fas></template>
+              <template slot="button-content">
+                <fas icon="menu-vaaka"></fas>
+              </template>
               <b-dropdown-item @click="ctrls.remove()"
                                 key="poista"
                                 :disabled="!hooks.remove || state.disabled">
@@ -73,7 +75,7 @@
               <slot name="kopioi-teksti">{{ $t('kopioi-muokattavaksi') }}</slot>
             </ep-button>
             <b-dropdown class="mx-4"
-                        v-if="katseluDropDownValinnatVisible && !ctrls.isCopyable"
+                        v-if="katseluDropDownValinnatVisible && !ctrls.isCopyable && ctrls.isEditable"
                         size="md"
                         variant="link"
                         :disabled="state.disabled"
@@ -273,7 +275,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
   }
 
   get editointiDropDownValinnatVisible() {
-    return this.ctrls!.isEditing && !this.state.disabled && this.hooks.remove;
+    return this.ctrls!.isEditing && !this.state.disabled && this.hooks.remove && this.ctrls?.isEditable;
   }
 
   get katseluDropDownValinnatVisible() {

@@ -80,17 +80,9 @@
       </template>
     </ep-recursive-nav>
 
-    <li v-if="isPohja">
-      <ep-tekstikappale-lisays
-        :opetussuunnitelmaStore="store"
-        :tekstikappaleet="tekstikappaleet"
-        v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
-        tyhja-valinta/>
-    </li>
-
   </ul>
 
-  <div class="muokkaa-kappaleita" v-sticky sticky-side="bottom" sticky-z-index="500">
+  <div class="muokkaa-kappaleita" v-sticky sticky-side="bottom" sticky-z-index="500" v-if="!isPohja">
     <router-link :to="{name: 'jarjesta'}">
       <div class="inner">
         <fas icon="jarjesta" fixed-width />

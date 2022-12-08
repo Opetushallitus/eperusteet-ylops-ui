@@ -19,14 +19,14 @@
     </div>
 
     <div v-if="!isPohja && pohjallaPuuttuviaTeksteja === null" class="d-flex justify-content-center">
-      {{$t('tarkistetaan-perustetekstimuutokset')}}
+      {{$t('tarkistetaan-pohjan-tekstimuutokset')}}
       <EpSpinner />
     </div>
     <div
       class="info-box import-box"
       v-if="!isPohja && pohjallaPuuttuviaTeksteja"
       v-oikeustarkastelu="oikeustarkastelu">
-      <h2>{{$t('paivita-opetussuunnitelma')}}</h2>
+      <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne')}}</h2>
       <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
 
       <div class="d-flex justify-content-end">
@@ -36,22 +36,25 @@
       </div>
     </div>
 
-    <div
-      class="info-box sync-box"
-      v-if="isPohja"
-      v-oikeustarkastelu="oikeustarkastelu">
-      <h2>{{$t('paivita-muutokset-opetussuunnitelmiin')}}</h2>
-      <div v-html="$t('paivita-muutokset-opetussuunnitelmiin-huomioteksti')" />
+    <template v-if="isPohja">
+      <EpSpinner v-if="pohjanPerustePaivittynyt === null" />
+      <div
+        class="info-box sync-box"
+        v-else-if="pohjanPerustePaivittynyt"
+        v-oikeustarkastelu="oikeustarkastelu">
+        <h2>{{$t('paivita-pohjan-peruste-opetussuunnitelmiin')}}</h2>
+        <div v-html="$t('paivita-pohjan-peruste-opetussuunnitelmiin-huomioteksti')" />
 
-      <div class="d-flex justify-content-end">
-        <div class="d-flex align-items-end mr-3 disabled-text font-size-08" v-if="ops.viimeisinSyncPvm">
-          {{$t('viimeisin-synkronisointi-pvm')}} {{$sd(ops.viimeisinSyncPvm)}}
+        <div class="d-flex justify-content-end">
+          <div class="d-flex align-items-end mr-3 disabled-text font-size-08" v-if="ops.viimeisinSyncPvm">
+            {{$t('viimeisin-synkronisointi-pvm')}} {{$sdt(ops.viimeisinSyncPvm)}}
+          </div>
+          <ep-button @click="synkronisoiPohja" :showSpinner="syncing">
+            {{$t('paivita-peruste')}}
+          </ep-button>
         </div>
-        <ep-button @click="synkronisoiPohja" :showSpinner="syncing">
-          {{$t('paivita-muutokset-opetussuunnitelmiin')}}
-        </ep-button>
       </div>
-    </div>
+    </template>
 
     <div class="row">
       <div class="col">
@@ -165,6 +168,10 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 
   get pohjallaPuuttuviaTeksteja() {
     return this.store.pohjallaPuuttuviaTeksteja;
+  }
+
+  get pohjanPerustePaivittynyt() {
+    return this.store.pohjanPerustePaivittynyt;
   }
 
   get isLops2019() {

@@ -37,7 +37,7 @@
               <ep-toggle v-model="data.tov.piilotettu">{{ $t('piilota-tekstikappale-julkisesta-opetussuunnitelmasta') }}</ep-toggle>
             </div>
             <div v-else-if="data.tov.piilotettu" class="disabled-text mb-4">{{$t('tekstikappale-piilotettu-julkisesta-opetussuunnitelmasta')}}</div>
-            <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa" :first="isEditing">
+            <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa" :first="isEditing" :borderBottom="!isPohja">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
               <ep-content
                 layout="normal"
@@ -69,14 +69,17 @@
                 <ep-toggle v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</ep-toggle>
               </div>
             </ep-collapse>
-            <h5>{{ $t('paikallinen-teksti') }}</h5>
-            <ep-content
-              layout="normal"
-              v-model="data.tov.tekstiKappale.teksti"
-              :is-editable="isEditing"
-              :kasiteHandler="kasiteHandler"
-              :kuvaHandler="kuvaHandler"> </ep-content>
-            <ep-alert v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)" :ops="false" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+
+            <template v-if="!isPohja">
+              <h5>{{ $t('paikallinen-teksti') }}</h5>
+              <ep-content
+                layout="normal"
+                v-model="data.tov.tekstiKappale.teksti"
+                :is-editable="isEditing"
+                :kasiteHandler="kasiteHandler"
+                :kuvaHandler="kuvaHandler"> </ep-content>
+              <ep-alert v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)" :ops="false" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+            </template>
           </span>
         </div>
       </template>
@@ -156,6 +159,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     },
     copy: this.copy,
     copyable: this.copyable,
+    editable: this.editable,
   };
 
   async remove(data: any) {
@@ -313,6 +317,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
   async copyable() {
     return this.kopioitava;
+  }
+
+  async editable() {
+    return !this.isPohja;
   }
 
   get kasiteHandler() {
