@@ -47,6 +47,7 @@ export interface EditointiKontrolliConfig {
   preview?: () => Promise<void>;
   copy?: (data: any) => Promise<void>;
   copyable?: () => Promise<boolean>;
+  editable?: () => Promise<boolean>;
 }
 
 export interface EditointiKontrolliRestore {
@@ -62,6 +63,7 @@ const DefaultConfig = {
     valid: true,
   }),
   copy: async () => {},
+  editable: async () => true,
 };
 
 export class EditointiKontrolli {
@@ -70,7 +72,8 @@ export class EditointiKontrolli {
   private isEditingState = false;
   private isRemoved = false;
   private isNew = false;
-  private isCopyable = false;
+  public isCopyable = false;
+  public isEditable: boolean | undefined = true;
 
   private readonly features: EditointiKontrolliFeatures;
   private mstate = Vue.observable({
@@ -118,10 +121,6 @@ export class EditointiKontrolli {
     return this.isEditingState;
   }
 
-  public get isEditable() {
-    return !!(this.config.source.save);
-  }
-
   public get state() {
     return this.mstate;
   }
@@ -143,6 +142,8 @@ export class EditointiKontrolli {
     if (this.config.copyable) {
       this.isCopyable = await this.config.copyable();
     }
+
+    this.isEditable = !!(this.config.source.save) && await this.config.editable?.();
   }
 
   public async start() {

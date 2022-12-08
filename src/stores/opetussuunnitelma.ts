@@ -86,6 +86,9 @@ export class OpetussuunnitelmaStore {
   public pohjallaPuuttuviaTeksteja: boolean | null = null;
 
   @State()
+  public pohjanPerustePaivittynyt: boolean | null = null;
+
+  @State()
   public julkaisemattomiaMuutoksia: boolean | null = null;
 
   @State()
@@ -130,6 +133,10 @@ export class OpetussuunnitelmaStore {
     }
 
     this.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.opetussuunnitelma!.id!)).data;
+
+    if (this.opetussuunnitelma!.tyyppi as string === 'pohja') {
+      this.pohjanPerustePaivittynyt = (await Opetussuunnitelmat.pohjanperustepaivittynyt(this.opetussuunnitelma.id!)).data;
+    }
   }
 
   async fetchJulkaisut() {
@@ -475,6 +482,7 @@ export class OpetussuunnitelmaStore {
 
   public async synkronisoiPohja() {
     await Opetussuunnitelmat.sync(this.opetussuunnitelma!.id!);
+    this.pohjanPerustePaivittynyt = false;
   }
 }
 
