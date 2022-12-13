@@ -163,7 +163,7 @@ import { Kielet } from '@shared/stores/kieli';
 import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
-import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
+import { buildEsikatseluUrl, buildKatseluUrl } from '@shared/utils/esikatselu';
 import { isLukio, koulutustyyppiTheme } from '@shared/utils/perusteet';
 import { OpetussuunnitelmaKevytDtoToteutusEnum, OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
@@ -261,8 +261,8 @@ export default class RouteTiedot extends EpOpsRoute {
 
         return {
           ...ops,
-          perusteUrl: buildEsikatseluUrl(this.kieli, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/${ops.perusteenId}/tiedot`),
-          opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}/${koulutustyyppiTheme(ops.koulutustyyppi!)}/tiedot`),
+          perusteUrl: buildKatseluUrl(this.kieli, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/${ops.perusteenId}/tiedot`),
+          opetussuunitelmaUrl: buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${ops.id}`, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/tiedot`),
           kaikkiOrganisaatiot: {
             kunnat: ops.kunnat,
             jarjestajat: ops.organisaatiot,
