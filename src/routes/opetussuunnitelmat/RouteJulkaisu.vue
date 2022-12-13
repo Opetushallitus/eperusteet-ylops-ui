@@ -220,7 +220,7 @@ export default class RouteJulkaisu extends EpOpsRoute {
   }
 
   get esikatseluUrl() {
-    return buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${this.ops.id}/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/tiedot`);
+    return buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${this.ops.id}`, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/tiedot`);
   }
 
   get kieli() {
