@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <div v-if="!isPohja && pohjallaPuuttuviaTeksteja === null" class="d-flex justify-content-center">
+    <!-- <div v-if="!isPohja && pohjallaPuuttuviaTeksteja === null" class="d-flex justify-content-center">
       {{$t('tarkistetaan-pohjan-tekstimuutokset')}}
       <EpSpinner />
     </div>
@@ -34,7 +34,7 @@
           {{$t('paivita-opetussuunnitelma')}}
         </ep-button>
       </div>
-    </div>
+    </div> -->
 
     <template v-if="isPohja">
       <EpSpinner v-if="pohjanPerustePaivittynyt === null" />
@@ -142,7 +142,7 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
       await this.store.init();
     }
     catch (e) {
-      this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
+      this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmaan-virhe') as string);
       createLogger('RouteHallintapaneeli').error(e);
     }
     this.syncPohja = false;
