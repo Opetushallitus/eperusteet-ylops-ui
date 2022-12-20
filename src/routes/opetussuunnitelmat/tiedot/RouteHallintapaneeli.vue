@@ -1,40 +1,24 @@
 <template>
   <div class="hallintapaneeli">
 
-    <div
-      class="info-box import-box"
-      v-if="!isPohja && perustepaivitys"
-      v-oikeustarkastelu="oikeustarkastelu">
-      <h2>{{$t('paivita-opetussuunnitelma')}}</h2>
-      <div v-html="$t('paivita-opetussuunnitelma-huomioteksti')" />
-
-      <div class="d-flex justify-content-end">
-        <ep-button variant="link" class="mr-4" @click="importPerusteTekstit(true)" :disabled="importing">
-          {{$t('ohita')}}
-        </ep-button>
-        <ep-button @click="importPerusteTekstit(false)" :showSpinner="importing">
-          {{$t('paivita-opetussuunnitelma')}}
-        </ep-button>
+    <template v-if="!isPohja">
+      <div v-if="pohjallaPuuttuviaTeksteja === null" class="d-flex justify-content-center">
+        {{$t('tarkistetaan-pohjan-tekstimuutokset')}}
+        <EpSpinner />
       </div>
-    </div>
+      <div class="info-box import-box"
+        v-if="pohjallaPuuttuviaTeksteja"
+        v-oikeustarkastelu="oikeustarkastelu">
+        <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne')}}</h2>
+        <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
 
-    <!-- <div v-if="!isPohja && pohjallaPuuttuviaTeksteja === null" class="d-flex justify-content-center">
-      {{$t('tarkistetaan-pohjan-tekstimuutokset')}}
-      <EpSpinner />
-    </div>
-    <div
-      class="info-box import-box"
-      v-if="!isPohja && pohjallaPuuttuviaTeksteja"
-      v-oikeustarkastelu="oikeustarkastelu">
-      <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne')}}</h2>
-      <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
-
-      <div class="d-flex justify-content-end">
-        <ep-button @click="syncTekstitPohjasta()" :showSpinner="syncPohja">
-          {{$t('paivita-opetussuunnitelma')}}
-        </ep-button>
+        <div class="d-flex justify-content-end">
+          <ep-button @click="syncTekstitPohjasta()" :showSpinner="syncPohja">
+            {{$t('paivita-opetussuunnitelma')}}
+          </ep-button>
+        </div>
       </div>
-    </div> -->
+    </template>
 
     <template v-if="isPohja">
       <EpSpinner v-if="pohjanPerustePaivittynyt === null" />
@@ -116,22 +100,6 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 
   get perustepaivitys() {
     return !this.ops.perusteDataTuontiPvm;
-  }
-
-  async importPerusteTekstit(ohita) {
-    this.importing = true;
-    try {
-      await this.store.importPerusteTekstit(ohita);
-      if (!ohita) {
-        this.$success(this.$t('perusteen-tekstikappaleet-tuotu-opetussuunitelmaan') as string);
-      }
-      await this.store.init();
-    }
-    catch (e) {
-      this.$fail(this.$t('perusteen-tekstikappaleet-tuotu-opetussuunitelmaan-virhe') as string);
-      createLogger('RouteHallintapaneeli').error(e);
-    }
-    this.importing = false;
   }
 
   async syncTekstitPohjasta() {
