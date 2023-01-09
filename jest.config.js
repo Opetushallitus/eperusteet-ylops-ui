@@ -42,6 +42,7 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^@shared/(.*)$': '<rootDir>/eperusteet-frontend-utils/vue/src/$1',
+    '^@assets/(.*)$': '<rootDir>/eperusteet-frontend-utils/vue/public/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^&/(.*)$': '<rootDir>/tests/$1',
   },
