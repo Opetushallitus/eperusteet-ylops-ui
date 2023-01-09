@@ -37,11 +37,9 @@ import RoutePerusopetusOppiaineVuosiluokkaistaminen from '@/routes/opetussuunnit
 import RoutePerusopetusOppiaineVuosiluokka from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokka.vue';
 import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusVuosiluokkaValinnaiset.vue';
 
-import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet } from '@shared/stores/kieli';
-import { SovellusVirhe } from '@shared/tyypit';
-import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { getOpetussuunnitelmaService } from '@/stores/opetussuunnitelma';
 import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@shared/utils/logger';
@@ -284,15 +282,6 @@ export const router = new Router({
       };
     },
   }],
-});
-
-Virheet.onError((virhe: SovellusVirhe) => {
-  router.push({
-    name: 'virhe',
-    query: {
-      virhe: JSON.stringify(virhe),
-    },
-  });
 });
 
 // Estetään ikkunan sulkeminen suoraan muokkaustilassa
