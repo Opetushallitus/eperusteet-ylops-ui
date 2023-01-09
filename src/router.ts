@@ -5,8 +5,7 @@ import VueMeta from 'vue-meta';
 
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/RouteHome.vue';
-import VirheRoute from '@/routes/virhe/VirheRoute.vue';
-
+import EpErrorPage from '@shared/components/EpErrorPage/EpErrorPage.vue';
 import RouteDokumentti from '@/routes/opetussuunnitelmat/dokumentti/RouteDokumentti.vue';
 import RouteKasite from '@/routes/opetussuunnitelmat/kasite/RouteKasite.vue';
 import RouteModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteModuuli.vue';
@@ -37,11 +36,9 @@ import RoutePerusopetusOppiaineVuosiluokkaistaminen from '@/routes/opetussuunnit
 import RoutePerusopetusOppiaineVuosiluokka from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokka.vue';
 import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusVuosiluokkaValinnaiset.vue';
 
-import { Virheet } from '@shared/stores/virheet';
 import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet } from '@shared/stores/kieli';
-import { SovellusVirhe } from '@shared/tyypit';
-import { getOpetussuunnitelmaService, OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { getOpetussuunnitelmaService } from '@/stores/opetussuunnitelma';
 import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@shared/utils/logger';
@@ -101,7 +98,7 @@ export const router = new Router({
     }, {
       path: 'virhe',
       name: 'virhe',
-      component: VirheRoute,
+      component: EpErrorPage,
     }, {
       path: 'uusi/pohja',
       name: 'uusiPohja',
@@ -273,26 +270,12 @@ export const router = new Router({
       logger.error('Unknown route', to);
       return {
         name: 'virhe',
-        params: {
-          lang: 'fi',
-          ...to.params,
-        },
         query: {
-          viesti: 'virhe-route',
-          virhe: to.path,
+          errorMessage: Kielet.kaannaOlioTaiTeksti('virhe-sivua-ei-loytynyt'),
         },
       };
     },
   }],
-});
-
-Virheet.onError((virhe: SovellusVirhe) => {
-  router.push({
-    name: 'virhe',
-    query: {
-      virhe: JSON.stringify(virhe),
-    },
-  });
 });
 
 // Estetään ikkunan sulkeminen suoraan muokkaustilassa
