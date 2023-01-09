@@ -1,6 +1,4 @@
-import _ from 'lodash';
 import { Vue, Component } from 'vue-property-decorator';
-import { Virheet } from '@shared/stores/virheet';
 import { Meta } from '@shared/utils/decorators';
 
 Component.registerHooks([
@@ -65,12 +63,7 @@ export default class EpRoot extends Vue {
       await fn();
     }
     catch (err) {
-      if (this.$route) {
-        await Virheet.lisaaVirhe({
-          path: this.$route.path,
-          err,
-        });
-      }
+      // ei tehdä mitään
     }
     finally {
       this.mIsLoading = false;
