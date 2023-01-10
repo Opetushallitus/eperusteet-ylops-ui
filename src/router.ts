@@ -5,8 +5,7 @@ import VueMeta from 'vue-meta';
 
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/RouteHome.vue';
-import VirheRoute from '@/routes/virhe/VirheRoute.vue';
-
+import EpErrorPage from '@shared/components/EpErrorPage/EpErrorPage.vue';
 import RouteDokumentti from '@/routes/opetussuunnitelmat/dokumentti/RouteDokumentti.vue';
 import RouteKasite from '@/routes/opetussuunnitelmat/kasite/RouteKasite.vue';
 import RouteModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RouteModuuli.vue';
@@ -99,7 +98,7 @@ export const router = new Router({
     }, {
       path: 'virhe',
       name: 'virhe',
-      component: VirheRoute,
+      component: EpErrorPage,
     }, {
       path: 'uusi/pohja',
       name: 'uusiPohja',
@@ -271,13 +270,8 @@ export const router = new Router({
       logger.error('Unknown route', to);
       return {
         name: 'virhe',
-        params: {
-          lang: 'fi',
-          ...to.params,
-        },
         query: {
-          viesti: 'virhe-route',
-          virhe: to.path,
+          virhekoodi: '404',
         },
       };
     },
