@@ -1,24 +1,26 @@
 <template>
 <div v-if="!isInitializing">
   <router-view />
-  <notifications style="margin-right: 6px; margin-top: 90px;"
-                 position="top right"
-                 :max="3" />
+  <EpNotification></EpNotification>
 </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { notify } from '@/utils/notifications';
 import { Kayttajat } from '@/stores/kayttaja';
 import { Ulkopuoliset } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
+import EpNotification from '@shared/components/EpNotification/EpNotification.vue';
 
 async function getLokalisoinnit() {
   return (await Ulkopuoliset.getLokalisoinnit()).data as any;
 }
 
-@Component
+@Component({
+  components: {
+    EpNotification,
+  },
+})
 export default class App extends Vue {
   private isInitializing = true;
 
