@@ -71,7 +71,7 @@
                 <ep-toggle help="ops-esikatseltavissa-ohje" v-model="data.esikatseltavissa" :is-editing="isEditing"></ep-toggle>
               </ep-form-content>
             </div>
-            <div class="col-md-6" v-if="isOps && data.esikatseltavissa && !isEditing">
+            <div class="col-md-6" v-if="isOps && data.esikatseltavissa && !isEditing" :class="{'disabled-events': data.tila === 'poistettu'}">
               <ep-form-content name="esikatsele-opetussuunnitelmaa">
                 <ep-external-link :url="data.opetussuunitelmaUrl"></ep-external-link>
               </ep-form-content>
