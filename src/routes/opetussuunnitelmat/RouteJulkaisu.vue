@@ -52,7 +52,7 @@
           </div>
           <div class="col-md-6" v-if="isOps && julkaisuhistoria && julkaisuhistoria.length > 0">
             <ep-form-content name="esikatsele-opetussuunnitelmaa">
-              <ep-external-link :url="esikatseluUrl"></ep-external-link>
+              <ep-external-link :url="esikatseluUrl" :class="{'disabled-events': ops.tila === 'poistettu'}"></ep-external-link>
             </ep-form-content>
           </div>
           <div class="col-md-12">
