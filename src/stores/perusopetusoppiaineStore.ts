@@ -1,6 +1,6 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
-import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OpsOppiaineKevytDto } from '@shared/api/ylops';
+import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OpsOppiaineKevytDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import { Revision } from '@shared/tyypit';
@@ -140,28 +140,42 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async hide(data) {
-    const piilotettu = {
-      piilotettu: true,
-    };
+    await Vuosiluokkakokonaisuudet.piilotaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!);
 
-    await OppiaineenVuosiluokkakokonaisuudet
-      .updateVuosiluokkakokonaisuudenSisalto(
-        this.opsId, this.oppiaineId,
-        data.vuosiluokkakokonaisuus.id,
-        piilotettu);
+    if (data.oppiaine.oma) {
+      const piilotettu = {
+        piilotettu: true,
+      };
+
+      await OppiaineenVuosiluokkakokonaisuudet
+        .updateVuosiluokkakokonaisuudenSisalto(
+          this.opsId, this.oppiaineId,
+          data.vuosiluokkakokonaisuus.id,
+          piilotettu);
+    }
+
+    await this.el.resetOps();
+    await this.el.init();
   }
 
   async unHide(data) {
-    const piilotettu = {
-      id: data.vuosiluokkakokonaisuus.id,
-      piilotettu: false,
-    };
+    await Vuosiluokkakokonaisuudet.palautaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!);
 
-    await OppiaineenVuosiluokkakokonaisuudet
-      .updateVuosiluokkakokonaisuudenSisalto(
-        this.opsId, this.oppiaineId,
-        data.vuosiluokkakokonaisuus.id,
-        piilotettu);
+    if (data.oppiaine.oma) {
+      const piilotettu = {
+        id: data.vuosiluokkakokonaisuus.id,
+        piilotettu: false,
+      };
+
+      await OppiaineenVuosiluokkakokonaisuudet
+        .updateVuosiluokkakokonaisuudenSisalto(
+          this.opsId, this.oppiaineId,
+          data.vuosiluokkakokonaisuus.id,
+          piilotettu);
+    }
+
+    await this.el.resetOps();
+    await this.el.init();
   }
 
   async copy(data) {
@@ -190,8 +204,8 @@ export class PerusopetusoppiaineStore implements IEditoitava {
       return data ? {
         editable: data.perusteenOppiaine && data.oppiaine.oma,
         removable: this.parent && isOppiaineUskontoTaiKieli(this.parent) && data.oppiaine.oma,
-        hideable: this.parent && isOppiaineUskontoTaiKieli(this.parent) && data.oppiaine.oma,
-        isHidden: data.vuosiluokkakokonaisuus?.piilotettu || false,
+        hideable: this.parent && isOppiaineUskontoTaiKieli(this.parent) && (data.oppiaine.oma || !data.vuosiluokkakokonaisuus?.piilotettu),
+        isHidden: data.vuosiluokkakokonaisuus?.piilotettu || _.includes(this.vuosiluokkakokonaisuus.lisatieto?.piilotetutOppiaineet, data.oppiaine.id) || false,
         recoverable: data.oppiaine.oma,
         copyable: !data.oppiaine.oma && !this.parent,
       } as EditoitavaFeatures

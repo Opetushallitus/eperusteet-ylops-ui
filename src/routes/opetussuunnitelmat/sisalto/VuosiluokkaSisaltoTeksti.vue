@@ -40,7 +40,7 @@ export default class VuosiluokkaSisaltoTeksti extends Vue {
   @Prop({ required: true })
   private perusteObject!: any;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   private pohjaObject!: any;
 
   @Prop({ required: false })
