@@ -15,14 +15,15 @@ export const YlopsKoulutustyypit = Object.freeze([
   'koulutustyyppi_22', // PERUSOPETUSVALMISTAVA
 ]);
 
-const Perusoppilaitokset = [11, 12, 19, 21, 63, 64];
+const Perusoppilaitokset = ['11', '12', '19', '21', '63', '64'];
 const koulutustyyppiToOppilaitos = {
   'koulutustyyppi_15': Perusoppilaitokset,
-  'koulutustyyppi_2': [...Perusoppilaitokset, 15],
-  'koulutustyyppi_14': [...Perusoppilaitokset, 15],
-  'koulutustyyppi_23': [...Perusoppilaitokset, 15],
+  'koulutustyyppi_2': [...Perusoppilaitokset, '15'],
+  'koulutustyyppi_14': [...Perusoppilaitokset, '15'],
+  'koulutustyyppi_23': [...Perusoppilaitokset, '15'],
   'koulutustyyppi_20': [...Perusoppilaitokset],
   'koulutustyyppi_6': Perusoppilaitokset,
+  'koulutustyyppi_999907': [...Perusoppilaitokset, '01'],
 };
 
 export function koulutustyypinOppilaitokset(koulutustyyppi: string | undefined | null) {
