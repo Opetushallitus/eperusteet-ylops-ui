@@ -243,12 +243,13 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           return {
             kaytetytModuulit: acc.kaytetytModuulit + next.kaytetytModuulit,
             kaikkiModuulit: acc.kaikkiModuulit + next.kaikkiModuulit,
+            opintojaksot: acc.opintojaksot + next.opintojaksot,
           };
         }, {
           kaytetytModuulit: 0,
           kaikkiModuulit: 0,
+          opintojaksot: 0,
         }),
-      opintojaksot: _.size(this.store.opintojaksot) + _.size(this.store.tuodutOpintojaksot),
     };
   }
 
@@ -466,7 +467,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       vieraatModuulit: _.map(vieraatModuulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
       stats: {
         opintojaksot: _.size(opintojaksot),
-        kaytetytModuulit: _.size(omatModuulit),
+        kaytetytModuulit: _.size(_.uniq(_.map(omatModuulit, 'koodi.uri'))),
         kaikkiModuulit: _.size(oppimaaranOmatModuulit),
         valid: _.size(omatModuulit) === _.size(oppimaaranOmatModuulit),
       },
@@ -551,7 +552,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       opintojaksot,
       stats: {
         opintojaksot: _.size(opintojaksot),
-        kaytetytModuulit: _.size(omatModuulit),
+        kaytetytModuulit: _.size(_.uniq(_.map(omatModuulit, 'koodi.uri'))),
         kaikkiModuulit: _.size(oppimaaranOmatModuulit),
         valid: _.size(omatModuulit) === _.size(oppimaaranOmatModuulit),
       },
