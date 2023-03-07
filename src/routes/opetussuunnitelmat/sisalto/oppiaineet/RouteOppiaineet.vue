@@ -595,7 +595,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       .map(moduuli => this.moduuliPresentation(moduuli, opintojaksojenModuulit))
       .value();
 
-    const kaytetytModuulit = _.size(opintojaksojenModuulit) - _.size(vieraatModuulit);
+    const kaytetytModuulit = _.size(_.filter(oa.moduulit, moduuli => opintojaksojenModuulit[moduuli.koodi.uri]));
 
     return {
       ...oa,
