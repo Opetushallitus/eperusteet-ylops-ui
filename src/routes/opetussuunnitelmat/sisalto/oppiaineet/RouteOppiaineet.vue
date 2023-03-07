@@ -453,6 +453,8 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       .keyBy('koodiUri')
       .value();
 
+    const kaytetytModuulit = _.size(_.uniq(_.map(omatModuulit, 'koodi.uri')));
+
     return {
       ...poa,
       koodi: {
@@ -467,9 +469,9 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       vieraatModuulit: _.map(vieraatModuulit, (moduuli) => this.moduuliPresentation(moduuli, opintojaksojenModuulit)),
       stats: {
         opintojaksot: _.size(opintojaksot),
-        kaytetytModuulit: _.size(_.uniq(_.map(omatModuulit, 'koodi.uri'))),
+        kaytetytModuulit: kaytetytModuulit,
         kaikkiModuulit: _.size(oppimaaranOmatModuulit),
-        valid: _.size(omatModuulit) === _.size(oppimaaranOmatModuulit),
+        valid: kaytetytModuulit === _.size(oppimaaranOmatModuulit),
       },
     };
   }
@@ -542,6 +544,8 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       .reject(moduuli => _.includes(omatModuulit, moduuli))
       .value();
 
+    const kaytetytModuulit = _.size(_.uniq(_.map(omatModuulit, 'koodi.uri')));
+
     return {
       ...pom,
       isOpen: !this.opened[pom.id!] || !_.isEmpty(this.query),
@@ -552,9 +556,9 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       opintojaksot,
       stats: {
         opintojaksot: _.size(opintojaksot),
-        kaytetytModuulit: _.size(_.uniq(_.map(omatModuulit, 'koodi.uri'))),
+        kaytetytModuulit: kaytetytModuulit,
         kaikkiModuulit: _.size(oppimaaranOmatModuulit),
-        valid: _.size(omatModuulit) === _.size(oppimaaranOmatModuulit),
+        valid: kaytetytModuulit === _.size(oppimaaranOmatModuulit),
       },
     };
   }
