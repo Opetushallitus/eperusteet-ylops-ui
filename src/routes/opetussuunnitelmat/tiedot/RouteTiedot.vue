@@ -165,7 +165,7 @@ import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl, buildKatseluUrl } from '@shared/utils/esikatselu';
 import { isLukio, koulutustyyppiTheme } from '@shared/utils/perusteet';
-import { OpetussuunnitelmaKevytDtoToteutusEnum, OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
+import { OpetussuunnitelmaKevytDtoToteutusEnum, OpetussuunnitelmaKevytDto, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
 
 @Component({
@@ -254,9 +254,9 @@ export default class RouteTiedot extends EpOpsRoute {
     try {
       if (this.$route.params.id) {
         const ops = await this.store.get();
-        let pohja: OpetussuunnitelmaKevytDto | null = null;
+        let pohjanVuosiluokkakokonaisuudet: OpsVuosiluokkakokonaisuusKevytDto[] | null = null;
         if (ops.toteutus === _.toLower(OpetussuunnitelmaKevytDtoToteutusEnum.PERUSOPETUS)) {
-          pohja = await this.store.getPohja(ops);
+          pohjanVuosiluokkakokonaisuudet = await this.store.getPohjanVuosiluokkakokonaisuudet(ops);
         }
 
         return {
@@ -272,7 +272,7 @@ export default class RouteTiedot extends EpOpsRoute {
           vuosiluokkakokonaisuudet: _.sortBy(ops.vuosiluokkakokonaisuudet, vlk => this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any))),
           valittavatVuosiluokkakokonaisuudet: _.chain([
             ...ops.vuosiluokkakokonaisuudet as Array<any>,
-            ...(_.filter(pohja?.vuosiluokkakokonaisuudet,
+            ...(_.filter(pohjanVuosiluokkakokonaisuudet,
               pohjaVlk => !_.includes(_.map(ops.vuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste')), _.get(pohjaVlk.vuosiluokkakokonaisuus, '_tunniste')))),
           ])
             .sortBy(vlk => this.$kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any)))

@@ -174,9 +174,9 @@ export class OpetussuunnitelmaStore {
     return (await Opetussuunnitelmat.getOpetussuunnitelma(this.opsId)).data;
   }
 
-  public async getPohja(ops) {
+  public async getPohjanVuosiluokkakokonaisuudet(ops) {
     if (ops.pohja) {
-      return (await Opetussuunnitelmat.getOpetussuunnitelma(ops.pohja.id)).data;
+      return (await Opetussuunnitelmat.getOpetussuunnitelmanPohjanVuosiluokkakokonaisuudet(this.opsId)).data;
     }
 
     return null;
