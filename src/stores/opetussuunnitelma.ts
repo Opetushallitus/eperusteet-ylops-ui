@@ -118,11 +118,26 @@ export class OpetussuunnitelmaStore {
   public async init() {
     logger.info('Initing ops store', this.opsId);
     this.opetussuunnitelma = await this.get();
-    await this.updateSisalto();
-    await this.updateValidation();
-    await this.fetchJulkaisut();
+    this.updateSisalto();
+    this.updateValidation();
+    this.fetchJulkaisut();
+    this.updateOppiaineet();
+    this.updatePohjallaPuuttuviaTeksteja();
+    this.updatePohjanPerustePaivittynyt();
+  }
 
-    if ((this.opetussuunnitelma.toteutus as any) === 'lops2019') {
+  async updatePohjanPerustePaivittynyt() {
+    if (this.opetussuunnitelma!.tyyppi as string === 'pohja') {
+      this.pohjanPerustePaivittynyt = (await Opetussuunnitelmat.pohjanperustepaivittynyt(this.opetussuunnitelma!.id!)).data;
+    }
+  }
+
+  async updatePohjallaPuuttuviaTeksteja() {
+    this.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.opetussuunnitelma!.id!)).data;
+  }
+
+  async updateOppiaineet() {
+    if ((this.opetussuunnitelma!.toteutus as any) === 'lops2019') {
       this.opintojaksot = (await Opintojaksot.getAllOpintojaksot(this.opetussuunnitelma!.id!)).data;
       this.tuodutOpintojaksot = (await Opintojaksot.getTuodutOpintojaksot(this.opetussuunnitelma!.id!)).data;
       this.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
@@ -130,12 +145,6 @@ export class OpetussuunnitelmaStore {
     }
     else {
       this.valinnaisetOppiaineet = (await Oppiaineet.getValinnaiset(this.opetussuunnitelma!.id!)).data;
-    }
-
-    this.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.opetussuunnitelma!.id!)).data;
-
-    if (this.opetussuunnitelma!.tyyppi as string === 'pohja') {
-      this.pohjanPerustePaivittynyt = (await Opetussuunnitelmat.pohjanperustepaivittynyt(this.opetussuunnitelma.id!)).data;
     }
   }
 
