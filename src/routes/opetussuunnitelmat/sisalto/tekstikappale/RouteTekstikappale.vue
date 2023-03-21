@@ -39,13 +39,23 @@
             <div v-else-if="data.tov.piilotettu" class="disabled-text mb-4">{{$t('tekstikappale-piilotettu-julkisesta-opetussuunnitelmasta')}}</div>
             <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa" :first="isEditing" :borderBottom="!isPohja">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
+
+              <template v-if="data.laajaAlaisetOsaamiset">
+                <EpCollapse class="ml-2" v-for="(lao, index) in data.laajaAlaisetOsaamiset" :key="'lao' + lao.id" :borderBottom="index < data.laajaAlaisetOsaamiset.length-1">
+                  <h3 slot="header">{{$kaanna(lao.nimi)}}</h3>
+                  <div v-html="$kaanna(lao.kuvaus)" />
+                </EpCollapse>
+              </template>
+
               <ep-content
+                v-else
                 layout="normal"
                 v-model="perusteenTeksti.perusteenOsa.teksti"
                 :is-editable="false"
                 :kasiteHandler="kasiteHandler"
                 :kuvaHandler="kuvaHandler"/>
-              <div class="font-italic text-secondary" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti)">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
+
+              <div class="font-italic text-secondary" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti) && !data.laajaAlaisetOsaamiset">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
               <div v-if="isEditing">
                 <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
               </div>
@@ -115,6 +125,7 @@ import {
   TekstiKappaleViiteDto,
   Puu,
   Matala,
+  Opetussuunnitelmat,
 } from '@shared/api/ylops';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { createLogger } from '@shared/utils/logger';
@@ -249,6 +260,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       const result = {
         tov: _.omit(_.cloneDeep(teksti), 'lapset'),
         ohjeet: ohjeet.data || [],
+        laajaAlaisetOsaamiset: [],
       } as any;
 
       if (_.isEmpty(result.ohjeet)) {
@@ -258,6 +270,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       try {
         if (teksti.perusteTekstikappaleId) {
           this.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;
+
+          if (this.perusteenTeksti?.perusteenOsa?.tunniste === 'laajaalainenosaaminen') {
+            result.laajaAlaisetOsaamiset = (await Opetussuunnitelmat.getLaajalaisetosamiset(this.opsId)).data;
+          }
         }
       }
       catch (err) {
