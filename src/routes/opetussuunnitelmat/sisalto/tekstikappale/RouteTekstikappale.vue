@@ -41,7 +41,7 @@
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
 
               <template v-if="data.laajaAlaisetOsaamiset">
-                <EpCollapse class="ml-2" v-for="(lao, index) in data.laajaAlaisetOsaamiset" :key="'lao' + lao.id" :borderBottom="index < data.laajaAlaisetOsaamiset.length-1">
+                <EpCollapse v-for="(lao, index) in data.laajaAlaisetOsaamiset" :key="'lao' + lao.id" :borderBottom="index < data.laajaAlaisetOsaamiset.length-1">
                   <h3 slot="header">{{$kaanna(lao.nimi)}}</h3>
                   <div v-html="$kaanna(lao.kuvaus)" />
                 </EpCollapse>
@@ -260,7 +260,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       const result = {
         tov: _.omit(_.cloneDeep(teksti), 'lapset'),
         ohjeet: ohjeet.data || [],
-        laajaAlaisetOsaamiset: [],
+        laajaAlaisetOsaamiset: null,
       } as any;
 
       if (_.isEmpty(result.ohjeet)) {
