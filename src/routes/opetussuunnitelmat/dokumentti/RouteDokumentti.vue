@@ -36,7 +36,7 @@
         </div>
 
         <div class="btn-group">
-          <ep-button @click="createDocument" :disabled="isPolling" :show-spinner="isPolling" buttonClass="px-5"><span>{{ $t('luo-uusi-pdf') }}</span></ep-button>
+          <ep-button @click="createDocument" :disabled="polling" :show-spinner="polling" buttonClass="px-5"><span>{{ $t('luo-uusi-pdf') }}</span></ep-button>
         </div>
       </div>
 
@@ -87,6 +87,7 @@ import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpDokumenttiKuvaLataus from './EpDokumenttiKuvaLataus.vue';
 import { success, fail } from '@/utils/notifications';
+import { Debounced } from '@shared/utils/delay';
 
 @Component({
   components: {
@@ -99,9 +100,8 @@ import { success, fail } from '@/utils/notifications';
 export default class RouteDokumentti extends EpOpsRoute {
   private previewUrl = null;
   private dto: DokumenttiDto | null = null;
-  private polling: any = null;
-  private pollingFrequency = 1000;
   private href: string | null = null;
+  private polling = false;
 
   get kieli() {
     return Kielet.getSisaltoKieli.value;
@@ -135,16 +135,10 @@ export default class RouteDokumentti extends EpOpsRoute {
     }
   }
 
-  get isPolling() {
-    return this.polling != null;
-  }
-
   // Alustetaan komponentti
   async init() {
     this.previewUrl = null;
     this.dto = null;
-    clearInterval(this.polling);
-    this.polling = null;
     this.href = null;
 
     const res = await Dokumentit.getDokumenttiId(this.opsId, this.kieli);
@@ -159,6 +153,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   }
 
   // Haetaan dokumentin tila ja päivitetään muuttujat
+  @Debounced(2000)
   private async getDokumenttiTila() {
     // Päivitetään dokumentin tila
     this.dto = (await Dokumentit.getDokumentti(this.opsId, this.kieli)).data;
@@ -166,8 +161,7 @@ export default class RouteDokumentti extends EpOpsRoute {
     // Lopetetaan pollaaminen kun dokumentin luominen on päättynyt
     if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)
       || _.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
-      clearInterval(this.polling);
-      this.polling = null;
+      this.polling = false;
 
       if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS) && this.dto.id) {
         this.href = baseURL + DokumentitParams.get(_.toString(this.dto.id)).url;
@@ -176,24 +170,16 @@ export default class RouteDokumentti extends EpOpsRoute {
         fail('pdf-tiedosto-luonti-epaonnistui');
       }
     }
+    else if (_.kebabCase(this.dto.tila) !== _.kebabCase(DokumenttiDtoTilaEnum.EIOLE)) {
+      await this.getDokumenttiTila();
+    }
   }
 
   // Luodaan uusi dokumentti
   private async createDocument() {
-    // Lopetetaan aikaisempi pollaus
-    clearInterval(this.polling);
     this.polling = true;
-
-    // Lähetetään pyyntö taustapalveluun
     this.dto = (await Dokumentit.create(this.opsId, this.kieli)).data;
-
-    // Ohitetaan ensimmäinen pollaus, koska paluuarvossa on jo tämänhetkinen tila
-    setTimeout(() => {
-      // Aloitetaan tilan pollaaminen
-      this.polling = setInterval(async () => {
-        await this.getDokumenttiTila();
-      }, this.pollingFrequency);
-    }, this.pollingFrequency);
+    await this.getDokumenttiTila();
   }
 
   // Tallennetaan uusi kansikuva
@@ -214,10 +200,6 @@ export default class RouteDokumentti extends EpOpsRoute {
     if (this.dto) {
       this.dto[tyyppi] = undefined;
     }
-  }
-
-  destroyed() {
-    clearInterval(this.polling);
   }
 
   get opetussuunnitelmanimi() {
