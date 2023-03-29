@@ -9,7 +9,8 @@
         <h5>{{ $t('luo-ja-lataa-pdf') }}</h5>
         <p>{{ $t('luo-pdf-selite')}}</p>
 
-        <div class="row pdf-box align-items-center justify-content-between" :class="infoClass">
+        <EpSpinner v-if="!dto"/>
+        <div v-else class="row pdf-box align-items-center justify-content-between" :class="infoClass">
           <div class="col col-auto ikoni">
             <img src="../../../../public/img/icons/pdfkuva_lataus.svg" />
           </div>
@@ -36,7 +37,7 @@
         </div>
 
         <div class="btn-group">
-          <ep-button @click="createDocument" :disabled="polling" :show-spinner="polling" buttonClass="px-5"><span>{{ $t('luo-uusi-pdf') }}</span></ep-button>
+          <ep-button @click="createDocument" :disabled="!dto || polling" :show-spinner="polling" buttonClass="px-5"><span>{{ $t('luo-uusi-pdf') }}</span></ep-button>
         </div>
       </div>
 
