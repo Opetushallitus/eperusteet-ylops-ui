@@ -171,6 +171,7 @@ export default class RouteDokumentti extends EpOpsRoute {
       }
     }
     else if (_.kebabCase(this.dto.tila) !== _.kebabCase(DokumenttiDtoTilaEnum.EIOLE)) {
+      this.polling = true;
       await this.getDokumenttiTila();
     }
   }
