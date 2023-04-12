@@ -145,7 +145,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   }
 
   get headerClass() {
-    if (this.ops && themes[this.ops.koulutustyyppi!] !== 'lukio') {
+    if (this.ops && themes[this.ops.koulutustyyppi!] !== 'lukiokoulutus') {
       return 'light';
     }
 
