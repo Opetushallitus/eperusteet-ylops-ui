@@ -41,14 +41,13 @@
 
 <script lang="ts">
 import { Vue, Component, Watch, Prop } from 'vue-property-decorator';
-
-import { baseURL, DokumentitParams, DokumenttiDto } from '@shared/api/ylops';
+import { baseURL, DokumentitParams } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import { fail } from '@/utils/notifications';
 import _ from 'lodash';
+import { DokumenttiKuvaDto } from '@shared/generated/ylops';
 
 @Component({
   components: {
@@ -66,10 +65,10 @@ export default class EpDokumenttiKuvaLataus extends Vue {
   private tyyppi!: string;
 
   @Prop({ required: true })
-  private dto: DokumenttiDto | null = null;
+  private dto: DokumenttiKuvaDto | null = null;
 
   get kuvaUrl() {
-    return baseURL + DokumentitParams.getImage(this.dto!.opsId!, this.tyyppi, this.kieli).url; ;
+    return baseURL + DokumentitParams.getImage(this.dto!.opsId!, this.tyyppi, this.kieli).url;
   }
 
   get kieli() {

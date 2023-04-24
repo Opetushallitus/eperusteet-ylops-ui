@@ -43,7 +43,7 @@
 
       <div class="row">
         <div class="col kuvalataus">
-          <ep-dokumentti-kuva-lataus tyyppi="kansikuva" :dto="dto" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+          <ep-dokumentti-kuva-lataus tyyppi="kansikuva" :dto="dtoKuva" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
         </div>
         <div class="col-4 text-center sijaintikuva">
           <div class="sijainti-topic">{{$t('sijainti')}}</div>
@@ -53,7 +53,7 @@
 
        <div class="row">
         <div class="col kuvalataus">
-          <ep-dokumentti-kuva-lataus tyyppi="ylatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+          <ep-dokumentti-kuva-lataus tyyppi="ylatunniste" :dto="dtoKuva" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
         </div>
         <div class="col-4 text-center sijaintikuva">
           <div class="sijainti-topic">&nbsp;</div>
@@ -63,7 +63,7 @@
 
        <div class="row">
         <div class="col kuvalataus">
-          <ep-dokumentti-kuva-lataus tyyppi="alatunniste" :dto="dto" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+          <ep-dokumentti-kuva-lataus tyyppi="alatunniste" :dto="dtoKuva" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
         </div>
         <div class="col-4 text-center sijaintikuva">
           <div class="sijainti-topic">&nbsp;</div>
@@ -78,10 +78,8 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Watch } from 'vue-property-decorator';
-
 import { baseURL, Dokumentit, DokumentitParams, DokumenttiDto, DokumenttiDtoTilaEnum } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -89,6 +87,7 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpDokumenttiKuvaLataus from './EpDokumenttiKuvaLataus.vue';
 import { success, fail } from '@/utils/notifications';
 import { Debounced } from '@shared/utils/delay';
+import { DokumenttiKuvaDto } from '@shared/generated/ylops';
 
 @Component({
   components: {
@@ -101,6 +100,7 @@ import { Debounced } from '@shared/utils/delay';
 export default class RouteDokumentti extends EpOpsRoute {
   private previewUrl = null;
   private dto: DokumenttiDto | null = null;
+  private dtoKuva: DokumenttiKuvaDto | null = null;
   private href: string | null = null;
   private polling = false;
 
@@ -151,6 +151,9 @@ export default class RouteDokumentti extends EpOpsRoute {
     }
 
     await this.getDokumenttiTila();
+
+    const resKuva = await Dokumentit.getDokumenttiKuva(this.opsId, this.kieli);
+    this.dtoKuva = resKuva.data;
   }
 
   // Haetaan dokumentin tila ja päivitetään muuttujat
@@ -190,7 +193,7 @@ export default class RouteDokumentti extends EpOpsRoute {
       const formData = new FormData();
       formData.append('file', file);
 
-      this.dto = (await Dokumentit.addImage(this.opsId, tyyppi, this.kieli, formData)).data;
+      this.dtoKuva = (await Dokumentit.addImage(this.opsId, tyyppi, this.kieli, formData)).data;
       success('pdf-tiedosto-kuva-lataus-onnistui');
     }
   }
@@ -199,8 +202,8 @@ export default class RouteDokumentti extends EpOpsRoute {
   private async removeImage(tyyppi) {
     await Dokumentit.deleteImage(this.opsId, tyyppi, this.kieli);
     success('pdf-tiedosto-kuva-poisto-onnistui');
-    if (this.dto) {
-      this.dto[tyyppi] = undefined;
+    if (this.dtoKuva) {
+      this.dtoKuva[tyyppi] = undefined;
     }
   }
 
