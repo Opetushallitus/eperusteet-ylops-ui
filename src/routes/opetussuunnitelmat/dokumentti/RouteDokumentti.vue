@@ -78,8 +78,10 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Watch } from 'vue-property-decorator';
+
 import { baseURL, Dokumentit, DokumentitParams, DokumenttiDto, DokumenttiDtoTilaEnum } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
+
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -140,18 +142,14 @@ export default class RouteDokumentti extends EpOpsRoute {
   async init() {
     this.previewUrl = null;
     this.dto = null;
+    this.dtoKuva = null;
     this.href = null;
 
-    const res = await Dokumentit.getDokumenttiId(this.opsId, this.kieli);
-
-    // Jos dokumentti löytyy, haetaan sen tila
-    if (_.isNumber(res.data)) {
-      const dokumenttiId = res.data;
-      this.href = baseURL + DokumentitParams.get(_.toString(dokumenttiId)).url;
+    if (this.opsId) {
+      await this.getDokumenttiTila();
     }
 
-    await this.getDokumenttiTila();
-
+    // Haetaan kuvaliitteet
     const resKuva = await Dokumentit.getDokumenttiKuva(this.opsId, this.kieli);
     this.dtoKuva = resKuva.data;
   }
@@ -159,8 +157,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   // Haetaan dokumentin tila ja päivitetään muuttujat
   @Debounced(2000)
   private async getDokumenttiTila() {
-    // Päivitetään dokumentin tila
-    this.dto = (await Dokumentit.getDokumentti(this.opsId, this.kieli)).data;
+    this.dto = (await Dokumentit.getLatestDokumentti(this.opsId, this.kieli)).data;
 
     // Lopetetaan pollaaminen kun dokumentin luominen on päättynyt
     if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)
