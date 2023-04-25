@@ -23,7 +23,7 @@ describe('RouteDokumentti', () => {
 
   const i18n = Kielet.i18n;
   OpetussuunnitelmaStore.prototype.init = jest.fn();
-  Dokumentit.getDokumenttiId = jest.fn();
+  Dokumentit.getLatestDokumenttiId = jest.fn();
   const opetussuunnitelmaStore = new OpetussuunnitelmaStore(42);
 
   test('mounting', async () => {
