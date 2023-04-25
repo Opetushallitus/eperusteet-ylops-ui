@@ -26,7 +26,9 @@
             </span>
           </div>
           <div class="col-sm-2 text-left luomisaika" v-if="dto && href">
-            {{$t('luotu')}}: {{$sd(dto.valmistumisaika)}}
+            <span class="luontitiedot">{{$t('luotu')}}: {{$sd(dto.valmistumisaika)}}</span>
+            <span class="luontitiedot" v-if="dto.julkaisuDokumentti">{{$t('julkaistu')}}</span>
+            <span class="luontitiedot" v-else>{{$t('tyoversio')}}</span>
           </div>
           <div class="col-sm-2 text-left"  v-if="dto && href">
             <a class="btn btn-link pl-0" :href="href" target="_blank" rel="noopener noreferrer" variant="link">
@@ -213,6 +215,10 @@ export default class RouteDokumentti extends EpOpsRoute {
 
 <style lang="scss" scoped>
 @import "@shared/styles/_variables.scss";
+
+.luontitiedot {
+  display: block;
+}
 
 .dokumentit {
   margin-top: 4px;
