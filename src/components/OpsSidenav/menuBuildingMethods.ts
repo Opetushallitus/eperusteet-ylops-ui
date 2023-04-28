@@ -136,6 +136,7 @@ function perusopetusOppiaineenLapset(oppiaineet, vlk) {
   return _.chain(oppiaineet)
     .filter(oppiaine => _.size(oppiaine?.vuosiluokkakokonaisuudet) === 0 || _.includes(_.map(oppiaine?.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk?._tunniste))
     .map(oppiaine => perusopetusOppiaineLinkki(oppiaine, vlk))
+    .sortBy(oppiaine => oppiaine.route?.name === 'perusopetuspaikallinenoppiaine' ? 1 : 0)
     .value();
 }
 
