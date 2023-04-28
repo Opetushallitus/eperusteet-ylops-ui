@@ -307,11 +307,11 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
       // Perusopetus oppiaineet
       const vuosiluokkakokonaisuudet = _.map(this.ops.vuosiluokkakokonaisuudet, 'vuosiluokkakokonaisuus._tunniste');
       oppiaineet = _.chain(sortedOppiaineet(this.ops.oppiaineet))
-        .filter(oppiaine => _.some(vuosiluokkakokonaisuudet, vlk => _.includes(_.map(oppiaine.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk)))
+        .filter(oppiaine => _.some(vuosiluokkakokonaisuudet, vlk => _.includes(_.map(oppiaine.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk))
+                         || _.some(oppiaine.oppimaarat, oppimaara => _.some(vuosiluokkakokonaisuudet, vlk => _.includes(_.map(oppimaara.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk))))
         .map(oppiaine => {
           return {
             ...oppiaine,
-            lapset: _.filter(oppiaine.oppimaarat, oppimaara => _.some(vuosiluokkakokonaisuudet, vlk => _.includes(_.map(oppimaara.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk))),
           };
         })
         .value();
@@ -333,6 +333,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
       }
       else {
         let jnro = 0;
+        let valinnainenjnro = 0;
         const oppiainejarjestys = _.chain(data.oppiaineet)
           .map(oppiaine => {
             return [
@@ -344,7 +345,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
           .map(oppiaine => {
             return {
               oppiaineId: oppiaine.id,
-              jnro: jnro++,
+              jnro: oppiaine.tyyppi === 'muu_valinnainen' ? _.size(data.oppiaineet) + valinnainenjnro++ : jnro++,
             };
           })
           .value();

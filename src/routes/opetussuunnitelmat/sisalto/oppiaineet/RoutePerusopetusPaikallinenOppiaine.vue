@@ -28,7 +28,14 @@
                                    :placeholder="$t('valitse-oppiaine')"
                                    track-by="id"
                                    label="nimi"
-                                   :custom-label="kaannaNimi" />
+                                   :custom-label="kaannaNimi">
+                    <template slot="singleLabel" slot-scope="{ option }">
+                      {{ $kaanna(option.nimi) }}
+                    </template>
+                    <template slot="option" slot-scope="{ option }">
+                      {{ $kaanna(option.nimi) }}
+                    </template>
+                  </ep-multi-select>
                 </ep-form-content>
                 <b-form-radio v-model="data.oppiaine.valinnainenTyyppi"
                               name="valinnaisen-oppiaineen-tyyppi-soveltava"
