@@ -80,10 +80,8 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Watch } from 'vue-property-decorator';
-
 import { baseURL, Dokumentit, DokumentitParams, DokumenttiDto, DokumenttiDtoTilaEnum } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -159,23 +157,33 @@ export default class RouteDokumentti extends EpOpsRoute {
   // Haetaan dokumentin tila ja päivitetään muuttujat
   @Debounced(2000)
   private async getDokumenttiTila() {
-    this.dto = (await Dokumentit.getLatestDokumentti(this.opsId, this.kieli)).data;
-
-    // Lopetetaan pollaaminen kun dokumentin luominen on päättynyt
-    if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)
-      || _.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
-      this.polling = false;
-
-      if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS) && this.dto.id) {
-        this.href = baseURL + DokumentitParams.get(_.toString(this.dto.id)).url;
-      }
-      else if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)) {
-        fail('pdf-tiedosto-luonti-epaonnistui');
-      }
+    if (this.dto && this.dto.id) {
+      this.dto = (await Dokumentit.query(this.dto.id)).data;
     }
-    else if (_.kebabCase(this.dto.tila) !== _.kebabCase(DokumenttiDtoTilaEnum.EIOLE)) {
-      this.polling = true;
-      await this.getDokumenttiTila();
+    else {
+      this.dto = (await Dokumentit.getLatestDokumentti(this.opsId, this.kieli)).data;
+    }
+    await this.handleTilaPolling();
+  }
+
+  private async handleTilaPolling() {
+    if (this.dto) {
+      // Lopetetaan pollaaminen kun dokumentin luominen on päättynyt
+      if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)
+        || _.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
+        this.polling = false;
+
+        if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS) && this.dto.id) {
+          this.href = baseURL + DokumentitParams.get(_.toString(this.dto.id)).url;
+        }
+        else if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)) {
+          fail('pdf-tiedosto-luonti-epaonnistui');
+        }
+      }
+      else if (_.kebabCase(this.dto.tila) !== _.kebabCase(DokumenttiDtoTilaEnum.EIOLE)) {
+        this.polling = true;
+        await this.getDokumenttiTila();
+      }
     }
   }
 
