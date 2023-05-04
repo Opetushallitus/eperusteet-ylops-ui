@@ -57,6 +57,7 @@
             <div class="flex-grow-1">
               {{ kaanna(itemData.item) }}
               <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
+              <fas icon="liite" v-if="itemData.item.order === '99'"></fas>
             </div>
             <fas icon="chevron-right" v-if="!itemData.item.hideChevron" class="ml-2 mt-1"/>
           </div>
