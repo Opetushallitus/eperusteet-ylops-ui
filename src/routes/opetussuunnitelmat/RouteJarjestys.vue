@@ -25,12 +25,9 @@
                 <router-link v-else :to="{ name: 'tekstikappale', params: { osaId: node.id } }">
                   {{ $kaanna(node.tekstiKappale.nimi) }}
                 </router-link>
-                <fas v-if="node.liite" :ref="node.id" icon="liite"></fas>
-                <b-tooltip :target="() => $refs[node.id]"
-                           placement="right"
-                           triggers="hover">
-                  {{ $t('tekstikappale-naytetaan-liitteena') }}
-                </b-tooltip>
+                <fas icon="liite"
+                     v-if="node.liite"
+                     v-b-popover="{content: $t('tekstikappale-naytetaan-liitteena'), trigger: 'hover'}"></fas>
               </template>
             </ep-jarjesta>
           </div>
