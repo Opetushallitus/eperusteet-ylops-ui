@@ -13,13 +13,13 @@
                          :dokumentti="dtoJulkaisu"
                          :dokumentti-href="hrefJulkaisu"
                          :is-polling="false"
-                         :pdfnimi="$kaanna(opetussuunnitelmanimi)">
+                         :pdfnimi="opetussuunnitelmanimi">
         </EpPdfDokumentti>
         <hr v-if="dtoJulkaisu">
         <EpPdfDokumentti :dokumentti="dto"
                          :dokumentti-href="href"
                          :is-polling="polling"
-                         :pdfnimi="$kaanna(opetussuunnitelmanimi)">
+                         :pdfnimi="opetussuunnitelmanimi">
         </EpPdfDokumentti>
         <div class="btn-group">
           <ep-button @click="createDocument" :disabled="!dto || polling" :show-spinner="polling" buttonClass="px-5"><span>{{ $t('luo-uusi-pdf') }}</span></ep-button>
@@ -212,7 +212,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   }
 
   get opetussuunnitelmanimi() {
-    return this.ops.nimi;
+    return this.$kaanna(this.ops);
   }
 }
 
