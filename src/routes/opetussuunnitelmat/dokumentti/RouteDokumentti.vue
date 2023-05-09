@@ -25,8 +25,8 @@
               {{$t('pdf-tiedostoa-ei-ole-viela-luotu')}}
             </span>
           </div>
-          <div class="col-sm-2 text-left luomisaika" v-if="dto && href">
-            <span class="luontitiedot">{{$t('luotu')}}: {{$sd(dto.valmistumisaika)}}</span>
+          <div class="col-sm-3 text-left luomisaika" v-if="dto && href">
+            <span class="luontitiedot">{{$t('luotu')}}: {{$sdt(dto.valmistumisaika)}}</span>
             <span class="luontitiedot" v-if="dto.julkaisuDokumentti">{{$t('julkaistu')}}</span>
             <span class="luontitiedot" v-else>{{$t('tyoversio')}}</span>
           </div>
