@@ -129,6 +129,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   async init() {
     this.previewUrl = null;
     this.dto = null;
+    this.dtoJulkaisu = null;
     this.dtoKuva = null;
     this.href = null;
 
