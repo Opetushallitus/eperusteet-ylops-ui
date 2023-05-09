@@ -15,7 +15,7 @@
                          :is-polling="false"
                          :pdfnimi="$kaanna(opetussuunnitelmanimi)">
         </EpPdfDokumentti>
-        <hr>
+        <hr v-if="dtoJulkaisu">
         <EpPdfDokumentti :dokumentti="dto"
                          :dokumentti-href="href"
                          :is-polling="polling"
