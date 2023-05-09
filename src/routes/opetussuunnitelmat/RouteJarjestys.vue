@@ -25,6 +25,9 @@
                 <router-link v-else :to="{ name: 'tekstikappale', params: { osaId: node.id } }">
                   {{ $kaanna(node.tekstiKappale.nimi) }}
                 </router-link>
+                <fas icon="liite"
+                     v-if="node.liite"
+                     v-b-popover="{content: $t('tekstikappale-naytetaan-liitteena'), trigger: 'hover'}"></fas>
               </template>
             </ep-jarjesta>
           </div>
@@ -324,6 +327,8 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
   }
 
   async save(data) {
+    data.tekstikappaleet.lapset = _.sortBy(data.tekstikappaleet.lapset, 'liite');
+
     await this.store.saveTeksti(data.tekstikappaleet);
 
     if (_.size(data.oppiaineet) > 0) {
