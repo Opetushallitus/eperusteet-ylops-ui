@@ -13,13 +13,13 @@
                          :dokumentti="dtoJulkaisu"
                          :dokumentti-href="hrefJulkaisu"
                          :is-polling="false"
-                         :pdfnimi="opetussuunnitelmanimi">
+                         :pdfnimi="$kaanna(opetussuunnitelmanimi)">
         </EpPdfDokumentti>
-        <hr v-if="dtoJulkaisu">
+        <hr>
         <EpPdfDokumentti :dokumentti="dto"
                          :dokumentti-href="href"
                          :is-polling="polling"
-                         :pdfnimi="opetussuunnitelmanimi">
+                         :pdfnimi="$kaanna(opetussuunnitelmanimi)">
         </EpPdfDokumentti>
         <div class="btn-group">
           <ep-button @click="createDocument" :disabled="!dto || polling" :show-spinner="polling" buttonClass="px-5"><span>{{ $t('luo-uusi-pdf') }}</span></ep-button>
@@ -151,6 +151,7 @@ export default class RouteDokumentti extends EpOpsRoute {
       this.dto = (await Dokumentit.getLatestDokumentti(this.opsId, this.kieli)).data;
     }
     await this.getJulkaistuDokumentti();
+    this.checkIfJulkaistuIsSameDokumentti();
     await this.handleTilaPolling();
   }
 
@@ -184,6 +185,13 @@ export default class RouteDokumentti extends EpOpsRoute {
     }
   }
 
+  private checkIfJulkaistuIsSameDokumentti() {
+    if (this.dto && this.dtoJulkaisu && this.dto.id === this.dtoJulkaisu.id) {
+      this.dtoJulkaisu = null;
+      this.hrefJulkaisu = null;
+    }
+  }
+
   // Luodaan uusi dokumentti
   private async createDocument() {
     this.polling = true;
@@ -212,7 +220,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   }
 
   get opetussuunnitelmanimi() {
-    return this.$kaanna(this.ops);
+    return this.ops ? this.ops.nimi : null;
   }
 }
 
@@ -220,10 +228,6 @@ export default class RouteDokumentti extends EpOpsRoute {
 
 <style lang="scss" scoped>
 @import "@shared/styles/_variables.scss";
-
-.luontitiedot {
-  display: block;
-}
 
 .dokumentit {
   margin-top: 4px;
