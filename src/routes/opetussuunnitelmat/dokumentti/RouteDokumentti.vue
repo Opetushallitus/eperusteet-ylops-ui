@@ -220,7 +220,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   }
 
   get opetussuunnitelmanimi() {
-    return this.ops ? this.ops.nimi : null;
+    return this.ops?.nimi;
   }
 }
 
