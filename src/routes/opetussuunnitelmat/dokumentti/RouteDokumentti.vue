@@ -151,7 +151,6 @@ export default class RouteDokumentti extends EpOpsRoute {
       this.dto = (await Dokumentit.getLatestDokumentti(this.opsId, this.kieli)).data;
     }
     await this.getJulkaistuDokumentti();
-    this.checkIfJulkaistuIsSameDokumentti();
     await this.handleTilaPolling();
   }
 
@@ -182,13 +181,6 @@ export default class RouteDokumentti extends EpOpsRoute {
         this.polling = true;
         await this.getDokumenttiTila();
       }
-    }
-  }
-
-  private checkIfJulkaistuIsSameDokumentti() {
-    if (this.dto && this.dtoJulkaisu && this.dto.id === this.dtoJulkaisu.id) {
-      this.dtoJulkaisu = null;
-      this.hrefJulkaisu = null;
     }
   }
 
