@@ -13,7 +13,7 @@
                     :validation="$v && $v.state && $v.state.data"></slot>
             </div>
             <div class="muokattu d-flex flex-wrap align-self-start pb-2" v-if="!ctrls.isEditing && latest">
-              <span v-if="state.data.tov.liite" class="liite-text">{{ $t('liite')}}.</span>
+              <slot name="liite" :data="state.data"></slot>
               <div class="text-truncate">{{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ nimi }}</div>
             </div>
           </div>
@@ -551,11 +551,6 @@ export default class EpEditointi extends Mixins(validationMixin) {
     .actual-content {
       width: 100%;
     }
-  }
-
-  .liite-text {
-    margin-right: 5px;
-    font-weight: 600;
   }
 }
 </style>
