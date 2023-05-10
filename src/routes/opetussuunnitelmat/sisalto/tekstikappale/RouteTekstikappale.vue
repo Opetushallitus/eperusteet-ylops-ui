@@ -23,6 +23,9 @@
       <template slot="header" slot-scope="{ isEditing, data }">
         <h2>{{ $kaanna(perusteTekstinOtsikko || data.tov.tekstiKappale.nimi) }}</h2>
       </template>
+      <template slot="liite" slot-scope="{ data }">
+        <span v-if="data.tov.liite" class="liite-text">{{ $t('liite')}}.</span>
+      </template>
       <template slot-scope="{ isEditing, data }">
         <div class="teksti">
           <ep-form-content v-if="isEditing && !data.tov.perusteTekstikappaleId" name="tekstikappale-nimi-ohje">
@@ -408,6 +411,11 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
   .sidepad {
     padding: 8px;
+  }
+
+  .liite-text {
+    margin-right: 5px;
+    font-weight: 600;
   }
 
 }
