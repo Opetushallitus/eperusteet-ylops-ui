@@ -9,35 +9,18 @@
         <h5>{{ $t('luo-ja-lataa-pdf') }}</h5>
         <p>{{ $t('luo-pdf-selite')}}</p>
 
-        <EpSpinner v-if="!dto"/>
-        <div v-else class="row pdf-box align-items-center justify-content-between" :class="infoClass">
-          <div class="col col-auto ikoni">
-            <img src="../../../../public/img/icons/pdfkuva_lataus.svg" />
-          </div>
-          <div class="col-lg teksti">
-            <span  v-if="dto && href">
-              {{$kaanna(opetussuunnitelmanimi)}}.pdf
-            </span>
-            <span v-else-if="dto && dto.tila === 'epaonnistui'">
-              {{$t('pdf-tiedosto-luonti-epaonnistui')}}
-            </span>
-            <span v-else>
-              {{$t('pdf-tiedostoa-ei-ole-viela-luotu')}}
-            </span>
-          </div>
-          <div class="col-sm-3 text-left luomisaika" v-if="dto && href">
-            <span class="luontitiedot">{{$t('luotu')}}: {{$sdt(dto.valmistumisaika)}}</span>
-            <span class="luontitiedot" v-if="dto.julkaisuDokumentti">{{$t('julkaistu')}}</span>
-            <span class="luontitiedot" v-else>{{$t('tyoversio')}}</span>
-          </div>
-          <div class="col-sm-2 text-left"  v-if="dto && href">
-            <a class="btn btn-link pl-0" :href="href" target="_blank" rel="noopener noreferrer" variant="link">
-              <fas class="mr-2" icon="silma"></fas>
-              <span>{{ $t('esikatsele-ja-lataa') }}</span>
-            </a>
-          </div>
-        </div>
-
+        <EpPdfDokumentti v-if="dtoJulkaisu"
+                         :dokumentti="dtoJulkaisu"
+                         :dokumentti-href="hrefJulkaisu"
+                         :is-polling="false"
+                         :pdfnimi="$kaanna(opetussuunnitelmanimi)">
+        </EpPdfDokumentti>
+        <hr v-if="dtoJulkaisu">
+        <EpPdfDokumentti :dokumentti="dto"
+                         :dokumentti-href="href"
+                         :is-polling="polling"
+                         :pdfnimi="$kaanna(opetussuunnitelmanimi)">
+        </EpPdfDokumentti>
         <div class="btn-group">
           <ep-button @click="createDocument" :disabled="!dto || polling" :show-spinner="polling" buttonClass="px-5"><span>{{ $t('luo-uusi-pdf') }}</span></ep-button>
         </div>
@@ -90,6 +73,7 @@ import EpDokumenttiKuvaLataus from './EpDokumenttiKuvaLataus.vue';
 import { success, fail } from '@/utils/notifications';
 import { Debounced } from '@shared/utils/delay';
 import { DokumenttiKuvaDto } from '@shared/generated/ylops';
+import EpPdfDokumentti from '@shared/components/EpPdfLuonti/EpPdfDokumentti.vue';
 
 @Component({
   components: {
@@ -97,13 +81,16 @@ import { DokumenttiKuvaDto } from '@shared/generated/ylops';
     EpFormContent,
     EpSpinner,
     EpDokumenttiKuvaLataus,
+    EpPdfDokumentti,
   },
 })
 export default class RouteDokumentti extends EpOpsRoute {
   private previewUrl = null;
   private dto: DokumenttiDto | null = null;
+  private dtoJulkaisu: DokumenttiDto | null = null;
   private dtoKuva: DokumenttiKuvaDto | null = null;
   private href: string | null = null;
+  private hrefJulkaisu: string | null = null;
   private polling = false;
 
   get kieli() {
@@ -142,6 +129,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   async init() {
     this.previewUrl = null;
     this.dto = null;
+    this.dtoJulkaisu = null;
     this.dtoKuva = null;
     this.href = null;
 
@@ -163,7 +151,17 @@ export default class RouteDokumentti extends EpOpsRoute {
     else {
       this.dto = (await Dokumentit.getLatestDokumentti(this.opsId, this.kieli)).data;
     }
+    await this.getJulkaistuDokumentti();
     await this.handleTilaPolling();
+  }
+
+  async getJulkaistuDokumentti() {
+    if (this.dto && !this.dto.julkaisuDokumentti && !this.dtoJulkaisu) {
+      this.dtoJulkaisu = (await Dokumentit.getJulkaistuDokumentti(this.opsId, this.kieli)).data;
+      if (this.dtoJulkaisu.id) {
+        this.hrefJulkaisu = baseURL + DokumentitParams.get(_.toString(this.dtoJulkaisu.id)).url;
+      }
+    }
   }
 
   private async handleTilaPolling() {
@@ -215,7 +213,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   }
 
   get opetussuunnitelmanimi() {
-    return this.ops.nimi;
+    return this.ops?.nimi;
   }
 }
 
@@ -223,10 +221,6 @@ export default class RouteDokumentti extends EpOpsRoute {
 
 <style lang="scss" scoped>
 @import "@shared/styles/_variables.scss";
-
-.luontitiedot {
-  display: block;
-}
 
 .dokumentit {
   margin-top: 4px;
