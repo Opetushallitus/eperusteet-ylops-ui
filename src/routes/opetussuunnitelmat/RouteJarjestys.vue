@@ -328,7 +328,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
   private sortTekstikappaleet(lapset) {
     return _.chain(lapset)
       .map(tekstikappale => {
-        if (tekstikappale && tekstikappale.lapset && tekstikappale.lapset.length > 0) {
+        if (_.size(tekstikappale?.lapset) > 0) {
           tekstikappale.lapset = this.sortTekstikappaleet(tekstikappale.lapset);
         }
         return tekstikappale;
