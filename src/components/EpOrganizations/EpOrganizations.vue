@@ -10,12 +10,13 @@
           :items="kunnatSelectOptions"
           @input="updateKunnat"
           :validation="$v.valitutKunnat"
+          :is-loading="kunnat.length === 0"
           :required="true"
           :equality="kuntaEquals"/>
       </div>
     </div>
 
-    <div v-if="taiteenperusopetus && showRyhmaValinta">
+    <div v-if="taiteenperusopetus">
       <label>{{ $t('organisaation-tyyppi') }} *</label>
       <b-form-group class="mt-0">
         <b-form-radio
@@ -80,13 +81,11 @@
 <script lang="ts">
 import * as _ from 'lodash';
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator';
-
 import { minLength, required } from 'vuelidate/lib/validators';
 import { Kielet } from '@shared/stores/kieli';
 import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
 import { metadataToTeksti } from '@/utils/organisaatiot';
 import { Ulkopuoliset } from '@shared/api/ylops';
-
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
@@ -132,7 +131,6 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   kunnatLoading: boolean = false;
   jarjestajatLoading: boolean = false;
   ryhmatLoading: boolean = false;
-  showRyhmaValinta: boolean = true;
 
   kouluryhmaModel: 'koulu' | 'ryhma' | null = null;
 
@@ -335,9 +333,11 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   async mounted() {
     if (_.find(this.value.jarjestajat, jarjestaja => _.includes(jarjestaja.tyypit, 'Ryhma'))) {
       this.kouluryhma = 'ryhma';
-      this.showRyhmaValinta = false;
       this.ryhmat = (await Ulkopuoliset.getOrganisaatioRyhmat()).data;
       this.updateRyhmat(this.value.jarjestajat);
+    }
+    else if (!_.isEmpty(this.value.jarjestajat)) {
+      this.kouluryhma = 'koulu';
     }
 
     await this.update();
