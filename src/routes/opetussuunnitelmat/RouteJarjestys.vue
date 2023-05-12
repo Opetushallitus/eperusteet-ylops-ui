@@ -66,7 +66,6 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
-
 import { Kielet } from '@shared/stores/kieli';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpRoute from '@/mixins/EpRoute';
@@ -77,7 +76,7 @@ import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import { sortedOppiaineet } from '../../utils/opetussuunnitelmat';
 import { PerusteCache } from '@/stores/peruste';
 import { KoulutustyyppiToteutus } from '@shared/tyypit';
-import { koodiAlku, koodiNumero, koodiSorters } from '@shared/utils/perusteet';
+import { koodiSorters } from '@shared/utils/perusteet';
 import { success } from '@/utils/notifications';
 
 @Component({
@@ -326,9 +325,20 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
     };
   }
 
-  async save(data) {
-    data.tekstikappaleet.lapset = _.sortBy(data.tekstikappaleet.lapset, 'liite');
+  private sortTekstikappaleet(lapset) {
+    return _.chain(lapset)
+      .map(tekstikappale => {
+        if (_.size(tekstikappale?.lapset) > 0) {
+          tekstikappale.lapset = this.sortTekstikappaleet(tekstikappale.lapset);
+        }
+        return tekstikappale;
+      })
+      .sortBy('liite')
+      .value();
+  }
 
+  async save(data) {
+    data.tekstikappaleet.lapset = this.sortTekstikappaleet(data.tekstikappaleet.lapset);
     await this.store.saveTeksti(data.tekstikappaleet);
 
     if (_.size(data.oppiaineet) > 0) {
