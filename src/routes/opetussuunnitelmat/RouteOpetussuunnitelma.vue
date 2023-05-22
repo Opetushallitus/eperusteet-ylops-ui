@@ -10,8 +10,10 @@
             :validoinnit="validoinnit"
             :julkaisemattomiaMuutoksia="onkoJulkaisemattomiaMuutoksia"
             :julkaistava="!isPohja"
+            :is-validating="isValidating"
             @asetaValmiiksi="valmistaPohja"
             @palauta="palauta"
+            @validoi="validoi"
             tyyppi="opetussuunnitelma"
           />
       </div>
@@ -70,9 +72,8 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Prop, Mixins, Component, ProvideReactive } from 'vue-property-decorator';
-import { Lops2019ValidointiDto, OpetussuunnitelmaKevytDtoTilaEnum } from '@shared/api/ylops';
+import { OpetussuunnitelmaKevytDtoTilaEnum } from '@shared/api/ylops';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
@@ -82,7 +83,7 @@ import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpProgressPopover from '@shared/components/EpProgressPopover/EpProgressPopover.vue';
-import { tileBackgroundColor, koulutustyyppiBanner } from '@shared/utils/bannerIcons';
+import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import { themes } from '@shared/utils/perusteet';
 import { LinkkiHandler, routeToNode } from '@/utils/routing';
 import { Kielet } from '@shared/stores/kieli';
@@ -107,6 +108,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   private tutoriaalistore!: TutoriaaliStore;
 
   private valikkoData: any | null = null;
+  private isValidating: boolean = false;
 
   protected async init() {
     await this.store.init();
@@ -253,6 +255,12 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         this.$fail(this.$t('tilan-vaihto-valmis-epaonnistui') as any);
       }
     }
+  }
+
+  async validoi() {
+    this.isValidating = true;
+    await this.store.updateValidation();
+    this.isValidating = false;
   }
 
   @ProvideReactive('navigation')
