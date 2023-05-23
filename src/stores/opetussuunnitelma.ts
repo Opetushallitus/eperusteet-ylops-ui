@@ -222,13 +222,12 @@ export class OpetussuunnitelmaStore {
           'validation-category-opetussuunnitelma': _.chain(this.validointi)
             .map('virheet')
             .flatMap()
-            .map('syy')
             .map(virhe => {
               return {
                 failed: true,
                 fatal: true,
-                kuvaus: virhe,
-                nimi: this.opetussuunnitelma?.nimi,
+                kuvaus: virhe.syy,
+                nimi: virhe.nimi,
                 id: this.opetussuunnitelma?.id,
               };
             })
