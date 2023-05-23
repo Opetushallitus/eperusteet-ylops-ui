@@ -93,7 +93,7 @@
 import _ from 'lodash';
 import { Component } from 'vue-property-decorator';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019ValidointiDto, UusiJulkaisuDto } from '@shared/api/ylops';
+import { UusiJulkaisuDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
@@ -137,6 +137,10 @@ export default class RouteJulkaisu extends EpOpsRoute {
   private uusiJulkaisu: UusiJulkaisuDto = {
     julkaisutiedote: {},
   };
+
+  async init() {
+    await this.store.updateValidation();
+  }
 
   get graph() {
     return {
