@@ -195,7 +195,6 @@ export class OpetussuunnitelmaStore {
     const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma as OpetussuunnitelmaDto);
     success('tallennus-onnistui-opetussuunnitelma');
     this.opetussuunnitelma = res.data as OpetussuunnitelmaKevytDto;
-    await this.updateValidation();
   }
 
   public async updateValidation() {
