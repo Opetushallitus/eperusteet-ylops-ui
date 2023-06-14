@@ -144,7 +144,6 @@ import EpJulkaisuValidointi from '@shared/components/EpJulkaisuValidointi/EpJulk
   },
 })
 export default class RouteJulkaisu extends EpOpsRoute {
-
   private uusiJulkaisu: UusiJulkaisuDto = {
     julkaisutiedote: {},
   };
