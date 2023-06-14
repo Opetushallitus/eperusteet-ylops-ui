@@ -152,6 +152,17 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     return null;
   }
 
+  async copy(data) {
+    const kopioituOppiaine = (await Oppiaineet.kopioiMuokattavaksi(this.opsId, _.toNumber(this.oppiaineId), false)).data;
+    await this.vue.store.init();
+    this.vue.$router.push({
+      name: 'perusopetuspaikallinenoppiaine',
+      params: {
+        oppiaineId: _.toString(kopioituOppiaine.id),
+      },
+    });
+  }
+
   public readonly validator = computed(() => {
     return {
       oppiaine: {
@@ -168,13 +179,14 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     };
   });
 
-  public features() {
+  public features(data) {
     return computed(() => {
       return {
-        editable: true,
+        editable: data?.oppiaine?.oma,
         removable: true,
         hideable: false,
         recoverable: true,
+        copyable: !data.oppiaine.oma,
       } as EditoitavaFeatures;
     });
   }
