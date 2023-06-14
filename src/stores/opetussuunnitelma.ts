@@ -97,6 +97,9 @@ export class OpetussuunnitelmaStore {
   @State()
   public tilaPolling: any | null = null;
 
+  @State()
+  public isValidating: boolean = false;
+
   constructor(opsId: number) {
     this.opsId = opsId;
   }
@@ -200,6 +203,7 @@ export class OpetussuunnitelmaStore {
   public async updateValidation() {
     this.lops2019Validation = null;
     this.validointi = null;
+    this.isValidating = true;
 
     if ((this.opetussuunnitelma!.toteutus as any) === 'lops2019') {
       this.lops2019Validation = (await Lops2019.getValidointi(this.opetussuunnitelma!.id!)).data;
@@ -209,6 +213,7 @@ export class OpetussuunnitelmaStore {
     }
 
     await this.fetchJulkaisemattomiaMuutoksia();
+    this.isValidating = false;
   }
 
   public validate() {
