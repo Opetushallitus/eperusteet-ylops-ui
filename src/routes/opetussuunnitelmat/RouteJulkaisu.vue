@@ -219,7 +219,7 @@ export default class RouteJulkaisu extends EpOpsRoute {
   }
 
   get validating() {
-    return this.store.isValidating;
+    return !this.store.lops2019Validation && !this.store.validointi;
   }
 
   get julkaisut() {
