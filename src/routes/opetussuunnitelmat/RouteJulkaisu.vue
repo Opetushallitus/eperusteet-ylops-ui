@@ -214,12 +214,12 @@ export default class RouteJulkaisu extends EpOpsRoute {
 
   async julkaise() {
     try {
-      const julkaisu = await this.store.julkaise(this.uusiJulkaisu);
+      await this.store.julkaise(this.uusiJulkaisu);
       this.uusiJulkaisu.julkaisutiedote = {};
       this.$success(this.$t('julkaisu-kaynnistetty') as string);
     }
     catch (err) {
-      this.$fail(this.$t('julkaisu-epaonnistui-' + err.response?.data?.syy) as string);
+      this.$fail(this.$t('julkaisu-epaonnistui') as string);
     }
   }
 
