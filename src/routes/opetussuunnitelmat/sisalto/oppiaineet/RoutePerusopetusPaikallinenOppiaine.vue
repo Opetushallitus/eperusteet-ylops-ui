@@ -1,6 +1,11 @@
 <template>
 <div id="scroll-anchor" v-if="editointiStore">
-  <EpEditointi :store="editointiStore" :versionumero="versionumero">
+  <EpEditointi
+    :store="editointiStore"
+    :versionumero="versionumero"
+    label-copy-confirm="paikallinen-oppiaine-kopiointi-varmistus"
+    label-copy-topic="oppiaine-kopiointi-varmistus-otsikko"
+    label-copy-confirm-button="oppiaine-kopiointi-varmistus-hyvaksynta">
     <template v-slot:header="{ data }">
       <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}</h2>
     </template>
