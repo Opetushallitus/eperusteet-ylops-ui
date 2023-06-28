@@ -140,7 +140,7 @@ class KayttajaStore {
   }
 
   private hasHallintaoikeus(kohde) {
-    return _.includes(this.oikeudet[kohde], 'luonti');
+    return _.includes(this.oikeudet[kohde], 'hallinta');
   }
 }
 
