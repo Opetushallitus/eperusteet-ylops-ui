@@ -2,7 +2,7 @@
 <div class="p-4">
   <div class="d-flex justify-content-between">
       <h2>{{ $t('julkaisunakyma') }}</h2>
-      <div class="d-flex flex-column" v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
+      <div v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
         <EpSpinner v-if="hallintaLoading" />
         <b-dropdown v-else class="asetukset" size="lg" variant="link" dropleft toggle-class="text-decoration-none" no-caret>
           <template v-slot:button-content>
