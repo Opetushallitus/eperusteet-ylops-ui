@@ -1,6 +1,19 @@
 <template>
 <div class="p-4">
-  <h2>{{ $t('julkaisunakyma') }}</h2>
+  <div class="d-flex justify-content-between">
+      <h2>{{ $t('julkaisunakyma') }}</h2>
+      <div class="d-flex flex-column" v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
+        <EpSpinner v-if="hallintaLoading" />
+        <b-dropdown v-else class="asetukset" size="lg" variant="link" dropleft toggle-class="text-decoration-none" no-caret>
+          <template v-slot:button-content>
+            {{$t('hallinta')}} <fas icon="ratas" class="hallinta" />
+          </template>
+          <EpButton variant="link" @click="palautaTekstirakenne">
+            {{$t('palauta-aiempi-tekstirakenne')}}
+          </EpButton>
+        </b-dropdown>
+      </div>
+    </div>
   <div v-html="$t('julkaisuohje')"></div>
 
   <h3>{{ $t('tarkistukset') }}</h3>
@@ -148,6 +161,8 @@ export default class RouteJulkaisu extends EpOpsRoute {
     julkaisutiedote: {},
   };
 
+  private hallintaLoading: boolean = false;
+
   async init() {
     await this.store.updateValidation();
   }
@@ -257,6 +272,18 @@ export default class RouteJulkaisu extends EpOpsRoute {
 
   get julkaisuKesken() {
     return this.store?.viimeisinJulkaisuTila === 'KESKEN';
+  }
+
+  async palautaTekstirakenne() {
+    this.hallintaLoading = true;
+
+    try {
+      await this.store.palautaTekstirakenne();
+      this.$success(this.$t('opetussuunnitelman-vanha-tekstirakenne-palautettu') as string);
+    }
+    finally {
+      this.hallintaLoading = false;
+    }
   }
 }
 </script>
