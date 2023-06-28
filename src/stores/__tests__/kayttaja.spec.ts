@@ -19,7 +19,7 @@ describe('Kayttajat', () => {
   test('Hallintaoikeudet', async () => {
     Kayttajat.oikeudet = {
       opetussuunnitelma: [],
-      pohja: ['luonti'],
+      pohja: ['hallinta'],
     };
 
     expect(await Kayttajat.hasOikeus('hallinta', 'pohja')).toEqual(true);
