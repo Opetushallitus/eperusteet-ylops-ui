@@ -25,6 +25,7 @@ function getOikeusArvo(oikeus: Oikeus) {
   case 'luonti': return 4;
   case 'poisto': return 5;
   case 'tilanvaihto': return 6;
+  case 'hallinta': return 7;
   default: return 0;
   }
 }
@@ -140,7 +141,7 @@ class KayttajaStore {
   }
 
   private hasHallintaoikeus(kohde) {
-    return _.includes(this.oikeudet[kohde], 'luonti');
+    return _.includes(this.oikeudet[kohde], 'hallinta');
   }
 }
 
