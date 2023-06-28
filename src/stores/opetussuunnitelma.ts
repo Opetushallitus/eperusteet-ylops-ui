@@ -412,6 +412,11 @@ export class OpetussuunnitelmaStore {
     return (await OpetussuunnitelmanSisalto.getRemovedTekstikappaleet(this.opetussuunnitelma!.id!)).data;
   }
 
+  public async palautaTekstirakenne() {
+    await Opetussuunnitelmat.palautaTekstirakenne(this.opetussuunnitelma!.id!);
+    await this.updateSisalto();
+  }
+
   public async palauta(poistettu) {
     try {
       if (poistettu.tyyppi) {
