@@ -1,5 +1,7 @@
 <template>
 <div class="sticky-container" sticky-container="sticky-container">
+  <EpTestiymparisto/>
+
   <router-view />
   <!-- <ep-footer /> -->
   <ep-tutorial :tutoriaalistore="tutoriaalistore" />
@@ -16,6 +18,7 @@ import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpFooter from '@/components/EpFooter/EpFooter.vue';
 import EpTutorial from '@shared/components/EpTutorial/EpTutorial.vue';
 import { Meta } from '@shared/utils/decorators';
+import EpTestiymparisto from '@shared/components/EpTestiymparisto/EpTestiymparisto.vue';
 
 @Component({
   directives: {
@@ -25,6 +28,7 @@ import { Meta } from '@shared/utils/decorators';
     EpNavigation,
     EpFooter,
     EpTutorial,
+    EpTestiymparisto,
   },
 })
 export default class Root extends Vue {
