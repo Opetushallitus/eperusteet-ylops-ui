@@ -33,7 +33,7 @@
                                     :peruste-teksti-avattu="true" />
         <hr/>
 
-        <div v-if="data.vuosiluokkakokonaisuus">
+        <div v-if="data.vuosiluokkakokonaisuus && perusteenVuosiluokkakokonaisuus.tehtava">
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tehtava"
                                       :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.tehtava"
                                       :vlkObject="data.vuosiluokkakokonaisuus.tehtava"
@@ -87,14 +87,14 @@
                                       :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" />
-          <hr/>
+          <hr v-if="perusteenVuosiluokkakokonaisuus.tyotavat"/>
 
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.ohjaus"
                                       :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.ohjaus"
                                       :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" />
-          <hr/>
+          <hr  v-if="perusteenVuosiluokkakokonaisuus.ohjaus"/>
 
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.arviointi"
                                       :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.arviointi"

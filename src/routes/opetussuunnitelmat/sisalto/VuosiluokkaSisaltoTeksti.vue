@@ -13,7 +13,7 @@
       <span v-html="$kaanna(pohjaObject[teksti])"></span>
     </ep-collapse>
 
-    <div v-if="vlkObject">
+    <div v-if="vlkObject && perusteObject">
       <h4>{{ $t('paikallinen-teksti') }}</h4>
       <ep-content v-if="isEditing || hasContent" v-model="vlkObject[teksti]"
                     layout="normal"
