@@ -187,9 +187,14 @@ export default class RouteDokumentti extends EpOpsRoute {
 
   // Luodaan uusi dokumentti
   private async createDocument() {
-    this.polling = true;
-    this.dto = (await Dokumentit.create(this.opsId, this.kieli)).data;
-    await this.getDokumenttiTila();
+    try {
+      this.polling = true;
+      this.dto = (await Dokumentit.create(this.opsId, this.kieli)).data;
+      await this.getDokumenttiTila();
+    }
+    catch (e) {
+      this.polling = false;
+    }
   }
 
   // Tallennetaan uusi kansikuva
