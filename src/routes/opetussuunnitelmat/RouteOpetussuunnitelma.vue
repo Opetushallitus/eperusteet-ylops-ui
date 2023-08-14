@@ -181,40 +181,20 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   }
 
   get validoinnit() {
-    if ((this.ops!.toteutus as any) === 'lops2019' && this.store.lops2019Validation?.validoinnit) {
-      return this.lops2019Validation;
-    }
-
     if (this.store.validointi) {
-      return this.validation;
+      return {
+        virheet: _.chain(this.store.validointi)
+          .map('virheet')
+          .flatMap()
+          .map('syy')
+          .value(),
+        huomautukset: _.chain(this.store.validointi)
+          .map('huomautukset')
+          .flatMap()
+          .map('syy')
+          .value(),
+      };
     }
-  }
-
-  get validation() {
-    return {
-      virheet: _.chain(this.store.validointi)
-        .map('virheet')
-        .flatMap()
-        .map('syy')
-        .value(),
-    };
-  }
-
-  get lops2019Validation() {
-    return {
-      virheet: _.chain(this.store.lops2019Validation?.validoinnit)
-        .keys()
-        .filter(key => _.some(this.store.lops2019Validation?.validoinnit![key], info => info.failed && info.fatal))
-        .value(),
-      huomautukset: _.chain(this.store.lops2019Validation?.validoinnit)
-        .keys()
-        .filter(key => _.some(this.store.lops2019Validation?.validoinnit![key], info => info.failed && !info.fatal))
-        .value(),
-      ok: _.chain(this.store.lops2019Validation?.validoinnit)
-        .keys()
-        .filter(key => !_.some(this.store.lops2019Validation?.validoinnit![key], info => info.failed && info.fatal))
-        .value(),
-    };
   }
 
   get onkoJulkaisemattomiaMuutoksia() {

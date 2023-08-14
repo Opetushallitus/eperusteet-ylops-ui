@@ -84,6 +84,10 @@ export function nodeToRoute(node: NavigationNodeDto): Location | null {
   }
 
   switch (node.type) {
+  case 'tiedot':
+    return {
+      name: 'opsTiedot',
+    };
   case 'viite':
     return {
       name: 'tekstikappale',

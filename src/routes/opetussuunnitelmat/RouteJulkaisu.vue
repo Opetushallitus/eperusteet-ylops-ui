@@ -137,6 +137,7 @@ import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import EpJulkaisuButton from '@shared/components/EpJulkaisuButton/EpJulkaisuButton.vue';
 import EpJulkaisuValidointi from '@shared/components/EpJulkaisuValidointi/EpJulkaisuValidointi.vue';
+import { nodeToRoute } from '@/utils/routing';
 
 @Component({
   components: {
@@ -194,32 +195,6 @@ export default class RouteJulkaisu extends EpOpsRoute {
     return _.every(this.validoinnit, validointi => _.isEmpty(validointi.virheet));
   }
 
-  get validoinnit() {
-    return _(this.validointi?.validoinnit)
-      .map((value, key) => ({
-        kategoria: key,
-        virheet: _.chain(value as any[])
-          .filter((rivi) => rivi.fatal && rivi.failed)
-          .map(rivi => {
-            return {
-              ...rivi,
-              ...this.mapValidointiRoute(rivi),
-            };
-          })
-          .value(),
-        huomautukset: _.chain(value as any[])
-          .filter((rivi) => !rivi.fatal && rivi.failed)
-          .map(rivi => {
-            return {
-              ...rivi,
-              ...this.mapValidointiRoute(rivi),
-            };
-          })
-          .value(),
-      }))
-      .value();
-  }
-
   mapValidointiRoute(validointi) {
     return {
       route: {
@@ -229,12 +204,25 @@ export default class RouteJulkaisu extends EpOpsRoute {
     };
   }
 
-  get validointi() {
-    return this.store.validate();
+  get validoinnit() {
+    if (this.store.validointi) {
+      return _.map(this.store.validointi, validointi => {
+        return {
+          ...validointi,
+          virheet: this.listNodeToRoute(validointi.virheet),
+          huomautukset: this.listNodeToRoute(validointi.huomautukset),
+          huomiot: this.listNodeToRoute(validointi.huomiot),
+        };
+      });
+    }
+  }
+
+  listNodeToRoute(list) {
+    return _.map(list, item => ({ ...item, route: nodeToRoute(item.navigationNode) }));
   }
 
   get validating() {
-    return !this.store.lops2019Validation && !this.store.validointi;
+    return !this.store.validointi;
   }
 
   get julkaisut() {
