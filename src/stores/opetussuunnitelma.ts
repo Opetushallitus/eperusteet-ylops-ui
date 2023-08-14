@@ -20,7 +20,6 @@ import {
   Oppiaineet,
   OppiaineDto,
   OpetussuunnitelmanJulkaisuDto,
-  Lops2019ValidointiDto,
   Validointi,
   Julkaisut,
   OpetussuunnitelmanJulkaisuDtoTilaEnum,
@@ -75,9 +74,6 @@ export class OpetussuunnitelmaStore {
 
   @State()
   public julkaisut: OpetussuunnitelmanJulkaisuDto[] | null = null;
-
-  @State()
-  public lops2019Validation: Lops2019ValidointiDto | null = null;
 
   @State()
   public validointi: Array<Validointi> | null = null;
@@ -198,42 +194,9 @@ export class OpetussuunnitelmaStore {
   }
 
   public async updateValidation() {
-    this.lops2019Validation = null;
     this.validointi = null;
-
-    if ((this.opetussuunnitelma!.toteutus as any) === 'lops2019') {
-      this.lops2019Validation = (await Lops2019.getValidointi(this.opetussuunnitelma!.id!)).data;
-    }
-    else {
-      this.validointi = (await Opetussuunnitelmat.validoiOpetussuunnitelma(this.opetussuunnitelma!.id!)).data;
-    }
-
+    this.validointi = (await Opetussuunnitelmat.validoiOpetussuunnitelma(this.opetussuunnitelma!.id!)).data;
     await this.fetchJulkaisemattomiaMuutoksia();
-  }
-
-  public validate() {
-    if ((this.opetussuunnitelma!.toteutus as any) === 'lops2019' && this.lops2019Validation) {
-      return this.lops2019Validation;
-    }
-    else if (this.validointi) {
-      return {
-        validoinnit: {
-          'validation-category-opetussuunnitelma': _.chain(this.validointi)
-            .map('virheet')
-            .flatMap()
-            .map(virhe => {
-              return {
-                failed: true,
-                fatal: true,
-                kuvaus: virhe.syy,
-                nimi: virhe.nimi,
-                id: this.opetussuunnitelma?.id,
-              };
-            })
-            .value(),
-        },
-      };
-    }
   }
 
   public async removeTeksti(tov: Puu) {
