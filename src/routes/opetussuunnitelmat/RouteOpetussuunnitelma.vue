@@ -186,12 +186,12 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
         virheet: _.chain(this.store.validointi)
           .map('virheet')
           .flatMap()
-          .map('syy')
+          .map('kuvaus')
           .value(),
         huomautukset: _.chain(this.store.validointi)
           .map('huomautukset')
           .flatMap()
-          .map('syy')
+          .map('kuvaus')
           .value(),
       };
     }
