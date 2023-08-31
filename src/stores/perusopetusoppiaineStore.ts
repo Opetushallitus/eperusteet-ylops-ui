@@ -1,6 +1,6 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
-import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OpsOppiaineKevytDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
+import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OppiaineSuppeaDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import { Revision } from '@shared/tyypit';
@@ -16,7 +16,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
     private oppiaineId: number,
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
     private versionumero: number,
-    private parent: OpsOppiaineKevytDto,
+    private parent: OppiaineSuppeaDto,
     private el: any) {
   }
 
