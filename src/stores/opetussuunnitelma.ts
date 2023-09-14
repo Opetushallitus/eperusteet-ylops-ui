@@ -172,7 +172,7 @@ export class OpetussuunnitelmaStore {
 
   public async fetchJulkaisemattomiaMuutoksia() {
     this.julkaisemattomiaMuutoksia = null;
-    this.julkaisemattomiaMuutoksia = (await Julkaisut.onkoMuutoksia(this.opetussuunnitelma!.id!)).data;
+    this.julkaisemattomiaMuutoksia = !_.isEmpty((await Julkaisut.julkaisuversioMuutokset(this.opetussuunnitelma!.id!)).data);
   }
 
   public async get() {
