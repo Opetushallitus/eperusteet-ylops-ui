@@ -24,11 +24,11 @@
     </div>
     <div v-else>
       <div v-if="isValid" class="d-flex">
-        <div class="material-icons no-errors">check_circle</div>
+        <EpMaterialIcon :color="'#4c7f00'">check_circle</EpMaterialIcon>
         <div class="ml-2">{{$t('ei-julkaisua-estavia-virheita')}}</div>
       </div>
       <div v-else class="d-flex">
-        <div class="material-icons errors">info</div>
+        <EpMaterialIcon :color="'#dc3545'">info</EpMaterialIcon>
         <div class="ml-2">{{$t('loytyi-julkaisun-estavia-virheita')}}</div>
       </div>
 
@@ -138,6 +138,7 @@ import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue
 import EpJulkaisuButton from '@shared/components/EpJulkaisuButton/EpJulkaisuButton.vue';
 import EpJulkaisuValidointi from '@shared/components/EpJulkaisuValidointi/EpJulkaisuValidointi.vue';
 import { nodeToRoute } from '@/utils/routing';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
@@ -155,6 +156,7 @@ import { nodeToRoute } from '@/utils/routing';
     EpExternalLink,
     EpJulkaisuButton,
     EpJulkaisuValidointi,
+    EpMaterialIcon,
   },
 })
 export default class RouteJulkaisu extends EpOpsRoute {
@@ -289,13 +291,5 @@ export default class RouteJulkaisu extends EpOpsRoute {
 
 .validointi-spinner {
   text-align: center;
-}
-
-.no-errors {
-  color: $green;
-}
-
-.errors {
-  color: $invalid;
 }
 </style>

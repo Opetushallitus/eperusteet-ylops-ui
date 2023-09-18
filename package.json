@@ -80,7 +80,7 @@
     "katex": "^0.10.2",
     "lint-staged": "^10.1.2",
     "lodash": "^4.17.15",
-    "material-icons": "^1.2.0",
+    "material-icons": "^1.13.11",
     "mocha": "^6.2.0",
     "mocha-multi-reporters": "^1.1.7",
     "moment": "^2.24.0",
