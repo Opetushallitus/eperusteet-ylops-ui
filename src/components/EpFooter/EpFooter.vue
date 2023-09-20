@@ -7,15 +7,15 @@
       </div>
       <div class="col-md col-slot">
         <p class="linkki-kuvaus">{{ $t('opetushallitus') }}</p>
-        <ep-linkki :url="$kaanna(linkit.oph)" icon="ulkoinen-linkki"></ep-linkki>
+        <ep-linkki :url="$kaanna(linkit.oph)" icon="launch"></ep-linkki>
       </div>
       <div class="col-md col-slot">
         <p class="linkki-kuvaus">{{ $t('opintopolku') }}</p>
-        <ep-linkki :url="$kaanna(linkit.opintopolku)" icon="ulkoinen-linkki"></ep-linkki>
+        <ep-linkki :url="$kaanna(linkit.opintopolku)" icon="launch"></ep-linkki>
       </div>
       <div class="col-md col-slot">
         <p class="linkki-kuvaus">{{ $t('eperusteet') }}</p>
-        <ep-linkki :url="$kaanna(linkit.eperusteet)" icon="ulkoinen-linkki"></ep-linkki>
+        <ep-linkki :url="$kaanna(linkit.eperusteet)" icon="launch"></ep-linkki>
       </div>
       <div class="col-md col-slot"><a :href="$kaanna(linkit.seloste)">{{ $t('tietosuojaseloste') }}</a></div>
     </div>
