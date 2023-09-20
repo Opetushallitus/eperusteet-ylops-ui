@@ -1,5 +1,5 @@
 <template>
-<ep-home-tile icon="faq" :route="{ name: 'useinkysytyt' }">
+<ep-home-tile icon="quiz" :route="{ name: 'useinkysytyt' }">
   <template slot="header">
     <span>{{ $t('ukk') }}</span>
   </template>

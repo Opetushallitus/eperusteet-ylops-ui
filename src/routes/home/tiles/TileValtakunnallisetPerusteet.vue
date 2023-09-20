@@ -1,6 +1,6 @@
 <template>
   <ep-home-tile
-    icon="hallitus"
+    icon="account_balance"
     :href="href">
     <template slot="header">
       <span>{{ $t('tile-perusteet') }}</span>
@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component } from 'vue-property-decorator';
+import { Vue, Component } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 

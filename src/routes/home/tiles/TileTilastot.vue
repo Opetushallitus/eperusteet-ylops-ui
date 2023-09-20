@@ -1,5 +1,5 @@
 <template>
-<ep-home-tile icon="tilasto" :route="{ name: 'tilastot' }">
+<ep-home-tile icon="show_chart" :route="{ name: 'tilastot' }">
   <template slot="header">
     <span>{{ $t('ops-tilastot') }}</span>
   </template>

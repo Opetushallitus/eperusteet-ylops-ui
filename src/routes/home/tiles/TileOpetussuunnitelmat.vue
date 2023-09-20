@@ -1,5 +1,5 @@
 <template>
-  <ep-home-tile icon="opetussuunnitelma" :route="vars.route">
+  <ep-home-tile icon="article" :route="vars.route">
     <template slot="header">
       <span>{{ $t(vars.header) }}</span>
     </template>
