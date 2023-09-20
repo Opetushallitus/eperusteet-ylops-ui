@@ -58,9 +58,9 @@
                           v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
                           @click="ctrls.start()"
                           v-if="!ctrls.isEditing && ctrls.isEditable && !versiohistoriaVisible && !ctrls.isCopyable"
-                          micon="edit"
                           :show-spinner="state.isSaving"
                           :disabled="state.disabled">
+                <EpMaterialIcon class="mr-1" :background="'inherit'" :color="'inherit'">edit</EpMaterialIcon>
                 <slot name="muokkaa">{{ $t('muokkaa') }}</slot>
               </ep-button>
             </slot>
@@ -70,9 +70,9 @@
                       v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
                       @click="copy()"
                       v-if="!ctrls.isEditing && ctrls.isCopyable"
-                      micon="edit"
                       :show-spinner="state.isSaving"
                       :disabled="state.disabled">
+              <EpMaterialIcon class="mr-1" :background="'inherit'" :color="'inherit'">edit</EpMaterialIcon>
               <slot name="kopioi-teksti">{{ $t('kopioi-muokattavaksi') }}</slot>
             </ep-button>
             <b-dropdown class="mx-4"
