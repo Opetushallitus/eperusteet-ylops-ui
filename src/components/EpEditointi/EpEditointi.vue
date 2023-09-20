@@ -139,31 +139,33 @@
                         size="sm"
                         class="mb-0">
             <template v-slot:prev-text>
-              <EpMaterialIcon>checvron_left</EpMaterialIcon>
+              <EpMaterialIcon>chevron_left</EpMaterialIcon>
             </template>
             <template v-slot:next-text>
-              <EpMaterialIcon>checvron_right</EpMaterialIcon>
+              <EpMaterialIcon>chevron_right</EpMaterialIcon>
             </template>
           </b-pagination>
         </div>
         <div class="floating-editing-buttons">
-          <ep-button variant="link" micon="list">
+          <ep-button variant="link">
             <ep-versio-modaali :value="current"
                                :versions="historia"
                                :current="current"
                                :per-page="10"
                                @restore="ctrls.restore($event)">
+              <EpMaterialIcon class="mr-1 icon" :background="'inherit'" :color="'inherit'">menu</EpMaterialIcon>
               {{ $t('palaa-listaan') }}
             </ep-versio-modaali>
           </ep-button>
-          <ep-button variant="link"
-                     micon="keyboard_return"
-                     @click="ctrls.restore({ numero: current.numero, routePushLatest: true })">
+          <ep-button variant="link" @click="ctrls.restore({ numero: current.numero, routePushLatest: true })">
+            <EpMaterialIcon class="mr-1 icon" :background="'inherit'" :color="'inherit'">keyboard_return</EpMaterialIcon>
             {{ $t('palauta-tama-versio') }}
           </ep-button>
-          <router-link :to="{ query: {} }">
-            <ep-button variant="link" micon="close" />
-          </router-link>
+          <div class="btn">
+            <router-link :to="{ query: {} }">
+              <EpMaterialIcon :background="'inherit'" :color="'inherit'">close</EpMaterialIcon>
+            </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -439,6 +441,10 @@ export default class EpEditointi extends Mixins(validationMixin) {
 </script>
 <style scoped lang="scss">
 @import '@shared/styles/_variables';
+
+.icon {
+  vertical-align: bottom;
+}
 
 .editointikontrolli {
   margin-top: 4px;
