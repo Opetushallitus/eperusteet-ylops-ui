@@ -147,18 +147,19 @@
           </b-pagination>
         </div>
         <div class="floating-editing-buttons">
-          <ep-button variant="link">
+          <ep-button variant="link" micon="menu" inherit-style>
             <ep-versio-modaali :value="current"
                                :versions="historia"
                                :current="current"
                                :per-page="10"
                                @restore="ctrls.restore($event)">
-              <EpMaterialIcon class="mr-1 icon" :background="'inherit'" :color="'inherit'">menu</EpMaterialIcon>
               {{ $t('palaa-listaan') }}
             </ep-versio-modaali>
           </ep-button>
-          <ep-button variant="link" @click="ctrls.restore({ numero: current.numero, routePushLatest: true })">
-            <EpMaterialIcon class="mr-1 icon" :background="'inherit'" :color="'inherit'">keyboard_return</EpMaterialIcon>
+          <ep-button variant="link"
+                     micon="keyboard_return"
+                     @click="ctrls.restore({ numero: current.numero, routePushLatest: true })"
+                     inherit-style>
             {{ $t('palauta-tama-versio') }}
           </ep-button>
           <div class="btn">

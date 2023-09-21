@@ -54,9 +54,20 @@
                 <div class="d-flex justify-content-between align-items-center otsikko">
                   <h4 class="flex-grow">{{$t('vuosiluokka')}} {{$t(vuosiluokka.vuosiluokka)}}</h4>
                   <div class="text-right">
-                    <ep-button class="tuokaikki" variant="link" icon="plus-circle" @click="lisaaKaikkiTavoitteet(vuosiluokka)">{{$t('tuo-kaikki')}}</ep-button>
+                    <ep-button class="tuokaikki"
+                               variant="link"
+                               micon="add"
+                               @click="lisaaKaikkiTavoitteet(vuosiluokka)"
+                               inherit-style>
+                      {{$t('tuo-kaikki')}}
+                    </ep-button>
                     <ep-button :disabled="vuosiluokka.tavoitteet.length === 0"
-                      variant="link" icon="roskalaatikko" @click="poistaKaikkiTavoitteet(vuosiluokka)">{{$t('tyhjenna')}}</ep-button>
+                               variant="link"
+                               micon="delete"
+                               @click="poistaKaikkiTavoitteet(vuosiluokka)"
+                               inherit-style>
+                      {{$t('tyhjenna')}}
+                    </ep-button>
                   </div>
                 </div>
 
@@ -94,7 +105,6 @@ import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { VuosiluokkaistaminenStore } from '@/stores/vuosiluokkaistaminenStore';
-import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import draggable from 'vuedraggable';
 import VClamp from 'vue-clamp';

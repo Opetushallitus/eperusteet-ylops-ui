@@ -8,7 +8,6 @@
     </template>
      <template slot="ohje">
       <div class="sidepad">
-        <!-- <p>N/A</p> -->
       </div>
     </template>
 
@@ -35,13 +34,13 @@
             class="w-100"
             v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
             variant="outline-primary"
-            icon="plussa"
+            micon="add"
             @click="uusiOppiaine()">{{ $t('paikallinen-oppiaine') }}</ep-button>
           <ep-button
             class="w-100"
             v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
             variant="outline-primary"
-            icon="plussa"
+            micon="add"
             @click="uusiOpintojakso()">{{ $t('opintojakso') }}
           </ep-button>
         </div>
@@ -174,7 +173,6 @@ import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
 import { koodiAlku, koodiNumero, koodiSorters } from '@/utils/perusteet';
-
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EditointiKontrolliConfig } from '@/stores/editointi';

@@ -15,8 +15,9 @@
     </template>
     <template v-slot:cell(actions)="row">
       <ep-button variant="link"
-                 icon="peruuta"
-                 @click="palauta(row.item)">
+                 micon="keyboard_return"
+                 @click="palauta(row.item)"
+                 inherit-style>
         {{ $t('palauta') }}
       </ep-button>
     </template>
@@ -25,7 +26,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 
 @Component({

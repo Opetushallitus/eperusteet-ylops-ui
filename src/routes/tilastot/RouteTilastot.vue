@@ -112,9 +112,10 @@
              <ep-button
                 v-if="data.value === 'poistettu'"
                 variant="link"
-                icon="peruuta"
+                micon="keyboard_return"
                 @click="palauta(data.item)"
-                buttonClass="mb-1">
+                buttonClass="mb-1"
+                inherit-style>
               {{$t('palauta')}}
             </ep-button>
           </template>
@@ -144,9 +145,8 @@
 </template>
 
 <script lang="ts">
-import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
+import { Prop, Component, Mixins } from 'vue-property-decorator';
 import * as _ from 'lodash';
-
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
@@ -158,7 +158,6 @@ import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import { Opetussuunnitelmat, Ulkopuoliset, OpetussuunnitelmaInfoDto, PerusteInfoDto } from '@shared/api/ylops';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-
 import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';

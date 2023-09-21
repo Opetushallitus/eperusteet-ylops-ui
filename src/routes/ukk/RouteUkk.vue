@@ -16,7 +16,11 @@
           <ep-toggle v-model="org.$checked" :id="org.oid">{{ $kaanna(org.nimi) }}</ep-toggle>
         </div>
         <p>
-          <ep-button v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }" class="float-right" variant="outline-primary" icon="plussa" @click="startKysymysModal(null)">
+          <ep-button v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }"
+                     class="float-right"
+                     variant="outline-primary"
+                     micon="add"
+                     @click="startKysymysModal(null)">
             {{ $t('lisaa-uusi-kysymys') }}
           </ep-button>
         </p>
@@ -104,17 +108,14 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
-
 import { validationMixin } from 'vuelidate';
 import { Kysymykset, Ulkopuoliset, KysymysDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-
 import { Kieli } from '@shared/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-
 import EpRoute from '@/mixins/EpRoot';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';

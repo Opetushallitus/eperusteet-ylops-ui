@@ -93,7 +93,7 @@
               </div>
             </div>
           </div>
-          <ep-button icon="plussa" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
+          <ep-button micon="add" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
         </ep-collapse>
       </div>
     </div>
@@ -109,7 +109,7 @@ import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
-import { Lops2019OppiaineDto, Lops2019OppiaineKaikkiDto } from '@shared/api/ylops';
+import { Lops2019OppiaineDto } from '@shared/api/ylops';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';

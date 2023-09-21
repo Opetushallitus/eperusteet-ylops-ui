@@ -35,7 +35,7 @@
             v-if="isEditing && !hasPohja"
             variant="outline-primary"
             @click="lisaaTekstikappale(data.tekstikappaleet.lapset)"
-            icon="plussa">
+            micon="add">
             {{ $t('lisaa-tekstikappale') }}
           </ep-button>
         </b-tab>
