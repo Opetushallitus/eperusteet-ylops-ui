@@ -93,7 +93,7 @@
               </div>
             </div>
           </div>
-          <ep-button micon="add" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
+          <ep-button icon="add" @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
         </ep-collapse>
       </div>
     </div>

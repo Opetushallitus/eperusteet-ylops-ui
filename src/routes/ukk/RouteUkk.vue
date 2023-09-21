@@ -19,7 +19,7 @@
           <ep-button v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }"
                      class="float-right"
                      variant="outline-primary"
-                     micon="add"
+                     icon="add"
                      @click="startKysymysModal(null)">
             {{ $t('lisaa-uusi-kysymys') }}
           </ep-button>

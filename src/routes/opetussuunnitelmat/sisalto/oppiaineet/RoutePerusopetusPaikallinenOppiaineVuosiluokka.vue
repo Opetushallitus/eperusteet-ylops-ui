@@ -37,7 +37,7 @@
         </div>
         <ep-button v-if="isEditing"
                    variant="link"
-                   micon="add"
+                   icon="add"
                    @click="lisaaTavoite(data.vuosiluokka.tavoitteet)"
                    inherit-style>
           {{ $t('lisaa-tavoite') }}

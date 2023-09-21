@@ -13,7 +13,7 @@
         </div>
 
         <ep-button variant="outline-primary"
-                   micon="add"
+                   icon="add"
                    @click="uusiOppiaine()">{{ $t('lisaa-valinnainen-oppiaine') }}</ep-button>
 
         <b-table v-if="data.oppiaineet.length > 0"

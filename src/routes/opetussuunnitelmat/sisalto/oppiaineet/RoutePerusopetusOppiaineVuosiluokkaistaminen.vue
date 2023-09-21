@@ -56,14 +56,14 @@
                   <div class="text-right">
                     <ep-button class="tuokaikki"
                                variant="link"
-                               micon="add"
+                               icon="add"
                                @click="lisaaKaikkiTavoitteet(vuosiluokka)"
                                inherit-style>
                       {{$t('tuo-kaikki')}}
                     </ep-button>
                     <ep-button :disabled="vuosiluokka.tavoitteet.length === 0"
                                variant="link"
-                               micon="delete"
+                               icon="delete"
                                @click="poistaKaikkiTavoitteet(vuosiluokka)"
                                inherit-style>
                       {{$t('tyhjenna')}}

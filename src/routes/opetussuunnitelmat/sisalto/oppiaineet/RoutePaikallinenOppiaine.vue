@@ -135,7 +135,7 @@
             </div>
             <ep-button class="mt-2"
                        v-if="!isUusi()"
-                       micon="add"
+                       icon="add"
                        @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
           </div>
         </div>

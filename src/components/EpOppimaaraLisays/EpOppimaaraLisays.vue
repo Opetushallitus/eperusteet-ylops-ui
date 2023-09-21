@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ep-button @click="openModal()" micon="add" :variant="buttonVariant" buttonClass="text-decoration-none" :inherit-style="buttonVariant === 'link'">
+  <ep-button @click="openModal()" icon="add" :variant="buttonVariant" buttonClass="text-decoration-none" :inherit-style="buttonVariant === 'link'">
     <span>{{ $t(addButtonText) }}</span>
   </ep-button>
   <b-modal ref="oppimaaralisaysModal"

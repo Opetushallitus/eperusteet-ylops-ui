@@ -34,13 +34,13 @@
             class="w-100"
             v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
             variant="outline-primary"
-            micon="add"
+            icon="add"
             @click="uusiOppiaine()">{{ $t('paikallinen-oppiaine') }}</ep-button>
           <ep-button
             class="w-100"
             v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
             variant="outline-primary"
-            micon="add"
+            icon="add"
             @click="uusiOpintojakso()">{{ $t('opintojakso') }}
           </ep-button>
         </div>

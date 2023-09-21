@@ -33,7 +33,7 @@
 
         <template v-slot:cell(siirtyminen)="data">
           <ep-button variant="link"
-                    micon="keyboard_return"
+                    icon="keyboard_return"
                     @click="$emit('restore', data.item)"
                     inherit-style>
             {{ $t('palauta') }}

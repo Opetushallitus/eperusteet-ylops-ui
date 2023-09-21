@@ -112,7 +112,7 @@
              <ep-button
                 v-if="data.value === 'poistettu'"
                 variant="link"
-                micon="keyboard_return"
+                icon="keyboard_return"
                 @click="palauta(data.item)"
                 buttonClass="mb-1"
                 inherit-style>
