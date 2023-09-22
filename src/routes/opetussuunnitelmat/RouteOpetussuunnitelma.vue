@@ -22,26 +22,31 @@
           <span>{{ $kaanna(ops.nimi) }}</span><span class="ml-2" v-if="isPohja">({{ $t('pohja') }})</span>
           <b-dropdown size="lg" variant="link" toggle-class="text-decoration-none" no-caret>
             <template slot="button-content">
-              <fas class="hallinta" icon="ratas"><span class="sr-only">{{ $t('hallinta') }}</span></fas>
+              <EpMaterialIcon icon-shape="outlined">settings</EpMaterialIcon>
             </template>
             <!-- https://bootstrap-vue.js.org/docs/reference/router-links/ -->
             <b-dropdown-item :to="{ name: 'opsTiedot' }">
-              <fas class="mr-2" icon="info" fixed-width /><span>{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
+              <EpMaterialIcon class="mr-2" icon-shape="outlined">info</EpMaterialIcon>
+              <span class="dropdown-text">{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsDokumentti' }">
-              <fas class="mr-2" icon="luo-pdf" fixed-width /><span>{{ $t('luo-pdf') }}</span>
+              <EpMaterialIcon class="mr-2" icon-shape="outlined">picture_as_pdf</EpMaterialIcon>
+              <span class="dropdown-text">{{ $t('luo-pdf') }}</span>
             </b-dropdown-item>
             <b-dropdown-item :to="{ name: 'opsKasitteet' }">
-              <fas class="mr-2" icon="kasitteet" fixed-width /><span>{{ $t('kasitteet') }}</span>
+              <EpMaterialIcon class="mr-2" icon-shape="outlined">book</EpMaterialIcon>
+              <span class="dropdown-text">{{ $t('kasitteet') }}</span>
             </b-dropdown-item>
             <b-dropdown-item v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" :to="{ name: 'opsPoistetut' }">
-              <fas class="mr-2" icon="roskalaatikko" fixed-width /><span>{{ $t('poistetut') }}</span>
+              <EpMaterialIcon class="mr-2" icon-shape="outlined">delete</EpMaterialIcon>
+              <span class="dropdown-text">{{ $t('poistetut') }}</span>
             </b-dropdown-item>
             <b-dropdown-divider v-if="ops.tila !== 'poistettu'"
               v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" />
             <b-dropdown-item v-if="ops.tila !== 'poistettu'"
               v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" @click="arkistoiOps">
-              <fas class="mr-2" icon="arkistoi" fixed-width /><span>{{ $t('arkistoi-' + tyyppi) }}</span>
+              <EpMaterialIcon class="mr-2" icon-shape="outlined">archive</EpMaterialIcon>
+              <span class="dropdown-text">{{ $t('arkistoi-' + tyyppi) }}</span>
             </b-dropdown-item>
           </b-dropdown>
         </h1>
@@ -81,25 +86,23 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpProgress from '@/components/EpProgress/EpProgress.vue';
-import EpProgressPopover from '@shared/components/EpProgressPopover/EpProgressPopover.vue';
 import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import { themes } from '@shared/utils/perusteet';
 import { LinkkiHandler, routeToNode } from '@/utils/routing';
 import { Kielet } from '@shared/stores/kieli';
 import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
     EpCommentThreads,
     EpNavigation,
-    EpProgress,
     EpSidebar,
     EpSpinner,
     OpsSidenav,
     EpButton,
-    EpProgressPopover,
     EpValidPopover,
+    EpMaterialIcon,
   },
   inject: [],
 })
@@ -288,6 +291,10 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 .fade-enter, .fade-leave-to {
   transition: opacity .2s;
   opacity: 0;
+}
+
+.dropdown-text {
+  vertical-align: text-top;
 }
 
 .opetussuunnitelma {

@@ -17,7 +17,7 @@
                   :disabled="feature.disabled"
                   :class="{ 'active': !feature.disabled && data.isActive[feature.command] && data.isActive[feature.command]() }"
                   @click="feature.customClick ? feature.customClick(data) : data.commands[feature.command](feature.params)">
-            <fas v-if="feature.icon" :icon="feature.icon" fixed-width />
+            <EpMaterialIcon v-if="feature.icon" :color="'#444'">{{ feature.icon }}</EpMaterialIcon>
             <span v-if="feature.text">{{ $t(feature.text) }}</span>
           </b-button>
         </div>
@@ -31,13 +31,14 @@
                   :disabled="feature.disabled"
                   :class="{ 'active': !feature.disabled && data.isActive[feature.command] && data.isActive[feature.command]() }"
                   @click="feature.customClick ? feature.customClick(data) : data.commands[feature.command](feature.params)">
-            <fal v-if="feature.icon" fixed-width>
-              <fas :icon="feature.icon" fixed-width />
-              <fas v-if="feature.uppericon" fixed-width transform="up-4 left-6" :icon="feature.uppericon" :style="{ color: feature.color || 'black' }" />
-              <fas v-if="feature.righticon" fixed-width transform="right-6" :icon="feature.righticon" :style="{ color: feature.color || 'black' }" />
-              <fas v-if="feature.subicon" fixed-width transform="down-4 left-6" :icon="feature.subicon" :style="{ color: feature.color || 'black' }" class="fa-inverse" />
-              <fas v-if="feature.lefticon" fixed-width transform="left-6" :icon="feature.lefticon" :style="{ color: feature.color || 'black' }" />
-            </fal>
+            <EpMaterialIcon v-if="feature.icon">{{ feature.icon }}</EpMaterialIcon>
+            <!--            näitä ei varmaan tarvi?-->
+<!--            <fal v-if="feature.icon" fixed-width>-->
+<!--              <fas v-if="feature.uppericon" fixed-width transform="up-4 left-6" :icon="feature.uppericon" :style="{ color: feature.color || 'black' }" />-->
+<!--              <fas v-if="feature.righticon" fixed-width transform="right-6" :icon="feature.righticon" :style="{ color: feature.color || 'black' }" />-->
+<!--              <fas v-if="feature.subicon" fixed-width transform="down-4 left-6" :icon="feature.subicon" :style="{ color: feature.color || 'black' }" class="fa-inverse" />-->
+<!--              <fas v-if="feature.lefticon" fixed-width transform="left-6" :icon="feature.lefticon" :style="{ color: feature.color || 'black' }" />-->
+<!--            </fal>-->
           </b-button>
         </div>
       </div>
@@ -61,10 +62,12 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { EditorMenuBar } from 'tiptap';
 import Sticky from 'vue-sticky-directive';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
     EditorMenuBar,
+    EpMaterialIcon,
   },
   directives: {
     Sticky,

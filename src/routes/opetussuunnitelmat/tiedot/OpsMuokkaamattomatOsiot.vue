@@ -19,7 +19,7 @@
         </template>
 
         <template v-slot:cell(siirtyminen)="data">
-          <fas icon="vakanen-oikea" />
+          <EpMaterialIcon>chevron_right</EpMaterialIcon>
         </template>
 
       </b-table>
@@ -44,10 +44,12 @@ import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { TekstiKappaleViitePerusteTekstillaDto, TekstiKappaleKevytDto } from '@shared/api/ylops';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
     EpSpinner,
+    EpMaterialIcon,
   },
 })
 export default class OpsMuokkaamattomatOsiot extends Vue {

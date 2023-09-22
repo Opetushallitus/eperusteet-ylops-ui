@@ -1,9 +1,5 @@
 <template>
   <ep-main-view :tutoriaalistore="tutoriaalistore">
-    <template slot="icon">
-      <ep-icon class="float-right" icon="taulukko" background-color="#000000">
-      </ep-icon>
-    </template>
     <template slot="header">
       <h1>{{ $t('ops-tilastot') }}</h1>
     </template>
@@ -148,7 +144,6 @@
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 import * as _ from 'lodash';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpRoute from '@/mixins/EpRoot';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
@@ -169,7 +164,6 @@ import { success, fail } from '@/utils/notifications';
   },
   components: {
     EpButton,
-    EpIcon,
     EpMainView,
     EpSearch,
     EpSpinner,

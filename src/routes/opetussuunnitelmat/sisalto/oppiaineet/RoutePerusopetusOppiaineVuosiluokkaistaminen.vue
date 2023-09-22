@@ -23,7 +23,7 @@
                 v-model="data.perusteenOppiaineenVlk.tavoitteet">
                   <div class="tavoite d-flex" :class="{'valittu': tavoite.valittu}"
                     v-for="(tavoite, index) in tavoitteet" :key="'tavoite'+index">
-                    <fas icon="raahaus" class="raahaus"/>
+                    <EpMaterialIcon class="raahaus">drag_indicator</EpMaterialIcon>
                     <ep-collapse class="flex-grow-1" ref="sisaltocollapse" :border-bottom="false" :border-top="false">
                       <template v-slot:header><h4 v-html="$kaanna(tavoite.tavoite)"></h4></template>
                       <div class="row">
@@ -79,7 +79,7 @@
                   v-model="vuosiluokka.tavoitteet">
                     <div class="tavoite" v-for="(tavoite, index) in vuosiluokka.tavoitteet" :key="'vlktavoite'+index" @click="poistaTavoite(vuosiluokka, tavoite)">
                       <div class="roskalaatikko">
-                        <fas icon="roskalaatikko" />
+                        <EpMaterialIcon>delete</EpMaterialIcon>
                       </div>
                       <v-clamp class="teksti" autoresize :max-lines="4">{{ $plaintext($kaanna(tavoite.tavoite)) }}</v-clamp>
                     </div>
@@ -110,6 +110,7 @@ import draggable from 'vuedraggable';
 import VClamp from 'vue-clamp';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpOrderColorBall from '@shared/components/EpColorIndicator/EpOrderColorBall.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
@@ -120,6 +121,7 @@ import EpOrderColorBall from '@shared/components/EpColorIndicator/EpOrderColorBa
     VClamp,
     EpCollapse,
     EpOrderColorBall,
+    EpMaterialIcon,
   },
 })
 export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins(EpRoute, EpOpsComponent) {
@@ -329,7 +331,7 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
           .roskalaatikko {
             display: inline-block;
             position: relative;
-            height: 20x;
+            height: 20px;
             left: 70px;
             color: $blue-lighten-5;
 

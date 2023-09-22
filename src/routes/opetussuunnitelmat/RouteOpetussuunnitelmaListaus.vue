@@ -1,10 +1,6 @@
 <template>
 <div>
   <ep-main-view :tutoriaalistore="tutoriaalistore">
-    <template slot="icon">
-      <ep-icon class="float-right" icon="opetussuunnitelmasi" background-color="#5bca13">
-      </ep-icon>
-    </template>
     <template slot="header">
       <h1>{{ $t(tyyppi) }}</h1>
       <ep-arkistoidut-ops ref="arkistoidutPopup"
@@ -61,7 +57,7 @@
                   <router-link tag="a" :to="{ name: vars.uusiRoute }">
                     <div class="uusi">
                       <div class="plus">
-                        <fas icon="plussa"></fas>
+                        <EpMaterialIcon>add</EpMaterialIcon>
                       </div>
                       <div class="text">
                         {{ $t('luo-uusi') }}
@@ -176,18 +172,14 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Prop, Component, Mixins, Watch } from 'vue-property-decorator';
-
-import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat, OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
-
+import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { success, fail } from '@/utils/notifications';
 import { Kielet } from '@shared/stores/kieli';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
-
 import EpRoute from '@/mixins/EpRoot';
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpProgress from '@shared/components/EpProgressPopover/EpProgress.vue';
@@ -197,11 +189,12 @@ import EpArkistoidutOps from '@/components/EpArkistoidutOps/EpArkistoidutOps.vue
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import KoulutustyyppiSelect from '@shared/components/forms/EpKoulutustyyppiSelect.vue';
-import { yleissivistavatKoulutustyypit, themes } from '@shared/utils/perusteet';
+import { yleissivistavatKoulutustyypit } from '@shared/utils/perusteet';
 import { tileBackgroundColor, koulutusTyyppiTile } from '@shared/utils/bannerIcons';
 import { Debounced } from '@shared/utils/delay';
 import { Page } from '@shared/tyypit';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 interface Jarjestys {
   jarjestys: string;
@@ -215,7 +208,6 @@ interface Jarjestys {
   },
   components: {
     EpButton,
-    EpIcon,
     EpMainView,
     EpNavigation,
     EpProgress,
@@ -225,6 +217,7 @@ interface Jarjestys {
     EpSearch,
     KoulutustyyppiSelect,
     EpMultiSelect,
+    EpMaterialIcon,
   },
 })
 export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {

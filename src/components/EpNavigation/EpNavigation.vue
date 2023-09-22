@@ -11,7 +11,7 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
             <router-link id="nav-admin" :to="{ name: 'root' }">
-              <fas fixed-width icon="koti" />
+              <EpMaterialIcon>home</EpMaterialIcon>
             </router-link>
           </li>
           <li class="breadcrumb-item" v-for="(route, idx) in routePath" :key="idx">
@@ -43,7 +43,7 @@
                      v-for="kieli in sovelluksenKielet"
                      :key="kieli"
                      :disabled="kieli === sisaltoKieli">
-            <fas fixed-width icon="checkmark" v-if="kieli === sisaltoKieli" class="mr-3 valittu" />
+            <EpMaterialIcon v-if="kieli === sisaltoKieli" class="mr-3 valittu" >check</EpMaterialIcon>
             {{ $t(kieli) }}
           </b-dd-item>
         </div>
@@ -69,6 +69,7 @@ import { Kayttajat } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
 import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   directives: {
@@ -78,6 +79,7 @@ import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
   components: {
     EpButton,
     EpKayttaja,
+    EpMaterialIcon,
   },
 })
 export default class EpNavigation extends Vue {

@@ -13,14 +13,11 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
 @Component({
   components: {
     EpHomeTile,
-    EpIcon,
   },
 })
 export default class TileUkk extends Vue {

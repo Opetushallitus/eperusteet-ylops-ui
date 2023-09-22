@@ -1,5 +1,4 @@
 <template>
-
   <div class="content">
     <h2>{{$t('tiedot')}}</h2>
 
@@ -8,10 +7,11 @@
 
       <div class="row">
         <div class="col-5">
-
           <div class="data-content">
             <div class="row">
-              <div class="col-1"><fas class="icon" icon="hallitus" /></div>
+              <div class="col-1">
+                <EpMaterialIcon>account_balance</EpMaterialIcon>
+              </div>
               <div class="col"><div class="topic">{{ $t('peruste')}}</div></div>
             </div>
             <div class="row justify-content-end">
@@ -22,7 +22,9 @@
 
           <div class="data-content">
             <div class="row">
-              <div class="col-1"><fas class="icon" icon="kielet" /></div>
+              <div class="col-1">
+                <EpMaterialIcon>translate</EpMaterialIcon>
+              </div>
               <div class="col"><div class="topic">{{ $t('julkaisukielet')}}</div></div>
             </div>
             <div class="row justify-content-end">
@@ -33,7 +35,9 @@
 
           <div class="data-content">
             <div class="row">
-              <div class="col-1"><fas class="icon" icon="kalenteri" /></div>
+              <div class="col-1">
+                <EpMaterialIcon>calendar_month</EpMaterialIcon>
+              </div>
               <div class="col"><div class="topic">{{ $t('luotu')}}</div></div>
             </div>
             <div class="row justify-content-end">
@@ -45,10 +49,11 @@
         </div>
 
         <div class="col-7">
-
           <div class="data-content">
             <div class="row">
-              <div class="col-1"><fas class="icon" icon="tyoryhma" /></div>
+              <div class="col-1">
+                <EpMaterialIcon>groups</EpMaterialIcon>
+              </div>
               <div class="col"><div class="topic">{{ $t('tyoryhma')}}</div></div>
             </div>
             <div class="row justify-content-end">
@@ -66,29 +71,28 @@
               </div>
             </div>
           </div>
-
         </div>
 
       </div>
-
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import _ from 'lodash';
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
-
+import { Component, Mixins } from 'vue-property-decorator';
 import { Kielet } from '@shared/stores/kieli';
 import { parsiEsitysnimi } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpOpsComponent from '../../../mixins/EpOpsComponent';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
     EpSpinner,
     EpButton,
+    EpMaterialIcon,
   },
 })
 export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
@@ -123,7 +127,6 @@ export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
 
 <style scoped lang="scss">
 @import "@shared/styles/_variables.scss";
-
   .content {
 
     .data-content {
@@ -136,10 +139,7 @@ export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
 
       .topic {
         font-weight: bold;
-        line-height: 1;
       }
     }
-
   }
-
 </style>

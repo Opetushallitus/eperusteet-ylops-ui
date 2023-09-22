@@ -33,7 +33,7 @@
                     {{$t(tila)}}
                   </ep-form-content>
                 </div>
-                <div class="ml-4" v-if="!isEditing && !isOps && !isValmisPohja">
+                <div class="ml-4" v-if="!isEditing">
                   <tilanvaihto v-model="data.tila" :onSave="tryTilanvaihto" :is-pohja="true">
                   </tilanvaihto>
                 </div>
@@ -158,7 +158,6 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { Component } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
-import EpProgress from '@/components/EpProgress/EpProgress.vue';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { buildEsikatseluUrl, buildKatseluUrl } from '@shared/utils/esikatselu';
 import { isLukio, koulutustyyppiTheme } from '@shared/utils/perusteet';
@@ -172,7 +171,6 @@ import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
     EpEditointi,
     EpField,
     EpFormContent,
-    EpProgress,
     EpSelect,
     EpToggle,
     Tilanvaihto,

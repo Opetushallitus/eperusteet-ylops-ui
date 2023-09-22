@@ -6,7 +6,8 @@
         <EpSpinner v-if="hallintaLoading" />
         <b-dropdown v-else class="asetukset" size="lg" variant="link" dropleft toggle-class="text-decoration-none" no-caret>
           <template v-slot:button-content>
-            {{$t('hallinta')}} <fas icon="ratas" class="hallinta" />
+            {{$t('hallinta')}}
+            <EpMaterialIcon icon-shape="outlined">settings</EpMaterialIcon>
           </template>
           <EpButton variant="link" @click="palautaTekstirakenne">
             {{$t('palauta-aiempi-tekstirakenne')}}
@@ -121,7 +122,6 @@ import { Component } from 'vue-property-decorator';
 import { UusiJulkaisuDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
-import Tilanvaihto from '@/routes/opetussuunnitelmat/Tilanvaihto.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
@@ -150,7 +150,6 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
     EpField,
     EpFormContent,
     EpSelect,
-    Tilanvaihto,
     EpSpinner,
     EpJulkaisuHistoria,
     EpExternalLink,

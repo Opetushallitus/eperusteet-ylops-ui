@@ -1,7 +1,11 @@
 <template>
 <div>
-  <ep-button v-b-modal.tekstikappalelisays variant="link" buttonClass="text-decoration-none" :paddingx="false">
-     <fas class="mr-2" icon="plussa" />
+  <ep-button v-b-modal.tekstikappalelisays
+             variant="link"
+             buttonClass="text-decoration-none"
+             icon="add"
+             :paddingx="false"
+             inherit-style>
     <span>{{ $t('uusi-tekstikappale') }}</span>
   </ep-button>
   <b-modal ref="tekstikappalelisaysModal"

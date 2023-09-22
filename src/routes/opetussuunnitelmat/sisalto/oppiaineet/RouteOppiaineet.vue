@@ -55,8 +55,8 @@
           <th width="25%">{{ $t('vieraat-moduulit') }}</th>
           <th class="actions" width="5%">
             <button class="btn btn-link" @click="toggleAll()">
-              <fas icon="chevron-up" v-if="isOpened" />
-              <fas icon="chevron-down" v-else />
+              <EpMaterialIcon v-if="isOpened">expand_less</EpMaterialIcon>
+              <EpMaterialIcon v-else>expand_more</EpMaterialIcon>
             </button>
           </th>
         </tr>
@@ -82,10 +82,8 @@
               <button class="btn btn-link"
                       @click="toggleOppiaine(oa)"
                       v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">
-                <fas v-if="oa.isOpen" icon="chevron-up">
-                </fas>
-                <fas v-else icon="chevron-down">
-                </fas>
+                <EpMaterialIcon v-if="oa.isOpen">expand_less</EpMaterialIcon>
+                <EpMaterialIcon v-else>expand_more</EpMaterialIcon>
               </button>
             </td>
           </tr>
@@ -176,6 +174,7 @@ import { koodiAlku, koodiNumero, koodiSorters } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   directives: {
@@ -189,6 +188,7 @@ import { EditointiKontrolliConfig } from '@/stores/editointi';
     EpSearch,
     EpSpinner,
     EpToggle,
+    EpMaterialIcon,
   },
 })
 export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {

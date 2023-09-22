@@ -25,9 +25,9 @@
                 <router-link v-else :to="{ name: 'tekstikappale', params: { osaId: node.id } }">
                   {{ $kaanna(node.tekstiKappale.nimi) }}
                 </router-link>
-                <fas icon="liite"
-                     v-if="node.liite"
-                     v-b-popover="{content: $t('tekstikappale-naytetaan-liitteena'), trigger: 'hover'}"></fas>
+                <EpMaterialIcon v-if="node.liite"
+                                v-b-popover="{content: $t('tekstikappale-naytetaan-liitteena'), trigger: 'hover'}"
+                                size="20px">attach_file</EpMaterialIcon>
               </template>
             </ep-jarjesta>
           </div>
@@ -78,12 +78,14 @@ import { PerusteCache } from '@/stores/peruste';
 import { KoulutustyyppiToteutus } from '@shared/tyypit';
 import { koodiSorters } from '@shared/utils/perusteet';
 import { success } from '@/utils/notifications';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
     EpButton,
     EpEditointi,
     EpJarjesta,
+    EpMaterialIcon,
   },
 })
 export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {

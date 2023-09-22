@@ -1,8 +1,5 @@
 <template>
 <ep-main-view :tutoriaalistore="tutoriaalistore">
-  <template slot="icon">
-    <ep-icon class="float-right" icon="luo-uusi"></ep-icon>
-  </template>
   <template slot="header">
     <h1>{{ $t('uusi-opetussuunnitelma') }}</h1>
     <p>{{ $t('uusi-opetussuunnitelma-ohje') }}</p>
@@ -121,16 +118,13 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator';
-
 import { success, fail } from '@/utils/notifications';
 import { validationMixin } from 'vuelidate';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { delay } from '@shared/utils/delay';
-
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
@@ -149,7 +143,6 @@ import {
   OpsVuosiluokkakokonaisuusKevytDto,
   OpsVuosiluokkakokonaisuusDto,
 } from '@shared/api/ylops';
-
 import { opsLuontiValidator } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
@@ -161,7 +154,6 @@ type PohjaTyyppi = 'pohjasta' | 'opsista';
     EpButton,
     EpField,
     EpFormContent,
-    EpIcon,
     EpInput,
     EpMainView,
     EpNavigation,
