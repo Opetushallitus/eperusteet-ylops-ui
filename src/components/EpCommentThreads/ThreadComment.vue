@@ -5,7 +5,7 @@
       <div class="actions" v-if="innerValue.tunniste">
         <b-dropdown variant="link" right no-caret>
           <template v-slot:button-content>
-            <fas slot="button-content" icon="ellipsis-h" />
+            <EpMaterialIcon>more_horiz</EpMaterialIcon>
           </template>
           <b-dropdown-item @click="muokkaa">
             {{ $t('muokkaa') }}
@@ -13,9 +13,6 @@
           <b-dropdown-item @click="poista">
             {{ $t('poista') }}
           </b-dropdown-item>
-          <!-- <b-dropdown-item @click="reply(innerValue.tunniste)"> -->
-          <!--   {{ $t('vastaa') }}                                  -->
-          <!-- </b-dropdown-item>                                    -->
         </b-dropdown>
       </div>
     </div>
@@ -46,17 +43,18 @@
 
 <script lang="ts">
 import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
-import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
+import { KommenttiDto } from '@shared/api/ylops';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
+  components: {
+    EpMaterialIcon,
+  },
   name: 'ThreadComment',
 })
 export default class ThreadComment extends Vue {
   @Prop({ required: true })
   value!: KommenttiDto;
-
-  // @Prop({ required: true, type: Function })
-  // private reply!: (uusi: KommenttiDto) => Promise<void>;
 
   @Prop({ required: true, type: Function })
   private save!: (uusi: KommenttiDto) => Promise<KommenttiDto>;
@@ -124,7 +122,6 @@ export default class ThreadComment extends Vue {
   height: 100%;
   box-shadow: 0 2px 4px 0 rgba(207, 207, 207, 0.5);
   border: 1px solid #eee;
-  // border-radius: 10px;
 
   .topbar {
     height: 10px;
@@ -154,7 +151,6 @@ export default class ThreadComment extends Vue {
       resize: vertical;
       width: 100%;
     }
-
   }
 }
 
