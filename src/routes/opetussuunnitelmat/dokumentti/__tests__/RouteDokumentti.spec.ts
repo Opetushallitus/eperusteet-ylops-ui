@@ -1,13 +1,10 @@
-import _ from 'lodash';
 import { mount, createLocalVue } from '@vue/test-utils';
 import VueI18n from 'vue-i18n';
 import RouteDokumentti from '../RouteDokumentti.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { Kielet } from '@shared/stores/kieli';
 import { Dokumentit } from '@shared/api/ylops';
-
 import '@shared/config/bootstrap';
-import '@shared/config/fontawesome';
 import { Kaannos } from '@shared/plugins/kaannos';
 
 describe('RouteDokumentti', () => {

@@ -1,12 +1,9 @@
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { mount, createLocalVue } from '@vue/test-utils';
 import ImageExtension from '../ImageExtension';
 import ImageModal from '../ImageModal.vue';
 import { Kielet } from '@shared/stores/kieli';
 import { IAttachmentWrapper } from '@/stores/kuvat';
-
 import '@shared/config/bootstrap';
-import '@shared/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 

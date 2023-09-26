@@ -1,10 +1,8 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import EpEditointi from './EpEditointi.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { KieliStore, Kielet } from '@shared/stores/kieli';
-
+import { Kielet } from '@shared/stores/kieli';
 import '@shared/config/bootstrap';
-import '@shared/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 

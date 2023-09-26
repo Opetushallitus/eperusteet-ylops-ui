@@ -3,10 +3,8 @@ import TermiEditor from './TermiEditor.vue';
 import { IKasiteHandler } from '@/stores/kuvat';
 import { TermiDto } from '@shared/api/ylops';
 import _ from 'lodash';
-
 import { Kielet } from '@shared/stores/kieli';
 import '@shared/config/bootstrap';
-import '@shared/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 

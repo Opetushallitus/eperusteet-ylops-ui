@@ -30,12 +30,6 @@
     "test:unit:report": "$BROWSER coverage/lcov-report/index.html"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.1",
-    "@fortawesome/fontawesome-svg-core": "^1.2.27",
-    "@fortawesome/free-brands-svg-icons": "^5.12.1",
-    "@fortawesome/free-regular-svg-icons": "^5.12.1",
-    "@fortawesome/free-solid-svg-icons": "^5.12.1",
-    "@fortawesome/vue-fontawesome": "^0.1.9",
     "@openapitools/openapi-generator-cli": "1.0.10-4.2.3",
     "@types/axios": "^0.14.0",
     "@types/he": "^1.1.0",

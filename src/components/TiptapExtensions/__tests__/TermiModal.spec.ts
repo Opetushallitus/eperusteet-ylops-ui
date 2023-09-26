@@ -1,14 +1,10 @@
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuelidate from 'vuelidate';
 import TermiExtension from '../TermiExtension';
 import TermiEditor from '../TermiEditor.vue';
-import { KieliStore, Kielet } from '@shared/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { IKasiteHandler } from '@/stores/kuvat';
 import { TermiDto } from '@shared/api/ylops';
-
 import '@shared/config/bootstrap';
-import '@shared/config/fontawesome';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';
 
