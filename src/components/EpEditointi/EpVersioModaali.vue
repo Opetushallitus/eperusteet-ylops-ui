@@ -16,14 +16,13 @@
         <div class="float-right">
           <div v-if="!row.item.valittu">
             <router-link :to="{ query: { versionumero: row.item.index } }">
-              <ep-button variant="link" icon="visibility" inherit-style>
+              <ep-button variant="link" icon="visibility">
                 {{ $t('katsele') }}
               </ep-button>
             </router-link>
             <ep-button variant="link"
                        icon="keyboard_return"
-                       @click="$emit('restore', { numero: row.item.numero, modal: $refs['epversiomodaali'] })"
-                       inherit-style>
+                       @click="$emit('restore', { numero: row.item.numero, modal: $refs['epversiomodaali'] })">
               {{ $t('palauta') }}
             </ep-button>
           </div>

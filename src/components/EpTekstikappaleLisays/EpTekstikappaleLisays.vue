@@ -4,8 +4,7 @@
              variant="link"
              buttonClass="text-decoration-none"
              icon="add"
-             :paddingx="false"
-             inherit-style>
+             :paddingx="false">
     <span>{{ $t('uusi-tekstikappale') }}</span>
   </ep-button>
   <b-modal ref="tekstikappalelisaysModal"

@@ -110,8 +110,7 @@
                 variant="link"
                 icon="keyboard_return"
                 @click="palauta(data.item)"
-                buttonClass="mb-1"
-                inherit-style>
+                buttonClass="mb-1">
               {{$t('palauta')}}
             </ep-button>
           </template>

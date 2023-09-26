@@ -16,8 +16,7 @@
     <template v-slot:cell(actions)="row">
       <ep-button variant="link"
                  icon="keyboard_return"
-                 @click="palauta(row.item)"
-                 inherit-style>
+                 @click="palauta(row.item)">
         {{ $t('palauta') }}
       </ep-button>
     </template>

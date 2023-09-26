@@ -147,7 +147,7 @@
           </b-pagination>
         </div>
         <div class="floating-editing-buttons">
-          <ep-button variant="link" icon="menu" inherit-style>
+          <ep-button variant="link" icon="menu">
             <ep-versio-modaali :value="current"
                                :versions="historia"
                                :current="current"
@@ -158,8 +158,7 @@
           </ep-button>
           <ep-button variant="link"
                      icon="keyboard_return"
-                     @click="ctrls.restore({ numero: current.numero, routePushLatest: true })"
-                     inherit-style>
+                     @click="ctrls.restore({ numero: current.numero, routePushLatest: true })">
             {{ $t('palauta-tama-versio') }}
           </ep-button>
           <div class="btn">

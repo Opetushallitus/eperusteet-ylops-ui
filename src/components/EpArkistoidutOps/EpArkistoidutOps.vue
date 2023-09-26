@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ep-button @click="open" variant="link" icon="folder" inherit-style>
+  <ep-button @click="open" variant="link" icon="folder">
     <span>{{ $t(title) }} </span>
   </ep-button>
   <b-modal ref="arkistoidutOpsModal"
@@ -32,8 +32,7 @@
         <template v-slot:cell(siirtyminen)="data">
           <ep-button variant="link"
                     icon="keyboard_return"
-                    @click="$emit('restore', data.item)"
-                    inherit-style>
+                    @click="$emit('restore', data.item)">
             {{ $t('palauta') }}
           </ep-button>
         </template>
