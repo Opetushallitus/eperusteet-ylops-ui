@@ -60,12 +60,12 @@
           <div class="prevnext">
             <div class="d-flex justify-content-between">
               <b-button variant="link" @click="activateThread(surr.previous)">
-                <fas icon="arrow-left" />
+                <EpMaterialIcon>arrow_back</EpMaterialIcon>
                 {{ $t('edellinen') }}
               </b-button>
               <b-button variant="link" @click="activateThread(surr.next)">
                 {{ $t('seuraava') }}
-                <fas icon="arrow-right" />
+                <EpMaterialIcon>arrow_forward</EpMaterialIcon>
               </b-button>
             </div>
             <div class="backbutton text-center">
@@ -103,12 +103,14 @@ import * as _ from 'lodash';
 import ThreadComment from './ThreadComment.vue';
 import CollapsedThreads from './CollapsedThreads.vue';
 import EpCommentAdd from './EpCommentAdd.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
     EpAlert,
     ThreadComment,
     CollapsedThreads,
+    EpMaterialIcon,
   },
 })
 export default class EpCommentThreads extends Vue {

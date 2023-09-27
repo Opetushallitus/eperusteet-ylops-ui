@@ -1,8 +1,6 @@
 <template>
 <div>
-  <ep-button @click="open" variant="link">
-    <fas class="mr-2" :icon="['far', 'folder']" >
-    </fas>
+  <ep-button @click="open" variant="link" icon="folder">
     <span>{{ $t(title) }} </span>
   </ep-button>
   <b-modal ref="arkistoidutOpsModal"
@@ -33,7 +31,7 @@
 
         <template v-slot:cell(siirtyminen)="data">
           <ep-button variant="link"
-                    icon="peruuta"
+                    icon="keyboard_return"
                     @click="$emit('restore', data.item)">
             {{ $t('palauta') }}
           </ep-button>
@@ -54,22 +52,21 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator';
-
 import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
-import { Kielet } from '@shared/stores/kieli';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Debounced } from '@shared/utils/delay';
 import { Page } from '@shared/tyypit';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
     EpButton,
     EpSearch,
     EpSpinner,
+    EpMaterialIcon,
   },
 })
 export default class EpArkistoidutOps extends Vue {

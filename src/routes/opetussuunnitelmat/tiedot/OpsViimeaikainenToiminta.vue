@@ -7,48 +7,43 @@
     <div class="container text-center" v-else>
       <div v-for="(muokkaustieto, index) in muokkaustiedotRouted" :key="muokkaustieto.id" class="row muokkaustieto">
 
-          <div class="col col-auto ikoni-col center-block">
-
-              <div class="ikoni d-inline-block">
-                <fas :icon="muokkaustieto.icon" :class="muokkaustieto.iconClass"/>
-              </div>
-
-            <div class="aikajana" v-if="index != muokkaustiedotRouted.length - 1">&nbsp;</div>
+        <div class="col col-auto ikoni-col center-block">
+          <div class="ikoni d-inline-block">
+            <EpMaterialIcon :class="muokkaustieto.iconClass">{{ muokkaustieto.icon }}</EpMaterialIcon>
           </div>
+          <div class="aikajana" v-if="index != muokkaustiedotRouted.length - 1">&nbsp;</div>
+        </div>
 
-          <div class="col router-col text-left">
-            <div v-if="muokkaustieto.poistettu">
-              <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu }">
-                <div class="row">
-                  <div class="col nimi">{{muokkaustieto.kayttajaNimi}}</div>
-                  <div class="col aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
-                </div>
-                <div class="kohde">{{muokkaustieto.tapahtumateksti}}</div>
+        <div class="col router-col text-left">
+          <div v-if="muokkaustieto.poistettu">
+            <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu }">
+              <div class="row">
+                <div class="col nimi">{{muokkaustieto.kayttajaNimi}}</div>
+                <div class="col aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
               </div>
+              <div class="kohde">{{muokkaustieto.tapahtumateksti}}</div>
             </div>
-            <router-link :to="muokkaustieto.route" v-else>
-              <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu }">
-                <div class="row">
-                  <div class="col nimi">{{muokkaustieto.kayttajaNimi}}</div>
-                  <div class="col aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
-                </div>
-                <div class="kohde">{{muokkaustieto.tapahtumateksti}}</div>
-              </div>
-            </router-link>
           </div>
+          <router-link :to="muokkaustieto.route" v-else>
+            <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu }">
+              <div class="row">
+                <div class="col nimi">{{muokkaustieto.kayttajaNimi}}</div>
+                <div class="col aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
+              </div>
+              <div class="kohde">{{muokkaustieto.tapahtumateksti}}</div>
+            </div>
+          </router-link>
+        </div>
 
       </div>
     </div>
 
     <div class="text-center">
-
       <span class="tyhja" v-if="muokkaustiedot && muokkaustiedot.length === 0">{{$t('viimeaikainen-toiminta-tyhja')}}</span>
-
       <div v-else>
         <ep-button @click="haeLisaa" variant="link" v-if="!lisahaku && muokkaustiedotRouted.length % hakuLukumaara == 0 && muokkaustiedot && (!viimeinenHaku || viimeinenHaku.length > 0)">
           {{$t('nayta-lisaa')}}
         </ep-button>
-
         <ep-spinner v-if="lisahaku"></ep-spinner>
       </div>
     </div>
@@ -58,18 +53,18 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
-
 import { parsiEsitysnimi } from '@/stores/kayttaja';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { muokkaustietoRoute, muokkaustietoIcon } from '@/utils/tapahtuma';
-
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
   components: {
     EpSpinner,
     EpButton,
+    EpMaterialIcon,
   },
 })
 export default class OpsViimeaikainenToiminta extends Vue {
@@ -147,13 +142,12 @@ export default class OpsViimeaikainenToiminta extends Vue {
 
   muokkaustietoIconClass(muokkaustieto) {
     if (muokkaustieto.kohde === 'kommentti') {
-      return 'kommentointi';
+      return 'comment';
     }
 
     if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
-      return 'luokaton';
+      return 'low_priority';
     }
-
     return muokkaustieto.tapahtuma;
   }
 }

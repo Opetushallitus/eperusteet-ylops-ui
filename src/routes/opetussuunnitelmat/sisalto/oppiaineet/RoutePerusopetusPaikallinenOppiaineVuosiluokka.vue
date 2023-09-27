@@ -37,7 +37,7 @@
         </div>
         <ep-button v-if="isEditing"
                    variant="link"
-                   icon="plussa"
+                   icon="add"
                    @click="lisaaTavoite(data.vuosiluokka.tavoitteet)">
           {{ $t('lisaa-tavoite') }}
         </ep-button>
@@ -49,7 +49,6 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
-
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';

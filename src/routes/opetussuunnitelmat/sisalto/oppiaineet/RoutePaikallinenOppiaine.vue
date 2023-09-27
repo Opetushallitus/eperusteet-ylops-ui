@@ -135,7 +135,7 @@
             </div>
             <ep-button class="mt-2"
                        v-if="!isUusi()"
-                       icon="plussa"
+                       icon="add"
                        @click="uusiOpintojakso()">{{ $t('uusi-opintojakso') }}</ep-button>
           </div>
         </div>
@@ -148,7 +148,6 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Mixins, Component } from 'vue-property-decorator';
-
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
@@ -167,12 +166,10 @@ import { Kielet } from '@shared/stores/kieli';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import * as defaults from '@/defaults';
 import LaajaAlaisetOsaamiset from '@/routes/opetussuunnitelmat/sisalto/yhteiset/LaajaAlaisetOsaamiset.vue';
-
 import { KoodistoLops2019LaajaAlaiset, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import { success } from '@/utils/notifications';
 import { PerusteCache } from '@/stores/peruste';
-import { Koulutustyyppi } from '@shared/tyypit';
 
 @Component({
   components: {

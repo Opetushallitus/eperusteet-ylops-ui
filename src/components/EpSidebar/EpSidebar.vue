@@ -3,12 +3,16 @@
   <div class="sidenav d-flex">
     <div class="closed">
       <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="!toggled">
-        <span class="bar"><fas icon="bars"></fas></span>
+        <span class="bar">
+          <EpMaterialIcon>menu</EpMaterialIcon>
+        </span>
       </button>
     </div>
     <div class="bar d-flex flex-column" v-if="toggled">
       <div class="d-flex flex-row">
-        <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="toggled"><fas icon="bars"></fas></button>
+        <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="toggled">
+          <EpMaterialIcon>menu</EpMaterialIcon>
+        </button>
       </div>
       <slot name="bar" class="flex-fill"></slot>
     </div>
@@ -20,10 +24,11 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import Sticky from 'vue-sticky-directive';
 import { Kommentit } from '@/stores/kommentit';
 import { setItem, getItem } from '@/utils/localstorage';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 interface SidenavLocalStorage {
   enabled: boolean;
@@ -32,6 +37,9 @@ interface SidenavLocalStorage {
 const SidenavLocalStorageStr = 'sidenav';
 
 @Component({
+  components: {
+    EpMaterialIcon,
+  },
   directives: {
     Sticky,
   },

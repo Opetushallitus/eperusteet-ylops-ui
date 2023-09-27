@@ -138,8 +138,7 @@
             <div v-for="(moduuli, idx) in editable.moduulit" :key="idx+'editable.moduulit.moduulilista'">
               <div class="d-flex">
                 <div class="p-2 flex-grow-1">
-                  <fas class="checked" icon="check">
-                  </fas>
+                  <EpMaterialIcon class="checked">check</EpMaterialIcon>
                   <span class="nimi">{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</span>
                 </div>
                 <div class="p-2">
@@ -264,7 +263,7 @@
                 <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
                   <h5 class="d-inline">{{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}</h5>
                   <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
-                    <fas icon="sulje" />
+                    <EpMaterialIcon>close</EpMaterialIcon>
                   </b-button>
                 </span>
               </div>
@@ -411,7 +410,7 @@ import EpList from '@shared/components/forms/EpList.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import { EditointiKontrolliConfig } from '@/stores/editointi';
-import { Lops2019OpintojaksonOppiaineDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat, Lops2019OpintojaksonModuuliDto } from '@shared/api/ylops';
+import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat, Lops2019OpintojaksonModuuliDto } from '@shared/api/ylops';
 import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import * as _ from 'lodash';
@@ -422,6 +421,7 @@ import { Kielet } from '@shared/stores/kieli';
 import * as defaults from '@/defaults';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 import { KoodistoLops2019LaajaAlaiset, koodiSorters, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 
@@ -450,6 +450,7 @@ interface OpintojaksonOppiaine {
     EpOppiaineSelector,
     EpPrefixList,
     EpToggle,
+    EpMaterialIcon,
   },
 })
 export default class RouteOpintojakso extends Mixins(EpOpsRoute) {

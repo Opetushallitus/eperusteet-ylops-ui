@@ -13,7 +13,7 @@
     </div>
     <div v-if="hasEllipsis">
       <div class="kommentti purettu pl-3 text-muted">
-        <fas icon="ellipsis-h"></fas>
+        <EpMaterialIcon>more_horiz</EpMaterialIcon>
       </div>
     </div>
     <div v-if="last">
@@ -30,7 +30,7 @@
     <div>
       <div class="kommentti purettu pl-1 text-muted">
         <b-button variant="link" @click="activateThread()">
-          <fas icon="search-location"></fas>
+          <EpMaterialIcon>search</EpMaterialIcon>
         </b-button>
       </div>
     </div>
@@ -38,12 +38,16 @@
 </template>
 
 <script lang="ts">
-import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
-import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { KommenttiDto } from '@shared/api/ylops';
 import { Kommentit } from '@/stores/kommentit';
 import _ from 'lodash';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
+  components: {
+    EpMaterialIcon,
+  },
   name: 'CollapsedThreads',
 })
 export default class CollapsedThreads extends Vue {

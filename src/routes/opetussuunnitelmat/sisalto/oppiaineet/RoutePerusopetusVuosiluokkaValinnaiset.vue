@@ -13,7 +13,7 @@
         </div>
 
         <ep-button variant="outline-primary"
-                   icon="plussa"
+                   icon="add"
                    @click="uusiOppiaine()">{{ $t('lisaa-valinnainen-oppiaine') }}</ep-button>
 
         <b-table v-if="data.oppiaineet.length > 0"
@@ -46,13 +46,13 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Mixins, Component, Vue } from 'vue-property-decorator';
+import { Mixins, Component } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusVuosiluokkaValinnaisetStore } from '@/stores/perusopetusvuosiluokkavalinnaisetStore';
-import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
+import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 
 @Component({

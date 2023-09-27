@@ -6,7 +6,7 @@
       <div class="justify-content-around align-items-center h-100 m-3" v-if="dto && dto[tyyppi]">
         <div class="h-100 justify-content-around align-items-center"><img :src="kuvaUrl" /></div>
         <div class="vali-viiva justify-content-center">
-          <ep-button @click="removeImage()" variant="link" icon="roskalaatikko" class="mt-2">
+          <ep-button @click="removeImage()" variant="link" icon="delete" class="mt-2">
             <slot name="poista">{{ $t('poista') }}</slot>
           </ep-button>
         </div>
@@ -23,10 +23,10 @@
           </div>
           <div class="justify-content-center">
               <div class="">
-                <ep-button @click="saveImage()" variant="link" icon="save" class="mr-5" v-if="fileValidi">
+                <ep-button v-if="fileValidi" @click="saveImage()" variant="link" icon="save" class="mr-5">
                   <slot name="tallenna">{{ $t('tallenna') }}</slot>
                 </ep-button>
-                <ep-button @click="file = null" variant="link" icon="peruuta">
+                <ep-button @click="file = null" variant="link" icon="keyboard_return">
                   <slot name="peruuta">{{ $t('peruuta') }}</slot>
                 </ep-button>
               </div>

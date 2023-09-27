@@ -1,25 +1,20 @@
 import Vue from 'vue';
 import VueCompositionApi from '@vue/composition-api';
 import VueScrollTo from 'vue-scrollto';
-
 import Loading from 'vue-loading-overlay';
 import Notifications from 'vue-notification';
 import PortalVue from 'portal-vue';
-
-import '@shared/config/bootstrap';
-import '@shared/config/fontawesome';
-
 import { router } from '@/router';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import Kaannos from '@shared/plugins/kaannos';
-import VueI18n, { IVueI18n } from 'vue-i18n';
+import VueI18n from 'vue-i18n';
 import { Notifikaatiot } from '@shared/plugins/notifikaatiot';
-
 import App from '@/App.vue';
 import aikaleima from '@shared/plugins/aikaleima';
 import plaintext from '@shared/plugins/plaintext';
 import Vuelidate from 'vuelidate';
+import '@shared/config/bootstrap';
 
 Vue.use(VueCompositionApi);
 Vue.use(VueI18n);

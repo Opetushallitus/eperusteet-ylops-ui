@@ -1,11 +1,6 @@
 <template>
 <ep-spinner v-if="isLoading" />
 <div v-else class="sidebar d-flex flex-column flex-fill">
-  <!-- Todo: toteutetaan yhteisen navigaatiokomponentin yhteydessä
-  <div class="search">
-    <ep-search v-model="query"/>
-  </div>
-  -->
   <ul class="navigation flex-fill">
 
     <li class="p-0">
@@ -20,7 +15,7 @@
       <template v-slot:previousLink="{ itemData, itemRoute, navigate }">
         <li class="previous-link align-items-start">
           <ops-sidenav-link class="back-btn" tag="span" :click="navigate" :clickParams="false">
-            <fas icon="chevron-left" />
+            <EpMaterialIcon>chevron_left</EpMaterialIcon>
           </ops-sidenav-link>
           <ops-sidenav-link class="previous-link" tag="span" :to="itemRoute">
               {{ kaanna(itemData.item) }}
@@ -31,11 +26,11 @@
       <template v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
         <ops-sidenav-link :to="itemRoute" :class="{ 'module-link': onkoModTaiOj(itemData.item) }" v-if="!isSubmenu && itemRoute">
           <div class="ml-2" v-if="itemData.item.type === 'uusi-opintojakso'">
-            <fas class="mr-2" icon="plussa" />
+            <EpMaterialIcon class="mr-2" size="20px">add</EpMaterialIcon>
             <span>{{ $t('luo-uusi-opintojakso') }}</span>
           </div>
           <div class="" v-else-if="itemData.item.type === 'uusi-paikallinen-oppiaine'">
-            <fas class="mr-2" icon="plussa" />
+            <EpMaterialIcon class="mr-2" size="20px">add</EpMaterialIcon>
             <span>{{ $t('luo-uusi-paikallinen-oppiaine') }}</span>
           </div>
           <div v-else class="d-inline-flex">
@@ -57,9 +52,9 @@
             <div class="flex-grow-1">
               {{ kaanna(itemData.item) }}
               <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
-              <fas icon="liite" v-if="itemData.item.order === '99'"></fas>
+              <EpMaterialIcon v-if="itemData.item.order === '99'" size="16px">attach_file</EpMaterialIcon>
             </div>
-            <fas icon="chevron-right" v-if="!itemData.item.hideChevron" class="ml-2 mt-1"/>
+            <EpMaterialIcon v-if="!itemData.item.hideChevron">chevron_right</EpMaterialIcon>
           </div>
         </ops-sidenav-link>
       </template>
@@ -86,7 +81,7 @@
   <div class="muokkaa-kappaleita" v-sticky sticky-side="bottom" sticky-z-index="500" v-if="!isPohja">
     <router-link :to="{name: 'jarjesta'}">
       <div class="inner">
-        <fas icon="jarjesta" fixed-width />
+        <EpMaterialIcon class="icon">reorder</EpMaterialIcon>
         <a class="btn btn-link btn-link-nav">{{$t('muokkaa-jarjestysta')}}</a>
       </div>
     </router-link>
@@ -113,6 +108,7 @@ import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.
 import { oppiaineLinkki, oppimaaraModuuliLinkit, oppimaaraOpintojaksoLinkit, opsLapsiLinkit, paikallinenOppiaineLinkki, oppimaaraUusiLinkki, vuosiluokkaLinkit } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { koodiNumero, koodiAlku, isPaikallisestiSallittuLaajennos, koodiSorters } from '@/utils/perusteet';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -183,6 +179,7 @@ const i18keys = {
     OpsSidenavLink,
     EpTekstikappaleLisays,
     EpOppimaaraLisays,
+    EpMaterialIcon,
   },
 })
 export default class OpsSidenav extends EpOpsComponent {
@@ -555,6 +552,10 @@ export default class OpsSidenav extends EpOpsComponent {
 
 <style scoped lang="scss">
 @import "@shared/styles/_variables.scss";
+
+.icon {
+  vertical-align: middle;
+}
 
 .sidebar {
   padding-top: 12px;

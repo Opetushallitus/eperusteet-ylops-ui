@@ -1,9 +1,5 @@
 <template>
   <ep-main-view :tutoriaalistore="tutoriaalistore">
-    <template slot="icon">
-      <ep-icon class="float-right" icon="luo-uusi">
-      </ep-icon>
-    </template>
     <template slot="header">
       <h1>{{ $t('uusi-pohja') }}</h1>
     </template>
@@ -31,23 +27,19 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
-
 import { Ulkopuoliset, Opetussuunnitelmat,
   PerusteInfoDto,
   OpetussuunnitelmaLuontiDto,
 } from '@shared/api/ylops';
 import { pohjaLuontiValidator } from '@/validators/ops';
 import { isPerusteSupported } from '@/utils/perusteet';
-
 import { createLogger } from '@shared/utils/logger';
 import { success } from '@/utils/notifications';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kieli } from '@shared/tyypit';
-
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
@@ -62,7 +54,6 @@ const logger = createLogger('RoutePohjaUusi');
     EpButton,
     EpField,
     EpFormContent,
-    EpIcon,
     EpMainView,
     EpNavigation,
     EpSelect,

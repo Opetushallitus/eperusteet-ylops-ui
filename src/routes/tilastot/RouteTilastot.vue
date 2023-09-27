@@ -1,9 +1,5 @@
 <template>
   <ep-main-view :tutoriaalistore="tutoriaalistore">
-    <template slot="icon">
-      <ep-icon class="float-right" icon="taulukko" background-color="#000000">
-      </ep-icon>
-    </template>
     <template slot="header">
       <h1>{{ $t('ops-tilastot') }}</h1>
     </template>
@@ -112,7 +108,7 @@
              <ep-button
                 v-if="data.value === 'poistettu'"
                 variant="link"
-                icon="peruuta"
+                icon="keyboard_return"
                 @click="palauta(data.item)"
                 buttonClass="mb-1">
               {{$t('palauta')}}
@@ -144,11 +140,9 @@
 </template>
 
 <script lang="ts">
-import { Prop, Vue, Component, Mixins } from 'vue-property-decorator';
+import { Prop, Component, Mixins } from 'vue-property-decorator';
 import * as _ from 'lodash';
-
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpRoute from '@/mixins/EpRoot';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
@@ -158,7 +152,6 @@ import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import { Opetussuunnitelmat, Ulkopuoliset, OpetussuunnitelmaInfoDto, PerusteInfoDto } from '@shared/api/ylops';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-
 import { YlopsKoulutustyypit } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
@@ -170,7 +163,6 @@ import { success, fail } from '@/utils/notifications';
   },
   components: {
     EpButton,
-    EpIcon,
     EpMainView,
     EpSearch,
     EpSpinner,

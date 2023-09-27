@@ -1,11 +1,9 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import OpsSidenav from './OpsSidenav.vue';
-
 import { router } from '@/router';
 import { PerusteCache } from '@/stores/peruste';
-import { KieliStore, Kielet } from '@shared/stores/kieli';
+import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-
 import { Opetussuunnitelmat, OpetussuunnitelmanSisalto, Termisto } from '@shared/api/ylops';
 import { makeAxiosResponse } from '&/utils/data';
 import VueI18n from 'vue-i18n';
@@ -56,7 +54,6 @@ describe('OpsSidenav component', () => {
       propsData: {
         opetussuunnitelmaStore: new OpetussuunnitelmaStore(1),
       },
-      stubs: ['fas'],
       mocks: {
         $t: x => x,
       },

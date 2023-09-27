@@ -1,5 +1,5 @@
 <template>
-<ep-home-tile icon="ryhma" :route="{ name: 'organisaatio' }">
+<ep-home-tile icon="groups" :route="{ name: 'organisaatio' }">
   <template slot="header">
     <span>{{ $t('tile-organisaatio') }}</span>
   </template>

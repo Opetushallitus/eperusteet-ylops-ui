@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ep-button @click="openModal()" icon="plussa" :variant="buttonVariant" buttonClass="text-decoration-none">
+  <ep-button @click="openModal()" icon="add" :variant="buttonVariant" buttonClass="text-decoration-none">
     <span>{{ $t(addButtonText) }}</span>
   </ep-button>
   <b-modal ref="oppimaaralisaysModal"

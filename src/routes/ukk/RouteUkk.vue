@@ -1,9 +1,5 @@
 <template>
   <ep-main-view :tutoriaalistore="tutoriaalistore">
-    <template slot="icon">
-      <ep-icon class="float-right" icon="question" background-color="#CE52C6"></ep-icon>
-    </template>
-
     <!-- Rajaimet-->
     <template slot="header">
       <h1>{{ $t('ukk') }}</h1>
@@ -16,7 +12,11 @@
           <ep-toggle v-model="org.$checked" :id="org.oid">{{ $kaanna(org.nimi) }}</ep-toggle>
         </div>
         <p>
-          <ep-button v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }" class="float-right" variant="outline-primary" icon="plussa" @click="startKysymysModal(null)">
+          <ep-button v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }"
+                     class="float-right"
+                     variant="outline-primary"
+                     icon="add"
+                     @click="startKysymysModal(null)">
             {{ $t('lisaa-uusi-kysymys') }}
           </ep-button>
         </p>
@@ -30,12 +30,10 @@
           <div class="col">
             <div class="float-right" v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }">
               <button class="btn btn-link" @click="startKysymysModal(kysymys)">
-                <fas icon="pen">
-                </fas>
+                <EpMaterialIcon>edit</EpMaterialIcon>
               </button>
               <button class="btn btn-link" @click="startRemoveKysymys(kysymys)">
-                <fas icon="sulje">
-                </fas>
+                <EpMaterialIcon>close</EpMaterialIcon>
               </button>
             </div>
             <div>
@@ -104,27 +102,24 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
-
 import { validationMixin } from 'vuelidate';
 import { Kysymykset, Ulkopuoliset, KysymysDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-
 import { Kieli } from '@shared/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-
 import EpRoute from '@/mixins/EpRoot';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 export interface KysymysLaajennettuDto extends KysymysDto {
   $uusi?: boolean;
@@ -138,12 +133,12 @@ export interface KysymysLaajennettuDto extends KysymysDto {
     EpButton,
     EpContent,
     EpFormContent,
-    EpIcon,
     EpMainView,
     EpSearch,
     EpSelect,
     EpSpinner,
     EpToggle,
+    EpMaterialIcon,
   },
   validations() {
     return {

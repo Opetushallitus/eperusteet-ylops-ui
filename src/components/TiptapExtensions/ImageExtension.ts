@@ -165,7 +165,7 @@ export default class ImageExtension extends Node {
               <figcaption>{{altText}}</figcaption>
             </figure>
 
-            <ep-button v-if="!dataUid" variant="outline" icon="plussa" @click="open()">{{$t('lisaa-kuva')}}</ep-button>
+            <ep-button v-if="!dataUid" variant="outline" icon="add" @click="open()">{{$t('lisaa-kuva')}}</ep-button>
           </div>
 
           <figure v-if="dataUid && !view.editable" class="text-center">

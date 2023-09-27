@@ -1,10 +1,5 @@
 <template>
-
 <ep-main-view :tutoriaalistore="tutoriaalistore">
-  <template slot="icon">
-    <ep-icon class="float-right" icon="tyoryhma" background-color="#82D4FF"></ep-icon>
-  </template>
-
   <template slot="header">
     <h1>{{ $t('organisaatio-tyoryhma') }}</h1>
     <p>{{ $t('organisaatio-tyoryhma-kuvaus') }}</p>
@@ -30,12 +25,9 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
-
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-
 import EpRoute from '@/mixins/EpRoot';
-import EpIcon from '@/components/EpIcon/EpIcon.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
@@ -44,7 +36,6 @@ import EpToggle from '@shared/components/forms/EpToggle.vue';
 @Component({
   components: {
     EpColorIndicator,
-    EpIcon,
     EpMainView,
     EpSpinner,
     EpToggle,

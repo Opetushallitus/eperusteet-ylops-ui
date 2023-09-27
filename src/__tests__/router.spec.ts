@@ -19,7 +19,6 @@ import {
 } from '@shared/api/ylops';
 
 import '@shared/config/bootstrap';
-import '@shared/config/fontawesome';
 import axios from 'axios';
 
 describe('Router', () => {

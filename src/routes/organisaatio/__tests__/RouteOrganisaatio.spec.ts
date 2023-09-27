@@ -1,11 +1,9 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import RouteOrganisaatio from '../RouteOrganisaatio.vue';
 import { Kielet } from '@shared/stores/kieli';
-
 import '@shared/config/bootstrap';
-import '@shared/config/fontawesome';
 import { Kayttajat as KayttajatApi, Opetussuunnitelmat, Ulkopuoliset } from '@shared/api/ylops';
-import { genKayttaja, genOikeudet, makeAxiosResponse } from '&/utils/data';
+import { genKayttaja, makeAxiosResponse } from '&/utils/data';
 import { Kayttajat } from '@/stores/kayttaja';
 import VueI18n from 'vue-i18n';
 import { Kaannos } from '@shared/plugins/kaannos';

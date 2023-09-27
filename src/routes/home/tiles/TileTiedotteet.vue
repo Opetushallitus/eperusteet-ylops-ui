@@ -1,5 +1,5 @@
 <template>
-<ep-home-tile icon="muistikirja" :route="{ name: 'tiedotteet' }" :count="uudetTiedotteetCount">
+<ep-home-tile icon="description" :route="{ name: 'tiedotteet' }" :count="uudetTiedotteetCount">
   <template slot="header">
     <span>{{ $t('tiedotteet') }}</span>
   </template>
