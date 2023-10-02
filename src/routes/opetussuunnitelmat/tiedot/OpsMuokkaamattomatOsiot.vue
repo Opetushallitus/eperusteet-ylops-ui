@@ -33,7 +33,7 @@
       </b-pagination>
     </div>
     <div v-else-if="opetussuunnitelmanTekstikappale && !hasMuokkaamattomatTekstikappaleet" class="d-flex flex-column align-items-center justify-content-center mt-4">
-      <img src="../../../../public/img/images/papukaijamerkki.svg" :alt="$t('papukaijamerkki')" class="mb-4">
+      <img src="@assets/img/images/papukaijamerkki.svg" :alt="$t('papukaijamerkki')" class="mb-4">
       <p class="text-muted">{{ $t('ei-muokkaamattomia-osia') }}</p>
     </div>
   </div>

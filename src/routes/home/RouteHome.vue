@@ -125,7 +125,7 @@ export default class Home extends Mixins(EpRoute) {
       font-weight: 300;
     }
     background-color: $etusivu-header-background;
-    background-image: url('../../../public/img/banners/header.svg');
+    background-image: url('~@assets/img/banners/banner_lukio.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
     @media only screen and (min-width: 2503px)  {

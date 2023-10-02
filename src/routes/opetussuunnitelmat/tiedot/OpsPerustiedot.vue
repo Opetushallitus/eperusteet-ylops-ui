@@ -23,7 +23,7 @@
           <div class="data-content">
             <div class="row">
               <div class="col-1">
-                <EpMaterialIcon>translate</EpMaterialIcon>
+                <EpMaterialIcon>language</EpMaterialIcon>
               </div>
               <div class="col"><div class="topic">{{ $t('julkaisukielet')}}</div></div>
             </div>

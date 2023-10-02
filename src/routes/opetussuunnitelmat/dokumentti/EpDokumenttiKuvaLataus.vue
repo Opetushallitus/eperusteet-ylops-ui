@@ -179,7 +179,7 @@ export default class EpDokumenttiKuvaLataus extends Vue {
 
       .custom-file-label {
         width: 90%;
-        background-image: url('../../../../public/img/icons/lataus_ikoni.svg');
+        background-image: url('~@assets/img/icons/lataus_ikoni.svg');
         background-repeat: no-repeat;
         background-position: left;
         border: 0px;
