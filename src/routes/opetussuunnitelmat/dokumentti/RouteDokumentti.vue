@@ -32,7 +32,7 @@
         </div>
         <div class="col-4 text-center sijaintikuva">
           <div class="sijainti-topic">{{$t('sijainti')}}</div>
-          <img src="../../../../public/img/icons/pdfkuva_etusivu.svg" />
+          <img src="@assets/img/icons/pdfkuva_etusivu.svg" />
         </div>
       </div>
 
@@ -42,7 +42,7 @@
         </div>
         <div class="col-4 text-center sijaintikuva">
           <div class="sijainti-topic">&nbsp;</div>
-          <img src="../../../../public/img/icons/pdfkuva_header.svg" />
+          <img src="@assets/img/icons/pdfkuva_header.svg" />
         </div>
       </div>
 
@@ -52,7 +52,7 @@
         </div>
         <div class="col-4 text-center sijaintikuva">
           <div class="sijainti-topic">&nbsp;</div>
-          <img src="../../../../public/img/icons/pdfkuva_alatunniste.svg"/>
+          <img src="@assets/img/icons/pdfkuva_alatunniste.svg"/>
         </div>
       </div>
     </div>

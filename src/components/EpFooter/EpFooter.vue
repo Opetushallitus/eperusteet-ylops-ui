@@ -3,7 +3,7 @@
   <div class="footer-content">
     <div class="row">
       <div class="col-lg col-slot">
-        <img src="../../../public/img/banners/oph_logo.svg" slot="footer-logo" :alt="$t('oph')" />
+        <img src="@assets/img/banners/oph_logo.svg" slot="footer-logo" :alt="$t('oph')" />
       </div>
       <div class="col-md col-slot">
         <p class="linkki-kuvaus">{{ $t('opetushallitus') }}</p>
