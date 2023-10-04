@@ -27,19 +27,6 @@
               </ep-form-content>
             </div>
             <div class="col-md-6">
-              <div class="d-flex align-items-center">
-                <div>
-                  <ep-form-content name="tila">
-                    {{$t(tila)}}
-                  </ep-form-content>
-                </div>
-                <div class="ml-4" v-if="!isEditing">
-                  <tilanvaihto v-model="data.tila" :onSave="tryTilanvaihto" :is-pohja="true">
-                  </tilanvaihto>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
               <ep-form-content name="julkaisukielet">
                 <ep-select help="ops-julkaisukielet-ohje"
                            v-model="data.julkaisukielet"
