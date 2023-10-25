@@ -73,7 +73,7 @@
     "jquery": "^3.4.1",
     "katex": "^0.10.2",
     "lint-staged": "^10.1.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "material-icons": "^1.13.11",
     "mocha": "^6.2.0",
     "mocha-multi-reporters": "^1.1.7",
