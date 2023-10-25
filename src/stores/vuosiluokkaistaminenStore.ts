@@ -73,6 +73,7 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
             .filter(opvlk => opvlk.vuosiluokka === vuosiluokka)
             .map('tavoitteet')
             .flatten()
+            .filter(vlktavoite => !!tavoitteetMap[vlktavoite.tunniste])
             .map(vlktavoite => {
               return {
                 ...vlktavoite,
