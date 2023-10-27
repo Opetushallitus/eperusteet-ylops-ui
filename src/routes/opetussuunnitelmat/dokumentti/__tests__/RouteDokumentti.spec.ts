@@ -30,6 +30,13 @@ describe('RouteDokumentti', () => {
       propsData: {
         opetussuunnitelmaStore,
       },
+      mocks: {
+        $route: {
+          params: {
+            id: 1,
+          },
+        },
+      },
     } as any);
 
     opetussuunnitelmaStore.opetussuunnitelma = {
