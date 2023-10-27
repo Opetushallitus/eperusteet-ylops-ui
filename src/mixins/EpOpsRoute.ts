@@ -11,7 +11,7 @@ import { Koulutustyyppi } from '@shared/tyypit';
 /**
  * Mixin näkymäkomponenteille mitkä tarvitsevat opetussuunnitelman sisällön
  */
-@Component
+@Component({ inject: [] })
 export default class EpOpsRoute extends EpRoute {
   @Prop({ required: true })
   private opetussuunnitelmaStore!: OpetussuunnitelmaStore;
@@ -25,7 +25,7 @@ export default class EpOpsRoute extends EpRoute {
   }
 
   get opsId() {
-    return this.store.opetussuunnitelma?.id!;
+    return this.store.opetussuunnitelma!.id!;
   }
 
   get isPohja() {
@@ -42,12 +42,12 @@ export default class EpOpsRoute extends EpRoute {
 
   @ProvideReactive('kasiteHandler')
   get kasiteHandler() {
-    return createKasiteHandler(new TermitStore(this.opsId));
+    return createKasiteHandler(new TermitStore(_.toNumber(this.$route.params.id)));
   }
 
   @ProvideReactive('kuvaHandler')
   get kuvaHandler() {
-    return createKuvaHandler(new KuvaStore(this.opsId));
+    return createKuvaHandler(new KuvaStore(_.toNumber(this.$route.params.id)));
   }
 
   get isLuva() {
