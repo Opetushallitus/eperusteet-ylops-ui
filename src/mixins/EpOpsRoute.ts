@@ -1,4 +1,4 @@
-import { Prop, Component } from 'vue-property-decorator';
+import { Prop, Component, ProvideReactive } from 'vue-property-decorator';
 import EpRoute from './EpRoute';
 import { OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import _ from 'lodash';
@@ -25,7 +25,7 @@ export default class EpOpsRoute extends EpRoute {
   }
 
   get opsId() {
-    return this.store.opetussuunnitelma!.id!;
+    return this.store.opetussuunnitelma?.id!;
   }
 
   get isPohja() {
@@ -40,12 +40,14 @@ export default class EpOpsRoute extends EpRoute {
     return this.isPohja && this.ops.tila as any === 'valmis';
   }
 
+  @ProvideReactive('kasiteHandler')
   get kasiteHandler() {
-    return createKasiteHandler(new TermitStore(this.opsId!));
+    return createKasiteHandler(new TermitStore(this.opsId));
   }
 
+  @ProvideReactive('kuvaHandler')
   get kuvaHandler() {
-    return createKuvaHandler(new KuvaStore(this.opsId!));
+    return createKuvaHandler(new KuvaStore(this.opsId));
   }
 
   get isLuva() {
