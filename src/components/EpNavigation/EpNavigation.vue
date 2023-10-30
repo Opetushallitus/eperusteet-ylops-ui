@@ -49,7 +49,7 @@
         </div>
       </b-nav-item-dropdown>
 
-      <ep-kayttaja :tiedot="tiedot" :sovellusOikeudet="sovellusOikeudet"/>
+      <ep-kayttaja :tiedot="tiedot" :sovellusOikeudet="sovellusOikeudet" :logoutHref="logoutHref"/>
 
     </b-navbar-nav>
   </b-navbar>
@@ -70,6 +70,7 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
 import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { LogoutParams, baseURL } from '@shared/api/ylops';
 
 @Component({
   directives: {
@@ -147,6 +148,10 @@ export default class EpNavigation extends Vue {
 
   get headerStyle() {
     return koulutustyyppiBanner(this.koulutustyyppi!);
+  }
+
+  get logoutHref() {
+    return baseURL + LogoutParams.logoutGet().url;
   }
 }
 </script>
