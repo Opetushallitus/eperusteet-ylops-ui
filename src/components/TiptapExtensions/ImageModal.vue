@@ -41,18 +41,17 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
+import { Component, Prop, Mixins } from 'vue-property-decorator';
 import VueSelect from 'vue-select';
 import { IAttachmentWrapper } from '@/stores/kuvat';
-import { LiiteDto, Api, DokumenttiDto } from '@shared/api/ylops';
-
+import { LiiteDto, Api } from '@shared/api/ylops';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 import { Kielet } from '@shared/stores/kieli';
-import EpKuvaLataus, { ImageData } from '@shared/components/EpKuvaLataus/EpKuvaLataus.vue';
+import EpKuvaLataus, { ImageData } from '@shared/components/EpTiedosto/EpKuvaLataus.vue';
 
 @Component({
   components: {

@@ -1,5 +1,4 @@
 <template>
-
   <div class="dokumentit">
     <div class="ylapaneeli d-flex align-items-center">
         <h2 class="otsikko">{{ $t('luo-pdf') }}</h2>
@@ -28,7 +27,7 @@
 
       <div class="row">
         <div class="col kuvalataus">
-          <ep-dokumentti-kuva-lataus tyyppi="kansikuva" :dto="dtoKuva" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+          <EpPdfKuvalataus tyyppi="kansikuva" :kuvaUrl="kansikuvaUrl" @saveImage="saveImage" @removeImage="removeImage"></EpPdfKuvalataus>
         </div>
         <div class="col-4 text-center sijaintikuva">
           <div class="sijainti-topic">{{$t('sijainti')}}</div>
@@ -38,7 +37,7 @@
 
        <div class="row">
         <div class="col kuvalataus">
-          <ep-dokumentti-kuva-lataus tyyppi="ylatunniste" :dto="dtoKuva" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+          <EpPdfKuvalataus tyyppi="ylatunniste" :kuvaUrl="ylatunnisteUrl" @saveImage="saveImage" @removeImage="removeImage"></EpPdfKuvalataus>
         </div>
         <div class="col-4 text-center sijaintikuva">
           <div class="sijainti-topic">&nbsp;</div>
@@ -48,7 +47,7 @@
 
        <div class="row">
         <div class="col kuvalataus">
-          <ep-dokumentti-kuva-lataus tyyppi="alatunniste" :dto="dtoKuva" @saveImage="saveImage" @removeImage="removeImage"></ep-dokumentti-kuva-lataus>
+          <EpPdfKuvalataus tyyppi="alatunniste" :kuvaUrl="alatunnisteUrl" @saveImage="saveImage" @removeImage="removeImage"></EpPdfKuvalataus>
         </div>
         <div class="col-4 text-center sijaintikuva">
           <div class="sijainti-topic">&nbsp;</div>
@@ -56,7 +55,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -69,19 +67,19 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpDokumenttiKuvaLataus from './EpDokumenttiKuvaLataus.vue';
 import { success, fail } from '@/utils/notifications';
 import { Debounced } from '@shared/utils/delay';
 import { DokumenttiKuvaDto } from '@shared/generated/ylops';
 import EpPdfDokumentti from '@shared/components/EpPdfLuonti/EpPdfDokumentti.vue';
+import EpPdfKuvalataus from '@shared/components/EpTiedosto/EpPdfKuvalataus.vue';
 
 @Component({
   components: {
     EpButton,
     EpFormContent,
     EpSpinner,
-    EpDokumenttiKuvaLataus,
     EpPdfDokumentti,
+    EpPdfKuvalataus,
   },
 })
 export default class RouteDokumentti extends EpOpsRoute {
@@ -140,6 +138,22 @@ export default class RouteDokumentti extends EpOpsRoute {
     // Haetaan kuvaliitteet
     const resKuva = await Dokumentit.getDokumenttiKuva(this.opsId, this.kieli);
     this.dtoKuva = resKuva.data;
+  }
+
+  get kansikuvaUrl() {
+    return this.dtoKuva?.kansikuva ? this.haeKuva('kansikuva') : undefined;
+  }
+
+  get ylatunnisteUrl() {
+    return this.dtoKuva?.ylatunniste ? this.haeKuva('ylatunniste') : undefined;
+  }
+
+  get alatunnisteUrl() {
+    return this.dtoKuva?.alatunniste ? this.haeKuva('alatunniste') : undefined;
+  }
+
+  haeKuva(tyyppi) {
+    return baseURL + DokumentitParams.getImage(this.dto!.opsId!, tyyppi, this.kieli).url;
   }
 
   // Haetaan dokumentin tila ja päivitetään muuttujat
