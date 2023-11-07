@@ -19,9 +19,9 @@ kanssa, joten ylläpidetään ohjeita vain yhdessä paikassa.
 
 ### 3.1. Testiympäristöt
 
-- [untuva](https://virkailija.untuvaopintopolku.fi/eperusteet-ylops-app/uusi/#/fi)
-- [hahtuva](https://virkailija.hahtuvaopintopolku.fi/eperusteet-ylops-app/uusi/#/fi)
-- [QA eli pallero](https://virkailija.testiopintopolku.fi/eperusteet-ylops-app/uusi/#/fi)
+- [untuva](https://virkailija.untuvaopintopolku.fi/eperusteet-ylops-app/#/fi)
+- [hahtuva](https://virkailija.hahtuvaopintopolku.fi/eperusteet-ylops-app/#/fi)
+- [QA eli pallero](https://virkailija.testiopintopolku.fi/eperusteet-ylops-app/#/fi)
 
 ### 3.1. Continuous integration
 
