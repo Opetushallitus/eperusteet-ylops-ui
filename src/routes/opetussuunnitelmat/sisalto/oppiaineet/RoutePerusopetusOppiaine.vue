@@ -11,7 +11,7 @@
         <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}</h2>
       </template>
       <template v-slot:info>
-        <div v-if="!isPohja && oppiaine.oma && !oppiaine.pohjanOppiaine">
+        <div v-if="isPohjanTyyppiOps && oppiaine.oma && !oppiaine.pohjanOppiaine">
           {{$t('oppiaine-on-kopioitu-muokattavaksi')}}
         </div>
       </template>
