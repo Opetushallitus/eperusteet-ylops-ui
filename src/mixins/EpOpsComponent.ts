@@ -60,6 +60,10 @@ export default class EpOpsComponent extends Vue {
     return this.isPohja && this.ops.tila as any === 'valmis';
   }
 
+  get isPohjanTyyppiOps() {
+    return this.ops.pohja?.tyyppi as string === 'ops';
+  }
+
   get kasiteHandler() {
     return createKasiteHandler(new TermitStore(this.opsId!));
   }

@@ -10,6 +10,12 @@
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}</h2>
       </template>
+      <template v-slot:info>
+        <div v-if="isPohjanTyyppiOps && oppiaine.oma && !oppiaine.pohjanOppiaine">
+          {{$t('oppiaine-on-kopioitu-muokattavaksi')}}
+        </div>
+      </template>
+
       <template v-slot:piilotettu>
         <div>{{$t('oavlk-on-piilotettu')}}</div>
       </template>
