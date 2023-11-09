@@ -5,7 +5,7 @@ const path = require('path');
 
 module.exports = {
   lintOnSave: false,
-  publicPath: process.env.NODE_ENV === 'production' ? '/eperusteet-ylops-app/uusi/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/eperusteet-ylops-app/' : '/',
   runtimeCompiler: true,
   transpileDependencies: ['vue-clamp', 'resize-detector'],
   configureWebpack: {
