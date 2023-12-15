@@ -39,6 +39,13 @@
                                     :peruste-teksti-avattu="true" />
         <hr/>
 
+        <template v-if="perusteenOppiaine.vapaatTekstit">
+          <ep-collapse tyyppi="perusteteksti" :border-bottom="true" :border-top="false" :expanded-by-default="true" v-for="(vapaateksti, index) in perusteenOppiaine.vapaatTekstit" :key="'perustevapaateksti' + index">
+            <template v-slot:header><h4>{{$kaanna(vapaateksti.nimi)}}</h4></template>
+            <span v-html="$kaanna(vapaateksti.teksti)"></span>
+          </ep-collapse>
+        </template>
+
         <div v-if="data.vuosiluokkakokonaisuus && perusteenVuosiluokkakokonaisuus.tehtava">
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.tehtava"
                                       :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.tehtava"
@@ -151,6 +158,7 @@ import { isOppiaineUskontoTaiVierasKieli } from '@/utils/opetussuunnitelmat';
 import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
+import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 
 @Component({
   components: {
@@ -162,6 +170,7 @@ import EpField from '@shared/components/forms/EpField.vue';
     EpOppimaaraLisays,
     EpFormContent,
     EpField,
+    EpCollapse,
   },
 })
 export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsComponent) {

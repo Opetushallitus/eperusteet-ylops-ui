@@ -110,6 +110,13 @@
 
           <b-tab :title="$t('keskeiset-sisallot')">
 
+            <template v-if="data.perusteenVlk.vapaatTekstit">
+              <ep-collapse tyyppi="perusteteksti" :border-bottom="true" :border-top="false" :expanded-by-default="true" v-for="(vapaateksti, index) in data.perusteenVlk.vapaatTekstit" :key="'perustevapaateksti' + index">
+                <template v-slot:header><h4>{{$kaanna(vapaateksti.nimi)}}</h4></template>
+                <span v-html="$kaanna(vapaateksti.teksti)"></span>
+              </ep-collapse>
+            </template>
+
             <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.sisaltoalueinfo" :perusteTekstiAvattu="true" :isEditing="false" />
             <hr/>
 
