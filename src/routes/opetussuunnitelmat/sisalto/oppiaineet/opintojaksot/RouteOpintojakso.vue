@@ -44,7 +44,13 @@
               </ep-form-content>
             </div>
             <div class="col-md-6">
-              <ep-form-content name="koodi">
+              <ep-form-content>
+                <div class="d-flex">
+                  <label class="mr-1">{{$t('koodi')}}</label>
+                  <EpInfoPopover v-if="isEditing">
+                    <div v-html="$t('koodiohje')"></div>
+                  </EpInfoPopover>
+                </div>
                 <ep-field help="opintojakso-koodi-ohje" v-model="data.koodi" type="string" :validation="validation.koodi" :is-editing="isEditing" />
               </ep-form-content>
             </div>
@@ -422,9 +428,8 @@ import * as defaults from '@/defaults';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
-
+import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
 import { KoodistoLops2019LaajaAlaiset, koodiSorters, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
-
 import { success } from '@/utils/notifications';
 
 interface OpintojaksonOppiaine {
@@ -436,6 +441,7 @@ interface OpintojaksonOppiaine {
 
 @Component({
   components: {
+    EpInfoPopover,
     EpCollapse,
     EpColorIndicator,
     EpCommentThreads,
