@@ -54,7 +54,13 @@
             </ep-form-content>
           </b-col>
           <b-col>
-            <ep-form-content name="koodi">
+            <ep-form-content>
+              <div class="d-flex">
+                <label class="mr-1">{{$t('koodi')}}</label>
+                <EpInfoPopover v-if="isEditing">
+                  <div v-html="$t('koodiohje')"></div>
+                </EpInfoPopover>
+              </div>
               <ep-field :help="data.perusteenOppiaineUri ? 'oppimaara-koodi-ohje' : 'oppiaine-koodi-ohje'" v-model="data.koodi" :validation="validation.koodi" type="string" :is-editing="isEditing" />
             </ep-form-content>
           </b-col>
@@ -170,9 +176,11 @@ import { KoodistoLops2019LaajaAlaiset, paikallisestiSallitutLaajennokset } from 
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import { success } from '@/utils/notifications';
 import { PerusteCache } from '@/stores/peruste';
+import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
 
 @Component({
   components: {
+    EpInfoPopover,
     EpButton,
     EpCollapse,
     EpColorIndicator,
