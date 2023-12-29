@@ -40,9 +40,41 @@
         <hr/>
 
         <template v-if="perusteenOppiaine.vapaatTekstit">
-          <ep-collapse tyyppi="perusteteksti" :border-bottom="true" :border-top="false" :expanded-by-default="true" v-for="(vapaateksti, index) in perusteenOppiaine.vapaatTekstit" :key="'perustevapaateksti' + index">
+          <ep-collapse tyyppi="perusteteksti"
+                       :border-bottom="true"
+                       :border-top="false"
+                       :expanded-by-default="true"
+                       v-for="(vapaateksti, index) in perusteenOppiaineVapaatTekstit"
+                       :key="'perustevapaateksti' + index">
+
             <template v-slot:header><h4>{{$kaanna(vapaateksti.nimi)}}</h4></template>
             <span v-html="$kaanna(vapaateksti.teksti)"></span>
+
+            <h4 class="paikallinen-header">{{ $t('paikallinen-teksti') }}</h4>
+            <EpButton v-if="isEditing && !vapaateksti.hasPaikallinenTarkennus"
+                      icon="add"
+                      @click="lisaaPaikallinenTarkennus(data.oppiaine, vapaateksti.id)"
+                      variant="link"
+                      class="mb-1">
+              {{ $t('lisaa-paikallinen-tarkennus') }}
+            </EpButton>
+            <EpAlert v-if="!isEditing && !vapaateksti.hasPaikallinenTarkennus" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+
+            <div v-for="(teksti, index) in data.oppiaine.vapaatTekstit" :key="'teksti'+index">
+              <div v-if="vapaateksti.id === teksti.perusteenVapaaTekstiId">
+                <EpContent v-model="teksti.paikallinenTarkennus"
+                           layout="normal"
+                           :is-editable="isEditing"></EpContent>
+
+                <EpButton v-if="isEditing"
+                          @click="poistaPaikallinenTarkennus(data.oppiaine, vapaateksti.id)"
+                          variant="link"
+                          icon="delete">
+                  {{ $t('poista-paikallinen-tarkennus') }}
+                </EpButton>
+              </div>
+
+            </div>
           </ep-collapse>
         </template>
 
@@ -159,6 +191,7 @@ import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {
@@ -191,6 +224,20 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
       this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(this.$route.query.versionumero), parent, this));
   }
 
+  lisaaPaikallinenTarkennus(oppiaine, id) {
+    if (!oppiaine.vapaatTekstit) {
+      oppiaine.vapaatTekstit = [];
+    }
+    oppiaine.vapaatTekstit.push(
+      { perusteenVapaaTekstiId: id,
+        paikallinenTarkennus: Kielet.haeLokalisoituOlio(''),
+      });
+  }
+
+  poistaPaikallinenTarkennus(oppiaine, vapaatekstiId) {
+    oppiaine.vapaatTekstit = _.filter(oppiaine.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
+  }
+
   get versionumero() {
     return this.$route.query.versionumero;
   }
@@ -214,6 +261,15 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
 
   get perusteenOppiaine() {
     return this.editointiStore?.data.value.perusteenOppiaine || {};
+  }
+
+  get perusteenOppiaineVapaatTekstit() {
+    return _.map(this.editointiStore?.data.value.perusteenOppiaine.vapaatTekstit || {}, pvt => {
+      return {
+        ...pvt,
+        hasPaikallinenTarkennus: _.some(this.oppiaine.vapaatTekstit, vt => pvt.id === vt.perusteenVapaaTekstiId),
+      };
+    });
   }
 
   get pohjanOppiaine() {
@@ -250,10 +306,14 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
 <style scoped lang="scss">
 @import "@shared/styles/_variables.scss";
 
-  .ei-tavoitteita {
-    font-size: 0.85rem;
-    font-style: italic;
-    color: $gray-lighten-2;
-  }
+.ei-tavoitteita {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: $gray-lighten-2;
+}
+
+.paikallinen-header {
+  margin-top: 30px;
+}
 
 </style>
