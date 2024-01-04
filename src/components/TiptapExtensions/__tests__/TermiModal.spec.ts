@@ -27,8 +27,8 @@ describe('Tiptap Termi Extension', () => {
   localVue.use(VueI18n);
   Kielet.install(localVue, {
     messages: {
-      fi: require('@/translations/locale-fi.json'),
-      sv: require('@/translations/locale-sv.json'),
+      fi: require('@shared/translations/locale-fi.json'),
+      sv: require('@shared/translations/locale-sv.json'),
     },
   });
   localVue.use(new Kaannos());
