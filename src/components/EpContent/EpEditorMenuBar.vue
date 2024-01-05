@@ -292,7 +292,7 @@ export default class EpEditorMenuBar extends Vue {
   border-top: 2px solid #E0E0E1;
 }
 
-/deep/ .active {
+::v-deep .active {
   background: #c1c1c1 !important;
   border-radius: 0;
 }

@@ -144,7 +144,7 @@ export function nodeToRoute(node: NavigationNodeDto): Location | null {
     };
   case 'perusopetusoppiaine':
     return {
-      name: _.get(node, 'meta.paikallinen') === true ? 'perusopetuspaikallinenoppiaine' : 'perusopetusoppiaine',
+      name: _.get(node, 'meta.paikallinen') as any === true ? 'perusopetuspaikallinenoppiaine' : 'perusopetusoppiaine',
       params: {
         oppiaineId: _.toString(node.id),
         vlkId: _.toString(node.meta?.vlkId),

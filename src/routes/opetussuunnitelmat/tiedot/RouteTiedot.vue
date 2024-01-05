@@ -309,7 +309,7 @@ export default class RouteTiedot extends EpOpsRoute {
 .otsikko {
     margin-bottom: 0;
 }
-/deep/ .linkki a {
+::v-deep .linkki a {
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-all;

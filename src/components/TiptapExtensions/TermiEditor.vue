@@ -159,11 +159,11 @@ export default class TermitEditor extends Mixins(EpValidation) {
 </script>
 
 <style scoped lang="scss">
-/deep/ .vs__dropdown-menu {
+::v-deep .vs__dropdown-menu {
   overflow-x: hidden !important;
 }
 
-/deep/ .vs__dropdown-option {
+::v-deep .vs__dropdown-option {
   overflow-x: hidden !important;
   white-space: normal !important;
   i {

@@ -486,7 +486,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
       padding-right: 50px;
     }
 
-    /deep/ .pagination .page-item {
+    ::v-deep .pagination .page-item {
       &.active {
         .page-link {
           font-weight: 600;

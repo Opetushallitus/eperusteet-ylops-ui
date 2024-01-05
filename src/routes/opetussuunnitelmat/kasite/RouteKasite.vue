@@ -312,7 +312,7 @@ export default class RouteKasite extends EpOpsRoute {
   .termi.closed {
     white-space: nowrap;
 
-    /deep/ div {
+    ::v-deep div {
       text-overflow: ellipsis;
       overflow: hidden;
     }
@@ -326,7 +326,7 @@ export default class RouteKasite extends EpOpsRoute {
     overflow: hidden;
     line-height: 1.5em;
 
-    /deep/ img {
+    ::v-deep img {
       max-width: 100%;
     }
 
@@ -342,7 +342,7 @@ export default class RouteKasite extends EpOpsRoute {
     white-space: nowrap;
     text-overflow: ellipsis;
 
-    /deep/ p {
+    ::v-deep p {
       margin: 0;
       text-overflow: ellipsis;
       overflow: hidden;

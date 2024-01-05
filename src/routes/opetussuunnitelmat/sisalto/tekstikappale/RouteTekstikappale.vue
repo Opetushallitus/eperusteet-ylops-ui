@@ -226,7 +226,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   }
 
   get versionumero() {
-    return _.parseInt(_.get(this, '$route.query.versionumero'));
+    return _.parseInt(_.get(this, '$route.query.versionumero') as any);
   }
 
   private async load() {

@@ -533,7 +533,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   get versionumero() {
-    return _.parseInt(_.get(this, '$route.query.versionumero'));
+    return _.parseInt(_.get(this, '$route.query.versionumero') as any);
   }
 
   get validator() {
@@ -621,7 +621,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     return _.keyBy(this.oppiaineetJaOppimaarat, 'koodi.uri');
   }
 
-  get oppiaineidenModuulit() {
+  get oppiaineidenModuulit(): any[] {
     return _.chain(this.oppiaineetJaOppimaarat)
       .map((oa: any) => {
         if (oa.perusteenOppiaineUri) {
@@ -660,7 +660,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .value();
   }
 
-  get oppiaineetJaOppimaarat() {
+  get oppiaineetJaOppimaarat(): any[] {
     return _.chain(this.oppiaineet)
       .map((oa: any) => [oa, ..._.map(oa.oppimaarat, om => ({
         ...om,
@@ -673,7 +673,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
           moduulit: _.sortBy(oa.moduulit, ...koodiSorters()),
         };
       })
-      .value() as (Lops2019OppiaineDto & { parentUri?: string })[];
+      .value();
   }
 
   get filteredOppiaineet() {
@@ -689,7 +689,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .value();
   }
 
-  get opintojaksonOppiaineet() {
+  get opintojaksonOppiaineet(): any[] {
     return _.chain(this.editable!.oppiaineet)
       .map(({ koodi }) => koodi)
       .sortBy(...koodiSorters() as any[])
@@ -708,7 +708,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
           ...this.oppiaineetMap[uri],
         };
       })
-      .value() as Lops2019OppiaineDto[];
+      .value();
   }
 
   get opintojaksonOppiaineidenTiedot() {
@@ -738,7 +738,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
           opiskeluymparistoTyotavat: this.getOppiaineTieto(oppiaineet, 'opiskeluymparistoTyotavat'),
         };
       })
-      .value() as Lops2019OppiaineDto[];
+      .value();
   }
 
   getOppiaineTieto(oppiaineet, tieto) {
@@ -885,7 +885,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     const { opintojaksoId } = this.$route.params;
     if (await this.isUusi()) {
       const result = defaults.opintojakso();
-      const oaUri = _.get(this.$route, 'query.oppiaineet');
+      const oaUri = _.get(this.$route, 'query.oppiaineet') as any;
       if (oaUri) {
         result.oppiaineet!.push({
           koodi: oaUri,
@@ -956,7 +956,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 <style lang="scss" scoped>
 @import "@shared/styles/_variables.scss";
 
-/deep/ .nimi {
+::v-deep .nimi {
   // font-size: 150%;
   // font-weight: 600;
 }

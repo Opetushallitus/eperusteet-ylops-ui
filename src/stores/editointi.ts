@@ -231,7 +231,7 @@ export class EditointiKontrolli {
       this.logger.debug('Poistettu');
       this.isRemoved = true;
     }
-    catch (err) {
+    catch (err: any) {
       const syy = _.get(err, 'response.data.syy');
       if (syy) {
         fail('poisto-epaonnistui', err.response.data.syy);
@@ -279,7 +279,7 @@ export class EditointiKontrolli {
           await after();
         }
       }
-      catch (err) {
+      catch (err: any) {
         fail('tallennus-epaonnistui', err?.response?.data?.syy || err);
         this.isEditingState = true;
       }
@@ -311,7 +311,7 @@ export class EditointiKontrolli {
       this.backup = JSON.stringify(data);
       this.mstate.data = data;
     }
-    catch (err) {
+    catch (err: any) {
       const syy = _.get(err, 'response.data.syy');
       if (syy) {
         fail('palautus-epaonnistui', err.response.data.syy);

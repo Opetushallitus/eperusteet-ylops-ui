@@ -308,7 +308,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
   }
 
   get versionumero() {
-    return _.parseInt(_.get(this, '$route.query.versionumero'));
+    return _.parseInt(_.get(this, '$route.query.versionumero') as any);
   }
 
   async load() {
