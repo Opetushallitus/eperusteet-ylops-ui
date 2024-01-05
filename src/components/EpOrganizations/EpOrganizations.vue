@@ -304,7 +304,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
 
     this.valitutJarjestajat = _.filter(
       this.valitutJarjestajat,
-      valittuJarjestaja => _.some(this.jarjestajat, jarjestaja => this.jarjestajaEquals(jarjestaja, valittuJarjestaja))
+      valittuJarjestaja => _.some(this.jarjestajat, jarjestaja => this.jarjestajaEquals(jarjestaja, valittuJarjestaja)),
     );
 
     this.updateJarjestajat(this.valitutJarjestajat);

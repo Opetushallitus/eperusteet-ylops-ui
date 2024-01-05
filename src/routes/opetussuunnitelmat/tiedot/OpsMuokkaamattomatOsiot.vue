@@ -18,7 +18,7 @@
           </router-link>
         </template>
 
-        <template v-slot:cell(siirtyminen)="data">
+        <template v-slot:cell(siirtyminen)>
           <EpMaterialIcon>chevron_right</EpMaterialIcon>
         </template>
 

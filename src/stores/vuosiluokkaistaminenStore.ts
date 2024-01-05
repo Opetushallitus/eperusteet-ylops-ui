@@ -31,9 +31,9 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
   }
 
   async load() {
-    let oppiaine;
-    let perusteenOppiaineenVlk;
-    let perusteenVlk;
+    let oppiaine = {} as any;
+    let perusteenOppiaineenVlk = {} as any;
+    let perusteenVlk = {} as any;
     [oppiaine, perusteenVlk] = _.map(await (Promise.all([
       Oppiaineet.getOppiaine(this.opsId, this.oppiaineId),
       Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuudenPerusteSisalto(this.opsId, this.vlkId),

@@ -96,7 +96,7 @@ export class EditointiKontrolli {
   }
 
   public constructor(
-    private config: EditointiKontrolliConfig
+    private config: EditointiKontrolliConfig,
   ) {
     this.features = {
       removal: !!config.remove,

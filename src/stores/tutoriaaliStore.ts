@@ -4,7 +4,7 @@ import _ from 'lodash';
 @Store
 export class TutoriaaliStore {
   @State()
-  public avaimet: string[]= [];
+  public avaimet: string[] = [];
 
   @State()
   private index = 0;

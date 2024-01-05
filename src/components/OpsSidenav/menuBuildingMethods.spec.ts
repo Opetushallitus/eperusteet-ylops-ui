@@ -46,7 +46,7 @@ describe('OpsSidenav menubuilder helper', () => {
     ], {
       id: 1,
       koodi: 'testiuri',
-    }
+    },
     );
     expect(res2.length).toBe(1);
     expect(res2[0].item.type).toEqual('opintojakso');

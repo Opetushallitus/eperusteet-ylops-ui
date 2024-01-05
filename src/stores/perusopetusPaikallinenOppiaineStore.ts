@@ -53,7 +53,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     const perusteVuosiluokkakokonaisuus = (await Vuosiluokkakokonaisuudet
       .getVuosiluokkakokonaisuudenPerusteSisalto(
         this.opsId,
-        this.vuosiluokkakokonaisuus!.vuosiluokkakokonaisuus!.id!
+        this.vuosiluokkakokonaisuus!.vuosiluokkakokonaisuus!.id!,
       )).data;
 
     const vuosiluokat = _.orderBy(vuosiluokkakokonaisuus?.vuosiluokat, 'vuosiluokka', 'asc');

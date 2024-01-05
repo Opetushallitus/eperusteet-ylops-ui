@@ -193,7 +193,7 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
       // Suodata kysymyksellä
       .filter((k: any) => _.includes(
         _.toLower(_.get(k, 'kysymys.' + Kielet.getSisaltoKieli.value)),
-        _.toLower(this.rajain)
+        _.toLower(this.rajain),
       ))
       // Suodata organisaatiolla
       .filter((k: any) => {

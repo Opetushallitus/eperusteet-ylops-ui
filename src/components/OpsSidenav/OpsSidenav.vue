@@ -23,7 +23,7 @@
           </ops-sidenav-link>
         </li>
       </template>
-      <template v-slot="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
+      <template v-slot="{ itemData, isSubmenu, navigate, itemRoute }">
         <ops-sidenav-link :to="itemRoute" :class="{ 'module-link': onkoModTaiOj(itemData.item) }" v-if="!isSubmenu && itemRoute">
           <div class="ml-2" v-if="itemData.item.type === 'uusi-opintojakso'">
             <EpMaterialIcon class="mr-2" size="20px">add</EpMaterialIcon>
@@ -58,7 +58,7 @@
           </div>
         </ops-sidenav-link>
       </template>
-      <template v-slot:after="{ itemData, isPreviousLink, isSubmenu, navigate, itemRoute }">
+      <template v-slot:after="{ itemData }">
         <li v-if="itemData.item.type === 'tekstikappale' && !isPohja">
           <ep-tekstikappale-lisays
             :opetussuunnitelmaStore="store"
@@ -267,7 +267,7 @@ export default class OpsSidenav extends EpOpsComponent {
                 this.opintojaksoModuuliLista({
                   id: poa.id!,
                   koodi: poa.koodi!,
-                })
+                }),
               ))
               .map(item => {
                 return {
@@ -276,7 +276,7 @@ export default class OpsSidenav extends EpOpsComponent {
                     _.find(this.oppiaineJarjestykset, {
                       koodi: _.get(item, 'item.objref.koodi.uri') || _.get(item, 'item.objref.koodi'),
                     }),
-                    'jarjestys'
+                    'jarjestys',
                   ),
                 };
               })
@@ -287,7 +287,7 @@ export default class OpsSidenav extends EpOpsComponent {
         return oppiaineLinkki(
           'oppimaara',
           oppimaara,
-          sideMenuEntries
+          sideMenuEntries,
         );
       })
       .value();
@@ -336,8 +336,8 @@ export default class OpsSidenav extends EpOpsComponent {
               poa.perusteenOppiaineUri === oppiaine.koodi.uri
               || _.includes(
                 _.map(oppiaine.oppimaarat, 'koodi.uri'),
-                poa.perusteenOppiaineUri
-              )
+                poa.perusteenOppiaineUri,
+              ),
           )
           .map(poa =>
             paikallinenOppiaineLinkki(
@@ -348,8 +348,8 @@ export default class OpsSidenav extends EpOpsComponent {
                 koodi: poa.koodi!,
                 // todo: Jos halutaan perusteen moduulit, vaatii myös linkkien korjauksen
                 // moduulit: poa.perusteenOppiaineUri ? _.keyBy(oppiaine.oppimaarat, 'koodi.uri')[poa.perusteenOppiaineUri].moduulit : undefined,
-              })
-            )
+              }),
+            ),
           )
           .value();
 
@@ -367,7 +367,7 @@ export default class OpsSidenav extends EpOpsComponent {
                     _.find(this.oppiaineJarjestykset, {
                       koodi: _.get(oppimaara, 'item.objref.koodi.uri') || _.get(oppimaara, 'item.objref.koodi'),
                     }),
-                    'jarjestys'
+                    'jarjestys',
                   ),
                 };
               })
@@ -377,7 +377,7 @@ export default class OpsSidenav extends EpOpsComponent {
               id: oppiaine.id!,
               koodi: oppiaine.koodi!.uri!,
               moduulit: oppiaine.moduulit!,
-            })
+            }),
         );
       })
       .map(el => ({
@@ -386,7 +386,7 @@ export default class OpsSidenav extends EpOpsComponent {
           _.find(this.oppiaineJarjestykset, {
             koodi: _.get(el, 'item.objref.koodi.uri'),
           }),
-          'jarjestys'
+          'jarjestys',
         ),
       }))
       .value();
@@ -414,7 +414,7 @@ export default class OpsSidenav extends EpOpsComponent {
     if (_.isArray(i18key)) {
       return _.join(
         _.map(i18key, key => this.$t(key)),
-        ' '
+        ' ',
       );
     }
     else {
@@ -486,8 +486,8 @@ export default class OpsSidenav extends EpOpsComponent {
                   that.opintojaksoModuuliLista({
                     id: poa.id!,
                     koodi: poa.koodi!,
-                  })
-                )
+                  }),
+                ),
               )
               .map(el => ({
                 ...el,
@@ -495,7 +495,7 @@ export default class OpsSidenav extends EpOpsComponent {
                   _.find(this.oppiaineJarjestykset, {
                     koodi: _.get(el, 'item.objref.koodi'),
                   }),
-                  'jarjestys'
+                  'jarjestys',
                 ),
               }))
               .value(),

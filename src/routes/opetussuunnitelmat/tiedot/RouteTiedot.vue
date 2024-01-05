@@ -227,7 +227,7 @@ export default class RouteTiedot extends EpOpsRoute {
       [
         ...(this.fetchedData?.kunnat ? this.fetchedData.kunnat : []),
         ...(this.fetchedData?.organisaatiot ? this.fetchedData.organisaatiot : []),
-      ], (org: any) => this.$kaanna(org.nimi)
+      ], (org: any) => this.$kaanna(org.nimi),
     );
   }
 
