@@ -131,21 +131,27 @@
                                       :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.tyotavat"
                                       :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
                                       :isEditing="isEditing"
-                                      :peruste-teksti-avattu="true" />
+                                      :peruste-teksti-avattu="true" >
+            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.tyotavat" class="mb-3">{{$t('tyotavat')}}</h3>
+          </vuosiluokka-sisalto-teksti>
           <hr v-if="perusteenVuosiluokkakokonaisuus.tyotavat"/>
 
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.ohjaus"
                                       :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.ohjaus"
                                       :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
                                       :isEditing="isEditing"
-                                      :peruste-teksti-avattu="true" />
+                                      :peruste-teksti-avattu="true" >
+            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.ohjaus" class="mb-3">{{$t('ohjaus')}}</h3>
+          </vuosiluokka-sisalto-teksti>
           <hr  v-if="perusteenVuosiluokkakokonaisuus.ohjaus"/>
 
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.arviointi"
                                       :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.arviointi"
                                       :vlkObject="data.vuosiluokkakokonaisuus.arviointi"
                                       :isEditing="isEditing"
-                                      :peruste-teksti-avattu="true" />
+                                      :peruste-teksti-avattu="true" >
+            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.arviointi" class="mb-3">{{$t('arviointi')}}</h3>
+          </vuosiluokka-sisalto-teksti>
         </div>
 
         <div v-if="data.oppiaine.oppimaarat && data.oppiaine.oppimaarat.length > 0">
