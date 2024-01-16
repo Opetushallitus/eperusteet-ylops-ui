@@ -14,7 +14,13 @@
                 <h3 v-html="$kaanna(tavoite.tavoite)"></h3>
               </template>
 
-              <div v-if="tavoite.tavoitteistaJohdetutOppimisenTavoitteet">
+              <div v-if="tavoite.oppiaineenTavoitteenOpetuksenTavoitteet && tavoite.oppiaineenTavoitteenOpetuksenTavoitteet.length > 0" class="mb-3">
+                <h4>{{ $t('opetuksen-tavoitteet') }}</h4>
+                <div v-for="(ot, index) in tavoite.oppiaineenTavoitteenOpetuksenTavoitteet" :key="'ot'+index">
+                  <span v-html="$kaanna(ot.tavoite)"></span>
+                </div>
+              </div>
+              <div v-else-if="tavoite.tavoitteistaJohdetutOppimisenTavoitteet">
                 <h4>{{ $t('tavoitteista-johdetut-oppimisen-tavoitteet') }}</h4>
                 <span v-html="$kaanna(tavoite.tavoitteistaJohdetutOppimisenTavoitteet)"></span>
               </div>
