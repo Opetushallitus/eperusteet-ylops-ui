@@ -20,7 +20,8 @@
                   <span v-html="$kaanna(ot.tavoite)"></span>
                 </div>
               </div>
-              <div v-else-if="tavoite.tavoitteistaJohdetutOppimisenTavoitteet">
+
+              <div v-if="tavoite.tavoitteistaJohdetutOppimisenTavoitteet">
                 <h4>{{ $t('tavoitteista-johdetut-oppimisen-tavoitteet') }}</h4>
                 <span v-html="$kaanna(tavoite.tavoitteistaJohdetutOppimisenTavoitteet)"></span>
               </div>
