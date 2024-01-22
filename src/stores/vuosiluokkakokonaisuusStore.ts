@@ -24,9 +24,9 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
   }
 
   async load() {
-    let vlk;
-    let perusteenVlk;
-    let laajaalaiset;
+    let vlk = {} as any;
+    let perusteenVlk = {} as any;
+    let laajaalaiset = {} as any;
     [vlk, perusteenVlk, laajaalaiset] = _.map(await (Promise.all([
       Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuus(this.opsId, this.vlkId),
       Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuudenPerusteSisalto(this.opsId, this.vlkId),

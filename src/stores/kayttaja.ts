@@ -91,7 +91,7 @@ class KayttajaStore {
       .map(oid => Ulkopuoliset.getOrganisaatioVirkailijat([oid]))
       .value()), 'data');
 
-    let virkailijat: any[] = [];
+    const virkailijat: any[] = [];
     for (let i = 0; i < res.length; i++) {
       const organisaatio = organisaatiot[i];
       const orgVirkailijat = res[i];

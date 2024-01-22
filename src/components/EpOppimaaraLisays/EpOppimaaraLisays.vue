@@ -65,6 +65,7 @@ import { required } from 'vuelidate/lib/validators';
     EpSelect,
     EpFormContent,
   },
+  mixins: [validationMixin],
   validations: {
     valittuOppimaara: {
       required,
@@ -76,7 +77,7 @@ import { required } from 'vuelidate/lib/validators';
     },
   },
 })
-export default class EpOppimaaraLisays extends Mixins(EpRoute, EpOpsComponent, validationMixin) {
+export default class EpOppimaaraLisays extends Mixins(EpRoute, EpOpsComponent) {
   @Prop({ required: true })
   private oppiaine!: OppiaineSuppeaDto;
 
@@ -189,7 +190,7 @@ export default class EpOppimaaraLisays extends Mixins(EpRoute, EpOpsComponent, v
         },
       });
     }
-    catch (err) {
+    catch (err: any) {
       this.$fail(this.$t('tallennus-epaonnistui') as string);
       this.$fail(err.response.data.syy);
     }

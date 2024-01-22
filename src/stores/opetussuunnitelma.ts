@@ -394,7 +394,7 @@ export class OpetussuunnitelmaStore {
       success('palautus-onnistui');
       await this.init();
     }
-    catch (err) {
+    catch (err: any) {
       fail('palautus-epaonnistui', err.response.data.syy);
     }
   }

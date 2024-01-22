@@ -9,7 +9,7 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
     private opsId: number,
     private oppiaineId: number,
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
-    private vuosiluokkaId: number
+    private vuosiluokkaId: number,
   ) {
   }
 
@@ -28,11 +28,11 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
   }
 
   async load() {
-    let oppiaine;
-    let vuosiluokka;
-    let perusteenOppiaine;
-    let laajaalaisetOsaamiset;
-    let vuosiluokkakokonaisuus;
+    let oppiaine = {} as any;
+    let vuosiluokka = {} as any;
+    let perusteenOppiaine = {} as any;
+    let laajaalaisetOsaamiset = {} as any;
+    let vuosiluokkakokonaisuus = {} as any;
     [oppiaine, vuosiluokka, perusteenOppiaine, laajaalaisetOsaamiset, vuosiluokkakokonaisuus] = _.map(await (Promise.all([
       Oppiaineet.getOppiaine(this.opsId, this.oppiaineId),
       OppiaineenVuosiluokat.getOppiaineenvuosiluokka(this.opsId, this.oppiaineId,

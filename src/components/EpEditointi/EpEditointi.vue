@@ -423,7 +423,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
     const vahvistusSisalto = this.$createElement('div', {},
       [
         this.$createElement('strong', this.$t('tata-toimintoa-ei-voida-perua') as string),
-      ]
+      ],
     ).children;
 
     return this.$bvModal.msgBoxConfirm((vahvistusSisalto as any), {
@@ -486,7 +486,7 @@ export default class EpEditointi extends Mixins(validationMixin) {
       padding-right: 50px;
     }
 
-    /deep/ .pagination .page-item {
+    ::v-deep .pagination .page-item {
       &.active {
         .page-link {
           font-weight: 600;

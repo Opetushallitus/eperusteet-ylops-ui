@@ -144,7 +144,7 @@ export default class RouteKasite extends EpOpsRoute {
     const res = await Termisto.updateTermi(
       this.opsId,
       kasiteId,
-      this.kasite
+      this.kasite,
     );
     _.remove(this.termisto, termi => termi.kasite.id === kasiteId);
     this.termisto.push({
@@ -203,9 +203,9 @@ export default class RouteKasite extends EpOpsRoute {
 
     return this.termisto.filter(termi => _.includes(
       _.toLower(
-        _.get(termi, 'kasite.termi.' + kieli) + ' ' + _.get(termi, 'kasite.selitys.' + kieli)
+        _.get(termi, 'kasite.termi.' + kieli) + ' ' + _.get(termi, 'kasite.selitys.' + kieli),
       ),
-      hakutermi
+      hakutermi,
     ));
   }
 
@@ -312,7 +312,7 @@ export default class RouteKasite extends EpOpsRoute {
   .termi.closed {
     white-space: nowrap;
 
-    /deep/ div {
+    ::v-deep div {
       text-overflow: ellipsis;
       overflow: hidden;
     }
@@ -326,7 +326,7 @@ export default class RouteKasite extends EpOpsRoute {
     overflow: hidden;
     line-height: 1.5em;
 
-    /deep/ img {
+    ::v-deep img {
       max-width: 100%;
     }
 
@@ -342,7 +342,7 @@ export default class RouteKasite extends EpOpsRoute {
     white-space: nowrap;
     text-overflow: ellipsis;
 
-    /deep/ p {
+    ::v-deep p {
       margin: 0;
       text-overflow: ellipsis;
       overflow: hidden;

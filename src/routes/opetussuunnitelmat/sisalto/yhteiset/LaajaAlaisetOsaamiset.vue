@@ -60,7 +60,7 @@ export default class LaajaAlaisetOsaamiset extends Vue {
   @Prop({
     required: true,
     type: Array,
-    validator(koodit) {
+    validator(koodit: any[]) {
       return _.every(koodit, koodi => koodi.koodiUri);
     },
   })

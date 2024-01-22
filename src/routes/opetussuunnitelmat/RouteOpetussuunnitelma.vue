@@ -317,7 +317,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     display: flex;
     align-items: center;
 
-    h1 /deep/ button {
+    h1 ::v-deep button {
       color: inherit;
     }
 

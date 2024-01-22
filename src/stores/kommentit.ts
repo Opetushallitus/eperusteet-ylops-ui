@@ -129,7 +129,7 @@ class KommenttiStore {
     }
   }
 
-  private watchVisibleThreads = watch(async () => {
+  private watchVisibleThreads = watch(this.visibleThreads, async () => {
     if (!_.isEmpty(this.visibleThreads.value)) {
       const res = await Promise.all(_(this.visibleThreads.value)
         .reject(uuid => uuid === UusiKommenttiHandle)
@@ -145,7 +145,7 @@ class KommenttiStore {
     this.clearCommentStyle();
   });
 
-  private watcher = watch(async () => {
+  private watcher = watch(this.threadUuid, async () => {
     if (this.threadUuid.value && this.threadUuid.value !== UusiKommenttiHandle) {
       const thread = await Kommentointi.getKommenttiByKetjuUuid(this.threadUuid.value);
       this.state.thread = thread.data;

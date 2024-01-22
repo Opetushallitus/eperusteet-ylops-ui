@@ -2,7 +2,7 @@
 <div id="scroll-anchor" v-if="hooks && !isLoading">
   <ep-editointi :hooks="hooks">
 
-    <template #header="{ data }">
+    <template #header>
       <h2 class="otsikko">{{ $t('muokkaa-jarjestysta') }}</h2>
     </template>
 
@@ -223,7 +223,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
               .map('koodi')
               .filter(_.identity)
               .value(),
-              poa.koodi!
+              poa.koodi!,
           ))
           .map(oj => {
             const ojOa: any = _.find(oj.oppiaineet, { koodi: poa.koodi });
@@ -259,7 +259,7 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
               .map('koodi')
               .filter(_.identity)
               .value(),
-              poa.koodi!
+              poa.koodi!,
           ))
           .map(oj => {
             const ojOa: any = _.find(oj.oppiaineet, { koodi: poa.koodi });

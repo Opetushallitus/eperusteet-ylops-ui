@@ -227,7 +227,7 @@ export default class RouteTiedot extends EpOpsRoute {
       [
         ...(this.fetchedData?.kunnat ? this.fetchedData.kunnat : []),
         ...(this.fetchedData?.organisaatiot ? this.fetchedData.organisaatiot : []),
-      ], (org: any) => this.$kaanna(org.nimi)
+      ], (org: any) => this.$kaanna(org.nimi),
     );
   }
 
@@ -309,7 +309,7 @@ export default class RouteTiedot extends EpOpsRoute {
 .otsikko {
     margin-bottom: 0;
 }
-/deep/ .linkki a {
+::v-deep .linkki a {
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-all;

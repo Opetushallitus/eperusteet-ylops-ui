@@ -127,7 +127,7 @@ export default class EpNavigation extends Vue {
     return _(this.$route.matched)
       .filter('name')
       .map(route => {
-        const computeds = _.get(route, 'instances.default');
+        const computeds = _.get(route, 'instances.default') as any;
         const result = {
           ...route,
           muru: this.murut[route!.name!],
@@ -217,18 +217,18 @@ export default class EpNavigation extends Vue {
       }
     }
 
-    /deep/ .dropdown-menu {
+    ::v-deep .dropdown-menu {
       padding: 0;
       color: #000000;
       min-width: initial;
     }
 
-    /deep/ .dropdown-item {
+    ::v-deep .dropdown-item {
       padding: 0.5rem 1rem;
       color: #000000;
     }
 
-    /deep/ .dropdown-item:hover {
+    ::v-deep .dropdown-item:hover {
       background-color: inherit;
     }
 

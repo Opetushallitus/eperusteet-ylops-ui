@@ -4,7 +4,7 @@
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}: {{ $t('vuosiluokkaista-tavoitteet') }}</h2>
       </template>
-      <template v-slot:default="{ data, isEditing }">
+      <template v-slot:default="{ data }">
 
         <div class="m-3">{{$t('lisaa-tavoitteet-vuosiluokille')}}</div>
 

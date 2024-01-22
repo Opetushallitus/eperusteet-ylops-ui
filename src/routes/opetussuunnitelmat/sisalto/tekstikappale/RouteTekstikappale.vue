@@ -20,7 +20,7 @@
       <template slot="keskustelu" slot-scope="{ }">
         <ep-comment-threads />
       </template>
-      <template slot="header" slot-scope="{ isEditing, data }">
+      <template slot="header" slot-scope="{ data }">
         <h2>{{ $kaanna(perusteTekstinOtsikko || data.tov.tekstiKappale.nimi) }}</h2>
       </template>
       <template slot="liite" slot-scope="{ data }">
@@ -226,7 +226,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   }
 
   get versionumero() {
-    return _.parseInt(_.get(this, '$route.query.versionumero'));
+    return _.parseInt(_.get(this, '$route.query.versionumero') as any);
   }
 
   private async load() {

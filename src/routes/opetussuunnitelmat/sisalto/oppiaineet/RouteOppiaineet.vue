@@ -413,7 +413,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           .map('koodi')
           .filter(_.identity)
           .value(),
-          poa.koodi!
+          poa.koodi!,
       ))
       .map(oj => {
         const ojOa: any = _.find(oj.oppiaineet, { koodi: poa.koodi });
@@ -513,7 +513,7 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
           .map('koodi')
           .filter(_.identity)
           .value(),
-          pom.koodi!.uri
+          pom.koodi!.uri,
       ))
       .value();
 

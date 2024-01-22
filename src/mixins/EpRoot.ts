@@ -56,7 +56,7 @@ export default class EpRoot extends Vue {
   }
 
   public async loading(
-    fn: () => Promise<void>
+    fn: () => Promise<void>,
   ) {
     this.mIsLoading = true;
     try {

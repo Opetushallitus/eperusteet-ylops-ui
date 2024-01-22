@@ -69,7 +69,7 @@ export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
 
   get liitetytModuulitLukumaara() {
     return _.size(
-      _.filter(this.moduulit, (moduuli) => _.includes(this.opintojaksojenModuuliKoodiUri, moduuli.koodi!.uri))
+      _.filter(this.moduulit, (moduuli) => _.includes(this.opintojaksojenModuuliKoodiUri, moduuli.koodi!.uri)),
     );
   }
 

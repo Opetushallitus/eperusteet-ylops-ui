@@ -28,7 +28,7 @@ describe('Router', () => {
   localVue.use(new Kaannos());
 
   async function createMounted(
-    oikeudet = genOikeudet('oph')
+    oikeudet = genOikeudet('oph'),
   ) {
     jest.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));

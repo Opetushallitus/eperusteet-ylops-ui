@@ -108,7 +108,7 @@
 
       <div class="text-right">
         <b-button class="mr-4" variant="link" :to="{ name: 'opetussuunnitelmaListaus'}">{{$t('peruuta')}}</b-button>
-        <ep-button :disabled="$v.uusi.$invalid || addingOpetussuunnitelma" @click="luoUusiOpetussuunnitelma" :show-spinner="isLoading">{{ $t('luo-opetussuunnitelma') }}</ep-button>
+        <ep-button :disabled="$v.uusi.$invalid || addingOpetussuunnitelma" @click="luoUusiOpetussuunnitelma" :show-spinner="addingOpetussuunnitelma">{{ $t('luo-opetussuunnitelma') }}</ep-button>
       </div>
     </div>
   </div>
@@ -276,41 +276,39 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
 
   public async luoUusiOpetussuunnitelma() {
     this.addingOpetussuunnitelma = true;
-    this.loading(async () => {
-      const ops: OpetussuunnitelmaLuontiDto = {
-        nimi: this.uusi.nimi,
-        julkaisukielet: [],
-        tyyppi: 'ops' as any,
-        kunnat: this.uusi.organisaatiot.kunnat,
-        organisaatiot: [
-          ...this.uusi.organisaatiot.jarjestajat,
-          ...this.uusi.organisaatiot.oppilaitokset,
-          ...this.uusi.organisaatiot.ryhmat,
-        ],
-        ainepainoitteinen: this.uusi.ainepainoitteinen,
-        vuosiluokkakokonaisuudet: this.uusi.vuosiluokkakokonaisuudet,
-        tuoPohjanOpintojaksot: this.uusi.tuoPohjanOpintojaksot ? this.uusi.tuoPohjanOpintojaksot : false,
-        tuoPohjanOppimaarat: this.uusi.tuoPohjanOppimaarat ? this.uusi.tuoPohjanOppimaarat : false,
-      };
+    const ops: OpetussuunnitelmaLuontiDto = {
+      nimi: this.uusi.nimi,
+      julkaisukielet: [],
+      tyyppi: 'ops' as any,
+      kunnat: this.uusi.organisaatiot.kunnat,
+      organisaatiot: [
+        ...this.uusi.organisaatiot.jarjestajat,
+        ...this.uusi.organisaatiot.oppilaitokset,
+        ...this.uusi.organisaatiot.ryhmat,
+      ],
+      ainepainoitteinen: this.uusi.ainepainoitteinen,
+      vuosiluokkakokonaisuudet: this.uusi.vuosiluokkakokonaisuudet,
+      tuoPohjanOpintojaksot: this.uusi.tuoPohjanOpintojaksot ? this.uusi.tuoPohjanOpintojaksot : false,
+      tuoPohjanOppimaarat: this.uusi.tuoPohjanOppimaarat ? this.uusi.tuoPohjanOppimaarat : false,
+    };
 
-      // FIXME: #swagger
-      (ops as any)._pohja = '' + this.uusi.pohja!.id;
-      try {
-        const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
-        success('lisays-opetussuunnitelma-onnistui');
-        this.$router.replace({
-          name: 'yleisnakyma',
-          params: {
-            id: '' + luotu.id,
-          },
-        });
-      }
-      catch (err) {
-        fail('ei-riittavia-oikeuksia-organisaatioissa');
-        await delay(300);
-        this.addingOpetussuunnitelma = false;
-      }
-    });
+    // FIXME: #swagger
+    (ops as any)._pohja = '' + this.uusi.pohja!.id;
+    try {
+      const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
+      success('lisays-opetussuunnitelma-onnistui');
+      this.$router.replace({
+        name: 'yleisnakyma',
+        params: {
+          id: '' + luotu.id,
+        },
+      });
+    }
+    catch (err) {
+      fail('ei-riittavia-oikeuksia-organisaatioissa');
+      await delay(300);
+      this.addingOpetussuunnitelma = false;
+    }
   }
 
   get validator() {
