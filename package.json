@@ -32,7 +32,7 @@
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/jest": "^24.0.19",
-    "@types/lodash": "^4.14.198",
+    "@types/lodash": "^4.14.202",
     "@types/qs": "^6.9.1",
     "@types/uuid": "^7.0.0",
     "@types/vue-select": "^2.5.0",
@@ -51,11 +51,11 @@
     "@vue/eslint-config-typescript": "^12.0.0",
     "@vue/test-utils": "1.0.0-beta.29",
     "animate.css": "^3.7.2",
-    "apexcharts": "^3.15.2",
-    "axios": "^0.21.1",
+    "apexcharts": "^3.44.0",
+    "axios": "^1.6.4",
     "axios-mock-adapter": "^1.17.0",
     "bootstrap-vue": "^2.21.2",
-    "core-js": "^3.4.4",
+    "core-js": "^3.33.0",
     "deepdash-es": "^5.3.9",
     "eslint": "^8.45.0",
     "eslint-plugin-vue": "^9.19.2",
@@ -102,7 +102,7 @@
     "vuelidate": "^0.7.5",
     "vuelidate-property-decorators": "^1.0.28",
     "vuex": "^3.1.2",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "mutation-observer": "^1.0.3",
