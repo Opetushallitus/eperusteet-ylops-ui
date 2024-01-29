@@ -18,8 +18,10 @@
             <EpMaterialIcon>chevron_left</EpMaterialIcon>
           </ops-sidenav-link>
           <ops-sidenav-link class="previous-link" tag="span" :to="itemRoute">
-              {{ kaanna(itemData.item) }}
-              <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
+            {{ kaanna(itemData.item) }}
+            <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
+            <EpMaterialIcon v-if="itemData.item.order === '99'" size="16px">attach_file</EpMaterialIcon>
+            <EpMaterialIcon v-if="itemData.item.piilotettu" size="16px">visibility_off</EpMaterialIcon>
           </ops-sidenav-link>
         </li>
       </template>
@@ -53,6 +55,7 @@
               {{ kaanna(itemData.item) }}
               <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
               <EpMaterialIcon v-if="itemData.item.order === '99'" size="16px">attach_file</EpMaterialIcon>
+              <EpMaterialIcon v-if="itemData.item.piilotettu" size="16px">visibility_off</EpMaterialIcon>
             </div>
             <EpMaterialIcon v-if="!itemData.item.hideChevron">chevron_right</EpMaterialIcon>
           </div>
