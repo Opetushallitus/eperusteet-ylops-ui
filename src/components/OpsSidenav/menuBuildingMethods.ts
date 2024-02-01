@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import { SideMenuEntry, OpintojaksoModuuliSource } from '@shared/tyypit';
-
 import { koodiNumero, koodiAlku } from '@/utils/perusteet';
 import { sortedOppiaineet } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
@@ -23,6 +22,7 @@ export function opsLapsiLinkit(lapset: any, prefix = ''): SideMenuEntry[] {
         objref: lapsi.perusteenTekstikappale || lapsi.tekstiKappale,
         prefix: lapsi.liite ? '' : chapter,
         order: lapsi.liite ? '99' : '0',
+        piilotettu: lapsi.piilotettu,
       },
       route: {
         name: 'tekstikappale',

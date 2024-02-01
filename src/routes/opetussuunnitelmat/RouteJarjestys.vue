@@ -28,6 +28,9 @@
                 <EpMaterialIcon v-if="node.liite"
                                 v-b-popover="{content: $t('tekstikappale-naytetaan-liitteena'), trigger: 'hover'}"
                                 size="20px">attach_file</EpMaterialIcon>
+                <EpMaterialIcon v-if="node.piilotettu"
+                                v-b-popover="{content: $t('tekstikappale-on-piilotettu'), trigger: 'hover'}"
+                                size="20px">visibility_off</EpMaterialIcon>
               </template>
             </ep-jarjesta>
           </div>
