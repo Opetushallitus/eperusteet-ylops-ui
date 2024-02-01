@@ -50,7 +50,7 @@
             <template v-slot:header><h4>{{$kaanna(vapaateksti.nimi)}}</h4></template>
             <span v-html="$kaanna(vapaateksti.teksti)"></span>
 
-            <h4 class="paikallinen-header">{{ $t('paikallinen-teksti') }}</h4>
+            <h4 class="mt-4">{{ $t('paikallinen-teksti') }}</h4>
             <EpButton v-if="isEditing && !vapaateksti.hasPaikallinenTarkennus"
                       icon="add"
                       @click="lisaaPaikallinenTarkennus(data.oppiaine, vapaateksti.id)"
@@ -316,10 +316,6 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
   font-size: 0.85rem;
   font-style: italic;
   color: $gray-lighten-2;
-}
-
-.paikallinen-header {
-  margin-top: 30px;
 }
 
 </style>
