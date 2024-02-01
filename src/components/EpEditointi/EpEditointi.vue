@@ -13,8 +13,10 @@
                     :validation="$v && $v.state && $v.state.data"></slot>
             </div>
             <div class="muokattu d-flex flex-wrap align-self-start pb-2" v-if="!ctrls.isEditing && latest">
-              <slot name="liite" :data="state.data"></slot>
-              <div class="text-truncate">{{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ nimi }}</div>
+              <div class="d-flex">
+                <slot name="additional-info" :data="state.data"></slot>
+                <div class="text-truncate">{{ $t('muokattu') }}: {{ $sdt(latest.pvm) }}, {{ nimi }}</div>
+              </div>
             </div>
           </div>
           <div class="d-flex flex-nowrap align-self-start justify-content-end muokkaus-container">
