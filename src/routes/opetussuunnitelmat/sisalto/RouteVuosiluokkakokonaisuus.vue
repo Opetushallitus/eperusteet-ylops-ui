@@ -10,6 +10,46 @@
                                     :isEditing="isEditing"
                                     :peruste-teksti-avattu="true" />
 
+        <template v-if="data.perusteenVlk.vapaatTekstit">
+          <ep-collapse class="mt-4"
+                       tyyppi="perusteteksti"
+                       :border-bottom="false"
+                       :border-top="true"
+                       :expanded-by-default="true"
+                       v-for="(vapaateksti, index) in perusteenVlkVapaatTekstit"
+                       :key="'perustevapaateksti' + index">
+
+            <template v-slot:header><h4>{{$kaanna(vapaateksti.nimi)}}</h4></template>
+            <span v-html="$kaanna(vapaateksti.teksti)"></span>
+
+            <h4 class="mt-4">{{ $t('paikallinen-teksti') }}</h4>
+            <EpButton v-if="isEditing && !vapaateksti.hasPaikallinenTarkennus"
+                      icon="add"
+                      @click="lisaaPaikallinenTarkennus(data.vlk, vapaateksti.id)"
+                      variant="link"
+                      class="mb-1">
+              {{ $t('lisaa-paikallinen-tarkennus') }}
+            </EpButton>
+            <EpAlert v-if="!isEditing && !vapaateksti.hasPaikallinenTarkennus" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+
+            <div v-for="(teksti, index) in data.vlk.vapaatTekstit" :key="'teksti'+index">
+              <div v-if="vapaateksti.id === teksti.perusteenVapaaTekstiId">
+                <EpContent v-model="teksti.paikallinenTarkennus"
+                           layout="normal"
+                           :is-editable="isEditing"></EpContent>
+
+                <EpButton v-if="isEditing"
+                          @click="poistaPaikallinenTarkennus(data.vlk, vapaateksti.id)"
+                          variant="link"
+                          icon="delete">
+                  {{ $t('poista-paikallinen-tarkennus') }}
+                </EpButton>
+              </div>
+
+            </div>
+          </ep-collapse>
+        </template>
+
         <hr/>
         <h2>{{$t('siirtymavaiheet')}}</h2>
 
@@ -54,9 +94,18 @@ import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
 import VuosiluokkaSisaltoTeksti from './VuosiluokkaSisaltoTeksti.vue';
+import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpContent from '@shared/components/EpContent/EpContent.vue';
+import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {
+    EpCollapse,
+    EpContent,
+    EpButton,
+    EpAlert,
     EpEditointi,
     VuosiluokkaSisaltoTeksti,
   },
@@ -71,6 +120,33 @@ export default class RouteVuosiluokkakokonaisuus extends Mixins(EpRoute, EpOpsCo
 
   async resetOps() {
     await this.store.init();
+  }
+
+  get vlk() {
+    return this.editointiStore?.data.value.vlk;
+  }
+
+  get perusteenVlkVapaatTekstit() {
+    return _.map(this.editointiStore?.data.value.perusteenVlk.vapaatTekstit || {}, vlkVt => {
+      return {
+        ...vlkVt,
+        hasPaikallinenTarkennus: _.some(this.vlk.vapaatTekstit, vt => vlkVt.id === vt.perusteenVapaaTekstiId),
+      };
+    });
+  }
+
+  lisaaPaikallinenTarkennus(vlk, id) {
+    if (!vlk.vapaatTekstit) {
+      vlk.vapaatTekstit = [];
+    }
+    vlk.vapaatTekstit.push(
+      { perusteenVapaaTekstiId: id,
+        paikallinenTarkennus: Kielet.haeLokalisoituOlio(''),
+      });
+  }
+
+  poistaPaikallinenTarkennus(vlk, vapaatekstiId) {
+    vlk.vapaatTekstit = _.filter(vlk.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
   }
 }
 </script>
