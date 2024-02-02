@@ -19,11 +19,16 @@
                 <ep-external-link :url="data.perusteUrl">{{data.perusteenDiaarinumero}}</ep-external-link>
               </ep-form-content>
             </div>
-            <div class="col-md-6" v-if="data.pohja && data.pohja.id && data.pohja.tyyppi === 'ops'">
-              <ep-form-content name="pohja">
-                <router-link :to="{ name:'opsTiedot', params: { id: data.pohja.id } }" target="_blank" rel="noopener noreferrer">
-                  <span>{{ $kaanna(data.pohja.nimi) || data.pohja.id }}</span>
-                </router-link>
+            <div class="col-md-6" v-if="data.periytyvatPohjat && data.periytyvatPohjat.length > 0">
+              <ep-form-content name="pohjat">
+                <ul>
+                  <li v-for="(pohja, idx) in data.periytyvatPohjat" :key="idx + 1" :style="{ marginLeft: (idx * 20) + 'px' }">
+                    <router-link v-if="pohja.id" :to="{ name:'opsTiedot', params: { id: pohja.id } }" target="_blank" rel="noopener noreferrer">
+                      <span>{{ $kaanna(pohja.nimi) }}</span>
+                    </router-link>
+                    <span v-else>{{ $kaanna(pohja.nimi) }}</span>
+                  </li>
+                </ul>
               </ep-form-content>
             </div>
             <div class="col-md-6">
