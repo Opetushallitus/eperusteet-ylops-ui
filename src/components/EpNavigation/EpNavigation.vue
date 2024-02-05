@@ -70,7 +70,7 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
 import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
-import { LogoutParams, baseURL } from '@shared/api/ylops';
+import { baseURL } from '@shared/api/ylops';
 
 @Component({
   directives: {
@@ -151,7 +151,7 @@ export default class EpNavigation extends Vue {
   }
 
   get logoutHref() {
-    return baseURL + LogoutParams.logoutGet().url;
+    return baseURL + '/api/logout';
   }
 }
 </script>
