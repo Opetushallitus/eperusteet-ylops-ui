@@ -21,14 +21,21 @@
             </div>
             <div class="col-md-6" v-if="data.periytyvatPohjat && data.periytyvatPohjat.length > 0">
               <ep-form-content name="pohjat">
-                <ul>
-                  <li v-for="(pohja, idx) in data.periytyvatPohjat" :key="idx + 1" :style="{ marginLeft: (idx * 20) + 'px' }">
+                <EpCollapse :borderBottom="false"
+                            :expandedByDefault="data.periytyvatPohjat.length < 4"
+                            :use-padding="false">
+                  <template v-slot:header="{ toggled }">
+                    <template v-if="!toggled">{{$t('nayta-kaikki-pohjat')}} ({{ data.periytyvatPohjat.length }})</template>
+                    <template v-if="toggled">{{$t('piilota-kaikki-pohjat')}}</template>
+                  </template>
+                  <div v-for="(pohja, idx) in data.periytyvatPohjat" :key="idx + 1" class="d-flex">
+                    <EpMaterialIcon v-if="idx > 0" size="22px" :color="'#555'" :style="{ marginLeft: ((idx - 1) * 25) + 'px' }">subdirectory_arrow_right</EpMaterialIcon>
                     <router-link v-if="pohja.id" :to="{ name:'opsTiedot', params: { id: pohja.id } }" target="_blank" rel="noopener noreferrer">
                       <span>{{ $kaanna(pohja.nimi) }}</span>
                     </router-link>
                     <span v-else>{{ $kaanna(pohja.nimi) }}</span>
-                  </li>
-                </ul>
+                  </div>
+                </EpCollapse>
               </ep-form-content>
             </div>
             <div class="col-md-6">
@@ -155,9 +162,14 @@ import { buildEsikatseluUrl, buildKatseluUrl } from '@shared/utils/esikatselu';
 import { isLukio, koulutustyyppiTheme } from '@shared/utils/perusteet';
 import { OpetussuunnitelmaKevytDtoToteutusEnum, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
+import EpJulkaisuLista from '@shared/components/EpJulkaisuHistoriaJulkinen/EpJulkaisuLista.vue';
 
 @Component({
   components: {
+    EpJulkaisuLista,
+    EpCollapse,
     EpContent,
     EpDatepicker,
     EpEditointi,
@@ -168,6 +180,7 @@ import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
     Tilanvaihto,
     EpExternalLink,
     EpOrganizations,
+    EpMaterialIcon,
   },
 })
 export default class RouteTiedot extends EpOpsRoute {
@@ -320,4 +333,13 @@ export default class RouteTiedot extends EpOpsRoute {
   word-break: break-all;
   white-space: normal;
 }
+
+::v-deep .ep-collapse .header {
+  color: #3367E3;
+}
+
+::v-deep .ml-auto {
+  margin-left: 0 !important;
+}
+
 </style>
