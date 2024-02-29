@@ -30,7 +30,7 @@ export interface IKasiteHandler {
 };
 
 export function createLiitetiedostoHandler(opsId: number): IAttachmentWrapper {
-  const Endpoint = '/opetussuunnitelmat/' + opsId + '/kuvat';
+  const Endpoint = '/api/opetussuunnitelmat/' + opsId + '/kuvat';
 
   return {
     endpoint() {
