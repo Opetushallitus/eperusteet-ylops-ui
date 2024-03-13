@@ -15,6 +15,7 @@ import aikaleima from '@shared/plugins/aikaleima';
 import plaintext from '@shared/plugins/plaintext';
 import Vuelidate from 'vuelidate';
 import '@shared/config/bootstrap';
+import '@shared/config/defaultcomponents';
 
 Vue.use(VueCompositionApi);
 Vue.use(VueI18n);

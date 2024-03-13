@@ -11,8 +11,14 @@
         v-oikeustarkastelu="oikeustarkastelu">
         <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne')}}</h2>
         <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
+        <br/>
+        <div>{{$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-peruste-selvennys')}}</div>
+        <EpExternalLink :url="perusteUrl">{{$kaanna(perusteNimi)}}</EpExternalLink>
 
         <div class="d-flex justify-content-end">
+          <div class="d-flex align-items-end mr-3 disabled-text font-size-08" v-if="viimeisinPohjaTekstiSync">
+            {{$t('viimeisin-synkronisointi-pvm')}} {{$sd(viimeisinPohjaTekstiSync)}}
+          </div>
           <ep-button @click="syncTekstitPohjasta()" :showSpinner="syncPohja">
             {{$t('paivita-opetussuunnitelma')}}
           </ep-button>
@@ -75,6 +81,9 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { createLogger } from '@shared/utils/logger';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { KoulutustyyppiToteutus } from '@shared/tyypit';
+import { Kielet } from '@shared/stores/kieli';
+import { buildKatseluUrl } from '@shared/utils/esikatselu';
+import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 
 @Component({
   components: {
@@ -138,6 +147,10 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
     return this.store.pohjallaPuuttuviaTeksteja;
   }
 
+  get viimeisinPohjaTekstiSync() {
+    return this.store.viimeisinPohjaTekstiSync?.luotu || this.ops.luotu;
+  }
+
   get pohjanPerustePaivittynyt() {
     return this.store.pohjanPerustePaivittynyt;
   }
@@ -148,6 +161,18 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 
   get oikeustarkastelu() {
     return { oikeus: 'hallinta', kohde: this.isPohja ? 'pohja' : 'opetussuunnitelma' };
+  }
+
+  get perusteId() {
+    return this.ops?.perusteenId;
+  }
+
+  get perusteUrl() {
+    return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/${this.perusteId}`);
+  }
+
+  get perusteNimi() {
+    return this.store.peruste?.nimi;
   }
 }
 </script>
