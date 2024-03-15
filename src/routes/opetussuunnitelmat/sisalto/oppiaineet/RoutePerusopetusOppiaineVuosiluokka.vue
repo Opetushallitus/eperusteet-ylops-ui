@@ -92,9 +92,9 @@
                 </b-col>
               </b-row>
 
-              <div class="mb-4" v-if="tavoite.hyvanOsaamisenKuvaus || tavoite.arvioinninKuvaus">
+              <div class="mb-4" v-if="(tavoite.hyvanOsaamisenKuvaus && tavoite.hyvanOsaamisenKuvaus.arvioinninKohde) || tavoite.arvioinninKuvaus">
                 <h4>{{ $t('arvioinnin-kohde') }}</h4>
-                <span v-if="tavoite.hyvanOsaamisenKuvaus" v-html="$kaanna(tavoite.hyvanOsaamisenKuvaus.arvioinninKohde)"></span>
+                <span v-if="tavoite.hyvanOsaamisenKuvaus && tavoite.hyvanOsaamisenKuvaus.arvioinninKohde" v-html="$kaanna(tavoite.hyvanOsaamisenKuvaus.arvioinninKohde)"></span>
                 <span v-else-if="tavoite.arvioinninKuvaus" v-html="$kaanna(tavoite.arvioinninKuvaus)"></span>
               </div>
 
@@ -103,12 +103,17 @@
                 <ep-arvioinninkohteet-table :arvioinninkohteet="tavoite.arvioinninkohteet" />
               </div>
 
-              <div class="mb-4" v-if="tavoite.vuosiluokanTavoite ">
+              <div class="mb-4" v-if="tavoite.vuosiluokanTavoite">
                 <h4>{{ $t('paikallinen-teksti') }}</h4>
                 <ep-content v-if="isEditing || tavoite.vuosiluokanTavoite.tavoite" v-model="tavoite.vuosiluokanTavoite.tavoite"
                               layout="normal"
                               :is-editable="isEditing"></ep-content>
                 <ep-alert v-if="!isEditing && !tavoite.vuosiluokanTavoite.tavoite" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+              </div>
+
+              <div class="mb-4" v-if="tavoite.vapaaTeksti">
+                <h4>{{ $t('lisatietoa') }}</h4>
+                <span v-html="$kaanna(tavoite.vapaaTeksti)"></span>
               </div>
 
             </ep-collapse>
