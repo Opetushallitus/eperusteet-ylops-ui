@@ -26,7 +26,6 @@ import RouteJarjestys from '@/routes/opetussuunnitelmat/RouteJarjestys.vue';
 import RouteJulkaisu from '@/routes/opetussuunnitelmat/RouteJulkaisu.vue';
 import RouteTiedotteet from '@/routes/tiedotteet/RouteTiedotteet.vue';
 import RouteUkk from '@/routes/ukk/RouteUkk.vue';
-import RouteTilastot from '@/routes/tilastot/RouteTilastot.vue';
 import RouteOppaat from '@/routes/oppaat/RouteOppaat.vue';
 import RouteVuosiluokkakokonaisuus from '@/routes/opetussuunnitelmat/sisalto/RouteVuosiluokkakokonaisuus.vue';
 import RoutePerusopetusOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaine.vue';
@@ -119,10 +118,6 @@ export const router = new Router({
       path: 'ukk',
       name: 'useinkysytyt',
       component: RouteUkk,
-    }, {
-      path: 'tilastot',
-      name: 'tilastot',
-      component: RouteTilastot,
     }, {
       path: 'oppaat',
       name: 'oppaat',
