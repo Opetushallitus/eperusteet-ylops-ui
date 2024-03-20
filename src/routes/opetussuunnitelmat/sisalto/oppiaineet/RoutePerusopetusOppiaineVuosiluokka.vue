@@ -99,7 +99,7 @@
               </div>
 
               <div class="mb-4" v-if="tavoite.arvioinninkohteet && tavoite.arvioinninkohteet.length > 0">
-                <h4 class="mb-0 pb-0">{{ $t('arviointi-vuosiluokan-paatteeksi') }}</h4>
+                <h4 class="mb-0 pb-0" v-html="tavoite.arvioinninOtsikko ? $kaanna(tavoite.arvioinninOtsikko) : $t('arviointi-vuosiluokan-paatteeksi')"></h4>
                 <ep-arvioinninkohteet-table :arvioinninkohteet="tavoite.arvioinninkohteet" />
               </div>
 
@@ -204,24 +204,6 @@ export default class RoutePerusopetusOppiaineVuosiluokka extends Mixins(EpRoute,
       this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(this.$route.params.vlId)));
   }
 
-  get arvioinninSarakkeet() {
-    return [{
-      key: 'arvosana',
-      label: this.$t('osaamistaso'),
-      thStyle: { width: '20%' },
-      formatter: (value, key, item) => {
-        return (this as any).$t('arvosana') + ' ' + value;
-      },
-    }, {
-      key: 'osaamisenKuvaus',
-      label: this.$t('kuvaus'),
-      formatter: (value, key, item) => {
-        return (this as any).$kaanna(value);
-      },
-    },
-    ];
-  }
-
   async aloitaMuokkaus() {
     _.forEach(this.$refs.tavoitecollapse, (collapse: any) => {
       collapse.toggle(true);
@@ -254,7 +236,7 @@ export default class RoutePerusopetusOppiaineVuosiluokka extends Mixins(EpRoute,
   .tavoite {
     box-shadow: 5px 5px 20px rgba(0, 45, 153, 0.08);
     margin-bottom: 20px;
-    padding: 0px 10px;
+    padding: 0 10px;
 
     .sisaltoalue {
 
@@ -273,8 +255,7 @@ export default class RoutePerusopetusOppiaineVuosiluokka extends Mixins(EpRoute,
       padding: 0;
 
       .header, h5 {
-        margin: 0;
-        margin-top: 2px;
+        margin: 2px 0 0;
       }
     }
 
