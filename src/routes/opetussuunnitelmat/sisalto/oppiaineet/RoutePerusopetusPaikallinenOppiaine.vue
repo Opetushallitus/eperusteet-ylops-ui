@@ -21,41 +21,42 @@
         <div class="col-md-12" v-if="isEditing">
           <ep-form-content name="valinnaisen-oppiaineen-tyyppi">
             <b-form-group>
-                <b-form-radio v-model="data.oppiaine.valinnainenTyyppi"
-                              name="valinnaisen-oppiaineen-tyyppi-syventava"
-                              value="syventava"
-                              class="mb-2">{{ $t('syventava') }}</b-form-radio>
-                <ep-form-content name="oppiaine-pakollinen"
-                                 v-if="data.oppiaine.valinnainenTyyppi === 'syventava'"
-                                 class="ml-4">
-                  <ep-multi-select :options="data.oppiaineet"
-                                   v-model="data.liittyvaOppiaine"
-                                   :placeholder="$t('valitse-oppiaine')"
-                                   track-by="id"
-                                   label="nimi"
-                                   :custom-label="kaannaNimi">
-                    <template slot="singleLabel" slot-scope="{ option }">
-                      {{ $kaanna(option.nimi) }}
-                    </template>
-                    <template slot="option" slot-scope="{ option }">
-                      {{ $kaanna(option.nimi) }}
-                    </template>
-                  </ep-multi-select>
-                </ep-form-content>
-                <b-form-radio v-model="data.oppiaine.valinnainenTyyppi"
-                              name="valinnaisen-oppiaineen-tyyppi-soveltava"
-                              value="soveltava"
-                              class="mb-2">{{ $t('soveltava') }}</b-form-radio>
-                <ep-form-content name="oppiaine"
-                                 v-if="data.oppiaine.valinnainenTyyppi === 'soveltava'"
-                                 class="ml-4">
-                  <ep-multi-select :options="data.oppiaineet"
-                                   v-model="data.liittyvaOppiaine"
-                                   :placeholder="$t('valitse-oppiaine')"
-                                   track-by="id"
-                                   label="nimi"
-                                   :custom-label="kaannaNimi" />
-                </ep-form-content>
+              <b-form-radio v-model="data.oppiaine.valinnainenTyyppi"
+                            name="valinnaisen-oppiaineen-tyyppi-syventava"
+                            value="syventava"
+                            class="mb-2">{{ $t('syventava') }}</b-form-radio>
+              <ep-form-content name="oppiaine-pakollinen"
+                               v-if="data.oppiaine.valinnainenTyyppi === 'syventava'"
+                               class="ml-4">
+                <ep-multi-select :options="data.oppiaineet"
+                                 v-model="data.liittyvaOppiaine"
+                                 :placeholder="$t('valitse-oppiaine')"
+                                 track-by="id"
+                                 label="nimi"
+                                 :custom-label="kaannaNimi">
+                  <template slot="option" slot-scope="{ option }">
+                    {{ $kaanna(option.nimi) }}
+                  </template>
+                </ep-multi-select>
+              </ep-form-content>
+              <b-form-radio v-model="data.oppiaine.valinnainenTyyppi"
+                            name="valinnaisen-oppiaineen-tyyppi-soveltava"
+                            value="soveltava"
+                            class="mb-2">{{ $t('soveltava') }}</b-form-radio>
+              <ep-form-content name="oppiaine"
+                               v-if="data.oppiaine.valinnainenTyyppi === 'soveltava'"
+                               class="ml-4">
+                <ep-multi-select :options="data.oppiaineet"
+                                 v-model="data.liittyvaOppiaine"
+                                 :placeholder="$t('valitse-oppiaine')"
+                                 track-by="id"
+                                 label="nimi"
+                                 :custom-label="kaannaNimi">
+                  <template slot="option" slot-scope="{ option }">
+                    {{ $kaanna(option.nimi) }}
+                  </template>
+                </ep-multi-select>
+              </ep-form-content>
             </b-form-group>
           </ep-form-content>
         </div>
@@ -158,7 +159,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Component, Mixins, Prop } from 'vue-property-decorator';
+import { Component, Mixins } from 'vue-property-decorator';
 import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';

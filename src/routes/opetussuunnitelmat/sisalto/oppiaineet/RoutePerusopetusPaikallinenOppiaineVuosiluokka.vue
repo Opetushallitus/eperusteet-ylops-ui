@@ -28,7 +28,7 @@
               </div>
             </ep-form-content>
             <ep-button variant="link"
-                       :icon="['far', 'trash-alt']"
+                       icon="delete"
                        class="float-right"
                        @click="poistaTavoite(data.vuosiluokka.tavoitteet, idx)">
               {{ $t('poista-tavoite') }}
