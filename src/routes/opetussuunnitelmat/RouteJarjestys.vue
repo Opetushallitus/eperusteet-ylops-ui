@@ -15,9 +15,11 @@
                 :is-editable="isEditing"
                 v-model="data.tekstikappaleet.lapset"
                 child-field="lapset"
-                rootGroup="root"
+                rootGroup="sisalto"
                 group="sisalto"
-                :sortable="true">
+                :allowMove="allowTekstikappaleMove"
+                :sortable="true"
+                :draggableClass="'root'">
               <template #default="{ node }">
                 <span v-if="isEditing">
                   {{ $kaanna(node.tekstiKappale.nimi) }}
@@ -380,6 +382,24 @@ export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
 
   get hasPohja() {
     return !_.isEmpty(this.ops.pohja);
+  }
+
+  allowTekstikappaleMove(event) {
+    if (event.draggedContext.element.perusteTekstikappaleId) {
+      if (event.from.classList.contains('root') && event.to.classList.contains('root')) {
+        return true;
+      }
+
+      if (!event.from.classList.contains('root') && !event.to.classList.contains('root')) {
+        return true;
+      }
+    }
+
+    if (!event.draggedContext.element.perusteTekstikappaleId) {
+      return true;
+    }
+
+    return false;
   }
 }
 </script>
