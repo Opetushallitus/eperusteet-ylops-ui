@@ -170,7 +170,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   }
 
   async getJulkaistuDokumentti() {
-    if (this.dto && !this.dto.julkaisuDokumentti && !this.dtoJulkaisu) {
+    if (!this.dtoJulkaisu || _.kebabCase(this.dtoJulkaisu?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)) {
       this.dtoJulkaisu = (await Dokumentit.getJulkaistuDokumentti(this.opsId, this.kieli)).data;
       if (this.dtoJulkaisu.id) {
         this.hrefJulkaisu = baseURL + DokumentitParams.get(_.toString(this.dtoJulkaisu.id)).url;
@@ -184,6 +184,7 @@ export default class RouteDokumentti extends EpOpsRoute {
       if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)
         || _.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
         this.polling = false;
+        await this.getJulkaistuDokumentti();
 
         if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS) && this.dto.id) {
           this.href = baseURL + DokumentitParams.get(_.toString(this.dto.id)).url;
