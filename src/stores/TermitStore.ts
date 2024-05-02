@@ -10,10 +10,10 @@ export class TermitStore implements ITermiStore {
   constructor(private readonly opsId?: number) {
   }
 
-  getTermi(avain: string) {
+  async getTermi(avain: string) {
     return Termisto.getTermi(this.opsId!, avain);
   }
-  getAllTermit() {
+  async getAllTermit() {
     return Termisto.getAllTermit(this.opsId!);
   }
   updateTermi(termiId: number, termi: ITermi) {
