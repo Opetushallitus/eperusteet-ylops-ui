@@ -19,23 +19,9 @@
                 <ep-external-link :url="data.perusteUrl">{{data.perusteenDiaarinumero}}</ep-external-link>
               </ep-form-content>
             </div>
-            <div class="col-md-6" v-if="data.periytyvatPohjat && data.periytyvatPohjat.length > 0">
+            <div class="col-md-6">
               <ep-form-content name="pohjat">
-                <EpCollapse :borderBottom="false"
-                            :expandedByDefault="data.periytyvatPohjat.length < 4"
-                            :use-padding="false">
-                  <template v-slot:header="{ toggled }">
-                    <template v-if="!toggled">{{$t('nayta-kaikki-pohjat')}} ({{ data.periytyvatPohjat.length }})</template>
-                    <template v-if="toggled">{{$t('piilota-kaikki-pohjat')}}</template>
-                  </template>
-                  <div v-for="(pohja, idx) in data.periytyvatPohjat" :key="idx + 1" class="d-flex">
-                    <EpMaterialIcon v-if="idx > 0" size="22px" :color="'#555'" :style="{ marginLeft: ((idx - 1) * 25) + 'px' }">subdirectory_arrow_right</EpMaterialIcon>
-                    <router-link v-if="pohja.id" :to="{ name:'opsTiedot', params: { id: pohja.id } }" target="_blank" rel="noopener noreferrer">
-                      <span>{{ $kaanna(pohja.nimi) }}</span>
-                    </router-link>
-                    <span v-else>{{ $kaanna(pohja.nimi) }}</span>
-                  </div>
-                </EpCollapse>
+                <OpsPohjat :ops="data"></OpsPohjat>
               </ep-form-content>
             </div>
             <div class="col-md-6">
@@ -165,9 +151,11 @@ import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpJulkaisuLista from '@shared/components/EpJulkaisuHistoriaJulkinen/EpJulkaisuLista.vue';
+import OpsPohjat from '@/routes/opetussuunnitelmat/tiedot/OpsPohjat.vue';
 
 @Component({
   components: {
+    OpsPohjat,
     EpJulkaisuLista,
     EpCollapse,
     EpContent,
