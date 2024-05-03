@@ -185,24 +185,21 @@ export default class RouteDokumentti extends EpOpsRoute {
   }
 
   private async handleTilaPolling() {
-    if (this.dto) {
-      if (this.tyoversioKesken && this.julkaisuKesken) {
-        await this.getDokumenttiTila();
-        this.polling = true;
-      }
-      else {
-        // Lopetetaan pollaaminen kun dokumentin luominen on päättynyt
-        this.polling = false;
-      }
+    if (this.tyoversioKesken || this.julkaisuKesken) {
+      this.polling = true;
+      await this.getDokumenttiTila();
+    }
+    else {
+      this.polling = false;
     }
   }
 
   get tyoversioKesken() {
-    return _.kebabCase(this.dto?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.JONOSSA) || _.kebabCase(this.dto?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.LUODAAN);
+    return !!this.dto && (_.kebabCase(this.dto?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.JONOSSA) || _.kebabCase(this.dto?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.LUODAAN));
   }
 
   get julkaisuKesken() {
-    return _.kebabCase(this.dtoJulkaisu?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.JONOSSA) || _.kebabCase(this.dtoJulkaisu?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.LUODAAN);
+    return !!this.dtoJulkaisu && (_.kebabCase(this.dtoJulkaisu?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.JONOSSA) || _.kebabCase(this.dtoJulkaisu?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.LUODAAN));
   }
 
   // Luodaan uusi dokumentti
