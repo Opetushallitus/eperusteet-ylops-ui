@@ -217,10 +217,7 @@ export default class RouteDokumentti extends EpOpsRoute {
   // Tallennetaan uusi kansikuva
   private async saveImage(file, tyyppi) {
     if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      this.dtoKuva = (await Dokumentit.addImage(this.opsId, tyyppi, this.kieli, formData)).data;
+      this.dtoKuva = (await Dokumentit.addImage(this.opsId, tyyppi, this.kieli, file)).data;
       success('pdf-tiedosto-kuva-lataus-onnistui');
     }
   }
