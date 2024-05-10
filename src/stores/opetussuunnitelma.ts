@@ -215,6 +215,10 @@ export class OpetussuunnitelmaStore {
     await this.updateSisalto();
   }
 
+  public async tekstikappaleAlaOpetussuunnitelmaLukumaara(tunniste) {
+    return (await OpetussuunnitelmanSisalto.getTekstikappaleAlaOpetussuunnitelmaLukumaara(this.opetussuunnitelma!.id!, tunniste)).data;
+  }
+
   public async addTeksti(tov: Puu, parentId?: number) {
     let osa: AxiosResponse<Matala>;
     if (parentId) {
