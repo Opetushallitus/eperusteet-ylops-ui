@@ -19,6 +19,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
     private versionumero: number,
     private vue,
+    private muokkaaLatauksenJalkeen: boolean,
   ) {
     this.isUusi = oppiaineId === 'uusi';
   }
@@ -31,24 +32,15 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
   }
 
   async editAfterLoad() {
-    return this.isUusi;
+    return this.isUusi || this.muokkaaLatauksenJalkeen;
   }
 
   async history() {
   }
 
-  async load() {
+  async load(supportDataProvider) {
     const oppiaine = this.isUusi ? { vuosiluokkakokonaisuudet: [], _liittyvaOppiaine: null } : (await this.getOppiaineVersion()).data;
-    const vuosiluokkakokonaisuus = _.find(oppiaine.vuosiluokkakokonaisuudet, [
-      '_vuosiluokkakokonaisuus',
-      this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!['_tunniste'],
-    ]) || {
-      tehtava: {},
-      tyotavat: {},
-      ohjaus: {},
-      arviointi: {},
-      tavoitteistaJohdetutOppimisenTavoitteet: {},
-    };
+    const vuosiluokkakokonaisuus = this.getOppiaineVuosiluokkakokonaisuus(oppiaine);
 
     const perusteVuosiluokkakokonaisuus = (await Vuosiluokkakokonaisuudet
       .getVuosiluokkakokonaisuudenPerusteSisalto(
@@ -61,6 +53,14 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     const oppiaineet = _.map(this.vue.opetussuunnitelmaStore.opetussuunnitelma.oppiaineet, 'oppiaine');
     const liittyvaOppiaine = _.find(oppiaineet, { id: _.toNumber(oppiaine._liittyvaOppiaine) });
 
+    let pohjanOppiaine = {};
+    let pohjaOppiaineenVuosiluokkakokonaisuus = {};
+    if ((oppiaine as any)?.oma) {
+      pohjanOppiaine = (await Oppiaineet.getPohjanVastaavaOppiaine(this.opsId, _.toNumber(this.oppiaineId))).data ?? {};
+      pohjaOppiaineenVuosiluokkakokonaisuus = this.getOppiaineVuosiluokkakokonaisuus(pohjanOppiaine);
+    }
+    supportDataProvider({ pohjanOppiaine, pohjaOppiaineenVuosiluokkakokonaisuus });
+
     return {
       oppiaine,
       vuosiluokkakokonaisuus,
@@ -69,6 +69,29 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
       perusteVuosiluokat: _(perusteVuosiluokat).sort(),
       liittyvaOppiaine,
       oppiaineet,
+    };
+  }
+
+  getOppiaineVuosiluokkakokonaisuus(oppiaine?) {
+    return _.find(oppiaine?.vuosiluokkakokonaisuudet, [
+      '_vuosiluokkakokonaisuus',
+      this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!['_tunniste'],
+    ]) || {
+      tehtava: {
+        teksti: {},
+      },
+      tyotavat: {
+        teksti: {},
+      },
+      ohjaus: {
+        teksti: {},
+      },
+      arviointi: {
+        teksti: {},
+      },
+      tavoitteistaJohdetutOppimisenTavoitteet: {
+        teksti: {},
+      },
     };
   }
 
@@ -153,12 +176,15 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
   }
 
   async copy(data) {
-    const kopioituOppiaine = (await Oppiaineet.kopioiMuokattavaksi(this.opsId, _.toNumber(this.oppiaineId), false)).data;
+    const kopioituOppiaine = (await Oppiaineet.kopioiMuokattavaksi(this.opsId, _.toNumber(this.oppiaineId), true)).data;
     await this.vue.store.init();
     this.vue.$router.push({
       name: 'perusopetuspaikallinenoppiaine',
       params: {
         oppiaineId: _.toString(kopioituOppiaine.id),
+      },
+      query: {
+        muokkaa: true,
       },
     });
   }
@@ -182,7 +208,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
   public features(data) {
     return computed(() => {
       return {
-        editable: data?.oppiaine?.oma,
+        editable: data.oppiaine.oma,
         removable: true,
         hideable: false,
         recoverable: true,
