@@ -3,13 +3,12 @@
   <EpEditointi
     :store="editointiStore"
     :versionumero="versionumero"
-    label-copy-confirm="paikallinen-oppiaine-kopiointi-varmistus"
-    label-copy-topic="oppiaine-kopiointi-varmistus-otsikko"
-    label-copy-confirm-button="oppiaine-kopiointi-varmistus-hyvaksynta">
+    :confirmCopy="false">
+    <template v-slot:kopioi-teksti>{{ $t('muokkaa') }}</template>
     <template v-slot:header="{ data }">
       <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}</h2>
     </template>
-    <template v-slot:default="{ data, isEditing }">
+    <template v-slot:default="{ data, isEditing, supportData }">
       <div class="row">
         <div class="col-md-12">
           <ep-form-content name="valinnaisen-oppiaineen-nimi">
@@ -81,60 +80,61 @@
             </ep-field>
           </ep-form-content>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.tehtava">
-          <ep-form-content name="valinnaisen-tehtava">
-            <ep-alert v-if="!isEditing && !$kaanna(data.vuosiluokkakokonaisuus.tehtava.teksti)"
-                      :only-text="true"
-                      :text="$t('sisaltoa-ei-maaritelty')" />
-            <ep-content v-else
-                        layout="normal"
-                        v-model="data.vuosiluokkakokonaisuus.tehtava.teksti"
-                        :is-editable="isEditing" />
-          </ep-form-content>
+        <div class="col-md-12">
+
+          <vuosiluokka-sisalto-teksti
+            :pohjaObject="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.tehtava"
+            :vlkObject="data.vuosiluokkakokonaisuus.tehtava"
+            :isEditing="isEditing" >
+            <template v-slot:header>
+              <h3>{{ $t('valinnaisen-tehtava') }}</h3>
+            </template>
+          </vuosiluokka-sisalto-teksti>
+          <hr/>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.tyotavat">
-          <ep-form-content name="oppiaine-tyotavat">
-            <ep-alert v-if="!isEditing && !$kaanna(data.vuosiluokkakokonaisuus.tyotavat.teksti)"
-                      :only-text="true"
-                      :text="$t('sisaltoa-ei-maaritelty')" />
-            <ep-content v-else
-                        layout="normal"
-                        v-model="data.vuosiluokkakokonaisuus.tyotavat.teksti"
-                        :is-editable="isEditing" />
-          </ep-form-content>
+        <div class="col-md-12">
+          <vuosiluokka-sisalto-teksti
+            :pohjaObject="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.tyotavat"
+            :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
+            :isEditing="isEditing" >
+            <template v-slot:header>
+              <h3>{{ $t('oppiaine-tyotavat') }}</h3>
+            </template>
+          </vuosiluokka-sisalto-teksti>
+          <hr/>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.ohjaus">
-          <ep-form-content name="oppiaine-ohjaus">
-            <ep-alert v-if="!isEditing && !$kaanna(data.vuosiluokkakokonaisuus.ohjaus.teksti)"
-                      :only-text="true"
-                      :text="$t('sisaltoa-ei-maaritelty')" />
-            <ep-content v-else
-                        layout="normal"
-                        v-model="data.vuosiluokkakokonaisuus.ohjaus.teksti"
-                        :is-editable="isEditing" />
-          </ep-form-content>
+        <div class="col-md-12">
+          <vuosiluokka-sisalto-teksti
+            :pohjaObject="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.ohjaus"
+            :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
+            :isEditing="isEditing" >
+            <template v-slot:header>
+              <h3>{{ $t('oppiaine-ohjaus') }}</h3>
+            </template>
+          </vuosiluokka-sisalto-teksti>
+          <hr/>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.arviointi">
-          <ep-form-content name="oppiaine-arviointi">
-            <ep-alert v-if="!isEditing && !$kaanna(data.vuosiluokkakokonaisuus.arviointi.teksti)"
-                      :only-text="true"
-                      :text="$t('sisaltoa-ei-maaritelty')" />
-            <ep-content v-else
-                        layout="normal"
-                        v-model="data.vuosiluokkakokonaisuus.arviointi.teksti"
-                        :is-editable="isEditing" />
-          </ep-form-content>
+        <div class="col-md-12">
+          <vuosiluokka-sisalto-teksti
+            :pohjaObject="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.arviointi"
+            :vlkObject="data.vuosiluokkakokonaisuus.arviointi"
+            :isEditing="isEditing" >
+            <template v-slot:header>
+              <h3>{{ $t('oppiaine-arviointi') }}</h3>
+            </template>
+          </vuosiluokka-sisalto-teksti>
+          <hr/>
         </div>
-        <div class="col-md-12" v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet">
-          <ep-form-content name="oppiaine-tavoitteista-johdetut-oppimisen-tavoitteet">
-            <ep-alert v-if="!isEditing && !$kaanna(data.vuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet.teksti)"
-                      :only-text="true"
-                      :text="$t('sisaltoa-ei-maaritelty')" />
-            <ep-content v-else
-                        layout="normal"
-                        v-model="data.vuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet.teksti"
-                        :is-editable="isEditing" />
-          </ep-form-content>
+        <div class="col-md-12">
+          <vuosiluokka-sisalto-teksti
+            :pohjaObject="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet"
+            :vlkObject="data.vuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet"
+            :isEditing="isEditing" >
+            <template v-slot:header>
+              <h3>{{ $t('oppiaine-tavoitteista-johdetut-oppimisen-tavoitteet') }}</h3>
+            </template>
+          </vuosiluokka-sisalto-teksti>
+          <hr/>
         </div>
         <div class="col-md-12" v-if="!isEditing && data.vuosiluokkakokonaisuus">
           <ep-form-content name="tavoitteet-ja-sisallot-vuosiluokittain">
@@ -171,6 +171,7 @@ import EpField from '@shared/components/forms/EpField.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
+import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 
 @Component({
   components: {
@@ -180,6 +181,7 @@ import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
     EpContent,
     EpAlert,
     EpMultiSelect,
+    VuosiluokkaSisaltoTeksti,
   },
 })
 export default class RoutePerusopetusPaikallinenOppiaine extends Mixins(EpRoute, EpOpsComponent) {
@@ -194,7 +196,12 @@ export default class RoutePerusopetusPaikallinenOppiaine extends Mixins(EpRoute,
       vuosiluokkakokonaisuus,
       _.toNumber(this.versionumero),
       this,
+      this.muokkaa,
     ));
+  }
+
+  get muokkaa() {
+    return _.has(this.$route.query, 'muokkaa');
   }
 
   get versionumero() {
