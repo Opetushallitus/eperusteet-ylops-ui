@@ -173,6 +173,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
       restore: this.restore,
     },
     copy: this.copy,
+    copyable: this.copyable,
     editable: this.editable,
   };
 
@@ -287,6 +288,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
         this.breadcrumb('tekstikappale', teksti.tekstiKappale.nimi);
       }
 
+      this.kopioitava = result.tov.omistussuhde === 'lainattu';
+
       return result;
     }
   }
@@ -330,6 +333,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   async copy(kopioitava) {
     await this.store.kopioiTeksti(kopioitava.tov);
     this.$router.go(0);
+  }
+
+  async copyable() {
+    return this.kopioitava;
   }
 
   async editable() {
