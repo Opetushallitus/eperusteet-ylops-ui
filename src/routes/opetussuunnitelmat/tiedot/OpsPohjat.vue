@@ -34,16 +34,16 @@
                       :style="{ marginLeft: (perityvatPohjatCount * 25) + 'px' }">
         subdirectory_arrow_right
       </EpMaterialIcon>
-      <EpNaytaKaikki v-model="naytaKaikki" :total-list-length="ops.joissaPohjana.length" :collapsed-size="collapsedSize">
-        <div v-for="(pohjana, idx2) in opsitJoissaPohjana" :key="'joi' + (idx2 + 1)">
-          <router-link v-if="pohjana.id"
-                       :to="{ name:'opsTiedot', params: { id: pohjana.id } }"
+      <EpNaytaKaikki v-model="ops.joissaPohjana">
+        <template #default="{ data }">
+          <router-link v-if="data.id"
+                       :to="{ name:'opsTiedot', params: { id: data.id } }"
                        target="_blank"
                        rel="noopener noreferrer">
-            <span>{{ $kaanna(pohjana.nimi) }}</span>
+            <span>{{ $kaanna(data.nimi) }}</span>
           </router-link>
-          <span v-else>{{ $kaanna(pohjana.nimi) }}</span>
-        </div>
+          <span v-else>{{ $kaanna(data.nimi) }}</span>
+        </template>
       </EpNaytaKaikki>
     </div>
   </div>
@@ -64,13 +64,6 @@ export default class OpsPohjat extends Vue {
   @Prop({ required: true })
   private ops!: any;
 
-  private naytaKaikki: boolean = false;
-  private collapsedSize: number = 3;
-
-  get opsitJoissaPohjana() {
-    return this.naytaKaikki ? this.ops.joissaPohjana : this.ops.joissaPohjana?.slice(0, this.collapsedSize);
-  }
-
   get perityvatPohjatCount() {
     return this.ops.periytyvatPohjat?.length || 0;
   }
@@ -81,5 +74,9 @@ export default class OpsPohjat extends Vue {
 
 .current-ops {
   font-weight: 600;
+}
+
+::v-deep .row {
+  padding: 0 15px;
 }
 </style>
