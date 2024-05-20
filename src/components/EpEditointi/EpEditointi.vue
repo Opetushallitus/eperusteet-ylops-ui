@@ -77,32 +77,34 @@
               <EpMaterialIcon class="mr-1" :background="'inherit'" :color="'inherit'">edit</EpMaterialIcon>
               <slot name="kopioi-teksti">{{ $t('kopioi-muokattavaksi') }}</slot>
             </ep-button>
-            <b-dropdown class="mx-4"
-                        v-if="katseluDropDownValinnatVisible && !ctrls.isCopyable && ctrls.isEditable"
-                        size="md"
-                        variant="link"
-                        :disabled="state.disabled"
-                        toggle-class="text-decoration-none"
-                        no-caret="no-caret"
-                        right
-                        v-oikeustarkastelu="{ oikeus: 'luku' }">
-              <template slot="button-content">
-                <EpMaterialIcon>more_horiz</EpMaterialIcon>
-              </template>
-              <b-dropdown-item :disabled="!hooks.preview || state.disabled">
-                {{ $t('esikatsele-sivua') }}
-              </b-dropdown-item>
-              <b-dropdown-item :disabled="!hooks.validate || state.disabled">
-                {{ $t('validoi') }}
-              </b-dropdown-item>
-              <b-dropdown-item :disabled="!hooks.history || state.disabled">
-                <ep-versio-modaali :value="current"
-                                    :versions="historia"
-                                    :current="current"
-                                    :per-page="10"
-                                    @restore="ctrls.restore($event)" />
-              </b-dropdown-item>
-            </b-dropdown>
+            <slot name="more-content">
+              <b-dropdown class="mx-4"
+                          v-if="katseluDropDownValinnatVisible && !ctrls.isCopyable && ctrls.isEditable"
+                          size="md"
+                          variant="link"
+                          :disabled="state.disabled"
+                          toggle-class="text-decoration-none"
+                          no-caret="no-caret"
+                          right
+                          v-oikeustarkastelu="{ oikeus: 'luku' }">
+                <template slot="button-content">
+                  <EpMaterialIcon>more_horiz</EpMaterialIcon>
+                </template>
+                <b-dropdown-item :disabled="!hooks.preview || state.disabled">
+                  {{ $t('esikatsele-sivua') }}
+                </b-dropdown-item>
+                <b-dropdown-item :disabled="!hooks.validate || state.disabled">
+                  {{ $t('validoi') }}
+                </b-dropdown-item>
+                <b-dropdown-item :disabled="!hooks.history || state.disabled">
+                  <ep-versio-modaali :value="current"
+                                      :versions="historia"
+                                      :current="current"
+                                      :per-page="10"
+                                      @restore="ctrls.restore($event)" />
+                </b-dropdown-item>
+              </b-dropdown>
+            </slot>
             <ep-round-button class="ml-2"
                               :disabled="state.disabled"
                               id="editointi-muokkaus-comments"

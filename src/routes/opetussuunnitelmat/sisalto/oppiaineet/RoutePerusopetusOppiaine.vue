@@ -3,9 +3,7 @@
     <EpEditointi
       :store="editointiStore"
       :versionumero="versionumero"
-      label-copy-confirm="oppiaine-kopiointi-varmistus-teksti"
-      label-copy-topic="oppiaine-kopiointi-varmistus-otsikko"
-      label-copy-confirm-button="oppiaine-kopiointi-varmistus-hyvaksynta">
+      :confirmCopy="false">
       <template v-slot:kopioi-teksti>{{ $t('muokkaa') }}</template>
 
       <template v-slot:header="{ data }">
@@ -25,8 +23,7 @@
       <template v-slot:piilotettu>
         <div>{{$t('oavlk-on-piilotettu')}}</div>
       </template>
-
-      <template v-slot:default="{ data, isEditing, isCopyable, validation }">
+      <template v-slot:default="{ data, isEditing, isCopyable, validation, supportData }">
 
         <div v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.piilotettu" class="disabled-text mb-4">{{$t('piilotettu-julkisesta-opetussuunnitelmasta')}}</div>
 
@@ -42,7 +39,7 @@
         </ep-form-content>
 
         <vuosiluokka-sisalto-teksti :perusteObject="perusteenOppiaine.tehtava"
-                                    :pohjaObject="pohjanOppiaine.tehtava"
+                                    :pohjaObject="supportData.pohjanOppiaine.tehtava"
                                     :vlkObject="data.oppiaine.tehtava"
                                     :isEditing="isEditing"
                                     :peruste-teksti-avattu="true" />
@@ -141,7 +138,7 @@
                                       :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" >
-            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.tyotavat" class="mb-3">{{$t('tyotavat')}}</h3>
+            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.tyotavat" class="mb-3">{{$t('oppiaine-osio-tyotavat')}}</h3>
           </vuosiluokka-sisalto-teksti>
           <hr v-if="perusteenVuosiluokkakokonaisuus.tyotavat"/>
 
@@ -150,7 +147,7 @@
                                       :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" >
-            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.ohjaus" class="mb-3">{{$t('ohjaus')}}</h3>
+            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.ohjaus" class="mb-3">{{$t('oppiaine-osio-ohjaus')}}</h3>
           </vuosiluokka-sisalto-teksti>
           <hr  v-if="perusteenVuosiluokkakokonaisuus.ohjaus"/>
 
@@ -236,7 +233,14 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
       .value();
 
     this.editointiStore = new EditointiStore(new PerusopetusoppiaineStore(
-      this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(this.$route.query.versionumero), parent, this));
+      this.opsId,
+      _.toNumber(this.$route.params.oppiaineId),
+      vuosiluokkakokonaisuus,
+      _.toNumber(this.$route.query.versionumero),
+      parent,
+      this.resetOps,
+      this.init,
+      this.muokkaa));
   }
 
   lisaaPaikallinenTarkennus(oppiaine, id) {
@@ -287,10 +291,6 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
     });
   }
 
-  get pohjanOppiaine() {
-    return this.editointiStore?.data.value.oppiaine.pohjanOppiaine || {};
-  }
-
   get perusteenVuosiluokkakokonaisuus() {
     return this.editointiStore?.data.value.perusteenVuosiluokkakokonaisuus || {};
   }
@@ -314,6 +314,10 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
     if (this.oppimaaranOppiaine) {
       return isOppiaineUskontoTaiVierasKieli(this.oppimaaranOppiaine);
     }
+  }
+
+  get muokkaa() {
+    return _.has(this.$route.query, 'muokkaa');
   }
 }
 </script>

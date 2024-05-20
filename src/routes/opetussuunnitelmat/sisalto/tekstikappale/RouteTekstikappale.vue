@@ -27,6 +27,9 @@
         <span v-if="data.tov.piilotettu" class="additional-info-text">({{ $t('piilotettu')}})</span>
         <span v-if="data.tov.liite" class="additional-info-text">({{ $t('liite')}})</span>
       </template>
+      <template #more-content v-if="poistetaan">
+        <EpSpinner class="mt-2" />
+      </template>
       <template slot-scope="{ isEditing, data }">
         <div class="teksti">
           <ep-form-content v-if="isEditing && !data.tov.perusteTekstikappaleId" name="tekstikappale-nimi-ohje">
@@ -134,7 +137,6 @@ import {
 import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { createLogger } from '@shared/utils/logger';
 
-import { success } from '@/utils/notifications';
 import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
 import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
 
@@ -160,6 +162,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   private alkuperaiset: Matala[] | null = null;
   private nimi: any = {};
   private kopioitava = false;
+  private poistetaan = false;
 
   private hooks: EditointiKontrolliConfig = {
     editAfterLoad: async () => this.isUusi(),
@@ -178,24 +181,30 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
   async remove(data: any) {
     const alaOpsLkm = await this.store.tekstikappaleAlaOpetussuunnitelmaLukumaara(data.tov.tekstiKappale.tunniste);
 
-    const confirm = this.$bvModal.msgBoxConfirm((this.$t('tekstikappale-poisto-vahvistus-ala-ops', { alaOpsLkm }) as any), {
-      title: this.$t('poista-tekstikappale'),
-      okVariant: 'primary',
-      okTitle: this.$t('poista') as any,
-      cancelVariant: 'link',
-      cancelTitle: this.$t('peruuta') as any,
-      centered: true,
-      ...{} as any,
-    });
+    let confirm = true;
+    if (alaOpsLkm > 0) {
+      const confirm = await this.$bvModal.msgBoxConfirm((this.$t('tekstikappale-poisto-vahvistus-ala-ops', { alaOpsLkm }) as any), {
+        title: this.$t('poista-tekstikappale'),
+        okVariant: 'primary',
+        okTitle: this.$t('poista') as any,
+        cancelVariant: 'link',
+        cancelTitle: this.$t('peruuta') as any,
+        centered: true,
+        ...{} as any,
+      });
+    }
 
-    if (alaOpsLkm === 0 || await confirm) {
+    if (confirm) {
+      this.poistetaan = true;
       await this.store.removeTeksti(data.tov);
+      this.poistetaan = false;
       this.$router.push({
         name: 'opsPoistetut',
         params: {
           tabIndex: '2',
         },
       });
+      this.$success(this.$t('tekstikappale-poistettu') as string);
     }
   }
 
@@ -225,7 +234,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
   private async restore(data, numero) {
     await OpetussuunnitelmanSisalto.revertTekstikappaleToVersion(this.opsId, data.tov!.id!, numero);
-    success('palautus-onnistui');
+    this.$success('palautus-onnistui');
   }
 
   private async revisions(data) {
@@ -330,7 +339,7 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
         ...ohje,
         kohde: tov.tekstiKappale.tunniste,
       })));
-      success('tallennus-onnistui-tekstikappale');
+      this.$success(this.$t('tallennus-onnistui-tekstikappale') as string);
     }
   }
 
