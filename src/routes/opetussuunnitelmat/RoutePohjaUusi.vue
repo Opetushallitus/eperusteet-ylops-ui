@@ -109,7 +109,6 @@ export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
         perusteenDiaarinumero: this.uusi.valittuPeruste!.diaarinumero,
         julkaisukielet: [Kieli.fi, Kieli.sv] as any,
         tyyppi: 'pohja' as any,
-        rakennePohjasta: true,
       };
 
       const data = (await Opetussuunnitelmat.addOpetussuunnitelma(pohja)).data;

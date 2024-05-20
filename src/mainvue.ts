@@ -16,6 +16,7 @@ import plaintext from '@shared/plugins/plaintext';
 import Vuelidate from 'vuelidate';
 import '@shared/config/bootstrap';
 import '@shared/config/defaultcomponents';
+import { PerusopetusoppiaineStore } from './stores/perusopetusoppiaineStore';
 
 Vue.use(VueCompositionApi);
 Vue.use(VueI18n);
@@ -28,6 +29,10 @@ Vue.use(Notifikaatiot);
 Vue.use(Vuelidate);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);
 Vue.use(PortalVue);
+
+Vue.use(PerusopetusoppiaineStore, {
+  router,
+});
 
 Vue.use(Loading, {
   fullPage: true,
