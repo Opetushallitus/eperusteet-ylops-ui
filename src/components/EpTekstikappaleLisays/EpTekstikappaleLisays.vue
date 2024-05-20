@@ -12,8 +12,7 @@
            size="lg"
            centered
            :ok-disabled="okDisabled"
-           @hidden="clear"
-           @ok="save">
+           @hidden="clear">
     <template v-slot:modal-title>
       {{ $t('lisaa-uusi-tekstikappale') }}
     </template>
@@ -34,11 +33,13 @@
       </ep-select>
     </ep-form-content>
 
-    <template v-slot:modal-cancel>
-      {{ $t('peruuta')}}
-    </template>
-    <template v-slot:modal-ok>
-      {{ $t('lisaa-tekstikappale')}}
+    <template #modal-footer>
+      <EpButton variant="secondary" @click="$refs.tekstikappalelisaysModal.hide()" :disabled="tallentaa">
+        {{ $t('peruuta') }}
+      </EpButton>
+      <EpButton variant="primary" @click="save" :disabled="okDisabled || tallentaa" :showSpinner="tallentaa">
+        {{ $t('lisaa-tekstikappale') }}
+      </EpButton>
     </template>
 
   </b-modal>
@@ -68,6 +69,7 @@ import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
 export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponent) {
   private otsikko: LokalisoituTekstiDto = {};
   private valittuTekstikappale: any = {};
+  private tallentaa = false;
 
   @Prop({ required: true })
   private tekstikappaleet!: SideMenuEntry[];
@@ -86,6 +88,7 @@ export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponen
       },
     };
 
+    this.tallentaa = true;
     const uusi = await this.store.addTeksti(newTekstikappale as Puu, this.valittuTekstikappale?.route?.params?.osaId);
 
     this.$router.push({
