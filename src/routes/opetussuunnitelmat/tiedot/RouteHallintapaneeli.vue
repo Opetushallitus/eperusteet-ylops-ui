@@ -148,7 +148,7 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
   }
 
   get viimeisinPohjaTekstiSync() {
-    return this.store.viimeisinPohjaTekstiSync?.luotu;
+    return this.store.viimeisinPohjaTekstiSync?.luotu || this.ops.perusteDataTuontiPvm || this.ops.luotu;
   }
 
   get pohjanPerustePaivittynyt() {
