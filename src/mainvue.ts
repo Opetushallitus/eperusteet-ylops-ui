@@ -17,6 +17,8 @@ import Vuelidate from 'vuelidate';
 import '@shared/config/bootstrap';
 import '@shared/config/defaultcomponents';
 import { PerusopetusoppiaineStore } from './stores/perusopetusoppiaineStore';
+import { TekstikappaleStore } from './stores/TekstikappaleStore';
+import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 
 Vue.use(VueCompositionApi);
 Vue.use(VueI18n);
@@ -30,9 +32,9 @@ Vue.use(Vuelidate);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);
 Vue.use(PortalVue);
 
-Vue.use(PerusopetusoppiaineStore, {
-  router,
-});
+Vue.use(PerusopetusoppiaineStore, { router });
+Vue.use(TekstikappaleStore, { router });
+Vue.use(EditointiStore, { router });
 
 Vue.use(Loading, {
   fullPage: true,
