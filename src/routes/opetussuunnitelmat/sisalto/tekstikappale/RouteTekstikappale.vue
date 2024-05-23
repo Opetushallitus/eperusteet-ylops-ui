@@ -1,8 +1,10 @@
 <template>
-<div id="scroll-anchor" class="tekstiviite" v-if="hooks">
+<div id="scroll-anchor" class="tekstiviite">
   <div class="kappale">
-    <ep-editointi :hooks="hooks" type="tekstikappale" :versionumero="versionumero">
-      <template slot="ohje" slot-scope="{ isEditing, data }">
+    <ep-editointi
+        :store="tekstikappaleStore"
+        :versionumero="versionumero">
+      <template v-slot:ohje="{ isEditing, data }">
         <div class="sidepad">
           <p>{{ $t('ohje-tekstikapale') }}</p>
           <p>{{ $t('ohje-tekstikapale-perusteteksti') }}</p>
@@ -17,20 +19,17 @@
           </div>
         </div>
       </template>
-      <template slot="keskustelu" slot-scope="{ }">
+      <template v-slot:keskustelu="{ }">
         <ep-comment-threads />
       </template>
-      <template slot="header" slot-scope="{ data }">
-        <h2>{{ $kaanna(perusteTekstinOtsikko || data.tov.tekstiKappale.nimi) }}</h2>
+      <template v-slot:header="{ data }">
+        <h2>{{ $kaanna(perusteenTekstikappaleNimi || data.tov.tekstiKappale.nimi) }}</h2>
       </template>
-      <template slot="additional-info" slot-scope="{ data }">
+      <template v-slot:postHeader="{ data }">
         <span v-if="data.tov.piilotettu" class="additional-info-text">({{ $t('piilotettu')}})</span>
         <span v-if="data.tov.liite" class="additional-info-text">({{ $t('liite')}})</span>
       </template>
-      <template #more-content v-if="poistetaan">
-        <EpSpinner class="mt-2" />
-      </template>
-      <template slot-scope="{ isEditing, data }">
+      <template v-slot:default="{ data, isEditing }">
         <div class="teksti">
           <ep-form-content v-if="isEditing && !data.tov.perusteTekstikappaleId" name="tekstikappale-nimi-ohje">
             <ep-field v-if="data.tov.tekstiKappale"
@@ -44,7 +43,7 @@
               <ep-toggle v-model="data.tov.piilotettu">{{ $t('piilota-tekstikappale-julkisesta-opetussuunnitelmasta') }}</ep-toggle>
             </div>
             <div v-else-if="data.tov.piilotettu" class="disabled-text mb-4">{{$t('tekstikappale-piilotettu-julkisesta-opetussuunnitelmasta')}}</div>
-            <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && perusteenTeksti && perusteenTeksti.perusteenOsa" :first="isEditing" :borderBottom="!isPohja">
+            <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && data.perusteenTeksti && data.perusteenTeksti.perusteenOsa" :first="isEditing" :borderBottom="!isPohja">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
 
               <template v-if="data.laajaAlaisetOsaamiset">
@@ -57,26 +56,29 @@
               <ep-content
                 v-else
                 layout="normal"
-                v-model="perusteenTeksti.perusteenOsa.teksti"
+                v-model="data.perusteenTeksti.perusteenOsa.teksti"
                 :is-editable="false"
                 :kasiteHandler="kasiteHandler"
                 :kuvaHandler="kuvaHandler"/>
 
-              <div class="font-italic text-secondary" v-if="!isEditing && !$kaanna(perusteenTeksti.perusteenOsa.teksti) && !data.laajaAlaisetOsaamiset">{{ $t('perusteen-sisaltoa-ei-maaritetty') }}</div>
+              <div class="font-italic text-secondary"
+                v-if="!isEditing && data.perusteenTeksti && data.perusteenTeksti.perusteenOsa && data.perusteenTeksti.perusteenOsa.teksti && !$kaanna(data.perusteenTeksti.perusteenOsa.teksti) && !data.laajaAlaisetOsaamiset">
+                {{ $t('perusteen-sisaltoa-ei-maaritetty') }}
+              </div>
               <div v-if="isEditing">
                 <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
               </div>
             </ep-collapse>
-            <div class="mb-4" v-if="data.tov.perusteTekstikappaleId && !perusteenTeksti">
+            <div class="mb-4" v-if="data.tov.perusteTekstikappaleId && !data.perusteenTeksti">
               <h5>{{ $t('perusteen-teksti') }}</h5>
               <div class="font-italic text-secondary">{{$t('perusteen-tekstia-ei-loydy')}}</div>
             </div>
-            <ep-collapse v-if="alkuperaiset && alkuperaiset.length > 0 && (isEditing || data.tov.naytaPohjanTeksti)">
+            <ep-collapse v-if="data.alkuperaiset && data.alkuperaiset.length > 0 && (isEditing || data.tov.naytaPohjanTeksti)">
               <h5 slot="header">
                 {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{$kaanna(pohjaNimi)}})</span>
               </h5>
               <ep-content
-                v-for="(alkuperainen, index) in alkuperaiset" :key="'alkuperainen'+index"
+                v-for="(alkuperainen, index) in data.alkuperaiset" :key="'alkuperainen'+index"
                 layout="normal"
                 v-model="alkuperainen.tekstiKappale.teksti"
                 :is-editable="false"
@@ -107,14 +109,14 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
+import { Mixins, Component, Watch } from 'vue-property-decorator';
 
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
-import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
@@ -123,22 +125,12 @@ import EpRoute from '@/mixins/EpRoute';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { TermitStore } from '@/stores/TermitStore';
 import { KuvaStore } from '@/stores/KuvaStore';
-
-import {
-  Lops2019Perusteet,
-  OhjeDto,
-  Ohjeet,
-  OpetussuunnitelmanSisalto,
-  TekstiKappaleViiteDto,
-  Puu,
-  Matala,
-  Opetussuunnitelmat,
-} from '@shared/api/ylops';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
 import { createLogger } from '@shared/utils/logger';
-
 import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
 import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
+import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
+import { Murupolku } from '@/stores/murupolku';
+import { TekstikappaleStore } from '@/stores/TekstikappaleStore';
 
 const logger = createLogger('RouteTekstikappale');
 
@@ -157,59 +149,38 @@ const logger = createLogger('RouteTekstikappale');
   },
 })
 export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) {
-  private ohjeet: OhjeDto[] = [];
-  private perusteenTeksti: TekstiKappaleViiteDto | null = null;
-  private alkuperaiset: Matala[] | null = null;
-  private nimi: any = {};
-  private kopioitava = false;
-  private poistetaan = false;
+  private tekstikappaleStore: EditointiStore | null = null;
 
-  private hooks: EditointiKontrolliConfig = {
-    editAfterLoad: async () => this.isUusi(),
-    source: {
-      load: this.load,
-      save: this.save,
-    },
-    remove: this.remove,
-    history: {
-      revisions: this.revisions,
-      restore: this.restore,
-    },
-    editable: this.editable,
-  };
+  async fetch() {
+    const tkstore = new TekstikappaleStore(this.opsId, this.osaId, this.store, this.versionumero);
+    this.tekstikappaleStore = new EditointiStore(tkstore);
+  }
 
-  async remove(data: any) {
-    const alaOpsLkm = await this.store.tekstikappaleAlaOpetussuunnitelmaLukumaara(data.tov.tekstiKappale.tunniste);
+  @Watch('versionumero', { immediate: true })
+  async versionumeroChange() {
+    await this.fetch();
+  }
 
-    let confirm = true;
-    if (alaOpsLkm > 0) {
-      const confirm = await this.$bvModal.msgBoxConfirm((this.$t('tekstikappale-poisto-vahvistus-ala-ops', { alaOpsLkm }) as any), {
-        title: this.$t('poista-tekstikappale'),
-        okVariant: 'primary',
-        okTitle: this.$t('poista') as any,
-        cancelVariant: 'link',
-        cancelTitle: this.$t('peruuta') as any,
-        centered: true,
-        ...{} as any,
-      });
+  @Watch('osaId', { immediate: true })
+  async onParamChange(id: string, oldId: string) {
+    if (!id || id === oldId) {
+      return;
     }
 
-    if (confirm) {
-      this.poistetaan = true;
-      await this.store.removeTeksti(data.tov);
-      this.poistetaan = false;
-      this.$router.push({
-        name: 'opsPoistetut',
-        params: {
-          tabIndex: '2',
-        },
+    await this.fetch();
+  }
+
+  @Watch('tekstikappale')
+  onDataChange(tk) {
+    if (tk) {
+      Murupolku.aseta('tekstikappale', this.$kaanna(tk.nimi), {
+        name: 'tekstikappale',
       });
-      this.$success(this.$t('tekstikappale-poistettu') as string);
     }
   }
 
-  get isPohja() {
-    return this.store.opetussuunnitelma!.tyyppi as string === 'pohja';
+  get tekstikappale() {
+    return this.tekstikappaleStore?.data?.value || null;
   }
 
   get allowOhjeEdit() {
@@ -228,128 +199,8 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
     return this.ops.pohja?.nimi;
   }
 
-  async isUusi() {
-    return this.$route.params.osaId === 'uusi';
-  }
-
-  private async restore(data, numero) {
-    await OpetussuunnitelmanSisalto.revertTekstikappaleToVersion(this.opsId, data.tov!.id!, numero);
-    this.$success('palautus-onnistui');
-  }
-
-  private async revisions(data) {
-    if (data.tov && data.tov.tekstiKappale && data.tov.tekstiKappale.id) {
-      return (await OpetussuunnitelmanSisalto
-        .getVersionsForTekstiKappaleViite(this.opsId, data.tov.tekstiKappale.id)).data;
-    }
-    else {
-      return [];
-    }
-  }
-
   get versionumero() {
     return _.parseInt(_.get(this, '$route.query.versionumero') as any);
-  }
-
-  private async load() {
-    if (await this.isUusi()) {
-      return {
-        tov: {
-          tekstiKappale: {
-            nimi: {},
-          },
-        },
-      };
-    }
-    else {
-      const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteSyva(this.opsId, this.osaId)).data;
-      if (this.versionumero) {
-        const revisions = (await OpetussuunnitelmanSisalto
-          .getVersionsForTekstiKappaleViite(this.opsId, teksti.tekstiKappale!.id as number)).data;
-        const rev = revisions[revisions.length - this.versionumero];
-        if (rev) {
-          teksti.tekstiKappale = (await OpetussuunnitelmanSisalto
-            .getVersionForTekstiKappaleViite(this.opsId, this.osaId, rev.numero as number)).data;
-        }
-      }
-      const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
-      try {
-        this.alkuperaiset = (await OpetussuunnitelmanSisalto
-          .getTekstiKappaleViiteOriginals(this.opsId, this.osaId)).data as Matala[];
-        this.alkuperaiset = _.filter(this.alkuperaiset, 'tekstiKappale');
-      }
-      catch (err) {
-        logger.warn('Alkuperäisen tekstikappaleen hakeminen epäonnistui:', err);
-      }
-
-      const result = {
-        tov: _.omit(_.cloneDeep(teksti), 'lapset'),
-        ohjeet: ohjeet.data || [],
-        laajaAlaisetOsaamiset: null,
-      } as any;
-
-      if (_.isEmpty(result.ohjeet)) {
-        result.ohjeet.push({});
-      }
-
-      try {
-        if (teksti.perusteTekstikappaleId) {
-          this.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;
-
-          if (this.perusteenTeksti?.perusteenOsa?.tunniste === 'laajaalainenosaaminen') {
-            result.laajaAlaisetOsaamiset = (await Opetussuunnitelmat.getLaajalaisetosamiset(this.opsId)).data;
-          }
-        }
-      }
-      catch (err) {
-        console.error(err);
-      }
-
-      if (teksti.tekstiKappale) {
-        this.breadcrumb('tekstikappale', teksti.tekstiKappale.nimi);
-      }
-      return result;
-    }
-  }
-
-  get perusteTekstinOtsikko() {
-    return this.perusteenTeksti?.perusteenOsa?.nimi;
-  }
-
-  siirry(uusi) {
-    setTimeout(() => {
-      this.$router.push({
-        name: 'tekstikappale',
-        params: {
-          ...this.$route.params,
-          osaId: '' + uusi.id,
-        },
-      });
-    }, 300);
-  }
-
-  async save({ tov, ohjeet }) {
-    if (await this.isUusi()) {
-      const uusi = await this.store.addTeksti(tov, _.parseInt(this.$route.params.parentId));
-      this.$nextTick(() => this.siirry(uusi));
-    }
-    else {
-      await this.store.saveTeksti(tov);
-      await Promise.all(_.map(ohjeet, (ohje) => this.store.saveOhje({
-        ...ohje,
-        kohde: tov.tekstiKappale.tunniste,
-      })));
-      this.$success(this.$t('tallennus-onnistui-tekstikappale') as string);
-    }
-  }
-
-  async addAlikappale(parent: Puu) {
-    const uusi = await this.store.addTeksti({}, parent.id);
-    this.$nextTick(() => this.siirry(uusi));
-  }
-
-  async editable() {
-    return !this.isPohja;
   }
 
   get kasiteHandler() {
@@ -358,6 +209,10 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
   get kuvaHandler() {
     return createKuvaHandler(new KuvaStore(this.opsId!));
+  }
+
+  get perusteenTekstikappaleNimi() {
+    return this.tekstikappaleStore?.data?.value?.perusteenTeksti?.perusteenOsa?.nimi;
   }
 }
 </script>

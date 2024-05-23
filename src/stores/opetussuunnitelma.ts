@@ -214,8 +214,8 @@ export class OpetussuunnitelmaStore {
     await this.fetchJulkaisemattomiaMuutoksia();
   }
 
-  public async removeTeksti(tov: Puu) {
-    await OpetussuunnitelmanSisalto.removeTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!);
+  public async removeTeksti(tovId: number) {
+    await OpetussuunnitelmanSisalto.removeTekstiKappaleViite(this.opetussuunnitelma!.id!, tovId);
     await this.updateSisalto();
   }
 
