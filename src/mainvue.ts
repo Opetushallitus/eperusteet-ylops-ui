@@ -16,6 +16,8 @@ import plaintext from '@shared/plugins/plaintext';
 import Vuelidate from 'vuelidate';
 import '@shared/config/bootstrap';
 import '@shared/config/defaultcomponents';
+import { TekstikappaleStore } from './stores/TekstikappaleStore';
+import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 
 Vue.use(VueCompositionApi);
 Vue.use(VueI18n);
@@ -28,6 +30,9 @@ Vue.use(Notifikaatiot);
 Vue.use(Vuelidate);
 Vue.directive('oikeustarkastelu', oikeustarkastelu);
 Vue.use(PortalVue);
+
+Vue.use(EditointiStore, { router });
+Vue.use(TekstikappaleStore, { router });
 
 Vue.use(Loading, {
   fullPage: true,
