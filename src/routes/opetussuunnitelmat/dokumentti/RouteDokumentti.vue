@@ -313,7 +313,6 @@ export default class RouteDokumentti extends EpOpsRoute {
     }
 
     .sijainti-topic {
-      margin-bottom: 40px;
       font-weight: 600;
     }
 
