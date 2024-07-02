@@ -228,6 +228,7 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
     padding-top: 15px;
     background-color: $gray-lighten-5;
     padding-left: 30px;
+    user-select: none;
 
     .tavoitesisallot {
 
@@ -321,16 +322,15 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
           border-width: 1px;
           font-size: 0.8rem;
           margin: 5px;
-          padding: 10px;
+          padding: 5px;
           height: 100px;
           width: 100px;
           overflow: hidden;
 
           .roskalaatikko {
-            display: inline-block;
             position: relative;
-            height: 20px;
-            left: 70px;
+            height: 22px;
+            left: 65px;
             color: $blue-lighten-5;
 
             svg {
