@@ -26,5 +26,6 @@ wwwroot/*.js
 package-lock.json
 yarn-debug.log*
 yarn-error.log*
+.yarn/*
 
 !./.eslintrc.js
