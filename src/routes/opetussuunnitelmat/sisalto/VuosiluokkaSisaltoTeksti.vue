@@ -8,7 +8,7 @@
       <span v-html="$kaanna(perusteObject[teksti])"></span>
     </ep-collapse>
 
-    <ep-collapse class="mb-4" :use-padding="false" tyyppi="pohjateksti" :border-bottom="false" :border-top="false" :expanded-by-default="perusteTekstiAvattu" v-if="pohjaObject && pohjaObject[teksti]">
+    <ep-collapse class="mb-4" :use-padding="false" tyyppi="pohjateksti" :border-bottom="false" :border-top="false" :expanded-by-default="perusteTekstiAvattu" v-if="hasPohjaObject">
       <template v-slot:header><h4>{{$t('pohjan-teksti')}}</h4></template>
       <span v-html="$kaanna(pohjaObject[teksti])"></span>
     </ep-collapse>
@@ -66,6 +66,10 @@ export default class VuosiluokkaSisaltoTeksti extends Vue {
 
   get contentNotEmpty() {
     return this.vlkObject != null && this.vlkObject[this.teksti] != null;
+  }
+
+  get hasPohjaObject() {
+    return this.pohjaObject && this.pohjaObject[this.teksti] && Object.keys(this.pohjaObject[this.teksti]).length > 0;
   }
 }
 </script>
