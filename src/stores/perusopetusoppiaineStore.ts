@@ -58,7 +58,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
       logger.error(e);
     }
 
-    if (!_.isObject(oppiaine.tehtava) && this.isOppiaineTaiOppimaaraUskontoTaiKieli(oppiaine)) {
+    if (!_.isObject(oppiaine.tehtava)) {
       oppiaine.tehtava = {};
     }
 
@@ -94,10 +94,6 @@ export class PerusopetusoppiaineStore implements IEditoitava {
         .head()
         .value(),
     };
-  }
-
-  isOppiaineTaiOppimaaraUskontoTaiKieli(oppiaine) {
-    return (this.parent && isOppiaineUskontoTaiKieli(this.parent)) || isOppiaineUskontoTaiKieli(oppiaine);
   }
 
   async getOppiaineVersion() {
