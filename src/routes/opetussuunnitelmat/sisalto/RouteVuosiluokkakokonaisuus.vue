@@ -70,15 +70,27 @@
         <hr/>
         <h2>{{$t('laaja-alaisen-osaamisen-alueet')}}</h2>
 
-        <vuosiluokka-sisalto-teksti v-for="(laajaalainen, index) in data.laajaalaiset"
-                                    :key="index"
-                                    :perusteObject="laajaalainen"
-                                    :vlkObject="data.vlk.laajaalaisetosaamiset[index]"
-                                    :isEditing="isEditing"
-                                    :id="'laajaalainen'+laajaalainen.tunniste"
-                                    :peruste-teksti-avattu="true"
-                                    otsikko="nimi"
-                                    teksti="kuvaus" />
+        <div v-for="(laajaalainen, index) in data.laajaalaiset" :key="index">
+          <h3>{{ $kaanna(laajaalainen.nimi) }}</h3>
+
+          <ep-collapse tyyppi="perusteteksti" :border-bottom="false" :border-top="false" chevronLocation="left">
+            <template #header>
+              <div class="link-style">{{ $t('laaja-alaisen-osaamisen-alueen-yleiskuvaus')}}</div>
+            </template>
+
+            <EpToggle v-if="isEditing" v-model="data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao">{{$t('nayta-laaja-alaisen-osaamisen-alueen-yleiskuvaus')}}</EpToggle>
+            <ep-content v-model="laajaalainen.kuvaus" layout="normal" v-if="isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao" />
+
+            <EpToggle v-if="isEditing" v-model="data.vlk.laajaalaisetosaamiset[index].naytaPerusteenVlkTarkennettuLao">{{$t('nayta-laaja-alaisen-osaamisen-vuosluokan-yleiskuvaus')}}</EpToggle>
+            <ep-content v-if="perusteenVlkByLaoTunniste[laajaalainen.tunniste] && (isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenVlkTarkennettuLao)"
+              v-model="perusteenVlkByLaoTunniste[laajaalainen.tunniste].kuvaus" layout="normal"/>
+          </ep-collapse>
+
+          <h4>{{ $t('paikallinen-teksti') }}</h4>
+          <ep-content v-model="data.vlk.laajaalaisetosaamiset[index].kuvaus" layout="normal" :is-editable="isEditing"/>
+          <ep-alert v-if="!isEditing && !data.vlk.laajaalaisetosaamiset[index].kuvaus" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+
+        </div>
 
         </template>
     </EpEditointi>
@@ -147,6 +159,10 @@ export default class RouteVuosiluokkakokonaisuus extends Mixins(EpRoute, EpOpsCo
 
   poistaPaikallinenTarkennus(vlk, vapaatekstiId) {
     vlk.vapaatTekstit = _.filter(vlk.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
+  }
+
+  get perusteenVlkByLaoTunniste() {
+    return _.keyBy(this.editointiStore?.data.value.perusteenVlk.laajaalaisetosaamiset, '_laajaalainenosaaminen');
   }
 }
 </script>
