@@ -73,7 +73,7 @@
         <div v-for="(laajaalainen, index) in data.laajaalaiset" :key="index">
           <h3>{{ $kaanna(laajaalainen.nimi) }}</h3>
 
-          <ep-collapse tyyppi="perusteteksti" :border-bottom="false" :border-top="false" chevronLocation="left">
+          <ep-collapse tyyppi="perusteteksti" :border-bottom="false" :border-top="false" chevronLocation="left" :usePadding="false" v-if="isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao" class="mb-4">
             <template #header>
               <div class="link-style">{{ $t('laaja-alaisen-osaamisen-alueen-yleiskuvaus')}}</div>
             </template>
@@ -81,7 +81,14 @@
             <EpToggle v-if="isEditing" v-model="data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao">{{$t('nayta-laaja-alaisen-osaamisen-alueen-yleiskuvaus')}}</EpToggle>
             <ep-content v-model="laajaalainen.kuvaus" layout="normal" v-if="isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao" />
 
-            <EpToggle v-if="isEditing" v-model="data.vlk.laajaalaisetosaamiset[index].naytaPerusteenVlkTarkennettuLao">{{$t('nayta-laaja-alaisen-osaamisen-vuosluokan-yleiskuvaus')}}</EpToggle>
+          </ep-collapse>
+
+          <ep-collapse tyyppi="perusteteksti" :border-bottom="false" :border-top="false" chevronLocation="left" :usePadding="false" v-if="isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenVlkTarkennettuLao" class="mb-4">
+            <template #header>
+              <div class="link-style">{{ $t('laaja-alaisen-osaamisen-alueen-vuosiluokkakokonaisuuden-kuvaus')}}</div>
+            </template>
+
+            <EpToggle v-if="isEditing" v-model="data.vlk.laajaalaisetosaamiset[index].naytaPerusteenVlkTarkennettuLao">{{$t('nayta-laaja-alaisen-osaamisen-alueen-vuosiluokkakokonaisuuden-kuvaus')}}</EpToggle>
             <ep-content v-if="perusteenVlkByLaoTunniste[laajaalainen.tunniste] && (isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenVlkTarkennettuLao)"
               v-model="perusteenVlkByLaoTunniste[laajaalainen.tunniste].kuvaus" layout="normal"/>
           </ep-collapse>
