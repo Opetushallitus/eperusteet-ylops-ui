@@ -123,12 +123,12 @@ export class OpetussuunnitelmaStore {
   public async init() {
     logger.info('Initing ops store', this.opsId);
     this.opetussuunnitelma = await this.get();
+    this.updatePohjanPerustePaivittynyt();
     this.updateSisalto();
     this.updateValidation();
     this.fetchJulkaisut();
     this.updateOppiaineet();
     this.updatePohjallaPuuttuviaTeksteja();
-    this.updatePohjanPerustePaivittynyt();
   }
 
   async updatePohjanPerustePaivittynyt() {

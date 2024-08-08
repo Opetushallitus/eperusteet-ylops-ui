@@ -205,6 +205,10 @@ export default class OpsViimeaikainenToiminta extends Vue {
             color: $green-lighten-2;
           }
 
+          .virhe {
+            color: $red;
+          }
+
         }
 
         .aikajana {

@@ -7,9 +7,9 @@
         <EpSpinner />
       </div>
       <div class="info-box import-box"
-        v-if="pohjallaPuuttuviaTeksteja"
+        v-if="pohjallaPuuttuviaTeksteja || viimeisinPohjaTekstiSyncVirheellinen"
         v-oikeustarkastelu="oikeustarkastelu">
-        <template v-if="pohjanaOphPohja">
+        <template v-if="pohjanaOphPohja || viimeisinPohjaTekstiSyncVirheellinen">
           <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne')}}</h2>
           <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
         </template>
@@ -25,7 +25,7 @@
           <div class="d-flex align-items-end mr-3 disabled-text font-size-08" v-if="viimeisinPohjaTekstiSync">
             {{$t('viimeisin-synkronisointi-pvm')}} {{$sd(viimeisinPohjaTekstiSync)}}
           </div>
-          <ep-button @click="syncTekstitPohjasta()" :showSpinner="syncPohja" v-if="pohjanaOphPohja">
+          <ep-button @click="syncTekstitPohjasta()" :showSpinner="syncPohja" v-if="pohjanaOphPohja || viimeisinPohjaTekstiSyncVirheellinen">
             {{$t('paivita-opetussuunnitelma')}}
           </ep-button>
         </div>
@@ -91,6 +91,7 @@ import { Kielet } from '@shared/stores/kieli';
 import { buildKatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 import _ from 'lodash';
+import { MuokkaustietoKayttajallaDtoTapahtumaEnum } from '@shared/api/ylops';
 
 @Component({
   components: {
@@ -122,8 +123,9 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
     this.syncPohja = true;
     try {
       await this.store.syncTekstitPohjasta();
-      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
+      await this.muokkaustietoStore.init();
       await this.store.init();
+      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
     }
     catch (e) {
       this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmaan-virhe') as string);
@@ -184,6 +186,10 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 
   get pohjanaOphPohja() {
     return _.toLower(this.ops.pohja?.tyyppi) === 'pohja';
+  }
+
+  get viimeisinPohjaTekstiSyncVirheellinen() {
+    return this.store.viimeisinPohjaTekstiSync?.tapahtuma === _.toLower(MuokkaustietoKayttajallaDtoTapahtumaEnum.VIRHE);
   }
 }
 </script>
