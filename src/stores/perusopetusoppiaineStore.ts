@@ -79,6 +79,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
           return {
             ...vlk,
             vuosiluokat: _.sortBy(vlk.vuosiluokat, 'vuosiluokka'),
+            yleistavoitteet: vlk.yleistavoitteet ?? {},
           };
         })
         .head()
