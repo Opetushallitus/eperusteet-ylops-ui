@@ -43,7 +43,7 @@
                                     :vlkObject="data.oppiaine.tehtava"
                                     :isEditing="isEditing"
                                     :peruste-teksti-avattu="true" />
-        <hr/>
+        <hr class="mt-5 mb-4"/>
 
         <template v-if="perusteenOppiaine.vapaatTekstit">
           <ep-collapse tyyppi="perusteteksti"
@@ -90,17 +90,17 @@
                                       :vlkObject="data.vuosiluokkakokonaisuus.tehtava"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" />
-          <hr/>
+          <hr class="mt-5 mb-4"/>
         </div>
 
         <div v-if="data.oppiaine.tyyppi === 'yhteinen' && data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.yleistavoitteet">
-          <h4>{{ $t('tavoitteet-ja-sisallot') }}</h4>
+          <h3>{{ $t('tavoitteet-ja-sisallot') }}</h3>
           <ep-content v-if="isEditing || data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
                         v-model="data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
                         layout="normal"
                         :is-editable="isEditing"></ep-content>
           <ep-alert v-if="!isEditing && !data.vuosiluokkakokonaisuus.yleistavoitteet.teksti" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
-          <hr/>
+          <hr class="mt-5 mb-4"/>
         </div>
 
         <div v-if="!data.oppiaine.koosteinen && data.vuosiluokkakokonaisuus && !isCopyable">
@@ -118,7 +118,7 @@
               </router-link>
             </div>
 
-            <hr/>
+            <hr class="mt-5 mb-4"/>
           </div>
 
           <div v-if="data.vuosiluokkakokonaisuus.vuosiluokat.length === 0 && !isEditing">
@@ -128,7 +128,7 @@
               <ep-button >{{ $t('vuosiluokkaista-tavoitteet')}}</ep-button>
             </router-link>
 
-            <hr/>
+            <hr class="mt-5 mb-4"/>
           </div>
         </div>
 
@@ -140,7 +140,7 @@
                                       :peruste-teksti-avattu="true" >
             <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.tyotavat" class="mb-3">{{$t('oppiaine-osio-tyotavat')}}</h3>
           </vuosiluokka-sisalto-teksti>
-          <hr v-if="perusteenVuosiluokkakokonaisuus.tyotavat"/>
+          <hr class="mt-5 mb-4" v-if="perusteenVuosiluokkakokonaisuus.tyotavat"/>
 
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.ohjaus"
                                       :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.ohjaus"
@@ -149,7 +149,7 @@
                                       :peruste-teksti-avattu="true" >
             <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.ohjaus" class="mb-3">{{$t('oppiaine-osio-ohjaus')}}</h3>
           </vuosiluokka-sisalto-teksti>
-          <hr  v-if="perusteenVuosiluokkakokonaisuus.ohjaus"/>
+          <hr class="mt-5 mb-4" v-if="perusteenVuosiluokkakokonaisuus.ohjaus"/>
 
           <vuosiluokka-sisalto-teksti :perusteObject="perusteenVuosiluokkakokonaisuus.arviointi"
                                       :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.arviointi"
@@ -162,7 +162,7 @@
 
         <div v-if="data.oppiaine.oppimaarat && data.oppiaine.oppimaarat.length > 0">
 
-          <hr class="mt-4 mb-4"/>
+          <hr class="mt-5 mb-4"/>
           <h3 class="mb-3">{{$t('oppimaarat')}}</h3>
           <b-table striped :items="data.oppiaine.oppimaarat" :fields="oppimaaratFields">
             <template v-slot:cell(nimi)="data">
