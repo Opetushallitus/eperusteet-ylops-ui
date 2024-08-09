@@ -123,12 +123,12 @@ export class OpetussuunnitelmaStore {
   public async init() {
     logger.info('Initing ops store', this.opsId);
     this.opetussuunnitelma = await this.get();
+    this.updatePohjanPerustePaivittynyt();
     this.updateSisalto();
     this.updateValidation();
     this.fetchJulkaisut();
     this.updateOppiaineet();
     this.updatePohjallaPuuttuviaTeksteja();
-    this.updatePohjanPerustePaivittynyt();
   }
 
   async updatePohjanPerustePaivittynyt() {
@@ -213,6 +213,10 @@ export class OpetussuunnitelmaStore {
   public async removeTeksti(tov: Puu) {
     await OpetussuunnitelmanSisalto.removeTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!);
     await this.updateSisalto();
+  }
+
+  public async tekstikappaleAlaOpetussuunnitelmaLukumaara(tunniste) {
+    return (await OpetussuunnitelmanSisalto.getTekstikappaleAlaOpetussuunnitelmaLukumaara(this.opetussuunnitelma!.id!, tunniste)).data;
   }
 
   public async addTeksti(tov: Puu, parentId?: number) {

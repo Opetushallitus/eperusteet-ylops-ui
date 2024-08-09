@@ -1,14 +1,14 @@
 <template>
   <div class="mt-4">
-    <slot name="header" v-if="perusteObject">
-      <h3>{{ $kaanna(perusteObject[otsikko]) }}</h3>
+    <slot name="header">
+      <h3 v-if="perusteObject">{{ $kaanna(perusteObject[otsikko]) }}</h3>
     </slot>
     <ep-collapse tyyppi="perusteteksti" :border-bottom="false" :border-top="false" :expanded-by-default="perusteTekstiAvattu" v-if="perusteObject && perusteObject[teksti]">
       <template v-slot:header><h4>{{$t('perusteen-teksti')}}</h4></template>
       <span v-html="$kaanna(perusteObject[teksti])"></span>
     </ep-collapse>
 
-    <ep-collapse class="mb-4" :use-padding="false" tyyppi="pohjateksti" :border-bottom="false" :border-top="false" :expanded-by-default="perusteTekstiAvattu" v-if="pohjaObject && pohjaObject[teksti]">
+    <ep-collapse class="mb-4" :use-padding="false" tyyppi="pohjateksti" :border-bottom="false" :border-top="false" :expanded-by-default="perusteTekstiAvattu" v-if="hasPohjaObject">
       <template v-slot:header><h4>{{$t('pohjan-teksti')}}</h4></template>
       <span v-html="$kaanna(pohjaObject[teksti])"></span>
     </ep-collapse>
@@ -16,10 +16,10 @@
     <div v-if="vlkObject && (hasContent || perusteObject)">
       <slot name="otsikko"></slot>
       <h4>{{ $t('paikallinen-teksti') }}</h4>
-      <ep-content v-if="isEditing || hasContent" v-model="vlkObject[teksti]"
+      <ep-content v-if="isEditing || contentNotEmpty" v-model="vlkObject[teksti]"
                     layout="normal"
                     :is-editable="isEditing"></ep-content>
-      <ep-alert v-if="!isEditing && !hasContent" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+      <ep-alert v-if="!isEditing && !contentNotEmpty" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
     </div>
   </div>
 </template>
@@ -29,6 +29,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import _ from 'lodash';
 
 @Component({
   components: {
@@ -38,7 +39,7 @@ import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
   },
 })
 export default class VuosiluokkaSisaltoTeksti extends Vue {
-  @Prop({ required: true })
+  @Prop({ required: false })
   private perusteObject!: any;
 
   @Prop({ required: false })
@@ -60,7 +61,15 @@ export default class VuosiluokkaSisaltoTeksti extends Vue {
   private perusteTekstiAvattu!: boolean;
 
   get hasContent() {
+    return this.vlkObject != null && _.has(this.vlkObject, this.teksti);
+  }
+
+  get contentNotEmpty() {
     return this.vlkObject != null && this.vlkObject[this.teksti] != null;
+  }
+
+  get hasPohjaObject() {
+    return this.pohjaObject && this.pohjaObject[this.teksti] && Object.keys(this.pohjaObject[this.teksti]).length > 0;
   }
 }
 </script>

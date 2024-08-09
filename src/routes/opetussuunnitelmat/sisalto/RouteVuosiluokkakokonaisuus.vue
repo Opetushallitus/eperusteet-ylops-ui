@@ -1,11 +1,15 @@
 <template>
   <div id="scroll-anchor" v-if="editointiStore" >
-    <EpEditointi :store="editointiStore" label-copy-confirm="vuosiluokkakokonaisuus-kopiointi-varmistus">
+    <EpEditointi
+      :store="editointiStore"
+      :confirmCopy="false">
+      <template v-slot:kopioi-teksti>{{ $t('muokkaa') }}</template>
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.vlk.nimi) }}</h2>
       </template>
-      <template v-slot:default="{ data, isEditing }">
+      <template v-slot:default="{ data, isEditing, supportData }">
         <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.tehtava"
+                                    :pohjaObject="supportData.pohjanVlk.tehtava"
                                     :vlkObject="data.vlk.tehtava"
                                     :isEditing="isEditing"
                                     :peruste-teksti-avattu="true" />
@@ -54,10 +58,12 @@
         <h2>{{$t('siirtymavaiheet')}}</h2>
 
         <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.siirtymaEdellisesta"
+                                    :pohjaObject="supportData.pohjanVlk.siirtymaEdellisesta"
                                     :vlkObject="data.vlk.siirtymaEdellisesta"
                                     :isEditing="isEditing"
                                     :peruste-teksti-avattu="true" />
         <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.siirtymaSeuraavaan"
+                                    :pohjaObject="supportData.pohjanVlk.siirtymaSeuraavaan"
                                     :vlkObject="data.vlk.siirtymaSeuraavaan"
                                     :isEditing="isEditing"
                                     :peruste-teksti-avattu="true" />
@@ -99,6 +105,16 @@
 
         </div>
 
+        <vuosiluokka-sisalto-teksti v-for="(laajaalainen, index) in data.laajaalaiset"
+                                    :key="index"
+                                    :perusteObject="laajaalainen"
+                                    :pohjaObject="supportData.pohjanLaajaAlaisetOsaamiset[data.vlk.laajaalaisetosaamiset[index]['_laajaalainenosaaminen']]"
+                                    :vlkObject="data.vlk.laajaalaisetosaamiset[index]"
+                                    :isEditing="isEditing"
+                                    :id="'laajaalainen'+laajaalainen.tunniste"
+                                    :peruste-teksti-avattu="true"
+                                    otsikko="nimi"
+                                    teksti="kuvaus" />
         </template>
     </EpEditointi>
   </div>
@@ -134,7 +150,7 @@ export default class RouteVuosiluokkakokonaisuus extends Mixins(EpRoute, EpOpsCo
 
   async init() {
     const scrollId = this.$route.hash ? 'laajaalainen' + this.$route.hash.replace('#', '') : null;
-    this.editointiStore = new EditointiStore(new VuosiluokkakokonaisuusStore(this.opsId, _.toNumber(this.$route.params.vlkId), scrollId, this));
+    this.editointiStore = new EditointiStore(new VuosiluokkakokonaisuusStore(this.opsId, _.toNumber(this.$route.params.vlkId), scrollId, this, this.muokkaa));
   }
 
   async resetOps() {
@@ -170,6 +186,10 @@ export default class RouteVuosiluokkakokonaisuus extends Mixins(EpRoute, EpOpsCo
 
   get perusteenVlkByLaoTunniste() {
     return _.keyBy(this.editointiStore?.data.value.perusteenVlk.laajaalaisetosaamiset, '_laajaalainenosaaminen');
+  }
+
+  get muokkaa() {
+    return _.has(this.$route.query, 'muokkaa');
   }
 }
 </script>

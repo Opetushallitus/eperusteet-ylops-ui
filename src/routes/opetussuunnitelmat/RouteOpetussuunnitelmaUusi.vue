@@ -5,25 +5,20 @@
     <p>{{ $t('uusi-opetussuunnitelma-ohje') }}</p>
   </template>
   <div class="form-group">
-    <!-- <div class="row"> -->
-      <!-- <legend class="col-form-label col-12 font-weight-bold">{{ $t('opetussuunnitelman-pohjatyyppi-pakollinen') }}</legend> -->
-      <ep-form-content name="opetussuunnitelman-pohjatyyppi-pakollinen">
-      <!-- <div class="col-sm-10 mb-4"> -->
-        <b-form-group class="mt-0">
-          <b-form-radio
-            v-model="oletuspohjasta"
-            @change="updateOletuspohja"
-            name="uusi-ops-pohjavalinta"
-            value="opsista">{{ $t('toinen-opetussuunnitelma') }}</b-form-radio>
-          <b-form-radio
-            v-model="oletuspohjasta"
-            @change="updateOletuspohja"
-            name="uusi-ops-pohjavalinta"
-            value="pohjasta">{{ $t('oletuspohja') }}</b-form-radio>
-        </b-form-group>
-      </ep-form-content>
-      <!-- </div> -->
-    <!-- </div> -->
+    <ep-form-content name="opetussuunnitelman-pohjatyyppi-pakollinen">
+      <b-form-group class="mt-0">
+        <b-form-radio
+          v-model="oletuspohjasta"
+          @change="updateOletuspohja"
+          name="uusi-ops-pohjavalinta"
+          value="opsista">{{ $t('toinen-opetussuunnitelma') }}</b-form-radio>
+        <b-form-radio
+          v-model="oletuspohjasta"
+          @change="updateOletuspohja"
+          name="uusi-ops-pohjavalinta"
+          value="pohjasta">{{ $t('oletuspohja') }}</b-form-radio>
+      </b-form-group>
+    </ep-form-content>
     <div v-if="oletuspohjasta">
       <div class="form-group">
         <div v-if="pohjat">
@@ -53,6 +48,25 @@
     </div>
   </div>
   <div v-if="oletuspohjasta">
+
+    <template v-if="oletuspohjasta !== 'pohjasta'">
+      <b-form-group class="mt-0">
+          <b-form-radio
+            v-model="uusi.luontityyppi"
+            name="uusi-ops-luontityyppi"
+            value="KOPIO"><b>Kopio</b> (pohjana käytettävän opetussuunnitelman tiedot kopioidaan 1:1)</b-form-radio>
+          <b-form-radio
+            v-model="uusi.luontityyppi"
+            name="uusi-ops-luontityyppi"
+            value="VIITTEILLA"><b>Opetussuunnitelma pohjaksi</b> (pohjan rakenne kopioidaan ja pohjan tekstit näytetään)</b-form-radio>
+            <b-form-radio
+            v-model="uusi.luontityyppi"
+            name="uusi-ops-luontityyppi"
+            value="LEGACY"><b>Legacy</b> (pohjan käyttö kuten tuotannossa. Jos valitaan oletuspohja, tiedot kopioidaan. Jos valitaan opetussuunnitelma, kannan viitteet säilyy samoina kuten pohjassa)</b-form-radio>
+        </b-form-group>
+
+    </template>
+
     <hr/>
 
     <div v-if="uusi.pohja && uusi.pohja.toteutus === 'perusopetus'">
@@ -142,6 +156,8 @@ import {
   OpetussuunnitelmaInfoDtoToteutusEnum,
   OpsVuosiluokkakokonaisuusKevytDto,
   OpsVuosiluokkakokonaisuusDto,
+  OpetussuunnitelmaInfoDtoTilaEnum,
+  OpetussuunnitelmaLuontiDtoLuontityyppiEnum,
 } from '@shared/api/ylops';
 import { opsLuontiValidator } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
@@ -189,6 +205,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     tuoPohjanOppimaarat: null as (boolean | null),
     ainepainoitteinen: false,
     vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
+    luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA,
   };
 
   initUusi() {
@@ -237,7 +254,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   }
 
   protected async init() {
-    this.oletuspohjat = (await Opetussuunnitelmat.getAll('POHJA', 'VALMIS')).data;
+    this.oletuspohjat = (await Opetussuunnitelmat.getAll('POHJA', OpetussuunnitelmaInfoDtoTilaEnum.VALMIS)).data;
     this.opetussuunnitelmat = (await Opetussuunnitelmat.getOpetussuunnitelmienOpsPohjat()).data;
   }
 
@@ -260,7 +277,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     }
 
     return _.chain(pohjat)
-      .filter(pohja => pohja.tila !== 'POISTETTU')
+      .filter(pohja => pohja.tila !== OpetussuunnitelmaInfoDtoTilaEnum.POISTETTU.toLowerCase())
       .filter(pohja => isOpsToteutusSupported(pohja))
       .value();
   }
@@ -268,6 +285,11 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   updateOletuspohja(value: PohjaTyyppi) {
     this.oletuspohjasta = value;
     this.initUusi();
+    this.uusi.luontityyppi = OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA;
+
+    if (this.oletuspohjasta === 'pohjasta') {
+      this.uusi.luontityyppi = OpetussuunnitelmaLuontiDtoLuontityyppiEnum.KOPIO;
+    }
   }
 
   nimiSearchIdentity(obj: any) {
@@ -290,9 +312,9 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       vuosiluokkakokonaisuudet: this.uusi.vuosiluokkakokonaisuudet,
       tuoPohjanOpintojaksot: this.uusi.tuoPohjanOpintojaksot ? this.uusi.tuoPohjanOpintojaksot : false,
       tuoPohjanOppimaarat: this.uusi.tuoPohjanOppimaarat ? this.uusi.tuoPohjanOppimaarat : false,
+      luontityyppi: this.uusi.luontityyppi as any,
     };
 
-    // FIXME: #swagger
     (ops as any)._pohja = '' + this.uusi.pohja!.id;
     try {
       const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
