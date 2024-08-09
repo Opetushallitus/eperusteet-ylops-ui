@@ -184,13 +184,12 @@ export default class RouteVuosiluokkakokonaisuus extends Mixins(EpRoute, EpOpsCo
     vlk.vapaatTekstit = _.filter(vlk.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
   }
 
-<<<<<<< HEAD
   get perusteenVlkByLaoTunniste() {
     return _.keyBy(this.editointiStore?.data.value.perusteenVlk.laajaalaisetosaamiset, '_laajaalainenosaaminen');
-=======
+  }
+
   get muokkaa() {
     return _.has(this.$route.query, 'muokkaa');
->>>>>>> 445d28c (perusopetus oppiaine kopioinnit)
   }
 }
 </script>
