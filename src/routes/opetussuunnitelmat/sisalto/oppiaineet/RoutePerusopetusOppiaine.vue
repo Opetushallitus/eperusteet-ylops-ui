@@ -93,15 +93,13 @@
           <hr class="mt-5 mb-4"/>
         </div>
 
-        <div v-if="data.oppiaine.tyyppi === 'yhteinen' && data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.yleistavoitteet">
-          <h3>{{ $t('tavoitteet-ja-sisallot') }}</h3>
-          <ep-content v-if="isEditing || data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
-                        v-model="data.vuosiluokkakokonaisuus.yleistavoitteet.teksti"
-                        layout="normal"
-                        :is-editable="isEditing"></ep-content>
-          <ep-alert v-if="!isEditing && !data.vuosiluokkakokonaisuus.yleistavoitteet.teksti" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
-          <hr class="mt-5 mb-4"/>
-        </div>
+        <vuosiluokka-sisalto-teksti
+          v-if="data.oppiaine.tyyppi === 'yhteinen'"
+          :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.yleistavoitteet"
+          :vlkObject="data.vuosiluokkakokonaisuus.yleistavoitteet"
+          :isEditing="isEditing" >
+          <h3 slot="header" class="mb-3">{{ $t('tavoitteet-ja-sisallot') }}</h3>
+        </vuosiluokka-sisalto-teksti>
 
         <div v-if="!data.oppiaine.koosteinen && data.vuosiluokkakokonaisuus && !isCopyable">
           <div v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.vuosiluokat.length > 0">
