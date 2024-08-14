@@ -7,9 +7,15 @@
       label-copy-topic="oppiaine-kopiointi-varmistus-otsikko"
       label-copy-confirm-button="oppiaine-kopiointi-varmistus-hyvaksynta">
       <template v-slot:kopioi-teksti>{{ $t('muokkaa') }}</template>
+
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}</h2>
       </template>
+
+      <template v-slot:additionalInfo="{ data }">
+        <span v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.piilotettu" class="additional-info-text">({{ $t('piilotettu')}})</span>
+      </template>
+
       <template v-slot:info>
         <div v-if="isPohjanTyyppiOps && oppiaine.oma && !oppiaine.pohjanOppiaine">
           {{$t('oppiaine-on-kopioitu-muokattavaksi')}}
@@ -19,6 +25,7 @@
       <template v-slot:piilotettu>
         <div>{{$t('oavlk-on-piilotettu')}}</div>
       </template>
+
       <template v-slot:default="{ data, isEditing, isCopyable, validation }">
 
         <div v-if="!data.perusteenOppiaine" class="alert alert-danger">{{$t('ei-perustetta-info')}}</div>
@@ -318,4 +325,8 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
   color: $gray-lighten-2;
 }
 
+.additional-info-text {
+  margin-right: 10px;
+  font-weight: 600;
+}
 </style>

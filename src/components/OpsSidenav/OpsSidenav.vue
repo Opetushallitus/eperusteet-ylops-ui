@@ -45,6 +45,7 @@
               <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
             </div>
           </div>
+          <EpMaterialIcon v-if="itemData.item.piilotettu" class="ml-1" size="16px">visibility_off</EpMaterialIcon>
         </ops-sidenav-link>
         <li class="subheader" v-if="!isSubmenu && !itemRoute && kaanna(itemData.item)">
           <span>{{ kaanna(itemData.item) }}</span>

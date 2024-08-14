@@ -99,23 +99,26 @@ function perusopetuksenValinnaisetOppiaineetLinkki(vlk) {
 
 function perusopetusOppiaineLinkki(oppiaine, vlk): SideMenuEntry {
   let children;
+  let oppiaineenVlk;
 
   if (oppiaine.koosteinen && _.size(oppiaine.oppimaarat) === 0) {
     children = [];
   }
   else {
+    oppiaineenVlk = _.head(_.filter(oppiaine?.vuosiluokkakokonaisuudet, ovlk => _.get(ovlk, '_vuosiluokkakokonaisuus') === _.get(vlk, '_tunniste')));
+
     children = [
-      ...perusopetusoppiaineenVuosiluokat(oppiaine, vlk),
+      ...perusopetusoppiaineenVuosiluokat(oppiaine, vlk, oppiaineenVlk),
       ...perusopetusOppiaineenLapset(oppiaine.oppimaarat, vlk),
     ];
 
     children = _.size(children) > 0 ? children : null;
   }
-
   return {
     item: {
       type: oppiaine.koosteinen ? 'koosteinen-oppiaine' : 'perusopetusoppiaine',
       objref: oppiaine,
+      piilotettu: oppiaineenVlk && oppiaineenVlk.piilotettu,
     },
     route: {
       name: oppiaine.tyyppi === 'muu_valinnainen' ? 'perusopetuspaikallinenoppiaine' : 'perusopetusoppiaine',
@@ -140,9 +143,7 @@ function perusopetusOppiaineenLapset(oppiaineet, vlk) {
     .value();
 }
 
-function perusopetusoppiaineenVuosiluokat(oppiaine, vlk) {
-  const oppiaineenVlk = _.head(_.filter(oppiaine?.vuosiluokkakokonaisuudet, ovlk => _.get(ovlk, '_vuosiluokkakokonaisuus') === _.get(vlk, '_tunniste')));
-
+function perusopetusoppiaineenVuosiluokat(oppiaine, vlk, oppiaineenVlk) {
   if (oppiaineenVlk && _.size(oppiaineenVlk.vuosiluokat) > 0) {
     return [{
       item: {
