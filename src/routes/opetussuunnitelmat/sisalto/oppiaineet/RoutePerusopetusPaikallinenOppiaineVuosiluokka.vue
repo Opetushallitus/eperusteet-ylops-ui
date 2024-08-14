@@ -9,6 +9,12 @@
         <div v-for="(tavoite, idx) in data.vuosiluokka.tavoitteet" :key="idx" :class="{ 'tavoite-editing': isEditing, 'mb-3': isEditing }">
           <ep-collapse v-if="!isEditing" tyyppi="perusopetus-vuosiluokka-tavoite">
             <h3 slot="header">{{ $kaanna(tavoite.tavoite) }}</h3>
+
+            <template v-if="data.pohjanTavoitteet[tavoite.tunniste]">
+              <h4>{{$t('pohjan-teksti')}}</h4>
+              <ep-content layout="normal" v-model="data.pohjanTavoitteet[tavoite.tunniste].sisaltoalueet[0].sisaltoalueet.kuvaus" :is-editable="false"></ep-content>
+            </template>
+
             <div v-for="(sa, idx2) in tavoite.sisaltoalueet" :key="idx2">
               <ep-content layout="normal"
                           v-model="sa.sisaltoalueet.kuvaus"></ep-content>
@@ -20,6 +26,12 @@
                         :is-editing="isEditing">
               </ep-field>
             </ep-form-content>
+
+            <template v-if="data.pohjanTavoitteet[tavoite.tunniste]">
+              <h4>{{$t('pohjan-teksti')}}</h4>
+              <ep-content layout="normal" v-model="data.pohjanTavoitteet[tavoite.tunniste].sisaltoalueet[0].sisaltoalueet.kuvaus" :is-editable="false"></ep-content>
+            </template>
+
             <ep-form-content name="tavoitteen-kuvaus">
               <div v-for="(sa, idx2) in tavoite.sisaltoalueet" :key="idx2">
                 <ep-content layout="normal"
@@ -60,6 +72,7 @@ import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
+import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 
 @Component({
   components: {

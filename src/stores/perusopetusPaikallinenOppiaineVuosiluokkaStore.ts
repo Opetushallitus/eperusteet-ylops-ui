@@ -38,28 +38,33 @@ export class PerusopetusPaikallinenOppiaineVuosiluokkaStore implements IEditoita
       'id',
       this.vuosiluokkaId,
     ]);
+
+    const pohjanOppiaine = (await Oppiaineet.getPohjanVastaavaOppiaine(this.opsId, _.toNumber(this.oppiaineId))).data ?? {};
+    const pohjanVuosiluokkakokonaisuus = _.find(pohjanOppiaine.vuosiluokkakokonaisuudet, [
+      '_vuosiluokkakokonaisuus',
+      this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!['_tunniste'],
+    ]);
+    const pohjanVuosiluokka = _.find(pohjanVuosiluokkakokonaisuus?.vuosiluokat, [
+      'vuosiluokka',
+      vuosiluokka?.vuosiluokka,
+    ]);
+
     return {
       oppiaine,
       vuosiluokkakokonaisuus,
       vuosiluokka,
+      pohjanOppiaine,
+      pohjanTavoitteet: _.keyBy(pohjanVuosiluokka?.tavoitteet, 'tunniste'),
     };
   }
 
   async save(data) {
-    const tavoitteet = _(data.vuosiluokka.tavoitteet)
-      .map(t => {
-        return {
-          otsikko: t.tavoite,
-          teksti: t.sisaltoalueet[0].sisaltoalueet.kuvaus,
-        };
-      })
-      .value();
     return OppiaineenVuosiluokat.updateValinnaisenVuosiluokanSisalto(
       this.opsId,
       this.oppiaineId,
       this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!,
       this.vuosiluokkaId,
-      tavoitteet,
+      data.vuosiluokka.tavoitteet,
     );
   }
 
