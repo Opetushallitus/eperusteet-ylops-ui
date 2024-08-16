@@ -1,79 +1,77 @@
 <template>
   <div class="content">
-    <h2>{{$t('tiedot')}}</h2>
+    <router-link :to="{ name: 'opsTiedot' }">
+      <h2>{{$t('opetussuunnitelman-tiedot')}}</h2>
+    </router-link>
 
     <ep-spinner v-if="!ops || !virkailijat"></ep-spinner>
     <div v-else>
 
       <div class="row">
         <div class="col-5">
-          <div class="data-content">
-            <div class="row">
-              <div class="col-1">
-                <EpMaterialIcon>account_balance</EpMaterialIcon>
-              </div>
-              <div class="col"><div class="topic">{{ $t('peruste')}}</div></div>
-            </div>
-            <div class="row justify-content-end">
-              <div class="col-1"></div>
-              <div class="col">{{ops.perusteenDiaarinumero}}</div>
-            </div>
-          </div>
-
-          <div class="data-content">
-            <div class="row">
-              <div class="col-1">
-                <EpMaterialIcon>language</EpMaterialIcon>
-              </div>
-              <div class="col"><div class="topic">{{ $t('julkaisukielet')}}</div></div>
-            </div>
-            <div class="row justify-content-end">
-              <div class="col-1"></div>
-              <div class="col">{{julkaisukieliet}}</div>
-            </div>
-          </div>
-
-          <div class="data-content">
-            <div class="row">
-              <div class="col-1">
-                <EpMaterialIcon>calendar_month</EpMaterialIcon>
-              </div>
-              <div class="col"><div class="topic">{{ $t('luotu')}}</div></div>
-            </div>
-            <div class="row justify-content-end">
-              <div class="col-1"></div>
-              <div class="col">{{ $sdt(ops.luotu)}}</div>
-            </div>
-          </div>
-
+          <EpPerustietoData icon="account_balance">
+            <template #header>{{ $t('peruste')}}</template>
+            {{ops.perusteenDiaarinumero}}
+          </EpPerustietoData>
         </div>
-
         <div class="col-7">
-          <div class="data-content">
-            <div class="row">
-              <div class="col-1">
-                <EpMaterialIcon>groups</EpMaterialIcon>
-              </div>
-              <div class="col"><div class="topic">{{ $t('tyoryhma')}}</div></div>
-            </div>
-            <div class="row justify-content-end">
-              <div class="col-1"></div>
-              <div class="col">
-                <p v-for="virkailija in virkailijatFormatted" :key="virkailija.oid" class="mb-1">
-                  {{ virkailija.esitysnimi }}
-                </p>
-                <ep-button v-if="!naytaLisaaTyoryhmaa && virkailijat.length > tyoryhmaAlkuMaara" @click="naytaLisaaTyoryhmaa = true" variant="link" buttonClass="pl-0 mt-2">
-                  {{$t('nayta-lisaa')}}
-                </ep-button>
-                <ep-button v-if="naytaLisaaTyoryhmaa" @click="naytaLisaaTyoryhmaa = false" variant="link" buttonClass="pl-0 mt-2">
-                  {{$t('piilota')}}
-                </ep-button>
-              </div>
-            </div>
-          </div>
+          <EpPerustietoData icon="language">
+            <template #header>{{ $t('julkaisukielet')}}</template>
+            {{julkaisukieliet}}
+          </EpPerustietoData>
         </div>
-
       </div>
+
+      <div class="row">
+        <div class="col-5">
+          <EpPerustietoData icon="calendar_month">
+            <template #header>{{ $t('luotu')}}</template>
+            {{ $sdt(ops.luotu)}}
+          </EpPerustietoData>
+        </div>
+        <div class="col-7">
+          <EpPerustietoData icon="calendar_month">
+            <template #header>{{ $t('julkaistu')}}</template>
+            {{ $sdt(ops.viimeisinJulkaisuAika)}}
+          </EpPerustietoData>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-5">
+          <EpPerustietoData icon="groups">
+            <template #header>{{ $t('tyoryhma')}}</template>
+            <p v-for="virkailija in virkailijatFormatted" :key="virkailija.oid" class="mb-1">
+              {{ virkailija.esitysnimi }}
+            </p>
+            <ep-button v-if="!naytaLisaaTyoryhmaa && virkailijat.length > tyoryhmaAlkuMaara" @click="naytaLisaaTyoryhmaa = true" variant="link" buttonClass="pl-0 mt-2">
+              {{$t('nayta-lisaa')}}
+            </ep-button>
+            <ep-button v-if="naytaLisaaTyoryhmaa" @click="naytaLisaaTyoryhmaa = false" variant="link" buttonClass="pl-0 mt-2">
+              {{$t('piilota')}}
+            </ep-button>
+          </EpPerustietoData>
+        </div>
+        <div class="col-7">
+          <EpPerustietoData icon="visibility">
+            <template #header>{{ $t('esikatsele-opetussuunnitelmaa')}}</template>
+            <template v-if="!ops.esikatseltavissa">{{ $t('esikatselua-ei-ole-sallittu') }}</template>
+            <template v-else>
+              <ep-external-link :url="esikatseluUrl"></ep-external-link>
+            </template>
+          </EpPerustietoData>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <EpPerustietoData icon="folder">
+            <template #header>{{ $t('pohjat')}}</template>
+            <OpsPohjat :ops="ops"></OpsPohjat>
+          </EpPerustietoData>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -87,12 +85,18 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpOpsComponent from '../../../mixins/EpOpsComponent';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
+import { koulutustyyppiTheme } from '@shared/utils/perusteet';
+import OpsPohjat from '@/routes/opetussuunnitelmat/tiedot/OpsPohjat.vue';
+import EpPerustietoData from '@shared/components/EpPerustietoData/EpPerustietoData.vue';
 
 @Component({
   components: {
     EpSpinner,
     EpButton,
     EpMaterialIcon,
+    OpsPohjat,
+    EpPerustietoData,
   },
 })
 export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
@@ -121,6 +125,10 @@ export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
       })
       .take(!this.naytaLisaaTyoryhmaa ? this.tyoryhmaAlkuMaara : _.size(this.virkailijat))
       .value();
+  }
+
+  get esikatseluUrl() {
+    return buildEsikatseluUrl(Kielet.getSisaltoKieli.value, `/opetussuunnitelma/${this.ops.id}`, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/tiedot`);
   }
 }
 </script>
