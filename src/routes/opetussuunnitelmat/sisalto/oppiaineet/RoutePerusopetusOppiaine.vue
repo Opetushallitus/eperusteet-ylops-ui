@@ -28,6 +28,8 @@
 
       <template v-slot:default="{ data, isEditing, isCopyable, validation }">
 
+        <div v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.piilotettu" class="disabled-text mb-4">{{$t('piilotettu-julkisesta-opetussuunnitelmasta')}}</div>
+
         <div v-if="!data.perusteenOppiaine" class="alert alert-danger">{{$t('ei-perustetta-info')}}</div>
 
         <ep-form-content :name="'oppimaaran-nimi'" v-if="isOppiaineUskontoTaiVierasKieli && isEditing">
