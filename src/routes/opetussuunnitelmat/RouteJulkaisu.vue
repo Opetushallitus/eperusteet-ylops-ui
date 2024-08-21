@@ -111,6 +111,11 @@
 
     <EpJulkaisuHistoria :julkaisut="julkaisuhistoria" :palauta="palautaJulkaisu">
       <div slot="empty">{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
+      <template slot="katsele" slot-scope="{ julkaisu }">
+          <ep-external-link v-if="julkaisu" :url="opintopolkuKatseluUrl(julkaisu)">
+            {{$t('katsele')}}
+          </ep-external-link>
+        </template>
     </EpJulkaisuHistoria>
   </div>
 </div>
@@ -132,7 +137,7 @@ import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpJulkaisuHistoria from '@shared/components/EpJulkaisuHistoria/EpJulkaisuHistoria.vue';
-import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
+import { buildEsikatseluUrl, buildKatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import EpJulkaisuButton from '@shared/components/EpJulkaisuButton/EpJulkaisuButton.vue';
@@ -273,6 +278,14 @@ export default class RouteJulkaisu extends EpOpsRoute {
     finally {
       this.hallintaLoading = false;
     }
+  }
+
+  opintopolkuKatseluUrl(julkaisu) {
+    let revision = julkaisu.revision;
+    if (revision === _.max(_.map(this.julkaisut, 'revision'))) {
+      revision = null;
+    }
+    return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/opetussuunnitelma/${this.ops.id}`, revision, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}`);
   }
 }
 </script>
