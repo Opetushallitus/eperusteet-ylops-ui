@@ -91,7 +91,7 @@ describe('Router', () => {
         }
       });
 
-    jest.spyOn(Opetussuunnitelmat, 'getAdminList')
+    jest.spyOn(Opetussuunnitelmat, 'getOpetussuunnitelmaTilastot')
       .mockImplementation(async (): Promise<any> => [
       ]);
 
