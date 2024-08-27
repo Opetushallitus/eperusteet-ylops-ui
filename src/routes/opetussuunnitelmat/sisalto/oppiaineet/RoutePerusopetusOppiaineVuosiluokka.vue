@@ -77,8 +77,7 @@
                       </template>
 
                       <div class="pl-4">
-                        <span v-if="lao.paikallinenLao && lao.paikallinenLao.kuvaus" v-html="$kaanna(lao.paikallinenLao.kuvaus)"></span>
-                        <span v-else v-html="$kaanna(lao.perusteenLao.kuvaus)"></span>
+                        <span v-html="$kaanna(lao.perusteenLao.kuvaus)"></span>
                       </div>
                     </ep-collapse>
                   </div>
