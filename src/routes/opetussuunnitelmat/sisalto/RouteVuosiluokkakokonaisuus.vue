@@ -70,7 +70,7 @@
         <hr/>
         <h2>{{$t('laaja-alaisen-osaamisen-alueet')}}</h2>
 
-        <div v-for="(laajaalainen, index) in data.laajaalaiset" :key="index">
+        <div v-for="(laajaalainen, index) in data.laajaalaiset" :key="index" class="mb-5">
           <h3>{{ $kaanna(laajaalainen.nimi) }}</h3>
 
           <ep-collapse tyyppi="perusteteksti" :border-bottom="false" :border-top="false" chevronLocation="left" :usePadding="false" v-if="isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao" class="mb-4">
@@ -78,7 +78,7 @@
               <div class="link-style">{{ $t('laaja-alaisen-osaamisen-alueen-yleiskuvaus')}}</div>
             </template>
 
-            <EpToggle v-if="isEditing" v-model="data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao">{{$t('nayta-laaja-alaisen-osaamisen-alueen-yleiskuvaus')}}</EpToggle>
+            <EpToggle class="mb-2" v-if="isEditing" v-model="data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao">{{$t('nayta-laaja-alaisen-osaamisen-alueen-yleiskuvaus')}}</EpToggle>
             <ep-content v-model="laajaalainen.kuvaus" layout="normal" v-if="isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao" />
 
           </ep-collapse>
@@ -88,13 +88,13 @@
               <div class="link-style">{{ $t('laaja-alaisen-osaamisen-alueen-vuosiluokkakokonaisuuden-kuvaus')}}</div>
             </template>
 
-            <EpToggle v-if="isEditing" v-model="data.vlk.laajaalaisetosaamiset[index].naytaPerusteenVlkTarkennettuLao">{{$t('nayta-laaja-alaisen-osaamisen-alueen-vuosiluokkakokonaisuuden-kuvaus')}}</EpToggle>
+            <EpToggle class="mb-2" v-if="isEditing" v-model="data.vlk.laajaalaisetosaamiset[index].naytaPerusteenVlkTarkennettuLao">{{$t('nayta-laaja-alaisen-osaamisen-alueen-vuosiluokkakokonaisuuden-kuvaus')}}</EpToggle>
             <ep-content v-if="perusteenVlkByLaoTunniste[laajaalainen.tunniste] && (isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenVlkTarkennettuLao)"
               v-model="perusteenVlkByLaoTunniste[laajaalainen.tunniste].kuvaus" layout="normal"/>
           </ep-collapse>
 
           <h4>{{ $t('paikallinen-teksti') }}</h4>
-          <ep-content v-model="data.vlk.laajaalaisetosaamiset[index].kuvaus" layout="normal" :is-editable="isEditing"/>
+          <ep-content v-if="isEditing || data.vlk.laajaalaisetosaamiset[index].kuvaus" v-model="data.vlk.laajaalaisetosaamiset[index].kuvaus" layout="normal" :is-editable="isEditing"/>
           <ep-alert v-if="!isEditing && !data.vlk.laajaalaisetosaamiset[index].kuvaus" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
 
         </div>

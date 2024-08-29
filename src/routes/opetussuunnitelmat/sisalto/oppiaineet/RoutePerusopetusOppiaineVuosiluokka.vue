@@ -77,7 +77,12 @@
                       </template>
 
                       <div class="pl-4">
-                        <span v-html="$kaanna(lao.perusteenLao.kuvaus)"></span>
+                        <span v-if="lao.paikallinenLao.naytaPerusteenPaatasonLao" v-html="$kaanna(lao.perusteenLao.kuvaus)"></span>
+                        <span v-if="lao.paikallinenLao.naytaPerusteenVlkTarkennettuLao" v-html="$kaanna(lao.perusteenVlkLao.kuvaus)"></span>
+                        <template v-if="lao.paikallinenLao && lao.paikallinenLao.kuvaus">
+                          <h4>{{ $t('paikallinen-teksti') }}</h4>
+                          <span v-if="lao.paikallinenLao && lao.paikallinenLao.kuvaus" v-html="$kaanna(lao.paikallinenLao.kuvaus)"></span>
+                        </template>
                       </div>
                     </ep-collapse>
                   </div>
