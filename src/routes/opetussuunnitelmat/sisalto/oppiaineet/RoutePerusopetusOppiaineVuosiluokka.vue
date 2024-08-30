@@ -26,6 +26,14 @@
                 <span v-html="$kaanna(tavoite.tavoitteistaJohdetutOppimisenTavoitteet)"></span>
               </div>
 
+              <div class="mb-4" v-if="tavoite.vuosiluokanTavoite">
+                <h4>{{ $t('paikallinen-teksti') }}</h4>
+                <ep-content v-if="isEditing || tavoite.vuosiluokanTavoite.tavoite" v-model="tavoite.vuosiluokanTavoite.tavoite"
+                              layout="normal"
+                              :is-editable="isEditing"></ep-content>
+                <ep-alert v-if="!isEditing && !tavoite.vuosiluokanTavoite.tavoite" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+              </div>
+
               <div class="inner-collapse mb-4" v-if="tavoite.sisaltoalueet.length > 0">
                 <h4>{{ $t('sisaltoalueet') }}</h4>
                 <ep-collapse ref="sisaltoaluecollapse" class="sisaltoalue" v-for="(sisaltoalue, index) in tavoite.sisaltoalueet" :key="'sisaltoalue'+index"
@@ -105,14 +113,6 @@
               <div class="mb-4" v-if="tavoite.arvioinninkohteet && tavoite.arvioinninkohteet.length > 0">
                 <h4 class="mb-0 pb-0" v-html="tavoite.arvioinninOtsikko ? $kaanna(tavoite.arvioinninOtsikko) : $t('arviointi-vuosiluokan-paatteeksi')"></h4>
                 <ep-arvioinninkohteet-table :arvioinninkohteet="tavoite.arvioinninkohteet" />
-              </div>
-
-              <div class="mb-4" v-if="tavoite.vuosiluokanTavoite">
-                <h4>{{ $t('paikallinen-teksti') }}</h4>
-                <ep-content v-if="isEditing || tavoite.vuosiluokanTavoite.tavoite" v-model="tavoite.vuosiluokanTavoite.tavoite"
-                              layout="normal"
-                              :is-editable="isEditing"></ep-content>
-                <ep-alert v-if="!isEditing && !tavoite.vuosiluokanTavoite.tavoite" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
               </div>
 
               <div class="mb-4" v-if="tavoite.vapaaTeksti">
