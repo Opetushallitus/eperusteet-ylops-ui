@@ -49,16 +49,14 @@
               <template slot="option" slot-scope="{ option }">
                 <span>{{ $kaanna(option.nimi) }} ({{ option.perusteenDiaarinumero }})</span>
               </template>
-              <div slot="helptext" class="form-text info-box mt-2" v-if="uusi.pohja">
-                <template v-if="this.oletuspohjasta !== 'pohjasta'">
-                  {{ $t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio') }}
-                  <template v-if="luontityyppi.toLowerCase() === 'kopio' && this.opetussuunnitelmaOrganisaatioTaso === 'oppilaitos'">
-                    <EpSpinner class="d-inline-block" v-if="!valitunPohjanPohja" />
-                    <div v-else class="mt-2">
-                      {{$t('valittu-opetussuunnitelma-kopio-huomio')}}
-                      <span class="font-italic">{{$kaanna(valitunPohjanPohja.nimi)}}</span>
-                    </div>
-                  </template>
+              <div slot="helptext" class="form-text info-box mt-2" v-if="uusi.pohja && this.oletuspohjasta !== 'pohjasta'">
+                {{ $t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio') }}
+                <template v-if="luontityyppi.toLowerCase() === 'kopio' && this.opetussuunnitelmaOrganisaatioTaso === 'oppilaitos'">
+                  <EpSpinner class="d-inline-block" v-if="!valitunPohjanPohja" />
+                  <div v-else class="mt-2">
+                    {{$t('valittu-opetussuunnitelma-kopio-huomio')}}
+                    <span class="font-italic">{{$kaanna(valitunPohjanPohja.nimi)}}</span>
+                  </div>
                 </template>
               </div>
             </EpMultiSelect>
@@ -204,7 +202,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       jarjestajat: [],
       oppilaitokset: [],
       kunnat: [],
-      ryhmat: [],
     },
     tuoPohjanOpintojaksot: null as (boolean | null),
     tuoPohjanOppimaarat: null as (boolean | null),
@@ -244,7 +241,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       jarjestajat: [],
       oppilaitokset: [],
       kunnat: [],
-      ryhmat: [],
     };
     this.uusi.vuosiluokkakokonaisuudet = [];
     this.valitunPohjanPohja = null;
@@ -319,7 +315,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       organisaatiot: [
         ...this.uusi.organisaatiot.jarjestajat,
         ...this.uusi.organisaatiot.oppilaitokset,
-        ...this.uusi.organisaatiot.ryhmat,
       ],
       ainepainoitteinen: this.uusi.ainepainoitteinen,
       vuosiluokkakokonaisuudet: this.uusi.vuosiluokkakokonaisuudet,
