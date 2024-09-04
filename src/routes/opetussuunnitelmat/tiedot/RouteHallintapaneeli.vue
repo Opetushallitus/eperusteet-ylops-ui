@@ -7,7 +7,7 @@
         <EpSpinner />
       </div>
       <div class="info-box import-box"
-        v-if="pohjallaPuuttuviaTeksteja || viimeisinPohjaTekstiSyncVirheellinen"
+        v-if="pohjallaPuuttuviaTeksteja"
         v-oikeustarkastelu="oikeustarkastelu">
         <template v-if="pohjanaOphPohja || viimeisinPohjaTekstiSyncVirheellinen">
           <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne')}}</h2>
@@ -189,7 +189,12 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
   }
 
   get viimeisinPohjaTekstiSyncVirheellinen() {
-    return this.store.viimeisinPohjaTekstiSync?.tapahtuma === _.toLower(MuokkaustietoKayttajallaDtoTapahtumaEnum.VIRHE);
+    return this.store.viimeisinPohjaTekstiSync?.tapahtuma === _.toLower(MuokkaustietoKayttajallaDtoTapahtumaEnum.VIRHE)
+      || (this.store.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync !== null && this.aikaMyohemminKuin(this.store.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync?.luotu as any, 4));
+  }
+
+  aikaMyohemminKuin(timeInMillis: number, tuntia: number) {
+    return timeInMillis < new Date().getTime() - tuntia * 60 * 60 * 1000;
   }
 }
 </script>

@@ -25,8 +25,8 @@ import {
   OpetussuunnitelmanJulkaisuDtoTilaEnum,
   TekstiKappaleViitePerusteTekstillaDto,
   Muokkaustieto,
-  MuokkaustietoKayttajallaDto,
   PerusteInfoDto,
+  OpetussuunnitelmanMuokkaustietoDto,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -97,7 +97,10 @@ export class OpetussuunnitelmaStore {
   public tilaPolling: any | null = null;
 
   @State()
-  public viimeisinPohjaTekstiSync: MuokkaustietoKayttajallaDto | null = null;
+  public viimeisinPohjaTekstiSync: OpetussuunnitelmanMuokkaustietoDto | null = null;
+
+  @State()
+  public pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync: OpetussuunnitelmanMuokkaustietoDto | null = null;
 
   @State()
   public peruste: PerusteInfoDto | null = null;
@@ -139,6 +142,7 @@ export class OpetussuunnitelmaStore {
 
   async updatePohjallaPuuttuviaTeksteja() {
     this.viimeisinPohjaTekstiSync = (await Muokkaustieto.getViimeisinPohjatekstiSync(this.opetussuunnitelma!.id!)).data;
+    this.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = (await Muokkaustieto.getOpetussuunnitelmanPohjanViimeisinPohjaTekstiSync(this.opetussuunnitelma!.id!)).data;
     this.peruste = (await Opetussuunnitelmat.getOpetussuunnitelmanPeruste(this.opetussuunnitelma!.id!)).data;
     this.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.opetussuunnitelma!.id!)).data;
   }
