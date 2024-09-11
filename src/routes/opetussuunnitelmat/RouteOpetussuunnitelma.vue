@@ -19,12 +19,21 @@
       </div>
       <div class="info">
         <h1>
-          <span>{{ $kaanna(ops.nimi) }}</span><span class="ml-2" v-if="isPohja">({{ $t('pohja') }})</span>
-          <b-dropdown size="lg" variant="link" toggle-class="text-decoration-none" no-caret>
-            <template slot="button-content">
-              <EpMaterialIcon icon-shape="outlined">settings</EpMaterialIcon>
+          <span>{{ $kaanna(ops.nimi) }}</span>
+          <span class="ml-2" v-if="isPohja">({{ $t('pohja') }})</span>
+        </h1>
+        <div>
+          <span v-if="koulutustyyppi">{{ $t(koulutustyyppi) }}</span>
+          <span v-if="koulutustyyppi" class="ml-2 mr-2">|</span>
+          <span>{{ ops.perusteenDiaarinumero }}</span>
+          <span class="ml-2 mr-2">|</span>
+
+          <b-dropdown class="asetukset" size="sm" no-caret variant="transparent">
+            <template v-slot:button-content>
+              <span>{{$t('lisatoiminnot')}}</span>
+              <EpMaterialIcon icon-shape="outlined" class="hallinta" size="22px">expand_more</EpMaterialIcon>
             </template>
-            <!-- https://bootstrap-vue.js.org/docs/reference/router-links/ -->
+
             <b-dropdown-item :to="{ name: 'opsTiedot' }">
               <EpMaterialIcon class="mr-2" icon-shape="outlined">info</EpMaterialIcon>
               <span class="dropdown-text">{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
@@ -42,16 +51,14 @@
               <span class="dropdown-text">{{ $t('poistetut') }}</span>
             </b-dropdown-item>
             <b-dropdown-divider v-if="ops.tila !== 'poistettu'"
-              v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" />
+                                v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" />
             <b-dropdown-item v-if="ops.tila !== 'poistettu'"
-              v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" @click="arkistoiOps">
+                             v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" @click="arkistoiOps">
               <EpMaterialIcon class="mr-2" icon-shape="outlined">archive</EpMaterialIcon>
               <span class="dropdown-text">{{ $t('arkistoi-' + tyyppi) }}</span>
             </b-dropdown-item>
           </b-dropdown>
-        </h1>
-        <h4 v-if="koulutustyyppi" class="secondary">{{ $t(koulutustyyppi) }}</h4>
-        <h6 class="secondary">{{ ops.perusteenDiaarinumero }}</h6>
+        </div>
       </div>
     </div>
     <div class="lower">
@@ -276,6 +283,17 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
 <style scoped lang="scss">
 @import "@shared/styles/_variables.scss";
+
+::v-deep .btn-sm {
+  padding: 0 0 3px 0 !important;
+  font-size: 1rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+::v-deep .btn:focus {
+  box-shadow: unset;
+}
 
 .center-loading {
   position: absolute;
