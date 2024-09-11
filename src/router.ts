@@ -49,6 +49,7 @@ import { Kommentit } from '@/stores/kommentit';
 import VueApexCharts from 'vue-apexcharts';
 import { getCasKayttajaKieli } from '@shared/api/common';
 import { Opetussuunnitelmat } from '@shared/api/ylops';
+import { BrowserStore } from '@shared/stores/BrowserStore';
 
 Vue.use(Router);
 Vue.use(VueTutorial, { tutoriaalistore });
@@ -324,4 +325,8 @@ router.beforeEach(async (to, from, next) => {
   await resolveRouterMetaProps(to);
   await Kommentit.clearThread();
   next();
+});
+
+router.afterEach(() => {
+  BrowserStore.changeLocation(location.href);
 });
