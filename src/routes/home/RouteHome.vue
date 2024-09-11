@@ -7,17 +7,10 @@
         <div class="row no-gutters">
           <div class="col my-4 px-3 px-md-0">
             <h1>{{ $t('lops-tyokalu-tervetuloa', { nimi }) }}</h1>
-            <p>{{ $t('tervetuloa-kuvaus') }}</p>
+            <p>{{ $t('ylops-tervetuloa-kuvaus') }}</p>
           </div>
         </div>
       </div>
-      <!--
-      <div class="row">
-         <div class="col-md-4 mb-3">
-           <ep-search v-model="rajain"></ep-search>
-         </div>
-      </div>
-      -->
     </div>
   </div>
   <div class="container tile-container">

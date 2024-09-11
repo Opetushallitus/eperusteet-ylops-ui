@@ -2,7 +2,7 @@
 <ep-main-view :tutoriaalistore="tutoriaalistore">
   <template slot="header">
     <h1>{{ $t('uusi-opetussuunnitelma') }}</h1>
-    <p>{{ $t('uusi-opetussuunnitelma-ohje') }}</p>
+    <span v-html="$t('ylops-uusi-opetussuunnitelma-ohje')"/>
   </template>
   <div class="form-group">
     <ep-form-content>
@@ -51,12 +51,12 @@
               </template>
               <div slot="helptext" class="form-text info-box mt-2" v-if="uusi.pohja && this.oletuspohjasta !== 'pohjasta'">
                 {{ $t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio') }}
-                <template v-if="luontityyppi.toLowerCase() === 'kopio' && this.opetussuunnitelmaOrganisaatioTaso === 'oppilaitos'">
+                <template v-if="luontityyppi.toLowerCase() === 'kopio' && opetussuunnitelmaOrganisaatioTaso === 'oppilaitos'">
                   <EpSpinner class="d-inline-block" v-if="!valitunPohjanPohja" />
-                  <div v-else class="mt-2">
-                    {{$t('valittu-opetussuunnitelma-kopio-huomio')}}
-                    <span class="font-italic">{{$kaanna(valitunPohjanPohja.nimi)}}</span>
-                  </div>
+                  <template v-else-if="valitunPohjanPohja._pohja !== null">
+                    <div class="mt-2">{{$t('valittu-opetussuunnitelma-kopio-huomio')}}</div>
+                    <div class="font-weight-bold mt-2">{{$kaanna(valitunPohjanPohja.nimi)}}</div>
+                  </template>
                 </template>
               </div>
             </EpMultiSelect>
@@ -86,13 +86,15 @@
     </div>
     <div v-if="uusi.pohja">
       <hr/>
-      <h2 class="mb-3">{{ $t('organisaatiot') }}</h2>
+      <div class="d-flex">
+        <h2 class="mb-3">
+          {{ $t('organisaatiot') }}
+        </h2>
+        <EpInfoPopover class="ml-2"><div v-html="$t('organisaatio-valinta-organisaatio-huomio')"/></EpInfoPopover>
+      </div>
       <ep-organizations :validation="$v.uusi.organisaatiot"
                         :koulutustyyppi="koulutustyyppi"
                         v-model="uusi.organisaatiot">
-        <div slot="oppilaitokset-label-suffix" class="ml-2">
-          <EpInfoPopover>{{$t('organisaatio-valinta-oppilaitos-huomio')}}</EpInfoPopover>
-        </div>
       </ep-organizations>
 
       <div v-if="uusi.pohja.toteutus === 'lops2019'">
@@ -159,7 +161,7 @@ import {
   OpsVuosiluokkakokonaisuusDto,
   OpetussuunnitelmaInfoDtoTilaEnum,
   OpetussuunnitelmaLuontiDtoLuontityyppiEnum,
-  OpetussuunnitelmaBaseDto,
+  OpetussuunnitelmaNimiDto,
 } from '@shared/api/ylops';
 import { opsLuontiValidator, LuotavaOpsOrganisaatioTaso } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
@@ -209,7 +211,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
     luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA,
   };
-  private valitunPohjanPohja: OpetussuunnitelmaBaseDto | null = null;
+  private valitunPohjanPohja: OpetussuunnitelmaNimiDto | null = null;
 
   initUusi() {
     this.uusi.pohja = null;
