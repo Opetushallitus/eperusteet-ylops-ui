@@ -39,8 +39,6 @@
       <tile-oppaat />
     </div>
   </div>
-
-  <EpFeedbackModal :palauteProvider="palautteetStore"/>
 </div>
 </template>
 
@@ -63,7 +61,6 @@ import TileOppaat from './tiles/TileOppaat.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpFeedbackModal from '@shared/components/EpFeedback/EpFeedbackModal.vue';
 import { PalautteetStore } from '@/stores/PalautteetStore';
 
 @Component({
@@ -76,7 +73,6 @@ import { PalautteetStore } from '@/stores/PalautteetStore';
     TileTiedotteet,
     TileUkk,
     TileValtakunnallisetPerusteet,
-    EpFeedbackModal,
     TileOppaat,
   },
   directives: {
