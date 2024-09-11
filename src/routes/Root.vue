@@ -1,9 +1,13 @@
 <template>
-<div class="sticky-container" sticky-container="sticky-container">
+<div class="sticky-container root" sticky-container="sticky-container">
   <EpTestiymparisto/>
 
-  <router-view />
-  <!-- <ep-footer /> -->
+  <router-view class="view-container"/>
+  <ep-footer>
+    <template #palaute>
+      <EpPalauteLinkki yllapito-avain="ops-tyokalu-palaute-url" />
+    </template>
+  </ep-footer>
   <ep-tutorial :tutoriaalistore="tutoriaalistore" />
 </div>
 </template>
@@ -15,10 +19,11 @@ import Sticky from 'vue-sticky-directive';
 
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpFooter from '@/components/EpFooter/EpFooter.vue';
+import EpFooter from '@shared/components/EpFooter/EpFooter.vue';
 import EpTutorial from '@shared/components/EpTutorial/EpTutorial.vue';
 import { Meta } from '@shared/utils/decorators';
 import EpTestiymparisto from '@shared/components/EpTestiymparisto/EpTestiymparisto.vue';
+import EpPalauteLinkki from '@shared/components/EpPalauteLinkki/EpPalauteLinkki.vue';
 
 @Component({
   directives: {
@@ -29,6 +34,7 @@ import EpTestiymparisto from '@shared/components/EpTestiymparisto/EpTestiymparis
     EpFooter,
     EpTutorial,
     EpTestiymparisto,
+    EpPalauteLinkki,
   },
 })
 export default class Root extends Vue {
@@ -81,3 +87,17 @@ export default class Root extends Vue {
 }
 
 </script>
+<style lang="scss" scoped>
+@import '@/styles/_variables.scss';
+
+.root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-container {
+  flex:1;
+}
+
+</style>
