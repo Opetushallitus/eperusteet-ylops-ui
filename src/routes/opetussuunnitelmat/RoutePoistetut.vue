@@ -135,7 +135,6 @@ export default class RoutePoistetut extends Mixins(EpOpsRoute) {
 .poistetut {
 
   ::v-deep .tabs .nav-item a {
-    margin: 0;
     padding: 10px;
   }
 

@@ -6,7 +6,7 @@ import { Kielet } from '@shared/stores/kieli';
 import VueScrollTo from 'vue-scrollto';
 
 export class VuosiluokkakokonaisuusStore implements IEditoitava {
-  constructor(private opsId: number, private vlkId: number, private scrollId: string | null, private el: any) {
+  constructor(private opsId: number, private vlkId: number, private scrollId: string | null, private el: any, private muokkaaLatauksenJalkeen: boolean) {
   }
 
   async acquire() {
@@ -17,13 +17,13 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
   }
 
   async editAfterLoad() {
-    return false;
+    return this.muokkaaLatauksenJalkeen;
   }
 
   async history() {
   }
 
-  async load() {
+  async load(supportDataProvider) {
     let vlk = {} as any;
     let perusteenVlk = {} as any;
     let laajaalaiset = {} as any;
@@ -32,6 +32,14 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
       Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuudenPerusteSisalto(this.opsId, this.vlkId),
       Opetussuunnitelmat.getLaajalaisetosamiset(this.opsId),
     ])), 'data');
+
+    let pohjanVlk = {} as any;
+    let pohjanLaajaAlaisetOsaamiset = {} as any;
+    if (vlk.oma) {
+      pohjanVlk = (await Vuosiluokkakokonaisuudet.getPohjanVuosiluokkakokonaisuus(this.opsId, vlk._tunniste)).data ?? {};
+      pohjanLaajaAlaisetOsaamiset = _.keyBy(pohjanVlk.laajaalaisetosaamiset, '_laajaalainenosaaminen');
+    }
+    supportDataProvider({ pohjanVlk, pohjanLaajaAlaisetOsaamiset });
 
     Object.keys(vlk).forEach(function(key) {
       if (vlk[key] === null) {
@@ -104,6 +112,9 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
       name: 'vuosiluokkakokonaisuus',
       params: {
         vlkId: kopioituVlk.data.id!,
+      },
+      query: {
+        muokkaa: true,
       },
     });
   }

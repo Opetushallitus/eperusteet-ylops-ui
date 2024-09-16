@@ -13,7 +13,7 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "checkJs": true,
     "target": "es6",
     "types": [
       "webpack-env",

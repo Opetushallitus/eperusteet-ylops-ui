@@ -36,6 +36,7 @@ const tapahtumaIcon = {
   poisto: 'delete',
   palautus: 'keyboard_return',
   julkaisu: 'check',
+  virhe: 'error',
 };
 
 const poistetutTabIndices = {

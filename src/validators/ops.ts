@@ -4,6 +4,8 @@ import { minLength, required, requiredIf } from 'vuelidate/lib/validators';
 import { OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
 import * as _ from 'lodash';
 
+export type LuotavaOpsOrganisaatioTaso = 'kunta' | 'oppilaitos';
+
 export function pohjaLuontiValidator(kielet: Kieli[] = []) {
   return {
     nimi: {
@@ -34,7 +36,10 @@ export function lops2019Validators() {
   };
 }
 
-export function opsLuontiValidator(kielet: Kieli[] = [], toteutus?: OpetussuunnitelmaInfoDtoToteutusEnum) {
+const arrayLengthNotOne = (value) => _.size(value) !== 1;
+const arrayLengthOne = (value) => _.size(value) === 1;
+
+export function opsLuontiValidator(kielet: Kieli[] = [], toteutus?: OpetussuunnitelmaInfoDtoToteutusEnum, luotavaOpsOrganisaatioTaso?: LuotavaOpsOrganisaatioTaso) {
   let opsValidators = {
     nimi: {
       ...requiredLokalisoituTeksti(kielet),
@@ -55,6 +60,13 @@ export function opsLuontiValidator(kielet: Kieli[] = [], toteutus?: Opetussuunni
         required: requiredIf((form) => {
           return _.size(form.ryhmat) === 0;
         }),
+      },
+      oppilaitokset: {
+        required: requiredIf((form) => {
+          return luotavaOpsOrganisaatioTaso === 'oppilaitos';
+        }),
+        ...(luotavaOpsOrganisaatioTaso === 'oppilaitos' && { arrayLengthOne }),
+        ...(luotavaOpsOrganisaatioTaso === 'kunta' && { arrayLengthNotOne }),
       },
     },
   };

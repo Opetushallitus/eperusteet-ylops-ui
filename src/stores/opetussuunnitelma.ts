@@ -25,8 +25,8 @@ import {
   OpetussuunnitelmanJulkaisuDtoTilaEnum,
   TekstiKappaleViitePerusteTekstillaDto,
   Muokkaustieto,
-  MuokkaustietoKayttajallaDto,
   PerusteInfoDto,
+  OpetussuunnitelmanMuokkaustietoDto,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -97,7 +97,10 @@ export class OpetussuunnitelmaStore {
   public tilaPolling: any | null = null;
 
   @State()
-  public viimeisinPohjaTekstiSync: MuokkaustietoKayttajallaDto | null = null;
+  public viimeisinPohjaTekstiSync: OpetussuunnitelmanMuokkaustietoDto | null = null;
+
+  @State()
+  public pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync: OpetussuunnitelmanMuokkaustietoDto | null = null;
 
   @State()
   public peruste: PerusteInfoDto | null = null;
@@ -123,12 +126,12 @@ export class OpetussuunnitelmaStore {
   public async init() {
     logger.info('Initing ops store', this.opsId);
     this.opetussuunnitelma = await this.get();
+    this.updatePohjanPerustePaivittynyt();
     this.updateSisalto();
     this.updateValidation();
     this.fetchJulkaisut();
     this.updateOppiaineet();
     this.updatePohjallaPuuttuviaTeksteja();
-    this.updatePohjanPerustePaivittynyt();
   }
 
   async updatePohjanPerustePaivittynyt() {
@@ -139,6 +142,7 @@ export class OpetussuunnitelmaStore {
 
   async updatePohjallaPuuttuviaTeksteja() {
     this.viimeisinPohjaTekstiSync = (await Muokkaustieto.getViimeisinPohjatekstiSync(this.opetussuunnitelma!.id!)).data;
+    this.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = (await Muokkaustieto.getOpetussuunnitelmanPohjanViimeisinPohjaTekstiSync(this.opetussuunnitelma!.id!)).data;
     this.peruste = (await Opetussuunnitelmat.getOpetussuunnitelmanPeruste(this.opetussuunnitelma!.id!)).data;
     this.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.opetussuunnitelma!.id!)).data;
   }
@@ -213,6 +217,10 @@ export class OpetussuunnitelmaStore {
   public async removeTeksti(tov: Puu) {
     await OpetussuunnitelmanSisalto.removeTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!);
     await this.updateSisalto();
+  }
+
+  public async tekstikappaleAlaOpetussuunnitelmaLukumaara(tunniste) {
+    return (await OpetussuunnitelmanSisalto.getTekstikappaleAlaOpetussuunnitelmaLukumaara(this.opetussuunnitelma!.id!, tunniste)).data;
   }
 
   public async addTeksti(tov: Puu, parentId?: number) {

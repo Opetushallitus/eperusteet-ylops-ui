@@ -9,8 +9,14 @@
       <div class="info-box import-box"
         v-if="pohjallaPuuttuviaTeksteja"
         v-oikeustarkastelu="oikeustarkastelu">
-        <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne')}}</h2>
-        <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
+        <template v-if="pohjanaOphPohja || viimeisinPohjaTekstiSyncVirheellinen">
+          <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne')}}</h2>
+          <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
+        </template>
+        <template v-else>
+          <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne-koulun-ops')}}</h2>
+          <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti-koulun-ops')" />
+        </template>
         <br/>
         <div>{{$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-peruste-selvennys')}}</div>
         <EpExternalLink :url="perusteUrl">{{$kaanna(perusteNimi)}}</EpExternalLink>
@@ -19,7 +25,7 @@
           <div class="d-flex align-items-end mr-3 disabled-text font-size-08" v-if="viimeisinPohjaTekstiSync">
             {{$t('viimeisin-synkronisointi-pvm')}} {{$sd(viimeisinPohjaTekstiSync)}}
           </div>
-          <ep-button @click="syncTekstitPohjasta()" :showSpinner="syncPohja">
+          <ep-button @click="syncTekstitPohjasta()" :showSpinner="syncPohja" v-if="pohjanaOphPohja || viimeisinPohjaTekstiSyncVirheellinen">
             {{$t('paivita-opetussuunnitelma')}}
           </ep-button>
         </div>
@@ -84,6 +90,8 @@ import { KoulutustyyppiToteutus } from '@shared/tyypit';
 import { Kielet } from '@shared/stores/kieli';
 import { buildKatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
+import _ from 'lodash';
+import { MuokkaustietoKayttajallaDtoTapahtumaEnum } from '@shared/api/ylops';
 
 @Component({
   components: {
@@ -115,8 +123,9 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
     this.syncPohja = true;
     try {
       await this.store.syncTekstitPohjasta();
-      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
+      await this.muokkaustietoStore.init();
       await this.store.init();
+      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
     }
     catch (e) {
       this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmaan-virhe') as string);
@@ -173,6 +182,19 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
 
   get perusteNimi() {
     return this.store.peruste?.nimi;
+  }
+
+  get pohjanaOphPohja() {
+    return _.toLower(this.ops.pohja?.tyyppi) === 'pohja';
+  }
+
+  get viimeisinPohjaTekstiSyncVirheellinen() {
+    return this.store.viimeisinPohjaTekstiSync?.tapahtuma === _.toLower(MuokkaustietoKayttajallaDtoTapahtumaEnum.VIRHE)
+      || (this.store.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync !== null && this.aikaMyohemminKuin(this.store.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync?.luotu as any, 4));
+  }
+
+  aikaMyohemminKuin(timeInMillis: number, tuntia: number) {
+    return timeInMillis < new Date().getTime() - tuntia * 60 * 60 * 1000;
   }
 }
 </script>
