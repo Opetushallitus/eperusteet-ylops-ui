@@ -60,8 +60,7 @@ export class OpetussuunnitelmaEditStore implements IEditoitava {
       kunnat: data.kaikkiOrganisaatiot.kunnat,
       organisaatiot: [
         ...data.kaikkiOrganisaatiot.jarjestajat,
-        ...data.kaikkiOrganisaatiot.oppilaitokset,
-        ...data.kaikkiOrganisaatiot.ryhmat,
+        ...(data.kaikkiOrganisaatiot.oppilaitokset || []),
       ],
 
     };
