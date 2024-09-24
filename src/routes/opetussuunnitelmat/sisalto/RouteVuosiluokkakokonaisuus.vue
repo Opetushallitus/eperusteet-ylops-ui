@@ -76,7 +76,7 @@
         <hr/>
         <h2>{{$t('laaja-alaisen-osaamisen-alueet')}}</h2>
 
-        <div v-for="(laajaalainen, index) in data.laajaalaiset" :key="index" class="mb-5">
+        <div v-for="(laajaalainen, index) in data.laajaalaiset" :key="'laajaalainen' + index" class="mb-5">
           <h3>{{ $kaanna(laajaalainen.nimi) }}</h3>
 
           <ep-collapse tyyppi="perusteteksti" :border-bottom="false" :border-top="false" chevronLocation="left" :usePadding="false" v-if="isEditing || data.vlk.laajaalaisetosaamiset[index].naytaPerusteenPaatasonLao" class="mb-4">
@@ -106,7 +106,7 @@
         </div>
 
         <vuosiluokka-sisalto-teksti v-for="(laajaalainen, index) in data.laajaalaiset"
-                                    :key="index"
+                                    :key="'vuosiluokkalaajaalainen' + index"
                                     :perusteObject="laajaalainen"
                                     :pohjaObject="supportData.pohjanLaajaAlaisetOsaamiset[data.vlk.laajaalaisetosaamiset[index]['_laajaalainenosaaminen']]"
                                     :vlkObject="data.vlk.laajaalaisetosaamiset[index]"

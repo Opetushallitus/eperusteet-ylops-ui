@@ -14,12 +14,6 @@
         <span v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.piilotettu" class="additional-info-text">({{ $t('piilotettu')}})</span>
       </template>
 
-      <template v-slot:info>
-        <div v-if="isPohjanTyyppiOps && oppiaine.oma && !oppiaine.pohjanOppiaine">
-          {{$t('oppiaine-on-kopioitu-muokattavaksi')}}
-        </div>
-      </template>
-
       <template v-slot:piilotettu>
         <div>{{$t('oavlk-on-piilotettu')}}</div>
       </template>
