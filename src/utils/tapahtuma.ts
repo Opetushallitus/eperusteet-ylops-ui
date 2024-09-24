@@ -10,6 +10,7 @@ const kohdereititys = {
   perusopetusoppiaine: 'perusopetusoppiaine',
   vuosiluokkakokonaisuus: 'vuosiluokkakokonaisuus',
   oppiaineenvuosiluokka: 'perusopetusoppiainevuosiluokka',
+  perusopetuspaikallinenoppiaine: 'perusopetuspaikallinenoppiaine',
 };
 
 const kohdereititysId = {
@@ -17,6 +18,7 @@ const kohdereititysId = {
   poppiaine: 'paikallinenOppiaineId',
   opintojakso: 'opintojaksoId',
   perusopetusoppiaine: 'oppiaineId',
+  perusopetuspaikallinenoppiaine: 'oppiaineId',
   vuosiluokkakokonaisuus: 'vlkId',
   oppiaineenvuosiluokka: 'vlId',
 
