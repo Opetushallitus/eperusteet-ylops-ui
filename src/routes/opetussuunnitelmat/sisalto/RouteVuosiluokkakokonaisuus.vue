@@ -99,23 +99,24 @@
               v-model="perusteenVlkByLaoTunniste[laajaalainen.tunniste].kuvaus" layout="normal"/>
           </ep-collapse>
 
+          <ep-collapse
+            v-if="supportData.pohjanLaajaAlaisetOsaamiset[data.vlk.laajaalaisetosaamiset[index]['_laajaalainenosaaminen']] && supportData.pohjanLaajaAlaisetOsaamiset[data.vlk.laajaalaisetosaamiset[index]['_laajaalainenosaaminen']].kuvaus"
+            class="mb-4"
+            :use-padding="false"
+            tyyppi="pohjateksti"
+            :border-bottom="false"
+            :border-top="false">
+            <template v-slot:header><h4>{{$t('pohjan-teksti')}}</h4></template>
+            <span v-html="$kaanna(supportData.pohjanLaajaAlaisetOsaamiset[data.vlk.laajaalaisetosaamiset[index]['_laajaalainenosaaminen']].kuvaus)"></span>
+          </ep-collapse>
+
           <h4>{{ $t('paikallinen-teksti') }}</h4>
           <ep-content v-if="isEditing || data.vlk.laajaalaisetosaamiset[index].kuvaus" v-model="data.vlk.laajaalaisetosaamiset[index].kuvaus" layout="normal" :is-editable="isEditing"/>
           <ep-alert v-if="!isEditing && !data.vlk.laajaalaisetosaamiset[index].kuvaus" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
 
         </div>
 
-        <vuosiluokka-sisalto-teksti v-for="(laajaalainen, index) in data.laajaalaiset"
-                                    :key="'vuosiluokkalaajaalainen' + index"
-                                    :perusteObject="laajaalainen"
-                                    :pohjaObject="supportData.pohjanLaajaAlaisetOsaamiset[data.vlk.laajaalaisetosaamiset[index]['_laajaalainenosaaminen']]"
-                                    :vlkObject="data.vlk.laajaalaisetosaamiset[index]"
-                                    :isEditing="isEditing"
-                                    :id="'laajaalainen'+laajaalainen.tunniste"
-                                    :peruste-teksti-avattu="true"
-                                    otsikko="nimi"
-                                    teksti="kuvaus" />
-        </template>
+      </template>
     </EpEditointi>
   </div>
 </template>
