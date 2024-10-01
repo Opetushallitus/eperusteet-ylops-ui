@@ -54,7 +54,6 @@ import TileOppaat from './tiles/TileOppaat.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { PalautteetStore } from '@/stores/PalautteetStore';
 
 @Component({
   components: {
@@ -83,7 +82,6 @@ export default class Home extends Mixins(EpRoute) {
     pohjatKeskeneraiset: 0,
     pohjatJulkaistut: 0,
   };
-  private palautteetStore = new PalautteetStore();
 
   async init() {
     this.etusivu = await Kayttajat.getEtusivu();
