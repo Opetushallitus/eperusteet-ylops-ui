@@ -30,11 +30,7 @@
         </template>
 
         <template v-slot:cell(siirtyminen)="data">
-          <ep-button variant="link"
-                    icon="keyboard_return"
-                    @click="$emit('restore', data.item)">
-            {{ $t('palauta') }}
-          </ep-button>
+          <EpPalautusModal @palauta="palauta" :opetussuunnitelma="data.item"/>
         </template>
 
       </b-table>
@@ -60,6 +56,8 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Debounced } from '@shared/utils/delay';
 import { Page } from '@shared/tyypit';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpPalautusModal from '@/components/EpArkistoidutOps/EpPalautusModal.vue';
+import _ from 'lodash';
 
 @Component({
   components: {
@@ -67,6 +65,7 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
     EpSearch,
     EpSpinner,
     EpMaterialIcon,
+    EpPalautusModal,
   },
 })
 export default class EpArkistoidutOps extends Vue {
@@ -83,11 +82,20 @@ export default class EpArkistoidutOps extends Vue {
   private opsSivu = 1;
 
   protected async fetch() {
+    this.opetussuunnitelmat = null;
     this.opetussuunnitelmat = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, 'poistettu', undefined, this.query, undefined, undefined, this.opsSivu - 1, 10)).data as Page<OpetussuunnitelmaInfoDto>;
   }
 
   get modalTitle() {
     return this.$t(this.title) + (this.opetussuunnitelmat ? '(' + this.opetussuunnitelmat['kokonaismäärä'] + ')' : '');
+  }
+
+  async palauta(ops, tila, palautusModalCallBack) {
+    await this.$emit('palauta', ops, tila, async () => {
+      this.opetussuunnitelmat!.data = _.reject(this.opetussuunnitelmat?.data, (o) => o.id === ops.id);
+      this.opetussuunnitelmat!['kokonaismäärä'] = this.opetussuunnitelmat!['kokonaismäärä'] - 1;
+      await palautusModalCallBack();
+    });
   }
 
   @Watch('query')
@@ -134,5 +142,11 @@ export default class EpArkistoidutOps extends Vue {
 </script>
 
 <style scoped lang="scss">
+
+::v-deep .ep-button {
+  .btn {
+    padding: 0;
+  }
+}
 
 </style>

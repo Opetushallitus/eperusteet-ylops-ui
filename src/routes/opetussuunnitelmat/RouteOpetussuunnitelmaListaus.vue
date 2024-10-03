@@ -7,7 +7,7 @@
                           :tyyppi="tyyppi"
                           :title="vars.poistetut"
                           class="float-right"
-                          @restore="palauta"/>
+                          @palauta="palauta"/>
       <p>{{ $t(vars.kuvaus) }}</p>
 
       <div class="d-flex flex-lg-row flex-column">
@@ -304,17 +304,10 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
     }
   }
 
-  async palauta(ops: OpetussuunnitelmaInfoDto) {
-    if (await this.vahvista(this.vars.palautaOps, this.vars.palautaOpsKuvaus)) {
-      try {
-        await OpetussuunnitelmaStore.updateOpsTila(ops.id!, 'luonnos');
-        success('palautus-onnistui');
-        (this.$refs['arkistoidutPopup'] as any).close();
-      }
-      catch (err) {
-        fail('palautus-epaonnistui');
-      }
-    }
+  async palauta(ops: OpetussuunnitelmaInfoDto, tila, arkistointiCallBack) {
+    await OpetussuunnitelmaStore.updateOpsTila(ops.id!, tila);
+    await arkistointiCallBack();
+    success('palautus-onnistui');
   }
 
   @Watch('koulutustyyppi')
