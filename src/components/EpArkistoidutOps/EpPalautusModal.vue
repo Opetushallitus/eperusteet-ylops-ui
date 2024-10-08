@@ -17,9 +17,7 @@
         <h5 class="modal-title">{{ $t(tyyppitekstit.palautaOps) }}</h5>
       </div>
 
-      <div class="content">
-        <p>{{ $t(tyyppitekstit.palautaOpsKuvaus) }}</p>
-      </div>
+      <div class="content" v-html="$t(tyyppitekstit.palautaOpsKuvaus)" />
 
       <div slot="modal-footer" class="d-flex">
         <ep-button variant="link" @click="peruuta">{{ $t('peruuta') }}</ep-button>
