@@ -88,7 +88,7 @@
         </div>
 
         <vuosiluokka-sisalto-teksti
-          v-if="data.oppiaine.tyyppi === 'yhteinen'"
+          v-if="data.oppiaine.tyyppi === 'yhteinen' && data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.yleistavoitteet"
           :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.yleistavoitteet"
           :vlkObject="data.vuosiluokkakokonaisuus.yleistavoitteet"
           :isEditing="isEditing" >
