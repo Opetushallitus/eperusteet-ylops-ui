@@ -5,7 +5,7 @@ import { buildKatseluUrl } from '@shared/utils/esikatselu';
 import { Kielet } from '@shared/stores/kieli';
 import * as _ from 'lodash';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
-import { OpetussuunnitelmaDto, OpetussuunnitelmaKevytDtoToteutusEnum, Opetussuunnitelmat, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
+import { OpetussuunnitelmaDto, OpetussuunnitelmaKevytDtoTilaEnum, OpetussuunnitelmaKevytDtoToteutusEnum, Opetussuunnitelmat, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import { opsTiedotValidator } from '@/validators/ops';
 
 export class OpetussuunnitelmaEditStore implements IEditoitava {
@@ -25,12 +25,20 @@ export class OpetussuunnitelmaEditStore implements IEditoitava {
     return false;
   }
 
-  async load() {
+  async load(supportData) {
     const ops = (await Opetussuunnitelmat.getOpetussuunnitelma(this.opetussuunnitelmaId)).data;
     OpetussuunnitelmaEditStore.opetussuunnitelmantyyppi = ops.tyyppi!;
     let pohjanVuosiluokkakokonaisuudet: OpsVuosiluokkakokonaisuusKevytDto[] | null = null;
     if (ops.toteutus === _.toLower(OpetussuunnitelmaKevytDtoToteutusEnum.PERUSOPETUS) && ops.pohja) {
       pohjanVuosiluokkakokonaisuudet = (await Opetussuunnitelmat.getOpetussuunnitelmanPohjanVuosiluokkakokonaisuudet(this.opetussuunnitelmaId)).data;
+      ops.vuosiluokkakokonaisuudet = _.chain(ops.vuosiluokkakokonaisuudet)
+        .map(vlk => {
+          return {
+            ...vlk,
+            lukittu: _.toLower(ops.tila) === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.JULKAISTU),
+          };
+        })
+        .value();
     }
 
     return {

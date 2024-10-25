@@ -87,7 +87,11 @@
           <div v-if="data.pohja && data.toteutus === 'perusopetus' && data.valittavatVuosiluokkakokonaisuudet">
             <ep-form-content name="vuosiluokkakokonaisuudet">
               <b-form-checkbox-group v-model="data.vuosiluokkakokonaisuudet" class="mt-2" stacked v-if="isEditing">
-                <b-form-checkbox v-for="(vuosiluokkakokonaisuus, index) in data.valittavatVuosiluokkakokonaisuudet" :key="'vlk'+index" :value="vuosiluokkakokonaisuus">
+                <b-form-checkbox
+                  v-for="(vuosiluokkakokonaisuus, index) in data.valittavatVuosiluokkakokonaisuudet"
+                  :key="'vlk'+index"
+                  :value="vuosiluokkakokonaisuus"
+                  :disabled="vuosiluokkakokonaisuus.lukittu">
                   {{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
                 </b-form-checkbox>
               </b-form-checkbox-group>
