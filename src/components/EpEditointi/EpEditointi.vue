@@ -55,7 +55,6 @@
             </b-dropdown>
             <slot name="muokkaa-content" :data="state.data">
               <ep-button id="editointi-muokkaus"
-                          v-tutorial
                           variant="link"
                           v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
                           @click="ctrls.start()"
@@ -67,7 +66,6 @@
               </ep-button>
             </slot>
             <ep-button id="editointi-kopiointi"
-                      v-tutorial
                       variant="link"
                       v-oikeustarkastelu="{ oikeus: 'muokkaus' }"
                       @click="copy()"
@@ -108,7 +106,6 @@
             <ep-round-button class="ml-2"
                               :disabled="state.disabled"
                               id="editointi-muokkaus-comments"
-                              v-tutorial
                               v-if="hasKeskusteluSlot"
                               @click="toggleSidebarState(1)"
                               icon="comment"
@@ -116,7 +113,6 @@
             <ep-round-button class="ml-2"
                               :disabled="state.disabled"
                               id="editointi-muokkaus-question"
-                              v-tutorial
                               v-if="hasOhjeSlot"
                               @click="toggleSidebarState(2)"
                               icon="question_mark"

@@ -27,11 +27,6 @@
       </nav>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
-      <b-nav-form v-if="tutoriaalistore && naytettaviaTutoriaaleja">
-        <b-button variant="primary" size="sm" @click="kaynnistaTutoriaali" class="mr-2">
-          {{ $t('tutorial-avaa') }}
-        </b-button>
-      </b-nav-form>
 
       <!-- Sisällön kieli-->
       <b-nav-item-dropdown id="content-lang-selector" right>

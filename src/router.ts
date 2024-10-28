@@ -42,7 +42,6 @@ import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@shared/utils/logger';
 import { tutoriaalistore } from './stores/tutoriaaliStore';
-import { VueTutorial } from './directives/tutoriaali';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from './stores/aikataulu';
 import { Kommentit } from '@/stores/kommentit';
@@ -52,7 +51,6 @@ import { Opetussuunnitelmat } from '@shared/api/ylops';
 import { BrowserStore } from '@shared/stores/BrowserStore';
 
 Vue.use(Router);
-Vue.use(VueTutorial, { tutoriaalistore });
 Vue.use(VueApexCharts);
 Vue.use(VueMeta, {
   refreshOnceOnNavigation: true,
