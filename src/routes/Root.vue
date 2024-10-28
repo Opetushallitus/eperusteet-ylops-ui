@@ -8,7 +8,6 @@
       <EpPalauteLinkki yllapito-avain="ops-tyokalu-palaute-url" />
     </template>
   </ep-footer>
-  <ep-tutorial :tutoriaalistore="tutoriaalistore" />
 </div>
 </template>
 
@@ -20,7 +19,6 @@ import Sticky from 'vue-sticky-directive';
 import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpFooter from '@shared/components/EpFooter/EpFooter.vue';
-import EpTutorial from '@shared/components/EpTutorial/EpTutorial.vue';
 import { Meta } from '@shared/utils/decorators';
 import EpTestiymparisto from '@shared/components/EpTestiymparisto/EpTestiymparisto.vue';
 import EpPalauteLinkki from '@shared/components/EpPalauteLinkki/EpPalauteLinkki.vue';
@@ -32,7 +30,6 @@ import EpPalauteLinkki from '@shared/components/EpPalauteLinkki/EpPalauteLinkki.
   components: {
     EpNavigation,
     EpFooter,
-    EpTutorial,
     EpTestiymparisto,
     EpPalauteLinkki,
   },
