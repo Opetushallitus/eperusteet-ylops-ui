@@ -3,7 +3,8 @@
     <EpEditointi
       :store="editointiStore"
       :versionumero="versionumero"
-      :confirmCopy="false">
+      :confirmCopy="false"
+      labelRemoveClarification="oppimaara-poisto-modal-selite">
       <template v-slot:kopioi-teksti>{{ $t('muokkaa') }}</template>
 
       <template v-slot:header="{ data }">
