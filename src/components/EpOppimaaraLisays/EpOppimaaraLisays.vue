@@ -16,13 +16,15 @@
       {{ $t(addText) }}
     </template>
 
-    <ep-form-content :showHeader="false">
+    <div>{{$t('oppimaara-lisays-modal-selite')}}</div>
+
+    <ep-form-content :showHeader="false" class="mt-4">
       <h3>{{$kaanna(oppiaine.nimi)}}</h3>
       <ep-select class="mb-5"
                  v-model="valittuOppimaara"
                  :items="oppimaaratTyhjalla"
                  :is-editing="true"
-                 :enable-empty-option="false">
+                 :enable-empty-option="true">
         <template slot-scope="{ item }">
           {{ $kaanna(item.nimi) }}
         </template>
