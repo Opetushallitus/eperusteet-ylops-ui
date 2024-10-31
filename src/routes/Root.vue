@@ -15,8 +15,6 @@
 import _ from 'lodash';
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import Sticky from 'vue-sticky-directive';
-
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpFooter from '@shared/components/EpFooter/EpFooter.vue';
 import { Meta } from '@shared/utils/decorators';
@@ -35,9 +33,6 @@ import EpPalauteLinkki from '@shared/components/EpPalauteLinkki/EpPalauteLinkki.
   },
 })
 export default class Root extends Vue {
-  @Prop({ required: true })
-  private tutoriaalistore!: TutoriaaliStore;
-
   @Meta
   getMetaInfo() {
     const lang = _.get(this.$route, 'params.lang');

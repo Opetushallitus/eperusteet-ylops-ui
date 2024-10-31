@@ -1,6 +1,11 @@
 <template>
 <div>
-  <ep-navigation tyyli="ops" :tutoriaalistore="tutoriaalistore" :koulutustyyppi="koulutustyyppi" :headerClass="headerClass"></ep-navigation>
+  <ep-navigation
+    tyyli="ops"
+    :koulutustyyppi="koulutustyyppi"
+    :headerClass="headerClass"
+    :sticky="true">
+  </ep-navigation>
   <ep-spinner class="center-loading" v-if="!ops"/>
   <div class="opetussuunnitelma" :class="headerClass" v-else>
     <div class="header" :style="headerStyle">
@@ -85,7 +90,6 @@
 import _ from 'lodash';
 import { Prop, Mixins, Component, ProvideReactive } from 'vue-property-decorator';
 import { OpetussuunnitelmaKevytDtoTilaEnum } from '@shared/api/ylops';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
@@ -114,9 +118,6 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
   inject: [],
 })
 export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
-  @Prop({ required: true })
-  private tutoriaalistore!: TutoriaaliStore;
-
   private valikkoData: any | null = null;
   private isValidating: boolean = false;
 
@@ -325,7 +326,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
 
   .header {
     color: $color-ops-header-text;
-    background-position: 100% -50px;
+    background-position: 100% -56px;
     background-repeat: no-repeat;
     height: 190px;
     @media only screen and (min-width: 2503px)  {

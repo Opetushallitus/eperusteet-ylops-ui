@@ -1,5 +1,5 @@
 <template>
-<ep-main-view :tutoriaalistore="tutoriaalistore">
+<ep-main-view>
   <template slot="header">
     <h1>{{ $t('organisaatio-tyoryhma') }}</h1>
     <p>{{ $t('organisaatio-tyoryhma-kuvaus') }}</p>
@@ -26,7 +26,6 @@
 import _ from 'lodash';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpRoute from '@/mixins/EpRoot';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
@@ -42,9 +41,6 @@ import EpToggle from '@shared/components/forms/EpToggle.vue';
   },
 })
 export default class RouteOrganisaatio extends Mixins(EpRoute) {
-  @Prop()
-  private tutoriaalistore!: TutoriaaliStore;
-
   private showOrganizations = false;
 
   async init() {

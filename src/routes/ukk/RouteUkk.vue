@@ -1,5 +1,5 @@
 <template>
-  <ep-main-view :tutoriaalistore="tutoriaalistore">
+  <ep-main-view>
     <!-- Rajaimet-->
     <template slot="header">
       <h1>{{ $t('ukk') }}</h1>
@@ -109,7 +109,6 @@ import { Kieli } from '@shared/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpRoute from '@/mixins/EpRoot';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
@@ -156,9 +155,6 @@ export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
     $uusi: true,
     organisaatiot: [],
   };
-
-  @Prop()
-  private tutoriaalistore!: TutoriaaliStore;
 
   async mounted() {
     this.kysymykset = (await Kysymykset.getKysymykset() as any).data;

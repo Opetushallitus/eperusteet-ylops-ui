@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ep-navigation :tutoriaalistore="tutoriaalistore" />
+    <ep-navigation />
     <ep-tiedote-view :tiedotteet="tiedotteet">
       <template #search>
         <ep-search class="mb-3" v-model="rajain" @input="updateSearch" />
@@ -23,7 +23,6 @@
 import { Prop, Component, Mixins } from 'vue-property-decorator';
 import _ from 'lodash';
 
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kielet } from '@shared/stores/kieli';
 import { julkaisupaikka } from '@shared/utils/tiedote';
 import { Debounced } from '@shared/utils/delay';
@@ -48,9 +47,6 @@ export default class RouteTiedotteet extends Mixins(EpRoute) {
   private sivu = 1;
   private sivukoko = 10;
   private kokonaismaara = 0;
-
-  @Prop({ required: true })
-  private tutoriaalistore!: TutoriaaliStore;
 
   async init() {
     await this.update();
