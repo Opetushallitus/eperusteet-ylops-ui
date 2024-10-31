@@ -1,5 +1,5 @@
 <template>
-  <ep-main-view :tutoriaalistore="tutoriaalistore">
+  <ep-main-view>
     <template slot="custom-content">
       <EpOppaat :koulutustyypit="koulutustyypit"/>
     </template>
@@ -13,7 +13,6 @@ import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import { Prop, Vue, Component } from 'vue-property-decorator';
 import EpOppaat from '@shared/components/EpOppaat/EpOppaat.vue';
 import { EperusteetKoulutustyyppiRyhmat } from '@shared/utils/perusteet';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 
 @Component({
   components: {
@@ -22,9 +21,6 @@ import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
   },
 })
 export default class RouteOppaat extends Vue {
-  @Prop()
-  private tutoriaalistore!: TutoriaaliStore;
-
   get koulutustyypit() {
     return [
       ...EperusteetKoulutustyyppiRyhmat.varhaiskasvatus,

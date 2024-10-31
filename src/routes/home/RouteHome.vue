@@ -1,7 +1,7 @@
 <template>
 <div class="home-container">
   <div class="header">
-    <ep-navigation :sticky="false" :tutoriaalistore="tutoriaalistore"></ep-navigation>
+    <ep-navigation :sticky="false"></ep-navigation>
     <div class="container">
       <div class="container-fluid">
         <div class="row no-gutters">
@@ -41,10 +41,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator';
 import { Kayttajat } from '@/stores/kayttaja';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EtusivuDto } from '@shared/api/ylops';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
-
 import EpRoute from '@/mixins/EpRoute';
-
 import TileUkk from './tiles/TileUkk.vue';
 import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
 import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
@@ -72,9 +69,6 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
   },
 })
 export default class Home extends Mixins(EpRoute) {
-  @Prop()
-  private tutoriaalistore!: TutoriaaliStore;
-
   private rajain: string = '';
   private etusivu: EtusivuDto = {
     opetussuunnitelmatKeskeneraiset: 0,

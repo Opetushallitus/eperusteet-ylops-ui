@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ep-main-view :tutoriaalistore="tutoriaalistore">
+  <ep-main-view>
     <template slot="header">
       <h1>{{ $t(tyyppi) }}</h1>
       <ep-arkistoidut-ops ref="arkistoidutPopup"
@@ -174,7 +174,6 @@ import _ from 'lodash';
 import { Prop, Component, Mixins, Watch } from 'vue-property-decorator';
 import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { success, fail } from '@/utils/notifications';
 import { Kielet } from '@shared/stores/kieli';
@@ -223,9 +222,6 @@ interface Jarjestys {
 export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
   @Prop({ default: 'ops' })
   private tyyppi!: 'ops' | 'pohja';
-
-  @Prop({ required: true })
-  private tutoriaalistore!: TutoriaaliStore;
 
   private opslista: Page<OpetussuunnitelmaInfoDto> | null = null;
   private julkaistutLista: Page<OpetussuunnitelmaInfoDto> | null = null;

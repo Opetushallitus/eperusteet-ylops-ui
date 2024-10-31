@@ -1,5 +1,5 @@
 <template>
-  <ep-main-view :tutoriaalistore="tutoriaalistore">
+  <ep-main-view>
     <template slot="header">
       <h1>{{ $t('uusi-pohja') }}</h1>
     </template>
@@ -35,7 +35,6 @@ import { pohjaLuontiValidator } from '@/validators/ops';
 import { isPerusteSupported } from '@/utils/perusteet';
 import { createLogger } from '@shared/utils/logger';
 import { success } from '@/utils/notifications';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kieli } from '@shared/tyypit';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
@@ -67,9 +66,6 @@ export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
     valittuPeruste: null as (PerusteInfoDto | null),
     nimi: {},
   };
-
-  @Prop()
-  private tutoriaalistore!: TutoriaaliStore;
 
   get validationConfig() {
     return {

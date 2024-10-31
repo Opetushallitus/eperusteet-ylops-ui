@@ -41,7 +41,6 @@ import { getOpetussuunnitelmaService } from '@/stores/opetussuunnitelma';
 import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 
 import { createLogger } from '@shared/utils/logger';
-import { tutoriaalistore } from './stores/tutoriaaliStore';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from './stores/aikataulu';
 import { Kommentit } from '@/stores/kommentit';
@@ -67,17 +66,6 @@ export const router = new Router({
   }, {
     path: '/:lang',
     component: Root,
-    meta: {
-      resolve: {
-        async props(route) {
-          return {
-            default: {
-              tutoriaalistore: tutoriaalistore,
-            },
-          };
-        },
-      },
-    },
     children: [{
       name: 'vaihdapohja',
       path: 'admin/vaihdapohja/:opsId/:pohjaId',

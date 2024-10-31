@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ep-navigation :tutoriaalistore="tutoriaalistore"></ep-navigation>
+  <ep-navigation></ep-navigation>
   <div class="content">
     <div class="container">
       <div class="row">
@@ -25,7 +25,6 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 
 @Component({
@@ -34,8 +33,6 @@ import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
   },
 })
 export default class EpMainView extends Vue {
-  @Prop({ required: false })
-  private tutoriaalistore!: TutoriaaliStore | undefined;
 }
 </script>
 

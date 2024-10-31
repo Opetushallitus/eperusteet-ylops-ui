@@ -1,5 +1,5 @@
 <template>
-<ep-main-view :tutoriaalistore="tutoriaalistore">
+<ep-main-view>
   <template slot="header">
     <h1>{{ $t('uusi-opetussuunnitelma') }}</h1>
     <span v-html="$t('ylops-uusi-opetussuunnitelma-ohje')"/>
@@ -137,7 +137,6 @@ import _ from 'lodash';
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator';
 import { success, fail } from '@/utils/notifications';
 import { validationMixin } from 'vuelidate';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { delay } from '@shared/utils/delay';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
@@ -216,9 +215,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
   initUusi() {
     this.uusi.pohja = null;
   }
-
-  @Prop({ required: true })
-  private tutoriaalistore!: TutoriaaliStore;
 
   get steps() {
     return [{

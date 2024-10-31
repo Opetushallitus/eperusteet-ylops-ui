@@ -59,7 +59,6 @@ import { Kieli } from '@shared/tyypit';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Murupolku } from '@/stores/murupolku';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { TutoriaaliStore } from '@/stores/tutoriaaliStore';
 import { Kayttajat } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
@@ -84,9 +83,6 @@ export default class EpNavigation extends Vue {
 
   @Prop({ default: 'normaali' })
   private tyyli!: string;
-
-  @Prop({ required: false })
-  private tutoriaalistore!: TutoriaaliStore | undefined;
 
   @Prop({ required: false })
   private koulutustyyppi!: string;
@@ -114,10 +110,6 @@ export default class EpNavigation extends Vue {
     return UiKielet;
   }
 
-  get naytettaviaTutoriaaleja() {
-    return !_.isEmpty(this.tutoriaalistore!.avaimet);
-  }
-
   get routePath() {
     return _(this.$route.matched)
       .filter('name')
@@ -131,10 +123,6 @@ export default class EpNavigation extends Vue {
         return result;
       })
       .value();
-  }
-
-  private kaynnistaTutoriaali() {
-    this.tutoriaalistore!.setActive(true);
   }
 
   private valitseSisaltoKieli(kieli: Kieli) {
@@ -191,7 +179,7 @@ export default class EpNavigation extends Vue {
   }
 
   .ep-navbar {
-    height: 50px;
+    height: 56px;
     background-color: $etusivu-header-background;
     background-position: 100% 0;
     background-repeat: no-repeat;
