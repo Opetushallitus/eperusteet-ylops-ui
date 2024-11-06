@@ -6,12 +6,10 @@ import {
   Lops2019PaikallinenOppiaineDto,
   Matala,
   Lops2019OpintojaksoDto,
-  OhjeDto,
   OpetussuunnitelmaDto,
   OpetussuunnitelmaKevytDto,
   Puu,
   Lops2019,
-  Ohjeet,
   OpetussuunnitelmanSisalto,
   Opintojaksot,
   Lops2019Oppiaineet,
@@ -259,17 +257,6 @@ export class OpetussuunnitelmaStore {
   public async saveTeksti(tov: Puu) {
     await OpetussuunnitelmanSisalto.updateTekstiKappaleViite(this.opetussuunnitelma!.id!, tov.id!, tov);
     await this.updateSisalto();
-  }
-
-  public async saveOhje(ohje: OhjeDto) {
-    if (ohje.id) {
-      const res = await Ohjeet.updateOhje(ohje.id, ohje);
-      return res.data;
-    }
-    else {
-      const res = await Ohjeet.addOhje(ohje);
-      return res.data;
-    }
   }
 
   // Julkaisut

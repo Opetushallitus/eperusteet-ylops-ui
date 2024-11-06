@@ -209,10 +209,6 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
       ohjeet: [{ teksti: 'N/A' }],
     } as any;
 
-    if (_.isEmpty(result.ohjeet)) {
-      result.ohjeet.push({});
-    }
-
     return result;
   }
 
