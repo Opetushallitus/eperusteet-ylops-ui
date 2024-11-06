@@ -4,19 +4,10 @@
     <ep-editointi
         :store="tekstikappaleStore"
         :versionumero="versionumero">
-      <template v-slot:ohje="{ isEditing, data }">
+      <template v-slot:ohje>
         <div class="sidepad">
           <p>{{ $t('ohje-tekstikapale') }}</p>
           <p>{{ $t('ohje-tekstikapale-perusteteksti') }}</p>
-          <div class="ohjeet" v-if="data.ohjeet.length > 0">
-            <div class="ohje" v-for="ohje in data.ohjeet" :key="ohje.id">
-              <ep-content layout="normal"
-                          v-model="ohje.teksti"
-                          :kasiteHandler="kasiteHandler"
-                          :kuvaHandler="kuvaHandler"
-                          :is-editable="allowOhjeEdit && isEditing"></ep-content>
-            </div>
-          </div>
         </div>
       </template>
       <template v-slot:keskustelu="{ }">
@@ -181,10 +172,6 @@ export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) 
 
   get tekstikappale() {
     return this.tekstikappaleStore?.data?.value || null;
-  }
-
-  get allowOhjeEdit() {
-    return this.isPohja;
   }
 
   get opsId() {

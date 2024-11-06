@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { EditoitavaFeatures, IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
 import { requiredOneLang } from '@shared/validators/required';
 import { PerusteenOsaDto } from '@shared/generated/eperusteet';
-import { Ohjeet, OpetussuunnitelmanSisalto, Opetussuunnitelmat } from '@shared/api/ylops';
+import { OpetussuunnitelmanSisalto, Opetussuunnitelmat } from '@shared/api/ylops';
 import { OpetussuunnitelmaStore } from './opetussuunnitelma';
 
 Vue.use(VueCompositionApi);
@@ -64,22 +64,16 @@ export class TekstikappaleStore implements IEditoitava {
           .getVersionForTekstiKappaleViite(this.opsId, this.tekstikappaleId, rev.numero as number)).data;
       }
     }
-    const ohjeet = await Ohjeet.getTekstiKappaleOhje(teksti.tekstiKappale!.tunniste as string);
     const alkuperaiset = _.filter((await OpetussuunnitelmanSisalto
       .getTekstiKappaleViiteOriginals(this.opsId, this.tekstikappaleId)).data as Matala[], 'tekstiKappale');
 
     const result = {
       tov: _.omit(_.cloneDeep(teksti), 'lapset'),
-      ohjeet: ohjeet.data || [],
       laajaAlaisetOsaamiset: null,
       alkuperaiset,
       perusteenTeksti: null,
       kopioitava: false,
     } as any;
-
-    if (_.isEmpty(result.ohjeet)) {
-      result.ohjeet.push({});
-    }
 
     if (teksti.perusteTekstikappaleId) {
       result.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;
@@ -96,10 +90,6 @@ export class TekstikappaleStore implements IEditoitava {
 
   public async save({ tov, ohjeet }) {
     await this.opetussuunnitelmaStore.saveTeksti(tov);
-    await Promise.all(_.map(ohjeet, (ohje) => this.opetussuunnitelmaStore.saveOhje({
-      ...ohje,
-      kohde: tov.tekstiKappale.tunniste,
-    })));
   }
 
   public async remove() {
