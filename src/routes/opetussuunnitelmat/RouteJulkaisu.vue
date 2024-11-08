@@ -15,7 +15,15 @@
         </b-dropdown>
       </div>
     </div>
-  <div v-html="$t('julkaisuohje')"></div>
+    <div>
+      <h3>{{ $t('julkaisun-vaikutukset') }}</h3>
+      <ul>
+        <li>{{ $t('opetussuunnitelma-julkaisun-vaikutukset-1') }}</li>
+        <li>{{ $t('opetussuunnitelma-julkaisun-vaikutukset-2') }}</li>
+        <li>{{ $t('opetussuunnitelma-julkaisun-vaikutukset-3') }}</li>
+        <li>{{ $t('opetussuunnitelma-julkaisun-vaikutukset-4') }}</li>
+      </ul>
+    </div>
 
   <h3>{{ $t('tarkistukset') }}</h3>
   <div class="validation">
