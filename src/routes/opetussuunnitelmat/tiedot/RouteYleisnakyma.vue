@@ -59,7 +59,7 @@
         <oppiaineet-statistiikka v-if="!yksinkertainen" :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box" />
       </div>
       <div class="col">
-        <ops-viimeaikainen-toiminta :muokkaustietoStore="muokkaustietoStore" class="info-box"/>
+        <ops-viimeaikainen-toiminta :ops="ops" :muokkaustietoStore="muokkaustietoStore" class="info-box"/>
       </div>
     </div>
 
@@ -104,7 +104,7 @@ import { MuokkaustietoKayttajallaDtoTapahtumaEnum } from '@shared/api/ylops';
     EpSpinner,
   },
 })
-export default class RouteHallintapaneeli extends EpOpsRoute {
+export default class RouteYleisnakyma extends EpOpsRoute {
   @Prop({ required: true })
   private muokkaustietoStore!: MuokkaustietoStore;
 
@@ -129,7 +129,7 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
     }
     catch (e) {
       this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmaan-virhe') as string);
-      createLogger('RouteHallintapaneeli').error(e);
+      createLogger('RouteYleisnakyma').error(e);
     }
     this.syncPohja = false;
   }
@@ -143,7 +143,7 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
     }
     catch (e) {
       this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmiin-virhe') as string);
-      createLogger('RouteHallintapaneeli').error(e);
+      createLogger('RouteYleisnakyma').error(e);
     }
     this.syncing = false;
   }
@@ -177,7 +177,7 @@ export default class RouteHallintapaneeli extends EpOpsRoute {
   }
 
   get perusteUrl() {
-    return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/${this.perusteId}`);
+    return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/${this.perusteId}/muutoshistoria?noscroll`);
   }
 
   get perusteNimi() {

@@ -15,24 +15,20 @@
         </div>
 
         <div class="col router-col text-left">
-          <div v-if="muokkaustieto.poistettu">
+          <component
+            :is="muokkaustieto.komponentti"
+            :to="muokkaustieto.route">
             <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu }">
               <div class="row">
                 <div class="col nimi">{{muokkaustieto.kayttajaNimi}}</div>
                 <div class="col aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
               </div>
-              <div class="kohde">{{muokkaustieto.tapahtumateksti}}</div>
+              <EpExternalLink v-if="muokkaustieto.url" :url="muokkaustieto.url">
+                {{muokkaustieto.tapahtumateksti}}
+              </EpExternalLink>
+              <div class="kohde" v-else>{{muokkaustieto.tapahtumateksti}}</div>
             </div>
-          </div>
-          <router-link :to="muokkaustieto.route" v-else>
-            <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu }">
-              <div class="row">
-                <div class="col nimi">{{muokkaustieto.kayttajaNimi}}</div>
-                <div class="col aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
-              </div>
-              <div class="kohde">{{muokkaustieto.tapahtumateksti}}</div>
-            </div>
-          </router-link>
+          </component>
         </div>
 
       </div>
@@ -55,10 +51,11 @@ import _ from 'lodash';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { parsiEsitysnimi } from '@/stores/kayttaja';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
-import { muokkaustietoRoute, muokkaustietoIcon } from '@/utils/tapahtuma';
+import { muokkaustietoRoute, muokkaustietoIcon, muokkaustietoUrl } from '@/utils/tapahtuma';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 
 @Component({
   components: {
@@ -70,6 +67,9 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 export default class OpsViimeaikainenToiminta extends Vue {
   @Prop({ required: true })
   private muokkaustietoStore!: MuokkaustietoStore;
+
+  @Prop({ required: true })
+  private ops!: OpetussuunnitelmaKevytDto;
 
   private lisahaku: boolean = false;
 
@@ -101,10 +101,17 @@ export default class OpsViimeaikainenToiminta extends Vue {
         return {
           ...muokkaustieto,
           route: muokkaustietoRoute(muokkaustieto.kohdeId, muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisaparametrit),
-          icon: muokkaustietoIcon(muokkaustieto.kohde, muokkaustieto.tapahtuma),
+          url: muokkaustietoUrl(muokkaustieto.kohdeId, muokkaustieto.kohde, this.ops),
+          icon: muokkaustietoIcon(muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisatieto),
           iconClass: this.muokkaustietoIconClass(muokkaustieto),
           kayttajaNimi: muokkaustieto.kayttajanTieto ? parsiEsitysnimi(muokkaustieto.kayttajanTieto) : muokkaustieto.muokkaaja,
           tapahtumateksti: this.tapahtumateksti(muokkaustieto),
+        };
+      })
+      .map((muokkaustieto) => {
+        return {
+          ...muokkaustieto,
+          komponentti: muokkaustieto.route ? 'router-link' : 'div',
         };
       })
       .sortBy((muokkaustieto) => muokkaustieto.luotu)
