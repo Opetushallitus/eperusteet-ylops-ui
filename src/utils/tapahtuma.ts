@@ -1,3 +1,6 @@
+import { Kielet } from '@shared/stores/kieli';
+import { buildKatseluUrl } from '@shared/utils/esikatselu';
+import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 import * as _ from 'lodash';
 
 const kohdereititys = {
@@ -13,6 +16,10 @@ const kohdereititys = {
   perusopetuspaikallinenoppiaine: 'perusopetuspaikallinenoppiaine',
 };
 
+const kohdeUrl = {
+  'peruste': (ops) => buildKatseluUrl(Kielet.getSisaltoKieli.value, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/${ops.perusteenId}/muutoshistoria?noscroll`),
+};
+
 const kohdereititysId = {
   viite: 'osaId',
   poppiaine: 'paikallinenOppiaineId',
@@ -25,11 +32,9 @@ const kohdereititysId = {
 };
 
 const kohdeIcon = {
-  viite: 'edit',
-  opetussuunnitelma: 'article',
   opetussuunnitelma_rakenne: 'low_priority',
-  termi: 'book',
   kommentti: 'comment',
+  peruste: 'account_balance',
 };
 
 const tapahtumaIcon = {
@@ -57,6 +62,10 @@ export function muokkaustietoRoute(id, kohde, tapahtuma, lisaparametrit?) {
     };
   }
 
+  if (!kohdereititys[kohde]) {
+    return null;
+  }
+
   const router = {
     name: kohdereititys[kohde],
     params: {},
@@ -75,10 +84,14 @@ export function muokkaustietoRoute(id, kohde, tapahtuma, lisaparametrit?) {
   return router;
 }
 
-export function muokkaustietoIcon(kohde, tapahtuma) {
-  if (kohde === 'kommentti' || kohde === 'opetussuunnitelma_rakenne') {
-    return kohdeIcon[kohde];
+export function muokkaustietoUrl(id, kohde, opetussuunnitelma) {
+  if (!kohdeUrl[kohde]) {
+    return null;
   }
 
-  return tapahtumaIcon[tapahtuma] ? tapahtumaIcon[tapahtuma] : 'question_mark';
+  return kohdeUrl[kohde](opetussuunnitelma);
+}
+
+export function muokkaustietoIcon(kohde, tapahtuma, lisatieto = '') {
+  return kohdeIcon[kohde] || tapahtumaIcon[tapahtuma] || 'question_mark';
 }
