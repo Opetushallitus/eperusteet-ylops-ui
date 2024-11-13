@@ -1,9 +1,13 @@
 import { mount } from '@vue/test-utils';
 import EpPrefixList from './EpPrefixList.vue';
+import { mocks } from '@shared/utils/jestutils';
 
 describe('EpPrefixList', () => {
   it('Read-only', () => {
     const wrapper = mount(EpPrefixList, {
+      mocks: {
+        ...mocks,
+      },
       propsData: {
         value: {
           kohde: {
