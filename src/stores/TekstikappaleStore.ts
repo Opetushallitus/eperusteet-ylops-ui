@@ -38,21 +38,6 @@ export class TekstikappaleStore implements IEditoitava {
   ) {
   }
 
-  public async fetch() {
-    try {
-      if (this.versionumero) {
-        const revisions = (await Perusteenosat.getPerusteenOsaViiteVersiot(this.tekstikappaleId)).data as Revision[];
-        const rev = revisions[revisions.length - this.versionumero];
-        this.state.tekstikappale = (await Perusteenosat.getPerusteenOsaVersioByViite(this.tekstikappaleId, rev.numero)).data;
-      }
-      else {
-        this.state.tekstikappale = (await Perusteenosat.getPerusteenOsatByViite(this.tekstikappaleId)).data;
-      }
-    }
-    catch (err) {
-    }
-  }
-
   public async load() {
     const teksti = (await OpetussuunnitelmanSisalto.getTekstiKappaleViiteSyva(this.opsId, this.tekstikappaleId)).data;
     if (this.versionumero) {
@@ -76,7 +61,12 @@ export class TekstikappaleStore implements IEditoitava {
     } as any;
 
     if (teksti.perusteTekstikappaleId) {
-      result.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;
+      try {
+        result.perusteenTeksti = (await OpetussuunnitelmanSisalto.getPerusteTekstikappale(this.opsId, teksti!.id as number)).data;
+      }
+      catch (e) {
+        result.perusteenTeksti = null;
+      }
 
       if (result.perusteenTeksti?.perusteenOsa?.tunniste === 'laajaalainenosaaminen') {
         result.laajaAlaisetOsaamiset = (await Opetussuunnitelmat.getLaajalaisetosamiset(this.opsId)).data;
