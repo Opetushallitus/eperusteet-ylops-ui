@@ -18,10 +18,10 @@
           <component
             :is="muokkaustieto.komponentti"
             :to="muokkaustieto.route">
-            <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu }">
-              <div class="row">
-                <div class="col nimi">{{muokkaustieto.kayttajaNimi}}</div>
-                <div class="col aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
+            <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu, 'd-flex flex-row-reverse justify-content-between': !muokkaustieto.kayttajaNimi }">
+              <div class="d-flex justify-content-between">
+                <div class="nimi" v-if="muokkaustieto.kayttajaNimi">{{muokkaustieto.kayttajaNimi}}</div>
+                <div class="aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
               </div>
               <EpExternalLink v-if="muokkaustieto.url" :url="muokkaustieto.url">
                 {{muokkaustieto.tapahtumateksti}}
@@ -104,7 +104,7 @@ export default class OpsViimeaikainenToiminta extends Vue {
           url: muokkaustietoUrl(muokkaustieto.kohdeId, muokkaustieto.kohde, this.ops),
           icon: muokkaustietoIcon(muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisatieto),
           iconClass: this.muokkaustietoIconClass(muokkaustieto),
-          kayttajaNimi: muokkaustieto.kayttajanTieto ? parsiEsitysnimi(muokkaustieto.kayttajanTieto) : muokkaustieto.muokkaaja,
+          kayttajaNimi: this.muokkaustietoKayttajanimi(muokkaustieto),
           tapahtumateksti: this.tapahtumateksti(muokkaustieto),
         };
       })
@@ -117,6 +117,18 @@ export default class OpsViimeaikainenToiminta extends Vue {
       .sortBy((muokkaustieto) => muokkaustieto.luotu)
       .reverse()
       .value();
+  }
+
+  muokkaustietoKayttajanimi(muokkaustieto) {
+    if (muokkaustieto.kohde === 'peruste') {
+      return null;
+    }
+
+    if (muokkaustieto.kayttajanTieto) {
+      return parsiEsitysnimi(muokkaustieto.kayttajanTieto);
+    }
+
+    return muokkaustieto.muokkaaja;
   }
 
   tapahtumateksti(muokkaustieto) {
