@@ -461,6 +461,13 @@ export class OpetussuunnitelmaStore {
     await Opetussuunnitelmat.sync(this.opetussuunnitelma!.id!);
     this.pohjanPerustePaivittynyt = false;
   }
+
+  public setOpetussuunnitelmaNimi(nimi) {
+    this.opetussuunnitelma = {
+      ...this.opetussuunnitelma,
+      nimi,
+    };
+  }
 }
 
 let opsServiceCache: OpetussuunnitelmaStore | null = null;
