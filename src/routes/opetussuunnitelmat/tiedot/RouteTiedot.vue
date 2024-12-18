@@ -139,7 +139,7 @@ import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
-import { Component } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
@@ -233,6 +233,15 @@ export default class RouteTiedot extends EpOpsRoute {
 
   set storeData(data) {
     this.editStore?.setData(data);
+  }
+
+  get nimi() {
+    return this.storeData?.nimi;
+  }
+
+  @Watch('nimi')
+  async onNimiChange() {
+    this.store.setOpetussuunnitelmaNimi(this.nimi);
   }
 }
 </script>
