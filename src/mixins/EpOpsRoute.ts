@@ -29,11 +29,11 @@ export default class EpOpsRoute extends EpRoute {
   }
 
   get isPohja() {
-    return this.store.opetussuunnitelma!.tyyppi as string === 'pohja';
+    return this.store.opetussuunnitelma?.tyyppi as string === 'pohja';
   }
 
   get isOps() {
-    return this.store.opetussuunnitelma!.tyyppi as string === 'ops';
+    return this.store.opetussuunnitelma?.tyyppi as string === 'ops';
   }
 
   get isValmisPohja() {
