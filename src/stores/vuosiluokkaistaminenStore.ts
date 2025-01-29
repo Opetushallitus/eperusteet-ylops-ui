@@ -1,6 +1,6 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import { computed } from '@vue/composition-api';
-import { Oppiaineet, OppiaineenVuosiluokkakokonaisuudet, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
+import { Oppiaineet, OppiaineenVuosiluokkakokonaisuudet, Vuosiluokkakokonaisuudet, PerusteOppiaineenVuosiluokkakokonaisuusDto } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import { required, maxValue, minValue } from 'vuelidate/lib/validators';
@@ -32,7 +32,7 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
 
   async load() {
     let oppiaine = {} as any;
-    let perusteenOppiaineenVlk = {} as any;
+    let perusteenOppiaineenVlk = {} as PerusteOppiaineenVuosiluokkakokonaisuusDto;
     let perusteenVlk = {} as any;
     [oppiaine, perusteenVlk] = _.map(await (Promise.all([
       Oppiaineet.getOppiaine(this.opsId, this.oppiaineId),
@@ -54,7 +54,7 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
           return {
             ...tavoite,
             sisaltoalueet: _.sortBy(tavoite.sisaltoalueet, [(sisaltoalue: any) => {
-              return sisaltoalueetMap[sisaltoalue].nimi[Kielet.getSisaltoKieli.value];
+              return sisaltoalueetMap[sisaltoalue]?.nimi?.[Kielet.getSisaltoKieli.value] ?? '';
             }]),
             kohdealueet: _.map(tavoite.kohdealueet, kohdealue => {
               return {
