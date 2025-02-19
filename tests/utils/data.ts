@@ -50,7 +50,7 @@ export function defaultAxiosResponse<T> (): AxiosResponse<T> {
     data: {} as T,
     status: 200,
     statusText: "",
-    config: {},
+    config: {} as any,
     headers: {}
   };
 }

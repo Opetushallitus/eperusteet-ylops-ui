@@ -37,5 +37,5 @@ jobs:
           
           yarn install --silent
           yarn lint
-          yarn test:unit
+          yarn test
           yarn build

@@ -40,11 +40,11 @@ module.exports = {
     }
   },
   devServer: {
-    overlay: {
-      warnings: false,
-      errors: true,
+    client: {
+      logging: 'none',
+      overlay: true,
+      progress: true,
     },
-    clientLogLevel: 'none',
     host: '0.0.0.0',
     port: 9040,
     proxy: {
