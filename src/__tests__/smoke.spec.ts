@@ -12,7 +12,7 @@ xdescribe('tests', () => {
       // console.log(Api.defaults);
       await Api.get('/helloworld');
     }
-    catch (err) {
+    catch (err: any) {
       errormsg = err.message;
     }
 
