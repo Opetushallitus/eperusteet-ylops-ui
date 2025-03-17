@@ -63,7 +63,7 @@
         <div class="oppimaarat-topic">{{ $t('oppiaine-moduuli-ohje')}}</div>
         <div class="block-container">
           <div class="moduulit">
-            <div class="moduuli" v-for="moduuli in moduulit" :key="moduuli.koodiUri">
+            <div class="moduuli mb-2" v-for="moduuli in moduulit" :key="moduuli.koodiUri">
               <router-link :to="{ name: 'moduuli', params: { moduuliId: moduuli.id } }">
                 <ep-opintojakson-moduuli :moduuli="moduuli">
                 </ep-opintojakson-moduuli>
@@ -114,7 +114,7 @@ import EpRoute from '@/mixins/EpRoute';
 import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { PerusteCache } from '@/stores/peruste';
 import _ from 'lodash';
-import EpOpintojaksonModuuli from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/opintojaksot/EpOpintojaksonModuuli.vue';
+import EpOpintojaksonModuuli from '@shared/components/EpOpintojaksonModuuli/EpOpintojaksonModuuli.vue';
 import { isPaikallisestiSallittuLaajennos } from '@/utils/perusteet';
 import { koodiSorters } from '@shared/utils/perusteet';
 
@@ -317,12 +317,4 @@ export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
   }
 }
 
-.moduulit {
-  display: flex;
-  flex-wrap: wrap;
-
-  .moduuli {
-    margin: 0 10px 10px 0;
-  }
-}
 </style>
