@@ -108,7 +108,7 @@
                 </ep-toggle>
               </div>
               <div class="moduulit" v-if="!oa.isModuuliton">
-                <div class="moduuli" v-for="(moduuli, index) in oppiaineidenModuulitMap[oa.koodi].moduulit" :key="index+'oppiaineetMap.moduulit'">
+                <div class="moduuli mb-2" v-for="(moduuli, index) in oppiaineidenModuulitMap[oa.koodi].moduulit" :key="index+'oppiaineetMap.moduulit'">
                   <ep-opintojakson-moduuli
                     :moduuli="moduuli"
                     :is-editing="true"
@@ -133,7 +133,7 @@
           </div>
           <div class="oppiaineet" v-if="!isEditing">
             <div class="moduulit" v-if="editable && editable.moduulit">
-              <div class="moduuli" v-for="(moduuli, index) in editable.moduulit" :key="index+'editable.moduulit.oppiaineet'">
+              <div class="moduuli mb-2" v-for="(moduuli, index) in editable.moduulit" :key="index+'editable.moduulit.oppiaineet'">
                 <ep-opintojakson-moduuli :moduuli="moduulitMap[moduuli.koodiUri]" :value="data.moduulit">
                 </ep-opintojakson-moduuli>
               </div>
@@ -420,7 +420,7 @@ import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetus
 import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import * as _ from 'lodash';
-import EpOpintojaksonModuuli from './EpOpintojaksonModuuli.vue';
+import EpOpintojaksonModuuli from '@shared/components/EpOpintojaksonModuuli/EpOpintojaksonModuuli.vue';
 import EpOpintojaksoSelect from './EpOpintojaksoSelect.vue';
 import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Kielet } from '@shared/stores/kieli';
@@ -955,20 +955,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
 <style lang="scss" scoped>
 @import "@shared/styles/_variables.scss";
-
-::v-deep .nimi {
-  // font-size: 150%;
-  // font-weight: 600;
-}
-
-.moduulit {
-  display: flex;
-  flex-wrap: wrap;
-
-  .moduuli {
-    margin: 0 10px 10px 0;
-  }
-}
 
 .liitetyt-moduulit {
   .taso {
