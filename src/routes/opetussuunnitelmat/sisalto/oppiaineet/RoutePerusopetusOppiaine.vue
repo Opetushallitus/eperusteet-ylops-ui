@@ -4,6 +4,7 @@
       :store="editointiStore"
       :versionumero="versionumero"
       :confirmCopy="false"
+      :skipRedirectBack="true"
       labelRemoveClarification="oppimaara-poisto-modal-selite">
       <template v-slot:kopioi-teksti>{{ $t('muokkaa') }}</template>
 
