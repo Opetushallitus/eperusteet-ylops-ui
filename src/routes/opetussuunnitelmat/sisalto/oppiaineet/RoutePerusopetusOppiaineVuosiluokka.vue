@@ -104,10 +104,9 @@
                 </b-col>
               </b-row>
 
-              <div class="mb-4" v-if="(tavoite.hyvanOsaamisenKuvaus && tavoite.hyvanOsaamisenKuvaus.arvioinninKohde) || tavoite.arvioinninKuvaus">
+              <div class="mb-4" v-if="tavoite.arvioinninKuvaus">
                 <h4>{{ $t('arvioinnin-kohde') }}</h4>
-                <span v-if="tavoite.hyvanOsaamisenKuvaus && tavoite.hyvanOsaamisenKuvaus.arvioinninKohde" v-html="$kaanna(tavoite.hyvanOsaamisenKuvaus.arvioinninKohde)"></span>
-                <span v-else-if="tavoite.arvioinninKuvaus" v-html="$kaanna(tavoite.arvioinninKuvaus)"></span>
+                <span v-html="$kaanna(tavoite.arvioinninKuvaus)"></span>
               </div>
 
               <div class="mb-4" v-if="tavoite.arvioinninkohteet && tavoite.arvioinninkohteet.length > 0">
