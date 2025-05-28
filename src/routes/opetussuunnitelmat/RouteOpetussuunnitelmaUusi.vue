@@ -333,8 +333,6 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       });
     }
     catch (err) {
-      fail('ei-riittavia-oikeuksia-organisaatioissa');
-      await delay(300);
       this.addingOpetussuunnitelma = false;
     }
   }
