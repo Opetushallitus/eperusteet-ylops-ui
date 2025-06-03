@@ -106,7 +106,7 @@
   </div>
 
   <div class="mt-4">
-    <div v-if="isValid">
+    <div v-if="!validating && isValid">
       <h3>{{ $t('uusi-julkaisu') }}</h3>
       <b-form-group :label="$t('julkaisun-tiedote')">
         <div class="font-size-08 mb-2">{{$t('tiedote-naytetaan-tyoryhmalle-taman-sivun-julkaisuhistoriassa')}}</div>
