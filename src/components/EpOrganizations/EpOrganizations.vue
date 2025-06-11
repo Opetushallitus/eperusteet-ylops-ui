@@ -196,6 +196,12 @@ export default class EpOrganizations extends Mixins(EpValidation) {
     this.oppilaitokset = _.chain(valitutJarjestajat)
       .map('children')
       .flatten()
+      .map(oppilaitos => {
+        return {
+          ...oppilaitos,
+          tyypit: ['Oppilaitos'],
+        };
+      })
       .sortBy((org: any) => Kielet.kaanna(org.nimi))
       .value();
     const jarjestajaOids = _.map(this.valitutJarjestajat, 'oid');
