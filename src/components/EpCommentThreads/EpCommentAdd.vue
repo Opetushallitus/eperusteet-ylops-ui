@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator';
 import _ from 'lodash';
-import { Kommentit } from '@/stores/kommentit';
+import { Kommentit } from '@shared/stores/kommentit';
 import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
 
 @Component({
