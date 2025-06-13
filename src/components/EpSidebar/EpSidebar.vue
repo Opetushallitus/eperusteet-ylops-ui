@@ -26,7 +26,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import Sticky from 'vue-sticky-directive';
-import { Kommentit } from '@/stores/kommentit';
+import { Kommentit } from '@shared/stores/kommentit';
 import { setItem, getItem } from '@/utils/localstorage';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 

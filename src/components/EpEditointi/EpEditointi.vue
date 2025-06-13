@@ -211,7 +211,7 @@ import { setItem, getItem } from '@/utils/localstorage';
 import EpVersioModaali from './EpVersioModaali.vue';
 import '@shared/stores/kieli';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import { Kommentit } from '@/stores/kommentit';
+import { Kommentit } from '@shared/stores/kommentit';
 import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { parsiEsitysnimi } from '@shared/utils/kayttaja';
