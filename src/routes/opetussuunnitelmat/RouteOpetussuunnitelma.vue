@@ -103,6 +103,8 @@ import { LinkkiHandler, routeToNode } from '@/utils/routing';
 import { Kielet } from '@shared/stores/kieli';
 import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { KommenttiKahvaDtoKieliEnum } from '@shared/generated/ylops';
+import { Kommentit } from '@shared/stores/kommentit';
 
 @Component({
   components: {
@@ -278,6 +280,11 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
   @ProvideReactive('linkkiHandler')
   get linkkiHandler() {
     return new LinkkiHandler();
+  }
+
+  @ProvideReactive('kommenttiHandler')
+  get kommenttiHandler() {
+    return Kommentit;
   }
 }
 </script>
