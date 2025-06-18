@@ -43,7 +43,7 @@ import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
 import { createLogger } from '@shared/utils/logger';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from './stores/aikataulu';
-import { Kommentit } from '@shared/stores/kommentit';
+import { Kommentit } from '@/stores/kommentit';
 import VueApexCharts from 'vue-apexcharts';
 import { getCasKayttajaKieli } from '@shared/api/common';
 import { Opetussuunnitelmat } from '@shared/api/ylops';

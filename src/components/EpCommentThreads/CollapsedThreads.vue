@@ -40,7 +40,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { KommenttiDto } from '@shared/api/ylops';
-import { Kommentit } from '@shared/stores/kommentit';
+import { Kommentit } from '@/stores/kommentit';
 import _ from 'lodash';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 

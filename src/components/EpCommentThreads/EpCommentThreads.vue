@@ -92,7 +92,7 @@
 
 <script lang="ts">
 import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
-import { UusiKommenttiHandle, Kommentit } from '@shared/stores/kommentit';
+import { UusiKommenttiHandle, Kommentit } from '@/stores/kommentit';
 import { KommenttiDto, KayttajanTietoDto } from '@shared/api/ylops';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import { Kielet } from '@shared/stores/kieli';
