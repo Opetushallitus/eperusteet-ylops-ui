@@ -104,7 +104,7 @@ import { Kielet } from '@shared/stores/kieli';
 import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { KommenttiKahvaDtoKieliEnum } from '@shared/generated/ylops';
-import { Kommentit } from '@shared/stores/kommentit';
+import { Kommentit } from '@/stores/kommentit';
 
 @Component({
   components: {
