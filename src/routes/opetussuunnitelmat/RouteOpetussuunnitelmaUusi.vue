@@ -101,7 +101,7 @@
         <hr/>
         <h2 class="mb-3">{{ $t('opintojaksot') }}</h2>
         <ep-form-content :showHeader="false">
-          <ep-form-content name="ops-opintojakso-tuonti-kysymys" class="no-padding">
+          <ep-form-content v-if="luontityyppi === LUONTITYYPPI_VIITTEILLA" name="ops-opintojakso-tuonti-kysymys" class="no-padding">
             <b-form-group>
               <b-form-radio v-model="uusi.tuoPohjanOpintojaksot" name="opintojaksoTuonti" :value="true">{{$t('kylla')}}</b-form-radio>
               <b-form-radio v-model="uusi.tuoPohjanOpintojaksot" name="opintojaksoTuonti" :value="false">{{$t('ei')}}</b-form-radio>
@@ -114,13 +114,15 @@
 
         </ep-form-content>
 
-        <h2 class="mb-3">{{ $t('oppimaarat') }}</h2>
-        <ep-form-content name="ops-oppimaara-tuonti-kysymys" class="no-padding">
-          <b-form-group>
-            <b-form-radio v-model="uusi.tuoPohjanOppimaarat" name="oppimaaraTuonti" :value="true">{{$t('kylla')}}</b-form-radio>
-            <b-form-radio v-model="uusi.tuoPohjanOppimaarat" name="oppimaaraTuonti" :value="false">{{$t('ei')}}</b-form-radio>
-          </b-form-group>
-        </ep-form-content>
+        <template v-if="luontityyppi === LUONTITYYPPI_VIITTEILLA">
+          <h2 class="mb-3">{{ $t('oppimaarat') }}</h2>
+          <ep-form-content name="ops-oppimaara-tuonti-kysymys" class="no-padding">
+            <b-form-group>
+              <b-form-radio v-model="uusi.tuoPohjanOppimaarat" name="oppimaaraTuonti" :value="true">{{$t('kylla')}}</b-form-radio>
+              <b-form-radio v-model="uusi.tuoPohjanOppimaarat" name="oppimaaraTuonti" :value="false">{{$t('ei')}}</b-form-radio>
+            </b-form-group>
+          </ep-form-content>
+        </template>
       </div>
 
       <div class="text-right">
@@ -211,6 +213,9 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
     luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA,
   };
   private valitunPohjanPohja: OpetussuunnitelmaNimiDto | null = null;
+
+  private LUONTITYYPPI_KOPIO = OpetussuunnitelmaLuontiDtoLuontityyppiEnum.KOPIO;
+  private LUONTITYYPPI_VIITTEILLA = OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA;
 
   initUusi() {
     this.uusi.pohja = null;
@@ -352,7 +357,7 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
 
   get validator() {
     if (this.uusi && this.uusi.pohja) {
-      return opsLuontiValidator([], this.uusi.pohja.toteutus, this.opetussuunnitelmaOrganisaatioTaso);
+      return opsLuontiValidator([], this.luontityyppi, this.uusi.pohja.toteutus, this.opetussuunnitelmaOrganisaatioTaso);
     }
 
     return {};
