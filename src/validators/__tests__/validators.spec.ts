@@ -3,7 +3,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import Vuelidate from 'vuelidate';
 
 import EpValidation from '@shared/mixins/EpValidation';
-import { TekstiKappaleDto, Lops2019OpintojaksoDto, TermiDto, KysymysDto, OpetussuunnitelmaLuontiDto, OpetussuunnitelmaDto, Lops2019OppiaineDto } from '@shared/api/ylops';
+import { TekstiKappaleDto, Lops2019OpintojaksoDto, TermiDto, KysymysDto, OpetussuunnitelmaLuontiDto, OpetussuunnitelmaDto, Lops2019OppiaineDto, OpetussuunnitelmaLuontiDtoLuontityyppiEnum } from '@shared/api/ylops';
 import { kasiteValidator } from '@/validators/kasite';
 import { kysymysValidator } from '@/validators/ukk';
 import { opintojaksoValidator, opintojaksoLuontiValidator } from '@/validators/opintojakso';
@@ -33,7 +33,7 @@ class Dummy extends Mixins(EpValidation) {
       oppiaine: oppiaineValidator(kielet),
       pohja: opsTiedotValidator(kielet, false),
       ops: opsTiedotValidator(kielet),
-      opsLuonti: opsLuontiValidator(kielet),
+      opsLuonti: opsLuontiValidator(kielet, OpetussuunnitelmaLuontiDtoLuontityyppiEnum.KOPIO),
       pohjaLuonti: pohjaLuontiValidator(kielet),
       kysymys: kysymysValidator(kielet),
       kasite: kasiteValidator(kielet),

@@ -1,7 +1,7 @@
 import { notNull, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@shared/tyypit';
 import { minLength, required, requiredIf } from 'vuelidate/lib/validators';
-import { OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
+import { OpetussuunnitelmaInfoDtoToteutusEnum, OpetussuunnitelmaLuontiDtoLuontityyppiEnum } from '@shared/api/ylops';
 import * as _ from 'lodash';
 
 export type LuotavaOpsOrganisaatioTaso = 'kunta' | 'oppilaitos';
@@ -25,13 +25,17 @@ export function opsPerusopetusLuontiValidators() {
   };
 }
 
-export function lops2019Validators() {
+export function lops2019Validators(luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum) {
   return {
     tuoPohjanOpintojaksot: {
-      required,
+      required: requiredIf(() => {
+        return luontityyppi === OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA;
+      }),
     },
     tuoPohjanOppimaarat: {
-      required,
+      required: requiredIf(() => {
+        return luontityyppi === OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA;
+      }),
     },
   };
 }
@@ -39,7 +43,7 @@ export function lops2019Validators() {
 const arrayLengthNotOne = (value) => _.size(value) !== 1;
 const arrayLengthOne = (value) => _.size(value) === 1;
 
-export function opsLuontiValidator(kielet: Kieli[] = [], toteutus?: OpetussuunnitelmaInfoDtoToteutusEnum, luotavaOpsOrganisaatioTaso?: LuotavaOpsOrganisaatioTaso) {
+export function opsLuontiValidator(kielet: Kieli[] = [], luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum, toteutus?: OpetussuunnitelmaInfoDtoToteutusEnum, luotavaOpsOrganisaatioTaso?: LuotavaOpsOrganisaatioTaso) {
   let opsValidators = {
     nimi: {
       ...requiredLokalisoituTeksti(kielet),
@@ -69,7 +73,7 @@ export function opsLuontiValidator(kielet: Kieli[] = [], toteutus?: Opetussuunni
         ...(luotavaOpsOrganisaatioTaso === 'kunta' && { arrayLengthNotOne }),
       },
     },
-  };
+  } as any;
 
   if (toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase()) {
     opsValidators = {
@@ -81,7 +85,7 @@ export function opsLuontiValidator(kielet: Kieli[] = [], toteutus?: Opetussuunni
   if (toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.LOPS2019.toLowerCase()) {
     opsValidators = {
       ...opsValidators,
-      ...lops2019Validators(),
+      ...lops2019Validators(luontityyppi),
     };
   }
 
