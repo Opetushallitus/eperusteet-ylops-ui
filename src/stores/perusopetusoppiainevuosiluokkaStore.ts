@@ -138,8 +138,13 @@ export class PerusopetusoppiaineVuosiluokkaStore implements IEditoitava {
       sisaltoalueet: _.map(data.perusteenVlk.sisaltoalueet, sisaltoalue => sisaltoalue.vuosiluokanSisaltoalue),
     };
 
-    data.vuosiluokka = (await OppiaineenVuosiluokat.updateVuosiluokanSisalto(this.opsId, this.oppiaineId,
-      (this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id as number), this.vuosiluokkaId, vuosiluokka)).data;
+    data.vuosiluokka = (await OppiaineenVuosiluokat.updateVuosiluokanSisalto(
+      this.opsId, this.oppiaineId,
+      (this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id as number),
+      this.vuosiluokkaId,
+      vuosiluokka,
+      data.valuta,
+    )).data;
 
     return data;
   }

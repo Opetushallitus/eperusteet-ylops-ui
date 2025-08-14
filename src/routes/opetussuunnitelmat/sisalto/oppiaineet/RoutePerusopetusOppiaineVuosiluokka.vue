@@ -1,6 +1,6 @@
 <template>
   <div id="scroll-anchor" v-if="editointiStore" >
-    <EpEditointi :store="editointiStore" :preModify="aloitaMuokkaus" :postSave="tallennettu">
+    <EpEditointi :store="editointiStore" :preModify="aloitaMuokkaus" :postSave="tallennettu" :allowSave="varmistaValutus">
       <template v-slot:header="{ data }">
         <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}, {{ $t('vuosiluokka') }} {{ $t(data.vuosiluokka.vuosiluokka) }}</h2>
       </template>
@@ -229,6 +229,37 @@ export default class RoutePerusopetusOppiaineVuosiluokka extends Mixins(EpRoute,
         collapse.toggle(false);
       });
     });
+  }
+
+  async varmistaValutus() {
+    if ((this.ops?.joissaPohjana?.length || 0) === 0) {
+      return true;
+    }
+
+    const valuta = await this.$bvModal.msgBoxConfirm((this.$t('vahvista-vuosiluokan-tietojen-valutus-teksti') as any), {
+      title: this.$t('vahvista-vuosiluokan-tietojen-valutus-otsikko'),
+      okVariant: 'primary',
+      okTitle: this.$t('kylla') as any,
+      cancelVariant: 'link',
+      cancelTitle: this.$t('ei') as any,
+      centered: true,
+      ...{} as any,
+    });
+
+    this.storeData = {
+      ...this.storeData,
+      valuta,
+    };
+
+    return true;
+  }
+
+  get storeData() {
+    return this.editointiStore?.data.value;
+  }
+
+  set storeData(data) {
+    this.editointiStore?.setData(data);
   }
 }
 </script>
