@@ -44,10 +44,10 @@
                            :maxHeight="500"
                            :is-editing="true">
               <template slot="singleLabel" slot-scope="{ option }">
-                <span>{{ $kaanna(option.nimi) }} ({{ option.perusteenDiaarinumero }})</span>
+                <span>{{ option.esitysMuoto }}</span>
               </template>
               <template slot="option" slot-scope="{ option }">
-                <span>{{ $kaanna(option.nimi) }} ({{ option.perusteenDiaarinumero }})</span>
+                <span>{{ option.esitysMuoto }}</span>
               </template>
               <div slot="helptext" class="form-text info-box mt-2" v-if="uusi.pohja && this.oletuspohjasta !== 'pohjasta'">
                 {{ $t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio') }}
@@ -291,6 +291,10 @@ export default class RouteOpetussuunnitelmaUusi extends Mixins(validationMixin, 
       .filter(pohja => pohja.tila !== OpetussuunnitelmaInfoDtoTilaEnum.POISTETTU.toLowerCase())
       .filter(pohja => isOpsToteutusSupported(pohja))
       .filter(pohja => this.opetussuunnitelmaOrganisaatioTaso !== 'kunta' || this.oletuspohjasta === 'pohjasta' || _.includes(pohja.koulutuksenjarjestaja?.tyypit, 'Kunta'))
+      .map(pohja => ({
+        ...pohja,
+        esitysMuoto: `${this.$kaanna(pohja.nimi)} | ${this.$t('luotu')} ${this.$sd(pohja.luotu)} | ${pohja.perusteenDiaarinumero}`,
+      }))
       .value();
   }
 
