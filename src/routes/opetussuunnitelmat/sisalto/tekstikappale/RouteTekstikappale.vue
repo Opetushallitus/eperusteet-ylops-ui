@@ -34,7 +34,7 @@
               <ep-toggle v-model="data.tov.piilotettu">{{ $t('piilota-tekstikappale-julkisesta-opetussuunnitelmasta') }}</ep-toggle>
             </div>
             <div v-else-if="data.tov.piilotettu" class="disabled-text mb-4">{{$t('tekstikappale-piilotettu-julkisesta-opetussuunnitelmasta')}}</div>
-            <ep-collapse tyyppi="perusteteksti" v-if="(isEditing || data.tov.naytaPerusteenTeksti) && data.perusteenTeksti && data.perusteenTeksti.perusteenOsa" :first="isEditing" :borderBottom="!isPohja">
+            <ep-collapse tyyppi="perusteteksti" v-if="data.perusteenTeksti && data.perusteenTeksti.perusteenOsa" :first="isEditing" :borderBottom="!isPohja">
               <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
 
               <template v-if="data.laajaAlaisetOsaamiset">
@@ -45,7 +45,7 @@
               </template>
 
               <ep-content
-                v-else
+                v-else-if="isEditing || data.tov.naytaPerusteenTeksti"
                 layout="normal"
                 v-model="data.perusteenTeksti.perusteenOsa.teksti"
                 :is-editable="false"
@@ -59,24 +59,32 @@
               <div v-if="isEditing">
                 <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
               </div>
+              <div v-if="!isEditing && !data.tov.naytaPerusteenTeksti" class="disabled-text">
+                {{ $t('piilotettu') }}
+              </div>
             </ep-collapse>
             <div class="mb-4" v-if="data.tov.perusteTekstikappaleId && !data.perusteenTeksti">
               <h5>{{ $t('perusteen-teksti') }}</h5>
               <div class="font-italic text-secondary">{{$t('perusteen-tekstia-ei-loydy')}}</div>
             </div>
-            <ep-collapse v-if="data.alkuperaiset && data.alkuperaiset.length > 0 && (isEditing || data.tov.naytaPohjanTeksti)">
+            <ep-collapse v-if="data.alkuperaiset && data.alkuperaiset.length > 0">
               <h5 slot="header">
                 {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{$kaanna(pohjaNimi)}})</span>
               </h5>
-              <ep-content
-                v-for="(alkuperainen, index) in data.alkuperaiset" :key="'alkuperainen'+index"
-                layout="normal"
-                v-model="alkuperainen.tekstiKappale.teksti"
-                :is-editable="false"
-                :kasiteHandler="kasiteHandler"
-                :kuvaHandler="kuvaHandler"/>
+              <template v-if="isEditing || data.tov.naytaPohjanTeksti">
+                <ep-content
+                  v-for="(alkuperainen, index) in data.alkuperaiset" :key="'alkuperainen'+index"
+                  layout="normal"
+                  v-model="alkuperainen.tekstiKappale.teksti"
+                  :is-editable="false"
+                  :kasiteHandler="kasiteHandler"
+                  :kuvaHandler="kuvaHandler"/>
+              </template>
               <div v-if="isEditing" class="mb-4">
                 <ep-toggle v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</ep-toggle>
+              </div>
+              <div v-if="!isEditing && !data.tov.naytaPohjanTeksti" class="disabled-text">
+                {{ $t('piilotettu') }}
               </div>
             </ep-collapse>
 
