@@ -269,6 +269,19 @@ window.addEventListener('beforeunload', e => {
   }
 });
 
+router.beforeEach((to, from, next) => {
+  const hash = window.location.hash;
+
+  if (hash.includes('%2F')) {
+    const decoded = decodeURIComponent(hash).replace('//', '/');
+    window.location.replace(window.location.pathname + window.location.search + decoded);
+    window.location.reload();
+  }
+  else {
+    next();
+  }
+});
+
 // Estetään tilan vaihtaminen muokkaustilassa
 router.beforeEach(async (to, from, next) => {
   if (EditointiKontrolli.anyEditing()) {
