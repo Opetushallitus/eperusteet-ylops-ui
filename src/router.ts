@@ -48,6 +48,7 @@ import VueApexCharts from 'vue-apexcharts';
 import { getCasKayttajaKieli } from '@shared/api/common';
 import { Opetussuunnitelmat } from '@shared/api/ylops';
 import { BrowserStore } from '@shared/stores/BrowserStore';
+import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 
 Vue.use(Router);
 Vue.use(VueApexCharts);
@@ -262,7 +263,7 @@ export const router = new Router({
 
 // Estetään ikkunan sulkeminen suoraan muokkaustilassa
 window.addEventListener('beforeunload', e => {
-  if (EditointiKontrolli.anyEditing()) {
+  if (EditointiKontrolli.anyEditing() || EditointiStore.anyEditing()) {
     e.preventDefault();
     // Vanhemmat selainversiot vaativat erillisen varmistustekstin
     e.returnValue = Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti');
@@ -284,7 +285,7 @@ router.beforeEach((to, from, next) => {
 
 // Estetään tilan vaihtaminen muokkaustilassa
 router.beforeEach(async (to, from, next) => {
-  if (EditointiKontrolli.anyEditing()) {
+  if (EditointiKontrolli.anyEditing() || EditointiStore.anyEditing()) {
     const value = await router.app.$bvModal.msgBoxConfirm(
       Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'), {
         title: Kielet.kaannaOlioTaiTeksti('haluatko-poistua-tallentamatta'),
@@ -296,6 +297,7 @@ router.beforeEach(async (to, from, next) => {
     if (value) {
       try {
         await EditointiKontrolli.cancelAll();
+        await EditointiStore.cancelAll();
       }
       finally {
         next();
