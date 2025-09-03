@@ -58,6 +58,7 @@ import { Page } from '@shared/tyypit';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpPalautusModal from '@/components/EpArkistoidutOps/EpPalautusModal.vue';
 import _ from 'lodash';
+import { Kielet } from '@shared/stores/kieli';
 
 @Component({
   components: {
@@ -83,7 +84,16 @@ export default class EpArkistoidutOps extends Vue {
 
   protected async fetch() {
     this.opetussuunnitelmat = null;
-    this.opetussuunnitelmat = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, 'poistettu', undefined, this.query, undefined, undefined, this.opsSivu - 1, 10)).data as Page<OpetussuunnitelmaInfoDto>;
+    this.opetussuunnitelmat = (await Opetussuunnitelmat.getSivutettu(
+      this.tyyppi as any,
+      'poistettu',
+      undefined,
+      this.query,
+      undefined, undefined,
+      this.opsSivu - 1,
+      10,
+      Kielet.getSisaltoKieli.value,
+    )).data as Page<OpetussuunnitelmaInfoDto>;
   }
 
   get modalTitle() {
