@@ -138,7 +138,6 @@ import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
-import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
@@ -159,7 +158,6 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
     EpCollapse,
     EpContent,
     EpDatepicker,
-    EpEditointi,
     EpField,
     EpFormContent,
     EpSelect,

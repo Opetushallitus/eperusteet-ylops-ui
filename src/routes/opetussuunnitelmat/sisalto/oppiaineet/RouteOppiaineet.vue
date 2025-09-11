@@ -1,15 +1,10 @@
 <template>
 <div class="content">
-  <ep-editointi :hooks="hooks">
-    <template slot="header">
-      <h2>
-        <span>{{ $t('oppiaineet') }}</span>
-      </h2>
-    </template>
-     <template slot="ohje">
-      <div class="sidepad">
-      </div>
-    </template>
+  <div class="m-2">
+
+    <h2 class="border-bottom pb-2 mb-3">
+      <span>{{ $t('oppiaineet') }}</span>
+    </h2>
 
     <div class="row">
       <div class="col-md-9">
@@ -152,7 +147,7 @@
         </tr>
       </tbody>
     </table>
-  </ep-editointi>
+  </div>
 </div>
 </template>
 
@@ -162,7 +157,6 @@ import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
@@ -173,7 +167,6 @@ import { PerusteCache } from '@/stores/peruste';
 import { koodiAlku, koodiNumero, koodiSorters } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 @Component({
@@ -184,7 +177,6 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
     EpButton,
     EpCollapse,
     EpColorIndicator,
-    EpEditointi,
     EpSearch,
     EpSpinner,
     EpToggle,
@@ -197,20 +189,6 @@ export default class RouteOppiaineet extends Mixins(EpRoute, EpOpsComponent) {
   private query = '';
   private vainPuuttuvat = false;
   private opened: { [id: number]: any } = {};
-
-  private hooks: EditointiKontrolliConfig = {
-    source: {
-      load: this.load,
-    },
-  };
-
-  private async load() {
-    const result = {
-      ohjeet: [{ teksti: 'N/A' }],
-    } as any;
-
-    return result;
-  }
 
   get isHovering() {
     return this.valitutModuuliUrit !== null;

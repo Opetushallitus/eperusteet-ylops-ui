@@ -106,7 +106,6 @@ import { Mixins, Component } from 'vue-property-decorator';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
-import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import { Lops2019OppiaineDto } from '@shared/api/ylops';
@@ -123,7 +122,6 @@ import { koodiSorters } from '@shared/utils/perusteet';
     EpButton,
     EpCollapse,
     EpContent,
-    EpEditointi,
     EpSpinner,
     EpPrefixList,
     EpOpintojaksonModuuli,

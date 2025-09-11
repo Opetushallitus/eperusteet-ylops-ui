@@ -35,7 +35,6 @@ import RoutePerusopetusOppiaineVuosiluokkaistaminen from '@/routes/opetussuunnit
 import RoutePerusopetusOppiaineVuosiluokka from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokka.vue';
 import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusVuosiluokkaValinnaiset.vue';
 
-import { EditointiKontrolli } from '@/stores/editointi';
 import { Kielet } from '@shared/stores/kieli';
 import { getOpetussuunnitelmaService } from '@/stores/opetussuunnitelma';
 import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
@@ -263,7 +262,7 @@ export const router = new Router({
 
 // Estetään ikkunan sulkeminen suoraan muokkaustilassa
 window.addEventListener('beforeunload', e => {
-  if (EditointiKontrolli.anyEditing() || EditointiStore.anyEditing()) {
+  if (EditointiStore.anyEditing()) {
     e.preventDefault();
     // Vanhemmat selainversiot vaativat erillisen varmistustekstin
     e.returnValue = Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti');
@@ -285,7 +284,7 @@ router.beforeEach((to, from, next) => {
 
 // Estetään tilan vaihtaminen muokkaustilassa
 router.beforeEach(async (to, from, next) => {
-  if (EditointiKontrolli.anyEditing() || EditointiStore.anyEditing()) {
+  if (EditointiStore.anyEditing()) {
     const value = await router.app.$bvModal.msgBoxConfirm(
       Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'), {
         title: Kielet.kaannaOlioTaiTeksti('haluatko-poistua-tallentamatta'),
@@ -296,7 +295,6 @@ router.beforeEach(async (to, from, next) => {
 
     if (value) {
       try {
-        await EditointiKontrolli.cancelAll();
         await EditointiStore.cancelAll();
       }
       finally {
