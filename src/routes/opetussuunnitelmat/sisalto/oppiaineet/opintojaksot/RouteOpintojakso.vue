@@ -1,12 +1,10 @@
 <template>
 <div id="scroll-anchor" class="content">
-  <div v-if="hooks && !isLoading">
-    <ep-editointi :hooks="hooks"
-                  v-model="editable"
-                  :validator="validator"
+  <div v-if="editointiStore">
+    <ep-editointi :store="editointiStore"
                   :versionumero="versionumero"
                   type="opintojakso">
-      <template slot="muokkaa-content" slot-scope="{ data }" v-if="data.tuotuOpintojakso">
+      <template #muokkaa-content v-if="data.tuotuOpintojakso">
         <div class="muokkaus-esto align-self-center">
           {{$t('et-voi-muokata-pohjan-opintojaksoa')}}
           <div class="d-inline" v-if="data.opintojaksonOpetussuunnitelma">
@@ -16,7 +14,7 @@
           </div>
         </div>
       </template>
-      <template slot="ohje" slot-scope="{ }">
+      <template #ohje>
         <div class="sidepad">
           <p v-html="$t('ohje-opintojakso')">
           </p>
@@ -24,13 +22,13 @@
           </p>
         </div>
       </template>
-      <template slot="keskustelu" slot-scope="{ }">
+      <template #keskustelu>
         <ep-comment-threads />
       </template>
-      <template slot="header" slot-scope="{ data }">
+      <template #header="{ data }">
         <h2 class="nimi mb-0">{{ $kaanna(data.nimi) || $t('opintojakso') }}</h2>
       </template>
-      <template v-slot="{ data, validation, isEditing }">
+      <template #default="{ data, validation, isEditing }">
         <div class="osio">
           <div class="row">
             <div class="col-md-6">
@@ -60,7 +58,7 @@
               <ep-form-content name="oppiaineet">
                 <ep-oppiaine-selector
                   v-if="isEditing"
-                  :opetussuunnitelma-store="opetussuunnitelmaStore"
+                  :opetussuunnitelma-store="opetussuunnitelmaStoreRef"
                   :ops-id="$route.params.id"
                   :validation="validation.oppiaineet"
                   :value="data.oppiaineet.map(x => x.koodi)"
@@ -113,7 +111,7 @@
                     :moduuli="moduuli"
                     :is-editing="true"
                     v-model="data.moduulit"
-                    :opetussuunnitelmaStore="opetussuunnitelmaStore"/>
+                    :opetussuunnitelmaStore="opetussuunnitelmaStoreRef"/>
                 </div>
               </div>
               <div class="col-md-4 mt-3 px-0">
@@ -408,29 +406,27 @@ import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
-import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
+import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 import EpList from '@shared/components/forms/EpList.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
-import { EditointiKontrolliConfig } from '@/stores/editointi';
+import { EditointiStore, editointi } from '@shared/components/EpEditointi/EditointiStore';
+import { OpintojaksoStore } from '@/stores/opintojaksoStore';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat, Lops2019OpintojaksonModuuliDto } from '@shared/api/ylops';
 import { PerusteCache } from '@/stores/peruste';
 import EpOpsRoute from '@/mixins/EpOpsRoute';
 import * as _ from 'lodash';
 import EpOpintojaksonModuuli from '@shared/components/EpOpintojaksonModuuli/EpOpintojaksonModuuli.vue';
 import EpOpintojaksoSelect from './EpOpintojaksoSelect.vue';
-import { opintojaksoValidator } from '@/validators/opintojakso';
-import { Kielet } from '@shared/stores/kieli';
-import * as defaults from '@/defaults';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
 import { KoodistoLops2019LaajaAlaiset, koodiSorters, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
-import { success } from '@/utils/notifications';
+import { Kielet } from '@shared/stores/kieli';
 
 interface OpintojaksonOppiaine {
   koodi: string;
@@ -464,55 +460,47 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   private oppiaineUri!: string;
 
   private oppiaineQuery = '';
-  private editable: Lops2019OpintojaksoDto | null = null;
   private cache!: PerusteCache;
   private laajaAlaisetKoodit: any | null = null;
-  private hooks: EditointiKontrolliConfig = {
-    editAfterLoad: this.isUusi,
-    remove: this.remove,
-    source: {
-      save: this.save,
-      load: this.load,
-    },
-    history: {
-      revisions: this.revisions,
-      restore: this.restore,
-    },
-  };
   private tempModules: Lops2019OpintojaksonModuuliDto[] | undefined = undefined;
+
+  private editointiStore: EditointiStore | null = null;
 
   get laajaAlaisetSorted() {
     return _.sortBy(this.laajaAlaisetKoodit, 'koodiArvo');
   }
 
+  get editable() {
+    return this.editointiStore?.data.value;
+  }
+
+  set editable(data) {
+    this.editointiStore?.setData(data);
+  }
+
+  get isLoading() {
+    return this.editointiStore?.isLoading?.value || false;
+  }
+
+  get opetussuunnitelmaStoreRef() {
+    return (this as any).store;
+  }
+
+  async mounted() {
+    await this.init();
+
+    this.editointiStore = new EditointiStore(new OpintojaksoStore(
+      this.opsId,
+      this.$route.params.opintojaksoId,
+      this.versionumero,
+      (this as any).store, // Access the parent store
+      this.$route.params.opintojaksoId === 'uusi',
+    ));
+  }
+
   async remove(data: any) {
-    if (await this.vahvista('vahvista-poisto', 'poistetaanko-opintojakso')) {
-      await this.store.removeOpintojakso(data.id);
-      this.$router.push({
-        name: 'opsPoistetut',
-        params: {
-          tabIndex: '0',
-        },
-      });
-    }
-  }
-
-  async isUusi() {
-    return this.$route.params.opintojaksoId === 'uusi';
-  }
-
-  async revisions() {
-    if (await this.isUusi() || !_.includes(_.map(this.store.opintojaksot, 'id'), _.parseInt(this.$route.params.opintojaksoId))) {
-      return [];
-    }
-    else {
-      return this.store.getOpintojaksoHistoria(_.parseInt(this.$route.params.opintojaksoId));
-    }
-  }
-
-  async restore(data, numero) {
-    await this.store.revertOpintojaksoToVersion(_.parseInt(this.$route.params.opintojaksoId), numero);
-    success('palautus-onnistui');
+    // This method can now be simplified as the logic is in the store
+    return this.editointiStore?.remove();
   }
 
   async init() {
@@ -536,12 +524,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
     return _.parseInt(_.get(this, '$route.query.versionumero') as any);
   }
 
-  get validator() {
-    return opintojaksoValidator([
-      Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
-    ]);
-  }
-
   get laajaAlaistenKoodit() {
     const lisatyt = _.map(this.editable!.laajaAlainenOsaaminen!, 'koodi');
     return _.map(this.laajaAlaisetKoodit, lo => ({
@@ -556,7 +538,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   get paikallisetOppiaineet() {
-    return _.chain(this.store.paikallisetOppiaineet)
+    return _.chain((this as any).store.paikallisetOppiaineet)
       .filter('koodi')
       .map((oa) => {
         return {
@@ -741,16 +723,17 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .value();
   }
 
-  getOppiaineTieto(oppiaineet, tieto) {
-    if (oppiaineet) {
-      return _.chain(oppiaineet)
+  getOppiaineTieto(oppiaineet: any[], tieto: string): any {
+    if (oppiaineet && oppiaineet.length > 0) {
+      const result = _.chain(oppiaineet)
         .filter(oppiaine => oppiaine && oppiaine[tieto] && oppiaine[tieto].kuvaus)
         .map(oppiaine => oppiaine[tieto])
         .head()
         .value();
+      return result || null;
     }
 
-    return {};
+    return null;
   }
 
   get paikallistenOpintojaksojenOppiaineet() {
@@ -761,7 +744,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   get editoitavaOpintojaksoValittuToisessaOpintojaksossa() {
-    return !_.isEmpty(_.filter(this.store.opintojaksot, opintojakso => _.includes(_.map(opintojakso.paikallisetOpintojaksot, 'koodi'), this.editable!.koodi)));
+    return !_.isEmpty(_.filter((this as any).store.opintojaksot, opintojakso => _.includes(_.map(opintojakso.paikallisetOpintojaksot, 'koodi'), this.editable!.koodi)));
   }
 
   get paikallistenOppiaineidenOpintojaksot() {
@@ -774,7 +757,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       .map((oppiaine) => {
         return {
           oppiaine,
-          opintojaksot: _.chain(this.store.opintojaksot)
+          opintojaksot: _.chain((this as any).store.opintojaksot)
             // valittavalla ei saa olla paikallisia opintojaksoja (ei saa olla parentti)
             .filter((opintojakso) => _.isEmpty(opintojakso.paikallisetOpintojaksot))
             // valittavassa opintojaksossa on editoitavan opintojakson oppiaine
@@ -821,37 +804,56 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
 
   private toggleLaajuus(oa, value) {
     oa.isModuuliton = value;
-    if (value) {
-      this.tempModules = this.editable!.moduulit!.length > 0 ? this.editable?.moduulit : undefined;
-      this.editable!.moduulit = _.reject(this.editable!.moduulit, moduuli => {
-        const moduulikoodit = _.map(this.oppiaineidenModuulitMap[oa.koodi].moduulit, 'koodi.uri');
-        return _.includes(moduulikoodit, moduuli.koodiUri);
-      }) as any[];
+    if (value && this.editable) {
+      this.tempModules = this.editable.moduulit!.length > 0 ? this.editable.moduulit : undefined;
+      this.editable = {
+        ...this.editable,
+        moduulit: _.reject(this.editable.moduulit, moduuli => {
+          const moduulikoodit = _.map(this.oppiaineidenModuulitMap[oa.koodi].moduulit, 'koodi.uri');
+          return _.includes(moduulikoodit, moduuli.koodiUri);
+        }) as any[],
+      };
     }
     else if (this.tempModules) {
-      this.editable!.moduulit = this.tempModules;
+      this.editable = {
+        ...this.editable,
+        moduulit: this.tempModules,
+      };
     }
   }
 
   private async poistaLaaja(laaja) {
     if (await this.vahvista('vahvista-poisto')) {
-      const filtered = _.reject(this.editable!.laajaAlainenOsaaminen!,
-        (lo) => laaja.koodi === lo.koodi);
-      Vue.set(this.editable!, 'laajaAlainenOsaaminen', filtered);
+      if (this.editable) {
+        const filtered = _.reject(this.editable.laajaAlainenOsaaminen!,
+          (lo) => laaja.koodi === lo.koodi);
+        this.editable = {
+          ...this.editable,
+          laajaAlainenOsaaminen: filtered,
+        };
+      }
     }
   }
 
   private addLaaja({ koodi }) {
-    this.editable!.laajaAlainenOsaaminen!.push({
-      koodi,
-    });
+    if (this.editable) {
+      this.editable = {
+        ...this.editable,
+        laajaAlainenOsaaminen: [
+          ...this.editable.laajaAlainenOsaaminen!,
+          { koodi },
+        ],
+      };
+    }
   }
 
   updateOppiaineet(koodit: string[]) {
-    const vanhat = _.map(this.editable!.oppiaineet, 'koodi');
+    if (!this.editable) return;
+
+    const vanhat = _.map(this.editable.oppiaineet, 'koodi');
     const uudet = _.filter(koodit, koodi => !_.includes(vanhat, koodi));
 
-    this.editable!.moduulit = _.filter(this.editable!.moduulit, moduuli => {
+    const filteredModuulit = _.filter(this.editable.moduulit, moduuli => {
       const moduuliurit = _.chain(koodit)
         .map(koodi => this.oppiaineidenModuulitMap[koodi].moduulit)
         .flatMap()
@@ -860,9 +862,9 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       return _.includes(moduuliurit, moduuli.koodiUri);
     }) as any[];
 
-    this.editable!.oppiaineet = _.filter(this.editable!.oppiaineet, (oppiaine) => _.includes(koodit, oppiaine.koodi));
-    this.editable!.oppiaineet = [
-      ...this.editable!.oppiaineet,
+    const filteredOppiaineet = _.filter(this.editable.oppiaineet, (oppiaine) => _.includes(koodit, oppiaine.koodi));
+    const updatedOppiaineet = [
+      ...filteredOppiaineet,
       ..._.map(uudet, koodi => ({
         koodi,
         laajuus: 0,
@@ -871,84 +873,19 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       })),
     ];
 
-    const paikallistenOpintojaksojenOppiaineKoodit = _.chain(this.editable!.paikallisetOpintojaksot)
-      .map('oppianeet')
-      .flatMap()
-      .map('koodi')
-      .value();
-
-    this.editable!.paikallisetOpintojaksot = _.filter(this.editable!.paikallisetOpintojaksot, paikallinenopintojakso =>
+    const filteredPaikallisetOpintojaksot = _.filter(this.editable.paikallisetOpintojaksot, paikallinenopintojakso =>
       _.some(paikallinenopintojakso.oppiaineet, oppiaine => _.includes(koodit, oppiaine.koodi)));
-  }
 
-  public async load() {
-    const { opintojaksoId } = this.$route.params;
-    if (await this.isUusi()) {
-      const result = defaults.opintojakso();
-      const oaUri = _.get(this.$route, 'query.oppiaineet') as any;
-      if (oaUri) {
-        result.oppiaineet!.push({
-          koodi: oaUri,
-          laajuus: null as any,
-          isPaikallinenOppiaine: _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), oaUri),
-          isModuuliton: _.isEmpty(this.oppiaineidenModuulitMap[oaUri]) || _.isEmpty(this.oppiaineidenModuulitMap[oaUri].moduulit),
-        } as OpintojaksonOppiaine);
-        delete this.$route.query.oppiaineet;
-      }
-      return result;
-    }
-    else {
-      let opintojakso: any = await this.store.getTuotuOpintojakso(_.parseInt(opintojaksoId));
-
-      if (!opintojakso) {
-        const revisions = await this.store.getOpintojaksoHistoria(_.parseInt(opintojaksoId));
-        const rev = revisions[revisions.length - this.versionumero];
-        if (this.versionumero && rev) {
-          opintojakso = await this.store.getOpintojaksoVersion(_.parseInt(opintojaksoId), rev.numero as number);
-        }
-        else {
-          opintojakso = await this.store.getOpintojakso(_.parseInt(opintojaksoId));
-        }
-      }
-      else {
-        opintojakso.tuotuOpintojakso = true;
-        opintojakso.opintojaksonOpetussuunnitelma = await this.store.getOpintojaksonOpetussuunnitelma(_.parseInt(opintojaksoId));
-      }
-
-      _.forEach(opintojakso.oppiaineet, (oa: OpintojaksonOppiaine) => {
-        oa.isPaikallinenOppiaine = _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), oa.koodi);
-        oa.isModuuliton = this.isModuuliton(oa);
-      });
-
-      if (opintojakso) {
-        this.breadcrumb('opintojakso', opintojakso.nimi);
-      }
-
-      return opintojakso;
-    }
+    this.editable = {
+      ...this.editable,
+      moduulit: filteredModuulit,
+      oppiaineet: updatedOppiaineet,
+      paikallisetOpintojaksot: filteredPaikallisetOpintojaksot,
+    };
   }
 
   isModuuliton(oa: OpintojaksonOppiaine) {
     return _.isEmpty(this.editable?.moduulit) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi]) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi].moduulit);
-  }
-
-  async save(opintojakso: Lops2019OpintojaksoDto) {
-    if (await this.isUusi()) {
-      const uusi = await this.store.addOpintojakso(opintojakso);
-      return () => {
-        this.$router.push({
-          name: 'opintojakso',
-          params: {
-            ...this.$router.currentRoute.params,
-            opintojaksoId: _.toString(uusi.id),
-          },
-        });
-      };
-    }
-    else {
-      await this.store.saveOpintojakso(opintojakso);
-    }
-    this.tempModules = undefined;
   }
 }
 </script>
