@@ -40,7 +40,6 @@ import { Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@shared/api/ylops';
 import { PerusteCache } from '@/stores/peruste';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
-import EpEditointi from '@/components/EpEditointi/EpEditointi.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpRoute from '@/mixins/EpRoute';
@@ -50,7 +49,6 @@ import EpOpsComponent from '@/mixins/EpOpsComponent';
   components: {
     EpButton,
     EpCollapse,
-    EpEditointi,
     EpPrefixList,
     EpSpinner,
   },

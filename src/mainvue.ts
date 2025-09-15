@@ -19,6 +19,9 @@ import '@shared/config/defaultcomponents';
 import { PerusopetusoppiaineStore } from './stores/perusopetusoppiaineStore';
 import { TekstikappaleStore } from './stores/TekstikappaleStore';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
+import { OpintojaksoStore } from './stores/opintojaksoStore';
+import { LopsPaikallinenOppiaineStore } from './stores/lopsPaikallinenOppiaineStore';
+import { JarjestysStore } from './stores/jarjestysStore';
 
 Vue.use(VueCompositionApi);
 Vue.use(VueI18n);
@@ -33,6 +36,9 @@ Vue.directive('oikeustarkastelu', oikeustarkastelu);
 Vue.use(PortalVue);
 
 Vue.use(PerusopetusoppiaineStore, { router });
+Vue.use(OpintojaksoStore, { router });
+Vue.use(LopsPaikallinenOppiaineStore, { router });
+Vue.use(JarjestysStore, { router });
 Vue.use(TekstikappaleStore, { router });
 Vue.use(EditointiStore, { router });
 
