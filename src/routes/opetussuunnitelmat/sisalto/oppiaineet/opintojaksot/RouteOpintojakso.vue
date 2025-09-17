@@ -4,15 +4,17 @@
     <ep-editointi :store="editointiStore"
                   :versionumero="versionumero"
                   type="opintojakso">
-      <template #muokkaa-content v-if="data.tuotuOpintojakso">
-        <div class="muokkaus-esto align-self-center">
-          {{$t('et-voi-muokata-pohjan-opintojaksoa')}}
-          <div class="d-inline" v-if="data.opintojaksonOpetussuunnitelma">
-            <b-button @click="remove(data)" variant="link" id="muokkaus-esto">
-              {{ $t('poista-opintojakso') }}
-            </b-button>
+      <template #muokkaa-content="{ data }">
+        <template v-if="data.tuotuOpintojakso">
+          <div class="muokkaus-esto align-self-center">
+            {{$t('et-voi-muokata-pohjan-opintojaksoa')}}
+            <div class="d-inline" v-if="data.opintojaksonOpetussuunnitelma">
+              <b-button @click="remove(data)" variant="link" id="muokkaus-esto">
+                {{ $t('poista-opintojakso') }}
+              </b-button>
+            </div>
           </div>
-        </div>
+        </template>
       </template>
       <template #ohje>
         <div class="sidepad">
@@ -499,7 +501,6 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
   }
 
   async remove(data: any) {
-    // This method can now be simplified as the logic is in the store
     return this.editointiStore?.remove();
   }
 

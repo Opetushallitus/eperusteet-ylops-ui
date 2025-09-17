@@ -223,7 +223,6 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
   }
 
   async remove() {
-    // This method can now be simplified as the logic is in the store
     return this.editointiStore?.remove();
   }
 
