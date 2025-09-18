@@ -23,6 +23,7 @@ export class OpintojaksoStore implements IEditoitava {
     private versionumero: number,
     private store: any, // Reference to the main store
     private isUusi: boolean = false,
+    private oaUri: string,
   ) {
   }
 
@@ -45,14 +46,11 @@ export class OpintojaksoStore implements IEditoitava {
 
   async load(supportDataProvider) {
     if (this.isUusi) {
-      // Load default data for new opintojakso
       const result = defaults.opintojakso() as Lops2019OpintojaksoDto;
 
-      // Check if there's an oppiaine query parameter to pre-select
-      const oaUri = _.get(window.location, 'search.oppiaineet') as any;
-      if (oaUri) {
+      if (this.oaUri) {
         result.oppiaineet!.push({
-          koodi: oaUri,
+          koodi: this.oaUri,
           laajuus: 0,
           isPaikallinenOppiaine: false,
           isModuuliton: false,

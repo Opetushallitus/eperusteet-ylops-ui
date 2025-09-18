@@ -497,6 +497,7 @@ export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
       this.versionumero,
       (this as any).store, // Access the parent store
       this.$route.params.opintojaksoId === 'uusi',
+      _.get(this.$route, 'query.oppiaineet') as string,
     ));
   }
 
