@@ -24,6 +24,7 @@ export class LopsPaikallinenOppiaineStore implements IEditoitava {
     private versionumero: number,
     private store: any, // Reference to the main store
     private isUusi: boolean = false,
+    private oppiaineUri: string,
   ) {
   }
 
@@ -76,9 +77,8 @@ export class LopsPaikallinenOppiaineStore implements IEditoitava {
     }
 
     // Check if there's an oppiaine query parameter to pre-select
-    const oppiaineUri = _.get(window.location, 'search.oppiaine') as any;
-    if (oppiaineUri) {
-      paikallinen.perusteenOppiaineUri = oppiaineUri;
+    if (this.oppiaineUri) {
+      paikallinen.perusteenOppiaineUri = this.oppiaineUri;
     }
 
     // Initialize default structures

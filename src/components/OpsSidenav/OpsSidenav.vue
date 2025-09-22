@@ -225,7 +225,10 @@ export default class OpsSidenav extends EpOpsComponent {
         },
         route: {
           name: 'uusi-paikallinen-oppiaine',
-          params: {},
+          params: {
+            paikallinenOppiaineId: 'uusi',
+            oppiaineKoodi: source.koodi,
+          },
           query: {
             oppiaine: source.koodi,
           },
@@ -288,6 +291,7 @@ export default class OpsSidenav extends EpOpsComponent {
               .value(),
           });
         }
+
         return oppiaineLinkki(
           'oppimaara',
           oppimaara,

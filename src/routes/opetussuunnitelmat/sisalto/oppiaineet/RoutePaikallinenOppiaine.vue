@@ -40,7 +40,6 @@
           <b-col v-if="isEditing || data.perusteenOppiaineUri">
             <ep-form-content name="oppiainekoodi">
               <ep-oppiaine-selector
-                help="oppiaine-ohje"
                 v-model="data.perusteenOppiaineUri"
                 :opetussuunnitelma-store="store"
                 :is-editable="isEditing"
@@ -57,7 +56,7 @@
                   <div v-html="$t('koodiohje')"></div>
                 </EpInfoPopover>
               </div>
-              <ep-field :help="data.perusteenOppiaineUri ? 'oppimaara-koodi-ohje' : 'oppiaine-koodi-ohje'" v-model="data.koodi" :validation="validation.koodi" type="string" :is-editing="isEditing" />
+              <ep-field v-model="data.koodi" :validation="validation.koodi" type="string" :is-editing="isEditing" />
             </ep-form-content>
           </b-col>
         </b-row>
@@ -214,7 +213,8 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
       this.$route.params.paikallinenOppiaineId,
       this.versionumero,
       (this as any).store, // Access the parent store
-      this.$route.params.paikallinenOppiaineId === 'uusi' || this.$route.name === 'uusi-paikallinen-oppiaine',
+      this.$route.params.paikallinenOppiaineId === 'uusi',
+      _.get(this.$route, 'query.oppiaine') as string,
     ));
   }
 
@@ -227,7 +227,7 @@ export default class RoutePaikallinenOppiaine extends Mixins(EpRoute, EpOpsCompo
   }
 
   isUusi() {
-    return this.$route.params.paikallinenOppiaineId === 'uusi' || this.$route.name === 'uusi-paikallinen-oppiaine';
+    return this.$route.params.paikallinenOppiaineId === 'uusi';
   }
 
   get tuotuOppimaara() {

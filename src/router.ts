@@ -197,7 +197,7 @@ export const router = new Router({
           parentNavigation: 'oppiaineet',
         },
       }, {
-        path: 'poppiaineet/uusi/',
+        path: 'poppiaineet/:paikallinenOppiaineId/:oppiaineKoodi',
         component: RoutePaikallinenOppiaine,
         name: 'uusi-paikallinen-oppiaine',
       }, {
