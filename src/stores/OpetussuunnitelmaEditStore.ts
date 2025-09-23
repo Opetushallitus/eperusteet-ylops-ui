@@ -1,6 +1,6 @@
 import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
-import { computed } from '@vue/composition-api';
-import { required } from 'vuelidate/lib/validators';
+import { computed } from 'vue';
+import { required } from '@vuelidate/validators';
 import { buildKatseluUrl } from '@shared/utils/esikatselu';
 import { Kielet } from '@shared/stores/kieli';
 import * as _ from 'lodash';

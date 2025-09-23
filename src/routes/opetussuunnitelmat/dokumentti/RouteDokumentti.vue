@@ -58,183 +58,199 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, watch, onMounted } from 'vue';
 import _ from 'lodash';
-import { Component, Watch } from 'vue-property-decorator';
 import { baseURL, Dokumentit, DokumentitParams, DokumenttiDto, DokumenttiDtoTilaEnum } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { success, fail } from '@/utils/notifications';
-import { Debounced } from '@shared/utils/delay';
+import { debounced } from '@shared/utils/delay';
 import { DokumenttiKuvaDto } from '@shared/generated/ylops';
 import EpPdfDokumentti from '@shared/components/EpPdfLuonti/EpPdfDokumentti.vue';
 import EpPdfKuvalataus from '@shared/components/EpTiedosto/EpPdfKuvalataus.vue';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
+import { $fail, $kaanna, $success, $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpButton,
-    EpFormContent,
-    EpSpinner,
-    EpPdfDokumentti,
-    EpPdfKuvalataus,
-  },
-})
-export default class RouteDokumentti extends EpOpsRoute {
-  private previewUrl = null;
-  private dto: DokumenttiDto | null = null;
-  private dtoJulkaisu: DokumenttiDto | null = null;
-  private dtoKuva: DokumenttiKuvaDto | null = null;
-  private href: string | null = null;
-  private hrefJulkaisu: string | null = null;
-  private polling = false;
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  get kieli() {
-    return Kielet.getSisaltoKieli.value;
+// Use the composable
+const {
+  store,
+  ops,
+  opsId,
+  isPohja,
+  isOps,
+  isValmisPohja,
+  kasiteHandler,
+  kuvaHandler,
+  isLuva,
+} = useEpOpsRoute(props.opetussuunnitelmaStore);
+// Reactive data
+const previewUrl = ref(null);
+const dto = ref<DokumenttiDto | null>(null);
+const dtoJulkaisu = ref<DokumenttiDto | null>(null);
+const dtoKuva = ref<DokumenttiKuvaDto | null>(null);
+const href = ref<string | null>(null);
+const hrefJulkaisu = ref<string | null>(null);
+const polling = ref(false);
+
+// Computed properties
+const kieli = computed(() => {
+  return Kielet.getSisaltoKieli.value;
+});
+
+const infoClass = computed(() => {
+  if (dto.value && href.value) {
+    return 'luotu';
   }
 
-  @Watch('kieli')
-  private kieliChanged() {
-    this.init();
+  if (dto.value && dto.value.tila === _.toLower(DokumenttiDtoTilaEnum.EPAONNISTUI)) {
+    return 'epaonnistui';
   }
 
-  get infoClass() {
-    if (this.dto && this.href) {
-      return 'luotu';
-    }
+  return 'ei-luotu';
+});
 
-    if (this.dto && this.dto.tila === _.toLower(DokumenttiDtoTilaEnum.EPAONNISTUI)) {
-      return 'epaonnistui';
-    }
+const tilaFormatted = computed(() => {
+  if (dto.value) {
+    // Note: $sdt is a global utility that may need to be imported
+    return $t('dokumentti-' + _.kebabCase(dto.value.tila), {
+      valmistumisaika: dto.value.valmistumisaika ? new Date(dto.value.valmistumisaika).toLocaleString() : null,
+    });
+  }
+  else {
+    return $t('dokumentti-' + _.kebabCase(DokumenttiDtoTilaEnum.EIOLE));
+  }
+});
 
-    return 'ei-luotu';
+const opetussuunnitelmanimi = computed(() => {
+  return ops.value?.nimi;
+});
+
+const kansikuvaUrl = computed(() => {
+  return dtoKuva.value?.kansikuva ? haeKuva('kansikuva') : '';
+});
+
+const ylatunnisteUrl = computed(() => {
+  return dtoKuva.value?.ylatunniste ? haeKuva('ylatunniste') : '';
+});
+
+const alatunnisteUrl = computed(() => {
+  return dtoKuva.value?.alatunniste ? haeKuva('alatunniste') : '';
+});
+
+const tyoversioKesken = computed(() => {
+  return !!dto.value && (_.kebabCase(dto.value?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.JONOSSA) || _.kebabCase(dto.value?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.LUODAAN));
+});
+
+const julkaisuKesken = computed(() => {
+  return !!dtoJulkaisu.value && (_.kebabCase(dtoJulkaisu.value?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.JONOSSA) || _.kebabCase(dtoJulkaisu.value?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.LUODAAN));
+});
+
+// Methods
+const haeKuva = (tyyppi: string) => {
+  return baseURL + DokumentitParams.getImage(dto.value!.opsId!, tyyppi, kieli.value).url;
+};
+
+// Alustetaan komponentti
+const init = async () => {
+  previewUrl.value = null;
+  dto.value = null;
+  dtoJulkaisu.value = null;
+  dtoKuva.value = null;
+  href.value = null;
+
+  if (opsId.value) {
+    await getDokumenttiTila();
   }
 
-  get tilaFormatted() {
-    if (this.dto) {
-      return this.$t('dokumentti-' + _.kebabCase(this.dto.tila), {
-        valmistumisaika: this.dto.valmistumisaika ? (this as any).$sdt(this.dto.valmistumisaika) : null,
-      });
-    }
-    else {
-      return this.$t('dokumentti-' + _.kebabCase(DokumenttiDtoTilaEnum.EIOLE));
-    }
+  // Haetaan kuvaliitteet
+  const resKuva = await Dokumentit.getDokumenttiKuva(opsId.value, kieli.value);
+  dtoKuva.value = resKuva.data;
+};
+
+// Haetaan dokumentin tila ja päivitetään muuttujat
+// Note: Debounced decorator needs to be replaced with debounce utility
+const getDokumenttiTila = debounced(async () => {
+  await getDokumentti();
+  if (!dto.value?.julkaisuDokumentti) {
+    await getJulkaistuDokumentti();
+  }
+  await handleTilaPolling();
+}, 2000);
+
+const getJulkaistuDokumentti = async () => {
+  dtoJulkaisu.value = (await Dokumentit.getJulkaistuDokumentti(opsId.value, kieli.value)).data;
+  if (dtoJulkaisu.value.id && _.kebabCase(dtoJulkaisu.value?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
+    hrefJulkaisu.value = baseURL + DokumentitParams.get(_.toString(dtoJulkaisu.value.id)).url;
+  }
+};
+
+const getDokumentti = async () => {
+  dto.value = (await Dokumentit.getLatestDokumentti(opsId.value, kieli.value)).data;
+  if (dto.value.id && _.kebabCase(dto.value?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
+    href.value = baseURL + DokumentitParams.get(_.toString(dto.value.id)).url;
   }
 
-  // Alustetaan komponentti
-  async init() {
-    this.previewUrl = null;
-    this.dto = null;
-    this.dtoJulkaisu = null;
-    this.dtoKuva = null;
-    this.href = null;
-
-    if (this.opsId) {
-      await this.getDokumenttiTila();
-    }
-
-    // Haetaan kuvaliitteet
-    const resKuva = await Dokumentit.getDokumenttiKuva(this.opsId, this.kieli);
-    this.dtoKuva = resKuva.data;
+  if (_.kebabCase(dto.value.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)) {
+    $fail('pdf-tiedosto-luonti-epaonnistui');
   }
+};
 
-  get kansikuvaUrl() {
-    return this.dtoKuva?.kansikuva ? this.haeKuva('kansikuva') : undefined;
+const handleTilaPolling = async () => {
+  if (tyoversioKesken.value || julkaisuKesken.value) {
+    polling.value = true;
+    await getDokumenttiTila();
   }
-
-  get ylatunnisteUrl() {
-    return this.dtoKuva?.ylatunniste ? this.haeKuva('ylatunniste') : undefined;
+  else {
+    polling.value = false;
   }
+};
 
-  get alatunnisteUrl() {
-    return this.dtoKuva?.alatunniste ? this.haeKuva('alatunniste') : undefined;
+// Luodaan uusi dokumentti
+const createDocument = async () => {
+  try {
+    polling.value = true;
+    dto.value = (await Dokumentit.create(opsId.value, kieli.value)).data;
+    await getDokumenttiTila();
   }
-
-  haeKuva(tyyppi) {
-    return baseURL + DokumentitParams.getImage(this.dto!.opsId!, tyyppi, this.kieli).url;
+  catch (e) {
+    polling.value = false;
   }
+};
 
-  // Haetaan dokumentin tila ja päivitetään muuttujat
-  @Debounced(2000)
-  private async getDokumenttiTila() {
-    await this.getDokumentti();
-    if (!this.dto?.julkaisuDokumentti) {
-      await this.getJulkaistuDokumentti();
-    }
-    await this.handleTilaPolling();
+// Tallennetaan uusi kansikuva
+const saveImage = async (file: File, tyyppi: string) => {
+  if (file) {
+    dtoKuva.value = (await Dokumentit.addImage(opsId.value, tyyppi, kieli.value, file)).data;
+    $success('pdf-tiedosto-kuva-lataus-onnistui');
   }
+};
 
-  async getJulkaistuDokumentti() {
-    this.dtoJulkaisu = (await Dokumentit.getJulkaistuDokumentti(this.opsId, this.kieli)).data;
-    if (this.dtoJulkaisu.id && _.kebabCase(this.dtoJulkaisu?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
-      this.hrefJulkaisu = baseURL + DokumentitParams.get(_.toString(this.dtoJulkaisu.id)).url;
-    }
+// Poistetaan kansikuva
+const removeImage = async (tyyppi: string) => {
+  await Dokumentit.deleteImage(opsId.value, tyyppi, kieli.value);
+  $success('pdf-tiedosto-kuva-poisto-onnistui');
+  if (dtoKuva.value) {
+    dtoKuva.value[tyyppi] = undefined;
   }
+};
 
-  async getDokumentti() {
-    this.dto = (await Dokumentit.getLatestDokumentti(this.opsId, this.kieli)).data;
-    if (this.dto.id && _.kebabCase(this.dto?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.VALMIS)) {
-      this.href = baseURL + DokumentitParams.get(_.toString(this.dto.id)).url;
-    }
+// Watchers
+watch(kieli, () => {
+  init();
+});
 
-    if (_.kebabCase(this.dto.tila) === _.kebabCase(DokumenttiDtoTilaEnum.EPAONNISTUI)) {
-      fail('pdf-tiedosto-luonti-epaonnistui');
-    }
-  }
-
-  private async handleTilaPolling() {
-    if (this.tyoversioKesken || this.julkaisuKesken) {
-      this.polling = true;
-      await this.getDokumenttiTila();
-    }
-    else {
-      this.polling = false;
-    }
-  }
-
-  get tyoversioKesken() {
-    return !!this.dto && (_.kebabCase(this.dto?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.JONOSSA) || _.kebabCase(this.dto?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.LUODAAN));
-  }
-
-  get julkaisuKesken() {
-    return !!this.dtoJulkaisu && (_.kebabCase(this.dtoJulkaisu?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.JONOSSA) || _.kebabCase(this.dtoJulkaisu?.tila) === _.kebabCase(DokumenttiDtoTilaEnum.LUODAAN));
-  }
-
-  // Luodaan uusi dokumentti
-  private async createDocument() {
-    try {
-      this.polling = true;
-      this.dto = (await Dokumentit.create(this.opsId, this.kieli)).data;
-      await this.getDokumenttiTila();
-    }
-    catch (e) {
-      this.polling = false;
-    }
-  }
-
-  // Tallennetaan uusi kansikuva
-  private async saveImage(file, tyyppi) {
-    if (file) {
-      this.dtoKuva = (await Dokumentit.addImage(this.opsId, tyyppi, this.kieli, file)).data;
-      success('pdf-tiedosto-kuva-lataus-onnistui');
-    }
-  }
-
-  // Poistetaan kansikuva
-  private async removeImage(tyyppi) {
-    await Dokumentit.deleteImage(this.opsId, tyyppi, this.kieli);
-    success('pdf-tiedosto-kuva-poisto-onnistui');
-    if (this.dtoKuva) {
-      this.dtoKuva[tyyppi] = undefined;
-    }
-  }
-
-  get opetussuunnitelmanimi() {
-    return this.ops?.nimi;
-  }
-}
+// Lifecycle
+onMounted(async () => {
+  await init();
+});
 
 </script>
 

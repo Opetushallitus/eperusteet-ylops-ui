@@ -1,0 +1,249 @@
+---
+description: Vue 2 to 3 migration rules
+globs:
+alwaysApply: false
+---
+Vue component might use vue-property-decorator or vue-facing-decorator, convert component away from these correctly.
+
+Use composition API and <script setup>
+
+Always file content order is <template>, <script>, <style>
+
+<script> content order should be consistent
+
+Always follow all these rules:
+
+-------------------------------------------------
+
+Migrate old vue named slots to new vue 2.6 (or 3.0) syntax:
+
+If html-part contains slot="<slot name>" then
+  if slot name is in template-element then 
+    replace slot property with #<slot name>
+  if slot name is not a template-element then 
+    surround that element with new <template> element. That new <template> has #<slot name> with same name as the original element had. 
+    Remove slot property from original element but do not delete that element
+
+example
+
+  <div slot="testi" class="palikka>
+    tekstiä
+  </div>
+
+  becomes
+
+  <template #testi>
+    <div class="palikka>
+      tekstiä
+    </div>
+  </template
+
+-------------------------------------------------
+
+Define props like 'const props = defineProps()'
+
+-------------------------------------------------
+
+-------------------------------------------------
+
+IF component has 'value' property, change 'value' property to 'modelValue' and 'input' event to 'update:modelValue'
+
+IF component has in any form
+this.$emit('input')
+
+THEN
+
+change 'input' event to 'update:modelValue'
+
+DO NOT change v-model to :modelValue
+
+-------------------------------------------------
+
+IF component has this.$emit THEN add defineEmits
+for example:
+
+this.$emit('doStuff', data);
+
+to
+
+const emit = defineEmits(['doStuff']);
+emit('doStuff', data);
+
+-------------------------------------------------
+
+IF component has this.$refs OR $ref THEN add useTemplateRef
+for example:
+
+this.$refs.childComponent.doStuff();
+
+to
+
+import { useTemplateRef } from 'vue';
+const childComponent = useTemplateRef('childComponent');
+childComponent.doStuff();
+
+-------------------------------------------------
+
+IF component has this.$slots THEN add useSlots
+for example:
+
+this.$slots.left;
+
+to
+
+const slots = useSlots();
+slots.left;
+
+-------------------------------------------------
+
+IF component has EpValidation OR validationMixin
+
+THEN convert to use new @vuelidate/core
+
+-------------------------------------------------
+
+IF component uses instance?.proxy?.$route
+THEN get instance from useRoute() like
+
+import { useRoute } from 'vue-router';
+const route = useRoute();
+
+-------------------------------------------------
+
+IF component uses any variable which starts with this.$
+AND is configured in subdirectory eperusteet-frontend-utils/vue/src/utils/globals.ts
+
+THEN get instance from eperusteet-frontend-utils/vue/src/utils/globals.ts like
+
+import { $kaanna, $kaannaPlaceholder } from '@shared/utils/globals';
+
+-------------------------------------------------
+
+IF component uses any of these
+this.$bvModal
+
+THEN get instance from '@shared/utils/globals'
+
+-------------------------------------------------
+
+IF component uses this.$el
+
+THEN get instance from proxy like
+
+const instance = getCurrentInstance();
+const $el = getCurrentInstance()?.proxy?.el;
+
+-------------------------------------------------
+
+add trailing commas (lint), for example
+
+isEditing: {
+  type: Boolean,
+  default: false
+}
+
+to
+
+isEditing: {
+  type: Boolean,
+  default: false,
+},
+
+-------------------------------------------------
+
+IF component uses @Meta
+
+THEN change it to
+import { useHead  } from '@unhead/vue';
+
+-------------------------------------------------
+
+IF computed function is expected to return a value in computed function.eslintvue/return-in-computed-property
+but function does not, then add
+
+return undefined;
+
+for example
+
+const oppimaarat = computed(() => {
+  if (props.oppiaine) {
+    return props.oppiaine.oppimaarat;
+  }
+});
+
+to
+
+const oppimaarat = computed(() => {
+  if (props.oppiaine) {
+    return props.oppiaine.oppimaarat;
+  }
+
+  return undefined;
+});
+
+-------------------------------------------------
+
+IF styles has ::v-deep then surround deep value with :deep(),
+
+for example
+
+::v-deep .collapse-button
+
+to
+
+:deep(.collapse-button)
+
+-------------------------------------------------
+
+IF component has
+get kasiteHandler() or get kuvaHandler
+THEN
+inject using
+
+const kasiteHandler = inject('kasiteHandler');
+const kuvaHandler = inject('kuvaHandler');
+
+-------------------------------------------------
+
+ALWAYS organize imports in this order:
+1. Vue composition API imports
+2. External library imports  
+3. Component imports
+4. Store/API imports
+5. Type imports
+6. Global utilities (always last)
+
+for example:
+
+import { computed, ref, onMounted, watch } from 'vue';
+import _ from 'lodash';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import { MyStore } from '@/stores/MyStore';
+import { MyType } from '@/types';
+import { $t, $kaanna } from '@shared/utils/globals';
+
+-------------------------------------------------
+
+IF computed function is expected to return a value but doesn't in all code paths
+THEN add explicit return undefined; at the end
+
+IMPORTANT: This is only needed when there are conditional returns that might not be reached.
+
+for example:
+
+const computed = computed(() => {
+  if (condition) {
+    return someValue;
+  }
+  // Missing return here
+});
+
+to
+
+const computed = computed(() => {
+  if (condition) {
+    return someValue;
+  }
+  
+  return undefined;
+});

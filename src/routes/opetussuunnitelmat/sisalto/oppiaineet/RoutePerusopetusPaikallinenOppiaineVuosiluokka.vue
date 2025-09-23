@@ -8,7 +8,9 @@
         <h2>{{ $t('tavoitteet') }}</h2>
         <div v-for="(tavoite, idx) in data.vuosiluokka.tavoitteet" :key="idx" :class="{ 'tavoite-editing': isEditing, 'mb-3': isEditing }">
           <ep-collapse v-if="!isEditing" tyyppi="perusopetus-vuosiluokka-tavoite">
-            <h3 slot="header">{{ $kaanna(tavoite.tavoite) }}</h3>
+            <template #header>
+              <h3>{{ $kaanna(tavoite.tavoite) }}</h3>
+            </template>
 
             <template v-if="data.pohjanTavoitteet[tavoite.tunniste]">
               <h4>{{$t('pohjan-teksti')}}</h4>
@@ -58,11 +60,10 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusPaikallinenOppiaineVuosiluokkaStore } from '@/stores/perusopetusPaikallinenOppiaineVuosiluokkaStore';
@@ -73,48 +74,68 @@ import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { useEpRoute } from '@/mixins/EpRoute';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
+import { $kaanna, $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpEditointi,
-    EpCollapse,
-    EpContent,
-    EpField,
-    EpFormContent,
-    EpButton,
-  },
-})
-export default class RoutePerusopetusPaikallinenOppiaineVuosiluokka extends Mixins(EpRoute, EpOpsComponent) {
-  private editointiStore: EditointiStore | null = null;
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async init() {
-    const vuosiluokkakokonaisuus = _.head(_.filter(this.ops.vuosiluokkakokonaisuudet, vlk =>
-      vlk.vuosiluokkakokonaisuus?.id === _.toNumber(this.$route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
-    this.editointiStore = new EditointiStore(new PerusopetusPaikallinenOppiaineVuosiluokkaStore(
-      this.opsId,
-      _.toNumber(this.$route.params.oppiaineId),
-      vuosiluokkakokonaisuus,
-      _.toNumber(this.$route.params.vuosiluokkaId),
-    ));
-  }
+// Router
+const route = useRoute();
 
-  private lisaaTavoite(tavoitteet) {
-    tavoitteet.push({
-      tavoite: {
+// Use composables
+const epRoute = useEpRoute();
+const {
+  store,
+  ops,
+  opsId,
+  isPohja,
+  isOps,
+  isValmisPohja,
+  kasiteHandler,
+  kuvaHandler,
+  isLuva,
+} = useEpOpsComponent(props.opetussuunnitelmaStore);
+// Reactive data
+const editointiStore = ref<EditointiStore | null>(null);
 
+// Methods
+const lisaaTavoite = (tavoitteet: any) => {
+  tavoitteet.push({
+    tavoite: {
+
+    },
+    sisaltoalueet: [{
+      sisaltoalueet: {
+        kuvaus: {},
       },
-      sisaltoalueet: [{
-        sisaltoalueet: {
-          kuvaus: {},
-        },
-      }],
-    });
-  }
+    }],
+  });
+};
 
-  private poistaTavoite(tavoitteet, idx) {
-    tavoitteet.splice(idx, 1);
-  }
-}
+const poistaTavoite = (tavoitteet: any, idx: number) => {
+  tavoitteet.splice(idx, 1);
+};
+
+const init = async () => {
+  const vuosiluokkakokonaisuus = _.head(_.filter(ops.value?.vuosiluokkakokonaisuudet, vlk =>
+    vlk.vuosiluokkakokonaisuus?.id === _.toNumber(route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
+  editointiStore.value = new EditointiStore(new PerusopetusPaikallinenOppiaineVuosiluokkaStore(
+    opsId.value,
+    _.toNumber(route.params.oppiaineId),
+    vuosiluokkakokonaisuus,
+    _.toNumber(route.params.vuosiluokkaId),
+  ));
+};
+
+// Lifecycle
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style scoped lang="scss">

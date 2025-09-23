@@ -63,12 +63,12 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
-import { Kielet } from '@shared/stores/kieli';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpJarjesta from '@shared/components/EpJarjesta/EpJarjesta.vue';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
@@ -76,53 +76,50 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { JarjestysStore } from '@/stores/jarjestysStore';
 
-@Component({
-  components: {
-    EpButton,
-    EpEditointi,
-    EpJarjesta,
-    EpMaterialIcon,
-  },
-})
-export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
-  private tabIndex: number = 0;
-  private editointiStore: EditointiStore | null = null;
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  get isLoading() {
-    return this.editointiStore?.isLoading?.value || false;
-  }
+const { opsId, store, ops } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const route = useRoute();
 
-  async mounted() {
-    this.editointiStore = new EditointiStore(new JarjestysStore(
-      this.opsId,
-      this.versionumero,
-      (this as any).store, // Access the parent store
-      this.ops, // Pass ops data
-    ));
-  }
+const tabIndex = ref(0);
+const editointiStore = ref<EditointiStore | null>(null);
 
-  get versionumero() {
-    return _.parseInt(_.get(this, '$route.query.versionumero') as any);
-  }
+const isLoading = computed(() => {
+  return editointiStore.value?.isLoading?.value || false;
+});
 
-  allowTekstikappaleMove(event) {
-    if (event.draggedContext.element.perusteTekstikappaleId) {
-      if (event.from.classList.contains('root') && event.to.classList.contains('root')) {
-        return true;
-      }
+const versionumero = computed(() => {
+  return _.parseInt(route.query.versionumero as string);
+});
 
-      if (!event.from.classList.contains('root') && !event.to.classList.contains('root')) {
-        return true;
-      }
-    }
+onMounted(async () => {
+  editointiStore.value = new EditointiStore(new JarjestysStore(
+    opsId.value,
+    versionumero.value,
+    store.value,
+    ops.value,
+  ));
+});
 
-    if (!event.draggedContext.element.perusteTekstikappaleId) {
+const allowTekstikappaleMove = (event: any) => {
+  if (event.draggedContext.element.perusteTekstikappaleId) {
+    if (event.from.classList.contains('root') && event.to.classList.contains('root')) {
       return true;
     }
 
-    return false;
+    if (!event.from.classList.contains('root') && !event.to.classList.contains('root')) {
+      return true;
+    }
   }
-}
+
+  if (!event.draggedContext.element.perusteTekstikappaleId) {
+    return true;
+  }
+
+  return false;
+};
 </script>
 
 <style scoped lang="scss">

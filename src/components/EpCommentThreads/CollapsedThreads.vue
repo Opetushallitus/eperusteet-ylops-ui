@@ -37,64 +37,58 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { KommenttiDto } from '@shared/api/ylops';
 import { Kommentit } from '@/stores/kommentit';
 import _ from 'lodash';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpMaterialIcon,
-  },
-  name: 'CollapsedThreads',
-})
-export default class CollapsedThreads extends Vue {
-  @Prop({ required: true })
-  value!: KommenttiDto[];
+const props = defineProps<{
+  value: KommenttiDto[];
+}>();
 
-  get nimi() {
-    if (!this.first) {
-      return null;
-    }
-    return this.first?.nimi || this.first?.muokkaaja || this.$t('tuntematon-kayttaja');
+const nimi = computed(() => {
+  if (!first.value) {
+    return null;
   }
+  return first.value?.nimi || first.value?.muokkaaja || $t('tuntematon-kayttaja');
+});
 
-  get first() {
-    if (this.value) {
-      return _.first(this.value);
-    }
-    else {
-      return null;
-    }
+const first = computed(() => {
+  if (props.value) {
+    return _.first(props.value);
   }
+  else {
+    return null;
+  }
+});
 
-  get last() {
-    if (_.size(this.value) > 1) {
-      return _.last(this.value);
-    }
-    else {
-      return null;
-    }
+const last = computed(() => {
+  if (_.size(props.value) > 1) {
+    return _.last(props.value);
   }
+  else {
+    return null;
+  }
+});
 
-  get hasEllipsis() {
-    return _.size(this.value) > 2;
-  }
+const hasEllipsis = computed(() => {
+  return _.size(props.value) > 2;
+});
 
-  showThread() {
-    if (this.first?.thread) {
-      Kommentit.scrollTo(this.first.thread);
-    }
+const showThread = () => {
+  if (first.value?.thread) {
+    Kommentit.scrollTo(first.value.thread);
   }
+};
 
-  activateThread() {
-    if (this.first?.thread) {
-      Kommentit.activateThread(this.first.thread);
-    }
+const activateThread = () => {
+  if (first.value?.thread) {
+    Kommentit.activateThread(first.value.thread);
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

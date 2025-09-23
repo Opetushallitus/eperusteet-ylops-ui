@@ -1,9 +1,9 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
 import { Oppiaineet, OppiaineenVuosiluokkakokonaisuudet, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
-import { required, maxValue, minValue } from 'vuelidate/lib/validators';
+import { required, maxValue, minValue } from '@vuelidate/validators';
 
 export class VuosiluokkaistaminenStore implements IEditoitava {
   constructor(private opsId: number, private vlkId: number, private oppiaineId: number, private el, private postSave: Function) {

@@ -68,13 +68,13 @@
     </div>
     <div class="lower">
       <ep-sidebar>
-        <template slot="bar">
+        <template #bar>
           <ops-sidenav
             :opetussuunnitelma-store="store"
             :key="$route.fullPath"
             v-model="valikkoData"/>
         </template>
-        <template slot="view">
+        <template #view>
           <transition name="fade" mode="out-in">
             <!-- ep-comment-threads-->
             <router-view :key="$route.fullPath" />
@@ -86,220 +86,229 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, provide, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import _ from 'lodash';
-import { Prop, Mixins, Component, ProvideReactive } from 'vue-property-decorator';
 import { OpetussuunnitelmaKevytDtoTilaEnum } from '@shared/api/ylops';
-import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import { themes } from '@shared/utils/perusteet';
 import { LinkkiHandler, routeToNode } from '@/utils/routing';
 import { Kielet } from '@shared/stores/kieli';
-import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue';
-import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { KommenttiKahvaDtoKieliEnum } from '@shared/generated/ylops';
 import { Kommentit } from '@/stores/kommentit';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
+import { $success, $fail, $t, $kaanna, $bvModal, $vahvista } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpCommentThreads,
-    EpNavigation,
-    EpSidebar,
-    EpSpinner,
-    OpsSidenav,
-    EpButton,
-    EpValidPopover,
-    EpMaterialIcon,
-  },
-  inject: [],
-})
-export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
-  private valikkoData: any | null = null;
-  private isValidating: boolean = false;
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  protected async init() {
-    await this.store.init();
+// Router
+const router = useRouter();
 
-    if (this.store.opetussuunnitelma) {
-      this.breadcrumb('opetussuunnitelma', this.store.opetussuunnitelma.nimi, { name: 'yleisnakyma' });
+// Use the composable
+const {
+  store,
+  ops,
+  opsId,
+  isPohja,
+  isOps,
+  isValmisPohja,
+  kasiteHandler,
+  kuvaHandler,
+  isLuva,
+  breadcrumb,
+} = useEpOpsRoute(props.opetussuunnitelmaStore);
+// Reactive data
+const valikkoData = ref<any | null>(null);
+const isValidating = ref(false);
+
+// Computed properties
+const koulutustyyppi = computed(() => {
+  return ops.value?.koulutustyyppi;
+});
+
+const tyyppi = computed(() => {
+  return isPohja.value ? 'pohja' : 'opetussuunnitelma';
+});
+
+const headerStyle = computed(() => {
+  if (ops.value?.koulutustyyppi) {
+    return koulutustyyppiBanner(ops.value.koulutustyyppi);
+  }
+  return '';
+});
+
+const headerClass = computed(() => {
+  if (ops.value?.koulutustyyppi && themes[ops.value.koulutustyyppi] !== 'lukiokoulutus') {
+    return 'light';
+  }
+  return 'dark';
+});
+
+const tila = computed(() => {
+  if (julkaisut.value) {
+    if (isJulkaistu.value) {
+      return _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.JULKAISTU);
     }
+    return _.toLower(ops.value?.tila);
   }
+  return undefined;
+});
 
-  get koulutustyyppi() {
-    if (this.ops) {
-      return this.ops.koulutustyyppi;
-    }
-  }
+const isLuonnos = computed(() => {
+  return tila.value === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.LUONNOS);
+});
 
-  get tyyppi() {
-    return this.isPohja ? 'pohja' : 'opetussuunnitelma';
-  }
+const isJulkaistu = computed(() => {
+  return (_.size(julkaisut.value) > 0 || ops.value?.tila === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.JULKAISTU)) && !isArkistoitu.value;
+});
 
-  async arkistoiOps() {
-    if (await this.vahvista('arkistoi-' + this.tyyppi, 'arkistoi-kuvaus-' + this.tyyppi)) {
-      await this.store.updateTila('poistettu');
-      this.$success(this.$t('tilan-vaihto-poistettu-onnistui') as string);
-      this.$router.push({
-        name: this.tyyppi + 'Listaus',
-      });
-    }
-  }
+const isArkistoitu = computed(() => {
+  return ops.value?.tila === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.POISTETTU);
+});
 
-  get headerStyle() {
-    if (this.ops) {
-      return koulutustyyppiBanner(this.ops.koulutustyyppi!);
-    }
+const julkaisut = computed(() => {
+  return store.value.julkaisut;
+});
 
-    return '';
-  }
-
-  get headerClass() {
-    if (this.ops && themes[this.ops.koulutustyyppi!] !== 'lukiokoulutus') {
-      return 'light';
-    }
-
-    return 'dark';
-  }
-
-  get tila() {
-    if (this.julkaisut) {
-      if (this.isJulkaistu) {
-        return _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.JULKAISTU);
-      }
-
-      return _.toLower(this.ops?.tila);
-    }
-  }
-
-  get isLuonnos() {
-    return this.tila === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.LUONNOS);
-  }
-
-  get isJulkaistu() {
-    return (_.size(this.julkaisut) > 0 || this.ops?.tila === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.JULKAISTU)) && !this.isArkistoitu;
-  }
-
-  get isArkistoitu() {
-    return this.ops?.tila === _.toLower(OpetussuunnitelmaKevytDtoTilaEnum.POISTETTU);
-  }
-
-  get julkaisut() {
-    return this.store.julkaisut;
-  }
-
-  get validoinnit() {
-    if (this.store.validointi) {
-      return {
-        virheet: _.chain(this.store.validointi)
-          .map('virheet')
-          .flatMap()
-          .map('kuvaus')
-          .value(),
-        huomautukset: _.chain(this.store.validointi)
-          .map('huomautukset')
-          .flatMap()
-          .map('kuvaus')
-          .value(),
-      };
-    }
-  }
-
-  get onkoJulkaisemattomiaMuutoksia() {
-    return this.store.julkaisemattomiaMuutoksia;
-  }
-
-  async palauta() {
-    if (await this.vahvista('palauta-' + this.tyyppi, 'palauta-' + this.tyyppi + '-vahvistus')) {
-      await this.store.updateTila('luonnos');
-      this.$success(this.$t('tilan-vaihto-luonnos-onnistui') as string);
-    }
-  }
-
-  get arkistoituTyyppiTeksti() {
-    if (this.tyyppi === 'pohja') {
-      return 'voit-palauttaa-arkistoidun-pohjan-luonnostilaan';
-    }
-
-    return 'voit-palauttaa-arkistoidun-opetussuunnitelman-luonnostilaan';
-  }
-
-  public async valmistaPohja() {
-    const valmista = await this.$bvModal.msgBoxConfirm(this.$t('pohja-valmis-varmistus') as any, {
-      title: this.$t('aseta-pohja-valmiiksi') as any,
-      okVariant: 'primary',
-      okTitle: this.$t('aseta-valmiiksi') as any,
-      cancelVariant: 'link',
-      cancelTitle: this.$t('peruuta') as any,
-      centered: true,
-    });
-
-    if (valmista) {
-      try {
-        await this.store.updateTila('valmis');
-        this.$success(this.$t('tilan-vaihto-valmis-onnistui') as any);
-      }
-      catch (err) {
-        this.$fail(this.$t('tilan-vaihto-valmis-epaonnistui') as any);
-      }
-    }
-  }
-
-  async validoi() {
-    this.isValidating = true;
-    await this.store.updateValidation();
-    this.isValidating = false;
-  }
-
-  @ProvideReactive('navigation')
-  get navigation(): any {
+const validoinnit = computed(() => {
+  if (store.value.validointi) {
     return {
-      type: 'root',
-      children: this.navigationToNode(this.valikkoData),
+      virheet: _.chain(store.value.validointi)
+        .map('virheet')
+        .flatMap()
+        .map('kuvaus')
+        .value(),
+      huomautukset: _.chain(store.value.validointi)
+        .map('huomautukset')
+        .flatMap()
+        .map('kuvaus')
+        .value(),
     };
   }
+  return undefined;
+});
 
-  navigationToNode(items: any[]): any[] {
-    return _.chain(items)
-      .filter(item => !!item.item.objref?.nimi || !!item.item.i18key)
-      .map(item => {
-        return {
-          label: item.item.objref?.nimi || { [Kielet.getUiKieli.value]: _.isArray(item.item.i18key) ? _.join(_.map(item.item.i18key, key => this.$t(key)), ', ') : this.$t(item.item.i18key) },
-          children: this.navigationToNode(item.children),
-          ...routeToNode(item.route),
-        };
-      })
-      .value();
-  }
+const onkoJulkaisemattomiaMuutoksia = computed(() => {
+  return store.value.julkaisemattomiaMuutoksia;
+});
 
-  @ProvideReactive('linkkiHandler')
-  get linkkiHandler() {
-    return new LinkkiHandler();
+const arkistoituTyyppiTeksti = computed(() => {
+  if (tyyppi.value === 'pohja') {
+    return 'voit-palauttaa-arkistoidun-pohjan-luonnostilaan';
   }
+  return 'voit-palauttaa-arkistoidun-opetussuunnitelman-luonnostilaan';
+});
 
-  @ProvideReactive('kommenttiHandler')
-  get kommenttiHandler() {
-    return Kommentit;
+// Methods
+const arkistoiOps = async () => {
+  if (await $vahvista('arkistoi-' + tyyppi.value, 'arkistoi-kuvaus-' + tyyppi.value)) {
+    await store.value.updateTila('poistettu');
+    $success($t('tilan-vaihto-poistettu-onnistui'));
+    router.push({
+      name: tyyppi.value + 'Listaus',
+    });
   }
-}
+};
+
+const palauta = async () => {
+  if (await $vahvista('palauta-' + tyyppi.value, 'palauta-' + tyyppi.value + '-vahvistus')) {
+    await store.value.updateTila('luonnos');
+    $success($t('tilan-vaihto-luonnos-onnistui'));
+  }
+};
+
+const valmistaPohja = async () => {
+  const valmista = await $bvModal.msgBoxConfirm($t('pohja-valmis-varmistus'), {
+    title: $t('aseta-pohja-valmiiksi'),
+    okVariant: 'primary',
+    okTitle: $t('aseta-valmiiksi'),
+    cancelVariant: 'link',
+    cancelTitle: $t('peruuta'),
+    centered: true,
+  });
+
+  if (valmista) {
+    try {
+      await store.value.updateTila('valmis');
+      $success($t('tilan-vaihto-valmis-onnistui'));
+    }
+    catch (err) {
+      $fail($t('tilan-vaihto-valmis-epaonnistui'));
+    }
+  }
+};
+
+const validoi = async () => {
+  isValidating.value = true;
+  await store.value.updateValidation();
+  isValidating.value = false;
+};
+
+// Navigation helper
+const navigationToNode = (items: any[]): any[] => {
+  return _.chain(items)
+    .filter(item => !!item.item.objref?.nimi || !!item.item.i18key)
+    .map(item => {
+      return {
+        label: item.item.objref?.nimi || { [Kielet.getUiKieli.value]: _.isArray(item.item.i18key) ? _.join(_.map(item.item.i18key, key => $t(key)), ', ') : $t(item.item.i18key) },
+        children: navigationToNode(item.children),
+        ...routeToNode(item.route),
+      };
+    })
+    .value();
+};
+
+// Navigation computed
+const navigation = computed(() => {
+  return {
+    type: 'root',
+    children: navigationToNode(valikkoData.value),
+  };
+});
+
+// Provide reactive values
+provide('navigation', navigation);
+provide('linkkiHandler', new LinkkiHandler());
+provide('kommenttiHandler', Kommentit);
+
+// Lifecycle
+const init = async () => {
+  await store.value.init();
+
+  if (store.value.opetussuunnitelma?.nimi) {
+    breadcrumb('opetussuunnitelma', store.value.opetussuunnitelma.nimi, { name: 'yleisnakyma' });
+  }
+};
+
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style scoped lang="scss">
 @import "@shared/styles/_variables.scss";
 
-::v-deep .btn-sm {
+:deep(.btn-sm) {
   padding: 0 0 3px 0 !important;
   font-size: 1rem;
   font-weight: 600;
   color: inherit;
 }
 
-::v-deep .btn:focus {
+:deep(.btn:focus) {
   box-shadow: unset;
 }
 
@@ -343,7 +352,7 @@ export default class RouteOpetussuunnitelma extends Mixins(EpOpsRoute) {
     display: flex;
     align-items: center;
 
-    h1 ::v-deep button {
+    h1 :deep(button) {
       color: inherit;
     }
 

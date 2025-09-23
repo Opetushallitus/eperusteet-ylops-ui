@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Vue from 'vue';
+import { reactive } from 'vue';
 
 import { Lops2019Perusteet, Lops2019OppiaineDto } from '@shared/api/ylops';
 
@@ -17,7 +17,7 @@ function sortedOppiaineet(oppiaineet: Lops2019OppiaineDto[]) {
 }
 
 export class PerusteCache {
-  private static cache: any = Vue.observable({});
+  private static cache: any = reactive({});
 
   constructor(
     private opsId: number,
@@ -46,10 +46,10 @@ export class PerusteCache {
   private async init() {
     if (!PerusteCache.cache[this.opsId]) {
       const sisalto = (await Lops2019Perusteet.getAllLops2019PerusteSisalto(this.opsId)).data;
-      Vue.set(PerusteCache.cache, this.opsId, {
+      PerusteCache.cache[this.opsId] = {
         ...sisalto,
         oppiaineet: sortedOppiaineet(sisalto.oppiaineet || []),
-      });
+      };
     }
   }
 

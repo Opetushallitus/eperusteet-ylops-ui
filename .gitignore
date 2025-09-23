@@ -29,3 +29,6 @@ yarn-error.log*
 .yarn/*
 
 !./.eslintrc.js
+
+# Generated API files
+src/generated/**

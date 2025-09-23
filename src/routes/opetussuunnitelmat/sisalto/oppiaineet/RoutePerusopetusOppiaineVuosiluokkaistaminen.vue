@@ -16,7 +16,7 @@
                 <ep-button variant="link" @click="suljeAvaaKaikki()">{{$t('avaa-sulje-kaikki')}}</ep-button>
               </div>
 
-              <draggable
+              <VueDraggable
                 class="sisalto"
                 v-bind="tavoitteetOptions"
                 tag="div"
@@ -42,7 +42,7 @@
                       </div>
                     </ep-collapse>
                   </div>
-              </draggable>
+              </VueDraggable>
 
             </b-col>
 
@@ -94,131 +94,154 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, onMounted, watch, useTemplateRef } from 'vue';
+import { useRoute } from 'vue-router';
 import _ from 'lodash';
-import { Mixins, Component, Watch } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { VuosiluokkaistaminenStore } from '@/stores/vuosiluokkaistaminenStore';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import draggable from 'vuedraggable';
+import { VueDraggable } from 'vue-draggable-plus';
 import VClamp from 'vue-clamp';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpOrderColorBall from '@shared/components/EpColorIndicator/EpOrderColorBall.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { useEpRoute } from '@/mixins/EpRoute';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
+import { $kaanna, $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpEditointi,
-    VuosiluokkaSisaltoTeksti,
-    EpButton,
-    draggable,
-    VClamp,
-    EpCollapse,
-    EpOrderColorBall,
-    EpMaterialIcon,
-  },
-})
-export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins(EpRoute, EpOpsComponent) {
-  private editointiStore: EditointiStore | null = null;
-  private avaaSulje: boolean = true;
 
-  async init() {
-    this.editointiStore = new EditointiStore(new VuosiluokkaistaminenStore(
-      this.opsId, _.toNumber(this.$route.params.vlkId), _.toNumber(this.$route.params.oppiaineId), this, this.reset));
-  }
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async reset() {
-    await this.store.init();
-  }
+// Router
+const route = useRoute();
 
-  get tavoitteetOptions() {
+// Template refs
+const sisaltocollapse = useTemplateRef('sisaltocollapse');
+
+// Use composables
+const epRoute = useEpRoute();
+const {
+  store,
+  ops,
+  opsId,
+  isPohja,
+  isOps,
+  isValmisPohja,
+  kasiteHandler,
+  kuvaHandler,
+  isLuva,
+} = useEpOpsComponent(props.opetussuunnitelmaStore);
+// Reactive data
+const editointiStore = ref<EditointiStore | null>(null);
+const avaaSulje = ref(true);
+
+// Computed properties
+const defaultOptions = computed(() => {
+  return {
+    animation: 300,
+    emptyInsertThreshold: 10,
+    group: {
+      name: 'tavoitteet',
+    },
+    disabled: false,
+    forceFallback: true,
+    sort: false,
+  };
+});
+
+const tavoitteetOptions = computed(() => {
+  return {
+    ...defaultOptions.value,
+    group: {
+      ...defaultOptions.value.group,
+      pull: 'clone',
+      put: false,
+      revertClone: true,
+    },
+  };
+});
+
+const vuosiluokatOptions = computed(() => {
+  return {
+    ...defaultOptions.value,
+    draggable: false,
+    emptyInsertThreshold: 0,
+  };
+});
+
+const valitutTavoitteet = computed(() => {
+  return _.chain(editointiStore.value?.data.value.vuosiluokat)
+    .map('tavoitteet')
+    .flatten()
+    .map('tunniste')
+    .value();
+});
+
+const tavoitteet = computed(() => {
+  return _.map(editointiStore.value?.data.value?.perusteenOppiaineenVlk.tavoitteet || [], tavoite => {
     return {
-      ...this.defaultOptions,
-      group: {
-        ...this.defaultOptions.group,
-        pull: 'clone',
-        put: false,
-        revertClone: true,
-      },
+      ...tavoite,
+      valittu: _.includes(valitutTavoitteet.value, tavoite.tunniste),
     };
-  }
+  });
+});
 
-  get vuosiluokatOptions() {
-    return {
-      ...this.defaultOptions,
-      draggable: false,
-      emptyInsertThreshold: 0,
-    };
-  }
+const asettamattomatTavoitteet = computed(() => {
+  return _.size(tavoitteet.value) - _.size(_.filter(tavoitteet.value, 'valittu'));
+});
 
-  get defaultOptions() {
-    return {
-      animation: 300,
-      emptyInsertThreshold: 10,
-      group: {
-        name: 'tavoitteet',
-      },
-      disabled: false,
-      forceFallback: true,
-      sort: false,
-    };
-  }
+// Methods
+const lisaaKaikkiTavoitteet = (vuosiluokka: any) => {
+  vuosiluokka.tavoitteet = editointiStore.value?.data.value.perusteenOppiaineenVlk.tavoitteet;
+};
 
-  lisaaKaikkiTavoitteet(vuosiluokka) {
-    vuosiluokka.tavoitteet = this.editointiStore?.data.value.perusteenOppiaineenVlk.tavoitteet;
-  }
+const poistaKaikkiTavoitteet = (vuosiluokka: any) => {
+  vuosiluokka.tavoitteet = [];
+};
 
-  poistaKaikkiTavoitteet(vuosiluokka) {
-    vuosiluokka.tavoitteet = [];
-  }
+const poistaTavoite = (vuosiluokka: any, poistettavaTavoite: any) => {
+  vuosiluokka.tavoitteet = _.filter(vuosiluokka.tavoitteet, tavoite => tavoite.tunniste !== poistettavaTavoite.tunniste);
+};
 
-  poistaTavoite(vuosiluokka, poistettavaTavoite) {
-    vuosiluokka.tavoitteet = _.filter(vuosiluokka.tavoitteet, tavoite => tavoite.tunniste !== poistettavaTavoite.tunniste);
-  }
-
-  suljeAvaaKaikki() {
-    this.avaaSulje = !this.avaaSulje;
-    _.forEach(this.$refs.sisaltocollapse, (collapse: any) => {
-      collapse.toggle(this.avaaSulje);
+const suljeAvaaKaikki = () => {
+  avaaSulje.value = !avaaSulje.value;
+  if (sisaltocollapse.value) {
+    _.forEach(sisaltocollapse.value, (collapse: any) => {
+      collapse.toggle(avaaSulje.value);
     });
   }
+};
 
-  get valitutTavoitteet() {
-    return _.chain(this.editointiStore?.data.value.vuosiluokat)
-      .map('tavoitteet')
-      .flatten()
-      .map('tunniste')
-      .value();
-  }
+const reset = async () => {
+  await store.value.init();
+};
 
-  get tavoitteet() {
-    return _.map(this.editointiStore?.data.value?.perusteenOppiaineenVlk.tavoitteet || [], tavoite => {
-      return {
-        ...tavoite,
-        valittu: _.includes(this.valitutTavoitteet, tavoite.tunniste),
-      };
+const init = async () => {
+  editointiStore.value = new EditointiStore(new VuosiluokkaistaminenStore(
+    opsId.value, _.toNumber(route.params.vlkId), _.toNumber(route.params.oppiaineId), { reset }, reset));
+};
+
+// Watch for asettamattomatTavoitteet changes
+watch(asettamattomatTavoitteet, (newVal) => {
+  if (editointiStore.value) {
+    editointiStore.value.setData({
+      ...editointiStore.value.data.value,
+      asettamattomatTavoitteet: newVal,
     });
   }
+});
 
-  get asettamattomatTavoitteet() {
-    return _.size(this.tavoitteet) - _.size(_.filter(this.tavoitteet, 'valittu'));
-  }
-
-  @Watch('asettamattomatTavoitteet')
-  valittuTavoiteChange() {
-    if (this.editointiStore) {
-      this.editointiStore.setData(
-        {
-          ...this.editointiStore.data.value,
-          asettamattomatTavoitteet: _.size(this.tavoitteet) - _.size(_.filter(this.tavoitteet, 'valittu')),
-        });
-    }
-  }
-}
+// Lifecycle
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style scoped lang="scss">
@@ -232,7 +255,7 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
 
     .tavoitesisallot {
 
-      ::v-deep .btn {
+      :deep(.btn) {
           font-size: 0.8rem;
         }
 
@@ -266,7 +289,7 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
           font-size: 0.7rem;
         }
 
-        ::v-deep .ep-collapse, ::v-deep .ep-collapse .header {
+        :deep(.ep-collapse), :deep(.ep-collapse .header) {
           margin: 0;
           padding: 0;
         }
@@ -291,7 +314,7 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
         }
 
         .tuokaikki {
-          ::v-deep .btn-link .teksti {
+          :deep(.btn-link .teksti) {
             color: $black;
           }
         }
@@ -360,12 +383,12 @@ export default class RoutePerusopetusOppiaineVuosiluokkaistaminen extends Mixins
 
   }
 
-  ::v-deep .editointikontrolli .sisalto {
+  :deep(.editointikontrolli .sisalto) {
     padding: 0;
     margin: 0;
   }
 
-  ::v-deep .container {
+  :deep(.container) {
     margin-left: 0;
     margin-right: 0;
     max-width: 100%;

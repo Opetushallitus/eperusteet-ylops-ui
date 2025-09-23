@@ -46,130 +46,122 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
 import _ from 'lodash';
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { parsiEsitysnimi } from '@/stores/kayttaja';
-import { MuokkaustietoStore } from '@/stores/muokkaustieto';
-import { muokkaustietoRoute, muokkaustietoIcon, muokkaustietoUrl } from '@/utils/tapahtuma';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
+import { MuokkaustietoStore } from '@/stores/muokkaustieto';
+import { muokkaustietoRoute, muokkaustietoIcon, muokkaustietoUrl } from '@/utils/tapahtuma';
 import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
+import { $t, $kaanna, $ago } from '@shared/utils/globals';
+import { parsiEsitysnimi } from '@shared/utils/kayttaja';
 
-@Component({
-  components: {
-    EpSpinner,
-    EpButton,
-    EpMaterialIcon,
-  },
-})
-export default class OpsViimeaikainenToiminta extends Vue {
-  @Prop({ required: true })
-  private muokkaustietoStore!: MuokkaustietoStore;
+const props = defineProps<{
+  muokkaustietoStore: MuokkaustietoStore;
+  ops: OpetussuunnitelmaKevytDto;
+}>();
 
-  @Prop({ required: true })
-  private ops!: OpetussuunnitelmaKevytDto;
+const lisahaku = ref<boolean>(false);
 
-  private lisahaku: boolean = false;
+const muokkaustiedot = computed(() => {
+  return props.muokkaustietoStore.muokkaustiedot;
+});
 
-  async mounted() {
-    await this.muokkaustietoStore.update();
+const viimeinenHaku = computed(() => {
+  return props.muokkaustietoStore.viimeinenHaku;
+});
+
+const hakuLukumaara = computed(() => {
+  return props.muokkaustietoStore.hakuLukumaara;
+});
+
+const muokkaustietoKayttajanimi = (muokkaustieto: any) => {
+  if (muokkaustieto.kohde === 'peruste') {
+    return null;
   }
 
-  get muokkaustiedot() {
-    return this.muokkaustietoStore.muokkaustiedot;
+  if (muokkaustieto.kayttajanTieto) {
+    return parsiEsitysnimi(muokkaustieto.kayttajanTieto);
   }
 
-  get viimeinenHaku() {
-    return this.muokkaustietoStore.viimeinenHaku;
+  return muokkaustieto.muokkaaja;
+};
+
+const tapahtumakaannos = (muokkaustieto: any) => {
+  if (muokkaustieto.tapahtuma === 'luonti') {
+    return 'tapahtuma-' + muokkaustieto.tapahtuma + '-' + muokkaustieto.kohde;
   }
 
-  get hakuLukumaara() {
-    return this.muokkaustietoStore.hakuLukumaara;
+  return 'tapahtuma-' + muokkaustieto.tapahtuma;
+};
+
+const tapahtumakohde = (muokkaustieto: any) => {
+  return $kaanna(muokkaustieto.nimi);
+};
+
+const tapahtumateksti = (muokkaustieto: any) => {
+  if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
+    return $t('tapahtuma-paivitys-opetussuunnitelma-rakenne');
   }
 
-  async haeLisaa() {
-    this.lisahaku = true;
-    await this.muokkaustietoStore.update();
-    this.lisahaku = false;
+  if (muokkaustieto.kohde === 'oppiaineenvuosiluokka') {
+    return $t(tapahtumakaannos(muokkaustieto)) + ': ' + $t('vuosiluokka') + ' ' + $t(muokkaustieto.lisatieto);
   }
 
-  get muokkaustiedotRouted() {
-    return _.chain(this.muokkaustiedot)
-      .map((muokkaustieto) => {
-        return {
-          ...muokkaustieto,
-          route: muokkaustietoRoute(muokkaustieto.kohdeId, muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisaparametrit),
-          url: muokkaustietoUrl(muokkaustieto.kohdeId, muokkaustieto.kohde, this.ops),
-          icon: muokkaustietoIcon(muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisatieto),
-          iconClass: this.muokkaustietoIconClass(muokkaustieto),
-          kayttajaNimi: this.muokkaustietoKayttajanimi(muokkaustieto),
-          tapahtumateksti: this.tapahtumateksti(muokkaustieto),
-        };
-      })
-      .map((muokkaustieto) => {
-        return {
-          ...muokkaustieto,
-          komponentti: muokkaustieto.route ? 'router-link' : 'div',
-        };
-      })
-      .sortBy((muokkaustieto) => muokkaustieto.luotu)
-      .reverse()
-      .value();
+  if (muokkaustieto.lisatieto) {
+    return $t(muokkaustieto.lisatieto);
   }
 
-  muokkaustietoKayttajanimi(muokkaustieto) {
-    if (muokkaustieto.kohde === 'peruste') {
-      return null;
-    }
+  return $t(tapahtumakaannos(muokkaustieto)) + ': ' + tapahtumakohde(muokkaustieto);
+};
 
-    if (muokkaustieto.kayttajanTieto) {
-      return parsiEsitysnimi(muokkaustieto.kayttajanTieto);
-    }
-
-    return muokkaustieto.muokkaaja;
+const muokkaustietoIconClass = (muokkaustieto: any) => {
+  if (muokkaustieto.kohde === 'kommentti') {
+    return 'comment';
   }
 
-  tapahtumateksti(muokkaustieto) {
-    if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
-      return this.$t('tapahtuma-paivitys-opetussuunnitelma-rakenne');
-    }
-
-    if (muokkaustieto.kohde === 'oppiaineenvuosiluokka') {
-      return this.$t(this.tapahtumakaannos(muokkaustieto)) + ': ' + this.$t('vuosiluokka') + ' ' + this.$t(muokkaustieto.lisatieto);
-    }
-
-    if (muokkaustieto.lisatieto) {
-      return this.$t(muokkaustieto.lisatieto);
-    }
-
-    return this.$t(this.tapahtumakaannos(muokkaustieto)) + ': ' + this.tapahtumakohde(muokkaustieto);
+  if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
+    return 'low_priority';
   }
+  return muokkaustieto.tapahtuma;
+};
 
-  tapahtumakaannos(muokkaustieto) {
-    if (muokkaustieto.tapahtuma === 'luonti') {
-      return 'tapahtuma-' + muokkaustieto.tapahtuma + '-' + muokkaustieto.kohde;
-    }
+const muokkaustiedotRouted = computed(() => {
+  return _.chain(muokkaustiedot.value)
+    .map((muokkaustieto) => {
+      return {
+        ...muokkaustieto,
+        route: muokkaustietoRoute(muokkaustieto.kohdeId, muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisaparametrit),
+        url: muokkaustietoUrl(muokkaustieto.kohdeId, muokkaustieto.kohde, props.ops),
+        icon: muokkaustietoIcon(muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisatieto),
+        iconClass: muokkaustietoIconClass(muokkaustieto),
+        kayttajaNimi: muokkaustietoKayttajanimi(muokkaustieto),
+        tapahtumateksti: tapahtumateksti(muokkaustieto),
+      };
+    })
+    .map((muokkaustieto) => {
+      return {
+        ...muokkaustieto,
+        komponentti: muokkaustieto.route ? 'router-link' : 'div',
+      };
+    })
+    .sortBy((muokkaustieto) => muokkaustieto.luotu)
+    .reverse()
+    .value();
+});
 
-    return 'tapahtuma-' + muokkaustieto.tapahtuma;
-  }
+const haeLisaa = async () => {
+  lisahaku.value = true;
+  await props.muokkaustietoStore.update();
+  lisahaku.value = false;
+};
 
-  tapahtumakohde(muokkaustieto) {
-    return (this as any).$kaanna(muokkaustieto.nimi);
-  }
-
-  muokkaustietoIconClass(muokkaustieto) {
-    if (muokkaustieto.kohde === 'kommentti') {
-      return 'comment';
-    }
-
-    if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
-      return 'low_priority';
-    }
-    return muokkaustieto.tapahtuma;
-  }
-}
+onMounted(async () => {
+  await props.muokkaustietoStore.update();
+});
 </script>
 
 <style scoped lang="scss">

@@ -12,51 +12,51 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Lops2019OpintojaksoDto } from '@shared/api/ylops';
+<script setup lang="ts">
+import { computed } from 'vue';
 import _ from 'lodash';
+import { Lops2019OpintojaksoDto } from '@shared/api/ylops';
+import { $t, $kaanna } from '@shared/utils/globals';
 
-@Component
-export default class EpOpintojaksoSelect extends Vue {
-  @Prop({ required: false })
-  private options!: Lops2019OpintojaksoDto[];
+const props = withDefaults(
+  defineProps<{
+    options?: Lops2019OpintojaksoDto[];
+    modelValue: Lops2019OpintojaksoDto[];
+    isEditing?: boolean;
+  }>(), {
+  isEditing: false,
+});
 
-  @Prop({ required: true })
-  private value!: Lops2019OpintojaksoDto[];
+const emit = defineEmits(['update:modelValue']);
 
-  @Prop({ required: false, default: false })
-  private isEditing!: boolean;
-
-  get opintojaksot() {
-    if (!this.isEditing) {
-      return this.value;
-    }
-
-    return _.map(this.options, (option) => {
-      return {
-        ...option,
-        selected: _.includes(_.map(this.value, 'koodi'), option.koodi),
-      };
-    });
+const opintojaksot = computed(() => {
+  if (!props.isEditing) {
+    return props.modelValue;
   }
 
-  select(opintojakso) {
-    if (!this.isEditing) {
-      return;
-    }
+  return _.map(props.options, (option) => {
+    return {
+      ...option,
+      selected: _.includes(_.map(props.modelValue, 'koodi'), option.koodi),
+    };
+  });
+});
 
-    if (_.includes(_.map(this.value, 'koodi'), opintojakso.koodi)) {
-      this.$emit('input', _.filter(this.value, (oj) => oj.koodi !== opintojakso.koodi));
-    }
-    else {
-      this.$emit('input', [
-        ...this.value,
-        opintojakso,
-      ]);
-    }
+const select = (opintojakso: Lops2019OpintojaksoDto) => {
+  if (!props.isEditing) {
+    return;
   }
-}
+
+  if (_.includes(_.map(props.modelValue, 'koodi'), opintojakso.koodi)) {
+    emit('update:modelValue', _.filter(props.modelValue, (oj) => oj.koodi !== opintojakso.koodi));
+  }
+  else {
+    emit('update:modelValue', [
+      ...props.modelValue,
+      opintojakso,
+    ]);
+  }
+};
 </script>
 
 <style lang="scss" scoped>

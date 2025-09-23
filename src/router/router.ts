@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Vue from 'vue';
-import Router from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import VueMeta from 'vue-meta';
 
 import Root from '@/routes/Root.vue';
@@ -37,35 +37,43 @@ import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/
 
 import { Kielet } from '@shared/stores/kieli';
 import { getOpetussuunnitelmaService } from '@/stores/opetussuunnitelma';
-import { changeLang, resolveRouterMetaProps } from '@shared/utils/router';
+import { changeLang, convertRouteParamsToNumbers } from '@shared/utils/router';
 
 import { createLogger } from '@shared/utils/logger';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
-import { AikatauluStore } from './stores/aikataulu';
+import { AikatauluStore } from '../stores/aikataulu';
 import { Kommentit } from '@/stores/kommentit';
 import VueApexCharts from 'vue-apexcharts';
 import { getCasKayttajaKieli } from '@shared/api/common';
 import { Opetussuunnitelmat } from '@shared/api/ylops';
 import { BrowserStore } from '@shared/stores/BrowserStore';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
-
-Vue.use(Router);
-Vue.use(VueApexCharts);
-Vue.use(VueMeta, {
-  refreshOnceOnNavigation: true,
-});
-
-Vue.component('apexchart', VueApexCharts);
+import { useLoading } from 'vue-loading-overlay';
+import { loadingOptions } from '@/utils/loading';
+import { stores } from '@/stores';
 
 const logger = createLogger('Router');
 
-export const router = new Router({
-  scrollBehavior: () => ({ x: 0, y: 0 }),
+const props = (route: any) => {
+  return {
+    ...convertRouteParamsToNumbers(route.params),
+    ...convertRouteParamsToNumbers(route.query),
+    ...stores,
+  };
+};
+
+const router = createRouter({
+  history: createWebHashHistory(),
   routes: [{
+    path: '',
+    redirect: () => '/fi',
+  }, {
     path: '/',
+    redirect: () => '/fi',
   }, {
     path: '/:lang',
     component: Root,
+    props,
     children: [{
       name: 'vaihdapohja',
       path: 'admin/vaihdapohja/:opsId/:pohjaId',
@@ -81,6 +89,7 @@ export const router = new Router({
       path: '',
       name: 'root',
       component: Home,
+      props,
     }, {
       path: 'virhe',
       name: 'virhe',
@@ -124,18 +133,18 @@ export const router = new Router({
       path: 'opetussuunnitelmat/:id',
       name: 'opetussuunnitelma',
       component: RouteOpetussuunnitelma,
-      meta: {
-        resolve: {
-          cacheBy: ['id'],
-          async props(route) {
-            return {
-              default: {
-                opetussuunnitelmaStore: getOpetussuunnitelmaService(_.parseInt(route.params.id)),
-              },
-            };
-          },
-        },
-      },
+      // meta: {
+      //   resolve: {
+      //     cacheBy: ['id'],
+      //     async props(route) {
+      //       return {
+      //         default: {
+      //           opetussuunnitelmaStore: getOpetussuunnitelmaService(_.parseInt(route.params.id)),
+      //         },
+      //       };
+      //     },
+      //   },
+      // },
       children: [{
         path: 'tiedot',
         component: RouteTiedot,
@@ -144,19 +153,19 @@ export const router = new Router({
         path: 'yleisnakyma',
         component: RouteYleisnakyma,
         name: 'yleisnakyma',
-        meta: {
-          resolve: {
-            cacheBy: ['id'],
-            async props(route) {
-              return {
-                default: {
-                  muokkaustietoStore: new MuokkaustietoStore(_.parseInt(route.params.id)),
-                  aikatauluStore: new AikatauluStore(_.parseInt(route.params.id)),
-                },
-              };
-            },
-          },
-        },
+        // meta: {
+        //   resolve: {
+        //     cacheBy: ['id'],
+        //     async props(route) {
+        //       return {
+        //         default: {
+        //           muokkaustietoStore: new MuokkaustietoStore(_.parseInt(route.params.id)),
+        //           aikatauluStore: new AikatauluStore(_.parseInt(route.params.id)),
+        //         },
+        //       };
+        //     },
+        //   },
+        // },
       }, {
         path: 'julkaisu',
         component: RouteJulkaisu,
@@ -247,7 +256,7 @@ export const router = new Router({
       ],
     }],
   }, {
-    path: '*',
+    path: '/:catchAll(.*)',
     redirect: (to) => {
       logger.error('Unknown route', to);
       return {
@@ -280,6 +289,13 @@ router.beforeEach((to, from, next) => {
   else {
     next();
   }
+});
+
+router.beforeEach((to, from, next) => {
+  if (!EditointiStore.anyEditing()) {
+    loader = $loading.show();
+  }
+  next();
 });
 
 // Estetään tilan vaihtaminen muokkaustilassa
@@ -321,11 +337,23 @@ router.beforeEach((to, from, next) => {
 });
 
 router.beforeEach(async (to, from, next) => {
-  await resolveRouterMetaProps(to);
   await Kommentit.clearThread();
   next();
 });
 
+const $loading = useLoading(loadingOptions);
+let loader: any = null;
+
 router.afterEach(() => {
+  hideLoading();
   BrowserStore.changeLocation(location.href);
 });
+
+function hideLoading() {
+  if (loader !== null) {
+    (loader as any).hide();
+    loader = null;
+  }
+}
+
+export default router;

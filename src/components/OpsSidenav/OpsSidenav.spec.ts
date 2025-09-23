@@ -1,6 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import OpsSidenav from './OpsSidenav.vue';
-import { router } from '@/router';
+import { router } from '@/router/router';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';

@@ -9,92 +9,80 @@
   </component>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
-
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { Kielet } from '@shared/stores/kieli';
 import { SideMenuEntry } from '@shared/tyypit';
 
-@Component
-export default class OpsSidenavLink extends Vue {
-  @Prop()
-  private to!: any;
+const props = withDefaults(
+  defineProps<{
+    to?: any;
+    click?: any;
+    clickParams?: any;
+    tag?: string;
+    itemData?: SideMenuEntry;
+  }>(), {
+  clickParams: null,
+  tag: 'li',
+});
 
-  @Prop()
-  private click: any;
+const router = useRouter();
+const route = useRoute();
 
-  @Prop({ default: null })
-  private clickParams: any;
+const linkRoute = ref<any>(null);
 
-  @Prop({ default: 'li' })
-  private tag!: string;
+const handleClick = (e: Event) => {
+  if (props.click) {
+    props.click(props.clickParams ? props.clickParams : props.itemData);
+    e.preventDefault();
+  }
+};
 
-  @Prop()
-  private itemData!: SideMenuEntry;
-
-  private linkRoute: any = null;
-
-  mounted() {
-    if (this.to) {
-      this.resolveRoute();
-    }
+const resolveRoute = () => {
+  if (!route) {
+    return;
   }
 
-  private handleClick(e) {
-    if (this.click) {
-      this.click(this.clickParams ? this.clickParams : this.itemData);
-      e.preventDefault();
-    }
+  linkRoute.value = router.resolve({
+    name: props.to.name,
+    params: {
+      ...props.to.params,
+      lang: Kielet.getUiKieli.value,
+      id: route.params.id,
+    },
+    query: props.to.query,
+  });
+};
+
+const isExactRoute = computed(() => {
+  const path = _.get(linkRoute.value, 'resolved.path', null);
+  return (path && route.fullPath === path);
+});
+
+onMounted(() => {
+  if (props.to) {
+    resolveRoute();
   }
+});
 
-  private resolveRoute() {
-    if (!this.$route) {
-      return;
-    }
-
-    this.linkRoute = this.$router.resolve({
-      name: this.to.name,
-      params: {
-        ...this.to.params,
-        lang: Kielet.getUiKieli.value,
-        id: this.$route.params.id,
-      },
-      query: this.to.query,
-    });
-
-    this.$el.querySelectorAll('a').forEach(el => {
-      el.href = this.linkRoute.href;
-    });
+watch(route, () => {
+  // This happens for ex. when changing ui language
+  if (props.to) {
+    resolveRoute();
   }
+});
 
-  private get isExactRoute() {
-    const path = _.get(this.linkRoute, 'resolved.path', null);
-    return (path && this.$route.fullPath === path);
+watch(() => props.to, () => {
+  // This happens, when vue recycles component
+  if (props.to) {
+    resolveRoute();
   }
-
-  @Watch('$route')
-  onRouteChange(to, from) {
-    // This happens for ex. when changing ui language
-    if (this.to) {
-      this.resolveRoute();
-    }
+  else {
+    linkRoute.value = null;
   }
-
-  @Watch('to')
-  onToChange(to, from) {
-    // This happens, when vue recycles component
-    if (this.to) {
-      this.resolveRoute();
-    }
-    else {
-      this.linkRoute = null;
-      this.$el.querySelectorAll('a').forEach(el => {
-        el.removeAttribute('href');
-      });
-    }
-  }
-}
+});
 </script>
 
 <style scoped lang="scss">

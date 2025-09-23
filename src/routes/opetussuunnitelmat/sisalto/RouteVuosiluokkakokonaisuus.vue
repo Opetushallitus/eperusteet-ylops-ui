@@ -121,78 +121,88 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
-import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
-import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
-import VuosiluokkaSisaltoTeksti from './VuosiluokkaSisaltoTeksti.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
+import VuosiluokkaSisaltoTeksti from './VuosiluokkaSisaltoTeksti.vue';
+import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
+import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
 import { Kielet } from '@shared/stores/kieli';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { $kaanna, $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpCollapse,
-    EpContent,
-    EpButton,
-    EpAlert,
-    EpEditointi,
-    VuosiluokkaSisaltoTeksti,
-  },
-})
-export default class RouteVuosiluokkakokonaisuus extends Mixins(EpRoute, EpOpsComponent) {
-  private editointiStore: EditointiStore | null = null;
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async init() {
-    const scrollId = this.$route.hash ? 'laajaalainen' + this.$route.hash.replace('#', '') : null;
-    this.editointiStore = new EditointiStore(new VuosiluokkakokonaisuusStore(this.opsId, _.toNumber(this.$route.params.vlkId), scrollId, this, this.muokkaa));
+// Use composables
+const route = useRoute();
+const { store, opsId } = useEpOpsComponent(props.opetussuunnitelmaStore);
+
+// Component state
+const editointiStore = ref<EditointiStore | null>(null);
+
+// Computed properties
+const vlk = computed(() => {
+  return editointiStore.value?.data.value.vlk;
+});
+
+const perusteenVlkVapaatTekstit = computed(() => {
+  return _.map(editointiStore.value?.data.value.perusteenVlk.vapaatTekstit || {}, vlkVt => {
+    return {
+      ...vlkVt,
+      hasPaikallinenTarkennus: _.some(vlk.value?.vapaatTekstit, vt => vlkVt.id === vt.perusteenVapaaTekstiId),
+    };
+  });
+});
+
+const perusteenVlkByLaoTunniste = computed(() => {
+  return _.keyBy(editointiStore.value?.data.value.perusteenVlk.laajaalaisetosaamiset, '_laajaalainenosaaminen');
+});
+
+const muokkaa = computed(() => {
+  return _.has(route.query, 'muokkaa');
+});
+
+// Methods
+const init = async () => {
+  const scrollId = route.hash ? 'laajaalainen' + route.hash.replace('#', '') : null;
+  const componentRef = { resetOps };
+  editointiStore.value = new EditointiStore(new VuosiluokkakokonaisuusStore(opsId.value, _.toNumber(route.params.vlkId), scrollId, componentRef, muokkaa.value));
+};
+
+const resetOps = async () => {
+  await store.value.init();
+};
+
+const lisaaPaikallinenTarkennus = (vlkParam, id) => {
+  if (!vlkParam.vapaatTekstit) {
+    vlkParam.vapaatTekstit = [];
   }
+  vlkParam.vapaatTekstit.push({
+    perusteenVapaaTekstiId: id,
+    paikallinenTarkennus: {
+      [Kielet.getSisaltoKieli.value]: '',
+    },
+  });
+};
 
-  async resetOps() {
-    await this.store.init();
-  }
+const poistaPaikallinenTarkennus = (vlkParam, vapaatekstiId) => {
+  vlkParam.vapaatTekstit = _.filter(vlkParam.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
+};
 
-  get vlk() {
-    return this.editointiStore?.data.value.vlk;
-  }
-
-  get perusteenVlkVapaatTekstit() {
-    return _.map(this.editointiStore?.data.value.perusteenVlk.vapaatTekstit || {}, vlkVt => {
-      return {
-        ...vlkVt,
-        hasPaikallinenTarkennus: _.some(this.vlk.vapaatTekstit, vt => vlkVt.id === vt.perusteenVapaaTekstiId),
-      };
-    });
-  }
-
-  lisaaPaikallinenTarkennus(vlk, id) {
-    if (!vlk.vapaatTekstit) {
-      vlk.vapaatTekstit = [];
-    }
-    vlk.vapaatTekstit.push(
-      { perusteenVapaaTekstiId: id,
-        paikallinenTarkennus: Kielet.haeLokalisoituOlio(''),
-      });
-  }
-
-  poistaPaikallinenTarkennus(vlk, vapaatekstiId) {
-    vlk.vapaatTekstit = _.filter(vlk.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
-  }
-
-  get perusteenVlkByLaoTunniste() {
-    return _.keyBy(this.editointiStore?.data.value.perusteenVlk.laajaalaisetosaamiset, '_laajaalainenosaaminen');
-  }
-
-  get muokkaa() {
-    return _.has(this.$route.query, 'muokkaa');
-  }
-}
+// Lifecycle
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style scoped lang="scss">

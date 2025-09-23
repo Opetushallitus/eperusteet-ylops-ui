@@ -49,25 +49,19 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed } from 'vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpNaytaKaikki from '@shared/components/EpNaytaKaikki/EpNaytaKaikki.vue';
+import { $kaanna } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpNaytaKaikki,
-    EpMaterialIcon,
-  },
-})
-export default class OpsPohjat extends Vue {
-  @Prop({ required: true })
-  private ops!: any;
+const props = defineProps<{
+  ops: any;
+}>();
 
-  get perityvatPohjatCount() {
-    return this.ops.periytyvatPohjat?.length || 0;
-  }
-}
+const perityvatPohjatCount = computed(() => {
+  return props.ops.periytyvatPohjat?.length || 0;
+});
 </script>
 
 <style scoped lang="scss">
@@ -76,7 +70,7 @@ export default class OpsPohjat extends Vue {
   font-weight: 600;
 }
 
-::v-deep .row {
+:deep(.row) {
   padding: 0 15px;
 }
 </style>

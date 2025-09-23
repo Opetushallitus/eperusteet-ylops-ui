@@ -27,7 +27,7 @@
                  :items="tekstikappaleet"
                  :is-editing="true"
                  :enable-empty-option="tyhjaValinta">
-        <template slot-scope="{ item }">
+        <template #default="{ item }">
           {{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}
         </template>
       </ep-select>
@@ -46,65 +46,63 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Prop, Component, Mixins } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
+import { ref, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import { Puu } from '@shared/api/ylops';
 import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-@Component({
-  components: {
-    EpButton,
-    EpField,
-    EpSelect,
-    EpFormContent,
-  },
-})
-export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponent) {
-  private otsikko: LokalisoituTekstiDto = {};
-  private valittuTekstikappale: any = {};
-  private tallentaa = false;
+const props = withDefaults(
+  defineProps<{
+    tekstikappaleet: SideMenuEntry[];
+    tyhjaValinta?: boolean;
+    opetussuunnitelmaStore: OpetussuunnitelmaStore;
+  }>(), {
+  tyhjaValinta: false,
+});
 
-  @Prop({ required: true })
-  private tekstikappaleet!: SideMenuEntry[];
+const { store } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const route = useRoute();
+const router = useRouter();
 
-  @Prop({ required: false, type: Boolean, default: false })
-  private tyhjaValinta!: boolean;
+const otsikko = ref<LokalisoituTekstiDto>({});
+const valittuTekstikappale = ref<any>({});
+const tallentaa = ref(false);
 
-  get okDisabled() {
-    return _.isEmpty(this.otsikko);
-  }
+const okDisabled = computed(() => {
+  return _.isEmpty(otsikko.value);
+});
 
-  async save() {
-    const newTekstikappale = {
-      tekstiKappale: {
-        nimi: this.otsikko,
-      },
-    };
+const save = async () => {
+  const newTekstikappale = {
+    tekstiKappale: {
+      nimi: otsikko.value,
+    },
+  };
 
-    this.tallentaa = true;
-    const uusi = await this.store.addTeksti(newTekstikappale as Puu, this.valittuTekstikappale?.route?.params?.osaId);
+  tallentaa.value = true;
+  const uusi = await store.value.addTeksti(newTekstikappale as Puu, valittuTekstikappale.value?.route?.params?.osaId);
 
-    this.$router.push({
-      name: 'tekstikappale',
-      params: {
-        ...this.$route.params,
-        osaId: '' + uusi.id,
-      },
-    });
-  }
+  router.push({
+    name: 'tekstikappale',
+    params: {
+      ...route.params,
+      osaId: '' + uusi.id,
+    },
+  });
+};
 
-  clear() {
-    this.otsikko = {};
-    this.valittuTekstikappale = {};
-  }
-}
+const clear = () => {
+  otsikko.value = {};
+  valittuTekstikappale.value = {};
+};
 
 </script>
 

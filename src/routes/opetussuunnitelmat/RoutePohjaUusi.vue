@@ -1,6 +1,6 @@
 <template>
   <ep-main-view>
-    <template slot="header">
+    <template #header>
       <h1>{{ $t('uusi-pohja') }}</h1>
     </template>
     <div>
@@ -11,7 +11,7 @@
     <div v-if="valittavat.length > 0">
       <ep-form-content name="peruste">
         <ep-select help="ops-peruste-ohje" v-model="uusi.valittuPeruste" :items="valittavat" :validation="$v.uusi.valittuPeruste" :is-editing="true">
-          <template slot-scope="{ item }">
+          <template #default="{ item }">
             {{ $kaanna(item.nimi) }} ({{ item.diaarinumero }})
           </template>
         </ep-select>
@@ -24,18 +24,11 @@
   </ep-main-view>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
 import _ from 'lodash';
-import { Component, Prop, Mixins } from 'vue-property-decorator';
-import { Ulkopuoliset, Opetussuunnitelmat,
-  PerusteInfoDto,
-  OpetussuunnitelmaLuontiDto,
-} from '@shared/api/ylops';
-import { pohjaLuontiValidator } from '@/validators/ops';
-import { isPerusteSupported } from '@/utils/perusteet';
-import { createLogger } from '@shared/utils/logger';
-import { success } from '@/utils/notifications';
-import { Kieli } from '@shared/tyypit';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -43,87 +36,82 @@ import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpRoute from '@/mixins/EpRoute';
-import EpValidation from '@shared/mixins/EpValidation';
+import { Ulkopuoliset, Opetussuunnitelmat, PerusteInfoDto, OpetussuunnitelmaLuontiDto } from '@shared/api/ylops';
+import { pohjaLuontiValidator } from '@/validators/ops';
+import { isPerusteSupported } from '@/utils/perusteet';
+import { createLogger } from '@shared/utils/logger';
+import { success } from '@/utils/notifications';
+import { Kieli } from '@shared/tyypit';
+import { $t, $kaanna } from '@shared/utils/globals';
 
 const logger = createLogger('RoutePohjaUusi');
+const router = useRouter();
 
-@Component({
-  components: {
-    EpButton,
-    EpField,
-    EpFormContent,
-    EpMainView,
-    EpNavigation,
-    EpSelect,
-    EpSpinner,
-  },
-})
-export default class RoutePohjaUusi extends Mixins(EpRoute, EpValidation) {
-  private isSaving = false;
-  private perusteet: PerusteInfoDto[] = [];
-  private uusi = {
-    valittuPeruste: null as (PerusteInfoDto | null),
-    nimi: {},
+const isSaving = ref(false);
+const perusteet = ref<PerusteInfoDto[]>([]);
+const uusi = ref({
+  valittuPeruste: null as (PerusteInfoDto | null),
+  nimi: {},
+});
+
+const validationConfig = computed(() => {
+  return {
+    uusi: pohjaLuontiValidator([]),
   };
+});
 
-  get validationConfig() {
-    return {
-      uusi: pohjaLuontiValidator([]),
+const $v = useVuelidate(validationConfig, { uusi });
+
+const steps = computed(() => {
+  return [{
+    name: 'wizard-peruste',
+  }, {
+    name: 'wizard-nimi',
+  }];
+});
+
+const valittavat = computed(() => {
+  return _(perusteet.value)
+    .filter((peruste) => isPerusteSupported(peruste))
+    .sortBy((peruste) => _.toLower($kaanna(peruste.nimi)))
+    .value();
+});
+
+const valitsePeruste = (peruste: PerusteInfoDto) => {
+  uusi.value.valittuPeruste = peruste;
+};
+
+const luoUusiPeruste = async () => {
+  isSaving.value = true;
+
+  try {
+    const pohja: OpetussuunnitelmaLuontiDto = {
+      nimi: uusi.value.nimi,
+      perusteenDiaarinumero: uusi.value.valittuPeruste!.diaarinumero,
+      julkaisukielet: [Kieli.fi, Kieli.sv] as any,
+      tyyppi: 'pohja' as any,
     };
-  }
 
-  get steps() {
-    return [{
-      name: 'wizard-peruste',
-    }, {
-      name: 'wizard-nimi',
-    }];
-  }
-
-  public async mounted() {
-    this.perusteet = (await Ulkopuoliset.getPerusteet()).data;
-  }
-
-  private get valittavat() {
-    return _(this.perusteet)
-      .filter((peruste) => isPerusteSupported(peruste))
-      .sortBy((peruste) => _.toLower((this as any).$kaanna(peruste.nimi)))
-      .value();
-  }
-
-  private valitsePeruste(peruste: PerusteInfoDto) {
-    this.uusi.valittuPeruste = peruste;
-  }
-
-  private async luoUusiPeruste() {
-    this.isSaving = true;
-
-    try {
-      const pohja: OpetussuunnitelmaLuontiDto = {
-        nimi: this.uusi.nimi,
-        perusteenDiaarinumero: this.uusi.valittuPeruste!.diaarinumero,
-        julkaisukielet: [Kieli.fi, Kieli.sv] as any,
-        tyyppi: 'pohja' as any,
-      };
-
-      const data = (await Opetussuunnitelmat.addOpetussuunnitelma(pohja)).data;
-      success('lisays-pohja-onnistui');
-      if (_.isNumber(data.id)) {
-        this.$router.replace({
-          name: 'yleisnakyma',
-          params: {
-            id: '' + data.id,
-          },
-        });
-      }
-    }
-    catch (err) {
-      logger.log(err);
-      this.isSaving = false;
+    const data = (await Opetussuunnitelmat.addOpetussuunnitelma(pohja)).data;
+    success('lisays-pohja-onnistui');
+    if (_.isNumber(data.id)) {
+      router.replace({
+        name: 'yleisnakyma',
+        params: {
+          id: '' + data.id,
+        },
+      });
     }
   }
-}
+  catch (err) {
+    logger.log(err);
+    isSaving.value = false;
+  }
+};
+
+onMounted(async () => {
+  perusteet.value = (await Ulkopuoliset.getPerusteet()).data;
+});
 
 </script>
 

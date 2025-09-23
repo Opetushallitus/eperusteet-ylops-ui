@@ -128,7 +128,7 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
@@ -137,9 +137,9 @@ import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
-import EpOpsRoute from '@/mixins/EpOpsRoute';
+import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
-import { Component, Watch } from 'vue-property-decorator';
+import { ref, computed, watch, onMounted } from 'vue';
 import { opsTiedotValidator } from '@/validators/ops';
 import { Kielet } from '@shared/stores/kieli';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
@@ -151,99 +151,83 @@ import EpJulkaisuLista from '@shared/components/EpJulkaisuHistoriaJulkinen/EpJul
 import OpsPohjat from '@/routes/opetussuunnitelmat/tiedot/OpsPohjat.vue';
 import EpEsikatselu from '@shared/components/EpEsikatselu/EpEsikatselu.vue';
 import { OpetussuunnitelmaEditStore } from '../../../stores/OpetussuunnitelmaEditStore';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { $t, $kaanna, $bvModal } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    OpsPohjat,
-    EpJulkaisuLista,
-    EpCollapse,
-    EpContent,
-    EpDatepicker,
-    EpEditointi,
-    EpField,
-    EpFormContent,
-    EpSelect,
-    EpToggle,
-    EpExternalLink,
-    EpOrganizations,
-    EpMaterialIcon,
-    EpEsikatselu,
-  },
-})
-export default class RouteTiedot extends EpOpsRoute {
-  private editStore: EditointiStore | null = null;
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async mounted() {
-    this.editStore = new EditointiStore(new OpetussuunnitelmaEditStore(this.opsId, this.$kaanna));
-  }
+const { opsId, ops, store } = useEpOpsRoute(props.opetussuunnitelmaStore);
 
-  get hasContentFilters() {
-    return this.features.opintojaksot;
-  }
+const editStore = ref<EditointiStore | null>(null);
 
-  get features() {
-    const koulutustyyppi = this.ops?.koulutustyyppi;
-    return {
-      opintojaksot: koulutustyyppi && isLukio(koulutustyyppi),
-      oppimaarat: koulutustyyppi && isLukio(koulutustyyppi),
-    };
-  }
+onMounted(async () => {
+  editStore.value = new EditointiStore(new OpetussuunnitelmaEditStore(opsId.value, $kaanna));
+});
 
-  private get kielet() {
-    return ['fi', 'sv', 'en'];
-  }
+const hasContentFilters = computed(() => {
+  return features.value.opintojaksot;
+});
 
-  get kieli() {
-    return Kielet.getSisaltoKieli.value;
-  }
+const features = computed(() => {
+  const koulutustyyppi = ops.value?.koulutustyyppi;
+  return {
+    opintojaksot: koulutustyyppi && isLukio(koulutustyyppi),
+    oppimaarat: koulutustyyppi && isLukio(koulutustyyppi),
+  };
+});
 
-  get kunnatJaOrganisaatiotSorted() {
-    return _.sortBy(
-      [
-        ...(this.storeData?.kunnat ? this.storeData.kunnat : []),
-        ...(this.storeData?.organisaatiot ? this.storeData.organisaatiot : []),
-      ], (org: any) => this.$kaanna(org.nimi),
-    );
-  }
+const kielet = computed(() => {
+  return ['fi', 'sv', 'en'];
+});
 
-  private async confirm() {
-    if (this.storeData?.toteutus === 'perusopetus') {
-      const vanhatVlkTunnisteet = _.map(this.storeData?.oldVuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste'));
-      const uudetVlkTunnisteet = _.map(this.storeData?.vuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste'));
+const kieli = computed(() => {
+  return Kielet.getSisaltoKieli.value;
+});
 
-      if (!_.every(vanhatVlkTunnisteet, vanhaTunniste => _.includes(uudetVlkTunnisteet, vanhaTunniste))) {
-        return this.$bvModal.msgBoxConfirm((this.$t('vahvista-vuosiluokkakokonaisuudet-muokkaus-teksti') as any), {
-          title: this.$t('vahvista-vuosiluokkakokonaisuudet-muokkaus-otsikko'),
-          okVariant: 'primary',
-          okTitle: this.$t('tallenna') as any,
-          cancelVariant: 'link',
-          cancelTitle: this.$t('peruuta') as any,
-          centered: true,
-          ...{} as any,
-        });
-      }
+const kunnatJaOrganisaatiotSorted = computed(() => {
+  return _.sortBy(
+    [
+      ...(storeData.value?.kunnat ? storeData.value.kunnat : []),
+      ...(storeData.value?.organisaatiot ? storeData.value.organisaatiot : []),
+    ], (org: any) => $kaanna(org.nimi),
+  );
+});
+
+const confirm = async () => {
+  if (storeData.value?.toteutus === 'perusopetus') {
+    const vanhatVlkTunnisteet = _.map(storeData.value?.oldVuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste'));
+    const uudetVlkTunnisteet = _.map(storeData.value?.vuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste'));
+
+    if (!_.every(vanhatVlkTunnisteet, vanhaTunniste => _.includes(uudetVlkTunnisteet, vanhaTunniste))) {
+      return $bvModal.msgBoxConfirm($t('vahvista-vuosiluokkakokonaisuudet-muokkaus-teksti') as any, {
+        title: $t('vahvista-vuosiluokkakokonaisuudet-muokkaus-otsikko'),
+        okVariant: 'primary',
+        okTitle: $t('tallenna') as any,
+        cancelVariant: 'link',
+        cancelTitle: $t('peruuta') as any,
+        centered: true,
+        ...{} as any,
+      });
     }
-
-    return true;
   }
 
-  get storeData() {
-    return this.editStore?.data.value;
-  }
+  return true;
+};
 
-  set storeData(data) {
-    this.editStore?.setData(data);
-  }
+const storeData = computed({
+  get: () => editStore.value?.data.value,
+  set: (data) => editStore.value?.setData(data)
+});
 
-  get nimi() {
-    return this.storeData?.nimi;
-  }
+const nimi = computed(() => {
+  return storeData.value?.nimi;
+});
 
-  @Watch('nimi')
-  async onNimiChange() {
-    this.store.setOpetussuunnitelmaNimi(this.nimi);
-  }
-}
+watch(nimi, async () => {
+  store.value.setOpetussuunnitelmaNimi(nimi.value);
+});
 </script>
 
 <style scoped lang="scss">
@@ -251,18 +235,18 @@ export default class RouteTiedot extends EpOpsRoute {
 .otsikko {
     margin-bottom: 0;
 }
-::v-deep .linkki a {
+:deep(.linkki a) {
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-all;
   white-space: normal;
 }
 
-::v-deep .ep-collapse .header {
+:deep(.ep-collapse .header) {
   color: #3367E3;
 }
 
-::v-deep .ml-auto {
+:deep(.ml-auto) {
   margin-left: 0 !important;
 }
 

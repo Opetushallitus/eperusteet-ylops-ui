@@ -1,42 +1,41 @@
 import _ from 'lodash';
-import { State, Store } from '@shared/stores/store';
+import { reactive, computed } from 'vue';
 import { MuokkaustietoKayttajallaDto, Muokkaustieto } from '@shared/api/ylops';
 
-@Store
 export class MuokkaustietoStore {
-  @State()
-  public opsId: number;
+  private state = reactive({
+    opsId: 0,
+    muokkaustiedot: null as MuokkaustietoKayttajallaDto[] | null,
+    viimeinenHaku: null as MuokkaustietoKayttajallaDto[] | null,
+    hakuLukumaara: 8,
+  });
 
-  @State()
-  public muokkaustiedot: MuokkaustietoKayttajallaDto[] | null = null;
-
-  @State()
-  public viimeinenHaku: MuokkaustietoKayttajallaDto[] | null = null;
-
-  @State()
-  public hakuLukumaara = 8;
+  public readonly opsId = computed(() => this.state.opsId);
+  public readonly muokkaustiedot = computed(() => this.state.muokkaustiedot);
+  public readonly viimeinenHaku = computed(() => this.state.viimeinenHaku);
+  public readonly hakuLukumaara = computed(() => this.state.hakuLukumaara);
 
   constructor(opsId: number) {
-    this.opsId = opsId;
+    this.state.opsId = opsId;
   }
 
   public async update() {
-    if (this.muokkaustiedot && !_.isEmpty(this.muokkaustiedot)) {
-      this.viimeinenHaku = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.opsId!, (_.last(this.muokkaustiedot) as any).luotu, this.hakuLukumaara) as any).data;
+    if (this.state.muokkaustiedot && !_.isEmpty(this.state.muokkaustiedot)) {
+      this.state.viimeinenHaku = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.state.opsId!, (_.last(this.state.muokkaustiedot) as any).luotu, this.state.hakuLukumaara) as any).data;
 
-      if (this.viimeinenHaku) {
-        this.muokkaustiedot = [
-          ...this.muokkaustiedot,
-          ...this.viimeinenHaku,
+      if (this.state.viimeinenHaku) {
+        this.state.muokkaustiedot = [
+          ...this.state.muokkaustiedot,
+          ...this.state.viimeinenHaku,
         ];
       }
     }
     else {
-      this.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.opsId, undefined, this.hakuLukumaara) as any).data;
+      this.state.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.state.opsId, undefined, this.state.hakuLukumaara) as any).data;
     }
   }
 
   public async init() {
-    this.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.opsId, undefined, this.hakuLukumaara) as any).data;
+    this.state.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.state.opsId, undefined, this.state.hakuLukumaara) as any).data;
   }
 }

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
 
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokat, OppiaineenVuosiluokkaDto } from '@shared/api/ylops';

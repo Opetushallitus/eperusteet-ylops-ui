@@ -44,7 +44,9 @@
       <div v-for="(validointi, idx) in validoinnit" :key="'validointi'+idx">
         <ep-collapse v-if="validointi.virheet.length > 0 || validointi.huomautukset.length > 0"
                      :borderBottom="false">
-          <h3 slot="header">{{ $t(validointi.kategoria) }}</h3>
+          <template #header>
+            <h3>{{ $t(validointi.kategoria) }}</h3>
+          </template>
           <EpJulkaisuValidointi :validointi="validointi" />
         </ep-collapse>
       </div>
@@ -118,8 +120,10 @@
     </div>
 
     <EpJulkaisuHistoria :julkaisut="julkaisuhistoria" :palauta="palautaJulkaisu">
-      <div slot="empty">{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
-      <template slot="katsele" slot-scope="{ julkaisu }">
+      <template #empty>
+        <div>{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
+      </template>
+      <template #katsele="{ julkaisu }">
           <ep-external-link v-if="julkaisu" :url="opintopolkuKatseluUrl(julkaisu)">
             {{$t('katsele')}}
           </ep-external-link>
@@ -129,12 +133,11 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, onMounted, inject } from 'vue';
 import _ from 'lodash';
-import { Component } from 'vue-property-decorator';
 import { UusiJulkaisuDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-import EpOpsRoute from '@/mixins/EpOpsRoute';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
@@ -144,156 +147,161 @@ import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpJulkaisuHistoria from '@shared/components/EpJulkaisuHistoria/EpJulkaisuHistoria.vue';
-import { buildEsikatseluUrl, buildKatseluUrl } from '@shared/utils/esikatselu';
-import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import EpJulkaisuButton from '@shared/components/EpJulkaisuButton/EpJulkaisuButton.vue';
 import EpJulkaisuValidointi from '@shared/components/EpJulkaisuValidointi/EpJulkaisuValidointi.vue';
-import { nodeToRoute } from '@/utils/routing';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { buildEsikatseluUrl, buildKatseluUrl } from '@shared/utils/esikatselu';
+import { koulutustyyppiTheme } from '@shared/utils/perusteet';
+import { nodeToRoute } from '@/utils/routing';
+import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
+import { success as $success, fail as $fail } from '@/utils/notifications';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-@Component({
-  components: {
-    EpButton,
-    EpCollapse,
-    EpContent,
-    EpDatepicker,
-    EpField,
-    EpFormContent,
-    EpSelect,
-    EpSpinner,
-    EpJulkaisuHistoria,
-    EpExternalLink,
-    EpJulkaisuButton,
-    EpJulkaisuValidointi,
-    EpMaterialIcon,
-  },
-})
-export default class RouteJulkaisu extends EpOpsRoute {
-  private uusiJulkaisu: UusiJulkaisuDto = {
-    julkaisutiedote: {},
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
+
+// Use the composable
+const {
+  store,
+  ops,
+  opsId,
+  isPohja,
+  isOps,
+  isValmisPohja,
+  kasiteHandler,
+  kuvaHandler,
+  isLuva,
+} = useEpOpsRoute(props.opetussuunnitelmaStore);
+// Reactive data
+const uusiJulkaisu = ref<UusiJulkaisuDto>({
+  julkaisutiedote: {},
+});
+
+const hallintaLoading = ref(false);
+
+// Lifecycle
+onMounted(async () => {
+  await store.value.updateValidation();
+});
+
+// Computed properties
+const graph = computed(() => {
+  return {
+    colorScheme: 'vihrea_sininen',
+    value: 80,
   };
+});
 
-  private hallintaLoading: boolean = false;
+const nimi = computed(() => {
+  return ops.value.nimi;
+});
 
-  async init() {
-    await this.store.updateValidation();
+const kielet = computed(() => {
+  return UiKielet;
+});
+
+const sisaltoKieli = computed(() => {
+  return Kielet.getSisaltoKieli.value;
+});
+
+const julkaisuhistoria = computed(() => {
+  return julkaisut.value;
+});
+
+const isValid = computed(() => {
+  return _.every(validoinnit.value, validointi => _.isEmpty(validointi.virheet));
+});
+
+// Methods
+const mapValidointiRoute = (validointi: any) => {
+  return {
+    route: {
+      name: _.get(validointi, 'meta.route.type'),
+      params: _.get(validointi, 'meta.route.meta'),
+    },
+  };
+};
+
+const listNodeToRoute = (list: any[]) => {
+  return _.map(list, item => ({ ...item, route: nodeToRoute(item.navigationNode) }));
+};
+
+const validoinnit = computed(() => {
+  if (store.value.validointi) {
+    return _.map(store.value.validointi, validointi => {
+      return {
+        ...validointi,
+        virheet: listNodeToRoute(validointi.virheet),
+        huomautukset: listNodeToRoute(validointi.huomautukset),
+        huomiot: listNodeToRoute(validointi.huomiot),
+      };
+    });
   }
+  return undefined;
+});
 
-  get graph() {
-    return {
-      colorScheme: 'vihrea_sininen',
-      value: 80,
-    };
+const validating = computed(() => {
+  return !store.value.validointi;
+});
+
+const julkaisut = computed(() => {
+  return store.value.julkaisut;
+});
+
+const julkaise = async () => {
+  try {
+    await store.value.julkaise(uusiJulkaisu.value);
+    uusiJulkaisu.value.julkaisutiedote = {};
+    $success('julkaisu-kaynnistetty');
   }
-
-  get nimi() {
-    return this.ops.nimi;
+  catch (err) {
+    $fail('julkaisu-epaonnistui');
   }
+};
 
-  get kielet() {
-    return UiKielet;
+const esikatseluUrl = computed(() => {
+  return buildEsikatseluUrl(kieli.value, `/opetussuunnitelma/${ops.value.id}`, `/${koulutustyyppiTheme(ops.value.koulutustyyppi!)}/tiedot`);
+});
+
+const kieli = computed(() => {
+  return Kielet.getSisaltoKieli.value;
+});
+
+const palautaJulkaisu = async (julkaisu: any) => {
+  try {
+    await store.value.palautaJulkaisu(julkaisu);
+    $success('opetussuunnitelman-julkaisuversio-palautettu-julkiseksi');
   }
-
-  get sisaltoKieli() {
-    return Kielet.getSisaltoKieli.value;
+  catch (err) {
+    $fail('palautus-epaonnistui');
   }
+};
 
-  get julkaisuhistoria() {
-    return this.julkaisut;
+const julkaisuKesken = computed(() => {
+  return store.value?.viimeisinJulkaisuTila === 'KESKEN';
+});
+
+const palautaTekstirakenne = async () => {
+  hallintaLoading.value = true;
+
+  try {
+    await store.value.palautaTekstirakenne();
+    $success('opetussuunnitelman-vanha-tekstirakenne-palautettu');
   }
-
-  get isValid() {
-    return _.every(this.validoinnit, validointi => _.isEmpty(validointi.virheet));
+  finally {
+    hallintaLoading.value = false;
   }
+};
 
-  mapValidointiRoute(validointi) {
-    return {
-      route: {
-        name: _.get(validointi, 'meta.route.type'),
-        params: _.get(validointi, 'meta.route.meta'),
-      },
-    };
+const opintopolkuKatseluUrl = (julkaisu: any) => {
+  let revision = julkaisu.revision;
+  if (revision === _.max(_.map(julkaisut.value, 'revision'))) {
+    revision = null;
   }
-
-  get validoinnit() {
-    if (this.store.validointi) {
-      return _.map(this.store.validointi, validointi => {
-        return {
-          ...validointi,
-          virheet: this.listNodeToRoute(validointi.virheet),
-          huomautukset: this.listNodeToRoute(validointi.huomautukset),
-          huomiot: this.listNodeToRoute(validointi.huomiot),
-        };
-      });
-    }
-  }
-
-  listNodeToRoute(list) {
-    return _.map(list, item => ({ ...item, route: nodeToRoute(item.navigationNode) }));
-  }
-
-  get validating() {
-    return !this.store.validointi;
-  }
-
-  get julkaisut() {
-    return this.store.julkaisut;
-  }
-
-  async julkaise() {
-    try {
-      await this.store.julkaise(this.uusiJulkaisu);
-      this.uusiJulkaisu.julkaisutiedote = {};
-      this.$success(this.$t('julkaisu-kaynnistetty') as string);
-    }
-    catch (err) {
-      this.$fail(this.$t('julkaisu-epaonnistui') as string);
-    }
-  }
-
-  get esikatseluUrl() {
-    return buildEsikatseluUrl(this.kieli, `/opetussuunnitelma/${this.ops.id}`, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/tiedot`);
-  }
-
-  get kieli() {
-    return Kielet.getSisaltoKieli.value;
-  }
-
-  async palautaJulkaisu(julkaisu) {
-    try {
-      await this.store.palautaJulkaisu(julkaisu);
-      this.$success(this.$t('opetussuunnitelman-julkaisuversio-palautettu-julkiseksi') as string);
-    }
-    catch (err) {
-      this.$fail(this.$t('palautus-epaonnistui') as string);
-    }
-  }
-
-  get julkaisuKesken() {
-    return this.store?.viimeisinJulkaisuTila === 'KESKEN';
-  }
-
-  async palautaTekstirakenne() {
-    this.hallintaLoading = true;
-
-    try {
-      await this.store.palautaTekstirakenne();
-      this.$success(this.$t('opetussuunnitelman-vanha-tekstirakenne-palautettu') as string);
-    }
-    finally {
-      this.hallintaLoading = false;
-    }
-  }
-
-  opintopolkuKatseluUrl(julkaisu) {
-    let revision = julkaisu.revision;
-    if (revision === _.max(_.map(this.julkaisut, 'revision'))) {
-      revision = null;
-    }
-    return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/opetussuunnitelma/${this.ops.id}`, revision, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}`);
-  }
-}
+  return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/opetussuunnitelma/${ops.value.id}`, revision, `/${koulutustyyppiTheme(ops.value.koulutustyyppi!)}`);
+};
 </script>
 
 <style scoped lang="scss">

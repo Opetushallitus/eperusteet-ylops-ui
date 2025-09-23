@@ -1,64 +1,44 @@
-import { Vue, Component } from 'vue-property-decorator';
-import { Meta } from '@shared/utils/decorators';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useHead } from '@unhead/vue';
+import { $t, $bvModal } from '@shared/utils/globals';
 
-Component.registerHooks([
-  'beforeRouteEnter',
-  'beforeRouteUpdate',
-  'beforeRouteLeave',
-]);
+export function useEpRoot() {
+  const route = useRoute();
+  const mIsLoading = ref(true);
 
-@Component
-export default class EpRoot extends Vue {
-  private mIsLoading = true;
-
-  @Meta
-  getMetaInfo() {
-    if (this.$route && this.$route.name) {
+  // Meta info using useHead
+  const getMetaInfo = () => {
+    if (route && route.name) {
       return {
-        title: this.$t('route-' + this.$route.name),
-        titleTemplate: '%s - ' + this.$t('eperusteet-ops-tyokalu'),
+        title: $t('route-' + route.name),
+        titleTemplate: '%s - ' + $t('eperusteet-ops-tyokalu'),
       };
     }
     else {
       return {
-        title: this.$t('eperusteet-ops-tyokalu'),
+        title: $t('eperusteet-ops-tyokalu'),
         titleTemplate: null,
       };
     }
-  }
+  };
 
-  public async beforeRouteEnter(to: any, from: any, next: any) {
-    next();
-  }
+  useHead(getMetaInfo);
 
-  public async beforeRouteUpdate(to: any, from: any, next: any) {
-    next();
-  }
-
-  public async beforeRouteLeave(to: any, from: any, next: any) {
-    next();
-  }
-
-  public async vahvista(title = 'vahvista-toiminto', msg = 'vahvista-toiminto-viesti', okTitle = 'kylla', config: any = {}) {
-    return this.$bvModal.msgBoxConfirm(this.$t(msg) as any, {
-      title: this.$t(title),
+  const vahvista = async (title = 'vahvista-toiminto', msg = 'vahvista-toiminto-viesti', okTitle = 'kylla', config: any = {}) => {
+    return await $bvModal.msgBoxConfirm($t(msg) as any, {
+      title: $t(title),
       okVariant: 'primary',
-      okTitle: this.$t(okTitle) as any,
+      okTitle: $t(okTitle) as any,
       cancelVariant: 'link',
-      cancelTitle: this.$t('peruuta') as any,
+      cancelTitle: $t('peruuta') as any,
       centered: true,
       ...config,
     });
-  }
+  };
 
-  public async mounted() {
-    this.loading(this.init);
-  }
-
-  public async loading(
-    fn: () => Promise<void>,
-  ) {
-    this.mIsLoading = true;
+  const loading = async (fn: () => Promise<void>) => {
+    mIsLoading.value = true;
     try {
       await fn();
     }
@@ -66,13 +46,25 @@ export default class EpRoot extends Vue {
       // ei tehdä mitään
     }
     finally {
-      this.mIsLoading = false;
+      mIsLoading.value = false;
     }
-  }
+  };
 
-  public get isLoading() {
-    return this.mIsLoading;
-  }
+  const isLoading = computed(() => mIsLoading.value);
 
-  protected async init() {}
+  const init = async () => {
+    // Default empty implementation
+  };
+
+  onMounted(async () => {
+    await loading(init);
+  });
+
+  return {
+    isLoading,
+    vahvista,
+    loading,
+    init,
+    getMetaInfo,
+  };
 }

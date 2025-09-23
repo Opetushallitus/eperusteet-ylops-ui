@@ -30,7 +30,7 @@
 
       <!-- Sisällön kieli-->
       <b-nav-item-dropdown id="content-lang-selector" right>
-        <template slot="button-content">
+        <template #button-content>
           <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ $t(sisaltoKieli) }}</span>
         </template>
         <div class="kielet">
@@ -51,9 +51,10 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import Sticky from 'vue-sticky-directive';
 import { Kieli } from '@shared/tyypit';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
@@ -66,77 +67,56 @@ import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { baseURL } from '@shared/api/ylops';
 
-@Component({
-  directives: {
-    oikeustarkastelu,
-    Sticky,
-  },
-  components: {
-    EpButton,
-    EpKayttaja,
-    EpMaterialIcon,
-  },
-})
-export default class EpNavigation extends Vue {
-  @Prop({ default: false })
-  private sticky!: boolean;
+const props = withDefaults(
+  defineProps<{
+    sticky?: boolean;
+    tyyli?: string;
+    koulutustyyppi?: string;
+    headerClass?: string;
+  }>(), {
+  sticky: false,
+  tyyli: 'normaali',
+  headerClass: 'dark',
+});
 
-  @Prop({ default: 'normaali' })
-  private tyyli!: string;
+const route = useRoute();
 
-  @Prop({ required: false })
-  private koulutustyyppi!: string;
+const tiedot = computed(() => Kayttajat.tiedot);
 
-  @Prop({ default: 'dark' })
-  private headerClass!: string;
+const sovellusOikeudet = computed(() => Kayttajat.sovellusOikeudet);
 
-  get tiedot() {
-    return Kayttajat.tiedot;
-  }
+const murut = computed(() => Murupolku.murut);
 
-  get sovellusOikeudet() {
-    return Kayttajat.sovellusOikeudet;
-  }
+const sisaltoKieli = computed(() => Kielet.getSisaltoKieli.value);
 
-  get murut() {
-    return Murupolku.murut;
-  }
+const sovelluksenKielet = computed(() => UiKielet);
 
-  get sisaltoKieli() {
-    return Kielet.getSisaltoKieli.value;
-  }
+const routePath = computed(() => {
+  return _(route.matched)
+    .filter('name')
+    .map(routeItem => {
+      const computeds = _.get(routeItem, 'instances.default') as any;
+      const result = {
+        ...routeItem,
+        muru: murut.value[routeItem!.name!],
+        breadname: computeds && computeds.breadcrumb,
+      };
+      return result;
+    })
+    .value();
+});
 
-  get sovelluksenKielet() {
-    return UiKielet;
-  }
+const valitseSisaltoKieli = (kieli: Kieli) => {
+  Kielet.setSisaltoKieli(kieli);
+};
 
-  get routePath() {
-    return _(this.$route.matched)
-      .filter('name')
-      .map(route => {
-        const computeds = _.get(route, 'instances.default') as any;
-        const result = {
-          ...route,
-          muru: this.murut[route!.name!],
-          breadname: computeds && computeds.breadcrumb,
-        };
-        return result;
-      })
-      .value();
-  }
+const headerStyle = computed(() => {
+  return koulutustyyppiBanner(props.koulutustyyppi!);
+});
 
-  private valitseSisaltoKieli(kieli: Kieli) {
-    Kielet.setSisaltoKieli(kieli);
-  }
-
-  get headerStyle() {
-    return koulutustyyppiBanner(this.koulutustyyppi!);
-  }
-
-  get logoutHref() {
-    return baseURL + '/api/logout';
-  }
-}
+const logoutHref = computed(() => {
+  return baseURL + '/api/logout';
+});
 </script>
 
 <style scoped lang="scss">
@@ -148,7 +128,7 @@ export default class EpNavigation extends Vue {
   &.light {
     color: $color-ops-header-black-text;
 
-    ::v-deep .kayttaja .kayttaja-valikko {
+    :deep(.kayttaja .kayttaja-valikko) {
       color: $color-ops-header-black-text;
     }
 
@@ -200,18 +180,18 @@ export default class EpNavigation extends Vue {
       }
     }
 
-    ::v-deep .dropdown-menu {
+    :deep(.dropdown-menu) {
       padding: 0;
       color: #000000;
       min-width: initial;
     }
 
-    ::v-deep .dropdown-item {
+    :deep(.dropdown-item) {
       padding: 0.5rem 1rem;
       color: #000000;
     }
 
-    ::v-deep .dropdown-item:hover {
+    :deep(.dropdown-item:hover) {
       background-color: inherit;
     }
 
