@@ -33,7 +33,7 @@
                                  track-by="id"
                                  label="nimi"
                                  :custom-label="kaannaNimi">
-                  <template slot="option" slot-scope="{ option }">
+                  <template #option="{ option }">
                     {{ $kaanna(option.nimi) }}
                   </template>
                 </ep-multi-select>
@@ -51,7 +51,7 @@
                                  track-by="id"
                                  label="nimi"
                                  :custom-label="kaannaNimi">
-                  <template slot="option" slot-scope="{ option }">
+                  <template #option="{ option }">
                     {{ $kaanna(option.nimi) }}
                   </template>
                 </ep-multi-select>
@@ -157,14 +157,15 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Component, Mixins } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useEpRoute } from '@/mixins/EpRoute';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusPaikallinenOppiaineStore } from '@/stores/perusopetusPaikallinenOppiaineStore';
-import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
+import { OpsVuosiluokkakokonaisuusKevytDto, PerusopetusoppiaineDto } from '@shared/api/ylops';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
@@ -172,46 +173,62 @@ import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { $kaanna } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpEditointi,
-    EpFormContent,
-    EpField,
-    EpContent,
-    EpAlert,
-    EpMultiSelect,
-    VuosiluokkaSisaltoTeksti,
-  },
-})
-export default class RoutePerusopetusPaikallinenOppiaine extends Mixins(EpRoute, EpOpsComponent) {
-  private editointiStore: EditointiStore | null = null;
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async init() {
-    const vuosiluokkakokonaisuus = _.head(_.filter(this.ops.vuosiluokkakokonaisuudet, vlk =>
-      vlk.vuosiluokkakokonaisuus?.id === _.toNumber(this.$route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
-    this.editointiStore = new EditointiStore(new PerusopetusPaikallinenOppiaineStore(
-      this.opsId,
-      this.$route.params.oppiaineId,
-      vuosiluokkakokonaisuus,
-      _.toNumber(this.versionumero),
-      this,
-      this.muokkaa,
-    ));
-  }
+// Use composables
+const route = useRoute();
+const { opsId, ops } = useEpOpsComponent(props.opetussuunnitelmaStore);
 
-  get muokkaa() {
-    return _.has(this.$route.query, 'muokkaa');
-  }
+// Reactive data
+const editointiStore = ref<EditointiStore | null>(null);
 
-  get versionumero() {
-    return this.$route.query.versionumero;
-  }
+const init = async () => {
+  const vuosiluokkakokonaisuus = _.head(_.filter(ops.value.vuosiluokkakokonaisuudet, vlk =>
+    vlk.vuosiluokkakokonaisuus?.id === _.toNumber(route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
+  editointiStore.value = new EditointiStore(new PerusopetusPaikallinenOppiaineStore(
+    opsId.value,
+    route.params.oppiaineId,
+    vuosiluokkakokonaisuus,
+    _.toNumber(versionumero.value),
+    undefined, // this context not needed
+    muokkaa.value,
+  ));
+};
 
-  kaannaNimi({ nimi }) {
-    return this.$kaanna(nimi);
-  }
-}
+// Computed properties
+const oppiaine = computed((): PerusopetusoppiaineDto | null => {
+  return editointiStore.value?.data.value || null;
+});
+
+const isJulkinen = computed(() => {
+  return oppiaine.value && oppiaine.value.jnro;
+});
+
+const versionumero = computed(() => {
+  return _.parseInt(_.get(route, 'query.versionumero') as any);
+});
+
+const muokkaa = computed(() => {
+  return route.params.oppiaineId === 'uusi';
+});
+
+const isOma = computed(() => {
+  return oppiaine.value && !oppiaine.value.jnro;
+});
+
+const kaannaNimi = ({ nimi }: { nimi: any }) => {
+  return $kaanna(nimi);
+};
+
+// Initialize on mount
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style scoped lang="scss">

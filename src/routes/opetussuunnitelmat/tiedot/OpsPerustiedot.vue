@@ -76,61 +76,59 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
 import _ from 'lodash';
-import { Component, Mixins } from 'vue-property-decorator';
-import { Kielet } from '@shared/stores/kieli';
-import { parsiEsitysnimi } from '@/stores/kayttaja';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpOpsComponent from '../../../mixins/EpOpsComponent';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
+import EpPerustietoData from '@shared/components/EpPerustietoData/EpPerustietoData.vue';
+import OpsPohjat from '@/routes/opetussuunnitelmat/tiedot/OpsPohjat.vue';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { Kielet } from '@shared/stores/kieli';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
-import OpsPohjat from '@/routes/opetussuunnitelmat/tiedot/OpsPohjat.vue';
-import EpPerustietoData from '@shared/components/EpPerustietoData/EpPerustietoData.vue';
+import { $t, $sdt } from '@shared/utils/globals';
+import { parsiEsitysnimi } from '@shared/utils/kayttaja';
 
-@Component({
-  components: {
-    EpSpinner,
-    EpButton,
-    EpMaterialIcon,
-    OpsPohjat,
-    EpPerustietoData,
-  },
-})
-export default class OpsPerustiedot extends Mixins(EpOpsComponent) {
-  private naytaLisaaTyoryhmaa: boolean = false;
-  private tyoryhmaAlkuMaara = 5;
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  get julkaisukieliet() {
-    return _.map(this.ops.julkaisukielet, (kieli) => Kielet.kaannaOlioTaiTeksti(kieli)).join(', ');
-  }
+const { store, ops } = useEpOpsComponent(props.opetussuunnitelmaStore);
 
-  async mounted() {
-    await this.store.fetchOrganisaatioVirkailijat();
-  }
+const naytaLisaaTyoryhmaa = ref<boolean>(false);
+const tyoryhmaAlkuMaara = 5;
 
-  private get virkailijat() {
-    return this.store.virkailijat;
-  }
+const julkaisukieliet = computed(() => {
+  return _.map(ops.value.julkaisukielet, (kieli) => Kielet.kaannaOlioTaiTeksti(kieli)).join(', ');
+});
 
-  private get virkailijatFormatted() {
-    return _.chain(this.virkailijat)
-      .map(virkailija => {
-        return {
-          oid: virkailija.oid,
-          esitysnimi: parsiEsitysnimi(virkailija),
-        };
-      })
-      .take(!this.naytaLisaaTyoryhmaa ? this.tyoryhmaAlkuMaara : _.size(this.virkailijat))
-      .value();
-  }
+const virkailijat = computed(() => {
+  return store.value.virkailijat;
+});
 
-  get esikatseluUrl() {
-    return buildEsikatseluUrl(Kielet.getSisaltoKieli.value, `/opetussuunnitelma/${this.ops.id}`, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/tiedot`);
-  }
-}
+const virkailijatFormatted = computed(() => {
+  return _.chain(virkailijat.value)
+    .map(virkailija => {
+      return {
+        oid: virkailija.oid,
+        esitysnimi: parsiEsitysnimi(virkailija),
+      };
+    })
+    .take(!naytaLisaaTyoryhmaa.value ? tyoryhmaAlkuMaara : _.size(virkailijat.value))
+    .value();
+});
+
+const esikatseluUrl = computed(() => {
+  return buildEsikatseluUrl(Kielet.getSisaltoKieli.value, `/opetussuunnitelma/${ops.value.id}`, `/${koulutustyyppiTheme(ops.value.koulutustyyppi!)}/tiedot`);
+});
+
+onMounted(async () => {
+  await store.value.fetchOrganisaatioVirkailijat();
+});
 </script>
 
 <style scoped lang="scss">

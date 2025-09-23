@@ -1,5 +1,6 @@
-import { Prop, Component, ProvideReactive } from 'vue-property-decorator';
-import EpRoute from './EpRoute';
+import { computed, provide } from 'vue';
+import { useRoute } from 'vue-router';
+import { useEpRoute } from './EpRoute';
 import { OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
 import _ from 'lodash';
 import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
@@ -9,48 +10,48 @@ import { KuvaStore } from '@/stores/KuvaStore';
 import { Koulutustyyppi } from '@shared/tyypit';
 
 /**
- * Mixin näkymäkomponenteille mitkä tarvitsevat opetussuunnitelman sisällön
+ * Composable for route components that need opetussuunnitelma content
  */
-@Component({ inject: [] })
-export default class EpOpsRoute extends EpRoute {
-  @Prop({ required: true })
-  private opetussuunnitelmaStore!: OpetussuunnitelmaStore;
+export function useEpOpsRoute(opetussuunnitelmaStore: OpetussuunnitelmaStore) {
+  const route = useRoute();
+  const epRoute = useEpRoute();
 
-  get store() {
-    return this.opetussuunnitelmaStore;
-  }
+  const store = computed(() => opetussuunnitelmaStore);
 
-  get ops() {
-    return this.store.opetussuunnitelma!;
-  }
+  const ops = computed(() => store.value.opetussuunnitelma!);
 
-  get opsId() {
-    return this.store.opetussuunnitelma!.id!;
-  }
+  const opsId = computed(() => store.value.opetussuunnitelma!.id!);
 
-  get isPohja() {
-    return this.store.opetussuunnitelma?.tyyppi as string === 'pohja';
-  }
+  const isPohja = computed(() => store.value.opetussuunnitelma?.tyyppi as string === 'pohja');
 
-  get isOps() {
-    return this.store.opetussuunnitelma?.tyyppi as string === 'ops';
-  }
+  const isOps = computed(() => store.value.opetussuunnitelma?.tyyppi as string === 'ops');
 
-  get isValmisPohja() {
-    return this.isPohja && this.ops.tila as any === 'valmis';
-  }
+  const isValmisPohja = computed(() => isPohja.value && ops.value.tila as any === 'valmis');
 
-  @ProvideReactive('kasiteHandler')
-  get kasiteHandler() {
-    return createKasiteHandler(new TermitStore(_.toNumber(this.$route.params.id)));
-  }
+  const kasiteHandler = computed(() => {
+    return createKasiteHandler(new TermitStore(_.toNumber(route.params.id)));
+  });
 
-  @ProvideReactive('kuvaHandler')
-  get kuvaHandler() {
-    return createKuvaHandler(new KuvaStore(_.toNumber(this.$route.params.id)));
-  }
+  const kuvaHandler = computed(() => {
+    return createKuvaHandler(new KuvaStore(_.toNumber(route.params.id)));
+  });
 
-  get isLuva() {
-    return this.ops?.koulutustyyppi as string === Koulutustyyppi.lukiovalmistavakoulutus;
-  }
+  const isLuva = computed(() => ops.value?.koulutustyyppi as string === Koulutustyyppi.lukiovalmistavakoulutus);
+
+  // Provide reactive handlers
+  provide('kasiteHandler', kasiteHandler);
+  provide('kuvaHandler', kuvaHandler);
+
+  return {
+    ...epRoute,
+    store,
+    ops,
+    opsId,
+    isPohja,
+    isOps,
+    isValmisPohja,
+    kasiteHandler,
+    kuvaHandler,
+    isLuva,
+  };
 }

@@ -38,64 +38,56 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, useTemplateRef } from 'vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { sallittuSiirtyma } from '@/utils/tilat';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { sallittuSiirtyma } from '@/utils/tilat';
+import { $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpInput,
-    EpSpinner,
-    EpButton,
-    EpMaterialIcon,
-  },
-})
-export default class Tilanvaihto extends Vue {
-  @Prop({ required: true })
-  private onSave!: (tila: string) => Promise<boolean>;
+const props = defineProps<{
+  onSave: (tila: string) => Promise<boolean>;
+  value: string;
+  isPohja?: boolean;
+}>();
 
-  @Prop({ required: true })
-  private value!: string;
+const modal = useTemplateRef('modal');
+const isUpdating = ref<boolean>(false);
+const selected = ref<string | null>(null);
 
-  @Prop({ required: false })
-  private isPohja!: boolean;
+const mahdollisetTilat = computed(() => {
+  return sallittuSiirtyma(props.value, props.isPohja);
+});
 
-  private isUpdating: boolean = false;
-  private selected: string | null = null;
-
-  get mahdollisetTilat() {
-    return sallittuSiirtyma(this.value, this.isPohja);
-  }
-
-  private async tallenna() {
-    this.isUpdating = true;
-    try {
-      if (this.selected && await this.onSave(this.selected)) {
-        // this.$emit('input', tila);
-        const modal = (this.$refs.modal as any);
-        if (modal) {
-          (this.$refs.modal as any).hide();
-        }
+const tallenna = async () => {
+  isUpdating.value = true;
+  try {
+    if (selected.value && await props.onSave(selected.value)) {
+      // this.$emit('input', tila);
+      const modalRef = modal.value;
+      if (modalRef) {
+        (modalRef as any).hide();
       }
     }
-    finally {
-      this.isUpdating = false;
-    }
   }
+  finally {
+    isUpdating.value = false;
+  }
+};
 
-  private peruuta() {
-    this.selected = null;
-    (this.$refs.modal as any).hide();
+const peruuta = () => {
+  selected.value = null;
+  const modalRef = modal.value;
+  if (modalRef) {
+    (modalRef as any).hide();
   }
+};
 
-  private async vaihdaTila(tila: string) {
-    this.selected = tila;
-  }
-}
+const vaihdaTila = async (tila: string) => {
+  selected.value = tila;
+};
 </script>
 
 <style scoped lang="scss">

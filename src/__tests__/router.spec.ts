@@ -1,6 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import { Kayttajat } from '@/stores/kayttaja';
-import { router } from '@/router';
+import { router } from '@/router/router';
 import { expectEventually } from '&/utils/assertions';
 import { getRootConfig } from '@/mainvue';
 import { Kielet } from '@shared/stores/kieli';

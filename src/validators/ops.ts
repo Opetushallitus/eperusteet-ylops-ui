@@ -1,6 +1,6 @@
 import { notNull, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@shared/tyypit';
-import { minLength, required, requiredIf } from 'vuelidate/lib/validators';
+import { minLength, required, requiredIf } from '@vuelidate/validators';
 import { OpetussuunnitelmaInfoDtoToteutusEnum, OpetussuunnitelmaLuontiDtoLuontityyppiEnum } from '@shared/api/ylops';
 import * as _ from 'lodash';
 

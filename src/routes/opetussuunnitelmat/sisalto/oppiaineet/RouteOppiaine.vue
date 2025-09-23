@@ -9,7 +9,9 @@
     </h2>
     <div class="collapse-container">
       <ep-collapse v-if="oppiaine.tehtava">
-        <h3 slot="header">{{ isOppiaine ? $t('oppiaineet-tehtava') : $t('oppimaaran-tehtava')}}</h3>
+        <template #header>
+          <h3>{{ isOppiaine ? $t('oppiaineet-tehtava') : $t('oppimaaran-tehtava')}}</h3>
+        </template>
         <ep-content
           layout="normal"
           :kasiteHandler="kasiteHandler"
@@ -17,7 +19,9 @@
           v-model="oppiaine.tehtava.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.laajaAlaisetOsaamiset && !isLuva">
-        <h3 slot="header">{{ $t('laaja-alainen-osaaminen') }}</h3>
+        <template #header>
+          <h3>{{ $t('laaja-alainen-osaaminen') }}</h3>
+        </template>
         <ep-content
           layout="normal"
           :kasiteHandler="kasiteHandler"
@@ -25,7 +29,9 @@
           v-model="oppiaine.laajaAlaisetOsaamiset.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.opiskeluymparistoTyotavat && isLuva">
-        <h3 slot="header">{{ $t('opiskeluymparisto-ja-tyotavat')}}</h3>
+        <template #header>
+          <h3>{{ $t('opiskeluymparisto-ja-tyotavat')}}</h3>
+        </template>
         <ep-content
           layout="normal"
           :kasiteHandler="kasiteHandler"
@@ -33,7 +39,9 @@
           v-model="oppiaine.opiskeluymparistoTyotavat.kuvaus"> </ep-content>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.tavoitteet">
-        <h3 slot="header">{{ $t('tavoitteet') }}</h3>
+        <template #header>
+          <h3>{{ $t('tavoitteet') }}</h3>
+        </template>
         <ep-content
           layout="normal"
           :kasiteHandler="kasiteHandler"
@@ -42,7 +50,9 @@
         <ep-prefix-list :value="oppiaine.tavoitteet.tavoitealueet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.arviointi">
-        <h3 slot="header">{{ $t('arviointi') }}</h3>
+        <template #header>
+          <h3>{{ $t('arviointi') }}</h3>
+        </template>
         <ep-content
           layout="normal"
           :kasiteHandler="kasiteHandler"
@@ -50,7 +60,9 @@
           v-model="oppiaine.arviointi.kuvaus"></ep-content>
       </ep-collapse>
       <ep-collapse v-if="perusteJaPaikallisetOppimaarat && perusteJaPaikallisetOppimaarat.length > 0">
-        <h3 slot="header">{{ $t('oppimaarat') }}</h3>
+        <template #header>
+          <h3>{{ $t('oppimaarat') }}</h3>
+        </template>
         <div class="oppimaarat-topic">{{ $t('oppiaine-oppimaara-ohje')}}</div>
         <div class="block-container oppimaarat" v-for="oppimaara in perusteJaPaikallisetOppimaarat" :key="oppimaara.id">
           <router-link class="om-content" :to="oppimaara.route">
@@ -59,7 +71,9 @@
         </div>
       </ep-collapse>
       <ep-collapse v-if="oppiaine.moduulit && oppiaine.moduulit.length > 0">
-        <h3 slot="header">{{ $t('moduulit') }}</h3>
+        <template #header>
+          <h3>{{ $t('moduulit') }}</h3>
+        </template>
         <div class="oppimaarat-topic">{{ $t('oppiaine-moduuli-ohje')}}</div>
         <div class="block-container">
           <div class="moduulit">
@@ -76,7 +90,9 @@
         <ep-spinner v-if="!opintojaksot">
         </ep-spinner>
         <ep-collapse else>
-          <h3 slot="header">{{ $t('opintojaksot') }}</h3>
+          <template #header>
+            <h3>{{ $t('opintojaksot') }}</h3>
+          </template>
           <div v-if="opintojaksot.length === 0">
             <div class="alert alert-info">{{ $t('opintojaksoja-ei-lisatty') }}</div>
           </div>
@@ -101,154 +117,179 @@
 </div>
 </template>
 
-<script lang="ts">
-import { Mixins, Component } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
-import { Lops2019OppiaineDto } from '@shared/api/ylops';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
-import { PerusteCache } from '@/stores/peruste';
-import _ from 'lodash';
 import EpOpintojaksonModuuli from '@shared/components/EpOpintojaksonModuuli/EpOpintojaksonModuuli.vue';
+import { Lops2019OppiaineDto } from '@shared/api/ylops';
+import { PerusteCache } from '@/stores/peruste';
 import { isPaikallisestiSallittuLaajennos } from '@/utils/perusteet';
 import { koodiSorters } from '@shared/utils/perusteet';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { useEpRoute } from '@/mixins/EpRoute';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
+import { $kaanna, $t } from '@shared/utils/globals';
+import _ from 'lodash';
 
-@Component({
-  components: {
-    EpButton,
-    EpCollapse,
-    EpContent,
-    EpSpinner,
-    EpPrefixList,
-    EpOpintojaksonModuuli,
-  },
-})
-export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
-  private cache: PerusteCache | null = null;
-  private oppiaine: Lops2019OppiaineDto | null = null;
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async init() {
-    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
-    this.oppiaine = await this.cache.getOppiaine(_.parseInt(this.$route.params.oppiaineId));
+// Router
+const route = useRoute();
+const router = useRouter();
+
+// Use composables
+const epRoute = useEpRoute();
+const {
+  store,
+  ops,
+  opsId,
+  isPohja,
+  isOps,
+  isValmisPohja,
+  kasiteHandler,
+  kuvaHandler,
+  isLuva,
+} = useEpOpsComponent(props.opetussuunnitelmaStore);
+// Reactive data
+const cache = ref<PerusteCache | null>(null);
+const oppiaine = ref<Lops2019OppiaineDto | null>(null);
+
+// Computed properties
+const isLoading = computed(() => {
+  return !oppiaine.value;
+});
+
+const perusteJaPaikallisetOppimaarat = computed(() => {
+  return [
+    ...oppimaarat.value,
+    ...paikallisetOppimaarat.value,
+  ];
+});
+
+const oppimaarat = computed(() => {
+  if (oppiaine.value) {
+    return _.map(oppiaine.value.oppimaarat, om => ({
+      ...om,
+      route: { name: 'oppiaine', params: { oppiaineId: om.id } },
+    })) || [];
   }
-
-  get perusteJaPaikallisetOppimaarat() {
-    return [
-      ...this.oppimaarat,
-      ...this.paikallisetOppimaarat,
-    ];
+  else {
+    return [];
   }
+});
 
-  get oppimaarat() {
-    if (this.oppiaine) {
-      return _.map(this.oppiaine.oppimaarat, om => ({
-        ...om,
-        route: { name: 'oppiaine', params: { oppiaineId: om.id } },
-      })) || [];
-    }
-    else {
-      return [];
-    }
-  }
-
-  get paikallisetOppimaarat() {
-    return _(this.store.paikallisetOppiaineet)
-      .filter(poa => {
-        const parentKoodi = poa.perusteenOppiaineUri;
-        if (_.get(this.oppiaine, 'koodi.uri') === parentKoodi) {
-          return true;
-        }
-        else {
-          // Voi olla myös perusteen oppimäärän alla
-          if (this.oppiaine) {
-            const parentOm = _.find(this.oppiaine.oppimaarat, { koodi: { uri: parentKoodi } });
-            if (parentOm) {
-              return true;
-            }
+const paikallisetOppimaarat = computed(() => {
+  return _(store.value.paikallisetOppiaineet)
+    .filter(poa => {
+      const parentKoodi = poa.perusteenOppiaineUri;
+      if (_.get(oppiaine.value, 'koodi.uri') === parentKoodi) {
+        return true;
+      }
+      else {
+        // Voi olla myös perusteen oppimäärän alla
+        if (oppiaine.value) {
+          const parentOm = _.find(oppiaine.value.oppimaarat, { koodi: { uri: parentKoodi } });
+          if (parentOm) {
+            return true;
           }
         }
-        return false;
-      })
-      .map(poa => ({
-        ...poa,
-        route: { name: 'paikallinenOppiaine', params: { paikallinenOppiaineId: _.toString(poa.id) } },
-      }))
-      .value();
-  }
+      }
+      return false;
+    })
+    .map(poa => ({
+      ...poa,
+      route: { name: 'paikallinenOppiaine', params: { paikallinenOppiaineId: _.toString(poa.id) } },
+    }))
+    .value();
+});
 
-  get opintojaksot() {
-    return _.chain(this.store.opintojaksot)
-      .filter(oj => _(oj.oppiaineet)
-        .sortBy('koodi')
-        .map('koodi')
-        .includes(this.oppiaine!.koodi!.uri))
-      .map(opintojakso => {
-        const ojOm: any = _.find(opintojakso.oppiaineet, { koodi: this.oppiaine!.koodi!.uri });
-        return {
-          ...opintojakso,
-          jarjestys: ojOm.jarjestys,
-        };
-      })
-      .sortBy('jarjestys', ...koodiSorters())
-      .value();
-  }
+const opintojaksot = computed(() => {
+  return _.chain(store.value.opintojaksot)
+    .filter(oj => _(oj.oppiaineet)
+      .sortBy('koodi')
+      .map('koodi')
+      .includes(oppiaine.value!.koodi!.uri))
+    .map(opintojakso => {
+      const ojOm: any = _.find(opintojakso.oppiaineet, { koodi: oppiaine.value!.koodi!.uri });
+      return {
+        ...opintojakso,
+        jarjestys: ojOm.jarjestys,
+      };
+    })
+    .sortBy('jarjestys', ...koodiSorters())
+    .value();
+});
 
-  get pakollisetModuulit() {
-    if (!this.oppiaine) {
-      return null;
-    }
-    return _.chain(this.oppiaine.moduulit as any)
-      .filter(moduuli => moduuli.pakollinen)
-      .sortBy('koodi.arvo')
-      .value();
+const pakollisetModuulit = computed(() => {
+  if (!oppiaine.value) {
+    return null;
   }
+  return _.chain(oppiaine.value.moduulit as any)
+    .filter(moduuli => moduuli.pakollinen)
+    .sortBy('koodi.arvo')
+    .value();
+});
 
-  get valinnaisetModuulit() {
-    if (!this.oppiaine) {
-      return null;
-    }
-    return _.chain(this.oppiaine.moduulit)
-      .filter(moduuli => !moduuli.pakollinen)
-      .sortBy('koodi.arvo')
-      .value();
+const valinnaisetModuulit = computed(() => {
+  if (!oppiaine.value) {
+    return null;
   }
+  return _.chain(oppiaine.value.moduulit)
+    .filter(moduuli => !moduuli.pakollinen)
+    .sortBy('koodi.arvo')
+    .value();
+});
 
-  get moduulit() {
-    return [
-      ...this.pakollisetModuulit ? this.pakollisetModuulit : [],
-      ...this.valinnaisetModuulit ? this.valinnaisetModuulit : [],
-    ];
-  }
+const moduulit = computed(() => {
+  return [
+    ...pakollisetModuulit.value ? pakollisetModuulit.value : [],
+    ...valinnaisetModuulit.value ? valinnaisetModuulit.value : [],
+  ];
+});
 
-  get isOppiaine() {
-    return !(this.oppiaine as any)._oppiaine;
-  }
+const isOppiaine = computed(() => {
+  return !(oppiaine.value as any)?._oppiaine;
+});
 
-  get isOppimaaria() {
-    return this.oppiaine!.oppimaarat && this.oppiaine!.oppimaarat.length > 0;
-  }
+const isOppimaaria = computed(() => {
+  return oppiaine.value?.oppimaarat && oppiaine.value.oppimaarat.length > 0;
+});
 
-  get isAllowedOppiaine() {
-    return !isPaikallisestiSallittuLaajennos(this.oppiaine!.koodi!.uri as string);
-  }
+const isAllowedOppiaine = computed(() => {
+  return !isPaikallisestiSallittuLaajennos(oppiaine.value?.koodi?.uri as string);
+});
 
-  public uusiOpintojakso() {
-    this.$router.push({
-      name: 'opintojakso',
-      params: {
-        ...this.$router.currentRoute.params,
-        opintojaksoId: 'uusi',
-      },
-      query: {
-        oppiaineet: _.get(this.oppiaine, 'koodi.uri'),
-      },
-    });
-  }
-}
+// Methods
+const uusiOpintojakso = () => {
+  router.push({
+    name: 'opintojakso',
+    params: {
+      ...route.params,
+      opintojaksoId: 'uusi',
+    },
+    query: {
+      oppiaineet: _.get(oppiaine.value, 'koodi.uri'),
+    },
+  });
+};
+
+const init = async () => {
+  cache.value = await PerusteCache.of(_.parseInt(route.params.id as string));
+  oppiaine.value = await cache.value.getOppiaine(_.parseInt(route.params.oppiaineId as string));
+};
+
+// Lifecycle
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style lang="scss" scoped>

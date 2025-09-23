@@ -8,7 +8,7 @@
           <slot name="header"></slot>
         </div>
       </div>
-      <div class="view-content" v-if="$slots['default']">
+      <div class="view-content" v-if="hasDefaultSlot">
         <div class="row">
           <div class="col">
             <slot name="default"></slot>
@@ -22,18 +22,17 @@
 </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
-
+<script setup lang="ts">
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import { hasSlotContent } from '@shared/utils/vue-utils';
+import { computed } from 'vue';
+import { useSlots } from 'vue';
 
-@Component({
-  components: {
-    EpNavigation,
-  },
-})
-export default class EpMainView extends Vue {
-}
+const slots = useSlots();
+
+const hasDefaultSlot = computed(() => {
+  return hasSlotContent(slots.default);
+});
 </script>
 
 <style scoped lang="scss">

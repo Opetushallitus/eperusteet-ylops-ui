@@ -38,101 +38,104 @@
   </div>
 </template>
 
-<script lang="ts">
-
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import _ from 'lodash';
-import { OpetussuunnitelmaKevytDto, Lops2019OppiaineDto } from '@shared/api/ylops';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
-import { PerusteCache } from '@/stores/peruste';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import { OpetussuunnitelmaKevytDto, Lops2019OppiaineDto } from '@shared/api/ylops';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { PerusteCache } from '@/stores/peruste';
+import { $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpSpinner,
-  },
-})
-export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
-  private cache: PerusteCache | null = null;
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async mounted() {
-    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
-  }
+const route = useRoute();
+const { store, isLops2019 } = useEpOpsComponent(props.opetussuunnitelmaStore);
 
-  get perusteCache() {
-    return this.cache;
-  }
+const cache = ref<PerusteCache | null>(null);
 
-  get luodutOpintojaksot() {
-    return _.size(this.store.opintojaksot);
-  }
+const perusteCache = computed(() => {
+  return cache.value;
+});
 
-  get liitetytModuulitLukumaara() {
-    return _.size(
-      _.filter(this.moduulit, (moduuli) => _.includes(this.opintojaksojenModuuliKoodiUri, moduuli.koodi!.uri)),
-    );
-  }
+const luodutOpintojaksot = computed(() => {
+  return _.size(store.value.opintojaksot);
+});
 
-  get opintojaksojenModuuliKoodiUri() {
-    return _.chain(this.store.opintojaksot)
-      .map((oa) => _.map(oa.moduulit, (moduuli) => moduuli.koodiUri))
-      .flatten()
-      .value();
-  }
+const opintojaksojenModuuliKoodiUri = computed(() => {
+  return _.chain(store.value.opintojaksot)
+    .map((oa) => _.map(oa.moduulit, (moduuli) => moduuli.koodiUri))
+    .flatten()
+    .value();
+});
 
-  get moduulit() {
-    return _.chain(this.oppiaineet)
-      .map((oa) => _.map(oa.moduulit, (moduuli) => ({
-        ...moduuli,
+const perusteenOppiaineidenOppimaarat = computed(() => {
+  if (cache.value) {
+    return _.chain(cache.value.peruste.oppiaineet)
+      .map((oa) => _.map(oa.oppimaarat, (oppimaarat) => ({
+        ...oppimaarat,
       })))
       .flatten()
       .value();
   }
-
-  get moduulitLukumaara() {
-    return _.size(this.moduulit);
+  else {
+    return [];
   }
+});
 
-  get useanOppiaineenOpintojaksot() {
-    return _.size(_.filter(this.store.opintojaksot, (opintojakso) => _.size(opintojakso.oppiaineet) > 1));
+const oppiaineet = computed(() => {
+  if (cache.value) {
+    return [
+      ...cache.value.peruste.oppiaineet,
+      ...store.value.paikallisetOppiaineet,
+      ...perusteenOppiaineidenOppimaarat.value,
+    ] as Lops2019OppiaineDto[];
   }
+  return undefined;
+});
 
-  get paikallisetOppiaineet() {
-    return _.size(this.store.paikallisetOppiaineet);
-  }
+const moduulit = computed(() => {
+  return _.chain(oppiaineet.value)
+    .map((oa) => _.map(oa.moduulit, (moduuli) => ({
+      ...moduuli,
+    })))
+    .flatten()
+    .value();
+});
 
-  get valinnaisetOppiaineet() {
-    return _.size(this.store.valinnaisetOppiaineet);
-  }
+const liitetytModuulitLukumaara = computed(() => {
+  return _.size(
+    _.filter(moduulit.value, (moduuli) => _.includes(opintojaksojenModuuliKoodiUri.value, moduuli.koodi!.uri)),
+  );
+});
 
-  get oppiaineet() {
-    if (this.cache) {
-      return [
-        ...this.cache.peruste.oppiaineet,
-        ...this.store.paikallisetOppiaineet,
-        ...this.perusteenOppiaineidenOppimaarat,
-      ] as Lops2019OppiaineDto[];
-    }
-  }
+const moduulitLukumaara = computed(() => {
+  return _.size(moduulit.value);
+});
 
-  get perusteenOppiaineidenOppimaarat() {
-    if (this.cache) {
-      return _.chain(this.cache.peruste.oppiaineet)
-        .map((oa) => _.map(oa.oppimaarat, (oppimaarat) => ({
-          ...oppimaarat,
-        })))
-        .flatten()
-        .value();
-    }
-    else {
-      return [];
-    }
-  }
+const useanOppiaineenOpintojaksot = computed(() => {
+  return _.size(_.filter(store.value.opintojaksot, (opintojakso) => _.size(opintojakso.oppiaineet) > 1));
+});
 
-  get oppimaarat() {
-    return _.sum(_.map(this.store.opetussuunnitelma?.oppiaineet || [], oppiaine => _.size(oppiaine.oppiaine!.oppimaarat)));
-  }
-}
+const paikallisetOppiaineet = computed(() => {
+  return _.size(store.value.paikallisetOppiaineet);
+});
+
+const valinnaisetOppiaineet = computed(() => {
+  return _.size(store.value.valinnaisetOppiaineet);
+});
+
+const oppimaarat = computed(() => {
+  return _.sum(_.map(store.value.opetussuunnitelma?.oppiaineet || [], oppiaine => _.size(oppiaine.oppiaine!.oppimaarat)));
+});
+
+onMounted(async () => {
+  cache.value = await PerusteCache.of(_.parseInt(route.params.id as string));
+});
 </script>
 
 <style scoped lang="scss">

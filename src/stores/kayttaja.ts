@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Store, Getter, State } from '@shared/stores/store';
+import { reactive, computed } from 'vue';
 import { KayttajanTietoDto,
   Kayttajat as KayttajatApi,
   Opetussuunnitelmat,
@@ -11,6 +11,7 @@ import { createLogger } from '@shared/utils/logger';
 import { delay } from '@shared/utils/delay';
 import { getCasKayttaja } from '@shared/api/common';
 import { getSovellusoikeudet } from '@shared/plugins/oikeustarkastelu';
+import { parsiEsitysnimi } from '@shared/utils/kayttaja';
 
 // FIXME: tyypitä backendiin
 export type Oikeus = 'luku' | 'kommentointi' | 'muokkaus' | 'luonti' | 'poisto' | 'tilanvaihto' | 'hallinta';
@@ -30,48 +31,34 @@ function getOikeusArvo(oikeus: Oikeus) {
   }
 }
 
-export function parsiEsitysnimi(tiedot: any): string {
-  if (tiedot.kutsumanimi && tiedot.sukunimi) {
-    return tiedot.kutsumanimi + ' ' + tiedot.sukunimi;
-  }
-  else {
-    return tiedot.oidHenkilo as string;
-  }
-}
-
 const logger = createLogger('Kayttaja');
 
-@Store
-class KayttajaStore {
-  @State()
-  public tiedot: KayttajanTietoDto = { };
+export class KayttajaStore {
+  private state = reactive({
+    tiedot: {} as KayttajanTietoDto,
+    virkailijat: null as any[] | null, // FIXME: tyyppi puuttuu
+    oikeudet: {
+      opetussuunnitelma: [],
+      pohja: [],
+    } as Oikeudet,
+    casKayttaja: null as any | null,
+  });
 
-  @State()
-  public virkailijat: any[] | null = null; // FIXME: tyyppi puuttuu
-
-  @State()
-  public oikeudet: Oikeudet = {
-    opetussuunnitelma: [],
-    pohja: [],
-  };
-
-  @State()
-  public casKayttaja: any | null = null;
-
-  @Getter(state => parsiEsitysnimi(state.tiedot))
-  public readonly nimi!: string;
-
-  @Getter(state => getSovellusoikeudet(state.casKayttaja?.groups, 'APP_EPERUSTEET_YLOPS'))
-  public readonly sovellusOikeudet!: any[];
+  public readonly tiedot = computed(() => this.state.tiedot);
+  public readonly virkailijat = computed(() => this.state.virkailijat);
+  public readonly oikeudet = computed(() => this.state.oikeudet);
+  public readonly casKayttaja = computed(() => this.state.casKayttaja);
+  public readonly nimi = computed(() => parsiEsitysnimi(this.state.tiedot));
+  public readonly sovellusOikeudet = computed(() => getSovellusoikeudet(this.state.casKayttaja?.groups, 'APP_EPERUSTEET_YLOPS'));
 
   public async init() {
     logger.info('Haetaan käyttäjän tiedot');
-    this.casKayttaja = await getCasKayttaja();
-    this.tiedot = (await KayttajatApi.getKayttaja()).data;
-    logger.info('Käyttäjän tiedot', this.tiedot);
+    this.state.casKayttaja = await getCasKayttaja();
+    this.state.tiedot = (await KayttajatApi.getKayttaja()).data;
+    logger.info('Käyttäjän tiedot', this.state.tiedot);
     await delay(1000); // EP-2371
-    this.oikeudet = ((await Opetussuunnitelmat.getOikeudet()).data as any);
-    logger.info('Käyttäjän oikeudet', this.oikeudet);
+    this.state.oikeudet = ((await Opetussuunnitelmat.getOikeudet()).data as any);
+    logger.info('Käyttäjän oikeudet', this.state.oikeudet);
   }
 
   public async fetchOrganisaatioVirkailijat() {
@@ -80,7 +67,7 @@ class KayttajaStore {
       .filter((org: any) => org.oid !== organizations.oph.oid)
       .map((org: any) => org.oid)
       .value();
-    this.virkailijat = (await Ulkopuoliset.getOrganisaatioVirkailijat(orgIds)).data as any[];
+    this.state.virkailijat = (await Ulkopuoliset.getOrganisaatioVirkailijat(orgIds)).data as any[];
   }
 
   public async fetchVirkailijatByOrganisaatio() {
@@ -109,7 +96,7 @@ class KayttajaStore {
         }
       });
     }
-    this.virkailijat = virkailijat;
+    this.state.virkailijat = virkailijat;
   }
 
   public hasOikeus(oikeus: Oikeus, kohde: OikeusKohde = 'opetussuunnitelma') {
@@ -135,13 +122,13 @@ class KayttajaStore {
       return false;
     }
     else {
-      const korkein = _.max(_.map(this.oikeudet[kohde], getOikeusArvo)) || 0;
+      const korkein = _.max(_.map(this.state.oikeudet[kohde], getOikeusArvo)) || 0;
       return korkein >= haettu;
     }
   }
 
   private hasHallintaoikeus(kohde) {
-    return _.includes(this.oikeudet[kohde], 'hallinta');
+    return _.includes(this.state.oikeudet[kohde], 'hallinta');
   }
 }
 

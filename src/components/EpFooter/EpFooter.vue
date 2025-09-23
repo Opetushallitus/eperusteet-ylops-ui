@@ -3,7 +3,9 @@
   <div class="footer-content">
     <div class="row">
       <div class="col-lg col-slot">
-        <img src="@assets/img/banners/oph_logo.svg" slot="footer-logo" :alt="$t('oph')" />
+        <template #footer-logo>
+          <img src="@assets/img/banners/oph_logo.svg" :alt="$t('oph')" />
+        </template>
       </div>
       <div class="col-md col-slot">
         <p class="linkki-kuvaus">{{ $t('opetushallitus') }}</p>
@@ -23,39 +25,30 @@
 </footer>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
+<script setup lang="ts" name="EpFooter">
+import { computed } from 'vue';
 import EpLinkki from '@shared/components/EpLinkki/EpLinkki.vue';
 
-@Component({
-  name: 'EpFooter',
-  components: {
-    EpLinkki,
-  },
-})
-export default class EpFooter extends Vue {
-  get linkit() {
-    return {
-      oph: {
-        fi: 'https://www.oph.fi/fi',
-        sv: 'https://www.oph.fi/sv',
-      },
-      opintopolku: {
-        fi: 'https://opintopolku.fi/wp/fi',
-        sv: 'https://studieinfo.fi/wp/sv/',
-      },
-      eperusteet: {
-        fi: 'https://eperusteet.opintopolku.fi/#/fi',
-        sv: 'https://eperusteet.opintopolku.fi/#/sv',
-      },
-      seloste: {
-        fi: 'https://opintopolku.fi/wp/tietosuojaseloste',
-        sv: 'https://studieinfo.fi/wp/dataskyddsbeskrivning/',
-      },
-    };
-  }
-}
+const linkit = computed(() => {
+  return {
+    oph: {
+      fi: 'https://www.oph.fi/fi',
+      sv: 'https://www.oph.fi/sv',
+    },
+    opintopolku: {
+      fi: 'https://opintopolku.fi/wp/fi',
+      sv: 'https://studieinfo.fi/wp/sv/',
+    },
+    eperusteet: {
+      fi: 'https://eperusteet.opintopolku.fi/#/fi',
+      sv: 'https://eperusteet.opintopolku.fi/#/sv',
+    },
+    seloste: {
+      fi: 'https://opintopolku.fi/wp/tietosuojaseloste',
+      sv: 'https://studieinfo.fi/wp/dataskyddsbeskrivning/',
+    },
+  };
+});
 </script>
 
 <style scoped lang="scss">

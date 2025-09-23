@@ -1,5 +1,5 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
 import { OpsVuosiluokkakokonaisuusKevytDto, OpetussuunnitelmaKevytDto, OppiaineSuppeaDtoTyyppiEnum } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';

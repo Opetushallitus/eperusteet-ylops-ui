@@ -6,7 +6,7 @@
       <div class="container-fluid">
         <div class="row no-gutters">
           <div class="col my-4 px-3 px-md-0">
-            <h1>{{ $t('lops-tyokalu-tervetuloa', { nimi }) }}</h1>
+            <h1>{{ $t('lops-tyokalu-tervetuloa', {nimi }) }}</h1>
             <p>{{ $t('ylops-tervetuloa-kuvaus') }}</p>
           </div>
         </div>
@@ -35,13 +35,12 @@
 </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator';
-
-import { Kayttajat } from '@/stores/kayttaja';
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { KayttajaStore, Kayttajat } from '@/stores/kayttaja';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EtusivuDto } from '@shared/api/ylops';
-import EpRoute from '@/mixins/EpRoute';
+import { useEpRoute } from '@/mixins/EpRoute';
 import TileUkk from './tiles/TileUkk.vue';
 import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
 import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
@@ -52,43 +51,32 @@ import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
-@Component({
-  components: {
-    EpNavigation,
-    EpSearch,
-    EpSpinner,
-    TileOpetussuunnitelmat,
-    TileOrganisaatio,
-    TileTiedotteet,
-    TileUkk,
-    TileValtakunnallisetPerusteet,
-    TileOppaat,
-  },
-  directives: {
-    oikeustarkastelu,
-  },
-})
-export default class Home extends Mixins(EpRoute) {
-  private rajain: string = '';
-  private etusivu: EtusivuDto = {
-    opetussuunnitelmatKeskeneraiset: 0,
-    opetussuunnitelmatJulkaistut: 0,
-    pohjatKeskeneraiset: 0,
-    pohjatJulkaistut: 0,
-  };
+const props = defineProps<{
+  kayttajaStore: KayttajaStore;
+}>();
 
-  async init() {
-    this.etusivu = await Kayttajat.getEtusivu();
-  }
+const { isLoading, init: baseInit } = useEpRoute();
 
-  get nimi() {
-    return Kayttajat.nimi;
-  }
+const rajain = ref('');
+const etusivu = ref<EtusivuDto>({
+  opetussuunnitelmatKeskeneraiset: 0,
+  opetussuunnitelmatJulkaistut: 0,
+  pohjatKeskeneraiset: 0,
+  pohjatJulkaistut: 0,
+});
 
-  get kayttaja() {
-    return Kayttajat.tiedot;
-  }
-}
+const init = async () => {
+  etusivu.value = await Kayttajat.getEtusivu();
+};
+
+// Override the base init function
+Object.assign(baseInit, init);
+
+const nimi = computed(() => kayttajaStore.value.nimi.value || null);
+
+const kayttajaStore = computed(() => props.kayttajaStore);
+
+const kayttaja = computed(() => Kayttajat.tiedot);
 </script>
 
 <style scoped lang="scss">

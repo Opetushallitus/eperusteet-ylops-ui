@@ -1,39 +1,40 @@
 <template>
-<div v-if="!isInitializing">
-  <router-view />
-  <EpNotification></EpNotification>
-</div>
+  <div class="minfull h-100">
+    <router-view v-if="mounted" />
+    <EpNotification />
+  </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref, onMounted, getCurrentInstance } from 'vue';
+import EpNotification from '@shared/components/EpNotification/EpNotification.vue';
 import { Kayttajat } from '@/stores/kayttaja';
 import { Ulkopuoliset } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-import EpNotification from '@shared/components/EpNotification/EpNotification.vue';
+import { useLoading } from 'vue-loading-overlay';
+import { loadingOptions } from './utils/loading';
+import { nextTick } from 'vue';
+import { setGlobalBvModal } from '@shared/utils/globals';
+import { getKaannokset } from '@shared/api/eperusteet';
 
-async function getLokalisoinnit() {
-  return (await Ulkopuoliset.getLokalisoinnit()).data as any;
-}
+const $loading = useLoading({
+  ...loadingOptions,
+  opacity: 1,
+});
 
-@Component({
-  components: {
-    EpNotification,
-  },
-})
-export default class App extends Vue {
-  private isInitializing = true;
+const mounted = ref(false);
 
-  public async mounted() {
-    const loader = (this as any).$loading.show({
-      color: '#2E5FD1',
-    });
-    await Kayttajat.init();
-    await Kielet.load(await getLokalisoinnit());
-    this.isInitializing = false;
-    loader.hide();
-  }
-}
+onMounted(async () => {
+  const instance = getCurrentInstance() as any;
+  await nextTick();
+  setGlobalBvModal(instance.ctx._bv__modal);
+
+  const loading = $loading.show();
+  Kielet.load(await getKaannokset());
+  await Kayttajat.init();
+  loading.hide();
+  mounted.value = true;
+});
 </script>
 
 <style lang="scss">

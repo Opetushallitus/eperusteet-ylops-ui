@@ -44,60 +44,69 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useEpRoute } from '@/mixins/EpRoute';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusVuosiluokkaValinnaisetStore } from '@/stores/perusopetusvuosiluokkavalinnaisetStore';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
+import { $t } from '@shared/utils/globals';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-@Component({
-  components: {
-    EpEditointi,
-    EpButton,
-  },
-})
-export default class RoutePerusopetusVuosiluokkaValinnaiset extends Mixins(EpRoute, EpOpsComponent) {
-  private editointiStore: EditointiStore | null = null;
-  private tabIndex: number = 0;
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async init() {
-    const vuosiluokkakokonaisuus = _.head(_.filter(this.ops.vuosiluokkakokonaisuudet, vlk =>
-      vlk.vuosiluokkakokonaisuus?.id === _.toNumber(this.$route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
-    this.editointiStore = new EditointiStore(new PerusopetusVuosiluokkaValinnaisetStore(this.ops, vuosiluokkakokonaisuus));
-  }
+// Use composables
+const route = useRoute();
+const router = useRouter();
+const { ops } = useEpOpsComponent(props.opetussuunnitelmaStore);
 
-  get sarakkeet() {
-    return [{
-      key: 'nimi',
-      label: this.$t('valinnaisen-nimi'),
-      sortable: true,
-    }, {
-      key: 'laajuus',
-      label: this.$t('laajuus'),
-      sortable: true,
-    }, {
-      key: 'vuosiluokat',
-      label: this.$t('vuosiluokat-ja-tavoitteet'),
-      sortable: true,
+// Reactive data
+const editointiStore = ref<EditointiStore | null>(null);
+const tabIndex = ref<number>(0);
+
+const init = async () => {
+  const vuosiluokkakokonaisuus = _.head(_.filter(ops.value.vuosiluokkakokonaisuudet, vlk =>
+    vlk.vuosiluokkakokonaisuus?.id === _.toNumber(route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
+  editointiStore.value = new EditointiStore(new PerusopetusVuosiluokkaValinnaisetStore(ops.value, vuosiluokkakokonaisuus));
+};
+
+const sarakkeet = computed(() => {
+  return [{
+    key: 'nimi',
+    label: $t('valinnaisen-nimi'),
+    sortable: true,
+  }, {
+    key: 'laajuus',
+    label: $t('laajuus'),
+    sortable: true,
+  }, {
+    key: 'vuosiluokat',
+    label: $t('vuosiluokat-ja-tavoitteet'),
+    sortable: true,
+  }];
+});
+
+const uusiOppiaine = () => {
+  router.push({
+    name: 'perusopetuspaikallinenoppiaine',
+    params: {
+      ...route.params,
+      oppiaineId: 'uusi',
     },
-    ];
-  }
+  });
+};
 
-  uusiOppiaine() {
-    this.$router.push({
-      name: 'perusopetuspaikallinenoppiaine',
-      params: {
-        ...this.$router.currentRoute.params,
-        oppiaineId: 'uusi',
-      },
-    });
-  }
-}
+// Initialize on mount
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style scoped lang="scss">

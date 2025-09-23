@@ -180,7 +180,9 @@
         </div>
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-tavoitteet" :first="true">
-            <div class="alueotsikko" slot="header"><h3>{{ $t('tavoitteet') }}</h3></div>
+            <template #header>
+              <div class="alueotsikko"><h3>{{ $t('tavoitteet') }}</h3></div>
+            </template>
             <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx+'data.moduulit.tavoitteet'">
               <div class="moduuliotsikko"><h4>{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</h4></div>
               <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].tavoitteet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
@@ -209,7 +211,9 @@
 
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-keskeiset-sisallot">
-            <div class="alueotsikko" slot="header"><h3>{{ $t('keskeiset-sisallot') }}</h3></div>
+            <template #header>
+              <div class="alueotsikko"><h3>{{ $t('keskeiset-sisallot') }}</h3></div>
+            </template>
             <div class="perustesisalto" v-for="(moduuli, idx) in data.moduulit" :key="idx+'data.moduulit.keskeiset'">
               <div class="moduuliotsikko"><h4>{{ $kaanna(moduulitMap[moduuli.koodiUri].nimi) }}</h4></div>
               <ep-prefix-list :value="moduulitMap[moduuli.koodiUri].sisallot" kohde="kohde" arvot="sisallot">
@@ -239,7 +243,9 @@
 
         <div class="osio" v-if="!isLuva">
          <ep-collapse tyyppi="opintojakson-laaja-alaiset">
-            <div class="alueotsikko" slot="header"><h3>{{ $t('laaja-alaiset-sisallot') }}</h3></div>
+            <template #header>
+              <div class="alueotsikko"><h3>{{ $t('laaja-alaiset-sisallot') }}</h3></div>
+            </template>
 
             <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineidenTiedot" :key="idx+'opintojaksonOppiaineet'">
               <div v-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
@@ -265,7 +271,7 @@
             <div class="moduuliotsikko"><h4>{{ $t('paikallinen-lisays-opintojakso-laaja-alainen') }}</h4></div>
 
             <div class="paikallinen-laaja-alainen" v-for="(lo, index) in data.laajaAlainenOsaaminen" :key="index+'laajaAlainenOsaaminen'">
-              <div slot="header">
+              <div>
                 <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
                   <h5 class="d-inline">{{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}</h5>
                   <b-button variant="link" @click.stop="poistaLaaja(lo)" v-if="isEditing">
@@ -294,7 +300,7 @@
               <div v-if="paikallinenOpintojakso.laajaAlainenOsaaminen && paikallinenOpintojakso.laajaAlainenOsaaminen.length > 0">
                 <div class="moduuliotsikko"><h4>{{ $kaanna(paikallinenOpintojakso.nimi) }}</h4></div>
                 <div class="paikallinen-laaja-alainen" v-for="(lo, index) in paikallinenOpintojakso.laajaAlainenOsaaminen" :key="index+'paik-laaja-osa'">
-                  <div slot="header" class="moduuliotsikko">
+                  <div class="moduuliotsikko">
                     <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
                       <h5>{{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}</h5>
                     </span>
@@ -312,7 +318,9 @@
 
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-arviointi">
-            <div class="alueotsikko" slot="header"><h3>{{ $t('opintojakson-arviointi') }}</h3></div>
+            <template #header>
+              <div class="alueotsikko"><h3>{{ $t('opintojakson-arviointi') }}</h3></div>
+            </template>
 
             <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineidenTiedot" :key="idx+'op-arviointi'">
               <div v-if="oppiaine.arviointi && oppiaine.arviointi.kuvaus">
@@ -349,7 +357,9 @@
 
         <div class="osio" v-if="isLuva">
           <ep-collapse tyyppi="opiskeluymparisto-ja-tyotavat">
-            <div class="alueotsikko" slot="header"><h3>{{ $t('opiskeluymparisto-ja-tyotavat') }}</h3></div>
+            <template #header>
+              <div class="alueotsikko"><h3>{{ $t('opiskeluymparisto-ja-tyotavat') }}</h3></div>
+            </template>
 
             <div class="perustesisalto" v-for="(oppiaine, idx) in opintojaksonOppiaineidenTiedot" :key="idx+'op-opiskeluymparistoTyotavat'">
               <div v-if="oppiaine.opiskeluymparistoTyotavat && oppiaine.opiskeluymparistoTyotavat.kuvaus">
@@ -386,7 +396,9 @@
 
         <div class="osio">
           <ep-collapse tyyppi="opintojakson-vapaa-kuvaus" :border-bottom="false">
-            <div class="alueotsikko" slot="header"><h3>{{ $t('opintojakson-vapaa-kuvaus') }}</h3></div>
+            <template #header>
+              <div class="alueotsikko"><h3>{{ $t('opintojakson-vapaa-kuvaus') }}</h3></div>
+            </template>
             <div class="alert alert-info" v-if="!isEditing && !data.kuvaus">{{ $t('ei-kuvausta') }}</div>
             <ep-content
               :kasiteHandler="kasiteHandler"
@@ -403,8 +415,10 @@
 </div>
 </template>
 
-<script lang="ts">
-import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import _ from 'lodash';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
@@ -413,22 +427,23 @@ import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 import EpList from '@shared/components/forms/EpList.vue';
-import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
-import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
-import { EditointiStore, editointi } from '@shared/components/EpEditointi/EditointiStore';
-import { OpintojaksoStore } from '@/stores/opintojaksoStore';
-import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat, Lops2019OpintojaksonModuuliDto } from '@shared/api/ylops';
-import { PerusteCache } from '@/stores/peruste';
-import EpOpsRoute from '@/mixins/EpOpsRoute';
-import * as _ from 'lodash';
-import EpOpintojaksonModuuli from '@shared/components/EpOpintojaksonModuuli/EpOpintojaksonModuuli.vue';
-import EpOpintojaksoSelect from './EpOpintojaksoSelect.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
-import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
+import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
+import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
+import EpOpintojaksonModuuli from '@shared/components/EpOpintojaksonModuuli/EpOpintojaksonModuuli.vue';
+import EpOpintojaksoSelect from './EpOpintojaksoSelect.vue';
+import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
+import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
+import { OpintojaksoStore } from '@/stores/opintojaksoStore';
+import { PerusteCache } from '@/stores/peruste';
+import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat, Lops2019OpintojaksonModuuliDto } from '@shared/api/ylops';
 import { KoodistoLops2019LaajaAlaiset, koodiSorters, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
+import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { $kaanna, $t, $vahvista } from '@shared/utils/globals';
 
 interface OpintojaksonOppiaine {
   koodi: string;
@@ -437,459 +452,444 @@ interface OpintojaksonOppiaine {
   isModuuliton: boolean;
 }
 
-@Component({
-  components: {
-    EpInfoPopover,
-    EpCollapse,
-    EpColorIndicator,
-    EpCommentThreads,
-    EpContent,
-    EpEditointi,
-    EpField,
-    EpFormContent,
-    EpInput,
-    EpList,
-    EpOpintojaksoSelect,
-    EpOpintojaksonModuuli,
-    EpOppiaineSelector,
-    EpPrefixList,
-    EpToggle,
-    EpMaterialIcon,
-  },
-})
-export default class RouteOpintojakso extends Mixins(EpOpsRoute) {
-  @Prop({ required: false })
-  private oppiaineUri!: string;
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+  oppiaineUri?: string;
+}>();
 
-  private oppiaineQuery = '';
-  private cache!: PerusteCache;
-  private laajaAlaisetKoodit: any | null = null;
-  private tempModules: Lops2019OpintojaksonModuuliDto[] | undefined = undefined;
+// Use composables
+const route = useRoute();
+const { store, opsId, kasiteHandler, kuvaHandler, isLuva } = useEpOpsRoute(props.opetussuunnitelmaStore);
 
-  private editointiStore: EditointiStore | null = null;
+// Component state
+const oppiaineQuery = ref('');
+const cache = ref<PerusteCache | null>(null);
+const laajaAlaisetKoodit = ref<any | null>(null);
+const tempModules = ref<Lops2019OpintojaksonModuuliDto[] | undefined>(undefined);
+const editointiStore = ref<EditointiStore | null>(null);
 
-  get laajaAlaisetSorted() {
-    return _.sortBy(this.laajaAlaisetKoodit, 'koodiArvo');
+// Computed properties
+const laajaAlaisetSorted = computed(() => {
+  return _.sortBy(laajaAlaisetKoodit.value, 'koodiArvo');
+});
+
+const editable = computed({
+  get: () => editointiStore.value?.data.value,
+  set: (data) => editointiStore.value?.setData(data)
+});
+
+const isLoading = computed(() => {
+  return editointiStore.value?.isLoading?.value || false;
+});
+
+const opetussuunnitelmaStoreRef = computed(() => {
+  return store.value;
+});
+
+const versionumero = computed(() => {
+  return _.parseInt(_.get(route, 'query.versionumero') as any);
+});
+
+// Methods
+const remove = async (data: any) => {
+  return editointiStore.value?.remove();
+};
+
+const init = async () => {
+  cache.value = await PerusteCache.of(_.parseInt(route.params.id as string));
+  try {
+    laajaAlaisetKoodit.value = (await Opetussuunnitelmat.getKoodistonKoodit(
+      opsId.value,
+      KoodistoLops2019LaajaAlaiset)).data;
+  }
+  catch (err) {
+    console.error(err);
+  }
+};
+
+const oppiaineFilter = (oppiaine) => {
+  return !_.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
+    _.startsWith(oppiaine.koodiUri, laajennos));
+};
+
+// Lifecycle
+onMounted(async () => {
+  await init();
+
+  editointiStore.value = new EditointiStore(new OpintojaksoStore(
+    opsId.value,
+    route.params.opintojaksoId,
+    versionumero.value,
+    store.value, // Access the parent store
+    route.params.opintojaksoId === 'uusi',
+    _.get(route, 'query.oppiaineet') as string,
+  ));
+});
+
+const laajaAlaistenKoodit = computed(() => {
+  const lisatyt = _.map(editable.value?.laajaAlainenOsaaminen || [], 'koodi');
+  return _.map(laajaAlaisetKoodit.value, lo => ({
+    koodi: lo.koodiUri,
+    nimi: lo.nimi,
+    hasPaikallinenKuvaus: _.includes(lisatyt, lo.koodi),
+  }));
+});
+
+const laajaAlaisetKooditByUri = computed(() => {
+  return _.keyBy(laajaAlaistenKoodit.value, 'koodi');
+});
+
+const paikallisetOppiaineet = computed(() => {
+  return _.chain(store.value.paikallisetOppiaineet)
+    .filter('koodi')
+    .map((oa) => {
+      return {
+        ...oa,
+        koodi: {
+          uri: oa.koodi,
+        },
+      };
+    })
+    .value();
+});
+
+const oppiaineet = computed(() => {
+  return [
+    ...cache.value?.peruste.oppiaineet || [],
+    ...paikallisetOppiaineet.value,
+  ] as Lops2019OppiaineDto[];
+});
+
+const laajuusJohdettavusTeksti = computed(() => {
+  if (!_.isEmpty(editable.value?.moduulit) && !_.isEmpty(editable.value?.paikallisetOpintojaksot)) {
+    return `(${$t('johdetaan-moduuleista-ja-opintojaksoista')})`;
+  }
+  else if (!_.isEmpty(editable.value?.moduulit) && lisalaajuus.value > 0) {
+    return `(${_.toLower($t('moduulit') as string)} ${laajuusModuuleista.value} ${$t('op')}, ${_.toLower($t('lisalaajuus') as string)} ${lisalaajuus.value} ${$t('op')})`;
+  }
+  else if (!_.isEmpty(editable.value?.moduulit)) {
+    return `(${$t('johdetaan-moduuleista')})`;
+  }
+  else if (!_.isEmpty(editable.value?.paikallisetOpintojaksot)) {
+    return `(${$t('johdetaan-opintojaksoista')})`;
   }
 
-  get editable() {
-    return this.editointiStore?.data.value;
-  }
+  return '';
+});
 
-  set editable(data) {
-    this.editointiStore?.setData(data);
-  }
-
-  get isLoading() {
-    return this.editointiStore?.isLoading?.value || false;
-  }
-
-  get opetussuunnitelmaStoreRef() {
-    return (this as any).store;
-  }
-
-  async mounted() {
-    await this.init();
-
-    this.editointiStore = new EditointiStore(new OpintojaksoStore(
-      this.opsId,
-      this.$route.params.opintojaksoId,
-      this.versionumero,
-      (this as any).store, // Access the parent store
-      this.$route.params.opintojaksoId === 'uusi',
-      _.get(this.$route, 'query.oppiaineet') as string,
-    ));
-  }
-
-  async remove(data: any) {
-    return this.editointiStore?.remove();
-  }
-
-  async init() {
-    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
-    try {
-      this.laajaAlaisetKoodit = (await Opetussuunnitelmat.getKoodistonKoodit(
-        this.opsId,
-        KoodistoLops2019LaajaAlaiset)).data;
-    }
-    catch (err) {
-      console.error(err);
-    }
-  }
-
-  oppiaineFilter(oppiaine) {
-    return !_.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
-      _.startsWith(oppiaine.koodiUri, laajennos));
-  }
-
-  get versionumero() {
-    return _.parseInt(_.get(this, '$route.query.versionumero') as any);
-  }
-
-  get laajaAlaistenKoodit() {
-    const lisatyt = _.map(this.editable!.laajaAlainenOsaaminen!, 'koodi');
-    return _.map(this.laajaAlaisetKoodit, lo => ({
-      koodi: lo.koodiUri,
-      nimi: lo.nimi,
-      hasPaikallinenKuvaus: _.includes(lisatyt, lo.koodi),
-    }));
-  }
-
-  get laajaAlaisetKooditByUri() {
-    return _.keyBy(this.laajaAlaistenKoodit, 'koodi');
-  }
-
-  get paikallisetOppiaineet() {
-    return _.chain((this as any).store.paikallisetOppiaineet)
-      .filter('koodi')
-      .map((oa) => {
-        return {
-          ...oa,
-          koodi: {
-            uri: oa.koodi,
-          },
-        };
-      })
-      .value();
-  }
-
-  get oppiaineet() {
-    return [
-      ...this.cache.peruste.oppiaineet,
-      ...this.paikallisetOppiaineet,
-    ] as Lops2019OppiaineDto[];
-  }
-
-  get laajuusJohdettavusTeksti() {
-    if (!_.isEmpty(this.editable!.moduulit) && !_.isEmpty(this.editable!.paikallisetOpintojaksot)) {
-      return `(${this.$t('johdetaan-moduuleista-ja-opintojaksoista')})`;
-    }
-    else if (!_.isEmpty(this.editable!.moduulit) && this.lisalaajuus > 0) {
-      return `(${_.toLower(this.$t('moduulit') as string)} ${this.laajuusModuuleista} ${this.$t('op')}, ${_.toLower(this.$t('lisalaajuus') as string)} ${this.lisalaajuus} ${this.$t('op')})`;
-    }
-    else if (!_.isEmpty(this.editable!.moduulit)) {
-      return `(${this.$t('johdetaan-moduuleista')})`;
-    }
-    else if (!_.isEmpty(this.editable!.paikallisetOpintojaksot)) {
-      return `(${this.$t('johdetaan-opintojaksoista')})`;
-    }
-
-    return '';
-  }
-
-  get laajuus() {
-    let result: number = _.chain(this.editable!.oppiaineet)
-      .filter((oppiaine) => !_.includes(_.map(this.paikallistenOpintojaksojenOppiaineet, 'koodi'), oppiaine.koodi))
-      .filter('laajuus')
-      .map('laajuus')
+const laajuus = computed(() => {
+  let result: number = _.chain(editable.value?.oppiaineet || [])
+    .filter((oppiaine) => !_.includes(_.map(paikallistenOpintojaksojenOppiaineet.value, 'koodi'), oppiaine.koodi))
+    .filter('laajuus')
+    .map('laajuus')
+    .map(_.parseInt)
+    .sum()
+    .value();
+  if (editable.value && editable.value.moduulit && !_.isEmpty(editable.value.moduulit)) {
+    result += _.chain(editable.value.moduulit)
+      .map('koodiUri')
+      .map((uri: string) => moduulitMap.value[uri].laajuus)
       .map(_.parseInt)
       .sum()
       .value();
-    if (this.editable && this.editable.moduulit && !_.isEmpty(this.editable.moduulit)) {
-      result += _.chain(this.editable.moduulit)
-        .map('koodiUri')
-        .map((uri: string) => this.moduulitMap[uri].laajuus)
-        .map(_.parseInt)
-        .sum()
-        .value();
-    }
-    result += _.chain(this.editable!.paikallisetOpintojaksot)
-      .map('laajuus')
-      .sum()
-      .value();
-
-    return result;
   }
+  result += _.chain(editable.value?.paikallisetOpintojaksot || [])
+    .map('laajuus')
+    .sum()
+    .value();
 
-  get oppiaineetMap() {
-    return _.keyBy(this.oppiaineetJaOppimaarat, 'koodi.uri');
-  }
+  return result;
+});
 
-  get oppiaineidenModuulit(): any[] {
-    return _.chain(this.oppiaineetJaOppimaarat)
-      .map((oa: any) => {
-        if (oa.perusteenOppiaineUri) {
-          return {
-            ...oa,
-            moduulit: this.oppiaineetMap[oa.perusteenOppiaineUri].moduulit,
-          };
-        }
-        else {
-          return oa;
-        }
-      })
-      .value();
-  }
+const oppiaineetJaOppimaarat = computed(() => {
+  return _.chain(oppiaineet.value)
+    .map((oa: any) => [oa, ..._.map(oa.oppimaarat, om => ({
+      ...om,
+      parentUri: oa.koodi.uri,
+    }))])
+    .flatten()
+    .map((oa: Lops2019OppiaineDto) => {
+      return {
+        ...oa,
+        moduulit: _.sortBy(oa.moduulit, ...koodiSorters()),
+      };
+    })
+    .value();
+});
 
-  get oppiaineidenModuulitMap() {
-    return _.chain(this.oppiaineidenModuulit)
-      .keyBy('koodi.uri')
-      .value();
-  }
+const oppiaineetMap = computed(() => {
+  return _.keyBy(oppiaineetJaOppimaarat.value, 'koodi.uri');
+});
 
-  get moduulit() {
-    return _.chain(this.oppiaineetJaOppimaarat)
-      .map((oa) => _.map(oa.moduulit, (moduuli) => ({
-        ...moduuli,
-        oppiaineUri: oa.koodi!.uri,
-      })))
-      .flatten()
-      .sortBy(...koodiSorters())
-      .value() as (Lops2019ModuuliDto & { oppiaineUri: string })[];
-  }
-
-  get moduulitMap() {
-    return _.chain(this.moduulit)
-      .keyBy('koodi.uri')
-      .value();
-  }
-
-  get oppiaineetJaOppimaarat(): any[] {
-    return _.chain(this.oppiaineet)
-      .map((oa: any) => [oa, ..._.map(oa.oppimaarat, om => ({
-        ...om,
-        parentUri: oa.koodi.uri,
-      }))])
-      .flatten()
-      .map((oa: Lops2019OppiaineDto) => {
+const oppiaineidenModuulit = computed(() => {
+  return _.chain(oppiaineetJaOppimaarat.value)
+    .map((oa: any) => {
+      if (oa.perusteenOppiaineUri) {
         return {
           ...oa,
-          moduulit: _.sortBy(oa.moduulit, ...koodiSorters()),
-        };
-      })
-      .value();
-  }
-
-  get filteredOppiaineet() {
-    return _.chain(this.oppiaineetJaOppimaarat)
-      .filter((org) => Kielet.search(this.oppiaineQuery, org.nimi))
-      .map('koodi.uri')
-      .value();
-  }
-
-  get oppiaineetModuuliTaiIlman() {
-    return _.chain(this.editable!.oppiaineet)
-      .filter((oppiaine) => !_.includes(_.map(this.paikallistenOpintojaksojenOppiaineet, 'koodi'), oppiaine.koodi))
-      .value();
-  }
-
-  get opintojaksonOppiaineet(): any[] {
-    return _.chain(this.editable!.oppiaineet)
-      .map(({ koodi }) => koodi)
-      .sortBy(...koodiSorters() as any[])
-      .uniq()
-      .map((uri: string) => {
-        if (this.oppiaineetMap[uri].parentUri) {
-          return [this.oppiaineetMap[uri].parentUri, uri];
-        }
-        else {
-          return [uri];
-        }
-      })
-      .flatten()
-      .map((uri: string) => {
-        return {
-          ...this.oppiaineetMap[uri],
-        };
-      })
-      .value();
-  }
-
-  get opintojaksonOppiaineidenTiedot() {
-    return _.chain(this.editable!.oppiaineet)
-      .map(({ koodi }) => koodi)
-      .sortBy(...koodiSorters() as any[])
-      .uniq()
-      .map((uri: string) => {
-        let oppiaineet = [this.oppiaineetMap[uri]];
-        if (this.oppiaineetMap[uri].parentUri) {
-          oppiaineet = [this.oppiaineetMap[uri], this.oppiaineetMap[this.oppiaineetMap[uri].parentUri!]];
-        }
-
-        if ((this.oppiaineetMap[uri] as any).perusteenOppiaineUri) {
-          const perusteenOppiaine = this.oppiaineetMap[(this.oppiaineetMap[uri] as any).perusteenOppiaineUri];
-          let perusteenOppiaineenParent;
-          if (perusteenOppiaine.parentUri) {
-            perusteenOppiaineenParent = this.oppiaineetMap[perusteenOppiaine.parentUri!];
-          }
-          oppiaineet = [this.oppiaineetMap[uri], perusteenOppiaine, perusteenOppiaineenParent];
-        }
-
-        return {
-          nimi: this.oppiaineetMap[uri].nimi,
-          arviointi: this.getOppiaineTieto(oppiaineet, 'arviointi'),
-          laajaAlaisetOsaamiset: this.getOppiaineTieto(oppiaineet, 'laajaAlaisetOsaamiset'),
-          opiskeluymparistoTyotavat: this.getOppiaineTieto(oppiaineet, 'opiskeluymparistoTyotavat'),
-        };
-      })
-      .value();
-  }
-
-  getOppiaineTieto(oppiaineet: any[], tieto: string): any {
-    if (oppiaineet && oppiaineet.length > 0) {
-      const result = _.chain(oppiaineet)
-        .filter(oppiaine => oppiaine && oppiaine[tieto] && oppiaine[tieto].kuvaus)
-        .map(oppiaine => oppiaine[tieto])
-        .head()
-        .value();
-      return result || null;
-    }
-
-    return null;
-  }
-
-  get paikallistenOpintojaksojenOppiaineet() {
-    return _.chain(this.editable!.paikallisetOpintojaksot)
-      .map('oppiaineet')
-      .flatMap()
-      .value();
-  }
-
-  get editoitavaOpintojaksoValittuToisessaOpintojaksossa() {
-    return !_.isEmpty(_.filter((this as any).store.opintojaksot, opintojakso => _.includes(_.map(opintojakso.paikallisetOpintojaksot, 'koodi'), this.editable!.koodi)));
-  }
-
-  get paikallistenOppiaineidenOpintojaksot() {
-    if (this.editoitavaOpintojaksoValittuToisessaOpintojaksossa) {
-      return [];
-    }
-
-    return _.chain(this.editable!.oppiaineet)
-      .filter('isPaikallinenOppiaine')
-      .map((oppiaine) => {
-        return {
-          oppiaine,
-          opintojaksot: _.chain((this as any).store.opintojaksot)
-            // valittavalla ei saa olla paikallisia opintojaksoja (ei saa olla parentti)
-            .filter((opintojakso) => _.isEmpty(opintojakso.paikallisetOpintojaksot))
-            // valittavassa opintojaksossa on editoitavan opintojakson oppiaine
-            .filter((opintojakso) => _.includes(_.map(opintojakso.oppiaineet, 'koodi'), oppiaine.koodi))
-            // valittava ei ole editoitava itse
-            .filter((opintojakso) => opintojakso.koodi !== this.editable!.koodi)
-            .value(),
-        };
-      })
-      .filter(oppiaine => !_.isEmpty(oppiaine.opintojaksot))
-      .reject(oppiaine => _.includes(this.oppiaineetJoiltaValittuModuuli, oppiaine.oppiaine.koodi))
-      .sortBy(...koodiSorters() as any[])
-      .value();
-  }
-
-  get oppiaineetJoiltaValittuModuuli() {
-    return _.chain(this.oppiaineidenModuulit)
-      .filter(oppiaineMod => _.some(_.map(oppiaineMod.moduulit, 'koodi.uri'), (oppainemoduri) => _.includes(_.map(this.editable!.moduulit, 'koodiUri'), oppainemoduri)))
-      .map('koodi.uri')
-      .value();
-  }
-
-  get esitettavaPaikallistenOppiaineidenOpintojaksot() {
-    return _.chain(this.editable!.oppiaineet)
-      .filter('isPaikallinenOppiaine')
-      .map((oppiaine) => {
-        return {
-          oppiaine,
-          opintojaksot: _.filter(this.editable!.paikallisetOpintojaksot, (paikallinenOpintojakso) => _.includes(_.map(paikallinenOpintojakso.oppiaineet, 'koodi'), oppiaine.koodi)),
-        };
-      })
-      .filter(oppiaineOpintojakso => !_.isEmpty(oppiaineOpintojakso.opintojaksot))
-      .sortBy(...koodiSorters() as any[])
-      .value();
-  }
-
-  get lisalaajuus() {
-    return this.editable!.oppiaineet!.reduce((acc, { laajuus }) => acc + laajuus!, 0);
-  }
-
-  get laajuusModuuleista(): number {
-    return this.laajuus - this.lisalaajuus;
-  }
-
-  private toggleLaajuus(oa, value) {
-    oa.isModuuliton = value;
-    if (value && this.editable) {
-      this.tempModules = this.editable.moduulit!.length > 0 ? this.editable.moduulit : undefined;
-      this.editable = {
-        ...this.editable,
-        moduulit: _.reject(this.editable.moduulit, moduuli => {
-          const moduulikoodit = _.map(this.oppiaineidenModuulitMap[oa.koodi].moduulit, 'koodi.uri');
-          return _.includes(moduulikoodit, moduuli.koodiUri);
-        }) as any[],
-      };
-    }
-    else if (this.tempModules) {
-      this.editable = {
-        ...this.editable,
-        moduulit: this.tempModules,
-      };
-    }
-  }
-
-  private async poistaLaaja(laaja) {
-    if (await this.vahvista('vahvista-poisto')) {
-      if (this.editable) {
-        const filtered = _.reject(this.editable.laajaAlainenOsaaminen!,
-          (lo) => laaja.koodi === lo.koodi);
-        this.editable = {
-          ...this.editable,
-          laajaAlainenOsaaminen: filtered,
+          moduulit: oppiaineetMap.value[oa.perusteenOppiaineUri].moduulit,
         };
       }
-    }
+      else {
+        return oa;
+      }
+    })
+    .value();
+});
+
+const oppiaineidenModuulitMap = computed(() => {
+  return _.chain(oppiaineidenModuulit.value)
+    .keyBy('koodi.uri')
+    .value();
+});
+
+const moduulit = computed(() => {
+  return _.chain(oppiaineetJaOppimaarat.value)
+    .map((oa) => _.map(oa.moduulit, (moduuli) => ({
+      ...moduuli,
+      oppiaineUri: oa.koodi!.uri,
+    })))
+    .flatten()
+    .sortBy(...koodiSorters())
+    .value() as (Lops2019ModuuliDto & { oppiaineUri: string })[];
+});
+
+const moduulitMap = computed(() => {
+  return _.chain(moduulit.value)
+    .keyBy('koodi.uri')
+    .value();
+});
+
+const filteredOppiaineet = computed(() => {
+  return _.chain(oppiaineetJaOppimaarat.value)
+    .filter((org) => Kielet.search(oppiaineQuery.value, org.nimi))
+    .map('koodi.uri')
+    .value();
+});
+
+const oppiaineetModuuliTaiIlman = computed(() => {
+  return _.chain(editable.value?.oppiaineet || [])
+    .filter((oppiaine) => !_.includes(_.map(paikallistenOpintojaksojenOppiaineet.value, 'koodi'), oppiaine.koodi))
+    .value();
+});
+
+const paikallistenOpintojaksojenOppiaineet = computed(() => {
+  return _.chain(editable.value?.paikallisetOpintojaksot || [])
+    .map('oppiaineet')
+    .flatMap()
+    .value();
+});
+
+const lisalaajuus = computed(() => {
+  return (editable.value?.oppiaineet || []).reduce((acc, { laajuus }) => acc + (laajuus || 0), 0);
+});
+
+const laajuusModuuleista = computed(() => {
+  return laajuus.value - lisalaajuus.value;
+});
+
+const opintojaksonOppiaineet = computed(() => {
+  return _.chain(editable.value?.oppiaineet || [])
+    .map(({ koodi }) => koodi)
+    .sortBy(...koodiSorters() as any[])
+    .uniq()
+    .map((uri: string) => {
+      if (oppiaineetMap.value[uri]?.parentUri) {
+        return [oppiaineetMap.value[uri].parentUri, uri];
+      }
+      else {
+        return [uri];
+      }
+    })
+    .flatten()
+    .map((uri: string) => {
+      return {
+        ...oppiaineetMap.value[uri],
+      };
+    })
+    .value();
+});
+
+const getOppiaineTieto = (oppiaineet: any[], tieto: string): any => {
+  if (oppiaineet && oppiaineet.length > 0) {
+    const result = _.chain(oppiaineet)
+      .filter(oppiaine => oppiaine && oppiaine[tieto] && oppiaine[tieto].kuvaus)
+      .map(oppiaine => oppiaine[tieto])
+      .head()
+      .value();
+    return result || null;
   }
 
-  private addLaaja({ koodi }) {
-    if (this.editable) {
-      this.editable = {
-        ...this.editable,
-        laajaAlainenOsaaminen: [
-          ...this.editable.laajaAlainenOsaaminen!,
-          { koodi },
-        ],
+  return null;
+};
+
+const opintojaksonOppiaineidenTiedot = computed(() => {
+  return _.chain(editable.value?.oppiaineet || [])
+    .map(({ koodi }) => koodi)
+    .sortBy(...koodiSorters() as any[])
+    .uniq()
+    .map((uri: string) => {
+      let oppiaineet = [oppiaineetMap.value[uri]];
+      if (oppiaineetMap.value[uri]?.parentUri) {
+        oppiaineet = [oppiaineetMap.value[uri], oppiaineetMap.value[oppiaineetMap.value[uri].parentUri!]];
+      }
+
+      if ((oppiaineetMap.value[uri] as any)?.perusteenOppiaineUri) {
+        const perusteenOppiaine = oppiaineetMap.value[(oppiaineetMap.value[uri] as any).perusteenOppiaineUri];
+        let perusteenOppiaineenParent;
+        if (perusteenOppiaine?.parentUri) {
+          perusteenOppiaineenParent = oppiaineetMap.value[perusteenOppiaine.parentUri!];
+        }
+        oppiaineet = [oppiaineetMap.value[uri], perusteenOppiaine, perusteenOppiaineenParent];
+      }
+
+      return {
+        nimi: oppiaineetMap.value[uri]?.nimi,
+        arviointi: getOppiaineTieto(oppiaineet, 'arviointi'),
+        laajaAlaisetOsaamiset: getOppiaineTieto(oppiaineet, 'laajaAlaisetOsaamiset'),
+        opiskeluymparistoTyotavat: getOppiaineTieto(oppiaineet, 'opiskeluymparistoTyotavat'),
+      };
+    })
+    .value();
+});
+
+const editoitavaOpintojaksoValittuToisessaOpintojaksossa = computed(() => {
+  return !_.isEmpty(_.filter(store.value.opintojaksot, opintojakso => _.includes(_.map(opintojakso.paikallisetOpintojaksot, 'koodi'), editable.value?.koodi)));
+});
+
+const oppiaineetJoiltaValittuModuuli = computed(() => {
+  return _.chain(oppiaineidenModuulit.value)
+    .filter(oppiaineMod => _.some(_.map(oppiaineMod.moduulit, 'koodi.uri'), (oppainemoduri) => _.includes(_.map(editable.value?.moduulit || [], 'koodiUri'), oppainemoduri)))
+    .map('koodi.uri')
+    .value();
+});
+
+const paikallistenOppiaineidenOpintojaksot = computed(() => {
+  if (editoitavaOpintojaksoValittuToisessaOpintojaksossa.value) {
+    return [];
+  }
+
+  return _.chain(editable.value?.oppiaineet || [])
+    .filter('isPaikallinenOppiaine')
+    .map((oppiaine) => {
+      return {
+        oppiaine,
+        opintojaksot: _.chain(store.value.opintojaksot)
+          // valittavalla ei saa olla paikallisia opintojaksoja (ei saa olla parentti)
+          .filter((opintojakso) => _.isEmpty(opintojakso.paikallisetOpintojaksot))
+          // valittavassa opintojaksossa on editoitavan opintojakson oppiaine
+          .filter((opintojakso) => _.includes(_.map(opintojakso.oppiaineet, 'koodi'), oppiaine.koodi))
+          // valittava ei ole editoitava itse
+          .filter((opintojakso) => opintojakso.koodi !== editable.value?.koodi)
+          .value(),
+      };
+    })
+    .filter(oppiaine => !_.isEmpty(oppiaine.opintojaksot))
+    .reject(oppiaine => _.includes(oppiaineetJoiltaValittuModuuli.value, oppiaine.oppiaine.koodi))
+    .sortBy(...koodiSorters() as any[])
+    .value();
+});
+
+const esitettavaPaikallistenOppiaineidenOpintojaksot = computed(() => {
+  return _.chain(editable.value?.oppiaineet || [])
+    .filter('isPaikallinenOppiaine')
+    .map((oppiaine) => {
+      return {
+        oppiaine,
+        opintojaksot: _.filter(editable.value?.paikallisetOpintojaksot || [], (paikallinenOpintojakso) => _.includes(_.map(paikallinenOpintojakso.oppiaineet, 'koodi'), oppiaine.koodi)),
+      };
+    })
+    .filter(oppiaineOpintojakso => !_.isEmpty(oppiaineOpintojakso.opintojaksot))
+    .sortBy(...koodiSorters() as any[])
+    .value();
+});
+
+const toggleLaajuus = (oa, value) => {
+  oa.isModuuliton = value;
+  if (value && editable.value) {
+    tempModules.value = editable.value.moduulit && editable.value.moduulit.length > 0 ? editable.value.moduulit : undefined;
+    editable.value = {
+      ...editable.value,
+      moduulit: _.reject(editable.value.moduulit, moduuli => {
+        const moduulikoodit = _.map(oppiaineidenModuulitMap.value[oa.koodi]?.moduulit || [], 'koodi.uri');
+        return _.includes(moduulikoodit, moduuli.koodiUri);
+      }) as any[],
+    };
+  }
+  else if (tempModules.value) {
+    editable.value = {
+      ...editable.value,
+      moduulit: tempModules.value,
+    };
+  }
+};
+
+const poistaLaaja = async (laaja) => {
+  if (await $vahvista('vahvista-poisto')) {
+    if (editable.value) {
+      const filtered = _.reject(editable.value.laajaAlainenOsaaminen || [],
+        (lo) => laaja.koodi === lo.koodi);
+      editable.value = {
+        ...editable.value,
+        laajaAlainenOsaaminen: filtered,
       };
     }
   }
+};
 
-  updateOppiaineet(koodit: string[]) {
-    if (!this.editable) return;
-
-    const vanhat = _.map(this.editable.oppiaineet, 'koodi');
-    const uudet = _.filter(koodit, koodi => !_.includes(vanhat, koodi));
-
-    const filteredModuulit = _.filter(this.editable.moduulit, moduuli => {
-      const moduuliurit = _.chain(koodit)
-        .map(koodi => this.oppiaineidenModuulitMap[koodi].moduulit)
-        .flatMap()
-        .map('koodi.uri')
-        .value();
-      return _.includes(moduuliurit, moduuli.koodiUri);
-    }) as any[];
-
-    const filteredOppiaineet = _.filter(this.editable.oppiaineet, (oppiaine) => _.includes(koodit, oppiaine.koodi));
-    const updatedOppiaineet = [
-      ...filteredOppiaineet,
-      ..._.map(uudet, koodi => ({
-        koodi,
-        laajuus: 0,
-        isPaikallinenOppiaine: _.includes(_.map(this.paikallisetOppiaineet, 'koodi.uri'), koodi),
-        isModuuliton: _.isEmpty(this.oppiaineidenModuulitMap[koodi]) || _.isEmpty(this.oppiaineidenModuulitMap[koodi].moduulit),
-      })),
-    ];
-
-    const filteredPaikallisetOpintojaksot = _.filter(this.editable.paikallisetOpintojaksot, paikallinenopintojakso =>
-      _.some(paikallinenopintojakso.oppiaineet, oppiaine => _.includes(koodit, oppiaine.koodi)));
-
-    this.editable = {
-      ...this.editable,
-      moduulit: filteredModuulit,
-      oppiaineet: updatedOppiaineet,
-      paikallisetOpintojaksot: filteredPaikallisetOpintojaksot,
+const addLaaja = ({ koodi }) => {
+  if (editable.value) {
+    editable.value = {
+      ...editable.value,
+      laajaAlainenOsaaminen: [
+        ...(editable.value.laajaAlainenOsaaminen || []),
+        { koodi },
+      ],
     };
   }
+};
 
-  isModuuliton(oa: OpintojaksonOppiaine) {
-    return _.isEmpty(this.editable?.moduulit) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi]) || _.isEmpty(this.oppiaineidenModuulitMap[oa.koodi].moduulit);
-  }
-}
+const updateOppiaineet = (koodit: string[]) => {
+  if (!editable.value) return;
+
+  const vanhat = _.map(editable.value.oppiaineet, 'koodi');
+  const uudet = _.filter(koodit, koodi => !_.includes(vanhat, koodi));
+
+  const filteredModuulit = _.filter(editable.value.moduulit, moduuli => {
+    const moduuliurit = _.chain(koodit)
+      .map(koodi => oppiaineidenModuulitMap.value[koodi]?.moduulit || [])
+      .flatMap()
+      .map('koodi.uri')
+      .value();
+    return _.includes(moduuliurit, moduuli.koodiUri);
+  }) as any[];
+
+  const filteredOppiaineet = _.filter(editable.value.oppiaineet, (oppiaine) => _.includes(koodit, oppiaine.koodi));
+  const updatedOppiaineet = [
+    ...filteredOppiaineet,
+    ..._.map(uudet, koodi => ({
+      koodi,
+      laajuus: 0,
+      isPaikallinenOppiaine: _.includes(_.map(paikallisetOppiaineet.value, 'koodi.uri'), koodi),
+      isModuuliton: _.isEmpty(oppiaineidenModuulitMap.value[koodi]) || _.isEmpty(oppiaineidenModuulitMap.value[koodi]?.moduulit),
+    })),
+  ];
+
+  const filteredPaikallisetOpintojaksot = _.filter(editable.value.paikallisetOpintojaksot, paikallinenopintojakso =>
+    _.some(paikallinenopintojakso.oppiaineet, oppiaine => _.includes(koodit, oppiaine.koodi)));
+
+  editable.value = {
+    ...editable.value,
+    moduulit: filteredModuulit,
+    oppiaineet: updatedOppiaineet,
+    paikallisetOpintojaksot: filteredPaikallisetOpintojaksot,
+  };
+};
+
+const isModuuliton = (oa: OpintojaksonOppiaine) => {
+  return _.isEmpty(editable.value?.moduulit) || _.isEmpty(oppiaineidenModuulitMap.value[oa.koodi]) || _.isEmpty(oppiaineidenModuulitMap.value[oa.koodi]?.moduulit);
+};
 </script>
 
 <style lang="scss" scoped>

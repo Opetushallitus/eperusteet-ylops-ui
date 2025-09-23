@@ -54,149 +54,140 @@
 
     <div class="row">
       <div class="col">
-        <ops-perustiedot :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box"/>
+        <ops-perustiedot :opetussuunnitelmaStore="props.opetussuunnitelmaStore" class="info-box"/>
         <ops-muokkaamattomat-osiot :opetussuunnitelmanTekstikappale="store.sisalto" class="info-box"/>
-        <oppiaineet-statistiikka v-if="!yksinkertainen" :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box" />
+        <oppiaineet-statistiikka v-if="!yksinkertainen" :opetussuunnitelmaStore="props.opetussuunnitelmaStore" class="info-box" />
       </div>
       <div class="col">
-        <ops-viimeaikainen-toiminta :ops="ops" :muokkaustietoStore="muokkaustietoStore" class="info-box"/>
+        <ops-viimeaikainen-toiminta :ops="ops" :muokkaustietoStore="props.muokkaustietoStore" class="info-box"/>
       </div>
     </div>
 
     <div class="row">
       <div class="col">
-        <ops-aikataulu :ops="ops" :aikatauluStore="aikatauluStore" class="info-box" v-if="!isPohja"/>
+        <ops-aikataulu :ops="ops" :aikatauluStore="props.aikatauluStore" class="info-box" v-if="!isPohja"/>
       </div>
     </div>
 
   </div>
 </template>
 
-<script lang="ts">
-
-import EpOpsRoute from '@/mixins/EpOpsRoute';
-import { Component, Prop } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import _ from 'lodash';
 import OpsPerustiedot from './OpsPerustiedot.vue';
 import OppiaineetStatistiikka from './OppiaineetStatistiikka.vue';
 import OpsMuokkaamattomatOsiot from './OpsMuokkaamattomatOsiot.vue';
 import OpsViimeaikainenToiminta from './OpsViimeaikainenToiminta.vue';
 import OpsAikataulu from './OpsAikataulu.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
+import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from '@/stores/aikataulu';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { createLogger } from '@shared/utils/logger';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { KoulutustyyppiToteutus } from '@shared/tyypit';
 import { Kielet } from '@shared/stores/kieli';
 import { buildKatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
-import _ from 'lodash';
 import { MuokkaustietoKayttajallaDtoTapahtumaEnum } from '@shared/api/ylops';
+import { $success, $fail, $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    OpsPerustiedot,
-    OppiaineetStatistiikka,
-    OpsMuokkaamattomatOsiot,
-    OpsViimeaikainenToiminta,
-    OpsAikataulu,
-    EpButton,
-    EpSpinner,
-  },
-})
-export default class RouteYleisnakyma extends EpOpsRoute {
-  @Prop({ required: true })
-  private muokkaustietoStore!: MuokkaustietoStore;
+const props = defineProps<{
+  muokkaustietoStore: MuokkaustietoStore;
+  aikatauluStore: AikatauluStore;
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  @Prop({ required: true })
-  private aikatauluStore!: AikatauluStore;
+const { store, ops, isPohja } = useEpOpsRoute(props.opetussuunnitelmaStore);
 
-  private importing = false;
-  private syncing = false;
-  private syncPohja = false;
+const importing = ref(false);
+const syncing = ref(false);
+const syncPohja = ref(false);
 
-  get perustepaivitys() {
-    return !this.ops.perusteDataTuontiPvm;
+const perustepaivitys = computed(() => {
+  return !ops.value.perusteDataTuontiPvm;
+});
+
+const syncTekstitPohjasta = async () => {
+  syncPohja.value = true;
+  try {
+    await store.value.syncTekstitPohjasta();
+    await props.muokkaustietoStore.init();
+    await store.value.init();
+    $success($t('muutokset-paivitetty-opetussuunnitelmaan') as string);
   }
-
-  async syncTekstitPohjasta() {
-    this.syncPohja = true;
-    try {
-      await this.store.syncTekstitPohjasta();
-      await this.muokkaustietoStore.init();
-      await this.store.init();
-      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
-    }
-    catch (e) {
-      this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmaan-virhe') as string);
-      createLogger('RouteYleisnakyma').error(e);
-    }
-    this.syncPohja = false;
+  catch (e) {
+    $fail($t('muutokset-paivitetty-opetussuunnitelmaan-virhe') as string);
+    createLogger('RouteYleisnakyma').error(e);
   }
+  syncPohja.value = false;
+};
 
-  async synkronisoiPohja() {
-    this.syncing = true;
-    try {
-      await this.store.synkronisoiPohja();
-      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmiin') as string);
-      await this.store.init();
-    }
-    catch (e) {
-      this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmiin-virhe') as string);
-      createLogger('RouteYleisnakyma').error(e);
-    }
-    this.syncing = false;
+const synkronisoiPohja = async () => {
+  syncing.value = true;
+  try {
+    await store.value.synkronisoiPohja();
+    $success($t('muutokset-paivitetty-opetussuunnitelmiin') as string);
+    await store.value.init();
   }
+  catch (e) {
+    $fail($t('muutokset-paivitetty-opetussuunnitelmiin-virhe') as string);
+    createLogger('RouteYleisnakyma').error(e);
+  }
+  syncing.value = false;
+};
 
-  get yksinkertainen() {
-    return (this.ops?.toteutus as any) === KoulutustyyppiToteutus.yksinkertainen;
-  }
+const yksinkertainen = computed(() => {
+  return (ops.value?.toteutus as any) === KoulutustyyppiToteutus.yksinkertainen;
+});
 
-  get pohjallaPuuttuviaTeksteja() {
-    return this.store.pohjallaPuuttuviaTeksteja;
-  }
+const pohjallaPuuttuviaTeksteja = computed(() => {
+  return store.value.pohjallaPuuttuviaTeksteja;
+});
 
-  get viimeisinPohjaTekstiSync() {
-    return this.store.viimeisinPohjaTekstiSync?.luotu || this.ops.perusteDataTuontiPvm || this.ops.luotu;
-  }
+const viimeisinPohjaTekstiSync = computed(() => {
+  return store.value.viimeisinPohjaTekstiSync?.luotu || ops.value.perusteDataTuontiPvm || ops.value.luotu;
+});
 
-  get pohjanPerustePaivittynyt() {
-    return this.store.pohjanPerustePaivittynyt;
-  }
+const pohjanPerustePaivittynyt = computed(() => {
+  return store.value.pohjanPerustePaivittynyt;
+});
 
-  get isLops2019() {
-    return ((this.ops.toteutus as any) === KoulutustyyppiToteutus.lops2019);
-  }
+const isLops2019 = computed(() => {
+  return ((ops.value.toteutus as any) === KoulutustyyppiToteutus.lops2019);
+});
 
-  get oikeustarkastelu() {
-    return { oikeus: 'hallinta', kohde: this.isPohja ? 'pohja' : 'opetussuunnitelma' };
-  }
+const oikeustarkastelu = computed(() => {
+  return { oikeus: 'hallinta', kohde: isPohja.value ? 'pohja' : 'opetussuunnitelma' };
+});
 
-  get perusteId() {
-    return this.ops?.perusteenId;
-  }
+const perusteId = computed(() => {
+  return ops.value?.perusteenId;
+});
 
-  get perusteUrl() {
-    return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/${this.perusteId}/muutoshistoria?noscroll`);
-  }
+const perusteUrl = computed(() => {
+  return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/${koulutustyyppiTheme(ops.value.koulutustyyppi!)}/${perusteId.value}/muutoshistoria?noscroll`);
+});
 
-  get perusteNimi() {
-    return this.store.peruste?.nimi;
-  }
+const perusteNimi = computed(() => {
+  return store.value.peruste?.nimi;
+});
 
-  get pohjanaOphPohja() {
-    return _.toLower(this.ops.pohja?.tyyppi) === 'pohja';
-  }
+const pohjanaOphPohja = computed(() => {
+  return _.toLower(ops.value.pohja?.tyyppi) === 'pohja';
+});
 
-  get viimeisinPohjaTekstiSyncVirheellinen() {
-    return this.store.viimeisinPohjaTekstiSync?.tapahtuma === _.toLower(MuokkaustietoKayttajallaDtoTapahtumaEnum.VIRHE)
-      || (this.store.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync !== null && this.aikaMyohemminKuin(this.store.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync?.luotu as any, 4));
-  }
+const viimeisinPohjaTekstiSyncVirheellinen = computed(() => {
+  return store.value.viimeisinPohjaTekstiSync?.tapahtuma === _.toLower(MuokkaustietoKayttajallaDtoTapahtumaEnum.VIRHE)
+    || (store.value.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync !== null && aikaMyohemminKuin(store.value.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync?.luotu as any, 4));
+});
 
-  aikaMyohemminKuin(timeInMillis: number, tuntia: number) {
-    return timeInMillis < new Date().getTime() - tuntia * 60 * 60 * 1000;
-  }
-}
+const aikaMyohemminKuin = (timeInMillis: number, tuntia: number) => {
+  return timeInMillis < new Date().getTime() - tuntia * 60 * 60 * 1000;
+};
 </script>
 
 <style scoped lang="scss">

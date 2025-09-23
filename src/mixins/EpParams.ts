@@ -1,26 +1,34 @@
-import { Vue, Component } from 'vue-property-decorator';
+import { computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import _ from 'lodash';
 
-@Component
-export default class EpParams extends Vue {
-  async navigateTo(name: string, params: object = {}) {
-    this.$router.push({
+export function useEpParams() {
+  const router = useRouter();
+  const route = useRoute();
+
+  const navigateTo = async (name: string, params: object = {}) => {
+    await router.push({
       name,
       params: {
-        ...this.$route.params,
+        ...route.params,
         ...params,
       },
     });
-  }
+  };
 
-  get params(): any {
+  const params = computed((): any => {
     return {
-      ...this.$route.params,
-      id: _.parseInt(this.$route.params.id),
-      moduuliId: _.parseInt(this.$route.params.moduuliId) || undefined,
-      opintojaksoId: _.parseInt(this.$route.params.opintojaksoId) || undefined,
-      oppiaineId: _.parseInt(this.$route.params.oppiaineId) || undefined,
-      osaId: _.parseInt(this.$route.params.osaId) || undefined,
+      ...route.params,
+      id: _.parseInt(route.params.id as string),
+      moduuliId: _.parseInt(route.params.moduuliId as string) || undefined,
+      opintojaksoId: _.parseInt(route.params.opintojaksoId as string) || undefined,
+      oppiaineId: _.parseInt(route.params.oppiaineId as string) || undefined,
+      osaId: _.parseInt(route.params.osaId as string) || undefined,
     } as any;
-  }
+  });
+
+  return {
+    navigateTo,
+    params,
+  };
 }

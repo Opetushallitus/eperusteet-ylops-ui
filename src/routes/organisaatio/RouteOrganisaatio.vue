@@ -1,6 +1,6 @@
 <template>
 <ep-main-view>
-  <template slot="header">
+  <template #header>
     <h1>{{ $t('organisaatio-tyoryhma') }}</h1>
     <p>{{ $t('organisaatio-tyoryhma-kuvaus') }}</p>
     <ep-toggle class="float-right" v-model="showOrganizations">{{ $t('nayta-organisaatiot') }}</ep-toggle>
@@ -22,45 +22,41 @@
 </ep-main-view>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Component, Mixins, Prop } from 'vue-property-decorator';
-import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
-import EpRoute from '@/mixins/EpRoot';
+import { ref, computed } from 'vue';
+import { Kayttajat } from '@/stores/kayttaja';
+import { useEpRoute } from '@/mixins/EpRoute';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
+import { parsiEsitysnimi } from '@shared/utils/kayttaja';
 
-@Component({
-  components: {
-    EpColorIndicator,
-    EpMainView,
-    EpSpinner,
-    EpToggle,
-  },
-})
-export default class RouteOrganisaatio extends Mixins(EpRoute) {
-  private showOrganizations = false;
+const { isLoading, loading } = useEpRoute();
 
-  async init() {
-    await Kayttajat.fetchVirkailijatByOrganisaatio();
-  }
+const showOrganizations = ref(false);
 
-  private get virkailijat() {
-    return Kayttajat.virkailijat;
-  }
+const init = async () => {
+  await Kayttajat.fetchVirkailijatByOrganisaatio();
+};
 
-  private get virkailijatFormatted() {
-    return _.map(this.virkailijat, virkailija => {
-      return {
-        oid: virkailija.oid,
-        esitysnimi: parsiEsitysnimi(virkailija),
-        organisaatiot: virkailija.organisaatiot,
-      };
-    });
-  }
-}
+// Call init function in the loading wrapper
+loading(init);
+
+const virkailijat = computed(() => {
+  return Kayttajat.virkailijat;
+});
+
+const virkailijatFormatted = computed(() => {
+  return _.map(virkailijat.value, virkailija => {
+    return {
+      oid: virkailija.oid,
+      esitysnimi: parsiEsitysnimi(virkailija),
+      organisaatiot: virkailija.organisaatiot,
+    };
+  });
+});
 </script>
 
 <style scoped lang="scss">

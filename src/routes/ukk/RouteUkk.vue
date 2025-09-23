@@ -60,7 +60,7 @@
 
     <!-- Kysymyksen luomisen ja muokkaamisen modaali-->
     <template slot="after">
-      <b-modal class="backdrop" id="createUpdateKysymys" ref="createUpdateKysymys" @ok="createUpdateKysymys" :no-close-on-backdrop="true" :no-enforce-focus="true" :lazy="true" :ok-disabled="validation.$invalid" size="lg">
+      <b-modal class="backdrop" id="createUpdateKysymys" ref="createUpdateKysymys" @ok="createUpdateKysymysHandler" :no-close-on-backdrop="true" :no-enforce-focus="true" :lazy="true" :ok-disabled="validation.$invalid" size="lg">
         <template slot="modal-title">
           <span class="mr-2">{{ kysymys.$uusi ? $t('lisaa-uusi-kysymys') : $t('muokkaa-kysymys') }}</span>
           <!-- Sisällön kieli-->
@@ -87,29 +87,29 @@
             :is-editing="true"
             :items="organisaatiot"
             :multiple="true">
-            <template slot-scope="{ item }">
+            <template #default="{ item }">
               {{ $kaanna(item.nimi) }}
             </template>
           </ep-select>
         </ep-form-content>
-        <template slot="modal-cancel">{{ $t('peruuta') }}</template>
-        <template slot="modal-ok">{{ kysymys.$uusi ? $t('lisaa-kysymys') : $t('tallenna') }}</template>
+        <template #modal-cancel>{{ $t('peruuta') }}</template>
+        <template #modal-ok>{{ kysymys.$uusi ? $t('lisaa-kysymys') : $t('tallenna') }}</template>
       </b-modal>
     </template>
   </ep-main-view>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Component, Mixins, Prop } from 'vue-property-decorator';
-import { validationMixin } from 'vuelidate';
+import { ref, computed, useTemplateRef, onMounted } from 'vue';
+import { useVuelidate } from '@vuelidate/core';
 import { Kysymykset, Ulkopuoliset, KysymysDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Kieli } from '@shared/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import EpRoute from '@/mixins/EpRoot';
+import { useEpRoot } from '@/mixins/EpRoot';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -124,185 +124,169 @@ export interface KysymysLaajennettuDto extends KysymysDto {
   $uusi?: boolean;
 }
 
-@Component({
-  directives: {
-    oikeustarkastelu,
-  },
-  components: {
-    EpButton,
-    EpContent,
-    EpFormContent,
-    EpMainView,
-    EpSearch,
-    EpSelect,
-    EpSpinner,
-    EpToggle,
-    EpMaterialIcon,
-  },
-  validations() {
-    return {
-      kysymys: {
-        ...(this as any).validator,
-      },
-    };
-  },
-} as any)
-export default class RouteUkk extends Mixins(EpRoute, validationMixin) {
-  rajain = '';
-  kysymykset: KysymysLaajennettuDto[] = [];
-  orgs: any[] = [];
-  kysymys: KysymysLaajennettuDto = {
-    $uusi: true,
-    organisaatiot: [],
-  };
+const rajain = ref('');
+const kysymykset = ref<KysymysLaajennettuDto[]>([]);
+const orgs = ref<any[]>([]);
+const kysymys = ref<KysymysLaajennettuDto>({
+  $uusi: true,
+  organisaatiot: [],
+});
 
-  async mounted() {
-    this.kysymykset = (await Kysymykset.getKysymykset() as any).data;
+const removeKysymys = useTemplateRef('removeKysymys');
+const createUpdateKysymys = useTemplateRef('createUpdateKysymys');
+
+const validator = computed(() => {
+  return kysymysValidator([
+    Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
+  ]);
+});
+
+const $v = useVuelidate({
+  kysymys: validator.value,
+}, { kysymys });
+
+const validation = computed(() => $v.value.kysymys);
+
+const { isLoading, loading } = useEpRoot();
+
+onMounted(async () => {
+  await loading(async () => {
+    kysymykset.value = (await Kysymykset.getKysymykset() as any).data;
 
     // Haetaan käyttäjän organisaatiot
-    const orgs = (await Ulkopuoliset.getUserOrganisations() as any).data;
+    const orgsData = (await Ulkopuoliset.getUserOrganisations() as any).data;
 
-    if (!_.find(orgs, o => o.oid === organizations.oph.oid)) {
-      orgs.push(organizations.oph);
+    if (!_.find(orgsData, o => o.oid === organizations.oph.oid)) {
+      orgsData.push(organizations.oph);
     }
 
     // Ei rajausta oletuksena
-    _.each(orgs, o => {
+    _.each(orgsData, o => {
       o.$checked = true;
     });
 
-    this.orgs = orgs;
-  }
+    orgs.value = orgsData;
+  });
+});
 
-  get validator() {
-    return kysymysValidator([
-      Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
-    ]);
-  }
+const kysymyksetFormatted = computed(() => {
+  return _(kysymykset.value)
+    // Suodata kysymyksellä
+    .filter((k: any) => _.includes(
+      _.toLower(_.get(k, 'kysymys.' + Kielet.getSisaltoKieli.value)),
+      _.toLower(rajain.value),
+    ))
+    // Suodata organisaatiolla
+    .filter((k: any) => {
+      // Tehdään lista valituista organisaatioista
+      const checked: string[] = [];
+      _.each(organisaatiot.value, org => {
+        if (org.$checked) {
+          checked.push(org.oid);
+        }
+      });
 
-  get validation() {
-    return (this as any).$v.kysymys;
-  }
+      // Tarkistetaan, löytyykö organisaatio haettavien joukosta
+      let found = false;
+      const kOrgs = _.map(k.organisaatiot, 'oid');
+      _.each(checked, oid => {
+        found = found || _.includes(kOrgs, oid);
+      });
 
-  get kysymyksetFormatted() {
-    return _(this.kysymykset)
-      // Suodata kysymyksellä
-      .filter((k: any) => _.includes(
-        _.toLower(_.get(k, 'kysymys.' + Kielet.getSisaltoKieli.value)),
-        _.toLower(this.rajain),
-      ))
-      // Suodata organisaatiolla
-      .filter((k: any) => {
-        // Tehdään lista valituista organisaatioista
-        const checked: string[] = [];
-        _.each(this.organisaatiot, org => {
-          if (org.$checked) {
-            checked.push(org.oid);
-          }
-        });
+      return found;
+    })
+    .sortBy((k: any) => -k.luotu) // Laskeva järjestys
+    .value();
+});
 
-        // Tarkistetaan, löytyykö organisaatio haettavien joukosta
-        let found = false;
-        const kOrgs = _.map(k.organisaatiot, 'oid');
-        _.each(checked, oid => {
-          found = found || _.includes(kOrgs, oid);
-        });
+const organisaatiot = computed(() => {
+  return _.sortBy(orgs.value, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli.value));
+});
 
-        return found;
-      })
-      .sortBy((k: any) => -k.luotu) // Laskeva järjestys
-      .value();
-  }
+const organisaatiotOptions = computed(() => {
+  return _.map(organisaatiot.value, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli.value));
+});
 
-  get organisaatiot() {
-    return _.sortBy(this.orgs, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli.value));
-  }
-
-  get organisaatiotOptions() {
-    return _.map(this.organisaatiot, o => _.get(o, 'nimi.' + Kielet.getSisaltoKieli.value));
-  }
-
-  // Luodaan uusi kysymys tai muokataan kysymystä riippuen tilanteesta
-  async createUpdateKysymys(event: any) {
-    event.preventDefault(); // Piilotetaan modaali myöhemmin
-    try {
-      if (this.kysymys.id) {
-        // Muokataan olemassa olevaa
-        const res = (await Kysymykset.updateKysymys(this.kysymys.id, (this as any).kysymys) as any).data;
-        _.remove(this.kysymykset, k => k.id === res.id);
-        this.kysymykset.push(res);
-      }
-      else {
-        // Luodaan uusi kysymys
-        const res = (await Kysymykset.createKysymys((this as any).kysymys) as any).data;
-        this.kysymykset.push(res);
-      }
-      (this as any).$refs.createUpdateKysymys.hide();
-    }
-    catch (e) {
-      // Todo: Tallentaminen epäonnistui
-    }
-  }
-
-  // Poistetaan olemassa oleva kysymys
-  async deleteKysymys() {
-    if (!this.kysymys || !this.kysymys.id) {
-      return;
-    }
-
-    try {
-      (await Kysymykset.deleteKysymys(this.kysymys.id));
-      _.remove(this.kysymykset, k => k.id === this.kysymys.id);
-      // Reaktiivisuus täytyy hoitaa käsin tässä tilanteessa
-      this.kysymykset = [
-        ...this.kysymykset,
-      ];
-    }
-    catch (e) {
-      // Todo: Poistaminen epäonnistui
-    }
-  }
-
-  // Aloitetaan kysymyksen muokkaamisen modaali
-  startKysymysModal(kysymys: KysymysLaajennettuDto | null) {
-    if (kysymys) {
-      this.kysymys = {
-        $uusi: false,
-        ..._.cloneDeep(kysymys),
-      };
+// Luodaan uusi kysymys tai muokataan kysymystä riippuen tilanteesta
+const createUpdateKysymysHandler = async (event: any) => {
+  event.preventDefault(); // Piilotetaan modaali myöhemmin
+  try {
+    if (kysymys.value.id) {
+      // Muokataan olemassa olevaa
+      const res = (await Kysymykset.updateKysymys(kysymys.value.id, kysymys.value) as any).data;
+      _.remove(kysymykset.value, k => k.id === res.id);
+      kysymykset.value.push(res);
     }
     else {
-      this.kysymys = {
-        organisaatiot: [],
-        $uusi: true,
-      };
+      // Luodaan uusi kysymys
+      const res = (await Kysymykset.createKysymys(kysymys.value) as any).data;
+      kysymykset.value.push(res);
     }
-    (this as any).$refs.createUpdateKysymys.show();
+    createUpdateKysymys.value?.hide();
+  }
+  catch (e) {
+    // Todo: Tallentaminen epäonnistui
+  }
+};
+
+// Poistetaan olemassa oleva kysymys
+const deleteKysymys = async () => {
+  if (!kysymys.value || !kysymys.value.id) {
+    return;
   }
 
-  // Aloitetaan kysymyksen poiston modaali
-  startRemoveKysymys(kysymys: KysymysLaajennettuDto) {
-    this.kysymys = {
+  try {
+    await Kysymykset.deleteKysymys(kysymys.value.id);
+    _.remove(kysymykset.value, k => k.id === kysymys.value.id);
+    // Reaktiivisuus täytyy hoitaa käsin tässä tilanteessa
+    kysymykset.value = [
+      ...kysymykset.value,
+    ];
+  }
+  catch (e) {
+    // Todo: Poistaminen epäonnistui
+  }
+};
+
+// Aloitetaan kysymyksen muokkaamisen modaali
+const startKysymysModal = (kysymysParam: KysymysLaajennettuDto | null) => {
+  if (kysymysParam) {
+    kysymys.value = {
       $uusi: false,
-      ..._.cloneDeep(kysymys),
+      ..._.cloneDeep(kysymysParam),
     };
-    (this as any).$refs.removeKysymys.show();
   }
+  else {
+    kysymys.value = {
+      organisaatiot: [],
+      $uusi: true,
+    };
+  }
+  createUpdateKysymys.value?.show();
+};
 
-  // TODO: tämä voisi olla oma komponentti
-  // Modaalin kielivalitsimen metodit
-  get sisaltoKieli() {
-    return Kielet.getSisaltoKieli.value;
-  }
+// Aloitetaan kysymyksen poiston modaali
+const startRemoveKysymys = (kysymysParam: KysymysLaajennettuDto) => {
+  kysymys.value = {
+    $uusi: false,
+    ..._.cloneDeep(kysymysParam),
+  };
+  removeKysymys.value?.show();
+};
 
-  get sovelluksenKielet() {
-    return UiKielet;
-  }
+// TODO: tämä voisi olla oma komponentti
+// Modaalin kielivalitsimen metodit
+const sisaltoKieli = computed(() => {
+  return Kielet.getSisaltoKieli.value;
+});
 
-  valitseSisaltoKieli(kieli: Kieli) {
-    Kielet.setSisaltoKieli(kieli);
-  }
-}
+const sovelluksenKielet = computed(() => {
+  return UiKielet;
+});
+
+const valitseSisaltoKieli = (kieli: Kieli) => {
+  Kielet.setSisaltoKieli(kieli);
+};
 </script>
 
 <style scoped lang="scss">

@@ -13,70 +13,64 @@
 </div>
 </template>
 
-<script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed } from 'vue';
+import _ from 'lodash';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import { Lops2019OpintojaksonModuuliDto, Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@shared/api/ylops';
-import EpRoute from '@/mixins/EpRoute';
-import _ from 'lodash';
-import EpOpsRoute from '@/mixins/EpOpsRoute';
 import { Kielet } from '@shared/stores/kieli';
+import { $t, $kaanna } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpColorIndicator,
-  },
-})
-export default class EpOpintojaksonModuuli extends Mixins(EpRoute) {
-  @Prop({ required: true })
-  private moduuli!: Lops2019ModuuliDto;
+const props = withDefaults(
+  defineProps<{
+    moduuli: Lops2019ModuuliDto;
+    modelValue?: Lops2019OpintojaksonModuuliDto[];
+    isEditing?: boolean;
+  }>(), {
+  isEditing: false,
+});
 
-  @Prop({ required: false })
-  private value!: Lops2019OpintojaksonModuuliDto[];
+const emit = defineEmits(['update:modelValue']);
 
-  @Prop({ default: false })
-  private isEditing!: boolean;
+const moduuliNimi = computed(() => {
+  return Kielet.kaanna((props.moduuli as any).nimi);
+});
 
-  get moduuliNimi() {
-    return Kielet.kaanna((this.moduuli as any).nimi);
+const koodi = computed(() => {
+  try {
+    return props.moduuli!.koodi!.uri!;
+  }
+  catch (err) {
+    return null;
+  }
+});
+
+const koodit = computed(() => {
+  return _.keyBy(props.modelValue || [], 'koodiUri');
+});
+
+const valittu = computed(() => {
+  return koodi.value && koodit.value[koodi.value];
+});
+
+const toggle = () => {
+  if (!props.isEditing) {
+    return;
   }
 
-  get koodi() {
-    try {
-      return this.moduuli!.koodi!.uri!;
+  const koodiUri = koodi.value;
+  if (koodiUri) {
+    if (koodit.value[koodiUri]) {
+      emit('update:modelValue', _.reject(props.modelValue || [], x => x.koodiUri === koodiUri));
     }
-    catch (err) {
-      return null;
-    }
-  }
-
-  get valittu() {
-    return this.koodi && this.koodit[this.koodi];
-  }
-
-  get koodit() {
-    return _.keyBy(this.value, 'koodiUri');
-  }
-
-  public toggle() {
-    if (!this.isEditing) {
-      return;
-    }
-
-    const koodiUri = this.koodi;
-    if (koodiUri) {
-      if (this.koodit[koodiUri]) {
-        this.$emit('input', _.reject(this.value, x => x.koodiUri === koodiUri));
-      }
-      else {
-        this.$emit('input', [
-          ...this.value,
-          { koodiUri },
-        ]);
-      }
+    else {
+      emit('update:modelValue', [
+        ...(props.modelValue || []),
+        { koodiUri },
+      ]);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

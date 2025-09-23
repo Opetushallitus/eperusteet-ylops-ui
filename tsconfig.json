@@ -1,27 +1,21 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "jsx": "preserve",
+    "target": "es5",
     "module": "esnext",
-    "moduleResolution": "node",
-    "noImplicitAny": false,
-    "noImplicitThis": false,
-    "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": true,
-    "checkJs": true,
-    "target": "es6",
-    "types": [
-      "webpack-env",
-      "jest"
-    ],
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "baseUrl": ".",
     "paths": {
-      "@shared/*": ["./eperusteet-frontend-utils/vue/src/*"],
-      "@assets/*": ["./eperusteet-frontend-utils/vue/public/*"],
+      "@shared/*": ["eperusteet-frontend-utils/vue/src/*"],
+      "@assets/*": ["eperusteet-frontend-utils/vue/public/*"],
       "@/*": ["src/*"],
       "&/*": ["tests/*"]
     },
@@ -31,19 +25,22 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+    "resolveJsonModule": true,
+    "types": ["vitest/globals", "vue/ref-macros", "vue/types/vue"],
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.svg",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "src/**/*.svg",
+    "eperusteet-frontend-utils/vue/src/**/*.ts",
+    "eperusteet-frontend-utils/vue/src/**/*.vue",
+    "tests/integration/**/*.ts",
+    "tests/integration/**/*.tsx",
   ],
   "exclude": [
     "node_modules",
-    "eperusteet-frontend-utils",
-    "tests/e2e"
+    "eperusteet-frontend-utils"
   ]
 }

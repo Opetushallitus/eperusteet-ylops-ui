@@ -1,25 +1,25 @@
-import { Getter, State, Store } from '@shared/stores/store';
+import { reactive, computed } from 'vue';
 import _ from 'lodash';
 import { Opetussuunnitelma } from './opetussuunnitelma';
-import { Location } from 'vue-router';
+import { RouteLocationNormalized as Location } from 'vue-router';
 
-@Store
 class MurupolkuStore {
-  @State()
-  public polku: { [avain: string]: any } = {};
+  private state = reactive({
+    polku: {} as { [avain: string]: any },
+  });
 
-  @Getter(state => {
+  public readonly polku = computed(() => this.state.polku);
+  public readonly murut = computed(() => {
     const nimi = _.get(Opetussuunnitelma(), 'opetussuunnitelma.nimi');
     return {
       opetussuunnitelma: nimi,
-      ...state.polku,
+      ...this.state.polku,
     };
-  })
-  public readonly murut!: object;
+  });
 
   aseta(key: string, value: any, location?: Location) {
-    this.polku = {
-      ...this.polku,
+    this.state.polku = {
+      ...this.state.polku,
       [key]: {
         name: value,
         location,

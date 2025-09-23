@@ -23,50 +23,47 @@
   </b-table>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed } from 'vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
+import { $t, $kaanna, $ago } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpButton,
-  },
-})
-export default class PoistettuTable extends Vue {
-  @Prop({ required: true })
-  private poistetut!: any[];
+const props = defineProps<{
+  poistetut: any[];
+}>();
 
-  get items() {
-    return this.poistetut;
-  }
+const emit = defineEmits(['palauta']);
 
-  get fields() {
-    return [{
-      label: this.$t('nimi'),
-      key: 'nimi',
-      sortable: true,
-      class: 'align-middle',
-    }, {
-      label: this.$t('poistoajankohta'),
-      key: 'muokattu',
-      sortable: true,
-      class: 'align-middle',
-    }, {
-      label: this.$t('poistaja'),
-      key: 'muokkaaja',
-      sortable: true,
-      class: 'align-middle',
-    }, {
-      key: 'actions',
-      label: '',
-      thStyle: { borderBottom: '0px' },
-      class: 'align-middle',
-    }];
-  }
+const items = computed(() => {
+  return props.poistetut;
+});
 
-  palauta(poistettu) {
-    this.$emit('palauta', poistettu);
-  }
-}
+const fields = computed(() => {
+  return [{
+    label: $t('nimi'),
+    key: 'nimi',
+    sortable: true,
+    class: 'align-middle',
+  }, {
+    label: $t('poistoajankohta'),
+    key: 'muokattu',
+    sortable: true,
+    class: 'align-middle',
+  }, {
+    label: $t('poistaja'),
+    key: 'muokkaaja',
+    sortable: true,
+    class: 'align-middle',
+  }, {
+    key: 'actions',
+    label: '',
+    thStyle: { borderBottom: '0px' },
+    class: 'align-middle',
+  }];
+});
+
+const palauta = (poistettu: any) => {
+  emit('palauta', poistettu);
+};
 
 </script>

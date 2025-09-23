@@ -164,11 +164,10 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, onMounted, nextTick, useTemplateRef } from 'vue';
+import { useRoute } from 'vue-router';
 import _ from 'lodash';
-import { Mixins, Component, Vue } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
@@ -181,87 +180,113 @@ import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpArvioinninkohteetTable from '@shared/components/EpArvioinninkohteetTable/EpArvioinninkohteetTable.vue';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { useEpRoute } from '@/mixins/EpRoute';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
+import { $kaanna, $t, $bvModal } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpEditointi,
-    VuosiluokkaSisaltoTeksti,
-    EpButton,
-    EpCollapse,
-    EpOrderColorBall,
-    EpAlert,
-    EpContent,
-    EpToggle,
-    EpArvioinninkohteetTable,
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
+
+// Router
+const route = useRoute();
+
+// Template refs
+const tavoitecollapse = useTemplateRef('tavoitecollapse');
+const sisaltoaluecollapse = useTemplateRef('sisaltoaluecollapse');
+
+// Use composables
+const epRoute = useEpRoute();
+const {
+  store,
+  ops,
+  opsId,
+  isPohja,
+  isOps,
+  isValmisPohja,
+  kasiteHandler,
+  kuvaHandler,
+  isLuva,
+} = useEpOpsComponent(props.opetussuunnitelmaStore);
+// Reactive data
+const editointiStore = ref<EditointiStore | null>(null);
+const tabIndex = ref(0);
+
+// Computed properties
+const storeData = computed({
+  get() {
+    return editointiStore.value?.data.value;
   },
-})
-export default class RoutePerusopetusOppiaineVuosiluokka extends Mixins(EpRoute, EpOpsComponent) {
-  private editointiStore: EditointiStore | null = null;
-  private tabIndex: number = 0;
-
-  async init() {
-    const vuosiluokkakokonaisuus = _.head(_.filter(this.ops.vuosiluokkakokonaisuudet, vlk =>
-      vlk.vuosiluokkakokonaisuus?.id === _.toNumber(this.$route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
-
-    this.editointiStore = new EditointiStore(new PerusopetusoppiaineVuosiluokkaStore(
-      this.opsId, _.toNumber(this.$route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(this.$route.params.vlId)));
+  set(data) {
+    editointiStore.value?.setData(data);
   }
+});
 
-  async aloitaMuokkaus() {
-    _.forEach(this.$refs.tavoitecollapse, (collapse: any) => {
+// Methods
+const aloitaMuokkaus = async () => {
+  if (tavoitecollapse.value) {
+    _.forEach(tavoitecollapse.value, (collapse: any) => {
       collapse.toggle(true);
     });
-    const self = this;
-    Vue.nextTick(function() {
-      _.forEach(self.$refs.sisaltoaluecollapse, (collapse: any) => {
-        collapse.toggle(true);
-      });
-    });
   }
-
-  async tallennettu() {
-    _.forEach(this.$refs.tavoitecollapse, (collapse: any) => {
+  await nextTick();
+  if (sisaltoaluecollapse.value) {
+    _.forEach(sisaltoaluecollapse.value, (collapse: any) => {
       collapse.toggle(true);
     });
-    const self = this;
-    Vue.nextTick(function() {
-      _.forEach(self.$refs.sisaltoaluecollapse, (collapse: any) => {
-        collapse.toggle(false);
-      });
+  }
+};
+
+const tallennettu = async () => {
+  if (tavoitecollapse.value) {
+    _.forEach(tavoitecollapse.value, (collapse: any) => {
+      collapse.toggle(true);
     });
   }
-
-  async varmistaValutus() {
-    if ((this.ops?.joissaPohjana?.length || 0) === 0) {
-      return true;
-    }
-
-    const valuta = await this.$bvModal.msgBoxConfirm((this.$t('vahvista-vuosiluokan-tietojen-valutus-teksti') as any), {
-      title: this.$t('vahvista-vuosiluokan-tietojen-valutus-otsikko'),
-      okVariant: 'primary',
-      okTitle: this.$t('kylla') as any,
-      cancelVariant: 'link',
-      cancelTitle: this.$t('ei') as any,
-      centered: true,
-      ...{} as any,
+  await nextTick();
+  if (sisaltoaluecollapse.value) {
+    _.forEach(sisaltoaluecollapse.value, (collapse: any) => {
+      collapse.toggle(false);
     });
+  }
+};
 
-    this.storeData = {
-      ...this.storeData,
-      valuta,
-    };
-
+const varmistaValutus = async () => {
+  if ((ops.value?.joissaPohjana?.length || 0) === 0) {
     return true;
   }
 
-  get storeData() {
-    return this.editointiStore?.data.value;
-  }
+  const valuta = await $bvModal.msgBoxConfirm($t('vahvista-vuosiluokan-tietojen-valutus-teksti'), {
+    title: $t('vahvista-vuosiluokan-tietojen-valutus-otsikko'),
+    okVariant: 'primary',
+    okTitle: $t('kylla'),
+    cancelVariant: 'link',
+    cancelTitle: $t('ei'),
+    centered: true,
+  });
 
-  set storeData(data) {
-    this.editointiStore?.setData(data);
-  }
-}
+  storeData.value = {
+    ...storeData.value,
+    valuta,
+  };
+
+  return true;
+};
+
+const init = async () => {
+  const vuosiluokkakokonaisuus = _.head(_.filter(ops.value?.vuosiluokkakokonaisuudet, vlk =>
+    vlk.vuosiluokkakokonaisuus?.id === _.toNumber(route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
+
+  editointiStore.value = new EditointiStore(new PerusopetusoppiaineVuosiluokkaStore(
+    opsId.value, _.toNumber(route.params.oppiaineId), vuosiluokkakokonaisuus, _.toNumber(route.params.vlId)));
+};
+
+// Lifecycle
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style scoped lang="scss">
@@ -284,7 +309,7 @@ export default class RoutePerusopetusOppiaineVuosiluokka extends Mixins(EpRoute,
   }
 
   .inner-collapse {
-    ::v-deep .ep-collapse {
+    :deep(.ep-collapse) {
       margin: 0;
       padding: 0;
 

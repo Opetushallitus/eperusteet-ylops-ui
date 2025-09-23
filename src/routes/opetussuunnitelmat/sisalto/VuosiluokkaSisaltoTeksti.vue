@@ -24,54 +24,41 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed } from 'vue';
+import _ from 'lodash';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
-import _ from 'lodash';
+import { $t, $kaanna } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpCollapse,
-    EpContent,
-    EpAlert,
-  },
-})
-export default class VuosiluokkaSisaltoTeksti extends Vue {
-  @Prop({ required: false })
-  private perusteObject!: any;
+const props = withDefaults(
+  defineProps<{
+    perusteObject?: any;
+    pohjaObject?: any;
+    vlkObject?: any;
+    isEditing?: boolean;
+    otsikko?: string;
+    teksti?: string;
+    perusteTekstiAvattu?: boolean;
+  }>(), {
+  isEditing: false,
+  otsikko: 'otsikko',
+  teksti: 'teksti',
+  perusteTekstiAvattu: false,
+});
 
-  @Prop({ required: false })
-  private pohjaObject!: any;
+const hasContent = computed(() => {
+  return props.vlkObject != null && _.has(props.vlkObject, props.teksti);
+});
 
-  @Prop({ required: false })
-  private vlkObject!: any;
+const contentNotEmpty = computed(() => {
+  return props.vlkObject != null && props.vlkObject[props.teksti] != null;
+});
 
-  @Prop({ default: false })
-  private isEditing!: boolean;
-
-  @Prop({ default: 'otsikko' })
-  private otsikko!: string;
-
-  @Prop({ default: 'teksti' })
-  private teksti!: string;
-
-  @Prop({ default: false })
-  private perusteTekstiAvattu!: boolean;
-
-  get hasContent() {
-    return this.vlkObject != null && _.has(this.vlkObject, this.teksti);
-  }
-
-  get contentNotEmpty() {
-    return this.vlkObject != null && this.vlkObject[this.teksti] != null;
-  }
-
-  get hasPohjaObject() {
-    return this.pohjaObject && this.pohjaObject[this.teksti] && Object.keys(this.pohjaObject[this.teksti]).length > 0;
-  }
-}
+const hasPohjaObject = computed(() => {
+  return props.pohjaObject && props.pohjaObject[props.teksti] && Object.keys(props.pohjaObject[props.teksti]).length > 0;
+});
 </script>
 
 <style lang="scss" scoped>

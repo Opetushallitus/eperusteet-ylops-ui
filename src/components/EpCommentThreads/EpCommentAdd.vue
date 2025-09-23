@@ -12,37 +12,33 @@
   <span v-else></span>
 </template>
 
-<script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed, useTemplateRef } from 'vue';
 import _ from 'lodash';
 import { Kommentit } from '@/stores/kommentit';
 import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
 
-@Component({
-  components: {
-    EpRoundButton,
-  },
-})
-export default class EpCommentAdd extends Vue {
-  @Prop({ required: true })
-  onAdd!: () => Promise<void>;
+const props = defineProps<{
+  onAdd: () => Promise<void>;
+}>();
 
-  get style() {
-    if (this.bounds) {
-      return {
-        left: window.scrollX + this.bounds.x + 5 + 'px',
-        top: window.scrollY + this.bounds.bottom + 10 + 'px',
-      };
-    }
-    else {
-      return null;
-    }
-  }
+const box = useTemplateRef('box');
 
-  get bounds() {
-    return Kommentit.bounds.value;
+const bounds = computed(() => {
+  return Kommentit.bounds.value;
+});
+
+const style = computed(() => {
+  if (bounds.value) {
+    return {
+      left: window.scrollX + bounds.value.x + 5 + 'px',
+      top: window.scrollY + bounds.value.bottom + 10 + 'px',
+    };
   }
-}
+  else {
+    return null;
+  }
+});
 </script>
 
 <style lang="scss" scoped>

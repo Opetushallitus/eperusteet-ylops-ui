@@ -1,5 +1,5 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
+import VueCompositionApi, { reactive, computed, ref, watch } from 'vue';
 import * as _ from 'lodash';
 import { Revision, KoulutustyyppiToteutus } from '@shared/tyypit';
 import { createLogger } from '@shared/utils/logger';

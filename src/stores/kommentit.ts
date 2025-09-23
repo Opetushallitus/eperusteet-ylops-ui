@@ -2,14 +2,13 @@ import _ from 'lodash';
 import { Kommentointi } from '@shared/api/ylops';
 import Vue from 'vue';
 
-import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
+import { reactive, computed, ref, watch } from 'vue';
 import VueScrollTo from 'vue-scrollto';
 import { Kielet } from '@shared/stores/kieli';
 
 import { unwrap } from '@shared/utils/wraps';
 
 import { createLogger } from '@shared/utils/logger';
-Vue.use(VueCompositionApi);
 const logger = createLogger('Kayttaja');
 
 export const UusiKommenttiHandle = 'uusi-kommentti';

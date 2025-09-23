@@ -94,7 +94,9 @@
           :pohjaObject="pohjaOppiaineenVuosiluokkakokonaisuus.yleistavoitteet"
           :vlkObject="data.vuosiluokkakokonaisuus.yleistavoitteet"
           :isEditing="isEditing" >
-          <h3 slot="header" class="mb-3">{{ $t('tavoitteet-ja-sisallot') }}</h3>
+          <template #header>
+            <h3 class="mb-3">{{ $t('tavoitteet-ja-sisallot') }}</h3>
+          </template>
         </vuosiluokka-sisalto-teksti>
 
         <div v-if="!data.oppiaine.koosteinen && data.vuosiluokkakokonaisuus && !isCopyable">
@@ -132,7 +134,9 @@
                                       :vlkObject="data.vuosiluokkakokonaisuus.tyotavat"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" >
-            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.tyotavat" class="mb-3">{{$t('oppiaine-osio-tyotavat')}}</h3>
+            <template #otsikko>
+              <h3 v-if="!perusteenVuosiluokkakokonaisuus.tyotavat" class="mb-3">{{$t('oppiaine-osio-tyotavat')}}</h3>
+            </template>
           </vuosiluokka-sisalto-teksti>
           <hr class="mt-5 mb-4" v-if="perusteenVuosiluokkakokonaisuus.tyotavat"/>
 
@@ -141,7 +145,9 @@
                                       :vlkObject="data.vuosiluokkakokonaisuus.ohjaus"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" >
-            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.ohjaus" class="mb-3">{{$t('oppiaine-osio-ohjaus')}}</h3>
+            <template #otsikko>
+              <h3 v-if="!perusteenVuosiluokkakokonaisuus.ohjaus" class="mb-3">{{$t('oppiaine-osio-ohjaus')}}</h3>
+            </template>
           </vuosiluokka-sisalto-teksti>
           <hr class="mt-5 mb-4" v-if="perusteenVuosiluokkakokonaisuus.ohjaus"/>
 
@@ -150,7 +156,9 @@
                                       :vlkObject="data.vuosiluokkakokonaisuus.arviointi"
                                       :isEditing="isEditing"
                                       :peruste-teksti-avattu="true" >
-            <h3 slot="otsikko" v-if="!perusteenVuosiluokkakokonaisuus.arviointi" class="mb-3">{{$t('arviointi')}}</h3>
+            <template #otsikko>
+              <h3 v-if="!perusteenVuosiluokkakokonaisuus.arviointi" class="mb-3">{{$t('arviointi')}}</h3>
+            </template>
           </vuosiluokka-sisalto-teksti>
         </div>
 
@@ -179,11 +187,10 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
@@ -192,128 +199,149 @@ import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
-import { isOppiaineUskontoTaiVierasKieli } from '@/utils/opetussuunnitelmat';
 import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
+import { isOppiaineUskontoTaiVierasKieli as checkIsOppiaineUskontoTaiVierasKieli } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { useEpRoute } from '@/mixins/EpRoute';
+import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
+import { $kaanna, $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpEditointi,
-    VuosiluokkaSisaltoTeksti,
-    EpButton,
-    EpContent,
-    EpAlert,
-    EpOppimaaraLisays,
-    EpFormContent,
-    EpField,
-    EpCollapse,
-  },
-})
-export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsComponent) {
-  private editointiStore: EditointiStore | null = null;
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async init() {
-    const vuosiluokkakokonaisuus = _.head(_.filter(this.ops.vuosiluokkakokonaisuudet, vlk =>
-      vlk.vuosiluokkakokonaisuus?.id === _.toNumber(this.$route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
+// Router
+const route = useRoute();
 
-    const parent = _.chain(this.ops.oppiaineet)
-      .map('oppiaine')
-      .filter(oppiaine => !_.isEmpty(oppiaine?.oppimaarat))
-      .filter(oppiaine => _.some(oppiaine?.oppimaarat, oppimaara => oppimaara.id === _.toNumber(this.$route.params.oppiaineId)))
-      .head()
-      .value();
+// Use composables
+const epRoute = useEpRoute();
+const {
+  store,
+  ops,
+  opsId,
+  isPohja,
+  isOps,
+  isValmisPohja,
+  kasiteHandler,
+  kuvaHandler,
+  isLuva,
+} = useEpOpsComponent(props.opetussuunnitelmaStore);
+// Reactive data
+const editointiStore = ref<EditointiStore | null>(null);
 
-    this.editointiStore = new EditointiStore(new PerusopetusoppiaineStore(
-      this.opsId,
-      _.toNumber(this.$route.params.oppiaineId),
-      vuosiluokkakokonaisuus,
-      _.toNumber(this.$route.query.versionumero),
-      parent,
-      this.resetOps,
-      this.init,
-      this.muokkaa));
+// Computed properties
+const versionumero = computed(() => {
+  return route.query.versionumero;
+});
+
+const vlkId = computed(() => {
+  return route.params.vlkId;
+});
+
+const perusteenOppiaine = computed(() => {
+  return editointiStore.value?.data.value.perusteenOppiaine || {};
+});
+
+const perusteenOppiaineVapaatTekstit = computed(() => {
+  return _.map(editointiStore.value?.data.value.perusteenOppiaine.vapaatTekstit || {}, pvt => {
+    return {
+      ...pvt,
+      hasPaikallinenTarkennus: _.some(oppiaine.value?.vapaatTekstit, vt => pvt.id === vt.perusteenVapaaTekstiId),
+    };
+  });
+});
+
+const perusteenVuosiluokkakokonaisuus = computed(() => {
+  return editointiStore.value?.data.value.perusteenVuosiluokkakokonaisuus || {};
+});
+
+const pohjaOppiaineenVuosiluokkakokonaisuus = computed(() => {
+  return editointiStore.value?.data.value.pohjaOppiaineenVuosiluokkakokonaisuus || {};
+});
+
+const oppiaine = computed(() => {
+  return editointiStore.value?.data.value.oppiaine;
+});
+
+const oppimaaranOppiaine = computed(() => {
+  return _.get(
+    _.find(ops.value?.oppiaineet, oppiaine =>
+      _.includes(_.map(oppiaine.oppiaine?.oppimaarat, 'tunniste'), oppiaine.value?.tunniste)),
+    'oppiaine');
+});
+
+const isOppiaineUskontoTaiVierasKieli = computed(() => {
+  if (oppimaaranOppiaine.value) {
+    return checkIsOppiaineUskontoTaiVierasKieli(oppimaaranOppiaine.value);
   }
+  return false;
+});
 
-  lisaaPaikallinenTarkennus(oppiaine, id) {
-    if (!oppiaine.vapaatTekstit) {
-      oppiaine.vapaatTekstit = [];
-    }
-    oppiaine.vapaatTekstit.push(
-      { perusteenVapaaTekstiId: id,
-        paikallinenTarkennus: Kielet.haeLokalisoituOlio(''),
-      });
-  }
+const muokkaa = computed(() => {
+  return _.has(route.query, 'muokkaa');
+});
 
-  poistaPaikallinenTarkennus(oppiaine, vapaatekstiId) {
-    oppiaine.vapaatTekstit = _.filter(oppiaine.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
-  }
+const oppimaaratFields = computed(() => {
+  return [{
+    key: 'nimi',
+    thStyle: {
+      display: 'none',
+    },
+  }];
+});
 
-  get versionumero() {
-    return this.$route.query.versionumero;
+// Methods
+const lisaaPaikallinenTarkennus = (oppiaine: any, id: any) => {
+  if (!oppiaine.vapaatTekstit) {
+    oppiaine.vapaatTekstit = [];
   }
+  oppiaine.vapaatTekstit.push({
+    perusteenVapaaTekstiId: id,
+    paikallinenTarkennus: {
+      [Kielet.getSisaltoKieli.value]: '',
+    },
+  });
+};
 
-  async resetOps() {
-    await this.store.init();
-  }
+const poistaPaikallinenTarkennus = (oppiaine: any, vapaatekstiId: any) => {
+  oppiaine.vapaatTekstit = _.filter(oppiaine.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
+};
 
-  get oppimaaratFields() {
-    return [{
-      key: 'nimi',
-      thStyle: {
-        display: 'none',
-      },
-    }];
-  }
+const resetOps = async () => {
+  await store.value.init();
+};
 
-  get vlkId() {
-    return this.$route.params.vlkId;
-  }
+const init = async () => {
+  const vuosiluokkakokonaisuus = _.head(_.filter(ops.value?.vuosiluokkakokonaisuudet, vlk =>
+    vlk.vuosiluokkakokonaisuus?.id === _.toNumber(route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
 
-  get perusteenOppiaine() {
-    return this.editointiStore?.data.value.perusteenOppiaine || {};
-  }
+  const parent = _.chain(ops.value?.oppiaineet)
+    .map('oppiaine')
+    .filter(oppiaine => !_.isEmpty(oppiaine?.oppimaarat))
+    .filter(oppiaine => _.some(oppiaine?.oppimaarat, oppimaara => oppimaara.id === _.toNumber(route.params.oppiaineId)))
+    .head()
+    .value();
 
-  get perusteenOppiaineVapaatTekstit() {
-    return _.map(this.editointiStore?.data.value.perusteenOppiaine.vapaatTekstit || {}, pvt => {
-      return {
-        ...pvt,
-        hasPaikallinenTarkennus: _.some(this.oppiaine.vapaatTekstit, vt => pvt.id === vt.perusteenVapaaTekstiId),
-      };
-    });
-  }
+  editointiStore.value = new EditointiStore(new PerusopetusoppiaineStore(
+    opsId.value,
+    _.toNumber(route.params.oppiaineId),
+    vuosiluokkakokonaisuus,
+    _.toNumber(route.query.versionumero),
+    parent,
+    resetOps,
+    init,
+    muokkaa.value));
+};
 
-  get perusteenVuosiluokkakokonaisuus() {
-    return this.editointiStore?.data.value.perusteenVuosiluokkakokonaisuus || {};
-  }
-
-  get pohjaOppiaineenVuosiluokkakokonaisuus() {
-    return this.editointiStore?.data.value.pohjaOppiaineenVuosiluokkakokonaisuus || {};
-  }
-
-  get oppiaine() {
-    return this.editointiStore?.data.value.oppiaine;
-  }
-
-  get oppimaaranOppiaine() {
-    return _.get(
-      _.find(this.ops.oppiaineet, oppiaine =>
-        _.includes(_.map(oppiaine.oppiaine?.oppimaarat, 'tunniste'), this.oppiaine.tunniste)),
-      'oppiaine');
-  }
-
-  get isOppiaineUskontoTaiVierasKieli() {
-    if (this.oppimaaranOppiaine) {
-      return isOppiaineUskontoTaiVierasKieli(this.oppimaaranOppiaine);
-    }
-  }
-
-  get muokkaa() {
-    return _.has(this.$route.query, 'muokkaa');
-  }
-}
+// Lifecycle
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style scoped lang="scss">

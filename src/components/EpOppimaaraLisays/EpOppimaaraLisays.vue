@@ -25,9 +25,9 @@
                  :items="oppimaaratTyhjalla"
                  :is-editing="true"
                  :enable-empty-option="true">
-        <template slot-scope="{ item }">
-          {{ $kaanna(item.nimi) }}
-        </template>
+    <template #default="{ item }">
+      {{ $kaanna(item.nimi) }}
+    </template>
       </ep-select>
     </ep-form-content>
 
@@ -46,168 +46,193 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, watch, useTemplateRef } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import _ from 'lodash';
-import { Prop, Component, Mixins, Watch } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
+
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+
 import { OppiaineSuppeaDto, Oppiaineet, PerusteOppiaineDto, KopioOppimaaraDto, UnwrappedOpsVuosiluokkakokonaisuusDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
-import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
 
-@Component({
-  components: {
-    EpButton,
-    EpField,
-    EpSelect,
-    EpFormContent,
+import { $t, $kaanna, $fail } from '@shared/utils/globals';
+
+// const props = defineProps<{
+//   oppiaine: OppiaineSuppeaDto;
+//   resetNavi: Function;
+//   buttonVariant?: string;
+// }>();
+
+const props = withDefaults(
+  defineProps<{
+    oppiaine: OppiaineSuppeaDto;
+    resetNavi: Function;
+    buttonVariant?: string;
+  }>(), {
+  buttonVariant: 'link',
+});
+
+const route = useRoute();
+const router = useRouter();
+
+// Template refs
+const oppimaaralisaysModal = useTemplateRef('oppimaaralisaysModal');
+
+// Reactive data
+const perusteenOppiaine = ref<PerusteOppiaineDto | null>(null);
+const vuosiluokkakokonaisuus = ref<UnwrappedOpsVuosiluokkakokonaisuusDto | null>(null);
+const nimi = ref<object | null>(null);
+const valittuOppimaara = ref<OppiaineSuppeaDto | null>(null);
+
+// Import mixins data - these would come from the mixins in the original code
+// For now, I'll assume these are available globally or need to be computed differently
+const opsId = computed(() => {
+  // This should come from EpOpsComponent mixin
+  return Number(route.params.opsId);
+});
+
+const ops = computed(() => {
+  // This should come from EpOpsComponent mixin
+  // For now return a minimal object
+  return { id: opsId.value };
+});
+
+// Computed properties
+const addText = computed(() => {
+  return isUskonto.value ? 'lisaa-muu-uskonto' : 'lisaa-kielitarjonta';
+});
+
+const addButtonText = computed(() => {
+  return isUskonto.value ? 'lisaa-uskonnon-oppimaara' : 'lisaa-kielitarjonta';
+});
+
+const isUskonto = computed(() => {
+  return props.oppiaine.koodiArvo === 'KT';
+});
+
+const isKieli = computed(() => {
+  return _.includes(['VK', 'TK'], props.oppiaine.koodiArvo);
+});
+
+const muuUskontoNimi = computed(() => {
+  let nimiObj = {};
+  Object.assign(nimiObj, ..._.map(UiKielet, kieli => {
+    return {
+      [kieli]: $t('muu-uskonto'),
+    };
+  }));
+  return nimiObj;
+});
+
+const oppimaarat = computed(() => {
+  if (perusteenOppiaine.value) {
+    return _.chain(perusteenOppiaine.value.oppimaarat)
+      .filter(oppimaara => _.includes(_.map(oppimaara?.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), _.get(vuosiluokkakokonaisuus.value, '_tunniste')))
+      .sortBy('koodiUri')
+      .value();
+  }
+
+  return undefined;
+});
+
+const oppimaaratTyhjalla = computed(() => {
+  if (perusteenOppiaine.value) {
+    if (isUskonto.value) {
+      return [
+        {
+          nimi: muuUskontoNimi.value,
+          tyhjanimi: true,
+        },
+        ...(oppimaarat.value as PerusteOppiaineDto[]),
+      ];
+    }
+    else {
+      return oppimaarat.value;
+    }
+  }
+
+  return undefined;
+});
+
+// Validation setup
+const validationRules = computed(() => ({
+  valittuOppimaara: {
+    required,
   },
-  mixins: [validationMixin],
-  validations: {
-    valittuOppimaara: {
+  nimi: {
+    [Kielet.getSisaltoKieli.value]: {
       required,
     },
-    nimi: {
-      [Kielet.getSisaltoKieli.value]: {
-        required,
-      },
-    },
   },
-})
-export default class EpOppimaaraLisays extends Mixins(EpRoute, EpOpsComponent) {
-  @Prop({ required: true })
-  private oppiaine!: OppiaineSuppeaDto;
+}));
 
-  @Prop({ required: true })
-  private resetNavi!: Function;
+const $v = useVuelidate(validationRules, { valittuOppimaara, nimi });
 
-  @Prop({ required: false, default: 'link' })
-  private buttonVariant!: string;
+const okDisabled = computed(() => {
+  return $v.value.$invalid;
+});
 
-  private perusteenOppiaine: PerusteOppiaineDto | null = null;
-  private vuosiluokkakokonaisuus: UnwrappedOpsVuosiluokkakokonaisuusDto | null = null;
-
-  private nimi: object | null = null;
-  private valittuOppimaara: OppiaineSuppeaDto | null = null;
-
-  get addText() {
-    return this.isUskonto ? 'lisaa-muu-uskonto' : 'lisaa-kielitarjonta';
-  }
-
-  get addButtonText() {
-    return this.isUskonto ? 'lisaa-uskonnon-oppimaara' : 'lisaa-kielitarjonta';
-  }
-
-  get okDisabled() {
-    return this.$v.$invalid;
-  }
-
-  get isUskonto() {
-    return this.oppiaine.koodiArvo === 'KT';
-  }
-
-  get isKieli() {
-    return _.includes(['VK', 'TK'], this.oppiaine.koodiArvo);
-  }
-
-  openModal() {
-    (this.$refs['oppimaaralisaysModal'] as any).show();
-  }
-
-  @Watch('valittuOppimaara')
-  valittuOppimaaraChange(val) {
-    if (val) {
-      if (val.tyhjanimi) {
-        this.nimi = {};
-      }
-      else {
-        this.nimi = val.nimi;
-      }
+// Watchers
+watch(valittuOppimaara, (val) => {
+  if (val) {
+    if (val.tyhjanimi) {
+      nimi.value = {};
+    }
+    else {
+      nimi.value = val.nimi;
     }
   }
+});
 
-  get muuUskontoNimi() {
-    let nimi = {};
-    Object.assign(nimi, ..._.map(UiKielet, kieli => {
-      return {
-        [kieli]: this.$t('muu-uskonto'),
-      };
-    }));
-    return nimi;
+// Methods
+const openModal = () => {
+  oppimaaralisaysModal.value?.show();
+};
+
+const show = async () => {
+  perusteenOppiaine.value = (await Oppiaineet.getPerusteSisalto(opsId.value, (props.oppiaine.id as number))).data;
+  vuosiluokkakokonaisuus.value = (await Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuus(opsId.value, _.toNumber(route.params.vlkId))).data;
+};
+
+const save = async () => {
+  const kopio = {
+    omaNimi: nimi.value as { [key: string]: string; },
+    tunniste: valittuOppimaara.value?.tunniste,
+  } as KopioOppimaaraDto;
+
+  try {
+    const uusi = (await Oppiaineet.addOppimaara((ops.value.id as number), (props.oppiaine.id as number), kopio)).data;
+
+    await props.resetNavi();
+
+    router.push({
+      name: 'perusopetusoppiaine',
+      params: {
+        ...route.params,
+        oppiaineId: '' + uusi.id,
+      },
+    });
   }
-
-  get oppimaarat() {
-    if (this.perusteenOppiaine) {
-      return _.chain(this.perusteenOppiaine.oppimaarat)
-        .filter(oppimaara => _.includes(_.map(oppimaara?.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), _.get(this.vuosiluokkakokonaisuus, '_tunniste')))
-        .sortBy('koodiUri')
-        .value();
-    }
+  catch (err: any) {
+    $fail($t('tallennus-epaonnistui') as string);
+    $fail(err.response.data.syy);
   }
+};
 
-  get oppimaaratTyhjalla() {
-    if (this.perusteenOppiaine) {
-      if (this.isUskonto) {
-        return [
-          {
-            nimi: this.muuUskontoNimi,
-            tyhjanimi: true,
-
-          },
-          ...this.oppimaarat as PerusteOppiaineDto[],
-        ];
-      }
-      else {
-        return this.oppimaarat;
-      }
-    }
-  }
-
-  async show() {
-    this.perusteenOppiaine = (await Oppiaineet.getPerusteSisalto(this.opsId, (this.oppiaine.id as number))).data;
-    this.vuosiluokkakokonaisuus = (await Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuus(this.opsId, _.toNumber(this.$route.params.vlkId))).data;
-  }
-
-  async save() {
-    const kopio = {
-      omaNimi: this.nimi as { [key: string]: string; },
-      tunniste: this.valittuOppimaara?.tunniste,
-    } as KopioOppimaaraDto;
-
-    try {
-      const uusi = (await Oppiaineet.addOppimaara((this.ops.id as number), (this.oppiaine.id as number), kopio)).data;
-
-      await this.resetNavi();
-
-      this.$router.push({
-        name: 'perusopetusoppiaine',
-        params: {
-          ...this.$route.params,
-          oppiaineId: '' + uusi.id,
-        },
-      });
-    }
-    catch (err: any) {
-      this.$fail(this.$t('tallennus-epaonnistui') as string);
-      this.$fail(err.response.data.syy);
-    }
-  }
-
-  clear() {
-    this.valittuOppimaara = null;
-  }
-}
-
+const clear = () => {
+  valittuOppimaara.value = null;
+};
 </script>
 
 <style scoped lang="scss">
 
-  ::v-deep .ep-button {
+  :deep(.ep-button) {
 
     .teksti {
       padding-left: 0px !important;

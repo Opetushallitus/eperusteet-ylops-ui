@@ -35,11 +35,15 @@
             </div>
             <div v-else-if="data.tov.piilotettu" class="disabled-text mb-4">{{$t('tekstikappale-piilotettu-julkisesta-opetussuunnitelmasta')}}</div>
             <ep-collapse tyyppi="perusteteksti" v-if="data.perusteenTeksti && data.perusteenTeksti.perusteenOsa" :first="isEditing" :borderBottom="!isPohja">
-              <h5 slot="header">{{ $t('perusteen-teksti') }}</h5>
+              <template #header>
+                <h5>{{ $t('perusteen-teksti') }}</h5>
+              </template>
 
               <template v-if="data.laajaAlaisetOsaamiset">
                 <EpCollapse v-for="(lao, index) in data.laajaAlaisetOsaamiset" :key="'lao' + lao.id" :borderBottom="index < data.laajaAlaisetOsaamiset.length-1">
-                  <h3 slot="header">{{$kaanna(lao.nimi)}}</h3>
+                  <template #header>
+                    <h3>{{$kaanna(lao.nimi)}}</h3>
+                  </template>
                   <div v-html="$kaanna(lao.kuvaus)" />
                 </EpCollapse>
               </template>
@@ -68,9 +72,11 @@
               <div class="font-italic text-secondary">{{$t('perusteen-tekstia-ei-loydy')}}</div>
             </div>
             <ep-collapse v-if="data.alkuperaiset && data.alkuperaiset.length > 0">
-              <h5 slot="header">
-                {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{$kaanna(pohjaNimi)}})</span>
-              </h5>
+              <template #header>
+                <h5>
+                  {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{$kaanna(pohjaNimi)}})</span>
+                </h5>
+              </template>
               <template v-if="isEditing || data.tov.naytaPohjanTeksti">
                 <ep-content
                   v-for="(alkuperainen, index) in data.alkuperaiset" :key="'alkuperainen'+index"
@@ -106,9 +112,11 @@
 </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Mixins, Component, Watch } from 'vue-property-decorator';
+import { ref, computed, watch, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
@@ -119,97 +127,68 @@ import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
-import EpRoute from '@/mixins/EpRoute';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
-import { TermitStore } from '@/stores/TermitStore';
-import { KuvaStore } from '@/stores/KuvaStore';
-import { createLogger } from '@shared/utils/logger';
-import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
-import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { Murupolku } from '@/stores/murupolku';
 import { TekstikappaleStore } from '@/stores/TekstikappaleStore';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { $kaanna } from '@shared/utils/globals';
+import { createLogger } from '@shared/utils/logger';
 
 const logger = createLogger('RouteTekstikappale');
 
-@Component({
-  components: {
-    EpButton,
-    EpCollapse,
-    EpCommentThreads,
-    EpContent,
-    EpEditointi,
-    EpField,
-    EpFormContent,
-    EpInput,
-    EpAlert,
-    EpToggle,
-  },
-})
-export default class RouteTekstikappale extends Mixins(EpRoute, EpOpsComponent) {
-  private tekstikappaleStore: EditointiStore | null = null;
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async fetch() {
-    const tkstore = new TekstikappaleStore(this.opsId, this.osaId, this.store, this.versionumero);
-    this.tekstikappaleStore = new EditointiStore(tkstore);
+const route = useRoute();
+const { opsId, ops, store, kasiteHandler, kuvaHandler } = useEpOpsRoute(props.opetussuunnitelmaStore);
+
+const tekstikappaleStore = ref<EditointiStore | null>(null);
+
+const osaId = computed(() => {
+  return _.parseInt(route.params.osaId as string);
+});
+
+const versionumero = computed(() => {
+  return _.parseInt(route.query.versionumero as string);
+});
+
+const fetch = async () => {
+  const tkstore = new TekstikappaleStore(opsId.value, osaId.value, store.value, versionumero.value);
+  tekstikappaleStore.value = new EditointiStore(tkstore);
+};
+
+const tekstikappale = computed(() => {
+  return tekstikappaleStore.value?.data?.value || null;
+});
+
+const pohjaNimi = computed(() => {
+  return ops.value.pohja?.nimi;
+});
+
+const perusteenTekstikappaleNimi = computed(() => {
+  return tekstikappaleStore.value?.data?.value?.perusteenTeksti?.perusteenOsa?.nimi;
+});
+
+watch(versionumero, async () => {
+  await fetch();
+}, { immediate: true });
+
+watch(osaId, async (id, oldId) => {
+  if (!id || id === oldId) {
+    return;
   }
+  await fetch();
+}, { immediate: true });
 
-  @Watch('versionumero', { immediate: true })
-  async versionumeroChange() {
-    await this.fetch();
+watch(tekstikappale, (tk) => {
+  if (tk) {
+    Murupolku.aseta('tekstikappale', $kaanna(tk.nimi), {
+      name: 'tekstikappale',
+    });
   }
-
-  @Watch('osaId', { immediate: true })
-  async onParamChange(id: string, oldId: string) {
-    if (!id || id === oldId) {
-      return;
-    }
-
-    await this.fetch();
-  }
-
-  @Watch('tekstikappale')
-  onDataChange(tk) {
-    if (tk) {
-      Murupolku.aseta('tekstikappale', this.$kaanna(tk.nimi), {
-        name: 'tekstikappale',
-      });
-    }
-  }
-
-  get tekstikappale() {
-    return this.tekstikappaleStore?.data?.value || null;
-  }
-
-  get opsId() {
-    return _.parseInt(this.$route.params.id);
-  }
-
-  get osaId(): number {
-    return _.parseInt(this.$route.params.osaId);
-  }
-
-  get pohjaNimi() {
-    return this.ops.pohja?.nimi;
-  }
-
-  get versionumero() {
-    return _.parseInt(_.get(this, '$route.query.versionumero') as any);
-  }
-
-  get kasiteHandler() {
-    return createKasiteHandler(new TermitStore(this.opsId!));
-  }
-
-  get kuvaHandler() {
-    return createKuvaHandler(new KuvaStore(this.opsId!));
-  }
-
-  get perusteenTekstikappaleNimi() {
-    return this.tekstikappaleStore?.data?.value?.perusteenTeksti?.perusteenOsa?.nimi;
-  }
-}
+});
 </script>
 
 <style scoped lang="scss">

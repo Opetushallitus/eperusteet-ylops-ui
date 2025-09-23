@@ -1,9 +1,9 @@
 <template>
 <ep-home-tile icon="groups" :route="{ name: 'organisaatio' }">
-  <template slot="header">
+  <template #header>
     <span>{{ $t('tile-organisaatio') }}</span>
   </template>
-  <template slot="content">
+  <template #content>
     <ep-spinner v-if="isLoading"></ep-spinner>
     <div v-else>
       <b-row class="mx-5 virkailijat">
@@ -20,52 +20,44 @@
 </ep-home-tile>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Vue, Component } from 'vue-property-decorator';
-import { Kayttajat, parsiEsitysnimi } from '@/stores/kayttaja';
+import { ref, computed, onMounted } from 'vue';
+import { Kayttajat } from '@/stores/kayttaja';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
+import { parsiEsitysnimi } from '@shared/utils/kayttaja';
 
-@Component({
-  components: {
-    EpColorIndicator,
-    EpSpinner,
-    EpHomeTile,
-  },
-})
-export default class TileOrganisaatio extends Vue {
-  private isLoading = true;
-  private previewSize = 6;
+const isLoading = ref(true);
+const previewSize = ref(6);
 
-  private get virkailijat() {
-    return Kayttajat.virkailijat;
+const virkailijat = computed(() => {
+  return Kayttajat.virkailijat.value;
+});
+
+onMounted(async () => {
+  try {
+    await Kayttajat.fetchOrganisaatioVirkailijat();
   }
-
-  async mounted() {
-    try {
-      await Kayttajat.fetchOrganisaatioVirkailijat();
-    }
-    finally {
-      this.isLoading = false;
-    }
+  finally {
+    isLoading.value = false;
   }
+});
 
-  private get virkailijatFormatted() {
-    return _.map(this.virkailijat, virkailija => {
-      const esitysnimi = parsiEsitysnimi(virkailija);
-      return {
-        oid: virkailija.oid,
-        esitysnimi,
-      };
-    });
-  }
+const virkailijatFormatted = computed(() => {
+  return _.map(virkailijat.value, virkailija => {
+    const esitysnimi = parsiEsitysnimi(virkailija);
+    return {
+      oid: virkailija.oid,
+      esitysnimi,
+    };
+  });
+});
 
-  private get virkailijatPrewview() {
-    return _.take(this.virkailijatFormatted, this.previewSize);
-  }
-}
+const virkailijatPrewview = computed(() => {
+  return _.take(virkailijatFormatted.value, previewSize.value);
+});
 </script>
 
 <style scoped lang="scss">

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
 
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import { Oppiaineet,
@@ -8,7 +8,7 @@ import { Oppiaineet,
 } from '@shared/api/ylops';
 import { Revision } from '@shared/tyypit';
 import { nimiValidator } from '@/validators/required';
-import { required, requiredIf } from 'vuelidate/lib/validators';
+import { required, requiredIf } from '@vuelidate/validators';
 
 export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
   private isUusi: boolean;

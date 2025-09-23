@@ -1,9 +1,9 @@
 <template>
 <ep-home-tile icon="quiz" :route="{ name: 'useinkysytyt' }">
-  <template slot="header">
+  <template #header>
     <span>{{ $t('ukk') }}</span>
   </template>
-  <template slot="content">
+  <template #content>
     <div class="kuvaus">
       <p>{{ $t('ukk-kuvaus') }}</p>
     </div>
@@ -11,18 +11,8 @@
 </ep-home-tile>
 </template>
 
-<script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+<script setup lang="ts">
 import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
-
-@Component({
-  components: {
-    EpHomeTile,
-  },
-})
-export default class TileUkk extends Vue {
-
-}
 </script>
 <style scoped lang="scss">
 .kuvaus {
