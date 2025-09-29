@@ -13,7 +13,7 @@ export class OpetussuunnitelmaEditStore implements IEditoitava {
 
   constructor(
     private opetussuunnitelmaId: number,
-    private kaanna: Function,
+    private kaanna: (value: any) => string,
   ) {
   }
 

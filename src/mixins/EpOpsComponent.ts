@@ -13,37 +13,29 @@ import { $kaanna, $t } from '@shared/utils/globals';
  * Composable for components that need opetussuunnitelma content
  */
 export function useEpOpsComponent(opetussuunnitelmaStore: OpetussuunnitelmaStore) {
-  const store = computed(() => opetussuunnitelmaStore);
+  // const store = computed(() => opetussuunnitelmaStore);
 
-  const ops = computed(() => store.value.opetussuunnitelma!);
+  // const ops = computed(() => store.value.opetussuunnitelma!);
 
-  const isLops2019 = computed(() => ops.value.toteutus as string === 'lops2019');
+  const isLops2019 = computed(() => opetussuunnitelmaStore.opetussuunnitelma.value?.toteutus as string === 'lops2019');
 
-  const opsId = computed(() => ops.value.id!);
+  // const opsId = computed(() => ops.value.id!);
 
-  const isPohja = computed(() => ops.value.tyyppi as string === 'pohja');
+  const isPohja = computed(() => opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 
-  const isOps = computed(() => ops.value.tyyppi as string === 'ops');
+  const isOps = computed(() => opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'ops');
 
-  const isValmisPohja = computed(() => isPohja.value && ops.value.tila as any === 'valmis');
+  const isValmisPohja = computed(() => isPohja.value && opetussuunnitelmaStore.opetussuunnitelma.value?.tila as any === 'valmis');
 
-  const isPohjanTyyppiOps = computed(() => ops.value.pohja?.tyyppi as string === 'ops');
+  const isPohjanTyyppiOps = computed(() => opetussuunnitelmaStore.opetussuunnitelma.value?.pohja?.tyyppi as string === 'ops');
 
-  const kasiteHandler = computed(() => {
-    return createKasiteHandler(new TermitStore(opsId.value));
-  });
-
-  const kuvaHandler = computed(() => {
-    return createKuvaHandler(new KuvaStore(opsId.value));
-  });
-
-  const isLuva = computed(() => ops.value?.koulutustyyppi as string === Koulutustyyppi.lukiovalmistavakoulutus);
+  const isLuva = computed(() => opetussuunnitelmaStore.opetussuunnitelma.value?.koulutustyyppi as string === Koulutustyyppi.lukiovalmistavakoulutus);
 
   // Meta info using useHead
   const getMetaInfo = () => {
-    if (ops.value && ops.value.nimi && !_.isEmpty($kaanna(ops.value.nimi))) {
+    if (opetussuunnitelmaStore.opetussuunnitelma.value && opetussuunnitelmaStore.opetussuunnitelma.value.nimi && !_.isEmpty($kaanna(opetussuunnitelmaStore.opetussuunnitelma.value.nimi))) {
       return {
-        title: $kaanna(ops.value.nimi),
+        title: $kaanna(opetussuunnitelmaStore.opetussuunnitelma.value.nimi),
         titleTemplate: '%s - ' + $t('eperusteet-ops-tyokalu'),
       };
     }
@@ -58,16 +50,14 @@ export function useEpOpsComponent(opetussuunnitelmaStore: OpetussuunnitelmaStore
   useHead(getMetaInfo);
 
   return {
-    store,
-    ops,
+    store: opetussuunnitelmaStore,
+    ops: opetussuunnitelmaStore.opetussuunnitelma.value,
     isLops2019,
-    opsId,
+    opsId: opetussuunnitelmaStore.opetussuunnitelma.value?.id,
     isPohja,
     isOps,
     isValmisPohja,
     isPohjanTyyppiOps,
-    kasiteHandler,
-    kuvaHandler,
     isLuva,
     getMetaInfo,
   };

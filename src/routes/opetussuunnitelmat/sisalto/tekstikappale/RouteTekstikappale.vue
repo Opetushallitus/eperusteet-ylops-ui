@@ -1,122 +1,167 @@
 <template>
-<div id="scroll-anchor" class="tekstiviite">
-  <div class="kappale">
-    <ep-editointi
+  <div
+    id="scroll-anchor"
+    class="tekstiviite"
+  >
+    <div class="kappale">
+      <ep-editointi
         :store="tekstikappaleStore"
-        :versionumero="versionumero">
-      <template v-slot:ohje>
-        <div class="sidepad">
-          <p>{{ $t('ohje-tekstikapale') }}</p>
-          <p>{{ $t('ohje-tekstikapale-perusteteksti') }}</p>
-        </div>
-      </template>
-      <template v-slot:keskustelu="{ }">
-        <ep-comment-threads />
-      </template>
-      <template v-slot:header="{ data }">
-        <h2>{{ $kaanna(perusteenTekstikappaleNimi || data.tov.tekstiKappale.nimi) }}</h2>
-      </template>
-      <template v-slot:postHeader="{ data }">
-        <span v-if="data.tov.piilotettu" class="additional-info-text">({{ $t('piilotettu')}})</span>
-        <span v-if="data.tov.liite" class="additional-info-text">({{ $t('liite')}})</span>
-      </template>
-      <template v-slot:default="{ data, isEditing }">
-        <div class="teksti">
-          <ep-form-content v-if="isEditing && !data.tov.perusteTekstikappaleId" name="tekstikappale-nimi-ohje">
-            <ep-field v-if="data.tov.tekstiKappale"
-                      v-model="data.tov.tekstiKappale.nimi"
-                      :is-header="true"
-                      :is-editing="isEditing && !data.tov.perusteTekstikappaleId"></ep-field>
-          </ep-form-content>
-          <span comment-uuid="data.tov.tekstiKappale.tunniste">
-            <div v-if="isEditing" class="mb-4">
-              <ep-toggle v-model="data.tov.liite">{{ $t('nayta-liitteena') }}</ep-toggle>
-              <ep-toggle v-model="data.tov.piilotettu">{{ $t('piilota-tekstikappale-julkisesta-opetussuunnitelmasta') }}</ep-toggle>
-            </div>
-            <div v-else-if="data.tov.piilotettu" class="disabled-text mb-4">{{$t('tekstikappale-piilotettu-julkisesta-opetussuunnitelmasta')}}</div>
-            <ep-collapse tyyppi="perusteteksti" v-if="data.perusteenTeksti && data.perusteenTeksti.perusteenOsa" :first="isEditing" :borderBottom="!isPohja">
-              <template #header>
-                <h5>{{ $t('perusteen-teksti') }}</h5>
-              </template>
-
-              <template v-if="data.laajaAlaisetOsaamiset">
-                <EpCollapse v-for="(lao, index) in data.laajaAlaisetOsaamiset" :key="'lao' + lao.id" :borderBottom="index < data.laajaAlaisetOsaamiset.length-1">
-                  <template #header>
-                    <h3>{{$kaanna(lao.nimi)}}</h3>
-                  </template>
-                  <div v-html="$kaanna(lao.kuvaus)" />
-                </EpCollapse>
-              </template>
-
-              <ep-content
-                v-else-if="isEditing || data.tov.naytaPerusteenTeksti"
-                layout="normal"
-                v-model="data.perusteenTeksti.perusteenOsa.teksti"
-                :is-editable="false"
-                :kasiteHandler="kasiteHandler"
-                :kuvaHandler="kuvaHandler"/>
-
-              <div class="font-italic text-secondary"
-                v-if="!isEditing && data.perusteenTeksti && data.perusteenTeksti.perusteenOsa && data.perusteenTeksti.perusteenOsa.teksti && !$kaanna(data.perusteenTeksti.perusteenOsa.teksti) && !data.laajaAlaisetOsaamiset">
-                {{ $t('perusteen-sisaltoa-ei-maaritetty') }}
+        :versionumero="versionumero"
+      >
+        <template #ohje>
+          <div class="sidepad">
+            <p>{{ $t('ohje-tekstikapale') }}</p>
+            <p>{{ $t('ohje-tekstikapale-perusteteksti') }}</p>
+          </div>
+        </template>
+        <template #keskustelu="{ }">
+          <ep-comment-threads />
+        </template>
+        <template #header="{ data }">
+          <h2>{{ $kaanna(perusteenTekstikappaleNimi || data.tov.tekstiKappale.nimi) }}</h2>
+        </template>
+        <template #postHeader="{ data }">
+          <span
+            v-if="data.tov.piilotettu"
+            class="additional-info-text"
+          >({{ $t('piilotettu') }})</span>
+          <span
+            v-if="data.tov.liite"
+            class="additional-info-text"
+          >({{ $t('liite') }})</span>
+        </template>
+        <template #default="{ data, isEditing }">
+          <div class="teksti">
+            <ep-form-content
+              v-if="isEditing && !data.tov.perusteTekstikappaleId"
+              name="tekstikappale-nimi-ohje"
+            >
+              <ep-field
+                v-if="data.tov.tekstiKappale"
+                v-model="data.tov.tekstiKappale.nimi"
+                :is-header="true"
+                :is-editing="isEditing && !data.tov.perusteTekstikappaleId"
+              />
+            </ep-form-content>
+            <span comment-uuid="data.tov.tekstiKappale.tunniste">
+              <div
+                v-if="isEditing"
+                class="mb-4"
+              >
+                <ep-toggle v-model="data.tov.liite">{{ $t('nayta-liitteena') }}</ep-toggle>
+                <ep-toggle v-model="data.tov.piilotettu">{{ $t('piilota-tekstikappale-julkisesta-opetussuunnitelmasta') }}</ep-toggle>
               </div>
-              <div v-if="isEditing">
-                <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
-              </div>
-              <div v-if="!isEditing && !data.tov.naytaPerusteenTeksti" class="disabled-text">
-                {{ $t('piilotettu') }}
-              </div>
-            </ep-collapse>
-            <div class="mb-4" v-if="data.tov.perusteTekstikappaleId && !data.perusteenTeksti">
-              <h5>{{ $t('perusteen-teksti') }}</h5>
-              <div class="font-italic text-secondary">{{$t('perusteen-tekstia-ei-loydy')}}</div>
-            </div>
-            <ep-collapse v-if="data.alkuperaiset && data.alkuperaiset.length > 0">
-              <template #header>
-                <h5>
-                  {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{$kaanna(pohjaNimi)}})</span>
-                </h5>
-              </template>
-              <template v-if="isEditing || data.tov.naytaPohjanTeksti">
+              <div
+                v-else-if="data.tov.piilotettu"
+                class="disabled-text mb-4"
+              >{{ $t('tekstikappale-piilotettu-julkisesta-opetussuunnitelmasta') }}</div>
+              <ep-collapse
+                v-if="data.perusteenTeksti && data.perusteenTeksti.perusteenOsa"
+                tyyppi="perusteteksti"
+                :first="isEditing"
+                :border-bottom="!isPohja"
+              >
+                <template #header>
+                  <h5>{{ $t('perusteen-teksti') }}</h5>
+                </template>
+
+                <template v-if="data.laajaAlaisetOsaamiset">
+                  <EpCollapse
+                    v-for="(lao, index) in data.laajaAlaisetOsaamiset"
+                    :key="'lao' + lao.id"
+                    :border-bottom="index < data.laajaAlaisetOsaamiset.length-1"
+                  >
+                    <template #header>
+                      <h3>{{ $kaanna(lao.nimi) }}</h3>
+                    </template>
+                    <div v-html="$kaanna(lao.kuvaus)" />
+                  </EpCollapse>
+                </template>
+
                 <ep-content
-                  v-for="(alkuperainen, index) in data.alkuperaiset" :key="'alkuperainen'+index"
+                  v-else-if="isEditing || data.tov.naytaPerusteenTeksti"
+                  v-model="data.perusteenTeksti.perusteenOsa.teksti"
                   layout="normal"
-                  v-model="alkuperainen.tekstiKappale.teksti"
                   :is-editable="false"
-                  :kasiteHandler="kasiteHandler"
-                  :kuvaHandler="kuvaHandler"/>
-              </template>
-              <div v-if="isEditing" class="mb-4">
-                <ep-toggle v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</ep-toggle>
-              </div>
-              <div v-if="!isEditing && !data.tov.naytaPohjanTeksti" class="disabled-text">
-                {{ $t('piilotettu') }}
-              </div>
-            </ep-collapse>
+                />
 
-            <template v-if="!isPohja">
-              <h5>{{ $t('paikallinen-teksti') }}</h5>
-              <ep-content
-                layout="normal"
-                v-model="data.tov.tekstiKappale.teksti"
-                :is-editable="isEditing"
-                :kasiteHandler="kasiteHandler"
-                :kuvaHandler="kuvaHandler"> </ep-content>
-              <ep-alert v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)" :ops="false" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
-            </template>
-          </span>
-        </div>
-      </template>
-    </ep-editointi>
+                <div
+                  v-if="!isEditing && data.perusteenTeksti && data.perusteenTeksti.perusteenOsa && data.perusteenTeksti.perusteenOsa.teksti && !$kaanna(data.perusteenTeksti.perusteenOsa.teksti) && !data.laajaAlaisetOsaamiset"
+                  class="font-italic text-secondary"
+                >
+                  {{ $t('perusteen-sisaltoa-ei-maaritetty') }}
+                </div>
+                <div v-if="isEditing">
+                  <ep-toggle v-model="data.tov.naytaPerusteenTeksti">{{ $t('nayta-perusteen-teksti') }}</ep-toggle>
+                </div>
+                <div
+                  v-if="!isEditing && !data.tov.naytaPerusteenTeksti"
+                  class="disabled-text"
+                >
+                  {{ $t('piilotettu') }}
+                </div>
+              </ep-collapse>
+              <div
+                v-if="data.tov.perusteTekstikappaleId && !data.perusteenTeksti"
+                class="mb-4"
+              >
+                <h5>{{ $t('perusteen-teksti') }}</h5>
+                <div class="font-italic text-secondary">{{ $t('perusteen-tekstia-ei-loydy') }}</div>
+              </div>
+              <ep-collapse v-if="data.alkuperaiset && data.alkuperaiset.length > 0">
+                <template #header>
+                  <h5>
+                    {{ $t('pohjan-teksti') }} <span v-if="pohjaNimi">({{ $kaanna(pohjaNimi) }})</span>
+                  </h5>
+                </template>
+                <template v-if="isEditing || data.tov.naytaPohjanTeksti">
+                  <ep-content
+                    v-for="(alkuperainen, index) in data.alkuperaiset"
+                    :key="'alkuperainen'+index"
+                    v-model="alkuperainen.tekstiKappale.teksti"
+                    layout="normal"
+                    :is-editable="false"
+                  />
+                </template>
+                <div
+                  v-if="isEditing"
+                  class="mb-4"
+                >
+                  <ep-toggle v-model="data.tov.naytaPohjanTeksti">{{ $t('nayta-pohjan-teksti') }}</ep-toggle>
+                </div>
+                <div
+                  v-if="!isEditing && !data.tov.naytaPohjanTeksti"
+                  class="disabled-text"
+                >
+                  {{ $t('piilotettu') }}
+                </div>
+              </ep-collapse>
+
+              <template v-if="!isPohja">
+                <h5>{{ $t('paikallinen-teksti') }}</h5>
+                <ep-content
+                  v-model="data.tov.tekstiKappale.teksti"
+                  layout="normal"
+                  :is-editable="isEditing"
+                />
+                <ep-alert
+                  v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)"
+                  :ops="false"
+                  :text="$t('paikallista-sisaltoa-ei-maaritetty')"
+                />
+              </template>
+            </span>
+          </div>
+        </template>
+      </ep-editointi>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
 import _ from 'lodash';
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
@@ -142,7 +187,9 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
-const { opsId, ops, store, kasiteHandler, kuvaHandler } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
 const tekstikappaleStore = ref<EditointiStore | null>(null);
 
@@ -164,7 +211,7 @@ const tekstikappale = computed(() => {
 });
 
 const pohjaNimi = computed(() => {
-  return ops.value.pohja?.nimi;
+  return ops.value?.pohja?.nimi;
 });
 
 const perusteenTekstikappaleNimi = computed(() => {

@@ -1,94 +1,158 @@
 <template>
-<div>
-  <ep-navigation
-    tyyli="ops"
-    :koulutustyyppi="koulutustyyppi"
-    :headerClass="headerClass"
-    :sticky="true">
-  </ep-navigation>
-  <ep-spinner class="center-loading" v-if="!ops"/>
-  <div class="opetussuunnitelma" :class="headerClass" v-else>
-    <div class="header" :style="headerStyle">
-      <div class="progress-chart">
-        <EpValidPopover
+  <div>
+    <ep-navigation
+      tyyli="ops"
+      :koulutustyyppi="koulutustyyppi"
+      :header-class="headerClass"
+      :sticky="true"
+    />
+    <ep-spinner
+      v-if="!ops"
+      class="center-loading"
+    />
+    <div
+      v-else
+      class="opetussuunnitelma"
+      :class="headerClass"
+    >
+      <div
+        class="header"
+        :style="headerStyle"
+      >
+        <div class="progress-chart">
+          <EpValidPopover
             :validoitava="ops"
             :validoinnit="validoinnit"
-            :julkaisemattomiaMuutoksia="onkoJulkaisemattomiaMuutoksia"
+            :julkaisemattomia-muutoksia="onkoJulkaisemattomiaMuutoksia"
             :julkaistava="!isPohja"
             :is-validating="isValidating"
-            @asetaValmiiksi="valmistaPohja"
+            tyyppi="opetussuunnitelma"
+            @aseta-valmiiksi="valmistaPohja"
             @palauta="palauta"
             @validoi="validoi"
-            tyyppi="opetussuunnitelma"
           />
-      </div>
-      <div class="info">
-        <h1>
-          <span>{{ $kaanna(ops.nimi) }}</span>
-          <span class="ml-2" v-if="isPohja">({{ $t('pohja') }})</span>
-        </h1>
-        <div>
-          <span v-if="koulutustyyppi">{{ $t(koulutustyyppi) }}</span>
-          <span v-if="koulutustyyppi" class="ml-2 mr-2">|</span>
-          <span>{{ ops.perusteenDiaarinumero }}</span>
-          <span class="ml-2 mr-2">|</span>
+        </div>
+        <div class="info">
+          <h1>
+            <span>{{ $kaanna(ops?.nimi) }}</span>
+            <span
+              v-if="isPohja"
+              class="ml-2"
+            >({{ $t('pohja') }})</span>
+          </h1>
+          <div>
+            <span v-if="koulutustyyppi">{{ $t(koulutustyyppi) }}</span>
+            <span
+              v-if="koulutustyyppi"
+              class="ml-2 mr-2"
+            >|</span>
+            <span>{{ ops?.perusteenDiaarinumero }}</span>
+            <span class="ml-2 mr-2">|</span>
 
-          <b-dropdown class="asetukset" size="sm" no-caret variant="transparent">
-            <template v-slot:button-content>
-              <span>{{$t('lisatoiminnot')}}</span>
-              <EpMaterialIcon icon-shape="outlined" class="hallinta" size="22px">expand_more</EpMaterialIcon>
-            </template>
+            <b-dropdown
+              class="asetukset"
+              size="sm"
+              no-caret
+              variant="transparent"
+            >
+              <template #button-content>
+                <span>{{ $t('lisatoiminnot') }}</span>
+                <EpMaterialIcon
+                  icon-shape="outlined"
+                  class="hallinta"
+                  size="22px"
+                >
+                  expand_more
+                </EpMaterialIcon>
+              </template>
 
-            <b-dropdown-item :to="{ name: 'opsTiedot' }">
-              <EpMaterialIcon class="mr-2" icon-shape="outlined">info</EpMaterialIcon>
-              <span class="dropdown-text">{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
-            </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'opsDokumentti' }">
-              <EpMaterialIcon class="mr-2" icon-shape="outlined">picture_as_pdf</EpMaterialIcon>
-              <span class="dropdown-text">{{ $t('luo-pdf') }}</span>
-            </b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'opsKasitteet' }">
-              <EpMaterialIcon class="mr-2" icon-shape="outlined">book</EpMaterialIcon>
-              <span class="dropdown-text">{{ $t('kasitteet') }}</span>
-            </b-dropdown-item>
-            <b-dropdown-item v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" :to="{ name: 'opsPoistetut' }">
-              <EpMaterialIcon class="mr-2" icon-shape="outlined">delete</EpMaterialIcon>
-              <span class="dropdown-text">{{ $t('poistetut') }}</span>
-            </b-dropdown-item>
-            <b-dropdown-divider v-if="ops.tila !== 'poistettu'"
-                                v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" />
-            <b-dropdown-item v-if="ops.tila !== 'poistettu'"
-                             v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }" @click="arkistoiOps">
-              <EpMaterialIcon class="mr-2" icon-shape="outlined">archive</EpMaterialIcon>
-              <span class="dropdown-text">{{ $t('arkistoi-' + tyyppi) }}</span>
-            </b-dropdown-item>
-          </b-dropdown>
+              <b-dropdown-item :to="{ name: 'opsTiedot' }">
+                <EpMaterialIcon
+                  class="mr-2"
+                  icon-shape="outlined"
+                >
+                  info
+                </EpMaterialIcon>
+                <span class="dropdown-text">{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
+              </b-dropdown-item>
+              <b-dropdown-item :to="{ name: 'opsDokumentti' }">
+                <EpMaterialIcon
+                  class="mr-2"
+                  icon-shape="outlined"
+                >
+                  picture_as_pdf
+                </EpMaterialIcon>
+                <span class="dropdown-text">{{ $t('luo-pdf') }}</span>
+              </b-dropdown-item>
+              <b-dropdown-item :to="{ name: 'opsKasitteet' }">
+                <EpMaterialIcon
+                  class="mr-2"
+                  icon-shape="outlined"
+                >
+                  book
+                </EpMaterialIcon>
+                <span class="dropdown-text">{{ $t('kasitteet') }}</span>
+              </b-dropdown-item>
+              <b-dropdown-item
+                v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+                :to="{ name: 'opsPoistetut' }"
+              >
+                <EpMaterialIcon
+                  class="mr-2"
+                  icon-shape="outlined"
+                >
+                  delete
+                </EpMaterialIcon>
+                <span class="dropdown-text">{{ $t('poistetut') }}</span>
+              </b-dropdown-item>
+              <b-dropdown-divider
+                v-if="ops?.tila !== 'poistettu'"
+                v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+              />
+              <b-dropdown-item
+                v-if="ops?.tila !== 'poistettu'"
+                v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+                @click="arkistoiOps"
+              >
+                <EpMaterialIcon
+                  class="mr-2"
+                  icon-shape="outlined"
+                >
+                  archive
+                </EpMaterialIcon>
+                <span class="dropdown-text">{{ $t('arkistoi-' + tyyppi) }}</span>
+              </b-dropdown-item>
+            </b-dropdown>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="lower">
-      <ep-sidebar>
-        <template #bar>
-          <ops-sidenav
-            :opetussuunnitelma-store="store"
-            :key="$route.fullPath"
-            v-model="valikkoData"/>
-        </template>
-        <template #view>
-          <transition name="fade" mode="out-in">
-            <!-- ep-comment-threads-->
-            <router-view :key="$route.fullPath" />
-          </transition>
-        </template>
-      </ep-sidebar>
+      <div class="lower">
+        <ep-sidebar>
+          <template #bar>
+            <ops-sidenav
+              :key="route.fullPath"
+              v-model="valikkoData"
+              :opetussuunnitelma-store="store"
+            />
+          </template>
+          <template #view>
+            <transition
+              name="fade"
+              mode="out-in"
+            >
+              <!-- ep-comment-threads-->
+              <router-view :key="route.fullPath" />
+            </transition>
+          </template>
+        </ep-sidebar>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, provide, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import _ from 'lodash';
 import { OpetussuunnitelmaKevytDtoTilaEnum } from '@shared/api/ylops';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
@@ -106,30 +170,30 @@ import { Kielet } from '@shared/stores/kieli';
 import { KommenttiKahvaDtoKieliEnum } from '@shared/generated/ylops';
 import { Kommentit } from '@/stores/kommentit';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { $success, $fail, $t, $kaanna, $bvModal, $vahvista } from '@shared/utils/globals';
+import { unref } from 'vue';
+import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
+import { TermitStore } from '@/stores/TermitStore';
+import { KuvaStore } from '@/stores/KuvaStore';
+import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
+import { nextTick } from 'vue';
+import { Murupolku } from '@/stores/murupolku';
+import { Koulutustyyppi } from '@shared/tyypit';
 
 // Props
 const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
+  termitStore: TermitStore;
 }>();
 
 // Router
 const router = useRouter();
+const route = useRoute();
 
-// Use the composable
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-  breadcrumb,
-} = useEpOpsRoute(props.opetussuunnitelmaStore);
+// Computed properties from store
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 // Reactive data
 const valikkoData = ref<any | null>(null);
 const isValidating = ref(false);
@@ -145,13 +209,13 @@ const tyyppi = computed(() => {
 
 const headerStyle = computed(() => {
   if (ops.value?.koulutustyyppi) {
-    return koulutustyyppiBanner(ops.value.koulutustyyppi);
+    return koulutustyyppiBanner(ops.value?.koulutustyyppi);
   }
   return '';
 });
 
 const headerClass = computed(() => {
-  if (ops.value?.koulutustyyppi && themes[ops.value.koulutustyyppi] !== 'lukiokoulutus') {
+  if (ops.value?.koulutustyyppi && themes[ops.value?.koulutustyyppi] !== 'lukiokoulutus') {
     return 'light';
   }
   return 'dark';
@@ -180,18 +244,18 @@ const isArkistoitu = computed(() => {
 });
 
 const julkaisut = computed(() => {
-  return store.value.julkaisut;
+  return store.value.julkaisut.value;
 });
 
 const validoinnit = computed(() => {
-  if (store.value.validointi) {
+  if (store.value.validointi.value) {
     return {
-      virheet: _.chain(store.value.validointi)
+      virheet: _.chain(store.value.validointi.value)
         .map('virheet')
         .flatMap()
         .map('kuvaus')
         .value(),
-      huomautukset: _.chain(store.value.validointi)
+      huomautukset: _.chain(store.value.validointi.value)
         .map('huomautukset')
         .flatMap()
         .map('kuvaus')
@@ -202,7 +266,7 @@ const validoinnit = computed(() => {
 });
 
 const onkoJulkaisemattomiaMuutoksia = computed(() => {
-  return store.value.julkaisemattomiaMuutoksia;
+  return store.value.julkaisemattomiaMuutoksia.value;
 });
 
 const arkistoituTyyppiTeksti = computed(() => {
@@ -243,6 +307,7 @@ const valmistaPohja = async () => {
   if (valmista) {
     try {
       await store.value.updateTila('valmis');
+      await nextTick();
       $success($t('tilan-vaihto-valmis-onnistui'));
     }
     catch (err) {
@@ -283,19 +348,9 @@ const navigation = computed(() => {
 provide('navigation', navigation);
 provide('linkkiHandler', new LinkkiHandler());
 provide('kommenttiHandler', Kommentit);
+provide('kasiteHandler', createKasiteHandler(props.termitStore));
+provide('kuvaHandler', createKuvaHandler(new KuvaStore(_.toNumber(route.params.id))));
 
-// Lifecycle
-const init = async () => {
-  await store.value.init();
-
-  if (store.value.opetussuunnitelma?.nimi) {
-    breadcrumb('opetussuunnitelma', store.value.opetussuunnitelma.nimi, { name: 'yleisnakyma' });
-  }
-};
-
-onMounted(async () => {
-  await init();
-});
 </script>
 
 <style scoped lang="scss">

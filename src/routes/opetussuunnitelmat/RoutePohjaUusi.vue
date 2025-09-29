@@ -5,12 +5,22 @@
     </template>
     <div>
       <ep-form-content name="pohja-nimi">
-        <ep-field help="pohja-nimi-ohje" v-model="uusi.nimi" :validation="$v.uusi.nimi" :is-editing="true" />
+        <ep-field
+          v-model="uusi.nimi"
+          help="pohja-nimi-ohje"
+          :validation="$v.uusi.nimi"
+          :is-editing="true"
+        />
       </ep-form-content>
     </div>
     <div v-if="valittavat.length > 0">
       <ep-form-content name="peruste">
-        <ep-select help="ops-peruste-ohje" v-model="uusi.valittuPeruste" :items="valittavat" :validation="$v.uusi.valittuPeruste" :is-editing="true">
+        <ep-select
+          v-model="uusi.valittuPeruste"
+          help="ops-peruste-ohje"
+          :items="valittavat"
+          :is-editing="true"
+        >
           <template #default="{ item }">
             {{ $kaanna(item.nimi) }} ({{ item.diaarinumero }})
           </template>
@@ -18,7 +28,11 @@
       </ep-form-content>
     </div>
     <ep-spinner v-else />
-    <ep-button :disabled="$v.uusi.$invalid" @click="luoUusiPeruste" :show-spinner="isSaving">
+    <ep-button
+      :disabled="$v.uusi.$invalid"
+      :show-spinner="isSaving"
+      @click="luoUusiPeruste"
+    >
       {{ $t('luo-pohja') }}
     </ep-button>
   </ep-main-view>
@@ -42,7 +56,7 @@ import { isPerusteSupported } from '@/utils/perusteet';
 import { createLogger } from '@shared/utils/logger';
 import { success } from '@/utils/notifications';
 import { Kieli } from '@shared/tyypit';
-import { $t, $kaanna } from '@shared/utils/globals';
+import { $t, $kaanna, $success } from '@shared/utils/globals';
 
 const logger = createLogger('RoutePohjaUusi');
 const router = useRouter();
@@ -93,7 +107,7 @@ const luoUusiPeruste = async () => {
     };
 
     const data = (await Opetussuunnitelmat.addOpetussuunnitelma(pohja)).data;
-    success('lisays-pohja-onnistui');
+    $success('lisays-pohja-onnistui');
     if (_.isNumber(data.id)) {
       router.replace({
         name: 'yleisnakyma',

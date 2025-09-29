@@ -1,96 +1,187 @@
 <template>
-<ep-spinner v-if="isLoading" />
-<div v-else class="sidebar d-flex flex-column flex-fill">
-  <ul class="navigation flex-fill">
+  <ep-spinner v-if="isLoading" />
+  <div
+    v-else
+    class="sidebar d-flex flex-column flex-fill"
+  >
+    <ul class="navigation flex-fill">
+      <li class="p-0">
+        <router-link :to="{name: 'yleisnakyma'}">
+          <div class="hallintapaneeli">
+            <span>{{ $t('yleisnakyma') }}</span>
+          </div>
+        </router-link>
+      </li>
 
-    <li class="p-0">
-      <router-link :to="{name: 'yleisnakyma'}">
-        <div class="hallintapaneeli">
-          <span>{{$t('yleisnakyma')}}</span>
-        </div>
-      </router-link>
-    </li>
-
-    <ep-recursive-nav :value="valikkoData">
-      <template v-slot:previousLink="{ itemData, itemRoute, navigate }">
-        <li class="previous-link align-items-start">
-          <ops-sidenav-link class="back-btn" tag="span" :click="navigate" :clickParams="false">
-            <EpMaterialIcon>chevron_left</EpMaterialIcon>
-          </ops-sidenav-link>
-          <ops-sidenav-link class="previous-link" tag="span" :to="itemRoute">
-            {{ kaanna(itemData.item) }}
-            <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
-            <EpMaterialIcon v-if="itemData.item.order === '99'" size="16px">attach_file</EpMaterialIcon>
-            <EpMaterialIcon v-if="itemData.item.piilotettu" size="16px">visibility_off</EpMaterialIcon>
-          </ops-sidenav-link>
-        </li>
-      </template>
-      <template v-slot="{ itemData, isSubmenu, navigate, itemRoute }">
-        <ops-sidenav-link :to="itemRoute" :class="{ 'module-link': onkoModTaiOj(itemData.item) }" v-if="!isSubmenu && itemRoute">
-          <div class="ml-2" v-if="itemData.item.type === 'uusi-opintojakso'">
-            <EpMaterialIcon class="mr-2" size="20px">add</EpMaterialIcon>
-            <span>{{ $t('luo-uusi-opintojakso') }}</span>
-          </div>
-          <div class="" v-else-if="itemData.item.type === 'uusi-paikallinen-oppiaine'">
-            <EpMaterialIcon class="mr-2" size="20px">add</EpMaterialIcon>
-            <span>{{ $t('luo-uusi-paikallinen-oppiaine') }}</span>
-          </div>
-          <div v-else class="d-inline-flex">
-            <div v-if="onModuuli(itemData.item)">
-              <ep-color-indicator class="mr-2" :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'">
-              </ep-color-indicator>
-            </div>
-            <div>
-              <span>{{ kaanna(itemData.item) }}</span>
-              <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
-            </div>
-          </div>
-          <EpMaterialIcon v-if="itemData.item.piilotettu" class="ml-1" size="16px">visibility_off</EpMaterialIcon>
-        </ops-sidenav-link>
-        <li class="subheader" v-if="!isSubmenu && !itemRoute && kaanna(itemData.item)">
-          <span>{{ kaanna(itemData.item) }}</span>
-        </li>
-        <ops-sidenav-link class="submenu" v-if="isSubmenu" :itemData="itemData" :to="itemRoute" :click="navigate">
-          <div class="d-flex w-100">
-            <div class="flex-grow-1">
+      <ep-recursive-nav :value="valikkoData">
+        <template #previousLink="{ itemData, itemRoute, navigate }">
+          <li class="previous-link align-items-start">
+            <ops-sidenav-link
+              class="back-btn"
+              tag="span"
+              :click="navigate"
+              :click-params="false"
+            >
+              <EpMaterialIcon>chevron_left</EpMaterialIcon>
+            </ops-sidenav-link>
+            <ops-sidenav-link
+              class="previous-link"
+              tag="span"
+              :to="itemRoute"
+            >
               {{ kaanna(itemData.item) }}
-              <span class="code-field" v-if="haeKoodi(itemData.item)">({{ haeKoodi(itemData.item) }})</span>
-              <EpMaterialIcon v-if="itemData.item.order === '99'" size="16px">attach_file</EpMaterialIcon>
-              <EpMaterialIcon v-if="itemData.item.piilotettu" size="16px">visibility_off</EpMaterialIcon>
+              <span
+                v-if="haeKoodi(itemData.item)"
+                class="code-field"
+              >({{ haeKoodi(itemData.item) }})</span>
+              <EpMaterialIcon
+                v-if="itemData.item.order === '99'"
+                size="16px"
+              >
+                attach_file
+              </EpMaterialIcon>
+              <EpMaterialIcon
+                v-if="itemData.item.piilotettu"
+                size="16px"
+              >
+                visibility_off
+              </EpMaterialIcon>
+            </ops-sidenav-link>
+          </li>
+        </template>
+        <template #default="{ itemData, isSubmenu, navigate, itemRoute }">
+          <ops-sidenav-link
+            v-if="!isSubmenu && itemRoute"
+            :to="itemRoute"
+            :class="{ 'module-link': onkoModTaiOj(itemData.item) }"
+          >
+            <div
+              v-if="itemData.item.type === 'uusi-opintojakso'"
+              class="ml-2"
+            >
+              <EpMaterialIcon
+                class="mr-2"
+                size="20px"
+              >
+                add
+              </EpMaterialIcon>
+              <span>{{ $t('luo-uusi-opintojakso') }}</span>
             </div>
-            <EpMaterialIcon v-if="!itemData.item.hideChevron">chevron_right</EpMaterialIcon>
-          </div>
-        </ops-sidenav-link>
-      </template>
-      <template v-slot:after="{ itemData }">
-        <li v-if="itemData.item.type === 'tekstikappale' && !isPohja">
-          <ep-tekstikappale-lisays
-            :opetussuunnitelmaStore="store"
-            :tekstikappaleet="tekstikappaleLapset(itemData)"
-            v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
-        </li>
+            <div
+              v-else-if="itemData.item.type === 'uusi-paikallinen-oppiaine'"
+              class=""
+            >
+              <EpMaterialIcon
+                class="mr-2"
+                size="20px"
+              >
+                add
+              </EpMaterialIcon>
+              <span>{{ $t('luo-uusi-paikallinen-oppiaine') }}</span>
+            </div>
+            <div
+              v-else
+              class="d-inline-flex"
+            >
+              <div v-if="onModuuli(itemData.item)">
+                <ep-color-indicator
+                  class="mr-2"
+                  :kind="itemData.item.objref.pakollinen ? 'pakollinen': 'valinnainen'"
+                />
+              </div>
+              <div>
+                <span>{{ kaanna(itemData.item) }}</span>
+                <span
+                  v-if="haeKoodi(itemData.item)"
+                  class="code-field"
+                >({{ haeKoodi(itemData.item) }})</span>
+              </div>
+            </div>
+            <EpMaterialIcon
+              v-if="itemData.item.piilotettu"
+              class="ml-1"
+              size="16px"
+            >
+              visibility_off
+            </EpMaterialIcon>
+          </ops-sidenav-link>
+          <li
+            v-if="!isSubmenu && !itemRoute && kaanna(itemData.item)"
+            class="subheader"
+          >
+            <span>{{ kaanna(itemData.item) }}</span>
+          </li>
+          <ops-sidenav-link
+            v-if="isSubmenu"
+            class="submenu"
+            :item-data="itemData"
+            :to="itemRoute"
+            :click="navigate"
+          >
+            <div class="d-flex w-100">
+              <div class="flex-grow-1">
+                {{ kaanna(itemData.item) }}
+                <span
+                  v-if="haeKoodi(itemData.item)"
+                  class="code-field"
+                >({{ haeKoodi(itemData.item) }})</span>
+                <EpMaterialIcon
+                  v-if="itemData.item.order === '99'"
+                  size="16px"
+                >
+                  attach_file
+                </EpMaterialIcon>
+                <EpMaterialIcon
+                  v-if="itemData.item.piilotettu"
+                  size="16px"
+                >
+                  visibility_off
+                </EpMaterialIcon>
+              </div>
+              <EpMaterialIcon v-if="!itemData.item.hideChevron">
+                chevron_right
+              </EpMaterialIcon>
+            </div>
+          </ops-sidenav-link>
+        </template>
+        <template #after="{ itemData }">
+          <li v-if="itemData.item.type === 'tekstikappale' && !isPohja">
+            <ep-tekstikappale-lisays
+              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+              :opetussuunnitelma-store="store"
+              :tekstikappaleet="tekstikappaleLapset(itemData)"
+            />
+          </li>
 
-        <li v-if="itemData.item.type === 'koosteinen-oppiaine'">
-          <ep-oppimaara-lisays
-              :opetussuunnitelmaStore="store"
+          <li v-if="itemData.item.type === 'koosteinen-oppiaine'">
+            <ep-oppimaara-lisays
+              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+              :opetussuunnitelma-store="store"
               :oppiaine="itemData.item.objref"
               :reset-navi="reset"
-              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"/>
-        </li>
-      </template>
-    </ep-recursive-nav>
+            />
+          </li>
+        </template>
+      </ep-recursive-nav>
+    </ul>
 
-  </ul>
-
-  <div class="muokkaa-kappaleita" v-sticky sticky-side="bottom" sticky-z-index="500" v-if="!isPohja">
-    <router-link :to="{name: 'jarjesta'}">
-      <div class="inner">
-        <EpMaterialIcon class="icon">reorder</EpMaterialIcon>
-        <a class="btn btn-link btn-link-nav">{{$t('muokkaa-jarjestysta')}}</a>
-      </div>
-    </router-link>
+    <div
+      v-if="!isPohja"
+      v-sticky
+      class="muokkaa-kappaleita"
+      sticky-side="bottom"
+      sticky-z-index="500"
+    >
+      <router-link :to="{name: 'jarjesta'}">
+        <div class="inner">
+          <EpMaterialIcon class="icon">
+            reorder
+          </EpMaterialIcon>
+          <a class="btn btn-link btn-link-nav">{{ $t('muokkaa-jarjestysta') }}</a>
+        </div>
+      </router-link>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
@@ -113,9 +204,13 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import { oppiaineLinkki, oppimaaraModuuliLinkit, oppimaaraOpintojaksoLinkit, opsLapsiLinkit, paikallinenOppiaineLinkki, oppimaaraUusiLinkki, vuosiluokkaLinkit } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { koodiNumero, koodiAlku, isPaikallisestiSallittuLaajennos, koodiSorters } from '@/utils/perusteet';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna, $t } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
+import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
+import { TermitStore } from '@/stores/TermitStore';
+import { KuvaStore } from '@/stores/KuvaStore';
+import { Koulutustyyppi } from '@shared/tyypit';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -185,20 +280,10 @@ const emit = defineEmits(['input']);
 // Router
 const route = useRoute();
 
-// Use the composable
-const {
-  store,
-  ops,
-  isLops2019,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  isPohjanTyyppiOps,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsComponent(props.opetussuunnitelmaStore);
+// Computed properties from store
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 
 // Reactive data
 const cache = ref<PerusteCache>(null as any);
@@ -207,8 +292,8 @@ const query = ref('');
 
 // Computed properties
 const opintojaksot = computed(() => {
-  return _(store.value.opintojaksot)
-    .concat(store.value.tuodutOpintojaksot)
+  return _(store.value.opintojaksot.value)
+    .concat(store.value.tuodutOpintojaksot.value)
     .value();
 });
 
@@ -277,14 +362,14 @@ const oppiaineOppimaaraLinkit = (oppiaine: Lops2019OppiaineDto) => {
         }),
       ];
 
-      if (Object.keys(paikallisetOppiaineetByPerusteenOppiaineenKoodi.value).includes(oppimaara.koodi?.uri!)) {
+      if (Object.keys(paikallisetOppiaineetByPerusteenOppiaineenKoodi.value).includes(oppimaara.koodi!.uri!)) {
         sideMenuEntries.unshift({
           item: {
             type: 'staticlink',
             i18key: 'oppimaarat',
           },
           flatten: true,
-          children: _.chain(paikallisetOppiaineetByPerusteenOppiaineenKoodi.value[oppimaara.koodi?.uri!])
+          children: _.chain(paikallisetOppiaineetByPerusteenOppiaineenKoodi.value[oppimaara.koodi!.uri!])
             .map(poa => paikallinenOppiaineLinkki(
               'oppimaara',
               poa,
@@ -323,7 +408,7 @@ const perusteenOppiaineet = computed(() => {
 });
 
 const paikallisetOppiaineet = computed(() => {
-  return store.value.paikallisetOppiaineet;
+  return store.value.paikallisetOppiaineet.value;
 });
 
 const paikallisetOppiaineetByPerusteenOppiaineenKoodi = computed(() => {
@@ -348,13 +433,14 @@ const isLoading = computed(() => {
 });
 
 const oppiaineJarjestykset = computed(() => {
-  return store.value.oppiaineJarjestykset;
+  return store.value.oppiaineJarjestykset.value;
 });
 
 const opsOppiaineLinkit = computed(() => {
   if (!perusteenOppiaineet.value) {
     return [];
   }
+
   return _.chain(perusteenOppiaineet.value)
     .sortBy(koodiAlku, koodiNumero)
     .map(oppiaine => {
@@ -475,7 +561,7 @@ const valikkoDataBasics = computed(() => {
 });
 
 const opsLapset = computed(() => {
-  return _.get(store.value, 'sisalto.lapset', []);
+  return _.get(store.value.sisalto.value, 'lapset', []);
 });
 
 const valikkoData = computed(() => {
@@ -487,7 +573,7 @@ const valikkoData = computed(() => {
 
   // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
   const oppiaineLinkit = opsOppiaineLinkit.value;
-  const paikallisetOppiaineArray = store.value.paikallisetOppiaineet || [];
+  const paikallisetOppiaineArray = store.value.paikallisetOppiaineet.value || [];
 
   if ((oppiaineLinkit && oppiaineLinkit.length > 0) || paikallisetOppiaineArray.length > 0) {
     menuOpsData = [
@@ -538,7 +624,7 @@ const valikkoData = computed(() => {
 });
 
 const reset = () => {
-  store.value.init();
+  store.value.init(store.value.opsId.value);
 };
 
 const tekstikappaleet = computed(() => {

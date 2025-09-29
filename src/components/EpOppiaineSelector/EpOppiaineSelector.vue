@@ -1,32 +1,36 @@
 <template>
-<div v-if="isEditable">
-
-  <ep-multi-list-select
-    v-if="cache"
-    :modelValue="sortedValue"
-    tyyppi="oppiaine"
-    :items="selectOptions"
-    @update:modelValue="handleInput"
-    :validation="validation"
-    :required="true"
-    :help="help"
-    :multiple="multiple"/>
-
-</div>
-<div v-else-if="modelValue">
-  <div v-if="isArray">
-    <ul>
-      <li v-for="uri in modelValue" :key="uri">
-        <span>{{ $kaanna(oppiaineetMap[uri].nimi) }}</span>
-        <span class="ml-1">({{ oppiaineetMap[uri].koodiArvo }})</span>
-      </li>
-    </ul>
-  </div>
-  <div v-else-if="oppiaineetMap[modelValue]">
-    <span>{{ $kaanna(oppiaineetMap[modelValue].nimi) }}</span>
-    <span class="ml-1">({{ oppiaineetMap[modelValue].koodiArvo }})</span>
-  </div>
-</div>
+  <template v-if="cache">
+    <div v-if="isEditable">
+      <ep-multi-list-select
+        v-if="cache"
+        :model-value="sortedValue"
+        tyyppi="oppiaine"
+        :items="selectOptions"
+        :validation="validation"
+        :required="true"
+        :help="help"
+        :multiple="multiple"
+        @update:model-value="handleInput"
+      />
+    </div>
+    <div v-else-if="modelValue">
+      <div v-if="isArray">
+        <ul>
+          <li
+            v-for="uri in modelValue"
+            :key="uri"
+          >
+            <span>{{ $kaanna(oppiaineetMap[uri].nimi) }}</span>
+            <span class="ml-1">({{ oppiaineetMap[uri].koodiArvo }})</span>
+          </li>
+        </ul>
+      </div>
+      <div v-else-if="oppiaineetMap[modelValue]">
+        <span>{{ $kaanna(oppiaineetMap[modelValue].nimi) }}</span>
+        <span class="ml-1">({{ oppiaineetMap[modelValue].koodiArvo }})</span>
+      </div>
+    </div>
+  </template>
 <!--
 <div v-else>
   <p>{{ $t('oppiainetta-ei-valittu') }}</p>
@@ -41,7 +45,6 @@ import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
 import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
@@ -58,9 +61,9 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue']);
 
-
 // Use the composable
-const { store, opsId } = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
 const cache = ref<PerusteCache | null>(null);
 
@@ -81,7 +84,7 @@ const sortedValue = computed(() => {
 });
 
 const paikallisetOppiaineet = computed(() => {
-  return _(store.value.paikallisetOppiaineet)
+  return _(store.value.paikallisetOppiaineet.value)
     .filter(getUri)
     .map((oa) => {
       return {

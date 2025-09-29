@@ -1,6 +1,6 @@
 import { nimiValidator, requiredLokalisoituTeksti } from '@/validators/required';
 import { Kieli } from '@shared/tyypit';
-import { minLength, required, minValue } from '@vuelidate/validators';
+import { minLength, required, minValue, helpers } from '@vuelidate/validators';
 import { koodiValidator } from '@shared/validators/required';
 
 export function opintojaksoLuontiValidator(kielet: Kieli[] = []) {
@@ -8,12 +8,12 @@ export function opintojaksoLuontiValidator(kielet: Kieli[] = []) {
     ...nimiValidator(kielet),
     oppiaineet: {
       required,
-      $each: {
+      $each: helpers.forEach({
         laajuus: {
           'min-value': minValue(0),
         },
         ...koodiValidator(),
-      },
+      }),
     },
   };
 }

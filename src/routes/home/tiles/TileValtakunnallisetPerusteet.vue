@@ -1,7 +1,8 @@
 <template>
   <ep-home-tile
     icon="account_balance"
-    :href="href">
+    :href="href"
+  >
     <template #header>
       <span>{{ $t('tile-perusteet') }}</span>
     </template>

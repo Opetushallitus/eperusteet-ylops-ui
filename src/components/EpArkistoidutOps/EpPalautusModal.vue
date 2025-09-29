@@ -3,27 +3,50 @@
     <ep-button
       icon="keyboard_return"
       variant="link"
+      :show-spinner="palautuksessa"
       @click="showModal"
-      :showSpinner="palautuksessa">
+    >
       {{ $t('palauta') }}
     </ep-button>
 
     <b-modal
       ref="opsPalautusModal"
       size="lg"
-      class="palautus-modal">
-
+      class="palautus-modal"
+    >
       <template #modal-header>
-        <h5 class="modal-title">{{ $t(tyyppitekstit.palautaOps) }}</h5>
+        <h5 class="modal-title">
+          {{ $t(tyyppitekstit.palautaOps) }}
+        </h5>
       </template>
 
-      <div class="content" v-html="$t(tyyppitekstit.palautaOpsKuvaus)" />
+      <div
+        class="content"
+        v-html="$t(tyyppitekstit.palautaOpsKuvaus)"
+      />
 
       <template #modal-footer>
         <div class="d-flex">
-          <ep-button variant="link" @click="peruuta">{{ $t('peruuta') }}</ep-button>
-          <ep-button variant="primary" @click="palauta('luonnos')">{{ $t('palauta-luonnokseksi') }}</ep-button>
-          <ep-button variant="primary" class="ml-3" @click="palauta('julkaistu')" v-if="isJulkaistu">{{ $t('palauta-julkaistuksi') }}</ep-button>
+          <ep-button
+            variant="link"
+            @click="peruuta"
+          >
+            {{ $t('peruuta') }}
+          </ep-button>
+          <ep-button
+            variant="primary"
+            @click="palauta('luonnos')"
+          >
+            {{ $t('palauta-luonnokseksi') }}
+          </ep-button>
+          <ep-button
+            v-if="isJulkaistu"
+            variant="primary"
+            class="ml-3"
+            @click="palauta('julkaistu')"
+          >
+            {{ $t('palauta-julkaistuksi') }}
+          </ep-button>
         </div>
       </template>
     </b-modal>
@@ -32,6 +55,7 @@
 
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 
 import { $t } from '@shared/utils/globals';
 
@@ -40,7 +64,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  palauta: [opetussuunnitelma: any, tila: 'luonnos' | 'julkaistu', callback: Function];
+  palauta: [opetussuunnitelma: any, tila: 'luonnos' | 'julkaistu', callback: () => void];
 }>();
 
 // Template refs

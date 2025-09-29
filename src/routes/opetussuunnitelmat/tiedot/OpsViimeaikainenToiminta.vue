@@ -1,46 +1,84 @@
 <template>
   <div class="content text-left">
-    <h2>{{$t('viimeaikainen-toiminta')}}</h2>
+    <h2>{{ $t('viimeaikainen-toiminta') }}</h2>
 
-    <ep-spinner v-if="!muokkaustiedot"></ep-spinner>
+    <ep-spinner v-if="!muokkaustiedot" />
 
-    <div class="container text-center" v-else>
-      <div v-for="(muokkaustieto, index) in muokkaustiedotRouted" :key="muokkaustieto.id" class="row muokkaustieto">
-
+    <div
+      v-else
+      class="container text-center"
+    >
+      <div
+        v-for="(muokkaustieto, index) in muokkaustiedotRouted"
+        :key="muokkaustieto.id"
+        class="row muokkaustieto"
+      >
         <div class="col col-auto ikoni-col center-block">
           <div class="ikoni d-inline-block">
-            <EpMaterialIcon :class="muokkaustieto.iconClass">{{ muokkaustieto.icon }}</EpMaterialIcon>
+            <EpMaterialIcon :class="muokkaustieto.iconClass">
+              {{ muokkaustieto.icon }}
+            </EpMaterialIcon>
           </div>
-          <div class="aikajana" v-if="index != muokkaustiedotRouted.length - 1">&nbsp;</div>
+          <div
+            v-if="index != muokkaustiedotRouted.length - 1"
+            class="aikajana"
+          >
+&nbsp;
+          </div>
         </div>
 
         <div class="col router-col text-left">
           <component
             :is="muokkaustieto.komponentti"
-            :to="muokkaustieto.route">
-            <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu, 'd-flex flex-row-reverse justify-content-between': !muokkaustieto.kayttajaNimi }">
+            :to="muokkaustieto.route"
+          >
+            <div
+              class="router-box"
+              :class="{ 'router-box-poistettu': muokkaustieto.poistettu, 'd-flex flex-row-reverse justify-content-between': !muokkaustieto.kayttajaNimi }"
+            >
               <div class="d-flex justify-content-between">
-                <div class="nimi" v-if="muokkaustieto.kayttajaNimi">{{muokkaustieto.kayttajaNimi}}</div>
-                <div class="aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
+                <div
+                  v-if="muokkaustieto.kayttajaNimi"
+                  class="nimi"
+                >
+                  {{ muokkaustieto.kayttajaNimi }}
+                </div>
+                <div class="aika text-right">
+                  {{ $ago(muokkaustieto.luotu) }}
+                </div>
               </div>
-              <EpExternalLink v-if="muokkaustieto.url" :url="muokkaustieto.url">
-                {{muokkaustieto.tapahtumateksti}}
+              <EpExternalLink
+                v-if="muokkaustieto.url"
+                :url="muokkaustieto.url"
+              >
+                {{ muokkaustieto.tapahtumateksti }}
               </EpExternalLink>
-              <div class="kohde" v-else>{{muokkaustieto.tapahtumateksti}}</div>
+              <div
+                v-else
+                class="kohde"
+              >
+                {{ muokkaustieto.tapahtumateksti }}
+              </div>
             </div>
           </component>
         </div>
-
       </div>
     </div>
 
     <div class="text-center">
-      <span class="tyhja" v-if="muokkaustiedot && muokkaustiedot.length === 0">{{$t('viimeaikainen-toiminta-tyhja')}}</span>
+      <span
+        v-if="muokkaustiedot && muokkaustiedot.length === 0"
+        class="tyhja"
+      >{{ $t('viimeaikainen-toiminta-tyhja') }}</span>
       <div v-else>
-        <ep-button @click="haeLisaa" variant="link" v-if="!lisahaku && muokkaustiedotRouted.length % hakuLukumaara == 0 && muokkaustiedot && (!viimeinenHaku || viimeinenHaku.length > 0)">
-          {{$t('nayta-lisaa')}}
+        <ep-button
+          v-if="!lisahaku && muokkaustiedotRouted.length % hakuLukumaara == 0 && muokkaustiedot && (!viimeinenHaku || viimeinenHaku.length > 0)"
+          variant="link"
+          @click="haeLisaa"
+        >
+          {{ $t('nayta-lisaa') }}
         </ep-button>
-        <ep-spinner v-if="lisahaku"></ep-spinner>
+        <ep-spinner v-if="lisahaku" />
       </div>
     </div>
   </div>
@@ -67,15 +105,15 @@ const props = defineProps<{
 const lisahaku = ref<boolean>(false);
 
 const muokkaustiedot = computed(() => {
-  return props.muokkaustietoStore.muokkaustiedot;
+  return props.muokkaustietoStore.muokkaustiedot.value;
 });
 
 const viimeinenHaku = computed(() => {
-  return props.muokkaustietoStore.viimeinenHaku;
+  return props.muokkaustietoStore.viimeinenHaku.value;
 });
 
 const hakuLukumaara = computed(() => {
-  return props.muokkaustietoStore.hakuLukumaara;
+  return props.muokkaustietoStore.hakuLukumaara.value;
 });
 
 const muokkaustietoKayttajanimi = (muokkaustieto: any) => {

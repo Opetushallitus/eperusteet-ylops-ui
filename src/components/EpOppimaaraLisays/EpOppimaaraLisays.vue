@@ -1,49 +1,69 @@
 <template>
-<div>
-  <ep-button @click="openModal()" icon="add" :variant="buttonVariant" buttonClass="text-decoration-none">
-    <span>{{ $t(addButtonText) }}</span>
-  </ep-button>
-  <b-modal ref="oppimaaralisaysModal"
-           id="oppimaaralisays"
-           size="lg"
-           centered
-           :ok-disabled="okDisabled"
-           @hidden="clear"
-           @show="show"
-           @ok="save"
-           static lazy>
-    <template v-slot:modal-title>
-      {{ $t(addText) }}
-    </template>
+  <div>
+    <ep-button
+      icon="add"
+      :variant="buttonVariant"
+      button-class="text-decoration-none"
+      @click="openModal()"
+    >
+      <span>{{ $t(addButtonText) }}</span>
+    </ep-button>
+    <b-modal
+      id="oppimaaralisays"
+      ref="oppimaaralisaysModal"
+      size="lg"
+      centered
+      :ok-disabled="okDisabled"
+      static
+      lazy
+      @hidden="clear"
+      @show="show"
+      @ok="save"
+    >
+      <template #modal-title>
+        {{ $t(addText) }}
+      </template>
 
-    <div>{{$t('oppimaara-lisays-modal-selite')}}</div>
+      <div>{{ $t('oppimaara-lisays-modal-selite') }}</div>
 
-    <ep-form-content :showHeader="false" class="mt-4">
-      <h3>{{$kaanna(oppiaine.nimi)}}</h3>
-      <ep-select class="mb-5"
-                 v-model="valittuOppimaara"
-                 :items="oppimaaratTyhjalla"
-                 :is-editing="true"
-                 :enable-empty-option="true">
-    <template #default="{ item }">
-      {{ $kaanna(item.nimi) }}
-    </template>
-      </ep-select>
-    </ep-form-content>
+      <ep-form-content
+        :show-header="false"
+        class="mt-4"
+      >
+        <h3>{{ $kaanna(oppiaine.nimi) }}</h3>
+        <ep-select
+          v-model="valittuOppimaara"
+          class="mb-5"
+          :items="oppimaaratTyhjalla"
+          :is-editing="true"
+          :enable-empty-option="true"
+        >
+          <template #default="{ item }">
+            {{ $kaanna(item.nimi) }}
+          </template>
+        </ep-select>
+      </ep-form-content>
 
-    <ep-form-content name="nimi" v-if="valittuOppimaara && (isKieli || valittuOppimaara.tyhjanimi)">
-      <ep-field class="mb-5" v-model="nimi" :is-editing="true" :validation="$v.nimi"/>
-    </ep-form-content>
+      <ep-form-content
+        v-if="valittuOppimaara && (isKieli || valittuOppimaara.tyhjanimi)"
+        name="nimi"
+      >
+        <ep-field
+          v-model="nimi"
+          class="mb-5"
+          :is-editing="true"
+          :validation="$v.nimi"
+        />
+      </ep-form-content>
 
-    <template v-slot:modal-cancel>
-      {{ $t('peruuta')}}
-    </template>
-    <template v-slot:modal-ok>
-      {{ $t(addText)}}
-    </template>
-
-  </b-modal>
-</div>
+      <template #modal-cancel>
+        {{ $t('peruuta') }}
+      </template>
+      <template #modal-ok>
+        {{ $t(addText) }}
+      </template>
+    </b-modal>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -62,21 +82,17 @@ import { OppiaineSuppeaDto, Oppiaineet, PerusteOppiaineDto, KopioOppimaaraDto, U
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 
 import { $t, $kaanna, $fail } from '@shared/utils/globals';
-
-// const props = defineProps<{
-//   oppiaine: OppiaineSuppeaDto;
-//   resetNavi: Function;
-//   buttonVariant?: string;
-// }>();
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
 const props = withDefaults(
   defineProps<{
     oppiaine: OppiaineSuppeaDto;
-    resetNavi: Function;
+    resetNavi: () => Promise<void>;
     buttonVariant?: string;
+    opetussuunnitelmaStore: OpetussuunnitelmaStore;
   }>(), {
-  buttonVariant: 'link',
-});
+    buttonVariant: 'link',
+  });
 
 const route = useRoute();
 const router = useRouter();
@@ -90,17 +106,12 @@ const vuosiluokkakokonaisuus = ref<UnwrappedOpsVuosiluokkakokonaisuusDto | null>
 const nimi = ref<object | null>(null);
 const valittuOppimaara = ref<OppiaineSuppeaDto | null>(null);
 
-// Import mixins data - these would come from the mixins in the original code
-// For now, I'll assume these are available globally or need to be computed differently
 const opsId = computed(() => {
-  // This should come from EpOpsComponent mixin
-  return Number(route.params.opsId);
+  return props.opetussuunnitelmaStore.opetussuunnitelma.value?.id;
 });
 
 const ops = computed(() => {
-  // This should come from EpOpsComponent mixin
-  // For now return a minimal object
-  return { id: opsId.value };
+  return props.opetussuunnitelmaStore.opetussuunnitelma.value;
 });
 
 // Computed properties

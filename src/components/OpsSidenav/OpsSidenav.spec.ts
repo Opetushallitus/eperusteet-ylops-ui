@@ -1,29 +1,28 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import OpsSidenav from './OpsSidenav.vue';
-import { router } from '@/router/router';
+import router from '@/router/router';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { Opetussuunnitelmat, OpetussuunnitelmanSisalto, Termisto } from '@shared/api/ylops';
 import { makeAxiosResponse } from '&/utils/data';
-import VueI18n from 'vue-i18n';
-import { Kaannos } from '@shared/plugins/kaannos';
+import { globalStubs } from '@shared/utils/__tests__/stubs';
+import { vi } from 'vitest';
+
+vi.mock('vue3-text-clamp', () => ({
+  default: {
+    install: vi.fn(),
+  },
+}));
 
 describe('OpsSidenav component', () => {
-  const localVue = createLocalVue();
-  localVue.use(VueI18n);
-  Kielet.install(localVue);
-  localVue.use(new Kaannos());
-
-  const i18n = Kielet.i18n;
-
-  jest.spyOn(Termisto, 'getAllTermit')
+  vi.spyOn(Termisto, 'getAllTermit')
     .mockImplementation(async (id: number) => {
       return makeAxiosResponse([{
       }]);
     });
 
-  jest.spyOn(OpetussuunnitelmanSisalto, 'getTekstiOtsikot')
+  vi.spyOn(OpetussuunnitelmanSisalto, 'getTekstiOtsikot')
     .mockImplementation(async (id: number) => {
       return makeAxiosResponse({
         id: id,
@@ -33,7 +32,7 @@ describe('OpsSidenav component', () => {
       });
     });
 
-  jest.spyOn(Opetussuunnitelmat, 'getOpetussuunnitelma')
+  vi.spyOn(Opetussuunnitelmat, 'getOpetussuunnitelma')
     .mockImplementation(async (id: number) => {
       return makeAxiosResponse({
         id: id,
@@ -43,19 +42,22 @@ describe('OpsSidenav component', () => {
       });
     });
 
-  test('navigates the menu structure properly', () => {
-    jest.spyOn(PerusteCache, 'of')
+  test('navigates the menu structure properly', async () => {
+    vi.spyOn(PerusteCache, 'of')
       .mockImplementation(async () => new PerusteCache(1));
 
+    const opetussuunnitelmaStore = new OpetussuunnitelmaStore();
+
     const wrapper = mount(OpsSidenav as any, {
-      localVue,
-      router,
-      i18n,
-      propsData: {
-        opetussuunnitelmaStore: new OpetussuunnitelmaStore(1),
+      global: {
+        ...globalStubs,
+        plugins: [
+          ...(globalStubs.plugins || []),
+          router,
+        ],
       },
-      mocks: {
-        $t: x => x,
+      props: {
+        opetussuunnitelmaStore,
       },
     } as any);
 

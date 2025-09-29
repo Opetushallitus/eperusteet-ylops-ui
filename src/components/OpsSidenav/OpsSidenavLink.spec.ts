@@ -1,38 +1,45 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import OpsSidenavLink from './OpsSidenavLink.vue';
-import VueRouter from 'vue-router';
-import { KieliStore, Kielet } from '@shared/stores/kieli';
-import VueI18n from 'vue-i18n';
-import { Kaannos } from '@shared/plugins/kaannos';
+import { createRouter, createMemoryHistory } from 'vue-router';
+import { globalStubs } from '@shared/utils/__tests__/stubs';
+import { nextTick } from 'vue';
 
 describe('OpsSidenav component', () => {
-  const localVue = createLocalVue();
-  localVue.use(VueI18n);
-  Kielet.install(localVue);
-  localVue.use(new Kaannos());
-
-  it('shows a element with currect href', () => {
-    localVue.use(VueRouter);
-    const router = new VueRouter({
+  it('shows a element with currect href', async () => {
+    const router = createRouter({
+      history: createMemoryHistory(),
       routes: [{
-        path: '/tiedot',
+        path: '/fi/:id/tiedot',
         name: 'opsTiedot',
+        component: { template: '<div>Test</div>' },
       }],
     });
 
-    const wrapper = shallowMount(OpsSidenavLink, {
-      localVue,
-      router,
-      slots: {
-        default: '<a>Linkki</a>',
+    await router.push({ name: 'opsTiedot', params: { id: '1' } });
+
+    const wrapper = mount(OpsSidenavLink, {
+      global: {
+        ...globalStubs,
+        plugins: [
+          ...(globalStubs.plugins || []),
+          router,
+        ],
       },
-      propsData: {
+      slots: {
+        default: 'Linkki',
+      },
+      props: {
         to: {
           name: 'opsTiedot',
         },
       },
     });
 
-    expect(wrapper.html()).toContain('tiedot');
+    await nextTick();
+
+    // Check that the router-link stub contains the correct "to" prop
+    const routerLink = wrapper.findComponent({ name: 'RouterLinkStub' });
+    expect(routerLink.exists()).toBe(true);
+    expect(routerLink.props('to').name).toBe('opsTiedot');
   });
 });

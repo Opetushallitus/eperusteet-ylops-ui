@@ -1,31 +1,20 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import RouteOrganisaatio from '../RouteOrganisaatio.vue';
 import { Kielet } from '@shared/stores/kieli';
-import '@shared/config/bootstrap';
 import { Kayttajat as KayttajatApi, Opetussuunnitelmat, Ulkopuoliset } from '@shared/api/ylops';
 import { genKayttaja, makeAxiosResponse } from '&/utils/data';
 import { Kayttajat } from '@/stores/kayttaja';
-import VueI18n from 'vue-i18n';
-import { Kaannos } from '@shared/plugins/kaannos';
 import { delay } from '@shared/utils/delay';
+import { globalStubs } from '@shared/utils/__tests__/stubs';
+import { vi } from 'vitest';
+import { nextTick, h, renderSlot } from 'vue';
 
 describe('RouteOrganisaatio', () => {
-  const localVue = createLocalVue();
-  localVue.use(VueI18n);
-  Kielet.install(localVue, {
-    messages: {
-      fi: require('@shared/translations/locale-fi.json'),
-      sv: require('@shared/translations/locale-sv.json'),
-    },
-  });
-  localVue.use(new Kaannos());
-  const i18n = Kielet.i18n;
-
   async function createMounted() {
-    jest.spyOn(KayttajatApi, 'getKayttaja')
+    vi.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
 
-    jest.spyOn(Ulkopuoliset, 'getUserOrganisations')
+    vi.spyOn(Ulkopuoliset, 'getUserOrganisations')
       .mockImplementation(async () => makeAxiosResponse([{
         oid: '1234',
         nimi: {
@@ -33,10 +22,10 @@ describe('RouteOrganisaatio', () => {
         },
       }]));
 
-    jest.spyOn(Opetussuunnitelmat, 'getOikeudet')
+    vi.spyOn(Opetussuunnitelmat, 'getOikeudet')
       .mockImplementation(async () => makeAxiosResponse({}));
 
-    jest.spyOn(Ulkopuoliset, 'getOrganisaatioVirkailijat')
+    vi.spyOn(Ulkopuoliset, 'getOrganisaatioVirkailijat')
       .mockImplementation(async () => makeAxiosResponse([{
         oid: '1',
         kutsumanimi: 'kutsumanimi1',
@@ -49,20 +38,28 @@ describe('RouteOrganisaatio', () => {
 
     await Kayttajat.init();
     return mount(RouteOrganisaatio, {
-      i18n,
-      localVue,
-      stubs: [
-        'EpNavigation',
-        'EpToggle',
-      ],
+      global: {
+        ...globalStubs,
+        stubs: {
+          ...globalStubs.stubs,
+          'EpNavigation': true,
+          'EpToggle': {
+            render() {
+              return h('div', { class: 'ep-toggle-stub' }, [
+                renderSlot(this.$slots, 'default'),
+              ]);
+            },
+          },
+        },
+      },
     });
   }
 
   test('Renders header and description', async () => {
     const wrapper = await createMounted();
-    expect(wrapper.html()).toContain('Organisaation työryhmä');
-    expect(wrapper.html()).toContain('Täältä löydät kaikkkiin organisaatioihisi kuuluvat henkilöt.');
-    expect(wrapper.html()).toContain('Näytä organisaatiot');
+    expect(wrapper.html()).toContain('organisaatio-tyoryhma');
+    expect(wrapper.html()).toContain('organisaatio-tyoryhma-kuvaus');
+    expect(wrapper.html()).toContain('nayta-organisaatiot');
   });
 
   test('Renders virkailijat', async () => {
@@ -77,7 +74,9 @@ describe('RouteOrganisaatio', () => {
   test('Renders organizations', async () => {
     const wrapper = await createMounted();
 
-    wrapper.setData({ showOrganizations: true });
+    // Set data using Vue 3 syntax
+    (wrapper.vm as any).showOrganizations = true;
+    await nextTick();
 
     await delay();
 

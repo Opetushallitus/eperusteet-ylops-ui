@@ -1,7 +1,14 @@
 <template>
   <div>
-    <div v-for="(opintojakso, index) in opintojaksot" :key="index">
-      <div class="oj-content" @click="select(opintojakso)" :class="{'selected': opintojakso.selected || !isEditing, 'selectable': isEditing}">
+    <div
+      v-for="(opintojakso, index) in opintojaksot"
+      :key="index"
+    >
+      <div
+        class="oj-content"
+        :class="{'selected': opintojakso.selected || !isEditing, 'selectable': isEditing}"
+        @click="select(opintojakso)"
+      >
         <span class="nimi">
           <span class="mr-2">{{ $kaanna(opintojakso.nimi) }}</span>
           <span v-if="opintojakso.koodi">({{ opintojakso.koodi }})</span>
@@ -24,8 +31,8 @@ const props = withDefaults(
     modelValue: Lops2019OpintojaksoDto[];
     isEditing?: boolean;
   }>(), {
-  isEditing: false,
-});
+    isEditing: false,
+  });
 
 const emit = defineEmits(['update:modelValue']);
 

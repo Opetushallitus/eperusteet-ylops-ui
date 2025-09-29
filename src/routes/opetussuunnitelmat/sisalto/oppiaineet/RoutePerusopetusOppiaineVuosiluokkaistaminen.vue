@@ -1,94 +1,148 @@
 <template>
-  <div id="scroll-anchor" v-if="editointiStore" >
+  <div
+    v-if="editointiStore"
+    id="scroll-anchor"
+  >
     <EpEditointi :store="editointiStore">
-      <template v-slot:header="{ data }">
-        <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}: {{ $t('vuosiluokkaista-tavoitteet') }}</h2>
+      <template #header="{ data }">
+        <h2 class="m-0">
+          {{ $kaanna(data.oppiaine.nimi) }}: {{ $t('vuosiluokkaista-tavoitteet') }}
+        </h2>
       </template>
-      <template v-slot:default="{ data }">
-
-        <div class="m-3">{{$t('lisaa-tavoitteet-vuosiluokille')}}</div>
+      <template #default="{ data }">
+        <div class="m-3">
+          {{ $t('lisaa-tavoitteet-vuosiluokille') }}
+        </div>
 
         <b-container class="vuosiluokkaistaminen">
           <b-row>
-            <b-col cols="6" class="pl-0 tavoitesisallot">
+            <b-col
+              cols="6"
+              class="pl-0 tavoitesisallot"
+            >
               <div class="d-flex justify-content-between align-items-center">
-                <h3>{{$t('tavoitteet-ja-sisallot')}}</h3>
-                <ep-button variant="link" @click="suljeAvaaKaikki()">{{$t('avaa-sulje-kaikki')}}</ep-button>
+                <h3>{{ $t('tavoitteet-ja-sisallot') }}</h3>
+                <ep-button
+                  variant="link"
+                  @click="suljeAvaaKaikki()"
+                >
+                  {{ $t('avaa-sulje-kaikki') }}
+                </ep-button>
               </div>
 
               <VueDraggable
-                class="sisalto"
                 v-bind="tavoitteetOptions"
+                v-model="data.perusteenOppiaineenVlk.tavoitteet"
+                class="sisalto"
                 tag="div"
-                v-model="data.perusteenOppiaineenVlk.tavoitteet">
-                  <div class="tavoite d-flex" :class="{'valittu': tavoite.valittu}"
-                    v-for="(tavoite, index) in tavoitteet" :key="'tavoite'+index">
-                    <EpMaterialIcon class="raahaus">drag_indicator</EpMaterialIcon>
-                    <ep-collapse class="flex-grow-1" ref="sisaltocollapse" :border-bottom="false" :border-top="false">
-                      <template v-slot:header><h4 v-html="$kaanna(tavoite.tavoite)"></h4></template>
-                      <div class="row">
-                        <div class="col-7">
-                          <div class="sisaltoalue" v-for="(sisaltoalue, index) in tavoite.sisaltoalueet" :key="'sisaltoalue'+index">
-                            {{$kaanna(data.sisaltoalueetMap[sisaltoalue].nimi)}}
-                          </div>
-                        </div>
-
-                        <div class="col-5 align-self-end text-right kohdealueet">
-                          <div class="kohdealue" v-for="(kohdealue, index) in tavoite.kohdealueet" :key="'kohdealue'+index">
-                            <ep-order-color-ball class="pr-2" :index="kohdealue.index" />
-                            {{$kaanna(kohdealue.nimi)}}
-                          </div>
+              >
+                <div
+                  v-for="(tavoite, index) in tavoitteet"
+                  :key="'tavoite'+index"
+                  class="tavoite d-flex"
+                  :class="{'valittu': tavoite.valittu}"
+                >
+                  <EpMaterialIcon class="raahaus">
+                    drag_indicator
+                  </EpMaterialIcon>
+                  <ep-collapse
+                    ref="sisaltocollapse"
+                    class="flex-grow-1"
+                    :border-bottom="false"
+                    :border-top="false"
+                  >
+                    <template #header>
+                      <h4 v-html="$kaanna(tavoite.tavoite)" />
+                    </template>
+                    <div class="row">
+                      <div class="col-7">
+                        <div
+                          v-for="(sisaltoalue, index) in tavoite.sisaltoalueet"
+                          :key="'sisaltoalue'+index"
+                          class="sisaltoalue"
+                        >
+                          {{ $kaanna(data.sisaltoalueetMap[sisaltoalue].nimi) }}
                         </div>
                       </div>
-                    </ep-collapse>
-                  </div>
-              </VueDraggable>
 
+                      <div class="col-5 align-self-end text-right kohdealueet">
+                        <div
+                          v-for="(kohdealue, index) in tavoite.kohdealueet"
+                          :key="'kohdealue'+index"
+                          class="kohdealue"
+                        >
+                          <ep-order-color-ball
+                            class="pr-2"
+                            :index="kohdealue.index"
+                          />
+                          {{ $kaanna(kohdealue.nimi) }}
+                        </div>
+                      </div>
+                    </div>
+                  </ep-collapse>
+                </div>
+              </VueDraggable>
             </b-col>
 
             <b-col cols="6">
-              <h3> {{$t('vuosiluokat')}}</h3>
+              <h3> {{ $t('vuosiluokat') }}</h3>
 
-              <div class="vuosiluokka" v-for="(vuosiluokka, index) in data.vuosiluokat" :key="'vuosiluokka'+index">
-
+              <div
+                v-for="(vuosiluokka, index) in data.vuosiluokat"
+                :key="'vuosiluokka'+index"
+                class="vuosiluokka"
+              >
                 <div class="d-flex justify-content-between align-items-center otsikko">
-                  <h4 class="flex-grow">{{$t('vuosiluokka')}} {{$t(vuosiluokka.vuosiluokka)}}</h4>
+                  <h4 class="flex-grow">
+                    {{ $t('vuosiluokka') }} {{ $t(vuosiluokka.vuosiluokka) }}
+                  </h4>
                   <div class="text-right">
-                    <ep-button class="tuokaikki"
-                               variant="link"
-                               icon="add"
-                               @click="lisaaKaikkiTavoitteet(vuosiluokka)">
-                      {{$t('tuo-kaikki')}}
+                    <ep-button
+                      class="tuokaikki"
+                      variant="link"
+                      icon="add"
+                      @click="lisaaKaikkiTavoitteet(vuosiluokka)"
+                    >
+                      {{ $t('tuo-kaikki') }}
                     </ep-button>
-                    <ep-button :disabled="vuosiluokka.tavoitteet.length === 0"
-                               variant="link"
-                               icon="delete"
-                               @click="poistaKaikkiTavoitteet(vuosiluokka)">
-                      {{$t('tyhjenna')}}
+                    <ep-button
+                      :disabled="vuosiluokka.tavoitteet.length === 0"
+                      variant="link"
+                      icon="delete"
+                      @click="poistaKaikkiTavoitteet(vuosiluokka)"
+                    >
+                      {{ $t('tyhjenna') }}
                     </ep-button>
                   </div>
                 </div>
 
-                <draggable
+                <VueDraggable
+                  v-bind="vuosiluokatOptions"
+                  v-model="vuosiluokka.tavoitteet"
                   class="d-flex flex-wrap sisalto"
                   :class="{'tyhja': vuosiluokka.tavoitteet.length === 0}"
-                  v-bind="vuosiluokatOptions"
                   tag="div"
-                  v-model="vuosiluokka.tavoitteet">
-                    <div class="tavoite" v-for="(tavoite, index) in vuosiluokka.tavoitteet" :key="'vlktavoite'+index" @click="poistaTavoite(vuosiluokka, tavoite)">
-                      <div class="roskalaatikko">
-                        <EpMaterialIcon>delete</EpMaterialIcon>
-                      </div>
-                      <v-clamp class="teksti" autoresize :max-lines="4">{{ $plaintext($kaanna(tavoite.tavoite)) }}</v-clamp>
+                >
+                  <div
+                    v-for="(tavoite, index) in vuosiluokka.tavoitteet"
+                    :key="'vlktavoite'+index"
+                    class="tavoite"
+                    @click="poistaTavoite(vuosiluokka, tavoite)"
+                  >
+                    <div class="roskalaatikko">
+                      <EpMaterialIcon>delete</EpMaterialIcon>
                     </div>
-                </draggable>
+                    <text-clamp
+                      class="teksti"
+                      :max-lines="4"
+                      :text="$plaintext($kaanna(tavoite.tavoite))"
+                    />
+                  </div>
+                </VueDraggable>
               </div>
-
             </b-col>
-
           </b-row>
         </b-container>
-
       </template>
     </EpEditointi>
   </div>
@@ -104,15 +158,12 @@ import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { VuosiluokkaistaminenStore } from '@/stores/vuosiluokkaistaminenStore';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { VueDraggable } from 'vue-draggable-plus';
-import VClamp from 'vue-clamp';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpOrderColorBall from '@shared/components/EpColorIndicator/EpOrderColorBall.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpRoute } from '@/mixins/EpRoute';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna, $t } from '@shared/utils/globals';
-
+import TextClamp from 'vue3-text-clamp';
 
 // Props
 const props = defineProps<{
@@ -126,18 +177,8 @@ const route = useRoute();
 const sisaltocollapse = useTemplateRef('sisaltocollapse');
 
 // Use composables
-const epRoute = useEpRoute();
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 // Reactive data
 const editointiStore = ref<EditointiStore | null>(null);
 const avaaSulje = ref(true);
@@ -177,7 +218,7 @@ const vuosiluokatOptions = computed(() => {
 });
 
 const valitutTavoitteet = computed(() => {
-  return _.chain(editointiStore.value?.data.value.vuosiluokat)
+  return _.chain(editointiStore.value?.data.vuosiluokat)
     .map('tavoitteet')
     .flatten()
     .map('tunniste')
@@ -185,7 +226,7 @@ const valitutTavoitteet = computed(() => {
 });
 
 const tavoitteet = computed(() => {
-  return _.map(editointiStore.value?.data.value?.perusteenOppiaineenVlk.tavoitteet || [], tavoite => {
+  return _.map(editointiStore.value?.data?.perusteenOppiaineenVlk.tavoitteet || [], tavoite => {
     return {
       ...tavoite,
       valittu: _.includes(valitutTavoitteet.value, tavoite.tunniste),
@@ -199,7 +240,7 @@ const asettamattomatTavoitteet = computed(() => {
 
 // Methods
 const lisaaKaikkiTavoitteet = (vuosiluokka: any) => {
-  vuosiluokka.tavoitteet = editointiStore.value?.data.value.perusteenOppiaineenVlk.tavoitteet;
+  vuosiluokka.tavoitteet = editointiStore.value?.data.perusteenOppiaineenVlk.tavoitteet;
 };
 
 const poistaKaikkiTavoitteet = (vuosiluokka: any) => {
@@ -232,7 +273,7 @@ const init = async () => {
 watch(asettamattomatTavoitteet, (newVal) => {
   if (editointiStore.value) {
     editointiStore.value.setData({
-      ...editointiStore.value.data.value,
+      ...editointiStore.value.data,
       asettamattomatTavoitteet: newVal,
     });
   }

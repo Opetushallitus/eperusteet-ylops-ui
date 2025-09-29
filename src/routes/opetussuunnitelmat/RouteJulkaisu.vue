@@ -1,16 +1,29 @@
 <template>
-<div class="p-4">
-  <div class="d-flex justify-content-between">
+  <div class="p-4">
+    <div class="d-flex justify-content-between">
       <h2>{{ $t('julkaisunakyma') }}</h2>
       <div v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
         <EpSpinner v-if="hallintaLoading" />
-        <b-dropdown v-else class="asetukset" size="lg" variant="link" dropleft toggle-class="text-decoration-none" no-caret>
-          <template v-slot:button-content>
-            {{$t('hallinta')}}
-            <EpMaterialIcon icon-shape="outlined">settings</EpMaterialIcon>
+        <b-dropdown
+          v-else
+          class="asetukset"
+          size="lg"
+          variant="link"
+          dropleft
+          toggle-class="text-decoration-none"
+          no-caret
+        >
+          <template #button-content>
+            {{ $t('hallinta') }}
+            <EpMaterialIcon icon-shape="outlined">
+              settings
+            </EpMaterialIcon>
           </template>
-          <EpButton variant="link" @click="palautaTekstirakenne">
-            {{$t('palauta-aiempi-tekstirakenne')}}
+          <EpButton
+            variant="link"
+            @click="palautaTekstirakenne"
+          >
+            {{ $t('palauta-aiempi-tekstirakenne') }}
           </EpButton>
         </b-dropdown>
       </div>
@@ -25,112 +38,175 @@
       </ul>
     </div>
 
-  <h3>{{ $t('tarkistukset') }}</h3>
-  <div class="validation">
-    <div v-if="validating" class="validointi-spinner">
-      <EpSpinner />
-      <div>{{ $t('validointi-kaynnissa') }}</div>
-    </div>
-    <div v-else>
-      <div v-if="isValid" class="d-flex">
-        <EpMaterialIcon class="no-errors">check_circle</EpMaterialIcon>
-        <div class="ml-2">{{$t('ei-julkaisua-estavia-virheita')}}</div>
+    <h3>{{ $t('tarkistukset') }}</h3>
+    <div class="validation">
+      <div
+        v-if="validating"
+        class="validointi-spinner"
+      >
+        <EpSpinner />
+        <div>{{ $t('validointi-kaynnissa') }}</div>
       </div>
-      <div v-else class="d-flex">
-        <EpMaterialIcon class="errors">info</EpMaterialIcon>
-        <div class="ml-2">{{$t('loytyi-julkaisun-estavia-virheita')}}</div>
-      </div>
+      <div v-else>
+        <div
+          v-if="isValid"
+          class="d-flex"
+        >
+          <EpMaterialIcon class="no-errors">
+            check_circle
+          </EpMaterialIcon>
+          <div class="ml-2">
+            {{ $t('ei-julkaisua-estavia-virheita') }}
+          </div>
+        </div>
+        <div
+          v-else
+          class="d-flex"
+        >
+          <EpMaterialIcon class="errors">
+            info
+          </EpMaterialIcon>
+          <div class="ml-2">
+            {{ $t('loytyi-julkaisun-estavia-virheita') }}
+          </div>
+        </div>
 
-      <div v-for="(validointi, idx) in validoinnit" :key="'validointi'+idx">
-        <ep-collapse v-if="validointi.virheet.length > 0 || validointi.huomautukset.length > 0"
-                     :borderBottom="false">
-          <template #header>
-            <h3>{{ $t(validointi.kategoria) }}</h3>
-          </template>
-          <EpJulkaisuValidointi :validointi="validointi" />
-        </ep-collapse>
-      </div>
-    </div>
-  </div>
-
-  <hr class="mt-4 mb-4">
-
-  <div class="vaihe" v-if="isValid">
-    <h3>{{ $t('tiedot') }}</h3>
-    <div>
-      <div class="row">
-        <div class="col-md-6">
-          <ep-form-content name="ops-nimi">
-            <ep-field help="ops-nimi-ohje" v-model="ops.nimi">
-            </ep-field>
-          </ep-form-content>
-        </div>
-        <div class="col-md-6">
-          <ep-form-content name="peruste">
-            <ep-field v-model="ops.perusteenDiaarinumero">
-            </ep-field>
-          </ep-form-content>
-        </div>
-        <div class="col-md-6">
-          <ep-form-content name="julkaisukielet">
-            <ep-select help="ops-julkaisukielet-ohje" v-model="ops.julkaisukielet" :items="kielet" :multiple="true">
-            </ep-select>
-          </ep-form-content>
-        </div>
-        <div class="col-md-6" v-if="isOps">
-          <ep-form-content name="ops-hyvaksyjataho">
-            <ep-field help="ops-hyvaksyjataho-ohje" v-model="ops.hyvaksyjataho" type="string">
-            </ep-field>
-          </ep-form-content>
-        </div>
-        <div class="col-md-6" v-if="isOps">
-          <ep-form-content name="ops-hyvaksymispvm">
-            <ep-datepicker v-model="ops.paatospaivamaara" help="ops-hyvaksymispvm-ohje">
-            </ep-datepicker>
-          </ep-form-content>
-        </div>
-        <div class="col-md-6" v-if="isOps && julkaisuhistoria && julkaisuhistoria.length > 0">
-          <ep-form-content name="esikatsele-opetussuunnitelmaa">
-            <ep-external-link :url="esikatseluUrl" :class="{'disabled-events': ops.tila === 'poistettu'}"></ep-external-link>
-          </ep-form-content>
-        </div>
-        <div class="col-md-12">
-          <ep-form-content name="ops-kuvaus">
-            <ep-content opetussuunnitelma-store="opetussuunnitelmaStore"
-                        layout="simplified"
-                        v-model="ops.kuvaus"
-                        help="ops-kuvaus-ohje">
-            </ep-content>
-          </ep-form-content>
+        <div
+          v-for="(validointi, idx) in validoinnit"
+          :key="'validointi'+idx"
+        >
+          <ep-collapse
+            v-if="validointi.virheet.length > 0 || validointi.huomautukset.length > 0"
+            :border-bottom="false"
+          >
+            <template #header>
+              <h3>{{ $t(validointi.kategoria) }}</h3>
+            </template>
+            <EpJulkaisuValidointi :validointi="validointi" />
+          </ep-collapse>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="mt-4">
-    <div v-if="!validating && isValid">
-      <h3>{{ $t('uusi-julkaisu') }}</h3>
-      <b-form-group :label="$t('julkaisun-tiedote')">
-        <div class="font-size-08 mb-2">{{$t('tiedote-naytetaan-tyoryhmalle-taman-sivun-julkaisuhistoriassa')}}</div>
-        <ep-content v-model="uusiJulkaisu.julkaisutiedote"
-                    layout="simplified"
-                    :is-editable="true" />
-        <EpJulkaisuButton class="mt-3" :julkaise="julkaise" v-oikeustarkastelu="'hallinta'" :julkaisuKesken="julkaisuKesken"/>
-      </b-form-group>
+    <hr class="mt-4 mb-4">
+
+    <div
+      v-if="isValid"
+      class="vaihe"
+    >
+      <h3>{{ $t('tiedot') }}</h3>
+      <div>
+        <div class="row">
+          <div class="col-md-6">
+            <ep-form-content name="ops-nimi">
+              <ep-field
+                v-model="ops.nimi"
+                help="ops-nimi-ohje"
+              />
+            </ep-form-content>
+          </div>
+          <div class="col-md-6">
+            <ep-form-content name="peruste">
+              <ep-field v-model="ops.perusteenDiaarinumero" />
+            </ep-form-content>
+          </div>
+          <div class="col-md-6">
+            <ep-form-content name="julkaisukielet">
+              <ep-select
+                v-model="ops.julkaisukielet"
+                help="ops-julkaisukielet-ohje"
+                :items="kielet"
+                :multiple="true"
+              />
+            </ep-form-content>
+          </div>
+          <div
+            v-if="isOps"
+            class="col-md-6"
+          >
+            <ep-form-content name="ops-hyvaksyjataho">
+              <ep-field
+                v-model="ops.hyvaksyjataho"
+                help="ops-hyvaksyjataho-ohje"
+                type="string"
+              />
+            </ep-form-content>
+          </div>
+          <div
+            v-if="isOps"
+            class="col-md-6"
+          >
+            <ep-form-content name="ops-hyvaksymispvm">
+              <ep-datepicker
+                v-model="ops.paatospaivamaara"
+                help="ops-hyvaksymispvm-ohje"
+              />
+            </ep-form-content>
+          </div>
+          <div
+            v-if="isOps && julkaisuhistoria && julkaisuhistoria.length > 0"
+            class="col-md-6"
+          >
+            <ep-form-content name="esikatsele-opetussuunnitelmaa">
+              <ep-external-link
+                :url="esikatseluUrl"
+                :class="{'disabled-events': ops.tila === 'poistettu'}"
+              />
+            </ep-form-content>
+          </div>
+          <div class="col-md-12">
+            <ep-form-content name="ops-kuvaus">
+              <ep-content
+                v-model="ops.kuvaus"
+                opetussuunnitelma-store="opetussuunnitelmaStore"
+                layout="simplified"
+                help="ops-kuvaus-ohje"
+              />
+            </ep-form-content>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <EpJulkaisuHistoria :julkaisut="julkaisuhistoria" :palauta="palautaJulkaisu">
-      <template #empty>
-        <div>{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
-      </template>
-      <template #katsele="{ julkaisu }">
-          <ep-external-link v-if="julkaisu" :url="opintopolkuKatseluUrl(julkaisu)">
-            {{$t('katsele')}}
+    <div class="mt-4">
+      <div v-if="!validating && isValid">
+        <h3>{{ $t('uusi-julkaisu') }}</h3>
+        <b-form-group :label="$t('julkaisun-tiedote')">
+          <div class="font-size-08 mb-2">
+            {{ $t('tiedote-naytetaan-tyoryhmalle-taman-sivun-julkaisuhistoriassa') }}
+          </div>
+          <ep-content
+            v-model="uusiJulkaisu.julkaisutiedote"
+            layout="simplified"
+            :is-editable="true"
+          />
+          <EpJulkaisuButton
+            v-oikeustarkastelu="'hallinta'"
+            class="mt-3"
+            :julkaise="julkaise"
+            :julkaisu-kesken="julkaisuKesken"
+          />
+        </b-form-group>
+      </div>
+
+      <EpJulkaisuHistoria
+        :julkaisut="julkaisuhistoria"
+        :palauta="palautaJulkaisu"
+      >
+        <template #empty>
+          <div>{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
+        </template>
+        <template #katsele="{ julkaisu }">
+          <ep-external-link
+            v-if="julkaisu"
+            :url="opintopolkuKatseluUrl(julkaisu)"
+          >
+            {{ $t('katsele') }}
           </ep-external-link>
         </template>
-    </EpJulkaisuHistoria>
+      </EpJulkaisuHistoria>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
@@ -154,26 +230,18 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import { buildEsikatseluUrl, buildKatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 import { nodeToRoute } from '@/utils/routing';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
-import { success as $success, fail as $fail } from '@/utils/notifications';
+import { Koulutustyyppi } from '@shared/tyypit';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { $fail, $success } from '@shared/utils/globals';
 
 const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
 }>();
 
 // Use the composable
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const isOps = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'ops');
 // Reactive data
 const uusiJulkaisu = ref<UusiJulkaisuDto>({
   julkaisutiedote: {},
@@ -229,8 +297,8 @@ const listNodeToRoute = (list: any[]) => {
 };
 
 const validoinnit = computed(() => {
-  if (store.value.validointi) {
-    return _.map(store.value.validointi, validointi => {
+  if (store.value.validointi.value) {
+    return _.map(store.value.validointi.value, validointi => {
       return {
         ...validointi,
         virheet: listNodeToRoute(validointi.virheet),
@@ -243,11 +311,11 @@ const validoinnit = computed(() => {
 });
 
 const validating = computed(() => {
-  return !store.value.validointi;
+  return store.value.validointi.value === undefined || store.value.validointi.value === null;
 });
 
 const julkaisut = computed(() => {
-  return store.value.julkaisut;
+  return store.value.julkaisut.value;
 });
 
 const julkaise = async () => {
@@ -257,6 +325,7 @@ const julkaise = async () => {
     $success('julkaisu-kaynnistetty');
   }
   catch (err) {
+    console.log(err);
     $fail('julkaisu-epaonnistui');
   }
 };
@@ -280,7 +349,7 @@ const palautaJulkaisu = async (julkaisu: any) => {
 };
 
 const julkaisuKesken = computed(() => {
-  return store.value?.viimeisinJulkaisuTila === 'KESKEN';
+  return store.value?.viimeisinJulkaisuTila.value === 'KESKEN';
 });
 
 const palautaTekstirakenne = async () => {

@@ -2,7 +2,7 @@ import { Kayttajat } from '../kayttaja';
 
 describe('Kayttajat', () => {
   beforeEach(() => {
-    Kayttajat.oikeudet = {
+    (Kayttajat as any).state.oikeudet = {
       opetussuunnitelma: [],
       pohja: [],
     };
@@ -17,7 +17,7 @@ describe('Kayttajat', () => {
   });
 
   test('Hallintaoikeudet', async () => {
-    Kayttajat.oikeudet = {
+    (Kayttajat as any).state.oikeudet = {
       opetussuunnitelma: [],
       pohja: ['hallinta'],
     };
@@ -34,7 +34,7 @@ describe('Kayttajat', () => {
   });
 
   test('Opetussuunnitelman lukuoikeudet', async () => {
-    Kayttajat.oikeudet = {
+    (Kayttajat as any).state.oikeudet = {
       opetussuunnitelma: ['luku'],
       pohja: [],
     };
@@ -44,7 +44,7 @@ describe('Kayttajat', () => {
   });
 
   test('Opetussuunnitelman muokkausoikeus', async () => {
-    Kayttajat.oikeudet = {
+    (Kayttajat as any).state.oikeudet = {
       opetussuunnitelma: ['muokkaus'],
       pohja: [],
     };

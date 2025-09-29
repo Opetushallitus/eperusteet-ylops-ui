@@ -62,7 +62,7 @@ export class PerusopetusPaikallinenOppiaineVuosiluokkaStore implements IEditoita
     return OppiaineenVuosiluokat.updateValinnaisenVuosiluokanSisalto(
       this.opsId,
       this.oppiaineId,
-      this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!,
+      this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!,
       this.vuosiluokkaId,
       data.vuosiluokka.tavoitteet,
     );

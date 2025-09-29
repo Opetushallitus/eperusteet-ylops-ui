@@ -1,11 +1,11 @@
-import Vue from 'vue';
+import { Directive } from 'vue';
 import * as _ from 'lodash';
 import { Kayttajat } from '@/stores/kayttaja';
 
 const DisableTags = ['input', 'button'];
 
-export const oikeustarkastelu: Vue.DirectiveOptions = {
-  async bind(el, binding) {
+export const oikeustarkastelu: Directive = {
+  async mounted(el, binding) {
     // Hide the element before rights have been resolved
     const old = el.style.display;
     el.style.display = 'none';

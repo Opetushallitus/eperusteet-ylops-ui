@@ -1,21 +1,34 @@
 <template>
-<ep-home-tile icon="description" :route="{ name: 'tiedotteet' }" :count="uudetTiedotteetCount">
-  <template #header>
-    <span>{{ $t('tiedotteet') }}</span>
-  </template>
-  <template #content>
-    <ep-spinner v-if="isLoading"></ep-spinner>
-    <div v-else>
-      <div class="tiedotteet" v-if="tiedotteet && tiedotteet.length > 0">
-        <div class="tiedote" v-for="(tiedote, idx) in tiedotteetFormatted" :key="idx">
-          <small class="mr-4">{{ $cdt(tiedote.luotu, 'L') }}</small>
-          <span :class="{'font-weight-bold': tiedote.uusi}">{{ $kaanna(tiedote.otsikko) }}</span>
+  <ep-home-tile
+    icon="description"
+    :route="{ name: 'tiedotteet' }"
+    :count="uudetTiedotteetCount"
+  >
+    <template #header>
+      <span>{{ $t('tiedotteet') }}</span>
+    </template>
+    <template #content>
+      <ep-spinner v-if="isLoading" />
+      <div v-else>
+        <div
+          v-if="tiedotteet && tiedotteet.length > 0"
+          class="tiedotteet"
+        >
+          <div
+            v-for="(tiedote, idx) in tiedotteetFormatted"
+            :key="idx"
+            class="tiedote"
+          >
+            <small class="mr-4">{{ $cdt(tiedote.luotu, 'L') }}</small>
+            <span :class="{'font-weight-bold': tiedote.uusi}">{{ $kaanna(tiedote.otsikko) }}</span>
+          </div>
         </div>
+        <p v-else>
+          {{ $t('tile-tiedotteet-kuvaus') }}
+        </p>
       </div>
-      <p v-else>{{ $t('tile-tiedotteet-kuvaus') }}</p>
-    </div>
-  </template>
-</ep-home-tile>
+    </template>
+  </ep-home-tile>
 </template>
 
 <script setup lang="ts">
@@ -48,9 +61,6 @@ onMounted(async () => {
       undefined,
       [julkaisupaikka.ops, julkaisupaikka.lops],
     )).data as any).data;
-  }
-  catch (err) {
-    throw err;
   }
   finally {
     isLoading.value = false;

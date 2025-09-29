@@ -1,11 +1,18 @@
 <template>
-  <component :is="tag" @click="handleClick" :class="{ 'router-link-exact-active': isExactRoute }">
-    <div class="menu-item w-100" v-if="to">
+  <component
+    :is="tag"
+    :class="{ 'router-link-exact-active': isExactRoute }"
+    @click="handleClick"
+  >
+    <div
+      v-if="to"
+      class="menu-item w-100"
+    >
       <router-link :to="to">
         <slot />
       </router-link>
     </div>
-    <slot v-else/>
+    <slot v-else />
   </component>
 </template>
 
@@ -24,9 +31,9 @@ const props = withDefaults(
     tag?: string;
     itemData?: SideMenuEntry;
   }>(), {
-  clickParams: null,
-  tag: 'li',
-});
+    clickParams: null,
+    tag: 'li',
+  });
 
 const router = useRouter();
 const route = useRoute();

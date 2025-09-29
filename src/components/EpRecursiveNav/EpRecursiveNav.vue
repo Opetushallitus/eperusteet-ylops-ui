@@ -1,27 +1,48 @@
 <template>
-<div class="valikko">
-  <div class="item">
-    <slot name="previousLink"
-          v-if="curTopItem"
-          :itemData="curTopItem"
-          :itemRoute="curTopItem.route"
-          :navigate="previousSubmenu"></slot>
-  </div>
-  <div class="item" v-for="(item, idx) in current" :key="idx">
-    <slot :itemData="item"
-          :isSubmenu="isSubmenu(item)"
-          :itemRoute="item.route"
-          :navigate="enterSubmenu"></slot>
-    <div v-if="item.flatten">
-      <div v-for="(subitem, idx) in item.children"
-           :key="idx"
-           class="subitem">
-        <slot :itemData="subitem" :isSubmenu="isSubmenu(subitem)" :itemRoute="subitem.route" :navigate="enterSubmenu"></slot>
+  <div class="valikko">
+    <div class="item">
+      <slot
+        v-if="curTopItem"
+        name="previousLink"
+        :item-data="curTopItem"
+        :item-route="curTopItem.route"
+        :navigate="previousSubmenu"
+      />
+    </div>
+    <div
+      v-for="(item, idx) in current"
+      :key="idx"
+      class="item"
+    >
+      <slot
+        :item-data="item"
+        :is-submenu="isSubmenu(item)"
+        :item-route="item.route"
+        :navigate="enterSubmenu"
+      />
+      <div v-if="item.flatten">
+        <div
+          v-for="(subitem, idx) in item.children"
+          :key="idx"
+          class="subitem"
+        >
+          <slot
+            :item-data="subitem"
+            :is-submenu="isSubmenu(subitem)"
+            :item-route="subitem.route"
+            :navigate="enterSubmenu"
+          />
+        </div>
       </div>
     </div>
+    <slot
+      v-if="curTopItem"
+      name="after"
+      :item-data="curTopItem"
+      :item-route="curTopItem.route"
+      :navigate="previousSubmenu"
+    />
   </div>
-  <slot name="after" v-if="curTopItem" :itemData="curTopItem" :itemRoute="curTopItem.route" :navigate="previousSubmenu"></slot>
-</div>
 </template>
 
 <script setup lang="ts">
@@ -33,13 +54,14 @@ import {
   SideMenuEntry,
   SideMenuRoute,
 } from '@shared/tyypit';
+import { nextTick } from 'vue';
 
 const props = withDefaults(
   defineProps<{
     value?: any[];
   }>(), {
-  value: () => [],
-});
+    value: () => [],
+  });
 
 const router = useRouter();
 const route = useRoute();
@@ -66,13 +88,15 @@ const previousSubmenu = (changeRoute: boolean) => {
   curTopItem.value = _.get(curTopItem.value, 'parent', null);
 };
 
-const enterSubmenu = (item: SideMenuEntry) => {
+const enterSubmenu = async (item: SideMenuEntry) => {
   if (!item.children) {
     return;
   }
 
   current.value = item.children;
   curTopItem.value = item;
+
+  await nextTick();
 };
 
 const isSubmenu = (item: SideMenuEntry) => {
@@ -120,11 +144,13 @@ const splitRouteParams = (): string[] => {
 };
 
 const matchRouteParams = (routeParam: SideMenuRoute): boolean => {
-  return splitRouteParams().every(param => {
-    const p1 = _.get(route.params, param, null);
-    const p2 = _.get(routeParam.params, param, null);
-    return (p1 && p2 && String(p1) === String(p2));
-  });
+  const ignoreParams = ['lang', 'id'];
+  return splitRouteParams().filter(param => !ignoreParams.includes(param))
+    .every(param => {
+      const p1 = _.get(route.params, param, null);
+      const p2 = _.get(routeParam.params, param, null);
+      return (p1 && p2 && String(p1) === String(p2));
+    });
 };
 
 const searchForRouteMatch = (menuEntry: SideMenuEntry) => {
@@ -155,6 +181,7 @@ const getEntryDetails = (menuEntry: SideMenuEntry) => {
 };
 
 const buildCurrentFromRoute = (menuData: SideMenuEntry[], curTopItemParam: SideMenuEntry | null) => {
+
   var found: boolean = false;
   var newTopItem: SideMenuEntry | null = null;
   var newCurrent: SideMenuEntry[] = [];
