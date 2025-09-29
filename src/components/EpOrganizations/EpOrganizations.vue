@@ -1,50 +1,56 @@
 <template>
-<div class="organisaatiot">
-  <ep-form-content :showHeader="false">
-    <div class="selectors">
-      <div class="form-group required mb-4">
-        <label>{{ $t('kunnat') }} *</label>
-        <ep-multi-list-select
-          v-model="valitutKunnat"
-          tyyppi="kunta"
-          :items="kunnatSelectOptions"
-          @update:modelValue="updateKunnat"
-          :validation="$v.valitutKunnat"
-          :is-loading="kunnat.length === 0"
-          :required="true"
-          :equality="kuntaEquals"/>
+  <div class="organisaatiot">
+    <ep-form-content :show-header="false">
+      <div class="selectors">
+        <div class="form-group required mb-4">
+          <label>{{ $t('kunnat') }} *</label>
+          <ep-multi-list-select
+            v-model="valitutKunnat"
+            tyyppi="kunta"
+            :items="kunnatSelectOptions"
+            :is-loading="kunnat.length === 0"
+            :required="true"
+            :equality="kuntaEquals"
+            @update:model-value="updateKunnat"
+          />
+        </div>
       </div>
-    </div>
 
-    <div class="selectors mb-4" :class="{'disabled-events': valitutKunnat.length === 0}">
-      <label>{{ $t('jarjestajat') }} *</label>
-      <ep-multi-list-select
+      <div
+        class="selectors mb-4"
+        :class="{'disabled-events': valitutKunnat.length === 0}"
+      >
+        <label>{{ $t('jarjestajat') }} *</label>
+        <ep-multi-list-select
           v-model="valitutJarjestajat"
           tyyppi="koulutuksen-jarjestaja"
           :items="jarjestajatSelectOptions"
-          @update:modelValue="updateJarjestajat"
-          :validation="$v.valitutJarjestajat"
           :is-loading="kunnatLoading"
           :required="true"
-          :equality="jarjestajaEquals"/>
-    </div>
-
-    <div class="selectors mb-4" :class="{'disabled-events': valitutJarjestajat.length === 0}">
-      <div class="d-flex">
-        <label>{{ $t('oppilaitokset') }}</label>
-        <slot name="oppilaitokset-label-suffix" />
+          :equality="jarjestajaEquals"
+          @update:model-value="updateJarjestajat"
+        />
       </div>
-      <ep-multi-list-select
+
+      <div
+        class="selectors mb-4"
+        :class="{'disabled-events': valitutJarjestajat.length === 0}"
+      >
+        <div class="d-flex">
+          <label>{{ $t('oppilaitokset') }}</label>
+          <slot name="oppilaitokset-label-suffix" />
+        </div>
+        <ep-multi-list-select
           v-model="valitutOppilaitokset"
           tyyppi="oppilaitos"
           :items="oppilaitoksetSelectOptions"
-          @update:modelValue="updateOppilaitokset"
           :is-loading="jarjestajatLoading || kunnatLoading"
-          :equality="jarjestajaEquals"/>
-    </div>
-
-  </ep-form-content>
-</div>
+          :equality="jarjestajaEquals"
+          @update:model-value="updateOppilaitokset"
+        />
+      </div>
+    </ep-form-content>
+  </div>
 </template>
 
 <script setup lang="ts">

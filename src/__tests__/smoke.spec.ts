@@ -3,7 +3,7 @@ import {
 } from '@shared/api/ylops';
 
 // FIXME: fix test
-xdescribe('tests', () => {
+describe.skip('tests', () => {
   it('should fail on all unmocked requests', async () => {
     let errormsg = '';
     const spy = jest.spyOn(console, 'error')

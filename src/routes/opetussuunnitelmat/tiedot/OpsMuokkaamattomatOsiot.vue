@@ -1,27 +1,30 @@
 <template>
   <div class="content">
-    <h2>{{$t('muokkaamattomat-osiot')}}</h2>
+    <h2>{{ $t('muokkaamattomat-osiot') }}</h2>
 
-    <ep-spinner v-if="!opetussuunnitelmanTekstikappale"></ep-spinner>
+    <ep-spinner v-if="!opetussuunnitelmanTekstikappale" />
     <div v-else-if="hasMuokkaamattomatTekstikappaleet">
-      <b-table responsive
-               borderless
-               striped
-               :items="muokkaamattomatTekstikappaleet"
-               :fields="fields"
-               :current-page="currentPage"
-               :per-page="perPage">
-
-        <template v-slot:cell(nimi)="data">
-          <router-link tag="a" :to="{ name: 'tekstikappale', params: { osaId: data.item.osaId } }" :key="data.item.osaId">
+      <b-table
+        responsive
+        borderless
+        striped
+        :items="muokkaamattomatTekstikappaleet"
+        :fields="fields"
+        :current-page="currentPage"
+        :per-page="perPage"
+      >
+        <template #cell(nimi)="data">
+          <router-link
+            :key="data.item.osaId"
+            :to="{ name: 'tekstikappale', params: { osaId: data.item.osaId } }"
+          >
             {{ $kaanna(data.value) }}
           </router-link>
         </template>
 
-        <template v-slot:cell(siirtyminen)>
+        <template #cell(siirtyminen)>
           <EpMaterialIcon>chevron_right</EpMaterialIcon>
         </template>
-
       </b-table>
 
       <b-pagination
@@ -29,12 +32,21 @@
         :total-rows="muokkaamattomatTekstikappaleet.length"
         :per-page="perPage"
         aria-controls="arkistoidut-opetussuunnitelmat"
-        align="center">
-      </b-pagination>
+        align="center"
+      />
     </div>
-    <div v-else-if="opetussuunnitelmanTekstikappale && !hasMuokkaamattomatTekstikappaleet" class="d-flex flex-column align-items-center justify-content-center mt-4">
-      <img src="@assets/img/images/papukaijamerkki.svg" :alt="$t('papukaijamerkki')" class="mb-4">
-      <p class="text-muted">{{ $t('ei-muokkaamattomia-osia') }}</p>
+    <div
+      v-else-if="opetussuunnitelmanTekstikappale && !hasMuokkaamattomatTekstikappaleet"
+      class="d-flex flex-column align-items-center justify-content-center mt-4"
+    >
+      <img
+        src="@assets/img/images/papukaijamerkki.svg"
+        :alt="$t('papukaijamerkki')"
+        class="mb-4"
+      >
+      <p class="text-muted">
+        {{ $t('ei-muokkaamattomia-osia') }}
+      </p>
     </div>
   </div>
 </template>

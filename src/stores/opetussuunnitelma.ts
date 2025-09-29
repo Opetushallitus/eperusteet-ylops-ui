@@ -33,6 +33,7 @@ import { reactive, computed } from 'vue';
 import { success, fail } from '@/utils/notifications';
 import { organizations } from '@/utils/organisaatiot';
 import _ from 'lodash';
+import { $success } from '@shared/utils/globals';
 
 interface OpintojaksoQuery {
   oppiaineUri?: string;
@@ -46,39 +47,22 @@ export class OpetussuunnitelmaStore {
     opsId: 0,
     sisalto: null as TekstiKappaleViitePerusteTekstillaDto | null,
     opetussuunnitelma: null as OpetussuunnitelmaKevytDto | null,
-
     paikallisetOppiaineet: [] as Lops2019PaikallinenOppiaineDto[],
-
     opintojaksot: [] as Lops2019OpintojaksoDto[],
-
     tuodutOpintojaksot: [] as Lops2019OpintojaksoDto[],
-
     oppiaineJarjestykset: [] as Lops2019OppiaineJarjestysDto[],
-
     kasitteet: [] as TermiDto[],
-
     virkailijat: null as any[] | null,
-
     valinnaisetOppiaineet: [] as OppiaineDto[],
-
     julkaisut: null as OpetussuunnitelmanJulkaisuDto[] | null,
-
     validointi: null as Array<Validointi> | null,
-
     pohjallaPuuttuviaTeksteja: null as boolean | null,
-
     pohjanPerustePaivittynyt: null as boolean | null,
-
     julkaisemattomiaMuutoksia: null as boolean | null,
-
     viimeisinJulkaisuTila: null as string | null,
-
     tilaPolling: null as any | null,
-
     viimeisinPohjaTekstiSync: null as OpetussuunnitelmanMuokkaustietoDto | null,
-
     pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync: null as OpetussuunnitelmanMuokkaustietoDto | null,
-
     peruste: null as PerusteInfoDto | null,
   });
 
@@ -103,10 +87,6 @@ export class OpetussuunnitelmaStore {
   public readonly pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = computed(() => this.state.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync);
   public readonly peruste = computed(() => this.state.peruste);
 
-  constructor(opsId: number) {
-    this.state.opsId = opsId;
-  }
-
   // Tekstikappaleet
   public async getOtsikot() {
     return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.state.opsId)).data;
@@ -121,15 +101,42 @@ export class OpetussuunnitelmaStore {
     this.state.kasitteet = await this.getKasitteet();
   }
 
-  public async init() {
+  public clear() {
+    this.state.opetussuunnitelma = null;
+    this.state.sisalto = null;
+    this.state.paikallisetOppiaineet = [];
+    this.state.opintojaksot = [];
+    this.state.tuodutOpintojaksot = [];
+    this.state.oppiaineJarjestykset = [];
+    this.state.kasitteet = [];
+    this.state.virkailijat = null;
+    this.state.valinnaisetOppiaineet = [];
+    this.state.julkaisut = null;
+    this.state.validointi = null;
+    this.state.pohjallaPuuttuviaTeksteja = null;
+    this.state.pohjanPerustePaivittynyt = null;
+    this.state.julkaisemattomiaMuutoksia = null;
+    this.state.viimeisinJulkaisuTila = null;
+    this.state.tilaPolling = null;
+    this.state.viimeisinPohjaTekstiSync = null;
+    this.state.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = null;
+    this.state.peruste = null;
+    this.state.opsId = 0;
+  }
+
+  public async init(opsId?: number) {
+    if (opsId) {
+      this.state.opsId = opsId;
+    }
+
     logger.info('Initing ops store', this.state.opsId);
     this.state.opetussuunnitelma = await this.get();
-    this.updatePohjanPerustePaivittynyt();
-    this.updateSisalto();
-    this.updateValidation();
-    this.fetchJulkaisut();
-    this.updateOppiaineet();
-    this.updatePohjallaPuuttuviaTeksteja();
+    await this.updatePohjanPerustePaivittynyt();
+    await this.updateSisalto();
+    await this.updateValidation();
+    await this.fetchJulkaisut();
+    await this.updateOppiaineet();
+    await this.updatePohjallaPuuttuviaTeksteja();
   }
 
   async updatePohjanPerustePaivittynyt() {
@@ -202,7 +209,7 @@ export class OpetussuunnitelmaStore {
 
   public async save(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
     const res = await Opetussuunnitelmat.updateOpetussuunnitelma(opetussuunnitelma.id as number, opetussuunnitelma as OpetussuunnitelmaDto);
-    success('tallennus-onnistui-opetussuunnitelma');
+    $success('tallennus-onnistui-opetussuunnitelma');
     this.state.opetussuunnitelma = res.data as OpetussuunnitelmaKevytDto;
   }
 
@@ -229,14 +236,14 @@ export class OpetussuunnitelmaStore {
     else {
       osa = await OpetussuunnitelmanSisalto.addTekstiKappale(this.state.opetussuunnitelma!.id!, tov as Matala);
     }
-    success('lisays-onnistui-tekstikappale');
+    $success('lisays-onnistui-tekstikappale');
     await this.updateSisalto();
     return osa.data;
   }
 
   public async kopioiTeksti(tov: Puu) {
     const kopioitu = await OpetussuunnitelmanSisalto.kloonaaTekstiKappale(this.state.opetussuunnitelma!.id!, tov.id!);
-    success('kopiointi-onnistui-tekstikappale');
+    $success('kopiointi-onnistui-tekstikappale');
     return kopioitu;
   }
 
@@ -281,7 +288,7 @@ export class OpetussuunnitelmaStore {
   public async addOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto = {}) {
     const result = (await Lops2019Oppiaineet.addLops2019PaikallinenOppiaine(this.state.opetussuunnitelma!.id!, oppiaine)).data;
     this.state.paikallisetOppiaineet = [...this.state.paikallisetOppiaineet, result];
-    success('lisays-onnistui-oppiaine');
+    $success('lisays-onnistui-oppiaine');
     return result;
   }
 
@@ -300,7 +307,7 @@ export class OpetussuunnitelmaStore {
 
   public async savePaikallinenOppiaine(oppiaine: Lops2019PaikallinenOppiaineDto) {
     const result = (await Lops2019Oppiaineet.updateLops2019PaikallinenOppiaine(this.state.opetussuunnitelma!.id!, oppiaine.id!, oppiaine)).data;
-    success('tallennus-onnistui-oppiaine');
+    $success('tallennus-onnistui-oppiaine');
     const idx = _.findIndex(this.state.paikallisetOppiaineet, { id: result.id });
     this.state.paikallisetOppiaineet = [
       ..._.slice(this.state.paikallisetOppiaineet, 0, idx),
@@ -331,7 +338,7 @@ export class OpetussuunnitelmaStore {
   // Opintojaksot
   public async addOpintojakso(opintojakso: Lops2019OpintojaksoDto = {}) {
     const result = (await Opintojaksot.addOpintojakso(this.state.opetussuunnitelma!.id!, opintojakso)).data;
-    success('lisays-onnistui-opintojakson');
+    $success('lisays-onnistui-opintojakson');
     this.state.opintojaksot = [...this.state.opintojaksot, result];
     return result;
   }
@@ -397,8 +404,8 @@ export class OpetussuunnitelmaStore {
         OpetussuunnitelmanSisalto.returnRemoved(this.state.opetussuunnitelma!.id!, poistettu!.id);
         await this.getPoistetutTekstikappaleet();
       }
-      success('palautus-onnistui');
-      await this.init();
+      $success('palautus-onnistui');
+      await this.init(this.state.opsId);
     }
     catch (err: any) {
       fail('palautus-epaonnistui', err.response.data.syy);
@@ -407,7 +414,7 @@ export class OpetussuunnitelmaStore {
 
   public async removeOppiaine(id: number) {
     await Lops2019Oppiaineet.removeLops2019PaikallinenOppiaine(this.state.opetussuunnitelma!.id!, id);
-    success('poisto-onnistui-oppiaineen');
+    $success('poisto-onnistui-oppiaineen');
     const idx = _.findIndex(this.state.paikallisetOppiaineet, { id });
     this.state.paikallisetOppiaineet = [
       ..._.slice(this.state.paikallisetOppiaineet, 0, idx),
@@ -417,7 +424,7 @@ export class OpetussuunnitelmaStore {
 
   public async removeOpintojakso(id: number) {
     await Opintojaksot.removeOpintojakso(this.state.opetussuunnitelma!.id!, id);
-    success('poisto-onnistui-opintojakson');
+    $success('poisto-onnistui-opintojakson');
     const idx = _.findIndex(this.state.opintojaksot, { id });
     this.state.opintojaksot = [
       ..._.slice(this.state.opintojaksot, 0, idx),
@@ -427,7 +434,7 @@ export class OpetussuunnitelmaStore {
 
   public async saveOpintojakso(opintojakso: Lops2019OpintojaksoDto) {
     const result = (await Opintojaksot.updateOpintojakso(this.state.opetussuunnitelma!.id!, opintojakso.id!, opintojakso)).data;
-    success('tallennus-onnistui-opintojakson');
+    $success('tallennus-onnistui-opintojakson');
     const idx = _.findIndex(this.state.opintojaksot, { id: result.id });
     this.state.opintojaksot = [
       ..._.slice(this.state.opintojaksot, 0, idx),
@@ -468,17 +475,4 @@ export class OpetussuunnitelmaStore {
       nimi,
     };
   }
-}
-
-let opsServiceCache: OpetussuunnitelmaStore | null = null;
-
-export function Opetussuunnitelma() {
-  return opsServiceCache!;
-}
-
-export function getOpetussuunnitelmaService(id: number) {
-  if (!opsServiceCache || opsServiceCache.opsId.value !== id) {
-    opsServiceCache = new OpetussuunnitelmaStore(id);
-  }
-  return opsServiceCache;
 }

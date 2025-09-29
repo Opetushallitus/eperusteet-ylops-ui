@@ -1,57 +1,89 @@
 <template>
   <div class="dokumentit">
     <div class="ylapaneeli d-flex align-items-center">
-        <h2 class="otsikko">{{ $t('luo-pdf') }}</h2>
+      <h2 class="otsikko">
+        {{ $t('luo-pdf') }}
+      </h2>
     </div>
     <div class="sisalto">
       <div class="mb-4">
         <h5>{{ $t('luo-ja-lataa-pdf') }}</h5>
-        <p>{{ $t('luo-pdf-selite')}}</p>
+        <p>{{ $t('luo-pdf-selite') }}</p>
 
-        <EpPdfDokumentti v-if="dtoJulkaisu"
-                         :dokumentti="dtoJulkaisu"
-                         :dokumentti-href="hrefJulkaisu"
-                         :is-polling="false"
-                         :pdfnimi="$kaanna(opetussuunnitelmanimi)">
-        </EpPdfDokumentti>
+        <EpPdfDokumentti
+          v-if="dtoJulkaisu"
+          :dokumentti="dtoJulkaisu"
+          :dokumentti-href="hrefJulkaisu"
+          :is-polling="false"
+          :pdfnimi="$kaanna(opetussuunnitelmanimi)"
+        />
         <hr v-if="dtoJulkaisu">
-        <EpPdfDokumentti :dokumentti="dto"
-                         :dokumentti-href="href"
-                         :is-polling="polling"
-                         :pdfnimi="$kaanna(opetussuunnitelmanimi)">
-        </EpPdfDokumentti>
+        <EpPdfDokumentti
+          :dokumentti="dto"
+          :dokumentti-href="href"
+          :is-polling="polling"
+          :pdfnimi="$kaanna(opetussuunnitelmanimi)"
+        />
         <div class="btn-group">
-          <ep-button @click="createDocument" :disabled="!dto || polling" :show-spinner="polling" buttonClass="px-5"><span>{{ $t('luo-uusi-pdf') }}</span></ep-button>
+          <ep-button
+            :disabled="!dto || polling"
+            :show-spinner="polling"
+            button-class="px-5"
+            @click="createDocument"
+          >
+            <span>{{ $t('luo-uusi-pdf') }}</span>
+          </ep-button>
         </div>
       </div>
 
       <div class="row">
         <div class="col kuvalataus">
-          <EpPdfKuvalataus tyyppi="kansikuva" :kuvaUrl="kansikuvaUrl" @saveImage="saveImage" @removeImage="removeImage"></EpPdfKuvalataus>
+          <EpPdfKuvalataus
+            tyyppi="kansikuva"
+            :kuva-url="kansikuvaUrl"
+            @save-image="saveImage"
+            @remove-image="removeImage"
+          />
         </div>
         <div class="col-4 text-center sijaintikuva">
-          <div class="sijainti-topic">{{$t('sijainti')}}</div>
-          <img src="@assets/img/icons/pdfkuva_etusivu.svg" />
+          <div class="sijainti-topic">
+            {{ $t('sijainti') }}
+          </div>
+          <img src="@assets/img/icons/pdfkuva_etusivu.svg">
         </div>
       </div>
 
-       <div class="row">
+      <div class="row">
         <div class="col kuvalataus">
-          <EpPdfKuvalataus tyyppi="ylatunniste" :kuvaUrl="ylatunnisteUrl" @saveImage="saveImage" @removeImage="removeImage"></EpPdfKuvalataus>
+          <EpPdfKuvalataus
+            tyyppi="ylatunniste"
+            :kuva-url="ylatunnisteUrl"
+            @save-image="saveImage"
+            @remove-image="removeImage"
+          />
         </div>
         <div class="col-4 text-center sijaintikuva">
-          <div class="sijainti-topic">&nbsp;</div>
-          <img src="@assets/img/icons/pdfkuva_header.svg" />
+          <div class="sijainti-topic">
+&nbsp;
+          </div>
+          <img src="@assets/img/icons/pdfkuva_header.svg">
         </div>
       </div>
 
-       <div class="row">
+      <div class="row">
         <div class="col kuvalataus">
-          <EpPdfKuvalataus tyyppi="alatunniste" :kuvaUrl="alatunnisteUrl" @saveImage="saveImage" @removeImage="removeImage"></EpPdfKuvalataus>
+          <EpPdfKuvalataus
+            tyyppi="alatunniste"
+            :kuva-url="alatunnisteUrl"
+            @save-image="saveImage"
+            @remove-image="removeImage"
+          />
         </div>
         <div class="col-4 text-center sijaintikuva">
-          <div class="sijainti-topic">&nbsp;</div>
-          <img src="@assets/img/icons/pdfkuva_alatunniste.svg"/>
+          <div class="sijainti-topic">
+&nbsp;
+          </div>
+          <img src="@assets/img/icons/pdfkuva_alatunniste.svg">
         </div>
       </div>
     </div>
@@ -71,8 +103,8 @@ import { DokumenttiKuvaDto } from '@shared/generated/ylops';
 import EpPdfDokumentti from '@shared/components/EpPdfLuonti/EpPdfDokumentti.vue';
 import EpPdfKuvalataus from '@shared/components/EpTiedosto/EpPdfKuvalataus.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { $fail, $kaanna, $success, $t } from '@shared/utils/globals';
+import { Koulutustyyppi } from '@shared/tyypit';
 
 // Props
 const props = defineProps<{
@@ -80,17 +112,8 @@ const props = defineProps<{
 }>();
 
 // Use the composable
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsRoute(props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 // Reactive data
 const previewUrl = ref(null);
 const dto = ref<DokumenttiDto | null>(null);

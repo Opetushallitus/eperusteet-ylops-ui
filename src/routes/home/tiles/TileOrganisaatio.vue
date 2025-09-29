@@ -1,23 +1,33 @@
 <template>
-<ep-home-tile icon="groups" :route="{ name: 'organisaatio' }">
-  <template #header>
-    <span>{{ $t('tile-organisaatio') }}</span>
-  </template>
-  <template #content>
-    <ep-spinner v-if="isLoading"></ep-spinner>
-    <div v-else>
-      <b-row class="mx-5 virkailijat">
-        <b-col class="virkailija text-left"
-               sm="6"
-               v-for="virkailija in virkailijatPrewview"
-               :key="virkailija.oid">
-          <span>{{ virkailija.esitysnimi }}</span>
-        </b-col>
-      </b-row>
-      <p class="mt-3 mb-0" v-if="virkailijat && virkailijat.length > previewSize">{{ $t('nayta-lisaa') }}</p>
-    </div>
-  </template>
-</ep-home-tile>
+  <ep-home-tile
+    icon="groups"
+    :route="{ name: 'organisaatio' }"
+  >
+    <template #header>
+      <span>{{ $t('tile-organisaatio') }}</span>
+    </template>
+    <template #content>
+      <ep-spinner v-if="isLoading" />
+      <div v-else>
+        <b-row class="mx-5 virkailijat">
+          <b-col
+            v-for="virkailija in virkailijatPrewview"
+            :key="virkailija.oid"
+            class="virkailija text-left"
+            sm="6"
+          >
+            <span>{{ virkailija.esitysnimi }}</span>
+          </b-col>
+        </b-row>
+        <p
+          v-if="virkailijat && virkailijat.length > previewSize"
+          class="mt-3 mb-0"
+        >
+          {{ $t('nayta-lisaa') }}
+        </p>
+      </div>
+    </template>
+  </ep-home-tile>
 </template>
 
 <script setup lang="ts">

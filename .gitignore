@@ -1,34 +1,32 @@
-*.js
-*.js.map
-*.njsproj
-*.ntvs*
-*.sln
-*.suo
-*.sw*
-*.DS_Store
-.env.*.local
-.env.local
-.idea
-.vscode
-/dist
-coverage
-dist
-generated
-mochawesome-report
+.DS_Store
 node_modules
-npm-debug.log*
-styleguide
-test-results.xml
-tests/e2e/screenshots
-tests/e2e/videos
-typings
-wwwroot/*.js
+coverage
+/dist
 package-lock.json
-yarn-debug.log*
-yarn-error.log*
 .yarn/*
 
-!./.eslintrc.js
+/tests/e2e/videos/
+/tests/e2e/screenshots/
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.nvmrc
 
 # Generated API files
 src/generated/**

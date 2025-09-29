@@ -1,22 +1,26 @@
 <template>
-  <b-table responsive
-           striped
-           hover
-           :items="items"
-           :fields="fields">
-    <template v-slot:cell(nimi)="data">
+  <b-table
+    responsive
+    striped
+    hover
+    :items="items"
+    :fields="fields"
+  >
+    <template #cell(nimi)="data">
       {{ $kaanna(data.value) }}
     </template>
-    <template v-slot:cell(muokattu)="data">
+    <template #cell(muokattu)="data">
       {{ $ago(data.value) }}
     </template>
-    <template v-slot:cell(esitysnimi)="data">
+    <template #cell(esitysnimi)="data">
       {{ data.value }}
     </template>
-    <template v-slot:cell(actions)="row">
-      <ep-button variant="link"
-                 icon="keyboard_return"
-                 @click="palauta(row.item)">
+    <template #cell(actions)="row">
+      <ep-button
+        variant="link"
+        icon="keyboard_return"
+        @click="palauta(row.item)"
+      >
         {{ $t('palauta') }}
       </ep-button>
     </template>

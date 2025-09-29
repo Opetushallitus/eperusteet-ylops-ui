@@ -1,6 +1,5 @@
 import { reactive, computed } from 'vue';
 import _ from 'lodash';
-import { Opetussuunnitelma } from './opetussuunnitelma';
 import { RouteLocationNormalized as Location } from 'vue-router';
 
 class MurupolkuStore {
@@ -10,7 +9,8 @@ class MurupolkuStore {
 
   public readonly polku = computed(() => this.state.polku);
   public readonly murut = computed(() => {
-    const nimi = _.get(Opetussuunnitelma(), 'opetussuunnitelma.nimi');
+    // const nimi = _.get(Opetussuunnitelma(), 'opetussuunnitelma.nimi');
+    const nimi = '';
     return {
       opetussuunnitelma: nimi,
       ...this.state.polku,

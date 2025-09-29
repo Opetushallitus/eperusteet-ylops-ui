@@ -1,41 +1,82 @@
 <template>
-<div v-if="mahdollisetTilat">
-  <ep-button v-b-modal.tilanvaihtomodal
-             id="opetussuunnitelma-tilanvaihto"
-             >{{ $t('vaihda-tilaa') }}</ep-button>
-  <b-modal ref="modal" id="tilanvaihtomodal" size="lg" title="testi">
-    <template slot="modal-title">{{ $t('vaihda-tilaa') }}</template>
-    <template slot="modal-footer">
-      <ep-button @click="tallenna()" :disabled="!selected" :show-spinner="isUpdating">{{ $t('ok') }}</ep-button>
-      <ep-button @click="peruuta()" :disabled="isUpdating">{{ $t('peruuta') }}</ep-button>
-    </template>
-    <div class="tilat">
-      <button v-for="(tila, idx) in mahdollisetTilat"
-              :key="idx"
-              @click="vaihdaTila(tila)"
-              @dblclick="vaihdaTila(tila) && tallenna()"
-              class="btn"
-              type="button"
-              tabindex="0">
-        <div class="tila" :class="{ 'tila-selected': selected === tila }">
-          <div class="ikoni" :class="'ikoni-' + tila">
-            <div class="kuvake">
-              <EpMaterialIcon v-if="tila === 'julkaistu'">verified</EpMaterialIcon>
-              <EpMaterialIcon v-if="tila === 'poistettu'">archive</EpMaterialIcon>
-              <EpMaterialIcon v-else-if="tila === 'valmis'">check</EpMaterialIcon>
-              <EpMaterialIcon v-else>edit</EpMaterialIcon>
+  <div v-if="mahdollisetTilat">
+    <ep-button
+      id="opetussuunnitelma-tilanvaihto"
+      v-b-modal.tilanvaihtomodal
+    >
+      {{ $t('vaihda-tilaa') }}
+    </ep-button>
+    <b-modal
+      id="tilanvaihtomodal"
+      ref="modal"
+      size="lg"
+      title="testi"
+    >
+      <template #modal-title>
+        {{ $t('vaihda-tilaa') }}
+      </template>
+      <template #modal-footer>
+        <ep-button
+          :disabled="!selected"
+          :show-spinner="isUpdating"
+          @click="tallenna()"
+        >
+          {{ $t('ok') }}
+        </ep-button>
+        <ep-button
+          :disabled="isUpdating"
+          @click="peruuta()"
+        >
+          {{ $t('peruuta') }}
+        </ep-button>
+      </template>
+      <div class="tilat">
+        <button
+          v-for="(tila, idx) in mahdollisetTilat"
+          :key="idx"
+          class="btn"
+          type="button"
+          tabindex="0"
+          @click="vaihdaTila(tila)"
+          @dblclick="vaihdaTila(tila) && tallenna()"
+        >
+          <div
+            class="tila"
+            :class="{ 'tila-selected': selected === tila }"
+          >
+            <div
+              class="ikoni"
+              :class="'ikoni-' + tila"
+            >
+              <div class="kuvake">
+                <EpMaterialIcon v-if="tila === 'julkaistu'">
+                  verified
+                </EpMaterialIcon>
+                <EpMaterialIcon v-if="tila === 'poistettu'">
+                  archive
+                </EpMaterialIcon>
+                <EpMaterialIcon v-else-if="tila === 'valmis'">
+                  check
+                </EpMaterialIcon>
+                <EpMaterialIcon v-else>
+                  edit
+                </EpMaterialIcon>
+              </div>
+              <div class="nimi">
+                {{ $t('tilanimi-' + tila) }}
+              </div>
             </div>
-            <div class="nimi">{{ $t('tilanimi-' + tila) }}</div>
+            <div class="tiedot">
+              {{ $t('tilakuvaus-' + tila) }}
+            </div>
           </div>
-          <div class="tiedot">{{ $t('tilakuvaus-' + tila) }}</div>
-        </div>
-      </button>
-    </div>
-  </b-modal>
-</div>
-<div v-else>
-  <ep-spinner />
-</div>
+        </button>
+      </div>
+    </b-modal>
+  </div>
+  <div v-else>
+    <ep-spinner />
+  </div>
 </template>
 
 <script setup lang="ts">

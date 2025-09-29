@@ -1,163 +1,234 @@
 <template>
-<div class="content">
-  <div class="m-2">
+  <div class="content">
+    <div class="m-2">
+      <h2 class="border-bottom pb-2 mb-3">
+        <span>{{ $t('oppiaineet') }}</span>
+      </h2>
 
-    <h2 class="border-bottom pb-2 mb-3">
-      <span>{{ $t('oppiaineet') }}</span>
-    </h2>
-
-    <div class="row">
-      <div class="col-md-9">
-        <div>
-          <p>{{ $t('route-oppiaineet-kuvaus') }}</p>
-        </div>
-        <div>
-          <div class="d-flex align-items-center">
-            <div class="p-2">
-              <ep-search v-model="query">
-              </ep-search>
-            </div>
-            <div class="p-2 checkbox">
-              <ep-toggle v-model="vainPuuttuvat">{{ $t('vain-liittamattomat-moduulit') }}</ep-toggle>
+      <div class="row">
+        <div class="col-md-9">
+          <div>
+            <p>{{ $t('route-oppiaineet-kuvaus') }}</p>
+          </div>
+          <div>
+            <div class="d-flex align-items-center">
+              <div class="p-2">
+                <ep-search v-model="query" />
+              </div>
+              <div class="p-2 checkbox">
+                <ep-toggle v-model="vainPuuttuvat">
+                  {{ $t('vain-liittamattomat-moduulit') }}
+                </ep-toggle>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-md-3">
-        <div>
-          <ep-button
-            class="w-100"
-            v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
-            variant="outline-primary"
-            icon="add"
-            @click="uusiOppiaine()">{{ $t('paikallinen-oppiaine') }}</ep-button>
-          <ep-button
-            class="w-100"
-            v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
-            variant="outline-primary"
-            icon="add"
-            @click="uusiOpintojakso()">{{ $t('opintojakso') }}
-          </ep-button>
+        <div class="col-md-3">
+          <div>
+            <ep-button
+              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+              class="w-100"
+              variant="outline-primary"
+              icon="add"
+              @click="uusiOppiaine()"
+            >
+              {{ $t('paikallinen-oppiaine') }}
+            </ep-button>
+            <ep-button
+              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+              class="w-100"
+              variant="outline-primary"
+              icon="add"
+              @click="uusiOpintojakso()"
+            >
+              {{ $t('opintojakso') }}
+            </ep-button>
+          </div>
         </div>
       </div>
-    </div>
-    <table class="table table-borderless oppiaineet">
-      <thead class="head">
-        <tr>
-          <th width="20%">{{ $t('oppiaine') }}</th>
-          <th width="25%">{{ $t('luodut-opintojaksot') }}</th>
-          <th width="25%">{{ $t('liitetyt-moduulit') }}</th>
-          <th width="25%">{{ $t('vieraat-moduulit') }}</th>
-          <th class="actions" width="5%">
-            <button class="btn btn-link" @click="toggleAll()">
-              <EpMaterialIcon v-if="isOpened">expand_less</EpMaterialIcon>
-              <EpMaterialIcon v-else>expand_more</EpMaterialIcon>
-            </button>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-for="(oa, idx) in suodatettuOppiaineRakenne" :key="idx">
-          <tr class="headerline" :class="[oa.isOpen && 'opened', oa._oppiaine || oa.perusteenOppiaineUri ? 'oppimaara': 'oppiaine']">
-            <td>
-              <router-link :to="{ name: oa.route.type, params: oa.route[oa.route.type] }">
-                <span>{{ $kaanna(oa.nimi) }}</span>
-                <span class="ml-1" v-if="oa.koodi">({{ oa.koodi.arvo }})</span>
-              </router-link>
-            </td>
-            <td>
-              <span v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">{{ oa.stats.opintojaksot }}</span>
-            </td>
-            <td :class="oa.stats.valid ? 'valid' : 'invalid'">
-              <span v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">{{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}</span>
-            </td>
-            <td>
-            </td>
-            <td class="actions">
-              <button class="btn btn-link"
-                      @click="toggleOppiaine(oa)"
-                      v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">
-                <EpMaterialIcon v-if="oa.isOpen">expand_less</EpMaterialIcon>
-                <EpMaterialIcon v-else>expand_more</EpMaterialIcon>
+      <table class="table table-borderless oppiaineet">
+        <thead class="head">
+          <tr>
+            <th width="20%">
+              {{ $t('oppiaine') }}
+            </th>
+            <th width="25%">
+              {{ $t('luodut-opintojaksot') }}
+            </th>
+            <th width="25%">
+              {{ $t('liitetyt-moduulit') }}
+            </th>
+            <th width="25%">
+              {{ $t('vieraat-moduulit') }}
+            </th>
+            <th
+              class="actions"
+              width="5%"
+            >
+              <button
+                class="btn btn-link"
+                @click="toggleAll()"
+              >
+                <EpMaterialIcon v-if="isOpened">
+                  expand_less
+                </EpMaterialIcon>
+                <EpMaterialIcon v-else>
+                  expand_more
+                </EpMaterialIcon>
               </button>
-            </td>
+            </th>
           </tr>
-          <tr class="dataline" v-if="(!oa.oppimaarat || oa.oppimaarat.length === 0) && (oa.opintojaksot.length > 0 || oa.moduulit.length > 0 || oa.vieraatModuulit > 0) && oa.isOpen" :key="-idx - 1">
-            <td>
-            </td>
-            <td>
-              <div class="boxcontainer" v-for="oj in oa.opintojaksot" :key="oj.id">
-                <div class="opintojakso" @mouseover="hoverOpintojakso(oj)" @mouseleave="unhoverOpintojakso(oj)">
-                  <table>
-                    <tbody>
-                      <tr class="item">
-                        <!-- td.op {{ oj.laajuus || 0 }}{{ $t('op') }}-->
-                        <td class="nimi">
-                          <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: oj.id } }">{{ $kaanna(oj.nimi) }} ({{ oj.koodi }})</router-link>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div>
-                <div class="boxcontainer" v-for="(moduuli, idx) in oa.moduulit" :key="idx">
-                  <div class="moduuli" :class="moduuli.classes">
+        </thead>
+        <tbody>
+          <template
+            v-for="(oa, idx) in suodatettuOppiaineRakenne"
+            :key="idx"
+          >
+            <tr
+              class="headerline"
+              :class="[oa.isOpen && 'opened', oa._oppiaine || oa.perusteenOppiaineUri ? 'oppimaara': 'oppiaine']"
+            >
+              <td>
+                <router-link :to="{ name: oa.route.type, params: oa.route[oa.route.type] }">
+                  <span>{{ $kaanna(oa.nimi) }}</span>
+                  <span
+                    v-if="oa.koodi"
+                    class="ml-1"
+                  >({{ oa.koodi.arvo }})</span>
+                </router-link>
+              </td>
+              <td>
+                <span v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">{{ oa.stats.opintojaksot }}</span>
+              </td>
+              <td :class="oa.stats.valid ? 'valid' : 'invalid'">
+                <span v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled">{{ oa.stats.kaytetytModuulit }}/{{ oa.stats.kaikkiModuulit }}</span>
+              </td>
+              <td />
+              <td class="actions">
+                <button
+                  v-if="(oa.oppimaarat && oa.oppimaarat.length === 0) || oa.toggleEnabled"
+                  class="btn btn-link"
+                  @click="toggleOppiaine(oa)"
+                >
+                  <EpMaterialIcon v-if="oa.isOpen">
+                    expand_less
+                  </EpMaterialIcon>
+                  <EpMaterialIcon v-else>
+                    expand_more
+                  </EpMaterialIcon>
+                </button>
+              </td>
+            </tr>
+            <tr
+              v-if="(!oa.oppimaarat || oa.oppimaarat.length === 0) && (oa.opintojaksot.length > 0 || oa.moduulit.length > 0 || oa.vieraatModuulit > 0) && oa.isOpen"
+              :key="-idx - 1"
+              class="dataline"
+            >
+              <td />
+              <td>
+                <div
+                  v-for="oj in oa.opintojaksot"
+                  :key="oj.id"
+                  class="boxcontainer"
+                >
+                  <div
+                    class="opintojakso"
+                    @mouseover="hoverOpintojakso(oj)"
+                    @mouseleave="unhoverOpintojakso(oj)"
+                  >
                     <table>
                       <tbody>
                         <tr class="item">
-                          <td>
-                            <ep-color-indicator class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
-                            </ep-color-indicator>
-                            <span>{{ $kaanna(moduuli.nimi) }}</span>
-                            <span class="ml-1" v-if="moduuli.koodi">({{ moduuli.koodi.arvo }})</span>
+                          <!-- td.op {{ oj.laajuus || 0 }}{{ $t('op') }}-->
+                          <td class="nimi">
+                            <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: oj.id } }">
+                              {{ $kaanna(oj.nimi) }} ({{ oj.koodi }})
+                            </router-link>
                           </td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                 </div>
-              </div>
-            </td>
-            <td>
-              <div>
-                <div class="boxcontainer" v-for="(moduuli, idx) in oa.vieraatModuulit" :key="idx">
-                  <div class="moduuli" :class="moduuli.classes">
-                    <table>
-                      <tbody>
-                        <tr class="item">
-                          <td>
-                            <ep-color-indicator class="mr-2" :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
-                            </ep-color-indicator>
-                            <span>{{ $kaanna(moduuli.nimi) }}</span>
-                            <span class="ml-1" v-if="moduuli.koodi">({{ moduuli.koodi.arvo }})</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+              </td>
+              <td>
+                <div>
+                  <div
+                    v-for="(moduuli, idx) in oa.moduulit"
+                    :key="idx"
+                    class="boxcontainer"
+                  >
+                    <div
+                      class="moduuli"
+                      :class="moduuli.classes"
+                    >
+                      <table>
+                        <tbody>
+                          <tr class="item">
+                            <td>
+                              <ep-color-indicator
+                                class="mr-2"
+                                :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'"
+                              />
+                              <span>{{ $kaanna(moduuli.nimi) }}</span>
+                              <span
+                                v-if="moduuli.koodi"
+                                class="ml-1"
+                              >({{ moduuli.koodi.arvo }})</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </td>
-            <td>
-            </td>
+              </td>
+              <td>
+                <div>
+                  <div
+                    v-for="(moduuli, idx) in oa.vieraatModuulit"
+                    :key="idx"
+                    class="boxcontainer"
+                  >
+                    <div
+                      class="moduuli"
+                      :class="moduuli.classes"
+                    >
+                      <table>
+                        <tbody>
+                          <tr class="item">
+                            <td>
+                              <ep-color-indicator
+                                class="mr-2"
+                                :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'"
+                              />
+                              <span>{{ $kaanna(moduuli.nimi) }}</span>
+                              <span
+                                v-if="moduuli.koodi"
+                                class="ml-1"
+                              >({{ moduuli.koodi.arvo }})</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td />
+            </tr>
+          </template>
+          <tr class="total">
+            <td>{{ $t('yhteensa') }}</td>
+            <td>{{ total.opintojaksot }}</td>
+            <td>{{ total.kaytetytModuulit }}/{{ total.kaikkiModuulit }}</td>
+            <td />
+            <td />
           </tr>
-        </template>
-        <tr class="total">
-          <td>{{ $t('yhteensa') }}</td>
-          <td>{{ total.opintojaksot }}</td>
-          <td>{{ total.kaytetytModuulit }}/{{ total.kaikkiModuulit }}</td>
-          <td>
-          </td>
-          <td>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
@@ -176,7 +247,6 @@ import { koodiAlku, koodiNumero, koodiSorters } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@shared/api/ylops';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { $kaanna } from '@shared/utils/globals';
 
@@ -188,7 +258,8 @@ const props = defineProps<{
 // Use composables
 const route = useRoute();
 const router = useRouter();
-const { store, isPohja } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 
 // Component state
 const cache = ref<PerusteCache | null>(null);
@@ -212,7 +283,7 @@ const peruste = computed(() => {
 });
 
 const oppiaineJarjestykset = computed(() => {
-  return store.value.oppiaineJarjestykset;
+  return store.value.oppiaineJarjestykset.value;
 });
 
 const total = computed(() => {
@@ -374,10 +445,10 @@ const moduuliPresentation = (moduuli: any, opintojaksojenModuulit: any) => {
 };
 
 const paikallinenOppiaineRakenne = computed(() => {
-  if (!peruste.value || !store.value.paikallisetOppiaineet) {
+  if (!peruste.value || !store.value.paikallisetOppiaineet.value) {
     return [];
   }
-  return _(store.value.paikallisetOppiaineet)
+  return _(store.value.paikallisetOppiaineet.value)
     .map(poa => mapPaikallinenOppiaine(poa))
     .value();
 });
@@ -392,8 +463,8 @@ const paikallinenOppiaineIlmanOppimaariaRakenne = computed(() => {
 const mapPaikallinenOppiaine = (poa) => {
   const oppimaaranOmatModuulit = poa.perusteenOppiaineUri ? oppiaineidenModuulitMap.value[poa.perusteenOppiaineUri].moduulit : [];
 
-  const opintojaksot = _(store.value.opintojaksot)
-    .concat(store.value.tuodutOpintojaksot)
+  const opintojaksot = _(store.value.opintojaksot.value)
+    .concat(store.value.tuodutOpintojaksot.value)
     .filter(oj => _.includes(
       _((oj as any).oppiaineet)
         .map('koodi')
@@ -492,8 +563,8 @@ const perusteenOppiaineRakenne = computed(() => {
 const mapPaikallinenOppimaara = (pom) => {
   const oppimaaranOmatModuulit = pom.perusteenOppiaineUri ? oppiaineidenModuulitMap.value[pom.perusteenOppiaineUri].moduulit : [];
 
-  const opintojaksot = _(store.value.opintojaksot)
-    .concat(store.value.tuodutOpintojaksot)
+  const opintojaksot = _(store.value.opintojaksot.value)
+    .concat(store.value.tuodutOpintojaksot.value)
     .filter(oj => _.includes(
       _((oj as any).oppiaineet)
         .map('koodi')
@@ -548,8 +619,8 @@ const mapPaikallinenOppimaara = (pom) => {
 };
 
 const mapOppiaineet = (oa) => {
-  const opintojaksot = _(store.value.opintojaksot)
-    .concat(store.value.tuodutOpintojaksot)
+  const opintojaksot = _(store.value.opintojaksot.value)
+    .concat(store.value.tuodutOpintojaksot.value)
     .filter(oj => _.includes(
       _((oj as any).oppiaineet)
         .map('koodi')

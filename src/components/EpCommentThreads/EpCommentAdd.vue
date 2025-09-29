@@ -1,15 +1,21 @@
 <template>
-  <div v-if="style" :style="style" ref="box" id="comment-add-box">
+  <div
+    v-if="style"
+    id="comment-add-box"
+    ref="box"
+    :style="style"
+  >
     <div class="commentbox">
       <b-button
         v-if="onAdd"
         variant="primary"
-        @click="onAdd">
+        @click="onAdd"
+      >
         {{ $t('lisaa-kommentti') }}
       </b-button>
     </div>
   </div>
-  <span v-else></span>
+  <span v-else />
 </template>
 
 <script setup lang="ts">

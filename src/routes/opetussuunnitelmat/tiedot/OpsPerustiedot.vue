@@ -1,23 +1,26 @@
 <template>
   <div class="content">
     <router-link :to="{ name: 'opsTiedot' }">
-      <h2>{{$t('opetussuunnitelman-tiedot')}}</h2>
+      <h2>{{ $t('opetussuunnitelman-tiedot') }}</h2>
     </router-link>
 
-    <ep-spinner v-if="!ops || !virkailijat"></ep-spinner>
+    <ep-spinner v-if="!ops || !virkailijat" />
     <div v-else>
-
       <div class="row">
         <div class="col-5">
           <EpPerustietoData icon="account_balance">
-            <template #header>{{ $t('peruste')}}</template>
-            {{ops.perusteenDiaarinumero}}
+            <template #header>
+              {{ $t('peruste') }}
+            </template>
+            {{ ops.perusteenDiaarinumero }}
           </EpPerustietoData>
         </div>
         <div class="col-7">
           <EpPerustietoData icon="language">
-            <template #header>{{ $t('julkaisukielet')}}</template>
-            {{julkaisukieliet}}
+            <template #header>
+              {{ $t('julkaisukielet') }}
+            </template>
+            {{ julkaisukieliet }}
           </EpPerustietoData>
         </div>
       </div>
@@ -25,14 +28,18 @@
       <div class="row">
         <div class="col-5">
           <EpPerustietoData icon="calendar_month">
-            <template #header>{{ $t('luotu')}}</template>
-            {{ $sdt(ops.luotu)}}
+            <template #header>
+              {{ $t('luotu') }}
+            </template>
+            {{ $sdt(ops.luotu) }}
           </EpPerustietoData>
         </div>
         <div class="col-7">
           <EpPerustietoData icon="calendar_month">
-            <template #header>{{ $t('julkaistu')}}</template>
-            {{ $sdt(ops.viimeisinJulkaisuAika)}}
+            <template #header>
+              {{ $t('julkaistu') }}
+            </template>
+            {{ $sdt(ops.viimeisinJulkaisuAika) }}
           </EpPerustietoData>
         </div>
       </div>
@@ -40,24 +47,44 @@
       <div class="row">
         <div class="col-5">
           <EpPerustietoData icon="groups">
-            <template #header>{{ $t('tyoryhma')}}</template>
-            <p v-for="virkailija in virkailijatFormatted" :key="virkailija.oid" class="mb-1">
+            <template #header>
+              {{ $t('tyoryhma') }}
+            </template>
+            <p
+              v-for="virkailija in virkailijatFormatted"
+              :key="virkailija.oid"
+              class="mb-1"
+            >
               {{ virkailija.esitysnimi }}
             </p>
-            <ep-button v-if="!naytaLisaaTyoryhmaa && virkailijat.length > tyoryhmaAlkuMaara" @click="naytaLisaaTyoryhmaa = true" variant="link" buttonClass="pl-0 mt-2">
-              {{$t('nayta-lisaa')}}
+            <ep-button
+              v-if="!naytaLisaaTyoryhmaa && virkailijat.length > tyoryhmaAlkuMaara"
+              variant="link"
+              button-class="pl-0 mt-2"
+              @click="naytaLisaaTyoryhmaa = true"
+            >
+              {{ $t('nayta-lisaa') }}
             </ep-button>
-            <ep-button v-if="naytaLisaaTyoryhmaa" @click="naytaLisaaTyoryhmaa = false" variant="link" buttonClass="pl-0 mt-2">
-              {{$t('piilota')}}
+            <ep-button
+              v-if="naytaLisaaTyoryhmaa"
+              variant="link"
+              button-class="pl-0 mt-2"
+              @click="naytaLisaaTyoryhmaa = false"
+            >
+              {{ $t('piilota') }}
             </ep-button>
           </EpPerustietoData>
         </div>
         <div class="col-7">
           <EpPerustietoData icon="visibility">
-            <template #header>{{ $t('esikatsele-opetussuunnitelmaa')}}</template>
-            <template v-if="!ops.esikatseltavissa">{{ $t('esikatselua-ei-ole-sallittu') }}</template>
+            <template #header>
+              {{ $t('esikatsele-opetussuunnitelmaa') }}
+            </template>
+            <template v-if="!ops.esikatseltavissa">
+              {{ $t('esikatselua-ei-ole-sallittu') }}
+            </template>
             <template v-else>
-              <ep-external-link :url="esikatseluUrl"></ep-external-link>
+              <ep-external-link :url="esikatseluUrl" />
             </template>
           </EpPerustietoData>
         </div>
@@ -66,12 +93,13 @@
       <div class="row">
         <div class="col-12">
           <EpPerustietoData icon="folder">
-            <template #header>{{ $t('pohjat')}}</template>
-            <OpsPohjat :ops="ops"></OpsPohjat>
+            <template #header>
+              {{ $t('pohjat') }}
+            </template>
+            <OpsPohjat :ops="ops" />
           </EpPerustietoData>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -85,7 +113,6 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import EpPerustietoData from '@shared/components/EpPerustietoData/EpPerustietoData.vue';
 import OpsPohjat from '@/routes/opetussuunnitelmat/tiedot/OpsPohjat.vue';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { Kielet } from '@shared/stores/kieli';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
@@ -97,17 +124,19 @@ const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
 }>();
 
-const { store, ops } = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
 
 const naytaLisaaTyoryhmaa = ref<boolean>(false);
 const tyoryhmaAlkuMaara = 5;
 
 const julkaisukieliet = computed(() => {
-  return _.map(ops.value.julkaisukielet, (kieli) => Kielet.kaannaOlioTaiTeksti(kieli)).join(', ');
+  return _.map(ops.value?.julkaisukielet, (kieli) => Kielet.kaannaOlioTaiTeksti(kieli)).join(', ');
 });
 
 const virkailijat = computed(() => {
-  return store.value.virkailijat;
+  // return store.virkailijat;
+  return {};
 });
 
 const virkailijatFormatted = computed(() => {

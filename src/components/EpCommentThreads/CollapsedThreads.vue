@@ -3,9 +3,13 @@
     <div v-if="first">
       <div class="kommentti p-3">
         <div class="topbar d-flex align-items-center justify-content-between">
-          <div class="pvm">{{ $ago(first.luotu || new Date()) }}</div>
+          <div class="pvm">
+            {{ $ago(first.luotu || new Date()) }}
+          </div>
         </div>
-        <div class="nimi">{{ first.nimi }}</div>
+        <div class="nimi">
+          {{ first.nimi }}
+        </div>
         <div class="viesti mt-1">
           {{ first.sisalto }}
         </div>
@@ -19,9 +23,13 @@
     <div v-if="last">
       <div class="kommentti p-3">
         <div class="topbar d-flex align-items-center justify-content-between">
-          <div class="pvm">{{ $ago(last.luotu || new Date()) }}</div>
+          <div class="pvm">
+            {{ $ago(last.luotu || new Date()) }}
+          </div>
         </div>
-        <div class="nimi">{{ last.luoja }}</div>
+        <div class="nimi">
+          {{ last.luoja }}
+        </div>
         <div class="viesti mt-1">
           {{ last.sisalto }}
         </div>
@@ -29,7 +37,10 @@
     </div>
     <div>
       <div class="kommentti purettu pl-1 text-muted">
-        <b-button variant="link" @click="activateThread()">
+        <b-button
+          variant="link"
+          @click="activateThread()"
+        >
           <EpMaterialIcon>search</EpMaterialIcon>
         </b-button>
       </div>

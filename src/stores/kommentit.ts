@@ -123,7 +123,9 @@ class KommenttiStore {
         try {
           sheet.deleteRule(ActiveCommentStyleIdx);
         }
-        catch (err) { }
+        catch (err) {
+          // Ignore errors when deleting CSS rules
+        }
       }
     }
   }
@@ -289,7 +291,6 @@ class KommenttiStore {
   }
 
   attach(el: Element) {
-    const store = this;
     if (this.obs) {
       this.detach();
     }

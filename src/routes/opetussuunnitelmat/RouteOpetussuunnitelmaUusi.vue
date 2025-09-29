@@ -1,141 +1,232 @@
 <template>
-<ep-main-view>
-  <template #header>
-    <h1>{{ $t('uusi-opetussuunnitelma') }}</h1>
-    <span v-html="$t('ylops-uusi-opetussuunnitelma-ohje')"/>
-  </template>
-  <div class="form-group">
-    <ep-form-content>
-      <template #header>
-        <h3>{{$t('mita-haluat-luoda')}} *</h3>
-      </template>
-      <b-form-group class="mt-0">
-        <b-form-radio
-          v-model="opetussuunnitelmaOrganisaatioTaso"
-          name="uusi-ops-organisaatiotasovalinta"
-          value="kunta">{{ $t('kunnan-tai-koulutuksen-jarjestajan-opetussuunnitelman') }}</b-form-radio>
-        <b-form-radio
-          v-model="opetussuunnitelmaOrganisaatioTaso"
-          name="uusi-ops-organisaatiotasovalinta"
-          value="oppilaitos">{{ $t('oppilaitoksen-opetussuunnitelman') }}</b-form-radio>
-      </b-form-group>
-    </ep-form-content>
-    <ep-form-content name="opetussuunnitelman-pohjatyyppi-pakollinen">
-      <b-form-group class="mt-0">
-        <b-form-radio
-          v-model="oletuspohjasta"
-          @change="updateOletuspohja"
-          name="uusi-ops-pohjavalinta"
-          value="pohjasta">{{ $t('vain-perustetta') }}</b-form-radio>
-          <b-form-radio
-          v-model="oletuspohjasta"
-          @change="updateOletuspohja"
-          name="uusi-ops-pohjavalinta"
-          value="opsista">{{ $t('toista-opetussuunnitelmaa') }}</b-form-radio>
-        </b-form-group>
-    </ep-form-content>
-    <div v-if="oletuspohjasta">
-      <div class="form-group">
-        <div v-if="pohjat">
-          <ep-form-content v-if="pohjat.length > 0" name="uusi-ops-pohja-pakollinen">
-            <EpMultiSelect v-model="uusi.pohja"
-                           track-by="id"
-                           :placeholder="$t('valitse-opetussuunnitelma')"
-                           :options="pohjatSortedByName"
-                           :search-identity="nimiSearchIdentity"
-                           :maxHeight="500"
-                           :is-editing="true">
-              <template #singleLabel="{ option }">
-                <span>{{ option.esitysMuoto }}</span>
-              </template>
-              <template #option="{ option }">
-                <span>{{ option.esitysMuoto }}</span>
-              </template>
-              <template #helptext>
-                <div class="form-text info-box mt-2" v-if="uusi.pohja && this.oletuspohjasta !== 'pohjasta'">
-                {{ $t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio') }}
-                <template v-if="luontityyppi.toLowerCase() === 'kopio' && opetussuunnitelmaOrganisaatioTaso === 'oppilaitos'">
-                  <EpSpinner class="d-inline-block" v-if="!valitunPohjanPohja" />
-                  <template v-else-if="valitunPohjanPohja._pohja !== null">
-                    <div class="mt-2">{{$t('valittu-opetussuunnitelma-kopio-huomio')}}</div>
-                    <div class="font-weight-bold mt-2">{{$kaanna(valitunPohjanPohja.nimi)}}</div>
-                  </template>
-                </template>
-                </div>
-              </template>
-            </EpMultiSelect>
-          </ep-form-content>
-          <div v-else>
-            <div class="alert alert-info">{{ $t('ei-opetussuunnitelmia') }}</div>
-          </div>
-        </div>
-        <ep-spinner v-else></ep-spinner>
-      </div>
-    </div>
-  </div>
-  <div v-if="oletuspohjasta">
-    <hr/>
-    <ep-form-content name="ops-nimi-pakollinen" v-if="uusi.pohja">
-      <ep-field help="ops-nimi-ohje" v-model="uusi.nimi" :validation="$v.uusi.nimi" :is-editing="true"></ep-field>
-    </ep-form-content>
-    <div v-if="uusi.pohja && uusi.pohja.toteutus === 'perusopetus'">
-      <ep-form-content name="vuosiluokkakokonaisuudet-pakollinen">
-        <EpSpinner v-if="!vuosiluokkakokonaisuudet" />
-        <b-form-checkbox-group v-else v-model="uusi.vuosiluokkakokonaisuudet" class="mt-2" stacked :validation="$v.uusi.vuosiluokkakokonaisuudet">
-          <b-form-checkbox v-for="(vuosiluokkakokonaisuus, index) in vuosiluokkakokonaisuudet" :key="'vlk'+index" :value="vuosiluokkakokonaisuus">
-            {{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
-          </b-form-checkbox>
-        </b-form-checkbox-group>
-      </ep-form-content>
-    </div>
-    <div v-if="uusi.pohja">
-      <hr/>
-      <div class="d-flex">
-        <h2 class="mb-3">
-          {{ $t('organisaatiot') }}
-        </h2>
-        <EpInfoPopover class="ml-2"><div v-html="$t('organisaatio-valinta-organisaatio-huomio')"/></EpInfoPopover>
-      </div>
-      <ep-organizations :validation="$v.uusi.organisaatiot"
-                        :koulutustyyppi="koulutustyyppi"
-                        v-model="uusi.organisaatiot">
-      </ep-organizations>
-
-      <div v-if="uusi.pohja.toteutus === 'lops2019'">
-        <hr/>
-        <h2 class="mb-3">{{ $t('opintojaksot') }}</h2>
-        <ep-form-content :showHeader="false">
-          <ep-form-content v-if="luontityyppi === LUONTITYYPPI_VIITTEILLA" name="ops-opintojakso-tuonti-kysymys" class="no-padding">
-            <b-form-group>
-              <b-form-radio v-model="uusi.tuoPohjanOpintojaksot" name="opintojaksoTuonti" :value="true">{{$t('kylla')}}</b-form-radio>
-              <b-form-radio v-model="uusi.tuoPohjanOpintojaksot" name="opintojaksoTuonti" :value="false">{{$t('ei')}}</b-form-radio>
-            </b-form-group>
-          </ep-form-content>
-
-          <ep-form-content name="opintojaksojen-tarkistus">
-            <ep-toggle v-model="uusi.ainepainoitteinen" :is-editing="true" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
-          </ep-form-content>
-
-        </ep-form-content>
-
-        <template v-if="luontityyppi === LUONTITYYPPI_VIITTEILLA">
-          <h2 class="mb-3">{{ $t('oppimaarat') }}</h2>
-          <ep-form-content name="ops-oppimaara-tuonti-kysymys" class="no-padding">
-            <b-form-group>
-              <b-form-radio v-model="uusi.tuoPohjanOppimaarat" name="oppimaaraTuonti" :value="true">{{$t('kylla')}}</b-form-radio>
-              <b-form-radio v-model="uusi.tuoPohjanOppimaarat" name="oppimaaraTuonti" :value="false">{{$t('ei')}}</b-form-radio>
-            </b-form-group>
-          </ep-form-content>
+  <ep-main-view>
+    <template #header>
+      <h1>{{ $t('uusi-opetussuunnitelma') }}</h1>
+      <span v-html="$t('ylops-uusi-opetussuunnitelma-ohje')" />
+    </template>
+    <div class="form-group">
+      <ep-form-content>
+        <template #header>
+          <h3>{{ $t('mita-haluat-luoda') }} *</h3>
         </template>
-      </div>
-
-      <div class="text-right">
-        <b-button class="mr-4" variant="link" :to="{ name: 'opetussuunnitelmaListaus'}">{{$t('peruuta')}}</b-button>
-        <ep-button :disabled="$v.uusi.$invalid || addingOpetussuunnitelma" @click="luoUusiOpetussuunnitelma" :show-spinner="addingOpetussuunnitelma">{{ $t('luo-opetussuunnitelma') }}</ep-button>
+        <b-form-group class="mt-0">
+          <EpRadio
+            v-model="opetussuunnitelmaOrganisaatioTaso"
+            name="uusi-ops-organisaatiotasovalinta"
+            value="kunta"
+          >
+            {{ $t('kunnan-tai-koulutuksen-jarjestajan-opetussuunnitelman') }}
+          </EpRadio>
+          <EpRadio
+            v-model="opetussuunnitelmaOrganisaatioTaso"
+            name="uusi-ops-organisaatiotasovalinta"
+            value="oppilaitos"
+          >
+            {{ $t('oppilaitoksen-opetussuunnitelman') }}
+          </EpRadio>
+        </b-form-group>
+      </ep-form-content>
+      <ep-form-content name="opetussuunnitelman-pohjatyyppi-pakollinen">
+        <b-form-group class="mt-0">
+          <EpRadio
+            v-model="oletuspohjasta"
+            name="uusi-ops-pohjavalinta"
+            value="pohjasta"
+            @change="updateOletuspohja"
+          >
+            {{ $t('vain-perustetta') }}
+          </EpRadio>
+          <EpRadio
+            v-model="oletuspohjasta"
+            name="uusi-ops-pohjavalinta"
+            value="opsista"
+            @change="updateOletuspohja"
+          >
+            {{ $t('toista-opetussuunnitelmaa') }}
+          </EpRadio>
+        </b-form-group>
+      </ep-form-content>
+      <div v-if="oletuspohjasta">
+        <div class="form-group">
+          <div v-if="pohjat">
+            <ep-form-content
+              v-if="pohjat.length > 0"
+              name="uusi-ops-pohja-pakollinen"
+            >
+              <EpMultiSelect
+                v-model="uusi.pohja"
+                track-by="id"
+                :placeholder="$t('valitse-opetussuunnitelma')"
+                :options="pohjatSortedByName"
+                :search-identity="nimiSearchIdentity"
+                :max-height="500"
+                :is-editing="true"
+              >
+                <template #singleLabel="{ option }">
+                  <span>{{ option.esitysMuoto }}</span>
+                </template>
+                <template #option="{ option }">
+                  <span>{{ option.esitysMuoto }}</span>
+                </template>
+                <template #helptext>
+                  <div
+                    v-if="uusi.pohja && oletuspohjasta !== 'pohjasta'"
+                    class="form-text info-box mt-2"
+                  >
+                    {{ $t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio') }}
+                    <template v-if="luontityyppi.toLowerCase() === 'kopio' && opetussuunnitelmaOrganisaatioTaso === 'oppilaitos'">
+                      <EpSpinner
+                        v-if="!valitunPohjanPohja"
+                        class="d-inline-block"
+                      />
+                      <template v-else-if="valitunPohjanPohja._pohja !== null">
+                        <div class="mt-2">
+                          {{ $t('valittu-opetussuunnitelma-kopio-huomio') }}
+                        </div>
+                        <div class="font-weight-bold mt-2">
+                          {{ $kaanna(valitunPohjanPohja.nimi) }}
+                        </div>
+                      </template>
+                    </template>
+                  </div>
+                </template>
+              </EpMultiSelect>
+            </ep-form-content>
+            <div v-else>
+              <div class="alert alert-info">
+                {{ $t('ei-opetussuunnitelmia') }}
+              </div>
+            </div>
+          </div>
+          <ep-spinner v-else />
+        </div>
       </div>
     </div>
-  </div>
-</ep-main-view>
+    <div v-if="oletuspohjasta">
+      <hr>
+      <ep-form-content
+        v-if="uusi.pohja"
+        name="ops-nimi-pakollinen"
+      >
+        <ep-field
+          v-model="uusi.nimi"
+          help="ops-nimi-ohje"
+          :validation="$v.uusi.nimi"
+          :is-editing="true"
+        />
+      </ep-form-content>
+      <div v-if="uusi.pohja && uusi.pohja.toteutus === 'perusopetus'">
+        <ep-form-content name="vuosiluokkakokonaisuudet-pakollinen">
+          <EpSpinner v-if="!vuosiluokkakokonaisuudet" />
+          <EpToggleGroup
+            v-else
+            v-model="uusi.vuosiluokkakokonaisuudet"
+            :items="vuosiluokkakokonaisuudet"
+            :validation="$v.uusi.vuosiluokkakokonaisuudet"
+            :stacked="true"
+            :is-editing="true"
+          >
+            <template #default="{ item }">
+              {{ $kaanna(item.vuosiluokkakokonaisuus.nimi) }}
+            </template>
+          </EpToggleGroup>
+        </ep-form-content>
+      </div>
+      <div v-if="uusi.pohja">
+        <hr>
+        <div class="d-flex">
+          <h2 class="mb-3">
+            {{ $t('organisaatiot') }}
+          </h2>
+          <EpInfoPopover class="ml-2">
+            <div v-html="$t('organisaatio-valinta-organisaatio-huomio')" />
+          </EpInfoPopover>
+        </div>
+        <ep-organizations
+          v-model="uusi.organisaatiot"
+          :validation="$v.uusi.organisaatiot"
+          :koulutustyyppi="koulutustyyppi"
+        />
+
+        <div v-if="uusi.pohja.toteutus === 'lops2019'">
+          <hr>
+          <h2 class="mb-3">
+            {{ $t('opintojaksot') }}
+          </h2>
+          <ep-form-content :show-header="false">
+            <ep-form-content
+              v-if="luontityyppi === LUONTITYYPPI_VIITTEILLA"
+              name="ops-opintojakso-tuonti-kysymys"
+              class="no-padding"
+            >
+              <EpRadio
+                v-model="uusi.tuoPohjanOpintojaksot"
+                name="opintojaksoTuonti"
+                :value="true"
+                :label="$t('kylla')"
+              />
+              <EpRadio
+                v-model="uusi.tuoPohjanOpintojaksot"
+                name="opintojaksoTuonti"
+                :value="false"
+                :label="$t('ei')"
+              />
+            </ep-form-content>
+
+            <ep-form-content name="opintojaksojen-tarkistus">
+              <ep-toggle
+                v-model="uusi.ainepainoitteinen"
+                :is-editing="true"
+                :is-switch="false"
+              >
+                {{ $t('ainepainoitteinen') }}
+              </ep-toggle>
+            </ep-form-content>
+          </ep-form-content>
+
+          <template v-if="luontityyppi === LUONTITYYPPI_VIITTEILLA">
+            <h2 class="mb-3">
+              {{ $t('oppimaarat') }}
+            </h2>
+            <ep-form-content
+              name="ops-oppimaara-tuonti-kysymys"
+              class="no-padding"
+            >
+              <EpRadio
+                v-model="uusi.tuoPohjanOppimaarat"
+                name="oppimaaraTuonti"
+                :value="true"
+                :label="$t('kylla')"
+              />
+              <EpRadio
+                v-model="uusi.tuoPohjanOppimaarat"
+                name="oppimaaraTuonti"
+                :value="false"
+                :label="$t('ei')"
+              />
+            </ep-form-content>
+          </template>
+        </div>
+
+        <div class="text-right">
+          <b-button
+            class="mr-4"
+            variant="link"
+            :to="{ name: 'opetussuunnitelmaListaus'}"
+          >
+            {{ $t('peruuta') }}
+          </b-button>
+          <ep-button
+            :disabled="$v.uusi.$invalid || addingOpetussuunnitelma"
+            :show-spinner="addingOpetussuunnitelma"
+            @click="luoUusiOpetussuunnitelma"
+          >
+            {{ $t('luo-opetussuunnitelma') }}
+          </ep-button>
+        </div>
+      </div>
+    </div>
+  </ep-main-view>
 </template>
 
 <script setup lang="ts">
@@ -143,15 +234,10 @@ import _ from 'lodash';
 import { ref, computed, watch, onMounted } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { useRoute, useRouter } from 'vue-router';
-import { useEpRoute } from '@/mixins/EpRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpInput from '@shared/components/forms/EpInput.vue';
-import EpMainView from '@/components/EpMainView/EpMainView.vue';
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpOrganizations from '@/components/EpOrganizations/EpOrganizations.vue';
-import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
@@ -170,8 +256,10 @@ import {
 import { opsLuontiValidator, LuotavaOpsOrganisaatioTaso } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
-import { success } from '@/utils/notifications';
 import { $t, $kaanna, $sd, $success } from '@shared/utils/globals';
+import EpRadio from '@shared/components/forms/EpRadio.vue';
+import EpToggleGroup from '@shared/components/forms/EpToggleGroup.vue';
+import EpMainView from '@/components/EpMainView/EpMainView.vue';
 
 type PohjaTyyppi = 'pohjasta' | 'opsista';
 
@@ -302,39 +390,39 @@ const nimiSearchIdentity = (obj: any) => {
   return _.toLower($kaanna(obj.nimi));
 };
 
-  const luoUusiOpetussuunnitelma = async () =>   {
-    addingOpetussuunnitelma.value = true;
-    const ops: OpetussuunnitelmaLuontiDto = {
-      nimi: uusi.value.nimi,
-      julkaisukielet: [],
-      tyyppi: 'ops' as any,
-      kunnat: uusi.value.organisaatiot.kunnat,
-      organisaatiot: [
-        ...uusi.value.organisaatiot.jarjestajat,
-        ...uusi.value.organisaatiot.oppilaitokset,
-      ],
-      ainepainoitteinen: uusi.value.ainepainoitteinen,
-      vuosiluokkakokonaisuudet: uusi.value.vuosiluokkakokonaisuudet,
-      tuoPohjanOpintojaksot: uusi.value.tuoPohjanOpintojaksot ? uusi.value.tuoPohjanOpintojaksot : false,
-      tuoPohjanOppimaarat: uusi.value.tuoPohjanOppimaarat ? uusi.value.tuoPohjanOppimaarat : false,
-      luontityyppi: luontityyppi.value,
-    };
+const luoUusiOpetussuunnitelma = async () =>   {
+  addingOpetussuunnitelma.value = true;
+  const ops: OpetussuunnitelmaLuontiDto = {
+    nimi: uusi.value.nimi,
+    julkaisukielet: [],
+    tyyppi: 'ops' as any,
+    kunnat: uusi.value.organisaatiot.kunnat,
+    organisaatiot: [
+      ...uusi.value.organisaatiot.jarjestajat,
+      ...uusi.value.organisaatiot.oppilaitokset,
+    ],
+    ainepainoitteinen: uusi.value.ainepainoitteinen,
+    vuosiluokkakokonaisuudet: uusi.value.vuosiluokkakokonaisuudet,
+    tuoPohjanOpintojaksot: uusi.value.tuoPohjanOpintojaksot ? uusi.value.tuoPohjanOpintojaksot : false,
+    tuoPohjanOppimaarat: uusi.value.tuoPohjanOppimaarat ? uusi.value.tuoPohjanOppimaarat : false,
+    luontityyppi: luontityyppi.value,
+  };
 
-    (ops as any)._pohja = '' + uusi.value.pohja!.id;
-    try {
-      const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
-      $success('lisays-opetussuunnitelma-onnistui');
-      router.replace({
-        name: 'yleisnakyma',
-        params: {
-          id: '' + luotu.id,
-        },
-      });
-    }
-    catch (err) {
-      addingOpetussuunnitelma.value = false;
-    }
+  (ops as any)._pohja = '' + uusi.value.pohja!.id;
+  try {
+    const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
+    $success('lisays-opetussuunnitelma-onnistui');
+    router.replace({
+      name: 'yleisnakyma',
+      params: {
+        id: '' + luotu.id,
+      },
+    });
   }
+  catch (err) {
+    addingOpetussuunnitelma.value = false;
+  }
+};
 
 const pohjanKoulutuksenJarjestajanTyyppi = computed(() => {
   if (_.first(_.get(uusi.value, 'pohja.koulutuksenjarjestaja.tyypit')) === 'Oppilaitos') {
@@ -368,7 +456,7 @@ const validator = computed(() => {
 // Vuelidate setup
 const $v = useVuelidate(
   { uusi: validator },
-  { uusi }
+  { uusi },
 );
 
 // Watchers

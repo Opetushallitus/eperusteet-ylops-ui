@@ -1,14 +1,17 @@
 <template>
-<div class="sticky-container root" sticky-container="sticky-container">
-  <EpTestiymparisto/>
+  <div
+    class="sticky-container root"
+    sticky-container="sticky-container"
+  >
+    <EpTestiymparisto />
 
-  <router-view class="view-container"/>
-  <ep-footer>
-    <template #palaute>
-      <EpPalauteLinkki yllapito-avain="ops-tyokalu-palaute-url" />
-    </template>
-  </ep-footer>
-</div>
+    <router-view class="view-container" />
+    <ep-footer>
+      <template #palaute>
+        <EpPalauteLinkki yllapito-avain="ops-tyokalu-palaute-url" />
+      </template>
+    </ep-footer>
+  </div>
 </template>
 
 <script setup lang="ts">

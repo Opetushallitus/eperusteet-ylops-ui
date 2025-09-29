@@ -1,10 +1,19 @@
 <template>
   <div class="kommentti p-3">
     <div class="topbar d-flex align-items-center justify-content-between">
-      <div class="pvm">{{ $ago(innerValue.luotu || new Date()) }}</div>
-      <div class="actions" v-if="innerValue.tunniste">
-        <b-dropdown variant="link" right no-caret>
-          <template v-slot:button-content>
+      <div class="pvm">
+        {{ $ago(innerValue.luotu || new Date()) }}
+      </div>
+      <div
+        v-if="innerValue.tunniste"
+        class="actions"
+      >
+        <b-dropdown
+          variant="link"
+          right
+          no-caret
+        >
+          <template #button-content>
             <EpMaterialIcon>more_horiz</EpMaterialIcon>
           </template>
           <b-dropdown-item @click="muokkaa">
@@ -16,26 +25,38 @@
         </b-dropdown>
       </div>
     </div>
-    <div class="nimi">{{ nimi }}</div>
+    <div class="nimi">
+      {{ nimi }}
+    </div>
     <div class="viesti mt-1">
       <div v-if="editable">
         <textarea
+          v-model="innerValue.sisalto"
           :placeholder="$t('kirjoita-viesti')"
           class="editori"
-          v-model="innerValue.sisalto"></textarea>
+        />
       </div>
       <div v-else>
         {{ innerValue.sisalto }}
       </div>
     </div>
-    <div class="toiminnot" v-if="editable">
+    <div
+      v-if="editable"
+      class="toiminnot"
+    >
       <div class="d-flex flex-row-reverse">
         <b-button
+          variant="primary"
           @click="tallenna"
-          variant="primary">{{ $t('tallenna') }}</b-button>
+        >
+          {{ $t('tallenna') }}
+        </b-button>
         <b-button
+          variant="default"
           @click="peruuta"
-          variant="default">{{ $t('peruuta') }}</b-button>
+        >
+          {{ $t('peruuta') }}
+        </b-button>
       </div>
     </div>
   </div>

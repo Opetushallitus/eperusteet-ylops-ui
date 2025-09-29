@@ -1,16 +1,25 @@
 <template>
-<div class="moduulibox" role="button" :class="{'moduulibox-valittu': valittu, 'selectable': isEditing}" @click="toggle()" @keyup.enter="toggle()" tabindex="0" :title="moduuliNimi">
-  <div class="name">{{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})</div>
-  <div class="bottom">
-    <div class="d-flex bd-highlight justify-content-end">
-      <div class="px-2 info">
-        <span class="op">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
-        <ep-color-indicator :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'">
-        </ep-color-indicator>
+  <div
+    class="moduulibox"
+    role="button"
+    :class="{'moduulibox-valittu': valittu, 'selectable': isEditing}"
+    tabindex="0"
+    :title="moduuliNimi"
+    @click="toggle()"
+    @keyup.enter="toggle()"
+  >
+    <div class="name">
+      {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
+    </div>
+    <div class="bottom">
+      <div class="d-flex bd-highlight justify-content-end">
+        <div class="px-2 info">
+          <span class="op">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
+          <ep-color-indicator :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'" />
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
@@ -27,8 +36,8 @@ const props = withDefaults(
     modelValue?: Lops2019OpintojaksonModuuliDto[];
     isEditing?: boolean;
   }>(), {
-  isEditing: false,
-});
+    isEditing: false,
+  });
 
 const emit = defineEmits(['update:modelValue']);
 

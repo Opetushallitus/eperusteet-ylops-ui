@@ -1,51 +1,51 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import VueI18n from 'vue-i18n';
+import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { vi } from 'vitest';
 import RouteDokumentti from '../RouteDokumentti.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { Kielet } from '@shared/stores/kieli';
 import { Dokumentit } from '@shared/api/ylops';
-import '@shared/config/bootstrap';
-import { Kaannos } from '@shared/plugins/kaannos';
+import { globalStubs } from '@shared/utils/__tests__/stubs';
+import { makeAxiosResponse } from '&/utils/data';
 
 describe('RouteDokumentti', () => {
-  const localVue = createLocalVue();
-  localVue.use(VueI18n);
-  Kielet.install(localVue, {
-    messages: {
-      fi: require('@shared/translations/locale-fi.json'),
-      sv: require('@shared/translations/locale-sv.json'),
-    },
-  });
-  localVue.use(new Kaannos());
+  OpetussuunnitelmaStore.prototype.init = vi.fn();
 
-  const i18n = Kielet.i18n;
-  OpetussuunnitelmaStore.prototype.init = jest.fn();
-  Dokumentit.getLatestDokumenttiId = jest.fn();
-  const opetussuunnitelmaStore = new OpetussuunnitelmaStore(42);
+  // Mock all Dokumentit API calls to prevent network errors and Pinia issues
+  vi.spyOn(Dokumentit, 'getDokumenttiKuva').mockResolvedValue(makeAxiosResponse({}));
+  vi.spyOn(Dokumentit, 'getJulkaistuDokumentti').mockResolvedValue(makeAxiosResponse({}));
+  vi.spyOn(Dokumentit, 'getLatestDokumentti').mockResolvedValue(makeAxiosResponse({}));
+  vi.spyOn(Dokumentit, 'create').mockResolvedValue(makeAxiosResponse({}));
+
+  const opetussuunnitelmaStore = new OpetussuunnitelmaStore();
 
   test('mounting', async () => {
-    const wrapper = mount(RouteDokumentti as any, {
-      i18n,
-      localVue,
-      propsData: {
-        opetussuunnitelmaStore,
-      },
-      mocks: {
-        $route: {
-          params: {
-            id: 1,
-          },
-        },
-      },
-    } as any);
-
-    opetussuunnitelmaStore.opetussuunnitelma = {
+    // Set the internal state directly for testing
+    (opetussuunnitelmaStore as any).state.opsId = 42;
+    (opetussuunnitelmaStore as any).state.opetussuunnitelma = {
       id: 42,
       nimi: {
         fi: 'nimi',
       } as any,
     };
 
-    await localVue.nextTick();
+    const wrapper = mount(RouteDokumentti as any, {
+      global: {
+        ...globalStubs,
+        mocks: {
+          $route: {
+            params: {
+              id: 1,
+            },
+          },
+        },
+      },
+      props: {
+        opetussuunnitelmaStore,
+      },
+    } as any);
+
+    await nextTick();
+    expect(wrapper.exists()).toBe(true);
   });
 });

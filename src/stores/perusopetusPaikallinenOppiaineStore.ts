@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import { computed } from 'vue';
+import { Router } from 'vue-router';
+import type { App } from 'vue';
 
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import { Oppiaineet,
@@ -9,8 +11,20 @@ import { Oppiaineet,
 import { Revision } from '@shared/tyypit';
 import { nimiValidator } from '@/validators/required';
 import { required, requiredIf } from '@vuelidate/validators';
+import { OpetussuunnitelmaStore } from './opetussuunnitelma';
+
+interface PerusopetusPaikallinenOppiaineStoreConfig {
+  router: Router;
+  opetussuunnitelmaStore: OpetussuunnitelmaStore
+}
 
 export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
+  private static config: PerusopetusPaikallinenOppiaineStoreConfig;
+
+  public static install(app: App, config: PerusopetusPaikallinenOppiaineStoreConfig) {
+    PerusopetusPaikallinenOppiaineStore.config = config;
+  }
+
   private isUusi: boolean;
 
   constructor(
@@ -18,7 +32,6 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     private oppiaineId: string,
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
     private versionumero: number,
-    private vue,
     private muokkaaLatauksenJalkeen: boolean,
   ) {
     this.isUusi = oppiaineId === 'uusi';
@@ -50,7 +63,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
 
     const vuosiluokat = _.orderBy(vuosiluokkakokonaisuus?.vuosiluokat, 'vuosiluokka', 'asc');
     const perusteVuosiluokat = perusteVuosiluokkakokonaisuus.vuosiluokat;
-    const oppiaineet = _.map(this.vue.opetussuunnitelmaStore.opetussuunnitelma.oppiaineet, 'oppiaine');
+    const oppiaineet = _.map(PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.opetussuunnitelma.value?.oppiaineet, 'oppiaine');
     const liittyvaOppiaine = _.find(oppiaineet, { id: _.toNumber(oppiaine._liittyvaOppiaine) });
 
     let pohjanOppiaine = {};
@@ -112,13 +125,13 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     if (this.isUusi) {
       const oa = (await Oppiaineet.addValinnainen(this.opsId, {
         oppiaine: data.oppiaine,
-        vuosiluokkakokonaisuusId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!,
+        vuosiluokkakokonaisuusId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!,
         vuosiluokat: data.valitutVuosiluokat,
         tavoitteet: [],
       })).data;
-      this.vue.store.init(); // Päivitetään sivunavigaatio
+      await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.init(); // Päivitetään sivunavigaatio
       return () => {
-        this.vue.$router.push({
+        PerusopetusPaikallinenOppiaineStore.config.router.push({
           name: 'perusopetuspaikallinenoppiaine',
           params: {
             oppiaineId: _.toString(oa.id),
@@ -129,20 +142,20 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     else {
       const oppiaineenTallennus = {
         oppiaine: data.oppiaine,
-        vuosiluokkakokonaisuusId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!,
+        vuosiluokkakokonaisuusId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!,
         vuosiluokat: data.valitutVuosiluokat,
         tavoitteet: [],
       };
       const updated = await Oppiaineet.updateYksinkertainen(this.opsId, _.toNumber(this.oppiaineId), oppiaineenTallennus);
-      this.vue.store.init(); // Päivitetään sivunavigaatio
+      await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.init(); // Päivitetään sivunavigaatio
       return updated;
     }
   }
 
   async remove() {
     await Oppiaineet.deleteOppiaine(this.opsId, _.toNumber(this.oppiaineId));
-    await this.vue.store.init(); // Päivitetään sivunavigaatio
-    this.vue.$router.push({
+    await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.init(); // Päivitetään sivunavigaatio
+    PerusopetusPaikallinenOppiaineStore.config.router.push({
       name: 'perusopetusvalinnaiset',
     });
   }
@@ -177,14 +190,14 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
 
   async copy(data) {
     const kopioituOppiaine = (await Oppiaineet.kopioiMuokattavaksi(this.opsId, _.toNumber(this.oppiaineId), true)).data;
-    await this.vue.store.init();
-    this.vue.$router.push({
+    await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.init();
+    PerusopetusPaikallinenOppiaineStore.config.router.push({
       name: 'perusopetuspaikallinenoppiaine',
       params: {
         oppiaineId: _.toString(kopioituOppiaine.id),
       },
       query: {
-        muokkaa: true,
+        muokkaa: 'true',
       },
     });
   }
@@ -198,8 +211,8 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
         },
       },
       liittyvaOppiaine: {
-        required: requiredIf(function(data) {
-          return data.oppiaine.valinnainenTyyppi === 'syventava';
+        required: requiredIf(function(value, siblings) {
+          return siblings.oppiaine.valinnainenTyyppi === 'syventava';
         }),
       },
     };

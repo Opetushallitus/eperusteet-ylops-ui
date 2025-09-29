@@ -1,164 +1,263 @@
 <template>
-  <div id="scroll-anchor" v-if="editointiStore" >
-    <EpEditointi :store="editointiStore" :preModify="aloitaMuokkaus" :postSave="tallennettu" :allowSave="varmistaValutus">
-      <template v-slot:header="{ data }">
-        <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}, {{ $t('vuosiluokka') }} {{ $t(data.vuosiluokka.vuosiluokka) }}</h2>
+  <div
+    v-if="editointiStore"
+    id="scroll-anchor"
+  >
+    <EpEditointi
+      :store="editointiStore"
+      :pre-modify="aloitaMuokkaus"
+      :post-save="tallennettu"
+      :allow-save="varmistaValutus"
+    >
+      <template #header="{ data }">
+        <h2 class="m-0">
+          {{ $kaanna(data.oppiaine.nimi) }}, {{ $t('vuosiluokka') }} {{ $t(data.vuosiluokka.vuosiluokka) }}
+        </h2>
       </template>
-      <template v-slot:default="{ data, isEditing }">
-
+      <template #default="{ data, isEditing }">
         <b-tabs v-model="tabIndex">
           <b-tab :title="$t('tavoitteet')">
-
-            <ep-collapse ref="tavoitecollapse" class="tavoite" v-for="(tavoite, index) in data.perusteenTavoitteet" :key="'tavoite'+index" :border-bottom="false" tyyppi="perusopetus-vuosiluokka-tavoite">
-              <template v-slot:header>
-                <h3 v-html="$kaanna(tavoite.tavoite)"></h3>
+            <ep-collapse
+              v-for="(tavoite, index) in data.perusteenTavoitteet"
+              ref="tavoitecollapse"
+              :key="'tavoite'+index"
+              class="tavoite"
+              :border-bottom="false"
+              tyyppi="perusopetus-vuosiluokka-tavoite"
+            >
+              <template #header>
+                <h3 v-html="$kaanna(tavoite.tavoite)" />
               </template>
 
-              <div v-if="tavoite.oppiaineenTavoitteenOpetuksenTavoitteet && tavoite.oppiaineenTavoitteenOpetuksenTavoitteet.length > 0" class="mb-3">
+              <div
+                v-if="tavoite.oppiaineenTavoitteenOpetuksenTavoitteet && tavoite.oppiaineenTavoitteenOpetuksenTavoitteet.length > 0"
+                class="mb-3"
+              >
                 <h4>{{ $t('opetuksen-tavoitteet') }}</h4>
-                <div v-for="(ot, index) in tavoite.oppiaineenTavoitteenOpetuksenTavoitteet" :key="'ot'+index">
-                  <span v-html="$kaanna(ot.tavoite)"></span>
+                <div
+                  v-for="(ot, index) in tavoite.oppiaineenTavoitteenOpetuksenTavoitteet"
+                  :key="'ot'+index"
+                >
+                  <span v-html="$kaanna(ot.tavoite)" />
                 </div>
               </div>
 
               <div v-if="tavoite.tavoitteistaJohdetutOppimisenTavoitteet">
                 <h4>{{ $t('tavoitteista-johdetut-oppimisen-tavoitteet') }}</h4>
-                <span v-html="$kaanna(tavoite.tavoitteistaJohdetutOppimisenTavoitteet)"></span>
+                <span v-html="$kaanna(tavoite.tavoitteistaJohdetutOppimisenTavoitteet)" />
               </div>
 
-              <div class="mb-4" v-if="tavoite.vuosiluokanTavoite">
+              <div
+                v-if="tavoite.vuosiluokanTavoite"
+                class="mb-4"
+              >
                 <h4>{{ $t('paikallinen-teksti') }}</h4>
-                <ep-content v-if="isEditing || tavoite.vuosiluokanTavoite.tavoite" v-model="tavoite.vuosiluokanTavoite.tavoite"
-                              layout="normal"
-                              :is-editable="isEditing"></ep-content>
-                <ep-alert v-if="!isEditing && !tavoite.vuosiluokanTavoite.tavoite" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+                <ep-content
+                  v-if="isEditing || tavoite.vuosiluokanTavoite.tavoite"
+                  v-model="tavoite.vuosiluokanTavoite.tavoite"
+                  layout="normal"
+                  :is-editable="isEditing"
+                />
+                <ep-alert
+                  v-if="!isEditing && !tavoite.vuosiluokanTavoite.tavoite"
+                  :text="$t('paikallista-sisaltoa-ei-maaritetty')"
+                />
               </div>
 
-              <div class="inner-collapse mb-4" v-if="tavoite.sisaltoalueet.length > 0">
+              <div
+                v-if="tavoite.sisaltoalueet.length > 0"
+                class="inner-collapse mb-4"
+              >
                 <h4>{{ $t('sisaltoalueet') }}</h4>
-                <ep-collapse ref="sisaltoaluecollapse" class="sisaltoalue" v-for="(sisaltoalue, index) in tavoite.sisaltoalueet" :key="'sisaltoalue'+index"
-                  :borderBottom="false" :expanded-by-default="false" chevronLocation="left" tyyppi="perusopetus-vuosiluokka-sisaltoalue">
-                  <template v-slot:header>
-                    <h5 v-html="$kaanna(sisaltoalue.nimi)"></h5>
+                <ep-collapse
+                  v-for="(sisaltoalue, index) in tavoite.sisaltoalueet"
+                  ref="sisaltoaluecollapse"
+                  :key="'sisaltoalue'+index"
+                  class="sisaltoalue"
+                  :border-bottom="false"
+                  :expanded-by-default="false"
+                  chevron-location="left"
+                  tyyppi="perusopetus-vuosiluokka-sisaltoalue"
+                >
+                  <template #header>
+                    <h5 v-html="$kaanna(sisaltoalue.nimi)" />
                   </template>
 
                   <div class="pl-4 mb-4 sisaltoaluekuvaus">
                     <div v-if="!isEditing">
-                      <div v-if="!sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta && !sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus"
-                        v-html="$kaanna(sisaltoalue.kuvaus)"></div>
-                      <div v-else-if="sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta"
-                        v-html="$kaanna(sisaltoalue.vuosiluokanSisaltoalue.omaKuvaus)"></div>
-                      <div v-else-if="sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus"
-                        v-html="$kaanna(sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus)"></div>
+                      <div
+                        v-if="!sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta && !sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus"
+                        v-html="$kaanna(sisaltoalue.kuvaus)"
+                      />
+                      <div
+                        v-else-if="sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta"
+                        v-html="$kaanna(sisaltoalue.vuosiluokanSisaltoalue.omaKuvaus)"
+                      />
+                      <div
+                        v-else-if="sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus"
+                        v-html="$kaanna(sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus)"
+                      />
                     </div>
 
                     <div v-else>
-                      <div v-if="!sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus"
+                      <div
+                        v-if="!sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus"
                         :class="{'disabled': sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta}"
-                        v-html="$kaanna(sisaltoalue.kuvaus)"></div>
-                      <div v-else
+                        v-html="$kaanna(sisaltoalue.kuvaus)"
+                      />
+                      <div
+                        v-else
                         :class="{'disabled': sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta}"
-                        v-html="$kaanna(sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus)"></div>
+                        v-html="$kaanna(sisaltoalue.vuosiluokanSisaltoalue.sisaltoalueet.kuvaus)"
+                      />
 
                       <ep-toggle v-model="sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta">
                         {{ $t('kayta-tavoitekohtaista-kuvausta') }}
                       </ep-toggle>
-                      <ep-content v-if="sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta"
-                                  v-model="sisaltoalue.vuosiluokanSisaltoalue.omaKuvaus"
-                                  layout="normal"
-                                  :is-editable="isEditing"></ep-content>
+                      <ep-content
+                        v-if="sisaltoalue.vuosiluokanSisaltoalue.kaytaOmaaKuvausta"
+                        v-model="sisaltoalue.vuosiluokanSisaltoalue.omaKuvaus"
+                        layout="normal"
+                        :is-editable="isEditing"
+                      />
                     </div>
                   </div>
-
                 </ep-collapse>
               </div>
 
               <b-row>
                 <b-col v-if="tavoite.laajaalaisetosaamiset.length > 0">
                   <div class="inner-collapse mb-4">
-                    <h4>{{$t('laaja-alaisen-osaamisen-alueet')}}</h4>
+                    <h4>{{ $t('laaja-alaisen-osaamisen-alueet') }}</h4>
 
-                    <ep-collapse v-for="(lao, index) in tavoite.laajaalaisetosaamiset" :key="'lao'+index"
-                      :borderBottom="false" :expanded-by-default="false" chevronLocation="left">
-                      <template v-slot:header>
-                        <h5 v-html="$kaanna(lao.perusteenLao.nimi)"></h5>
+                    <ep-collapse
+                      v-for="(lao, index) in tavoite.laajaalaisetosaamiset"
+                      :key="'lao'+index"
+                      :border-bottom="false"
+                      :expanded-by-default="false"
+                      chevron-location="left"
+                    >
+                      <template #header>
+                        <h5 v-html="$kaanna(lao.perusteenLao.nimi)" />
                       </template>
 
                       <div class="pl-4">
-                        <span v-if="lao.paikallinenLao.naytaPerusteenPaatasonLao" v-html="$kaanna(lao.perusteenLao.kuvaus)"></span>
-                        <span v-if="lao.paikallinenLao.naytaPerusteenVlkTarkennettuLao" v-html="$kaanna(lao.perusteenVlkLao.kuvaus)"></span>
+                        <span
+                          v-if="lao.paikallinenLao.naytaPerusteenPaatasonLao"
+                          v-html="$kaanna(lao.perusteenLao.kuvaus)"
+                        />
+                        <span
+                          v-if="lao.paikallinenLao.naytaPerusteenVlkTarkennettuLao"
+                          v-html="$kaanna(lao.perusteenVlkLao.kuvaus)"
+                        />
                         <template v-if="lao.paikallinenLao && lao.paikallinenLao.kuvaus">
                           <h4>{{ $t('paikallinen-teksti') }}</h4>
-                          <span v-if="lao.paikallinenLao && lao.paikallinenLao.kuvaus" v-html="$kaanna(lao.paikallinenLao.kuvaus)"></span>
+                          <span
+                            v-if="lao.paikallinenLao && lao.paikallinenLao.kuvaus"
+                            v-html="$kaanna(lao.paikallinenLao.kuvaus)"
+                          />
                         </template>
                       </div>
                     </ep-collapse>
                   </div>
-
                 </b-col>
                 <b-col v-if="tavoite.kohdealueet.length > 0 && tavoite.kohdealueet[0].nimi">
-                  <div v-for="(kohdealue, index) in tavoite.kohdealueet" :key="'kohdealue'+index">
-                    <ep-order-color-ball class="pr-2" :index="kohdealue.index" v-if="kohdealue.nimi" />
+                  <div
+                    v-for="(kohdealue, index) in tavoite.kohdealueet"
+                    :key="'kohdealue'+index"
+                  >
+                    <ep-order-color-ball
+                      v-if="kohdealue.nimi"
+                      class="pr-2"
+                      :index="kohdealue.index"
+                    />
                     <span>{{ $kaanna(kohdealue.nimi) }}</span>
                   </div>
                 </b-col>
               </b-row>
 
-              <div class="mb-4" v-if="tavoite.arvioinninKuvaus">
+              <div
+                v-if="tavoite.arvioinninKuvaus"
+                class="mb-4"
+              >
                 <h4>{{ $t('arvioinnin-kohde') }}</h4>
-                <span v-html="$kaanna(tavoite.arvioinninKuvaus)"></span>
+                <span v-html="$kaanna(tavoite.arvioinninKuvaus)" />
               </div>
 
-              <div class="mb-4" v-if="tavoite.arvioinninkohteet && tavoite.arvioinninkohteet.length > 0">
-                <h4 class="mb-0 pb-0" v-html="tavoite.arvioinninOtsikko ? $kaanna(tavoite.arvioinninOtsikko) : $t('arviointi-vuosiluokan-paatteeksi')"></h4>
+              <div
+                v-if="tavoite.arvioinninkohteet && tavoite.arvioinninkohteet.length > 0"
+                class="mb-4"
+              >
+                <h4
+                  class="mb-0 pb-0"
+                  v-html="tavoite.arvioinninOtsikko ? $kaanna(tavoite.arvioinninOtsikko) : $t('arviointi-vuosiluokan-paatteeksi')"
+                />
                 <ep-arvioinninkohteet-table :arvioinninkohteet="tavoite.arvioinninkohteet" />
               </div>
 
-              <div class="mb-4" v-if="tavoite.vapaaTeksti">
+              <div
+                v-if="tavoite.vapaaTeksti"
+                class="mb-4"
+              >
                 <h4>{{ $t('lisatietoa') }}</h4>
-                <span v-html="$kaanna(tavoite.vapaaTeksti)"></span>
+                <span v-html="$kaanna(tavoite.vapaaTeksti)" />
               </div>
-
             </ep-collapse>
-
           </b-tab>
 
           <b-tab :title="$t('keskeiset-sisallot')">
-
             <template v-if="data.perusteenVlk.vapaatTekstit">
-              <ep-collapse tyyppi="perusteteksti" :border-bottom="true" :border-top="false" :expanded-by-default="true" v-for="(vapaateksti, index) in data.perusteenVlk.vapaatTekstit" :key="'perustevapaateksti' + index">
-                <template v-slot:header><h4>{{$kaanna(vapaateksti.nimi)}}</h4></template>
-                <span v-html="$kaanna(vapaateksti.teksti)"></span>
+              <ep-collapse
+                v-for="(vapaateksti, index) in data.perusteenVlk.vapaatTekstit"
+                :key="'perustevapaateksti' + index"
+                tyyppi="perusteteksti"
+                :border-bottom="true"
+                :border-top="false"
+                :expanded-by-default="true"
+              >
+                <template #header>
+                  <h4>{{ $kaanna(vapaateksti.nimi) }}</h4>
+                </template>
+                <span v-html="$kaanna(vapaateksti.teksti)" />
               </ep-collapse>
             </template>
 
-            <vuosiluokka-sisalto-teksti :perusteObject="data.perusteenVlk.sisaltoalueinfo" :perusteTekstiAvattu="true" :isEditing="false" />
-            <hr/>
+            <vuosiluokka-sisalto-teksti
+              :peruste-object="data.perusteenVlk.sisaltoalueinfo"
+              :peruste-teksti-avattu="true"
+              :is-editing="false"
+            />
+            <hr>
 
-            <div v-for="(sisaltoalue, index) in data.perusteenVlk.sisaltoalueet" :key="'keskeinensisalto'+index">
+            <div
+              v-for="(sisaltoalue, index) in data.perusteenVlk.sisaltoalueet"
+              :key="'keskeinensisalto'+index"
+            >
               <vuosiluokka-sisalto-teksti
-                :perusteObject="sisaltoalue"
-                :perusteTekstiAvattu="true"
-                :isEditing="isEditing"
+                v-model="sisaltoalue.vuosiluokanSisaltoalue"
+                :peruste-object="sisaltoalue"
+                :peruste-teksti-avattu="true"
+                :is-editing="isEditing"
                 otsikko="nimi"
                 teksti="kuvaus"
-                :vlkObject="sisaltoalue.vuosiluokanSisaltoalue">
-
-                <template v-slot:header>
-                  <h3>{{ $kaanna(sisaltoalue.nimi) }}
+              >
+                <template #header>
+                  <h3>
+                    {{ $kaanna(sisaltoalue.nimi) }}
                     <span v-if="sisaltoalue.vuosiluokanSisaltoalue.piilotettu">({{ $t('piilotettu-tavoitteista') }})</span>
                   </h3>
-                  <ep-toggle v-model="sisaltoalue.vuosiluokanSisaltoalue.piilotettu" v-if="isEditing">
+                  <ep-toggle
+                    v-if="isEditing"
+                    v-model="sisaltoalue.vuosiluokanSisaltoalue.piilotettu"
+                  >
                     {{ $t('piilota-sisaltoalue') }}
                   </ep-toggle>
                 </template>
               </vuosiluokka-sisalto-teksti>
-              <hr/>
+              <hr>
             </div>
-
           </b-tab>
         </b-tabs>
-
       </template>
     </EpEditointi>
   </div>
@@ -181,9 +280,8 @@ import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpArvioinninkohteetTable from '@shared/components/EpArvioinninkohteetTable/EpArvioinninkohteetTable.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpRoute } from '@/mixins/EpRoute';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna, $t, $bvModal } from '@shared/utils/globals';
+
 
 // Props
 const props = defineProps<{
@@ -198,18 +296,8 @@ const tavoitecollapse = useTemplateRef('tavoitecollapse');
 const sisaltoaluecollapse = useTemplateRef('sisaltoaluecollapse');
 
 // Use composables
-const epRoute = useEpRoute();
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsComponent(props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 // Reactive data
 const editointiStore = ref<EditointiStore | null>(null);
 const tabIndex = ref(0);
@@ -217,11 +305,11 @@ const tabIndex = ref(0);
 // Computed properties
 const storeData = computed({
   get() {
-    return editointiStore.value?.data.value;
+    return editointiStore.value?.data;
   },
   set(data) {
     editointiStore.value?.setData(data);
-  }
+  },
 });
 
 // Methods

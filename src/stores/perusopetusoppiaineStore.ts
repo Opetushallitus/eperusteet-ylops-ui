@@ -23,8 +23,8 @@ export class PerusopetusoppiaineStore implements IEditoitava {
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
     private versionumero: number,
     private parent: OppiaineSuppeaDto,
-    private resetOps: Function,
-    private init: Function,
+    private resetOps: () => Promise<void>,
+    private init: () => Promise<void>,
     private muokkaaLatauksenJalkeen: boolean) {
   }
 
@@ -163,7 +163,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async hide(data) {
-    await Vuosiluokkakokonaisuudet.piilotaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!);
+    await Vuosiluokkakokonaisuudet.piilotaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!);
 
     if (data.oppiaine.oma) {
       const piilotettu = {
@@ -182,7 +182,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async unHide(data) {
-    await Vuosiluokkakokonaisuudet.palautaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!);
+    await Vuosiluokkakokonaisuudet.palautaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!);
 
     if (data.oppiaine.oma) {
       const piilotettu = {

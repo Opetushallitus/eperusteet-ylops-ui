@@ -15,8 +15,9 @@ export class MuokkaustietoStore {
   public readonly viimeinenHaku = computed(() => this.state.viimeinenHaku);
   public readonly hakuLukumaara = computed(() => this.state.hakuLukumaara);
 
-  constructor(opsId: number) {
+  public async init(opsId: number) {
     this.state.opsId = opsId;
+    this.state.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.state.opsId, undefined, this.state.hakuLukumaara) as any).data;
   }
 
   public async update() {
@@ -35,7 +36,9 @@ export class MuokkaustietoStore {
     }
   }
 
-  public async init() {
-    this.state.muokkaustiedot = (await Muokkaustieto.getOpsMuokkausTiedotWithLuomisaika(this.state.opsId, undefined, this.state.hakuLukumaara) as any).data;
+  public clear() {
+    this.state.muokkaustiedot = null;
+    this.state.viimeinenHaku = null;
+    this.state.opsId = 0;
   }
 }

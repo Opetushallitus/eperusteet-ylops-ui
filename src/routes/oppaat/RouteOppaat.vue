@@ -1,10 +1,9 @@
 <template>
   <ep-main-view>
     <template #custom-content>
-      <EpOppaat :koulutustyypit="koulutustyypit"/>
+      <EpOppaat :koulutustyypit="koulutustyypit" />
     </template>
   </ep-main-view>
-
 </template>
 
 <script setup lang="ts">

@@ -7,6 +7,7 @@ import App from './App.vue';
 import { setAppInstance } from '@shared/utils/globals';
 import router from './router/router';
 import Kaannos from '@shared/plugins/kaannos';
+import Plaintext from '@shared/plugins/plaintext';
 import { Kieli } from '@shared/tyypit';
 import { createI18n } from 'vue-i18n';
 import fiLocale from '@shared/translations/locale-fi.json';
@@ -24,6 +25,13 @@ import VueApexCharts from 'vue-apexcharts';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import Sticky from 'vue-sticky-directive';
 import { registerIconColorSchemeChange } from '@shared/utils/icon';
+import TextClamp from 'vue3-text-clamp';
+import { VuosiluokkaistaminenStore } from './stores/vuosiluokkaistaminenStore';
+import { PerusopetusPaikallinenOppiaineStore } from './stores/perusopetusPaikallinenOppiaineStore';
+import { VuosiluokkakokonaisuusStore } from './stores/vuosiluokkakokonaisuusStore';
+import { OpetussuunnitelmaStore } from './stores/opetussuunnitelma';
+import { stores } from './stores';
+import { OpintojaksoStore } from './stores/opintojaksoStore';
 
 const app = createApp(App);
 
@@ -63,6 +71,8 @@ app.use(LoadingPlugin);
 app.use(createHead());
 app.use(Oikeustarkastelu, { oikeusProvider: Kayttajat });
 app.use(Notifikaatiot);
+app.use(Plaintext);
+app.use(TextClamp);
 
 Vue.use(VueScrollTo, {
   duration: 1000,
@@ -72,5 +82,10 @@ Vue.component('Apexchart', VueApexCharts);
 
 app.use(EditointiStore, { router, kayttajaProvider: Kayttajat });
 app.use(Sticky);
+
+app.use(VuosiluokkaistaminenStore, { router });
+app.use(PerusopetusPaikallinenOppiaineStore, { router, opetussuunnitelmaStore: stores.opetussuunnitelmaStore });
+app.use(VuosiluokkakokonaisuusStore, { router });
+app.use(OpintojaksoStore, { router });
 
 app.mount('#app');

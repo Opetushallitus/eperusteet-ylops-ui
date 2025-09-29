@@ -1,36 +1,47 @@
 <template>
-  <div class="threadbox" ref="threadbox">
+  <div
+    ref="threadbox"
+    class="threadbox"
+  >
     <div v-if="threadUuid && thread">
       <div
         v-if="newThread"
-        class="newComment p-3 m-1"
         ref="newComment"
-        :style="activeThreadStyle">
+        class="newComment p-3 m-1"
+        :style="activeThreadStyle"
+      >
         <div class="otsikko">
           {{ $t('uusi-kommentti') }}
         </div>
         <div class="viesti">
           <textarea
+            v-model="newThread.sisalto"
             :placeholder="$t('kirjoita-viesti')"
             class="editori"
-            v-model="newThread.sisalto"></textarea>
+          />
         </div>
         <div class="d-flex justify-content-end mt-2">
           <b-button
             variant="link"
-            @click="cancelNewThread">
+            @click="cancelNewThread"
+          >
             {{ $t('peruuta') }}
           </b-button>
           <b-button
             variant="primary"
-            @click="saveNewThread"
             :disabled="!newThread.sisalto"
-            class="ml-1">
+            class="ml-1"
+            @click="saveNewThread"
+          >
             {{ $t('kommentoi') }}
           </b-button>
         </div>
       </div>
-      <div class="p-2 thread" :style="activeThreadStyle" v-else>
+      <div
+        v-else
+        class="p-2 thread"
+        :style="activeThreadStyle"
+      >
         <div class="thread-comment">
           <thread-comment
             v-for="comment in thread"
@@ -38,38 +49,53 @@
             :cancel="poista"
             :remove="poista"
             :save="tallenna"
-            :value="comment" />
+            :value="comment"
+          />
         </div>
         <div v-if="threadUuid">
           <div class="replybox p-3">
             <textarea
+              v-model="reply"
               :placeholder="$t('vastaa')"
               class="editori"
-              v-model="reply"
-              :disabled="isWorking"></textarea>
-            <div v-if="reply" class="d-flex justify-content-end">
+              :disabled="isWorking"
+            />
+            <div
+              v-if="reply"
+              class="d-flex justify-content-end"
+            >
               <b-button
                 variant="primary"
-                @click="tallenna({ sisalto: reply })"
                 class="ml-1"
-                :disabled="isWorking">
+                :disabled="isWorking"
+                @click="tallenna({ sisalto: reply })"
+              >
                 {{ $t('vastaa') }}
               </b-button>
             </div>
           </div>
           <div class="prevnext">
             <div class="d-flex justify-content-between">
-              <b-button variant="link" @click="activateThread(surr.previous)">
+              <b-button
+                variant="link"
+                @click="activateThread(surr.previous)"
+              >
                 <EpMaterialIcon>arrow_back</EpMaterialIcon>
                 {{ $t('edellinen') }}
               </b-button>
-              <b-button variant="link" @click="activateThread(surr.next)">
+              <b-button
+                variant="link"
+                @click="activateThread(surr.next)"
+              >
                 {{ $t('seuraava') }}
                 <EpMaterialIcon>arrow_forward</EpMaterialIcon>
               </b-button>
             </div>
             <div class="backbutton text-center">
-              <b-button variant="primary" @click="suljeKetju">
+              <b-button
+                variant="primary"
+                @click="suljeKetju"
+              >
                 {{ $t('nayta-kaikki-kommentit') }}
               </b-button>
             </div>
@@ -79,13 +105,19 @@
     </div>
     <div v-else-if="activeThreads.length > 0">
       <div class="thread-comment">
-        <div v-for="(root, idx) in activeThreads" :key="'thread' + idx">
+        <div
+          v-for="(root, idx) in activeThreads"
+          :key="'thread' + idx"
+        >
           <collapsed-threads :value="root" />
         </div>
       </div>
     </div>
-    <div v-else class="p-3">
-      <ep-alert :text="$t('ei-lisattyja-kommentteja')"></ep-alert>
+    <div
+      v-else
+      class="p-3"
+    >
+      <ep-alert :text="$t('ei-lisattyja-kommentteja')" />
     </div>
   </div>
 </template>
@@ -107,7 +139,7 @@ import { Kielet } from '@shared/stores/kieli';
 import { fail, success } from '@/utils/notifications';
 import { delay } from '@shared/utils/delay';
 import { unwrap, findIndexWithTagsIncluded } from '@/utils/utils';
-import { $t } from '@shared/utils/globals';
+import { $success, $t } from '@shared/utils/globals';
 
 // Template refs
 const threadbox = useTemplateRef('threadbox');
@@ -360,7 +392,7 @@ const withOpsId = (kommentti: KommenttiDto): KommenttiDto => {
 
 const poista = async (kommentti: KommenttiDto): Promise<any> => {
   await Kommentit.poista(kommentti.tunniste!);
-  success('kommentti-poistettu');
+  $success('kommentti-poistettu');
   return kommentti;
 };
 
@@ -371,10 +403,10 @@ const tallenna = async (kommentti: any): Promise<any> => {
     const result = await Kommentit.tallenna(withOpsId(kommentti));
     reply.value = null;
     if (isNew) {
-      success('kommentti-tallennettu');
+      $success('kommentti-tallennettu');
     }
     else {
-      success('kommentti-paivitetty');
+      $success('kommentti-paivitetty');
     }
     return result;
   }

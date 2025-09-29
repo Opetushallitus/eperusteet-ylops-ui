@@ -12,8 +12,9 @@ export class AikatauluStore {
   public readonly opsId = computed(() => this.state.opsId);
   public readonly aikataulut = computed(() => this.state.aikataulut);
 
-  constructor(opsId: number) {
+  public async init(opsId: number) {
     this.state.opsId = opsId;
+    await this.update();
   }
 
   public async update() {
@@ -33,5 +34,10 @@ export class AikatauluStore {
       ...lisatyt,
       ...paivitetyt,
     ];
+  }
+
+  public clear() {
+    this.state.aikataulut = null;
+    this.state.opsId = 0;
   }
 }

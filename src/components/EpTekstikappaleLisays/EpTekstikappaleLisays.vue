@@ -1,56 +1,76 @@
 <template>
-<div>
-  <ep-button v-b-modal.tekstikappalelisays
-             variant="link"
-             buttonClass="text-decoration-none"
-             icon="add"
-             :paddingx="false">
-    <span>{{ $t('uusi-tekstikappale') }}</span>
-  </ep-button>
-  <b-modal ref="tekstikappalelisaysModal"
-           id="tekstikappalelisays"
-           size="lg"
-           centered
-           :ok-disabled="okDisabled"
-           @hidden="clear">
-    <template v-slot:modal-title>
-      {{ $t('lisaa-uusi-tekstikappale') }}
-    </template>
+  <div>
+    <ep-button
+      v-b-modal.tekstikappalelisays
+      variant="link"
+      button-class="text-decoration-none"
+      icon="add"
+      :paddingx="false"
+    >
+      <span>{{ $t('uusi-tekstikappale') }}</span>
+    </ep-button>
+    <b-modal
+      id="tekstikappalelisays"
+      ref="tekstikappalelisaysModal"
+      size="lg"
+      centered
+      :ok-disabled="okDisabled"
+      @hidden="clear"
+    >
+      <template #modal-title>
+        {{ $t('lisaa-uusi-tekstikappale') }}
+      </template>
 
-    <ep-form-content name="tekstikappale-nimi-ohje">
-      <ep-field class="mb-5" v-model="otsikko" :is-editing="true" />
-    </ep-form-content>
+      <ep-form-content name="tekstikappale-nimi-ohje">
+        <ep-field
+          v-model="otsikko"
+          class="mb-5"
+          :is-editing="true"
+        />
+      </ep-form-content>
 
-    <ep-form-content name="ylaotsikko" v-if="tekstikappaleet.length > 0">
-      <ep-select class="mb-5"
-                 v-model="valittuTekstikappale"
-                 :items="tekstikappaleet"
-                 :is-editing="true"
-                 :enable-empty-option="tyhjaValinta">
-        <template #default="{ item }">
-          {{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}
-        </template>
-      </ep-select>
-    </ep-form-content>
+      <ep-form-content
+        v-if="tekstikappaleet.length > 0"
+        name="ylaotsikko"
+      >
+        <ep-select
+          v-model="valittuTekstikappale"
+          class="mb-5"
+          :items="tekstikappaleet"
+          :is-editing="true"
+          :enable-empty-option="tyhjaValinta"
+        >
+          <template #default="{ item }">
+            {{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}
+          </template>
+        </ep-select>
+      </ep-form-content>
 
-    <template #modal-footer>
-      <EpButton variant="secondary" @click="$refs.tekstikappalelisaysModal.hide()" :disabled="tallentaa">
-        {{ $t('peruuta') }}
-      </EpButton>
-      <EpButton variant="primary" @click="save" :disabled="okDisabled || tallentaa" :showSpinner="tallentaa">
-        {{ $t('lisaa-tekstikappale') }}
-      </EpButton>
-    </template>
-
-  </b-modal>
-</div>
+      <template #modal-footer>
+        <EpButton
+          variant="secondary"
+          :disabled="tallentaa"
+          @click="$refs.tekstikappalelisaysModal.hide()"
+        >
+          {{ $t('peruuta') }}
+        </EpButton>
+        <EpButton
+          variant="primary"
+          :disabled="okDisabled || tallentaa"
+          :show-spinner="tallentaa"
+          @click="save"
+        >
+          {{ $t('lisaa-tekstikappale') }}
+        </EpButton>
+      </template>
+    </b-modal>
+  </div>
 </template>
 
 <script setup lang="ts">
 import _ from 'lodash';
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
@@ -65,10 +85,10 @@ const props = withDefaults(
     tyhjaValinta?: boolean;
     opetussuunnitelmaStore: OpetussuunnitelmaStore;
   }>(), {
-  tyhjaValinta: false,
-});
+    tyhjaValinta: false,
+  });
 
-const { store } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
 const route = useRoute();
 const router = useRouter();
 

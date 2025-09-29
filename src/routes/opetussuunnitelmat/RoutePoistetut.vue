@@ -1,19 +1,32 @@
 <template>
   <div class="poistetut">
     <div class="ylapaneeli d-flex align-items-center">
-      <h2 class="otsikko">{{ $t('poistetut') }}</h2>
+      <h2 class="otsikko">
+        {{ $t('poistetut') }}
+      </h2>
     </div>
     <div class="sisalto">
-      <b-tabs content-class="mt-4" v-model="tabIndex">
-        <b-tab v-for="(tab, index) in tabs" :key="'tab'+index" :title="$t(tab.otsikko)">
+      <b-tabs
+        v-model="tabIndex"
+        content-class="mt-4"
+      >
+        <b-tab
+          v-for="(tab, index) in tabs"
+          :key="'tab'+index"
+          :title="$t(tab.otsikko)"
+        >
           <ep-spinner v-if="isLoading" />
-          <poistetut-haku-table v-else
-                                :poistetut="tab.poistetut"
-                                @palauta="palauta" />
+          <poistetut-haku-table
+            v-else
+            :poistetut="tab.poistetut"
+            @palauta="palauta"
+          />
         </b-tab>
       </b-tabs>
 
-      <div v-if="!isLoading && tabs.length === 0">{{$t('ei-poistettuja-sisaltoja')}}</div>
+      <div v-if="!isLoading && tabs.length === 0">
+        {{ $t('ei-poistettuja-sisaltoja') }}
+      </div>
     </div>
   </div>
 </template>
@@ -23,19 +36,9 @@ import _ from 'lodash';
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
-import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
-import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpInput from '@shared/components/forms/EpInput.vue';
-import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
-import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
-import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Lops2019PoistettuDto, PoistettuTekstiKappaleDto } from '@shared/api/ylops';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import Multiselect from 'vue-multiselect';
 import PoistetutHakuTable from '@shared/components/EpPoistettuTable/PoistetutHakuTable.vue';
 import { onMounted } from 'vue';
 
@@ -43,7 +46,8 @@ const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
 }>();
 
-const { store, isLoading } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const isLoading = computed(() => false); // Not needed from the route mixin
 const route = useRoute();
 
 const poistetut = ref<Lops2019PoistettuDto[]>([]);
