@@ -154,8 +154,8 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import { buildEsikatseluUrl, buildKatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
 import { nodeToRoute } from '@/utils/routing';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { success as $success, fail as $fail } from '@/utils/notifications';
+import { Koulutustyyppi } from '@shared/tyypit';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
 const props = defineProps<{
@@ -163,17 +163,9 @@ const props = defineProps<{
 }>();
 
 // Use the composable
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const isOps = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'ops');
 // Reactive data
 const uusiJulkaisu = ref<UusiJulkaisuDto>({
   julkaisutiedote: {},

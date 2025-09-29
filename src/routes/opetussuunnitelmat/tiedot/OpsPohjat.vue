@@ -34,7 +34,7 @@
                       :style="{ marginLeft: (perityvatPohjatCount * 25) + 'px' }">
         subdirectory_arrow_right
       </EpMaterialIcon>
-      <EpNaytaKaikki v-model="ops.joissaPohjana">
+      <EpNaytaKaikki :value="ops.joissaPohjana">
         <template #default="{ data }">
           <router-link v-if="data.id"
                        :to="{ name:'opsTiedot', params: { id: data.id } }"

@@ -40,7 +40,7 @@ import { ref, computed } from 'vue';
 import { KayttajaStore, Kayttajat } from '@/stores/kayttaja';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EtusivuDto } from '@shared/api/ylops';
-import { useEpRoute } from '@/mixins/EpRoute';
+import { onMounted } from 'vue';
 import TileUkk from './tiles/TileUkk.vue';
 import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
 import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
@@ -55,8 +55,7 @@ const props = defineProps<{
   kayttajaStore: KayttajaStore;
 }>();
 
-const { isLoading, init: baseInit } = useEpRoute();
-
+const isLoading = ref(true);
 const rajain = ref('');
 const etusivu = ref<EtusivuDto>({
   opetussuunnitelmatKeskeneraiset: 0,
@@ -65,12 +64,11 @@ const etusivu = ref<EtusivuDto>({
   pohjatJulkaistut: 0,
 });
 
-const init = async () => {
+onMounted(async () => {
+  isLoading.value = true;
   etusivu.value = await Kayttajat.getEtusivu();
-};
-
-// Override the base init function
-Object.assign(baseInit, init);
+  isLoading.value = false;
+});
 
 const nimi = computed(() => kayttajaStore.value.nimi.value || null);
 
@@ -91,7 +89,7 @@ const kayttaja = computed(() => Kayttajat.tiedot);
       font-weight: 300;
     }
     background-color: $etusivu-header-background;
-    background-image: url('~@assets/img/banners/banner_lukio.svg');
+    background-image: url('@assets/img/banners/banner_lukio.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
     @media only screen and (min-width: 2503px)  {

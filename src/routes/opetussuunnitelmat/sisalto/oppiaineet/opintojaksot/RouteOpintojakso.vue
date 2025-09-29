@@ -441,8 +441,12 @@ import { PerusteCache } from '@/stores/peruste';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat, Lops2019OpintojaksonModuuliDto } from '@shared/api/ylops';
 import { KoodistoLops2019LaajaAlaiset, koodiSorters, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
+import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
+import { TermitStore } from '@/stores/TermitStore';
+import { KuvaStore } from '@/stores/KuvaStore';
+import { Koulutustyyppi } from '@shared/tyypit';
 import { $kaanna, $t, $vahvista } from '@shared/utils/globals';
 
 interface OpintojaksonOppiaine {
@@ -460,7 +464,9 @@ const props = defineProps<{
 
 // Use composables
 const route = useRoute();
-const { store, opsId, kasiteHandler, kuvaHandler, isLuva } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
+const isLuva = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.koulutustyyppi as string === Koulutustyyppi.lukiovalmistavakoulutus);
 
 // Component state
 const oppiaineQuery = ref('');

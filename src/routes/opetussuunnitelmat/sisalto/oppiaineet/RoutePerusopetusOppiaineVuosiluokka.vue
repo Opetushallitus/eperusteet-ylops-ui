@@ -181,9 +181,8 @@ import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpArvioinninkohteetTable from '@shared/components/EpArvioinninkohteetTable/EpArvioinninkohteetTable.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpRoute } from '@/mixins/EpRoute';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna, $t, $bvModal } from '@shared/utils/globals';
+
 
 // Props
 const props = defineProps<{
@@ -198,18 +197,8 @@ const tavoitecollapse = useTemplateRef('tavoitecollapse');
 const sisaltoaluecollapse = useTemplateRef('sisaltoaluecollapse');
 
 // Use composables
-const epRoute = useEpRoute();
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsComponent(props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 // Reactive data
 const editointiStore = ref<EditointiStore | null>(null);
 const tabIndex = ref(0);

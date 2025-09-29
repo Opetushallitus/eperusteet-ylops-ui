@@ -7,17 +7,15 @@
   </template>
 
   <ep-spinner v-if="isLoading" />
-  <div v-else>
-    <b-row class="virkailijat">
-      <b-col class="virkailija text-left" sm="6" v-for="virkailija in virkailijatFormatted" :key="virkailija.oid">
-        <span class="mr-2">{{ virkailija.esitysnimi }}</span>
-        <ul v-if="showOrganizations">
-          <li v-for="(org, idx) in virkailija.organisaatiot" :key="idx">
-            {{ $kaanna(org.nimi) }}
-          </li>
-        </ul>
-      </b-col>
-    </b-row>
+  <div v-else-if="virkailijatFormatted" class="row virkailijat">
+    <div class="virkailija text-left col-sm-6" v-for="virkailija in virkailijatFormatted" :key="virkailija.oid">
+      <span class="mr-2">{{ virkailija.esitysnimi }}</span>
+      <ul v-if="showOrganizations">
+        <li v-for="(org, idx) in virkailija.organisaatiot" :key="idx">
+          {{ $kaanna(org.nimi) }}
+        </li>
+      </ul>
+    </div>
   </div>
 </ep-main-view>
 </template>
@@ -32,20 +30,18 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { parsiEsitysnimi } from '@shared/utils/kayttaja';
-
-const { isLoading, loading } = useEpRoute();
+import { onMounted } from 'vue';
 
 const showOrganizations = ref(false);
+const isLoading = ref(true);
 
-const init = async () => {
+onMounted(async () => {
   await Kayttajat.fetchVirkailijatByOrganisaatio();
-};
-
-// Call init function in the loading wrapper
-loading(init);
+  isLoading.value = false;
+});
 
 const virkailijat = computed(() => {
-  return Kayttajat.virkailijat;
+  return Kayttajat.virkailijat.value;
 });
 
 const virkailijatFormatted = computed(() => {

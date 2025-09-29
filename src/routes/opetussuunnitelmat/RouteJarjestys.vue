@@ -67,7 +67,6 @@
 import _ from 'lodash';
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpJarjesta from '@shared/components/EpJarjesta/EpJarjesta.vue';
@@ -80,15 +79,13 @@ const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
 }>();
 
-const { opsId, store, ops } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 const route = useRoute();
 
 const tabIndex = ref(0);
 const editointiStore = ref<EditointiStore | null>(null);
-
-const isLoading = computed(() => {
-  return editointiStore.value?.isLoading?.value || false;
-});
 
 const versionumero = computed(() => {
   return _.parseInt(route.query.versionumero as string);

@@ -206,8 +206,6 @@ import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import { isOppiaineUskontoTaiVierasKieli as checkIsOppiaineUskontoTaiVierasKieli } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpRoute } from '@/mixins/EpRoute';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna, $t } from '@shared/utils/globals';
 
 // Props
@@ -219,18 +217,10 @@ const props = defineProps<{
 const route = useRoute();
 
 // Use composables
-const epRoute = useEpRoute();
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
+const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 // Reactive data
 const editointiStore = ref<EditointiStore | null>(null);
 

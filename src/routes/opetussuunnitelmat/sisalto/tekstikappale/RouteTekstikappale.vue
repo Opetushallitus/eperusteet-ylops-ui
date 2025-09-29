@@ -116,9 +116,12 @@
 import _ from 'lodash';
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
+import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
+import { TermitStore } from '@/stores/TermitStore';
+import { KuvaStore } from '@/stores/KuvaStore';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
@@ -142,7 +145,9 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
-const { opsId, ops, store, kasiteHandler, kuvaHandler } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
 const tekstikappaleStore = ref<EditointiStore | null>(null);
 
@@ -164,7 +169,7 @@ const tekstikappale = computed(() => {
 });
 
 const pohjaNimi = computed(() => {
-  return ops.value.pohja?.nimi;
+  return ops.value?.pohja?.nimi;
 });
 
 const perusteenTekstikappaleNimi = computed(() => {

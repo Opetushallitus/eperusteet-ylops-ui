@@ -42,7 +42,7 @@
               </p>
               <h5 v-html="$kaanna(kysymys.kysymys)"></h5>
               <p class="text-secondary">
-                <ep-content layout="normal" :value="kysymys.vastaus"></ep-content>
+                <ep-content layout="normal" :model-value="kysymys.vastaus"></ep-content>
               </p>
               <hr />
             </div>
@@ -60,7 +60,7 @@
 
     <!-- Kysymyksen luomisen ja muokkaamisen modaali-->
     <template slot="after">
-      <b-modal class="backdrop" id="createUpdateKysymys" ref="createUpdateKysymys" @ok="createUpdateKysymysHandler" :no-close-on-backdrop="true" :no-enforce-focus="true" :lazy="true" :ok-disabled="validation.$invalid" size="lg">
+      <b-modal class="backdrop" id="createUpdateKysymys" ref="createUpdateKysymys" @ok="createUpdateKysymysHandler" :no-close-on-backdrop="true" :no-enforce-focus="true" :lazy="true" :ok-disabled="$v.kysymys.$invalid" size="lg">
         <template slot="modal-title">
           <span class="mr-2">{{ kysymys.$uusi ? $t('lisaa-uusi-kysymys') : $t('muokkaa-kysymys') }}</span>
           <!-- Sisällön kieli-->
@@ -72,18 +72,17 @@
           </b-dropdown>
         </template>
         <ep-form-content name="kysymys-nimi">
-          <ep-content v-model="kysymys.kysymys" help="kysymys-nimi-ohje" layout="normal" :validation="validation.kysymys" :is-editable="true">
+          <ep-content v-model="kysymys.kysymys" help="kysymys-nimi-ohje" layout="normal" :validation="$v.kysymys.kysymys" :is-editable="true">
           </ep-content>
         </ep-form-content>
         <ep-form-content name="kysymys-vastaus">
-          <ep-content v-model="kysymys.vastaus" help="kysymys-vastaus-ohje" layout="normal" :validation="validation.vastaus" :is-editable="true">
+          <ep-content v-model="kysymys.vastaus" help="kysymys-vastaus-ohje" layout="normal" :validation="$v.kysymys.vastaus" :is-editable="true">
           </ep-content>
         </ep-form-content>
         <ep-form-content name="nayta-organisaatioissa">
           <ep-select
             v-model="kysymys.organisaatiot"
             help="kysymys-organisaatiot-ohje"
-            :validation="validation.organisaatiot"
             :is-editing="true"
             :items="organisaatiot"
             :multiple="true">
@@ -109,7 +108,6 @@ import { Kieli } from '@shared/tyypit';
 import { kysymysValidator } from '@/validators/ukk';
 import { organizations } from '@/utils/organisaatiot';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { useEpRoot } from '@/mixins/EpRoot';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
@@ -142,31 +140,29 @@ const validator = computed(() => {
 });
 
 const $v = useVuelidate({
-  kysymys: validator.value,
+  kysymys: validator,
 }, { kysymys });
 
-const validation = computed(() => $v.value.kysymys);
-
-const { isLoading, loading } = useEpRoot();
+const isLoading = ref(true);
 
 onMounted(async () => {
-  await loading(async () => {
-    kysymykset.value = (await Kysymykset.getKysymykset() as any).data;
+  kysymykset.value = (await Kysymykset.getKysymykset() as any).data;
 
-    // Haetaan käyttäjän organisaatiot
-    const orgsData = (await Ulkopuoliset.getUserOrganisations() as any).data;
+  // Haetaan käyttäjän organisaatiot
+  const orgsData = (await Ulkopuoliset.getUserOrganisations() as any).data;
 
-    if (!_.find(orgsData, o => o.oid === organizations.oph.oid)) {
-      orgsData.push(organizations.oph);
-    }
+  if (!_.find(orgsData, o => o.oid === organizations.oph.oid)) {
+    orgsData.push(organizations.oph);
+  }
 
-    // Ei rajausta oletuksena
-    _.each(orgsData, o => {
-      o.$checked = true;
-    });
-
-    orgs.value = orgsData;
+  // Ei rajausta oletuksena
+  _.each(orgsData, o => {
+    o.$checked = true;
   });
+
+  orgs.value = orgsData;
+
+  isLoading.value = false;
 });
 
 const kysymyksetFormatted = computed(() => {

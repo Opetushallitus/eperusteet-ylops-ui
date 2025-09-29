@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import _ from 'lodash';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
@@ -73,10 +73,7 @@ import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpRoute } from '@/mixins/EpRoute';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna, $t } from '@shared/utils/globals';
 
 // Props
@@ -88,18 +85,8 @@ const props = defineProps<{
 const route = useRoute();
 
 // Use composables
-const epRoute = useEpRoute();
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsComponent(props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 // Reactive data
 const editointiStore = ref<EditointiStore | null>(null);
 

@@ -71,8 +71,8 @@ import { DokumenttiKuvaDto } from '@shared/generated/ylops';
 import EpPdfDokumentti from '@shared/components/EpPdfLuonti/EpPdfDokumentti.vue';
 import EpPdfKuvalataus from '@shared/components/EpTiedosto/EpPdfKuvalataus.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { $fail, $kaanna, $success, $t } from '@shared/utils/globals';
+import { Koulutustyyppi } from '@shared/tyypit';
 
 // Props
 const props = defineProps<{
@@ -80,17 +80,8 @@ const props = defineProps<{
 }>();
 
 // Use the composable
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsRoute(props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 // Reactive data
 const previewUrl = ref(null);
 const dto = ref<DokumenttiDto | null>(null);

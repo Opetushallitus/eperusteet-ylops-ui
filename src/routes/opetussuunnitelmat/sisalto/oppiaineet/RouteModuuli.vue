@@ -48,7 +48,6 @@ import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@shared/api/ylops';
 import { PerusteCache } from '@/stores/peruste';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { $t, $kaanna } from '@shared/utils/globals';
 
@@ -57,7 +56,7 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
-const { store } = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
 
 const cache = ref<PerusteCache | null>(null);
 const moduuli = ref<Lops2019ModuuliDto | null>(null);

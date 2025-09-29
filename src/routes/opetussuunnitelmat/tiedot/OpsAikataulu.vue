@@ -54,7 +54,7 @@ const props = defineProps<{
 const aikataulumodal = useTemplateRef('aikataulumodal');
 
 const aikataulut = computed(() => {
-  return props.aikatauluStore.aikataulut;
+  return props.aikatauluStore.aikataulut.value;
 });
 
 const otaAikatauluKayttoon = () => {

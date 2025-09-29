@@ -41,7 +41,6 @@ import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
 import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
@@ -60,7 +59,8 @@ const emit = defineEmits(['update:modelValue']);
 
 
 // Use the composable
-const { store, opsId } = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
 const cache = ref<PerusteCache | null>(null);
 

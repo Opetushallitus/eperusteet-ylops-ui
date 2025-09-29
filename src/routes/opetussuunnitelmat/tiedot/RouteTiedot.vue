@@ -137,7 +137,6 @@ import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { ref, computed, watch, onMounted } from 'vue';
 import { opsTiedotValidator } from '@/validators/ops';
@@ -158,7 +157,9 @@ const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
 }>();
 
-const { opsId, ops, store } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
 const editStore = ref<EditointiStore | null>(null);
 

@@ -162,7 +162,6 @@ import _ from 'lodash';
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useEpRoute } from '@/mixins/EpRoute';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusPaikallinenOppiaineStore } from '@/stores/perusopetusPaikallinenOppiaineStore';
 import { OpsVuosiluokkakokonaisuusKevytDto, PerusopetusoppiaineDto } from '@shared/api/ylops';
@@ -182,7 +181,8 @@ const props = defineProps<{
 
 // Use composables
 const route = useRoute();
-const { opsId, ops } = useEpOpsComponent(props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma);
 
 // Reactive data
 const editointiStore = ref<EditointiStore | null>(null);

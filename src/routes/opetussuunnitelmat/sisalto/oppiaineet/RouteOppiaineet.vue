@@ -176,7 +176,6 @@ import { koodiAlku, koodiNumero, koodiSorters } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { Lops2019ModuuliDto, Lops2019OppiaineDto } from '@shared/api/ylops';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { $kaanna } from '@shared/utils/globals';
 
@@ -188,7 +187,8 @@ const props = defineProps<{
 // Use composables
 const route = useRoute();
 const router = useRouter();
-const { store, isPohja } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 
 // Component state
 const cache = ref<PerusteCache | null>(null);

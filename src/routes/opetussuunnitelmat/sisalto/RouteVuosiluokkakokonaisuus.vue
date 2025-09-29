@@ -134,7 +134,6 @@ import VuosiluokkaSisaltoTeksti from './VuosiluokkaSisaltoTeksti.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { VuosiluokkakokonaisuusStore } from '@/stores/vuosiluokkakokonaisuusStore';
 import { Kielet } from '@shared/stores/kieli';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { $kaanna, $t } from '@shared/utils/globals';
 
@@ -145,7 +144,8 @@ const props = defineProps<{
 
 // Use composables
 const route = useRoute();
-const { store, opsId } = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
 // Component state
 const editointiStore = ref<EditointiStore | null>(null);

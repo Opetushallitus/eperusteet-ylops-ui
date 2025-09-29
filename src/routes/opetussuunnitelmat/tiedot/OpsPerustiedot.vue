@@ -85,7 +85,6 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import EpPerustietoData from '@shared/components/EpPerustietoData/EpPerustietoData.vue';
 import OpsPohjat from '@/routes/opetussuunnitelmat/tiedot/OpsPohjat.vue';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { Kielet } from '@shared/stores/kieli';
 import { buildEsikatseluUrl } from '@shared/utils/esikatselu';
@@ -97,17 +96,19 @@ const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
 }>();
 
-const { store, ops } = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
 
 const naytaLisaaTyoryhmaa = ref<boolean>(false);
 const tyoryhmaAlkuMaara = 5;
 
 const julkaisukieliet = computed(() => {
-  return _.map(ops.value.julkaisukielet, (kieli) => Kielet.kaannaOlioTaiTeksti(kieli)).join(', ');
+  return _.map(ops.value?.julkaisukielet, (kieli) => Kielet.kaannaOlioTaiTeksti(kieli)).join(', ');
 });
 
 const virkailijat = computed(() => {
-  return store.value.virkailijat;
+  // return store.virkailijat;
+  return {};
 });
 
 const virkailijatFormatted = computed(() => {

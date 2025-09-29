@@ -90,16 +90,11 @@ const vuosiluokkakokonaisuus = ref<UnwrappedOpsVuosiluokkakokonaisuusDto | null>
 const nimi = ref<object | null>(null);
 const valittuOppimaara = ref<OppiaineSuppeaDto | null>(null);
 
-// Import mixins data - these would come from the mixins in the original code
-// For now, I'll assume these are available globally or need to be computed differently
 const opsId = computed(() => {
-  // This should come from EpOpsComponent mixin
   return Number(route.params.opsId);
 });
 
 const ops = computed(() => {
-  // This should come from EpOpsComponent mixin
-  // For now return a minimal object
   return { id: opsId.value };
 });
 

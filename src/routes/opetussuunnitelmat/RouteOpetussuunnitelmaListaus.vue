@@ -102,13 +102,13 @@
               </div>
 
               <div class="paginating mt-2">
-                <b-pagination
+                <EpPagination
                   v-model="opsSivu"
                   :total-rows="opslista['kokonaismäärä']"
                   :per-page="14"
                   aria-controls="opetussuunnitelmat"
                   align="center">
-                </b-pagination>
+                </EpPagination>
               </div>
             </div>
           </div>
@@ -152,13 +152,13 @@
 
               </div>
               <div class="paginating mt-2">
-                <b-pagination
+                <EpPagination
                   v-model="julkaistutSivu"
                   :total-rows="julkaistutLista['kokonaismäärä']"
                   :per-page="10"
                   aria-controls="julkaistut-opetussuunnitelmat"
                   align="center">
-                </b-pagination>
+                </EpPagination>
               </div>
             </div>
           </div>
@@ -195,6 +195,7 @@ import { Page } from '@shared/tyypit';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { $t, $kaanna, $sd } from '@shared/utils/globals';
+import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
 
 interface Jarjestys {
   jarjestys: string;

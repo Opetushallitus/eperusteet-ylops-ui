@@ -50,7 +50,6 @@
 import _ from 'lodash';
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
@@ -68,7 +67,7 @@ const props = withDefaults(
   tyhjaValinta: false,
 });
 
-const { store } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
 const route = useRoute();
 const router = useRouter();
 

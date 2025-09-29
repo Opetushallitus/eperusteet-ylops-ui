@@ -109,10 +109,7 @@ import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpOrderColorBall from '@shared/components/EpColorIndicator/EpOrderColorBall.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpRoute } from '@/mixins/EpRoute';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna, $t } from '@shared/utils/globals';
-
 
 // Props
 const props = defineProps<{
@@ -126,18 +123,8 @@ const route = useRoute();
 const sisaltocollapse = useTemplateRef('sisaltocollapse');
 
 // Use composables
-const epRoute = useEpRoute();
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 // Reactive data
 const editointiStore = ref<EditointiStore | null>(null);
 const avaaSulje = ref(true);

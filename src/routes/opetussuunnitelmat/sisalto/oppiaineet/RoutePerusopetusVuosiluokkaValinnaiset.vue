@@ -48,8 +48,6 @@
 import _ from 'lodash';
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useEpRoute } from '@/mixins/EpRoute';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusVuosiluokkaValinnaisetStore } from '@/stores/perusopetusvuosiluokkavalinnaisetStore';
@@ -65,7 +63,7 @@ const props = defineProps<{
 // Use composables
 const route = useRoute();
 const router = useRouter();
-const { ops } = useEpOpsComponent(props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma);
 
 // Reactive data
 const editointiStore = ref<EditointiStore | null>(null);

@@ -27,7 +27,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useEpRoot } from '@/mixins/EpRoot';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
@@ -43,8 +42,6 @@ const props = withDefaults(
   isOps: true,
   countIsLoading: true,
 });
-
-const { isLoading, vahvista, loading, init, getMetaInfo } = useEpRoot();
 
 const vars = computed(() => {
   if (props.isOps) {

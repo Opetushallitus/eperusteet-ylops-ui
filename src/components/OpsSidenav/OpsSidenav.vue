@@ -113,9 +113,13 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import { oppiaineLinkki, oppimaaraModuuliLinkit, oppimaaraOpintojaksoLinkit, opsLapsiLinkit, paikallinenOppiaineLinkki, oppimaaraUusiLinkki, vuosiluokkaLinkit } from './menuBuildingMethods';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { koodiNumero, koodiAlku, isPaikallisestiSallittuLaajennos, koodiSorters } from '@/utils/perusteet';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna, $t } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
+import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
+import { TermitStore } from '@/stores/TermitStore';
+import { KuvaStore } from '@/stores/KuvaStore';
+import { Koulutustyyppi } from '@shared/tyypit';
 
 // Static content for menu
 const menuBaseData: SideMenuEntry[] = [
@@ -185,20 +189,10 @@ const emit = defineEmits(['input']);
 // Router
 const route = useRoute();
 
-// Use the composable
-const {
-  store,
-  ops,
-  isLops2019,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  isPohjanTyyppiOps,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsComponent(props.opetussuunnitelmaStore);
+// Computed properties from store
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 
 // Reactive data
 const cache = ref<PerusteCache>(null as any);
@@ -323,7 +317,7 @@ const perusteenOppiaineet = computed(() => {
 });
 
 const paikallisetOppiaineet = computed(() => {
-  return store.value.paikallisetOppiaineet;
+  return store.value.paikallisetOppiaineet.value;
 });
 
 const paikallisetOppiaineetByPerusteenOppiaineenKoodi = computed(() => {
@@ -348,13 +342,14 @@ const isLoading = computed(() => {
 });
 
 const oppiaineJarjestykset = computed(() => {
-  return store.value.oppiaineJarjestykset;
+  return store.value.oppiaineJarjestykset.value;
 });
 
 const opsOppiaineLinkit = computed(() => {
   if (!perusteenOppiaineet.value) {
     return [];
   }
+
   return _.chain(perusteenOppiaineet.value)
     .sortBy(koodiAlku, koodiNumero)
     .map(oppiaine => {
@@ -475,7 +470,7 @@ const valikkoDataBasics = computed(() => {
 });
 
 const opsLapset = computed(() => {
-  return _.get(store.value, 'sisalto.lapset', []);
+  return _.get(store.value.sisalto.value, 'lapset', []);
 });
 
 const valikkoData = computed(() => {
@@ -487,7 +482,7 @@ const valikkoData = computed(() => {
 
   // Lisätään oppiaineet valikkoon ja niiden alle opintojaksot & modulit
   const oppiaineLinkit = opsOppiaineLinkit.value;
-  const paikallisetOppiaineArray = store.value.paikallisetOppiaineet || [];
+  const paikallisetOppiaineArray = store.value.paikallisetOppiaineet.value || [];
 
   if ((oppiaineLinkit && oppiaineLinkit.length > 0) || paikallisetOppiaineArray.length > 0) {
     menuOpsData = [
@@ -538,7 +533,7 @@ const valikkoData = computed(() => {
 });
 
 const reset = () => {
-  store.value.init();
+  store.value.init(store.value.opsId.value);
 };
 
 const tekstikappaleet = computed(() => {

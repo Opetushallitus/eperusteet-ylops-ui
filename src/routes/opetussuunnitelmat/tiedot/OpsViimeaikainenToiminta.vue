@@ -67,15 +67,15 @@ const props = defineProps<{
 const lisahaku = ref<boolean>(false);
 
 const muokkaustiedot = computed(() => {
-  return props.muokkaustietoStore.muokkaustiedot;
+  return props.muokkaustietoStore.muokkaustiedot.value;
 });
 
 const viimeinenHaku = computed(() => {
-  return props.muokkaustietoStore.viimeinenHaku;
+  return props.muokkaustietoStore.viimeinenHaku.value;
 });
 
 const hakuLukumaara = computed(() => {
-  return props.muokkaustietoStore.hakuLukumaara;
+  return props.muokkaustietoStore.hakuLukumaara.value;
 });
 
 const muokkaustietoKayttajanimi = (muokkaustieto: any) => {

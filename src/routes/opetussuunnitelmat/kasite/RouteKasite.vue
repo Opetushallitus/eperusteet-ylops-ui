@@ -61,7 +61,6 @@ import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { TermiDto, Termisto } from '@shared/api/ylops';
 import { kasiteValidator } from '@/validators/kasite';
 import { Kieli } from '@shared/tyypit';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
@@ -83,7 +82,9 @@ const props = defineProps<{
 }>();
 
 // Use composables
-const { store, opsId, isLoading } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
+const isLoading = computed(() => false); // Not needed from the route mixin
 // Template refs
 const kasitteenPoistoModal = ref();
 const kasitteenLuontiModal = ref();

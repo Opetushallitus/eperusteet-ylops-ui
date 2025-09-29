@@ -46,39 +46,22 @@ export class OpetussuunnitelmaStore {
     opsId: 0,
     sisalto: null as TekstiKappaleViitePerusteTekstillaDto | null,
     opetussuunnitelma: null as OpetussuunnitelmaKevytDto | null,
-
     paikallisetOppiaineet: [] as Lops2019PaikallinenOppiaineDto[],
-
     opintojaksot: [] as Lops2019OpintojaksoDto[],
-
     tuodutOpintojaksot: [] as Lops2019OpintojaksoDto[],
-
     oppiaineJarjestykset: [] as Lops2019OppiaineJarjestysDto[],
-
     kasitteet: [] as TermiDto[],
-
     virkailijat: null as any[] | null,
-
     valinnaisetOppiaineet: [] as OppiaineDto[],
-
     julkaisut: null as OpetussuunnitelmanJulkaisuDto[] | null,
-
     validointi: null as Array<Validointi> | null,
-
     pohjallaPuuttuviaTeksteja: null as boolean | null,
-
     pohjanPerustePaivittynyt: null as boolean | null,
-
     julkaisemattomiaMuutoksia: null as boolean | null,
-
     viimeisinJulkaisuTila: null as string | null,
-
     tilaPolling: null as any | null,
-
     viimeisinPohjaTekstiSync: null as OpetussuunnitelmanMuokkaustietoDto | null,
-
     pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync: null as OpetussuunnitelmanMuokkaustietoDto | null,
-
     peruste: null as PerusteInfoDto | null,
   });
 
@@ -103,10 +86,6 @@ export class OpetussuunnitelmaStore {
   public readonly pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = computed(() => this.state.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync);
   public readonly peruste = computed(() => this.state.peruste);
 
-  constructor(opsId: number) {
-    this.state.opsId = opsId;
-  }
-
   // Tekstikappaleet
   public async getOtsikot() {
     return (await OpetussuunnitelmanSisalto.getTekstiOtsikot(this.state.opsId)).data;
@@ -121,15 +100,42 @@ export class OpetussuunnitelmaStore {
     this.state.kasitteet = await this.getKasitteet();
   }
 
-  public async init() {
+  public clear() {
+    this.state.opetussuunnitelma = null;
+    this.state.sisalto = null;
+    this.state.paikallisetOppiaineet = [];
+    this.state.opintojaksot = [];
+    this.state.tuodutOpintojaksot = [];
+    this.state.oppiaineJarjestykset = [];
+    this.state.kasitteet = [];
+    this.state.virkailijat = null;
+    this.state.valinnaisetOppiaineet = [];
+    this.state.julkaisut = null;
+    this.state.validointi = null;
+    this.state.pohjallaPuuttuviaTeksteja = null;
+    this.state.pohjanPerustePaivittynyt = null;
+    this.state.julkaisemattomiaMuutoksia = null;
+    this.state.viimeisinJulkaisuTila = null;
+    this.state.tilaPolling = null;
+    this.state.viimeisinPohjaTekstiSync = null;
+    this.state.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = null;
+    this.state.peruste = null;
+    this.state.opsId = 0;
+  }
+
+  public async init(opsId?: number) {
+    if (opsId) {
+      this.state.opsId = opsId;
+    }
+
     logger.info('Initing ops store', this.state.opsId);
     this.state.opetussuunnitelma = await this.get();
-    this.updatePohjanPerustePaivittynyt();
-    this.updateSisalto();
-    this.updateValidation();
-    this.fetchJulkaisut();
-    this.updateOppiaineet();
-    this.updatePohjallaPuuttuviaTeksteja();
+    await this.updatePohjanPerustePaivittynyt();
+    await this.updateSisalto();
+    await this.updateValidation();
+    await this.fetchJulkaisut();
+    await this.updateOppiaineet();
+    await this.updatePohjallaPuuttuviaTeksteja();
   }
 
   async updatePohjanPerustePaivittynyt() {
@@ -398,7 +404,7 @@ export class OpetussuunnitelmaStore {
         await this.getPoistetutTekstikappaleet();
       }
       success('palautus-onnistui');
-      await this.init();
+      await this.init(this.state.opsId);
     }
     catch (err: any) {
       fail('palautus-epaonnistui', err.response.data.syy);
@@ -468,17 +474,4 @@ export class OpetussuunnitelmaStore {
       nimi,
     };
   }
-}
-
-let opsServiceCache: OpetussuunnitelmaStore | null = null;
-
-export function Opetussuunnitelma() {
-  return opsServiceCache!;
-}
-
-export function getOpetussuunnitelmaService(id: number) {
-  if (!opsServiceCache || opsServiceCache.opsId.value !== id) {
-    opsServiceCache = new OpetussuunnitelmaStore(id);
-  }
-  return opsServiceCache;
 }

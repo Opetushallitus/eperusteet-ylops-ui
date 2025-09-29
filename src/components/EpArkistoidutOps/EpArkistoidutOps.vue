@@ -13,7 +13,7 @@
     </div>
     <EpSpinner v-if="!opetussuunnitelmat" />
 
-    <template v-else>
+    <template v-else-if="opetussuunnitelmat.data.length > 0">
       <b-table
               responsive
               borderless
@@ -35,13 +35,13 @@
 
       </b-table>
 
-      <b-pagination
+      <EpPagination
         v-model="opsSivu"
         :total-rows="opetussuunnitelmat['kokonaismäärä']"
         :per-page="10"
         aria-controls="arkistoidut-opetussuunnitelmat"
         align="center">
-      </b-pagination>
+      </EpPagination>
     </template>
   </b-modal>
 </div>
@@ -61,6 +61,7 @@ import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops'
 import { debounced } from '@shared/utils/delay';
 import { Page } from '@shared/tyypit';
 import { Kielet } from '@shared/stores/kieli';
+import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
 
 import { $t, $kaanna, $sdt } from '@shared/utils/globals';
 

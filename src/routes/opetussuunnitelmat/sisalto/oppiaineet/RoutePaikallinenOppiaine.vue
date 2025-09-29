@@ -181,9 +181,8 @@ import { PerusteCache } from '@/stores/peruste';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { LopsPaikallinenOppiaineStore } from '@/stores/lopsPaikallinenOppiaineStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { useEpRoute } from '@/mixins/EpRoute';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { $kaanna } from '@shared/utils/globals';
+import { Koulutustyyppi } from '@shared/tyypit';
 
 // Props
 const props = defineProps<{
@@ -195,18 +194,9 @@ const route = useRoute();
 const router = useRouter();
 
 // Use composables
-const epRoute = useEpRoute();
-const {
-  store,
-  ops,
-  opsId,
-  isPohja,
-  isOps,
-  isValmisPohja,
-  kasiteHandler,
-  kuvaHandler,
-  isLuva,
-} = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
+const isLuva = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.koulutustyyppi as string === Koulutustyyppi.lukiovalmistavakoulutus);
 // Reactive data
 const perusteCache = ref<PerusteCache | null>(null);
 const editointiStore = ref<EditointiStore | null>(null);
