@@ -1,7 +1,13 @@
 <template>
   <div>
-    <ep-search v-model="query" class="mb-4" />
-    <poistetut-table :poistetut="rajatut" @palauta="palauta" />
+    <ep-search
+      v-model="query"
+      class="mb-4"
+    />
+    <poistetut-table
+      :poistetut="rajatut"
+      @palauta="palauta"
+    />
   </div>
 </template>
 

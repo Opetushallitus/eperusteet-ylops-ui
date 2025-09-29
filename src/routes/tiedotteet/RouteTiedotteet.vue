@@ -3,17 +3,22 @@
     <ep-navigation />
     <ep-tiedote-view :tiedotteet="tiedotteet">
       <template #search>
-        <ep-search class="mb-3" v-model="rajain" @input="updateSearch" />
+        <ep-search
+          v-model="rajain"
+          class="mb-3"
+          @input="updateSearch"
+        />
       </template>
       <template #pagination>
-        <b-pagination
-          class="justify-content-center"
+        <EpPagination
           v-model="sivu"
+          class="justify-content-center"
           :per-page="sivukoko"
           :total-rows="kokonaismaara"
           :limit="10"
-          @input="update"
-          aria-controls="tiedotteet" />
+          aria-controls="tiedotteet"
+          @update:model-value="update"
+        />
       </template>
     </ep-tiedote-view>
   </div>
@@ -27,11 +32,10 @@ import { julkaisupaikka } from '@shared/utils/tiedote';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpTiedoteView from '@shared/components/EpTiedoteView/EpTiedoteView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import { useEpRoot } from '@/mixins/EpRoot';
 import { Ulkopuoliset } from '@shared/api/ylops';
 import { debounced } from '@shared/utils/delay';
-
-const { loading } = useEpRoot();
+import { onMounted } from 'vue';
+import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
 
 const rajain = ref('');
 const tiedotteet = ref<any[] | null>(null);
@@ -65,13 +69,6 @@ const updateSearch = debounced(async () => {
   await update();
 }, 300);
 
-const init = async () => {
-  await update();
-};
-
-// Call init function in the loading wrapper
-loading(init);
-
 // Watch for pagination changes
 watch(sivu, () => {
   update();
@@ -80,5 +77,9 @@ watch(sivu, () => {
 // Watch for search changes
 watch(rajain, () => {
   updateSearch();
+});
+
+onMounted(async () => {
+  await update();
 });
 </script>

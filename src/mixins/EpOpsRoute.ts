@@ -1,7 +1,7 @@
 import { computed, provide } from 'vue';
 import { useRoute } from 'vue-router';
 import { useEpRoute } from './EpRoute';
-import { OpetussuunnitelmaStore, Opetussuunnitelma } from '@/stores/opetussuunnitelma';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import _ from 'lodash';
 import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
 import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
@@ -16,42 +16,22 @@ export function useEpOpsRoute(opetussuunnitelmaStore: OpetussuunnitelmaStore) {
   const route = useRoute();
   const epRoute = useEpRoute();
 
-  const store = computed(() => opetussuunnitelmaStore);
+  const isPohja = computed(() => opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 
-  const ops = computed(() => store.value.opetussuunnitelma!);
+  const isOps = computed(() => opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'ops');
 
-  const opsId = computed(() => store.value.opetussuunnitelma!.id!);
+  const isValmisPohja = computed(() => isPohja.value && opetussuunnitelmaStore.opetussuunnitelma.value?.tila as any === 'valmis');
 
-  const isPohja = computed(() => store.value.opetussuunnitelma?.tyyppi as string === 'pohja');
-
-  const isOps = computed(() => store.value.opetussuunnitelma?.tyyppi as string === 'ops');
-
-  const isValmisPohja = computed(() => isPohja.value && ops.value.tila as any === 'valmis');
-
-  const kasiteHandler = computed(() => {
-    return createKasiteHandler(new TermitStore(_.toNumber(route.params.id)));
-  });
-
-  const kuvaHandler = computed(() => {
-    return createKuvaHandler(new KuvaStore(_.toNumber(route.params.id)));
-  });
-
-  const isLuva = computed(() => ops.value?.koulutustyyppi as string === Koulutustyyppi.lukiovalmistavakoulutus);
-
-  // Provide reactive handlers
-  provide('kasiteHandler', kasiteHandler);
-  provide('kuvaHandler', kuvaHandler);
+  const isLuva = computed(() => opetussuunnitelmaStore.opetussuunnitelma.value?.koulutustyyppi as string === Koulutustyyppi.lukiovalmistavakoulutus);
 
   return {
     ...epRoute,
-    store,
-    ops,
-    opsId,
+    store: opetussuunnitelmaStore,
+    ops: opetussuunnitelmaStore.opetussuunnitelma.value,
+    opsId: opetussuunnitelmaStore.opetussuunnitelma.value?.id,
     isPohja,
     isOps,
     isValmisPohja,
-    kasiteHandler,
-    kuvaHandler,
     isLuva,
   };
 }

@@ -1,26 +1,43 @@
 <template>
-<div>
-  <div class="sidenav d-flex">
-    <div class="closed">
-      <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="!toggled">
-        <span class="bar">
-          <EpMaterialIcon>menu</EpMaterialIcon>
-        </span>
-      </button>
-    </div>
-    <div class="bar d-flex flex-column" v-if="toggled">
-      <div class="d-flex flex-row">
-        <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="toggled">
-          <EpMaterialIcon>menu</EpMaterialIcon>
+  <div>
+    <div class="sidenav d-flex">
+      <div class="closed">
+        <button
+          v-if="!toggled"
+          class="btn btn-link menubutton"
+          @click="toggled = !toggled"
+        >
+          <span class="bar">
+            <EpMaterialIcon>menu</EpMaterialIcon>
+          </span>
         </button>
       </div>
-      <slot name="bar" class="flex-fill"></slot>
-    </div>
-    <div class="view" ref="content">
-      <slot name="view"></slot>
+      <div
+        v-if="toggled"
+        class="bar d-flex flex-column"
+      >
+        <div class="d-flex flex-row">
+          <button
+            v-if="toggled"
+            class="btn btn-link menubutton"
+            @click="toggled = !toggled"
+          >
+            <EpMaterialIcon>menu</EpMaterialIcon>
+          </button>
+        </div>
+        <slot
+          name="bar"
+          class="flex-fill"
+        />
+      </div>
+      <div
+        ref="content"
+        class="view"
+      >
+        <slot name="view" />
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">

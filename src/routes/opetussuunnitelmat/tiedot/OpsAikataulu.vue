@@ -1,36 +1,43 @@
 <template>
   <div class="content">
-
     <div class="row">
       <div class="col">
-        <h2>{{$t('aikataulu')}}</h2>
+        <h2>{{ $t('aikataulu') }}</h2>
       </div>
       <div class="col text-right">
-        <ep-aikataulu-modal ref="aikataulumodal" :rootModel="ops" :aikataulut="aikataulut" @tallenna="tallenna"
-        v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }">
-          <template v-slot:selite>
-            <p>{{ $t('aikataulu-modal-selite')}}</p>
+        <ep-aikataulu-modal
+          ref="aikataulumodal"
+          v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }"
+          :root-model="ops"
+          :aikataulut="aikataulut"
+          @tallenna="tallenna"
+        >
+          <template #selite>
+            <p>{{ $t('aikataulu-modal-selite') }}</p>
           </template>
         </ep-aikataulu-modal>
       </div>
     </div>
 
-    <ep-spinner v-if="!aikataulut"></ep-spinner>
+    <ep-spinner v-if="!aikataulut" />
 
     <div v-else>
-
-      <div v-if="aikataulut.length === 0" class="text-center">
-        <ep-button @click="otaAikatauluKayttoon" buttonClass="pl-5 pr-5">
+      <div
+        v-if="aikataulut.length === 0"
+        class="text-center"
+      >
+        <ep-button
+          button-class="pl-5 pr-5"
+          @click="otaAikatauluKayttoon"
+        >
           <span>{{ $t('ota-kayttoon') }}</span>
         </ep-button>
       </div>
 
       <div v-else>
-        <ep-aikataulu :aikataulut ="aikataulut" />
+        <ep-aikataulu :aikataulut="aikataulut" />
       </div>
-
     </div>
-
   </div>
 </template>
 
@@ -44,7 +51,7 @@ import EpAikatauluModal from '@shared/components/EpAikataulu/EpAikatauluModal.vu
 import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import { AikatauluStore } from '@/stores/aikataulu';
 import { success } from '@/utils/notifications';
-import { $t } from '@shared/utils/globals';
+import { $success, $t } from '@shared/utils/globals';
 
 const props = defineProps<{
   ops: OpetussuunnitelmaKevytDto;
@@ -54,7 +61,7 @@ const props = defineProps<{
 const aikataulumodal = useTemplateRef('aikataulumodal');
 
 const aikataulut = computed(() => {
-  return props.aikatauluStore.aikataulut;
+  return props.aikatauluStore.aikataulut.value;
 });
 
 const otaAikatauluKayttoon = () => {
@@ -73,7 +80,7 @@ const tallenna = async (aikataulutData: any) => {
   });
 
   await props.aikatauluStore.saveAikataulut(processedAikataulut);
-  success('aikataulu-tallennettu');
+  $success('aikataulu-tallennettu');
 };
 
 onMounted(async () => {

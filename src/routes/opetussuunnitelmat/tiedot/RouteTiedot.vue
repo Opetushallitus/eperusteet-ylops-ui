@@ -1,131 +1,207 @@
 <template>
-<div id="scroll-anchor" class="content">
-  <ep-editointi :store="editStore" :allowSave="confirm">
-    <template v-slot:header>
-      <h2 class="otsikko">{{ $t('tiedot') }}</h2>
-    </template>
-    <template v-slot="{ data, validation, isEditing }">
-      <div>
-        <div class="row">
-          <div class="col-md-6">
-            <ep-form-content name="ops-nimi">
-              <ep-field help="ops-nimi-ohje"
-                        v-model="data.nimi"
-                        :validation="validation.nimi" :is-editing="isEditing">
-              </ep-field>
-            </ep-form-content>
-          </div>
-          <div class="col-md-6">
-            <ep-form-content name="peruste">
-              <ep-external-link :url="data.perusteUrl">{{data.perusteenDiaarinumero}}</ep-external-link>
-            </ep-form-content>
-          </div>
-          <div class="col-md-6">
-            <ep-form-content name="pohjat">
-              <OpsPohjat :ops="data"></OpsPohjat>
-            </ep-form-content>
-          </div>
-          <div class="col-md-6">
-            <ep-form-content name="julkaisukielet">
-              <ep-select help="ops-julkaisukielet-ohje"
-                          v-model="data.julkaisukielet"
-                          :validation="validation.julkaisukielet"
-                          :is-editing="isEditing"
-                          :items="kielet"
-                          :multiple="true"
-                          :use-checkboxes="true">
-                <template v-slot:default="{item}">
-                  {{$t(item)}}
-                </template>
-              </ep-select>
-            </ep-form-content>
-          </div>
-          <div class="col-md-6" v-if="isOps">
-            <ep-form-content name="ops-hyvaksyjataho">
-              <ep-field help="ops-hyvaksyjataho-ohje" v-model="data.hyvaksyjataho" :validation="validation.hyvaksyjataho" type="string" :is-editing="isEditing">
-              </ep-field>
-            </ep-form-content>
-          </div>
-          <div class="col-md-6" v-if="isOps">
-            <ep-form-content name="ops-hyvaksymispvm">
-              <ep-datepicker v-model="data.paatospaivamaara" help="ops-hyvaksymispvm-ohje" :validation="validation.paatospaivamaara" :is-editing="isEditing" :showValidValidation="false">
-              </ep-datepicker>
-            </ep-form-content>
-          </div>
+  <div
+    id="scroll-anchor"
+    class="content"
+  >
+    <ep-editointi
+      :store="editStore"
+      :allow-save="confirm"
+    >
+      <template #header>
+        <h2 class="otsikko">
+          {{ $t('tiedot') }}
+        </h2>
+      </template>
+      <template #default="{ data, validation, isEditing }">
+        <div>
+          <div class="row">
+            <div class="col-md-6">
+              <ep-form-content name="ops-nimi">
+                <ep-field
+                  v-model="data.nimi"
+                  help="ops-nimi-ohje"
+                  :validation="validation.nimi"
+                  :is-editing="isEditing"
+                />
+              </ep-form-content>
+            </div>
+            <div class="col-md-6">
+              <ep-form-content name="peruste">
+                <ep-external-link :url="data.perusteUrl">
+                  {{ data.perusteenDiaarinumero }}
+                </ep-external-link>
+              </ep-form-content>
+            </div>
+            <div class="col-md-6">
+              <ep-form-content name="pohjat">
+                <OpsPohjat :ops="data" />
+              </ep-form-content>
+            </div>
+            <div class="col-md-6">
+              <ep-form-content name="julkaisukielet">
+                <ep-select
+                  v-model="data.julkaisukielet"
+                  help="ops-julkaisukielet-ohje"
+                  :validation="validation.julkaisukielet"
+                  :is-editing="isEditing"
+                  :items="kielet"
+                  :multiple="true"
+                  :use-checkboxes="true"
+                >
+                  <template #default="{item}">
+                    {{ $t(item) }}
+                  </template>
+                </ep-select>
+              </ep-form-content>
+            </div>
+            <div
+              v-if="isOps"
+              class="col-md-6"
+            >
+              <ep-form-content name="ops-hyvaksyjataho">
+                <ep-field
+                  v-model="data.hyvaksyjataho"
+                  help="ops-hyvaksyjataho-ohje"
+                  :validation="validation.hyvaksyjataho"
+                  type="string"
+                  :is-editing="isEditing"
+                />
+              </ep-form-content>
+            </div>
+            <div
+              v-if="isOps"
+              class="col-md-6"
+            >
+              <ep-form-content name="ops-hyvaksymispvm">
+                <ep-datepicker
+                  v-model="data.paatospaivamaara"
+                  help="ops-hyvaksymispvm-ohje"
+                  :validation="validation.paatospaivamaara"
+                  :is-editing="isEditing"
+                  :show-valid-validation="false"
+                />
+              </ep-form-content>
+            </div>
 
-          <div class="col-md-6" v-if="isOps">
-            <EpEsikatselu opetussuunnitelma v-model="storeData" :is-editing="isEditing" />
-          </div>
-          <div class="col-md-6">
-            <ep-form-content name="ops-organisaatiot">
-              <ul>
-                <li v-for="(org, idx) in kunnatJaOrganisaatiotSorted" :key="idx + 1">
-                  {{ $kaanna(org.nimi) }}
-                </li>
-              </ul>
-            </ep-form-content>
-          </div>
-            <div class="col-md-6" v-if="hasContentFilters">
-            <ep-form-content name="sisallon-tuonti" v-if="features.opintojaksot || features.oppimaarat">
-              <div>
-                <ep-toggle v-model="data.tuoPohjanOpintojaksot" :is-editing="isEditing" v-if="features.opintojaksot">
-                  {{ $t('tuo-pohjan-organisaation-opintojaksot') }}
+            <div
+              v-if="isOps"
+              class="col-md-6"
+            >
+              <EpEsikatselu
+                v-model="storeData"
+                opetussuunnitelma
+                :is-editing="isEditing"
+              />
+            </div>
+            <div class="col-md-6">
+              <ep-form-content name="ops-organisaatiot">
+                <ul>
+                  <li
+                    v-for="(org, idx) in kunnatJaOrganisaatiotSorted"
+                    :key="idx + 1"
+                  >
+                    {{ $kaanna(org.nimi) }}
+                  </li>
+                </ul>
+              </ep-form-content>
+            </div>
+            <div
+              v-if="hasContentFilters"
+              class="col-md-6"
+            >
+              <ep-form-content
+                v-if="features.opintojaksot || features.oppimaarat"
+                name="sisallon-tuonti"
+              >
+                <div>
+                  <ep-toggle
+                    v-if="features.opintojaksot"
+                    v-model="data.tuoPohjanOpintojaksot"
+                    :is-editing="isEditing"
+                  >
+                    {{ $t('tuo-pohjan-organisaation-opintojaksot') }}
+                  </ep-toggle>
+                  <ep-toggle
+                    v-if="features.oppimaarat"
+                    v-model="data.tuoPohjanOppimaarat"
+                    :is-editing="isEditing"
+                  >
+                    {{ $t('tuo-pohjan-organisaation-oppimaarat') }}
+                  </ep-toggle>
+                </div>
+              </ep-form-content>
+            </div>
+            <div
+              v-if="data.ainepainoitteinen"
+              class="col-md-6"
+            >
+              <ep-form-content name="opintojaksojen-tarkistus">
+                <ep-toggle
+                  v-model="data.ainepainoitteinen"
+                  :is-editing="false"
+                  :is-switch="false"
+                >
+                  {{ $t('ainepainoitteinen') }}
                 </ep-toggle>
-                <ep-toggle v-model="data.tuoPohjanOppimaarat" :is-editing="isEditing" v-if="features.oppimaarat">
-                  {{ $t('tuo-pohjan-organisaation-oppimaarat') }}
-                </ep-toggle>
+              </ep-form-content>
+            </div>
+            <div class="col-md-12">
+              <div v-if="data.pohja && data.toteutus === 'perusopetus' && data.valittavatVuosiluokkakokonaisuudet">
+                <ep-form-content name="vuosiluokkakokonaisuudet">
+                  <b-form-checkbox-group
+                    v-if="isEditing"
+                    v-model="data.vuosiluokkakokonaisuudet"
+                    class="mt-2"
+                    stacked
+                  >
+                    <b-form-checkbox
+                      v-for="(vuosiluokkakokonaisuus, index) in data.valittavatVuosiluokkakokonaisuudet"
+                      :key="'vlk'+index"
+                      :value="vuosiluokkakokonaisuus"
+                      :disabled="vuosiluokkakokonaisuus.lukittu"
+                    >
+                      {{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
+                    </b-form-checkbox>
+                  </b-form-checkbox-group>
+                  <template v-else>
+                    <span
+                      v-for="(vuosiluokkakokonaisuus, index) in data.vuosiluokkakokonaisuudet"
+                      :key="'vlk'+index"
+                    >
+                      <span v-if="index > 0">, </span>{{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
+                    </span>
+                  </template>
+                </ep-form-content>
               </div>
-            </ep-form-content>
-          </div>
-            <div class="col-md-6" v-if="data.ainepainoitteinen">
-            <ep-form-content name="opintojaksojen-tarkistus">
-              <ep-toggle v-model="data.ainepainoitteinen" :is-editing="false" :is-switch="false">{{$t('ainepainoitteinen')}}</ep-toggle>
-            </ep-form-content>
-          </div>
-          <div class="col-md-12">
-
-          <div v-if="data.pohja && data.toteutus === 'perusopetus' && data.valittavatVuosiluokkakokonaisuudet">
-            <ep-form-content name="vuosiluokkakokonaisuudet">
-              <b-form-checkbox-group v-model="data.vuosiluokkakokonaisuudet" class="mt-2" stacked v-if="isEditing">
-                <b-form-checkbox
-                  v-for="(vuosiluokkakokonaisuus, index) in data.valittavatVuosiluokkakokonaisuudet"
-                  :key="'vlk'+index"
-                  :value="vuosiluokkakokonaisuus"
-                  :disabled="vuosiluokkakokonaisuus.lukittu">
-                  {{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
-                </b-form-checkbox>
-              </b-form-checkbox-group>
-              <template v-else>
-                <span v-for="(vuosiluokkakokonaisuus, index) in data.vuosiluokkakokonaisuudet" :key="'vlk'+index" >
-                  <span v-if="index > 0">, </span>{{ $kaanna(vuosiluokkakokonaisuus.vuosiluokkakokonaisuus.nimi) }}
-                </span>
-              </template>
-            </ep-form-content>
-          </div>
-
-          </div>
-          <div class="col-md-12">
-            <ep-form-content name="ops-kuvaus">
-              <ep-content layout="normal"
-                          v-model="data.kuvaus"
-                          help="ops-kuvaus-ohje"
-                          :validation="validation.kuvaus"
-                          :is-editable="isEditing"> </ep-content>
-            </ep-form-content>
-          </div>
-          <div class="col-md-6" v-if="isEditing && data.pohja" >
-            <hr/>
-            <h3>{{$t('organisaatiot')}}</h3>
-            <ep-organizations
-              :validation="validation.organisaatiot"
-              :koulutustyyppi="data.koulutustyyppi"
-              v-model="data.kaikkiOrganisaatiot"/>
+            </div>
+            <div class="col-md-12">
+              <ep-form-content name="ops-kuvaus">
+                <ep-content
+                  v-model="data.kuvaus"
+                  layout="normal"
+                  help="ops-kuvaus-ohje"
+                  :validation="validation.kuvaus"
+                  :is-editable="isEditing"
+                />
+              </ep-form-content>
+            </div>
+            <div
+              v-if="isEditing && data.pohja"
+              class="col-md-6"
+            >
+              <hr>
+              <h3>{{ $t('organisaatiot') }}</h3>
+              <ep-organizations
+                v-model="data.kaikkiOrganisaatiot"
+                :validation="validation.organisaatiot"
+                :koulutustyyppi="data.koulutustyyppi"
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-  </ep-editointi>
-</div>
+      </template>
+    </ep-editointi>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -137,7 +213,6 @@ import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpDatepicker from '@shared/components/forms/EpDatepicker.vue';
-import { useEpOpsRoute } from '@/mixins/EpOpsRoute';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { ref, computed, watch, onMounted } from 'vue';
 import { opsTiedotValidator } from '@/validators/ops';
@@ -158,7 +233,9 @@ const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
 }>();
 
-const { opsId, ops, store } = useEpOpsRoute(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
 const editStore = ref<EditointiStore | null>(null);
 
@@ -218,7 +295,7 @@ const confirm = async () => {
 
 const storeData = computed({
   get: () => editStore.value?.data.value,
-  set: (data) => editStore.value?.setData(data)
+  set: (data) => editStore.value?.setData(data),
 });
 
 const nimi = computed(() => {

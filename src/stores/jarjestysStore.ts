@@ -10,6 +10,7 @@ import { PerusteCache } from './peruste';
 
 import { koodiSorters } from '@shared/utils/perusteet';
 import { success } from '@/utils/notifications';
+import { $success } from '@shared/utils/globals';
 
 const logger = createLogger('JarjestysStore');
 
@@ -310,7 +311,7 @@ export class JarjestysStore implements IEditoitava {
       }
     }
 
-    success('tallennus-onnistui-jarjestys');
+    $success('tallennus-onnistui-jarjestys');
   }
 
   async preview() {

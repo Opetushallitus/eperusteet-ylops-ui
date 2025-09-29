@@ -1,28 +1,41 @@
 <template>
-<div>
-  <div v-for="(text, idx) in innerValue" :key="idx">
-    <slot :kooditettu="text">
-      <h4 class="otsikko">{{ $kaanna(used[text.koodi].nimi) }} ({{ used[text.koodi].koodiArvo }})</h4>
-      <ep-content
-        :modelValue="text.kuvaus"
-        @update:modelValue="updatedKuvaus(text.koodi, $event)"
-        :is-editable="isEditable"
-        layout="normal" />
-    </slot>
-  </div>
+  <div>
+    <div
+      v-for="(text, idx) in innerValue"
+      :key="idx"
+    >
+      <slot :kooditettu="text">
+        <h4 class="otsikko">
+          {{ $kaanna(used[text.koodi].nimi) }} ({{ used[text.koodi].koodiArvo }})
+        </h4>
+        <ep-content
+          :model-value="text.kuvaus"
+          :is-editable="isEditable"
+          layout="normal"
+          @update:model-value="updatedKuvaus(text.koodi, $event)"
+        />
+      </slot>
+    </div>
 
-  <div v-if="isEditable" class="mt-4">
-    <b-dropdown :text="$t(nimi)" variant="primary">
-      <b-dropdown-item-button
-        v-for="(koodi, idx) in used"
-        @click="addKooditettuKuvaus(koodi)"
-        :key="idx"
-        :disabled="koodi.inUse">
-        {{ $kaanna(koodi.nimi) }} ({{ koodi.koodiArvo }})
-      </b-dropdown-item-button>
-    </b-dropdown>
+    <div
+      v-if="isEditable"
+      class="mt-4"
+    >
+      <b-dropdown
+        :text="$t(nimi)"
+        variant="primary"
+      >
+        <b-dropdown-item-button
+          v-for="(koodi, idx) in used"
+          :key="idx"
+          :disabled="koodi.inUse"
+          @click="addKooditettuKuvaus(koodi)"
+        >
+          {{ $kaanna(koodi.nimi) }} ({{ koodi.koodiArvo }})
+        </b-dropdown-item-button>
+      </b-dropdown>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
@@ -52,8 +65,8 @@ const props = withDefaults(
     isEditable?: boolean;
     nimi: string;
   }>(), {
-  isEditable: false,
-});
+    isEditable: false,
+  });
 
 const emit = defineEmits(['update:modelValue']);
 

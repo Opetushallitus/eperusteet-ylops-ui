@@ -1,38 +1,40 @@
 <template>
-<div class="home-container">
-  <div class="header">
-    <ep-navigation :sticky="false"></ep-navigation>
-    <div class="container">
-      <div class="container-fluid">
-        <div class="row no-gutters">
-          <div class="col my-4 px-3 px-md-0">
-            <h1>{{ $t('lops-tyokalu-tervetuloa', {nimi }) }}</h1>
-            <p>{{ $t('ylops-tervetuloa-kuvaus') }}</p>
+  <div class="home-container">
+    <div class="header">
+      <ep-navigation :sticky="false" />
+      <div class="container">
+        <div class="container-fluid">
+          <div class="row no-gutters">
+            <div class="col my-4 px-3 px-md-0">
+              <h1>{{ $t('lops-tyokalu-tervetuloa', {nimi }) }}</h1>
+              <p>{{ $t('ylops-tervetuloa-kuvaus') }}</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="container tile-container">
-    <div class="d-flex flex-row flex-wrap justify-content-center">
-      <tile-opetussuunnitelmat
-        :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
-        :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
-        :count-is-loading="isLoading" />
-      <tile-opetussuunnitelmat
-        :keskeneraiset="etusivu.pohjatKeskeneraiset"
-        :julkaistut="etusivu.pohjatJulkaistut"
-        :is-ops="false"
-        v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }"
-        :count-is-loading="isLoading" />
-      <tile-organisaatio />
-      <tile-valtakunnalliset-perusteet />
-      <tile-tiedotteet />
-      <tile-ukk />
-      <tile-oppaat />
+    <div class="container tile-container">
+      <div class="d-flex flex-row flex-wrap justify-content-center">
+        <tile-opetussuunnitelmat
+          :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
+          :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
+          :count-is-loading="isLoading"
+        />
+        <tile-opetussuunnitelmat
+          v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }"
+          :keskeneraiset="etusivu.pohjatKeskeneraiset"
+          :julkaistut="etusivu.pohjatJulkaistut"
+          :is-ops="false"
+          :count-is-loading="isLoading"
+        />
+        <tile-organisaatio />
+        <tile-valtakunnalliset-perusteet />
+        <tile-tiedotteet />
+        <tile-ukk />
+        <tile-oppaat />
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
@@ -40,7 +42,7 @@ import { ref, computed } from 'vue';
 import { KayttajaStore, Kayttajat } from '@/stores/kayttaja';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EtusivuDto } from '@shared/api/ylops';
-import { useEpRoute } from '@/mixins/EpRoute';
+import { onMounted } from 'vue';
 import TileUkk from './tiles/TileUkk.vue';
 import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
 import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
@@ -55,8 +57,7 @@ const props = defineProps<{
   kayttajaStore: KayttajaStore;
 }>();
 
-const { isLoading, init: baseInit } = useEpRoute();
-
+const isLoading = ref(true);
 const rajain = ref('');
 const etusivu = ref<EtusivuDto>({
   opetussuunnitelmatKeskeneraiset: 0,
@@ -65,12 +66,11 @@ const etusivu = ref<EtusivuDto>({
   pohjatJulkaistut: 0,
 });
 
-const init = async () => {
+onMounted(async () => {
+  isLoading.value = true;
   etusivu.value = await Kayttajat.getEtusivu();
-};
-
-// Override the base init function
-Object.assign(baseInit, init);
+  isLoading.value = false;
+});
 
 const nimi = computed(() => kayttajaStore.value.nimi.value || null);
 
@@ -91,7 +91,7 @@ const kayttaja = computed(() => Kayttajat.tiedot);
       font-weight: 300;
     }
     background-color: $etusivu-header-background;
-    background-image: url('~@assets/img/banners/banner_lukio.svg');
+    background-image: url('@assets/img/banners/banner_lukio.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
     @media only screen and (min-width: 2503px)  {

@@ -1,39 +1,75 @@
 <template>
   <div class="content">
-    <h2>{{$t('oppiaineet')}}</h2>
+    <h2>{{ $t('oppiaineet') }}</h2>
 
-    <ep-spinner v-if="!cache"></ep-spinner>
+    <ep-spinner v-if="!cache" />
     <div v-else>
-
-      <div class="box d-inline-flex align-items-center flex-column" v-if="isLops2019">
-        <div class="count">{{luodutOpintojaksot}}</div>
-        <div class="topic text-center">{{ $t('luotuja-opintojaksoja') }}</div>
-      </div>
-
-      <div class="box d-inline-flex align-items-center flex-column" v-if="isLops2019">
+      <div
+        v-if="isLops2019"
+        class="box d-inline-flex align-items-center flex-column"
+      >
         <div class="count">
-          <span>{{liitetytModuulitLukumaara}}</span>
-          <span class="secondary">/ {{moduulitLukumaara}}</span>
+          {{ luodutOpintojaksot }}
         </div>
-        <div class="topic text-center">{{ $t('moduulia-liitetty') }}</div>
+        <div class="topic text-center">
+          {{ $t('luotuja-opintojaksoja') }}
+        </div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column" v-if="isLops2019">
-        <div class="count">{{useanOppiaineenOpintojaksot}}</div>
-        <div class="topic text-center">{{$t('usean-oppiaineen-opintojaksoa')}}</div>
+      <div
+        v-if="isLops2019"
+        class="box d-inline-flex align-items-center flex-column"
+      >
+        <div class="count">
+          <span>{{ liitetytModuulitLukumaara }}</span>
+          <span class="secondary">/ {{ moduulitLukumaara }}</span>
+        </div>
+        <div class="topic text-center">
+          {{ $t('moduulia-liitetty') }}
+        </div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column" v-if="!isLops2019">
-        <div class="count">{{oppimaarat}}</div>
-        <div class="topic text-center">{{$t('luotua-oppimaaraa')}}</div>
+      <div
+        v-if="isLops2019"
+        class="box d-inline-flex align-items-center flex-column"
+      >
+        <div class="count">
+          {{ useanOppiaineenOpintojaksot }}
+        </div>
+        <div class="topic text-center">
+          {{ $t('usean-oppiaineen-opintojaksoa') }}
+        </div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column" >
-        <div class="count" v-if="isLops2019">{{paikallisetOppiaineet}}</div>
-        <div class="count" v-if="!isLops2019">{{valinnaisetOppiaineet}}</div>
-        <div class="topic text-center">{{$t('paikallista-oppiainetta')}}</div>
+      <div
+        v-if="!isLops2019"
+        class="box d-inline-flex align-items-center flex-column"
+      >
+        <div class="count">
+          {{ oppimaarat }}
+        </div>
+        <div class="topic text-center">
+          {{ $t('luotua-oppimaaraa') }}
+        </div>
       </div>
 
+      <div class="box d-inline-flex align-items-center flex-column">
+        <div
+          v-if="isLops2019"
+          class="count"
+        >
+          {{ paikallisetOppiaineet }}
+        </div>
+        <div
+          v-if="!isLops2019"
+          class="count"
+        >
+          {{ valinnaisetOppiaineet }}
+        </div>
+        <div class="topic text-center">
+          {{ $t('paikallista-oppiainetta') }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -44,7 +80,6 @@ import { useRoute } from 'vue-router';
 import _ from 'lodash';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { OpetussuunnitelmaKevytDto, Lops2019OppiaineDto } from '@shared/api/ylops';
-import { useEpOpsComponent } from '@/mixins/EpOpsComponent';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { PerusteCache } from '@/stores/peruste';
 import { $t } from '@shared/utils/globals';
@@ -54,7 +89,8 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
-const { store, isLops2019 } = useEpOpsComponent(props.opetussuunnitelmaStore);
+const store = computed(() => props.opetussuunnitelmaStore);
+const isLops2019 = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.toteutus as string === 'lops2019');
 
 const cache = ref<PerusteCache | null>(null);
 
@@ -63,11 +99,11 @@ const perusteCache = computed(() => {
 });
 
 const luodutOpintojaksot = computed(() => {
-  return _.size(store.value.opintojaksot);
+  return _.size(store.value.opintojaksot.value);
 });
 
 const opintojaksojenModuuliKoodiUri = computed(() => {
-  return _.chain(store.value.opintojaksot)
+  return _.chain(store.value.opintojaksot.value)
     .map((oa) => _.map(oa.moduulit, (moduuli) => moduuli.koodiUri))
     .flatten()
     .value();
@@ -91,7 +127,7 @@ const oppiaineet = computed(() => {
   if (cache.value) {
     return [
       ...cache.value.peruste.oppiaineet,
-      ...store.value.paikallisetOppiaineet,
+      ...store.value.paikallisetOppiaineet.value,
       ...perusteenOppiaineidenOppimaarat.value,
     ] as Lops2019OppiaineDto[];
   }
@@ -118,19 +154,19 @@ const moduulitLukumaara = computed(() => {
 });
 
 const useanOppiaineenOpintojaksot = computed(() => {
-  return _.size(_.filter(store.value.opintojaksot, (opintojakso) => _.size(opintojakso.oppiaineet) > 1));
+  return _.size(_.filter(store.value.opintojaksot.value, (opintojakso) => _.size(opintojakso.oppiaineet) > 1));
 });
 
 const paikallisetOppiaineet = computed(() => {
-  return _.size(store.value.paikallisetOppiaineet);
+  return _.size(store.value.paikallisetOppiaineet.value);
 });
 
 const valinnaisetOppiaineet = computed(() => {
-  return _.size(store.value.valinnaisetOppiaineet);
+  return _.size(store.value.valinnaisetOppiaineet.value);
 });
 
 const oppimaarat = computed(() => {
-  return _.sum(_.map(store.value.opetussuunnitelma?.oppiaineet || [], oppiaine => _.size(oppiaine.oppiaine!.oppimaarat)));
+  return _.sum(_.map(store.value.opetussuunnitelma?.value?.oppiaineet || [], oppiaine => _.size(oppiaine.oppiaine!.oppimaarat)));
 });
 
 onMounted(async () => {
