@@ -5,7 +5,8 @@
       :versionumero="versionumero"
       :confirmCopy="false"
       :skipRedirectBack="true"
-      labelRemoveClarification="oppimaara-poisto-modal-selite">
+      labelRemoveClarification="oppimaara-poisto-modal-selite"
+      :preSave="varmistaValutus">
       <template v-slot:kopioi-teksti>{{ $t('muokkaa') }}</template>
 
       <template v-slot:header="{ data }">
@@ -188,7 +189,7 @@ import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
 import { PerusopetusoppiaineStore } from '@/stores/perusopetusoppiaineStore';
-import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
+import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
@@ -312,6 +313,43 @@ export default class RoutePerusopetusOppiaine extends Mixins(EpRoute, EpOpsCompo
 
   get muokkaa() {
     return _.has(this.$route.query, 'muokkaa');
+  }
+
+  async varmistaValutus() {
+    if ((this.ops?.joissaPohjana?.length || 0) === 0) {
+      return;
+    }
+
+    if (!this.oppimaaranOppiaine) {
+      return;
+    }
+
+    if ((await Oppiaineet.oppimaaraKaytossaKaikissaAlaOpetussuunnitelmissa(this.opsId, this.oppiaine.id)).data) {
+      return;
+    }
+
+    const valuta = await this.$bvModal.msgBoxConfirm((this.$t('vahvista-oppiaineen-tietojen-valutus-teksti') as any), {
+      title: this.$t('vahvista-oppiaineen-tietojen-valutus-otsikko'),
+      okVariant: 'primary',
+      okTitle: this.$t('kylla') as any,
+      cancelVariant: 'link',
+      cancelTitle: this.$t('ei') as any,
+      centered: true,
+      ...{} as any,
+    });
+
+    this.storeData = {
+      ...this.storeData,
+      valuta,
+    };
+  }
+
+  get storeData() {
+    return this.editointiStore?.data.value;
+  }
+
+  set storeData(data) {
+    this.editointiStore?.setData(data);
   }
 }
 </script>
