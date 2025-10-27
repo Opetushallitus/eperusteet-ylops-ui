@@ -9,7 +9,7 @@
       :confirm-copy="false"
       :skip-redirect-back="true"
       label-remove-clarification="oppimaara-poisto-modal-selite"
-      :preSave="varmistaValutus"
+      :pre-save="varmistaValutus"
     >
       <template #kopioi-teksti>
         {{ $t('muokkaa') }}
@@ -431,24 +431,18 @@ const storeData = computed({
 });
 
 const varmistaValutus = async () => {
-  console.log('varmistaValutus');
-  console.log(ops.value?.joissaPohjana);
   if ((ops.value?.joissaPohjana?.length || 0) === 0) {
-    console.log('no pohja');
     return;
   }
 
-  console.log(oppimaaranOppiaine.value);
   if (!oppimaaranOppiaine.value) {
     return;
   }
 
   if ((await Oppiaineet.oppimaaraKaytossaKaikissaAlaOpetussuunnitelmissa(opsId.value, oppiaine.value?.id)).data) {
-    console.log('oppimaara kaytossa kaikissa alaopetussuunnitelmissa');
     return;
   }
 
-  console.log('valuta');
   const valuta = await $bvModal.msgBoxConfirm($t('vahvista-oppiaineen-tietojen-valutus-teksti'), {
     title: $t('vahvista-oppiaineen-tietojen-valutus-otsikko'),
     okVariant: 'primary',
@@ -459,12 +453,11 @@ const varmistaValutus = async () => {
     ...{} as any,
   });
 
-  console.log('storeData', storeData.value);
   storeData.value = {
     ...storeData.value,
     valuta,
   };
-}
+};
 
 // Lifecycle
 onMounted(async () => {

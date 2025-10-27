@@ -110,11 +110,11 @@ const props = withDefaults(
 
 const route = useRoute();
 
-const tiedot = computed(() => Kayttajat.tiedot);
+const tiedot = computed(() => Kayttajat.tiedot.value);
 
-const sovellusOikeudet = computed(() => Kayttajat.sovellusOikeudet);
+const sovellusOikeudet = computed(() => Kayttajat.sovellusOikeudet.value);
 
-const murut = computed(() => Murupolku.murut);
+const murut = computed(() => Murupolku.murut.value);
 
 const sisaltoKieli = computed(() => Kielet.getSisaltoKieli.value);
 

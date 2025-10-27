@@ -444,17 +444,6 @@ $box-size: 350px;
 
 $box-radius: 10px;
 
-h1 {
-  color: #001A58;
-  font-size: 0.5555555555555556rem;
-  font-weight: 400;
-}
-
-h2 {
-  font-size: 1.1111111111111112rem;
-  font-weight: 400;
-}
-
 .jarjestys-select {
   width: 300px;
 }

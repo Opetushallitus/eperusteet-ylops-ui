@@ -27,7 +27,7 @@
         </template>
       </b-table>
 
-      <b-pagination
+      <EpPagination
         v-model="currentPage"
         :total-rows="muokkaamattomatTekstikappaleet.length"
         :per-page="perPage"
@@ -58,6 +58,8 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { TekstiKappaleViitePerusteTekstillaDto, TekstiKappaleKevytDto } from '@shared/api/ylops';
 import { $t, $kaanna } from '@shared/utils/globals';
+import { unref } from 'vue';
+import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
 
 const props = defineProps<{
   opetussuunnitelmanTekstikappale: TekstiKappaleViitePerusteTekstillaDto;
@@ -95,8 +97,8 @@ const tekstikappaleetRecursive = (tekstikappaleItem: TekstiKappaleViitePerusteTe
 };
 
 const kaikkiOpetussuunnitelmanTekstikappaleet = computed((): TekstiKappaleKevytDto[] => {
-  if (props.opetussuunnitelmanTekstikappale) {
-    return tekstikappaleetRecursive(props.opetussuunnitelmanTekstikappale);
+  if (unref(props.opetussuunnitelmanTekstikappale)) {
+    return tekstikappaleetRecursive(unref(props.opetussuunnitelmanTekstikappale));
   }
 
   return [];

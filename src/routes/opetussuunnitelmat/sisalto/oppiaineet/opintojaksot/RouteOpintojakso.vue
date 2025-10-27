@@ -79,6 +79,7 @@
                 <ep-form-content name="oppiaineet">
                   <ep-oppiaine-selector
                     v-if="isEditing"
+                    :is-editable="true"
                     :opetussuunnitelma-store="store"
                     :ops-id="opsId"
                     :validation="validation.oppiaineet"
@@ -123,7 +124,10 @@
                 class="mb-4"
               >
                 <div class="d-flex moduuliotsikko">
-                  <div class="flex-grow-1">
+                  <div
+                    v-if="oppiaineetMap[oa.koodi]"
+                    class="flex-grow-1"
+                  >
                     {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
                   </div>
                   <div

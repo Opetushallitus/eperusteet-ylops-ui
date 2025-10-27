@@ -123,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, nextTick, h } from 'vue';
+import { computed, ref, watch, nextTick, h, getCurrentInstance } from 'vue';
 import { createApp } from 'vue';
 import { useRoute } from 'vue-router';
 import { useTemplateRef } from 'vue';
@@ -136,10 +136,12 @@ import CollapsedThreads from './CollapsedThreads.vue';
 import EpCommentAdd from './EpCommentAdd.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { Kielet } from '@shared/stores/kieli';
-import { fail, success } from '@/utils/notifications';
 import { delay } from '@shared/utils/delay';
 import { unwrap, findIndexWithTagsIncluded } from '@/utils/utils';
-import { $success, $t } from '@shared/utils/globals';
+import { $fail, $success, $t } from '@shared/utils/globals';
+
+// Get current app instance to copy config to dynamically created apps
+const instance = getCurrentInstance();
 
 // Template refs
 const threadbox = useTemplateRef('threadbox');
@@ -154,6 +156,7 @@ const thread = ref<KommenttiDto[] | null>(null);
 const newThread = ref<KommenttiDto | null>(null);
 const newKahva = ref<any>(null);
 const reply = ref<any>(null);
+const commentAddApp = ref<any>(null);
 
 // Computed properties
 const threadUuid = computed(() => {
@@ -264,6 +267,10 @@ const suljeKetju = async () => {
 };
 
 const removeAddBox = () => {
+  if (commentAddApp.value) {
+    commentAddApp.value.unmount();
+    commentAddApp.value = null;
+  }
   const el = document.querySelector('#comment-add-box');
   if (el) {
     el.remove();
@@ -273,7 +280,11 @@ const removeAddBox = () => {
 const findContentNode = (origin: Node | null) => {
   let el = origin;
   while (el !== null && el !== el.parentNode) {
-    if ((el as any)?.__vue__?.$options?._componentTag === 'editor-content') {
+    // Vue 3: Check component type via __vnode instead of $options
+    const componentName = (el as any)?.__vnode?.type?.name || (el as any)?.__vnode?.type?.__name;
+
+    // Also check for editor-content class as a fallback
+    if (componentName === 'EditorContent' || (el as HTMLElement)?.classList?.contains('ProseMirror')) {
       return el;
     }
     el = el.parentNode;
@@ -281,33 +292,50 @@ const findContentNode = (origin: Node | null) => {
   return null;
 };
 
-// VUE 3 : FIX LATER
-const onSelectionImpl = (val: any, old: any) => {
+const onSelectionImpl = async (val: any, old: any) => {
   removeAddBox();
   if (val && !old) {
+    // Clear any active thread when making a new selection
+    if (Kommentit.threadUuid.value) {
+      await Kommentit.clearThread();
+    }
     const selection = document.getSelection();
     if (selection && !Kommentit.threadUuid.value && findContentNode(selection.anchorNode)) {
       const commentbox = document.createElement('div');
+      commentbox.id = 'comment-add-box';
       const range = selection.getRangeAt(selection.rangeCount - 1);
       const bound = range.getBoundingClientRect();
       const el = document.querySelector('body');
       if (el) {
         el.appendChild(commentbox);
       }
-      createApp({
+
+      // Create new app and copy global properties from parent app
+      const app = createApp({
         render: () => {
           return h(EpCommentAdd, {
-            props: {
-              onAdd: async () => {
-                removeAddBox();
-                await Kommentit.clearThread();
-                await delay(100);
-                await addNewComment();
-              },
+            onAdd: async () => {
+              removeAddBox();
+              await Kommentit.clearThread();
+              await delay(100);
+              await addNewComment();
             },
           });
         },
-      }).mount(commentbox);
+      });
+
+      // Copy global properties from parent app
+      if (instance?.appContext) {
+        const parentApp = instance.appContext;
+
+        // Copy global properties
+        if (parentApp.config?.globalProperties) {
+          Object.assign(app.config.globalProperties, parentApp.config.globalProperties);
+        }
+      }
+
+      commentAddApp.value = app;
+      app.mount(commentbox);
     }
   }
 };
@@ -344,41 +372,53 @@ const lisaaKommenttiKahva = async () => {
   const selection = document.getSelection();
   const node = selection?.anchorNode;
   if (!node || !selection) {
-    fail('virheellinen-valinta');
+    $fail('virheellinen-valinta');
     return;
   }
 
-  // const el = Kommentit.findTekstikappaleNode(selection, node);
-  let el = node.parentNode;
-  while (el !== null && el !== el.parentNode) {
-    if ((el as any)?.__vue__?.$options?._componentTag === 'editor-content') {
-      const value = (el as any)?.__vue__?.$parent?.value;
-      const tekstiId = Number(value?._id);
-      if (tekstiId) {
-        const teksti = value[Kielet.getSisaltoKieli.value];
-        const { start, stop } = distanceFromParentBegin(selection, el);
-
-        newKahva.value = {
-          opsId: Number(route.params.id),
-          tekstiId: tekstiId,
-          kieli: Kielet.getSisaltoKieli.value,
-          start: findIndexWithTagsIncluded(teksti, start),
-          stop: findIndexWithTagsIncluded(teksti, stop),
-        };
-
-        const kspan = document.createElement('span');
-        kspan.setAttribute('kommentti', UusiKommenttiHandle);
-        kspan.className = 'animated jackInTheBox slower';
-        selection.getRangeAt(0).surroundContents(kspan);
-        setTimeout(() => {
-          kspan.className = '';
-        }, 1000);
-      }
+  // First find the ProseMirror editor element
+  let editorEl = node.parentNode;
+  while (editorEl !== null && editorEl !== editorEl.parentNode) {
+    if ((editorEl as HTMLElement)?.classList?.contains('ProseMirror')) {
       break;
     }
-    else {
-      el = el.parentNode;
-    }
+    editorEl = editorEl.parentNode;
+  }
+
+  if (!editorEl || !(editorEl as HTMLElement)?.classList?.contains('ProseMirror')) {
+    $fail('virheellinen-valinta');
+    return;
+  }
+
+  // Get tekstiId from data attribute (more reliable than Vue internals, works in production)
+  const tekstiId = Number((editorEl as HTMLElement).getAttribute('data-teksti-id'));
+
+  if (!tekstiId) {
+    $fail('virheellinen-valinta');
+    return;
+  }
+
+  // Get the HTML content from the editor element
+  const teksti = (editorEl as HTMLElement).innerHTML;
+
+  if (tekstiId && teksti) {
+    const { start, stop } = distanceFromParentBegin(selection, editorEl);
+
+    newKahva.value = {
+      opsId: Number(route.params.id),
+      tekstiId: tekstiId,
+      kieli: Kielet.getSisaltoKieli.value,
+      start: findIndexWithTagsIncluded(teksti, start),
+      stop: findIndexWithTagsIncluded(teksti, stop),
+    };
+
+    const kspan = document.createElement('span');
+    kspan.setAttribute('kommentti', UusiKommenttiHandle);
+    kspan.className = 'animated jackInTheBox slower';
+    selection?.getRangeAt(0)?.surroundContents(kspan);
+    setTimeout(() => {
+      kspan.className = '';
+    }, 1000);
   }
 };
 
@@ -434,8 +474,8 @@ watch(threadUuid, async (val, old) => {
   }
 });
 
-watch(hasSelection, (val, old) => {
-  onSelectionImpl(val, old);
+watch(hasSelection, async (val, old) => {
+  await onSelectionImpl(val, old);
 });
 
 watch(originalThread, (value: KommenttiDto[]) => {
@@ -451,6 +491,8 @@ watch(originalThread, (value: KommenttiDto[]) => {
 }
 
 .thread {
+  z-index: 1000;
+
   .thread-comment {
     box-shadow: 0 2px 4px 0 rgba(207, 207, 207, 0.5);
   }

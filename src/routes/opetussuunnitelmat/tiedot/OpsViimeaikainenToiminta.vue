@@ -96,12 +96,14 @@ import { muokkaustietoRoute, muokkaustietoIcon, muokkaustietoUrl } from '@/utils
 import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import { $t, $kaanna, $ago } from '@shared/utils/globals';
 import { parsiEsitysnimi } from '@shared/utils/kayttaja';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   muokkaustietoStore: MuokkaustietoStore;
   ops: OpetussuunnitelmaKevytDto;
 }>();
 
+const router = useRouter();
 const lisahaku = ref<boolean>(false);
 
 const muokkaustiedot = computed(() => {
@@ -186,10 +188,26 @@ const muokkaustiedotRouted = computed(() => {
         komponentti: muokkaustieto.route ? 'router-link' : 'div',
       };
     })
+    .map((muokkaustieto) => {
+      return {
+        ...muokkaustieto,
+        route: isValidRoute(muokkaustieto.route) ? muokkaustieto.route : null,
+      };
+    })
     .sortBy((muokkaustieto) => muokkaustieto.luotu)
     .reverse()
     .value();
 });
+
+function isValidRoute(to) {
+  try {
+    const resolved = router.resolve(to);
+    return resolved.matched.length > 0;
+  }
+  catch (error) {
+    return false;
+  }
+}
 
 const haeLisaa = async () => {
   lisahaku.value = true;

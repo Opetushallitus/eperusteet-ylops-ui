@@ -50,6 +50,7 @@ import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { useLoading } from 'vue-loading-overlay';
 import { loadingOptions } from '@/utils/loading';
 import { stores } from '@/stores';
+import { $bvModal } from '@shared/utils/globals';
 
 const logger = createLogger('Router');
 
@@ -298,7 +299,7 @@ router.beforeEach((to, from, next) => {
 // Estetään tilan vaihtaminen muokkaustilassa
 router.beforeEach(async (to, from, next) => {
   if (EditointiStore.anyEditing()) {
-    const value = await router.app.$bvModal.msgBoxConfirm(
+    const value = await $bvModal.msgBoxConfirm(
       Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'), {
         title: Kielet.kaannaOlioTaiTeksti('haluatko-poistua-tallentamatta'),
         okTitle: Kielet.kaannaOlioTaiTeksti('poistu-tallentamatta'),

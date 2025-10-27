@@ -346,7 +346,7 @@ const opintojaksot = computed(() => {
   }
   return _.chain(store.value.opintojaksot as any)
     .filter(oj => {
-      return !!_(oj.oppiaineet)
+      return !!_(oj?.oppiaineet || [])
         .map('koodi')
         .filter(koodi => koodi === editable.value!.koodi)
         .first();

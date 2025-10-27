@@ -40,9 +40,9 @@ const route = useRoute();
 
 const linkRoute = ref<any>(null);
 
-const handleClick = (e: Event) => {
+const handleClick = async (e: Event) => {
   if (props.click) {
-    props.click(props.clickParams ? props.clickParams : props.itemData);
+    await props.click(props.clickParams ? props.clickParams : props.itemData);
     e.preventDefault();
   }
 };

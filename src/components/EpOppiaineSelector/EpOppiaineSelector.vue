@@ -48,16 +48,23 @@ import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiA
 import { $kaanna } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-const props = defineProps<{
-  modelValue: string | string[];
-  opetussuunnitelmaStore: OpetussuunnitelmaStore;
-  isEditable?: boolean;
-  multiple?: boolean;
-  oppiaineFilter: (any: any) => boolean;
-  allowOppiaine?: boolean;
-  help?: string;
-  validation?: any;
-}>();
+const props = withDefaults(
+  defineProps<{
+    modelValue: string | string[];
+    opetussuunnitelmaStore: OpetussuunnitelmaStore;
+    isEditable?: boolean;
+    multiple?: boolean;
+    oppiaineFilter: (any: any) => boolean;
+    allowOppiaine?: boolean;
+    help?: string;
+    validation?: any;
+}>(), {
+    isEditable: false,
+    multiple: true,
+    allowOppiaine: false,
+    help: '',
+    validation: undefined,
+  });
 
 const emit = defineEmits(['update:modelValue']);
 

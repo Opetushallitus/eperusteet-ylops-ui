@@ -11,7 +11,7 @@
         variant="primary"
         @click="onAdd"
       >
-        {{ $t('lisaa-kommentti') }}
+        {{ lisaaKommenttiTeksti }}
       </b-button>
     </div>
   </div>
@@ -23,12 +23,15 @@ import { computed, useTemplateRef } from 'vue';
 import _ from 'lodash';
 import { Kommentit } from '@/stores/kommentit';
 import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
+import { $t } from '@shared/utils/globals';
 
 const props = defineProps<{
   onAdd: () => Promise<void>;
 }>();
 
 const box = useTemplateRef('box');
+
+const lisaaKommenttiTeksti = $t('lisaa-kommentti');
 
 const bounds = computed(() => {
   return Kommentit.bounds.value;

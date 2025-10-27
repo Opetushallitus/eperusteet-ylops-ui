@@ -183,7 +183,7 @@ const validationRules = computed(() => ({
   },
 }));
 
-const $v = useVuelidate(validationRules, { valittuOppimaara, nimi });
+const $v = useVuelidate(validationRules, { valittuOppimaara, nimi }, { $stopPropagation: true });
 
 const okDisabled = computed(() => {
   return $v.value.$invalid;

@@ -2000,6 +2000,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tiptap/extension-text-style@npm:^3.0.9":
+  version: 3.10.2
+  resolution: "@tiptap/extension-text-style@npm:3.10.2"
+  peerDependencies:
+    "@tiptap/core": ^3.10.2
+  checksum: 10c0/de76c4dc441ea9e74b206c453d29b8f9962e1b505f095e35a94bf0643da30a63fc8f8f35901d884f75d36b44ad0b862841c4d0c69ab26832a44a3d23249aaed3
+  languageName: node
+  linkType: hard
+
 "@tiptap/extension-text@npm:^3.4.4":
   version: 3.4.4
   resolution: "@tiptap/extension-text@npm:3.4.4"
@@ -5079,6 +5088,7 @@ __metadata:
     "@tiptap/extension-table-cell": "npm:^3.0.9"
     "@tiptap/extension-table-header": "npm:^3.0.9"
     "@tiptap/extension-table-row": "npm:^3.0.9"
+    "@tiptap/extension-text-style": "npm:^3.0.9"
     "@tiptap/pm": "npm:^3.0.9"
     "@tiptap/starter-kit": "npm:^3.0.9"
     "@tiptap/vue-3": "npm:^3.0.9"
@@ -5129,7 +5139,7 @@ __metadata:
     typescript: "npm:^5.8.3"
     url: "npm:0.11.4"
     uuid: "npm:^7.0.2"
-    vite: "npm:^6.3.6"
+    vite: "npm:^6.4.1"
     vite-plugin-commonjs: "npm:^0.10.4"
     vitest: "npm:^3.1.1"
     vue: "npm:3.5.22"
@@ -13001,9 +13011,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.3.6":
-  version: 6.3.6
-  resolution: "vite@npm:6.3.6"
+"vite@npm:^6.4.1":
+  version: 6.4.1
+  resolution: "vite@npm:6.4.1"
   dependencies:
     esbuild: "npm:^0.25.0"
     fdir: "npm:^6.4.4"
@@ -13052,7 +13062,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/add701f1e72596c002275782e38d0389ab400c1be330c93a3009804d62db68097a936ca1c53c3301df3aaacfe5e328eab547060f31ef9c49a277ae50df6ad4fb
+  checksum: 10c0/77bb4c5b10f2a185e7859cc9a81c789021bc18009b02900347d1583b453b58e4b19ff07a5e5a5b522b68fc88728460bb45a63b104d969e8c6a6152aea3b849f7
   languageName: node
   linkType: hard
 
