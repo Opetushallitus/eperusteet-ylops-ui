@@ -109,7 +109,13 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async save(data: any) {
-    data.oppiaine = (await Oppiaineet.updateOppiaineWithVlk(this.opsId, this.vuosiluokkakokonaisuus!.vuosiluokkakokonaisuus!.id!, this.oppiaineId, data.oppiaine)).data;
+    data.oppiaine = (await Oppiaineet.updateOppiaineWithVlk(
+      this.opsId,
+      this.vuosiluokkakokonaisuus!.vuosiluokkakokonaisuus!.id!,
+      this.oppiaineId,
+      data.oppiaine,
+      data.valuta,
+    )).data;
 
     if (data.vuosiluokkakokonaisuus) {
       data.vuosiluokkakokonaisuus = (await OppiaineenVuosiluokkakokonaisuudet
@@ -144,16 +150,22 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async remove() {
-    await Oppiaineet.deleteOppiaine(this.opsId, this.oppiaineId);
+    try {
+      await Oppiaineet.deleteOppiaine(this.opsId, this.oppiaineId);
 
-    PerusopetusoppiaineStore.config.router.push({
-      name: 'vuosiluokkakokonaisuus',
-      params: {
-        vlkId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id,
-      },
-    } as any);
+      PerusopetusoppiaineStore.config.router.push({
+        name: 'vuosiluokkakokonaisuus',
+        params: {
+          vlkId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id,
+        },
+      } as any);
 
-    await this.resetOps();
+      await this.resetOps();
+    }
+    catch (e) {
+      logger.error(e);
+      throw e;
+    }
   }
 
   async hide(data) {
