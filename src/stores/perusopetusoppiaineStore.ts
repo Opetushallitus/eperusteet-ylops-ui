@@ -150,16 +150,22 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async remove() {
-    await Oppiaineet.deleteOppiaine(this.opsId, this.oppiaineId);
+    try {
+      await Oppiaineet.deleteOppiaine(this.opsId, this.oppiaineId);
 
-    PerusopetusoppiaineStore.config.router.push({
-      name: 'vuosiluokkakokonaisuus',
-      params: {
-        vlkId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id,
-      },
-    } as any);
+      PerusopetusoppiaineStore.config.router.push({
+        name: 'vuosiluokkakokonaisuus',
+        params: {
+          vlkId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id,
+        },
+      } as any);
 
-    await this.resetOps();
+      await this.resetOps();
+    }
+    catch (e) {
+      logger.error(e);
+      throw e;
+    }
   }
 
   async hide(data) {

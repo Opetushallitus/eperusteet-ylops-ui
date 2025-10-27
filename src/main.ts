@@ -32,6 +32,7 @@ import { VuosiluokkakokonaisuusStore } from './stores/vuosiluokkakokonaisuusStor
 import { OpetussuunnitelmaStore } from './stores/opetussuunnitelma';
 import { stores } from './stores';
 import { OpintojaksoStore } from './stores/opintojaksoStore';
+import { PerusopetusoppiaineStore } from './stores/perusopetusoppiaineStore';
 
 const app = createApp(App);
 
@@ -85,6 +86,7 @@ app.use(Sticky);
 
 app.use(VuosiluokkaistaminenStore, { router });
 app.use(PerusopetusPaikallinenOppiaineStore, { router, opetussuunnitelmaStore: stores.opetussuunnitelmaStore });
+app.use(PerusopetusoppiaineStore, { router });
 app.use(VuosiluokkakokonaisuusStore, { router });
 app.use(OpintojaksoStore, { router });
 

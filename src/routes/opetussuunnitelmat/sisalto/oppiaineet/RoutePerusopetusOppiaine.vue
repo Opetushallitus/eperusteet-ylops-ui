@@ -9,6 +9,7 @@
       :confirm-copy="false"
       :skip-redirect-back="true"
       label-remove-clarification="oppimaara-poisto-modal-selite"
+      :preSave="varmistaValutus"
     >
       <template #kopioi-teksti>
         {{ $t('muokkaa') }}
@@ -299,7 +300,7 @@ import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import { isOppiaineUskontoTaiVierasKieli as checkIsOppiaineUskontoTaiVierasKieli } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { $kaanna, $t } from '@shared/utils/globals';
+import { $bvModal, $kaanna, $t } from '@shared/utils/globals';
 
 // Props
 const props = defineProps<{
@@ -353,8 +354,7 @@ const oppiaine = computed(() => {
 
 const oppimaaranOppiaine = computed(() => {
   return _.get(
-    _.find(ops.value?.oppiaineet, oppiaine =>
-      _.includes(_.map(oppiaine.oppiaine?.oppimaarat, 'tunniste'), oppiaine.value?.tunniste)),
+    _.find(ops.value?.oppiaineet, opsinOppaine => _.includes(_.map(opsinOppaine.oppiaine?.oppimaarat, 'tunniste'), oppiaine.value.tunniste)),
     'oppiaine');
 });
 
@@ -420,6 +420,51 @@ const init = async () => {
     init,
     muokkaa.value));
 };
+
+const storeData = computed({
+  get: () => {
+    return editointiStore.value?.data;
+  },
+  set: (data: any) => {
+    editointiStore.value?.setData(data);
+  },
+});
+
+const varmistaValutus = async () => {
+  console.log('varmistaValutus');
+  console.log(ops.value?.joissaPohjana);
+  if ((ops.value?.joissaPohjana?.length || 0) === 0) {
+    console.log('no pohja');
+    return;
+  }
+
+  console.log(oppimaaranOppiaine.value);
+  if (!oppimaaranOppiaine.value) {
+    return;
+  }
+
+  if ((await Oppiaineet.oppimaaraKaytossaKaikissaAlaOpetussuunnitelmissa(opsId.value, oppiaine.value?.id)).data) {
+    console.log('oppimaara kaytossa kaikissa alaopetussuunnitelmissa');
+    return;
+  }
+
+  console.log('valuta');
+  const valuta = await $bvModal.msgBoxConfirm($t('vahvista-oppiaineen-tietojen-valutus-teksti'), {
+    title: $t('vahvista-oppiaineen-tietojen-valutus-otsikko'),
+    okVariant: 'primary',
+    okTitle: $t('kylla') as any,
+    cancelVariant: 'link',
+    cancelTitle: $t('ei') as any,
+    centered: true,
+    ...{} as any,
+  });
+
+  console.log('storeData', storeData.value);
+  storeData.value = {
+    ...storeData.value,
+    valuta,
+  };
+}
 
 // Lifecycle
 onMounted(async () => {
