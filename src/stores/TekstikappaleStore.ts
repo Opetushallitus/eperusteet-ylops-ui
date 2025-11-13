@@ -48,8 +48,11 @@ export class TekstikappaleStore implements IEditoitava {
           .getVersionForTekstiKappaleViite(this.opsId, this.tekstikappaleId, rev.numero as number)).data;
       }
     }
-    const alkuperaiset = _.filter((await OpetussuunnitelmanSisalto
-      .getTekstiKappaleViiteOriginals(this.opsId, this.tekstikappaleId)).data as Matala[], 'tekstiKappale');
+
+    const alkuperaiset = _.chain((await OpetussuunnitelmanSisalto
+      .getTekstiKappaleViiteOriginals(this.opsId, this.tekstikappaleId)).data as Matala[])
+      .filter('tekstiKappale.teksti')
+      .value();
 
     const result = {
       tov: _.omit(_.cloneDeep(teksti), 'lapset'),

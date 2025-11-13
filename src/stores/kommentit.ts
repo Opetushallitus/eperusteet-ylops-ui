@@ -157,7 +157,9 @@ class KommenttiStore {
     this.clearCommentStyle();
     this.state.threadUuid = null;
     this.state.thread = null;
-    VueScrollTo.scrollTo('#keskustelu-sisalto', 300);
+    if (document.querySelector('#keskustelu-sisalto')) {
+      VueScrollTo.scrollTo('#keskustelu-sisalto', 300);
+    }
   }
 
   private obs: MutationObserver | null = null;
