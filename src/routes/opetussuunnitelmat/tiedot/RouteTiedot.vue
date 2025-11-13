@@ -119,7 +119,8 @@
             <ep-organizations
               :validation="validation.organisaatiot"
               :koulutustyyppi="data.koulutustyyppi"
-              v-model="data.kaikkiOrganisaatiot"/>
+              v-model="data.kaikkiOrganisaatiot"
+              :lakkautetut="true"/>
           </div>
         </div>
       </div>
