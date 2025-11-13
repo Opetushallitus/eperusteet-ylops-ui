@@ -86,6 +86,9 @@ export default class EpOrganizations extends Mixins(EpValidation) {
   @Prop({ default: null })
   koulutustyyppi!: string | null;
 
+  @Prop({ default: false })
+  lakkautetut!: boolean;
+
   kayttajanOrganisaatiot: any = {};
   kunnat: any[] = [];
   jarjestajat: any[] = [];
@@ -167,6 +170,7 @@ export default class EpOrganizations extends Mixins(EpValidation) {
 
   get oppilaitoksetSelectOptions() {
     return _.chain(this.filteredOppilaitokset)
+      .filter(org => this.lakkautetut || org.status !== 'PASSIIVINEN')
       .map(org => {
         return {
           value: org,
