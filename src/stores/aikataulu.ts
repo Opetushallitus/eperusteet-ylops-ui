@@ -1,36 +1,43 @@
-import { State, Store } from '@shared/stores/store';
+import { reactive, computed } from 'vue';
 import { OpetussuunnitelmanAikatauluDto, Aikataulu } from '@shared/api/ylops';
 
 import _ from 'lodash';
 
-@Store
 export class AikatauluStore {
-  @State()
-  public opsId: number;
+  private state = reactive({
+    opsId: 0,
+    aikataulut: null as OpetussuunnitelmanAikatauluDto[] | null,
+  });
 
-  @State()
-  public aikataulut: OpetussuunnitelmanAikatauluDto[] | null = null;
+  public readonly opsId = computed(() => this.state.opsId);
+  public readonly aikataulut = computed(() => this.state.aikataulut);
 
-  constructor(opsId: number) {
-    this.opsId = opsId;
+  public async init(opsId: number) {
+    this.state.opsId = opsId;
+    await this.update();
   }
 
   public async update() {
-    this.aikataulut = (await Aikataulu.getAikataulu(this.opsId) as any).data;
+    this.state.aikataulut = (await Aikataulu.getAikataulu(this.state.opsId) as any).data;
   }
 
   public async saveAikataulut(aikataulut) {
     const lisattavat = _.filter(aikataulut, (aikataulu) => _.isNil(aikataulu.id));
     const paivitettavat = _.filter(aikataulut, (aikataulu) => !_.isNil(aikataulu.id));
-    const poistettavat = _.filter(this.aikataulut, (aikataulu) => !_.includes(_.map(aikataulut, (aikataulu) => aikataulu.id), aikataulu.id));
+    const poistettavat = _.filter(this.state.aikataulut, (aikataulu) => !_.includes(_.map(aikataulut, (aikataulu) => aikataulu.id), aikataulu.id));
 
-    const lisatyt = _.map(await Promise.all(_.map(lisattavat, (lisattava) => Aikataulu.save(this.opsId, (lisattava as any)) as any)), (lisatty) => lisatty.data);
-    const paivitetyt = _.map(await Promise.all(_.map(paivitettavat, (paivitettava) => Aikataulu.update(this.opsId, (paivitettava as any)) as any)), (paivitetty) => paivitetty.data);
-    await Promise.all(_.map(poistettavat, (poistettava) => Aikataulu._delete(this.opsId, (poistettava as any)) as any));
+    const lisatyt = _.map(await Promise.all(_.map(lisattavat, (lisattava) => Aikataulu.save(this.state.opsId, (lisattava as any)) as any)), (lisatty) => lisatty.data);
+    const paivitetyt = _.map(await Promise.all(_.map(paivitettavat, (paivitettava) => Aikataulu.update(this.state.opsId, (paivitettava as any)) as any)), (paivitetty) => paivitetty.data);
+    await Promise.all(_.map(poistettavat, (poistettava) => Aikataulu._delete(this.state.opsId, (poistettava as any)) as any));
 
-    this.aikataulut = [
+    this.state.aikataulut = [
       ...lisatyt,
       ...paivitetyt,
     ];
+  }
+
+  public clear() {
+    this.state.aikataulut = null;
+    this.state.opsId = 0;
   }
 }

@@ -1,135 +1,196 @@
 <template>
-<div v-if="isEditable">
-  <div class="alue" v-for="(alue, alueIdx) in internal" :key="alueIdx">
-    <div class="alue-editing">
-      <div class="header">
-        <div class="row">
-          <div class="col-sm-6">
-            <ep-input v-model="alue.nimi" :help="arvot + '-nimi'" :placeholder="$t(arvot + '-nimi')" :is-editing="true" />
-          </div>
-          <div class="col-sm-6">
-            <div class="actions">
-              <ep-button variant="danger" icon="close" @click="poistaIndeksi(internal, alueIdx)">{{ $t('poista-alue-' + arvot) }}</ep-button>
+  <div v-if="props.isEditable">
+    <div
+      v-for="(alue, alueIdx) in internal"
+      :key="alueIdx"
+      class="alue"
+    >
+      <div class="alue-editing">
+        <div class="header">
+          <div class="row">
+            <div class="col-sm-6">
+              <ep-input
+                v-model="alue.nimi"
+                :help="props.arvot + '-nimi'"
+                :placeholder="$t(props.arvot + '-nimi')"
+                :is-editing="true"
+              />
+            </div>
+            <div class="col-sm-6">
+              <div class="actions">
+                <ep-button
+                  variant="danger"
+                  icon="close"
+                  @click="poistaIndeksi(internal, alueIdx)"
+                >
+                  {{ $t('poista-alue-' + props.arvot) }}
+                </ep-button>
+              </div>
             </div>
           </div>
         </div>
+        <div class="kohde">
+          <ep-input
+            v-model="alue[props.kohde]"
+            :help="props.kohde"
+            :is-editing="true"
+          />
+        </div>
+        <div class="arvot">
+          <VueDraggable
+            class="arvot-group"
+            v-bind="options"
+            :list="alue[props.arvot]"
+          >
+            <div
+              v-for="(item, idx) in alue[props.arvot]"
+              :key="idx"
+              class="arvo arvot-group-item"
+            >
+              <!-- fas.handle(icon="sort")-->
+              <div class="text">
+                <ep-input
+                  v-model="item[props.arvo]"
+                  :is-editing="true"
+                />
+              </div>
+              <div class="actions">
+                <ep-button
+                  variant="danger"
+                  icon="close"
+                  @click="poistaIndeksi(alue[props.arvot], idx)"
+                >
+                  {{ $t('poista') }}
+                </ep-button>
+              </div>
+            </div>
+          </VueDraggable>
+          <ep-button
+            icon="add"
+            @click="lisaaArvo(alue)"
+          >
+            {{ $t('lisaa-arvo-' + props.arvo) }}
+          </ep-button>
+        </div>
+      </div>
+    </div>
+    <ep-button
+      v-if="hasMultiple"
+      icon="add"
+      @click="lisaaAlue()"
+    >
+      {{ $t('lisaa-alue-' + props.arvot) }}
+    </ep-button>
+  </div>
+  <div v-else>
+    <div
+      v-for="(alue, alueIdx) in internal"
+      :key="alueIdx"
+      class="alue"
+    >
+      <div class="header">
+        <ep-input
+          v-model="alue.nimi"
+          :is-editing="props.isEditable"
+        />
       </div>
       <div class="kohde">
-        <ep-input v-model="alue[kohde]" :help="kohde" :is-editing="true" />
+        <ep-input
+          v-model="alue[props.kohde]"
+          :is-editing="props.isEditable"
+        />
       </div>
-      <div class="arvot">
-        <draggable class="arvot-group" v-bind="options" :list="alue[arvot]">
-          <div class="arvo arvot-group-item" v-for="(item, idx) in alue[arvot]" :key="idx">
-            <!-- fas.handle(icon="sort")-->
-            <div class="text">
-              <ep-input v-model="item[arvo]" :is-editing="true" />
-            </div>
-            <div class="actions">
-              <ep-button variant="danger" icon="close" @click="poistaIndeksi(alue[arvot], idx)">{{ $t('poista') }}</ep-button>
-            </div>
-          </div>
-        </draggable>
-        <ep-button icon="add" @click="lisaaArvo(alue)">{{ $t('lisaa-arvo-' + arvo) }}</ep-button>
-      </div>
+      <ul class="arvot">
+        <li
+          v-for="(item, idx) in alue[props.arvot]"
+          :key="idx"
+          class="arvo"
+        >
+          <ep-input
+            :model-value="props.arvo ? item[props.arvo] : item"
+            :is-editing="false"
+          />
+        </li>
+      </ul>
     </div>
   </div>
-  <ep-button v-if="hasMultiple" icon="add" @click="lisaaAlue()">{{ $t('lisaa-alue-' + arvot) }}</ep-button>
-</div>
-<div v-else>
-  <div class="alue" v-for="(alue, alueIdx) in internal" :key="alueIdx">
-    <div class="header">
-      <ep-input v-model="alue.nimi" :is-editing="isEditable" />
-    </div>
-    <div class="kohde">
-      <ep-input v-model="alue[kohde]" :is-editing="isEditable" />
-    </div>
-    <ul class="arvot">
-      <li class="arvo" v-for="(item, idx) in alue[arvot]" :key="idx">
-        <ep-input :value="arvo ? item[arvo] : item" :is-editing="false" />
-      </li>
-    </ul>
-  </div>
-</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed } from 'vue';
 import _ from 'lodash';
-import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import draggable from 'vuedraggable';
+import { VueDraggable } from 'vue-draggable-plus';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 
-@Component({
-  components: {
-    draggable,
-    EpButton,
-    EpInput,
+import { $t } from '@shared/utils/globals';
+
+const props = withDefaults(
+  defineProps<{
+    isEditable?: boolean;
+    modelValue: any;
+    kohde?: string;
+    arvot?: string;
+    arvo?: string;
+  }>(), {
+    isEditable: false,
+    kohde: 'kohde',
+    arvot: 'arvot',
+    arvo: '',
+  });
+
+const emit = defineEmits<{
+  'update:modelValue': [value: any];
+}>();
+
+const hasMultiple = computed(() => {
+  return _.isArray(sanitized.value);
+});
+
+const sanitized = computed(() => {
+  if (_.isArray(props.modelValue)) {
+    return props.modelValue;
+  }
+  else {
+    return [props.modelValue];
+  }
+});
+
+const internal = computed({
+  get() {
+    return sanitized.value;
   },
-})
-export default class EpPrefixList extends Vue {
-  @Prop({ default: false })
-  private isEditable!: boolean;
+  set(value: any) {
+    emit('update:modelValue', value);
+  },
+});
 
-  @Prop({ required: true })
-  private value!: any;
+const options = computed(() => {
+  return {
+    // handle: '.handle',
+    animation: 300,
+    disabled: false,
+  };
+});
 
-  @Prop({ default: 'kohde' })
-  private kohde!: string;
+const poistaIndeksi = (arr: any[], alueIdx: number) => {
+  arr.splice(alueIdx, 1);
+};
 
-  @Prop({ default: 'arvot' })
-  private arvot!: string;
+const lisaaAlue = () => {
+  internal.value.push({
+    nimi: {},
+    [props.kohde]: {},
+    [props.arvot]: [],
+  });
+};
 
-  @Prop({ default: '' })
-  private arvo!: string;
-
-  get hasMultiple() {
-    return _.isArray(this.sanitized);
-  }
-
-  get sanitized() {
-    if (_.isArray(this.value)) {
-      return this.value;
-    }
-    else {
-      return [this.value];
-    }
-  }
-
-  get internal() {
-    return this.sanitized;
-  }
-
-  set internal(value: any) {
-    this.$emit('input', value);
-  }
-
-  get options() {
-    return {
-      // handle: '.handle',
-      animation: 300,
-      disabled: false,
-    };
-  }
-
-  private poistaIndeksi(arr: any[], alueIdx: number) {
-    arr.splice(alueIdx, 1);
-  }
-
-  private lisaaAlue() {
-    this.internal.push({
-      nimi: {},
-      [this.kohde]: {},
-      [this.arvot]: [],
-    });
-  }
-
-  private lisaaArvo(alue: any) {
-    alue[this.arvot].push(this.arvot
-      ? { [this.arvo]: {} }
-      : {});
-  }
-}
+const lisaaArvo = (alue: any) => {
+  alue[props.arvot].push(props.arvo
+    ? { [props.arvo]: {} }
+    : {});
+};
 </script>
 
 <style lang="scss" scoped>

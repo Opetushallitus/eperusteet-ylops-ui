@@ -1,59 +1,89 @@
 <template>
-<div class="topbar" v-sticky="sticky" sticky-z-index="600" :class="headerClass">
-  <b-navbar id="navigation-bar"
-            class="ep-navbar"
-            :type="headerClass"
-            toggleable="md"
-            :class="'navbar-style-' + tyyli"
-            :style="{ 'background-attachment': sticky ? 'fixed' : '', ...headerStyle }">
-    <b-navbar-nav>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <router-link id="nav-admin" :to="{ name: 'root' }">
-              <EpMaterialIcon>home</EpMaterialIcon>
-            </router-link>
-          </li>
-          <li class="breadcrumb-item" v-for="(route, idx) in routePath" :key="idx">
-            <router-link v-if="route.muru && route.muru.location" :to="route.muru.location">
-              {{ $kaanna(route.muru.name) }}
-            </router-link>
-            <span v-else-if="route.muru">
-              {{ $kaanna(route.muru.name) }}
-            </span>
-            <span v-else>{{ $t('route-' + route.name) }}</span>
-          </li>
-        </ol>
-      </nav>
-    </b-navbar-nav>
-    <b-navbar-nav class="ml-auto">
+  <div
+    v-sticky="sticky"
+    class="topbar"
+    sticky-z-index="600"
+    :class="headerClass"
+  >
+    <b-navbar
+      id="navigation-bar"
+      class="ep-navbar"
+      :type="headerClass"
+      toggleable="md"
+      :class="'navbar-style-' + tyyli"
+      :style="{ 'background-attachment': sticky ? 'fixed' : '', ...headerStyle }"
+    >
+      <b-navbar-nav>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <router-link
+                id="nav-admin"
+                :to="{ name: 'root' }"
+              >
+                <EpMaterialIcon>home</EpMaterialIcon>
+              </router-link>
+            </li>
+            <li
+              v-for="(route, idx) in routePath"
+              :key="idx"
+              class="breadcrumb-item"
+            >
+              <router-link
+                v-if="route.muru && route.muru.location"
+                :to="route.muru.location"
+              >
+                {{ $kaanna(route.muru.name) }}
+              </router-link>
+              <span v-else-if="route.muru">
+                {{ $kaanna(route.muru.name) }}
+              </span>
+              <span v-else>{{ $t('route-' + route.name) }}</span>
+            </li>
+          </ol>
+        </nav>
+      </b-navbar-nav>
+      <b-navbar-nav class="ml-auto">
+        <!-- Sisällön kieli-->
+        <b-nav-item-dropdown
+          id="content-lang-selector"
+          right
+        >
+          <template #button-content>
+            <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ $t(sisaltoKieli) }}</span>
+          </template>
+          <div class="kielet">
+            <b-dd-item
+              v-for="kieli in sovelluksenKielet"
+              :key="kieli"
+              :disabled="kieli === sisaltoKieli"
+              @click="valitseSisaltoKieli(kieli)"
+            >
+              <EpMaterialIcon
+                v-if="kieli === sisaltoKieli"
+                class="mr-3 valittu"
+              >
+                check
+              </EpMaterialIcon>
+              {{ $t(kieli) }}
+            </b-dd-item>
+          </div>
+        </b-nav-item-dropdown>
 
-      <!-- Sisällön kieli-->
-      <b-nav-item-dropdown id="content-lang-selector" right>
-        <template slot="button-content">
-          <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ $t(sisaltoKieli) }}</span>
-        </template>
-        <div class="kielet">
-          <b-dd-item @click="valitseSisaltoKieli(kieli)"
-                     v-for="kieli in sovelluksenKielet"
-                     :key="kieli"
-                     :disabled="kieli === sisaltoKieli">
-            <EpMaterialIcon v-if="kieli === sisaltoKieli" class="mr-3 valittu" >check</EpMaterialIcon>
-            {{ $t(kieli) }}
-          </b-dd-item>
-        </div>
-      </b-nav-item-dropdown>
-
-      <ep-kayttaja :tiedot="tiedot" :sovellusOikeudet="sovellusOikeudet" :logoutHref="logoutHref"/>
-
-    </b-navbar-nav>
-  </b-navbar>
-</div>
+        <ep-kayttaja
+          :tiedot="tiedot"
+          :sovellus-oikeudet="sovellusOikeudet"
+          :logout-href="logoutHref"
+        />
+      </b-navbar-nav>
+    </b-navbar>
+  </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import Sticky from 'vue-sticky-directive';
 import { Kieli } from '@shared/tyypit';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
@@ -66,77 +96,56 @@ import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { baseURL } from '@shared/api/ylops';
 
-@Component({
-  directives: {
-    oikeustarkastelu,
-    Sticky,
-  },
-  components: {
-    EpButton,
-    EpKayttaja,
-    EpMaterialIcon,
-  },
-})
-export default class EpNavigation extends Vue {
-  @Prop({ default: false })
-  private sticky!: boolean;
+const props = withDefaults(
+  defineProps<{
+    sticky?: boolean;
+    tyyli?: string;
+    koulutustyyppi?: string;
+    headerClass?: string;
+  }>(), {
+    sticky: false,
+    tyyli: 'normaali',
+    headerClass: 'dark',
+  });
 
-  @Prop({ default: 'normaali' })
-  private tyyli!: string;
+const route = useRoute();
 
-  @Prop({ required: false })
-  private koulutustyyppi!: string;
+const tiedot = computed(() => Kayttajat.tiedot.value);
 
-  @Prop({ default: 'dark' })
-  private headerClass!: string;
+const sovellusOikeudet = computed(() => Kayttajat.sovellusOikeudet.value);
 
-  get tiedot() {
-    return Kayttajat.tiedot;
-  }
+const murut = computed(() => Murupolku.murut.value);
 
-  get sovellusOikeudet() {
-    return Kayttajat.sovellusOikeudet;
-  }
+const sisaltoKieli = computed(() => Kielet.getSisaltoKieli.value);
 
-  get murut() {
-    return Murupolku.murut;
-  }
+const sovelluksenKielet = computed(() => UiKielet);
 
-  get sisaltoKieli() {
-    return Kielet.getSisaltoKieli.value;
-  }
+const routePath = computed(() => {
+  return _(route.matched)
+    .filter('name')
+    .map(routeItem => {
+      const computeds = _.get(routeItem, 'instances.default') as any;
+      const result = {
+        ...routeItem,
+        muru: murut.value[routeItem!.name!],
+        breadname: computeds && computeds.breadcrumb,
+      };
+      return result;
+    })
+    .value();
+});
 
-  get sovelluksenKielet() {
-    return UiKielet;
-  }
+const valitseSisaltoKieli = (kieli: Kieli) => {
+  Kielet.setSisaltoKieli(kieli);
+};
 
-  get routePath() {
-    return _(this.$route.matched)
-      .filter('name')
-      .map(route => {
-        const computeds = _.get(route, 'instances.default') as any;
-        const result = {
-          ...route,
-          muru: this.murut[route!.name!],
-          breadname: computeds && computeds.breadcrumb,
-        };
-        return result;
-      })
-      .value();
-  }
+const headerStyle = computed(() => {
+  return koulutustyyppiBanner(props.koulutustyyppi!);
+});
 
-  private valitseSisaltoKieli(kieli: Kieli) {
-    Kielet.setSisaltoKieli(kieli);
-  }
-
-  get headerStyle() {
-    return koulutustyyppiBanner(this.koulutustyyppi!);
-  }
-
-  get logoutHref() {
-    return baseURL + '/api/logout';
-  }
-}
+const logoutHref = computed(() => {
+  return baseURL + '/api/logout';
+});
 </script>
 
 <style scoped lang="scss">
@@ -148,7 +157,7 @@ export default class EpNavigation extends Vue {
   &.light {
     color: $color-ops-header-black-text;
 
-    ::v-deep .kayttaja .kayttaja-valikko {
+    :deep(.kayttaja .kayttaja-valikko) {
       color: $color-ops-header-black-text;
     }
 
@@ -200,18 +209,18 @@ export default class EpNavigation extends Vue {
       }
     }
 
-    ::v-deep .dropdown-menu {
+    :deep(.dropdown-menu) {
       padding: 0;
       color: #000000;
       min-width: initial;
     }
 
-    ::v-deep .dropdown-item {
+    :deep(.dropdown-item) {
       padding: 0.5rem 1rem;
       color: #000000;
     }
 
-    ::v-deep .dropdown-item:hover {
+    :deep(.dropdown-item:hover) {
       background-color: inherit;
     }
 

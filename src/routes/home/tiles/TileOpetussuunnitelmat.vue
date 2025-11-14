@@ -1,85 +1,82 @@
 <template>
-  <ep-home-tile icon="article" :route="vars.route">
-    <template slot="header">
+  <ep-home-tile
+    icon="article"
+    :route="vars.route"
+  >
+    <template #header>
       <span>{{ $t(vars.header) }}</span>
     </template>
-    <template slot="content">
-      <ep-spinner v-if="countIsLoading"></ep-spinner>
+    <template #content>
+      <ep-spinner v-if="countIsLoading" />
       <div v-else>
         <table class="count-table">
-          <tr>
-            <td width="50%">
-              <div class="bignumber">{{ keskeneraiset }}</div>
-              <div class="description">{{ $t('keskeneraista') }}</div>
-            </td>
-            <td class="spacer" width="50%">
-              <div class="bignumber">{{ julkaistut }}</div>
-              <div class="description">{{ $t(vars.julkaistua) }}</div>
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <td width="50%">
+                <div class="bignumber">
+                  {{ keskeneraiset }}
+                </div>
+                <div class="description">
+                  {{ $t('keskeneraista') }}
+                </div>
+              </td>
+              <td
+                class="spacer"
+                width="50%"
+              >
+                <div class="bignumber">
+                  {{ julkaistut }}
+                </div>
+                <div class="description">
+                  {{ $t(vars.julkaistua) }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </template>
   </ep-home-tile>
 </template>
 
-<script lang="ts">
-import { Prop, Component, Mixins } from 'vue-property-decorator';
-
-import EpRoot from '@/mixins/EpRoot';
+<script setup lang="ts">
+import { computed } from 'vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
-@Component({
-  components: {
-    EpSpinner,
-    EpHomeTile,
-  },
-  mixins: [EpRoot],
-})
-export default class TileOpetussuunnitelmat extends Mixins(EpRoot) {
-  @Prop({
-    default: () => 0,
-  })
-  private keskeneraiset!: number;
+const props = withDefaults(
+  defineProps<{
+    keskeneraiset?: number;
+    julkaistut?: number;
+    isOps?: boolean;
+    countIsLoading?: boolean;
+  }>(), {
+    keskeneraiset: 0,
+    julkaistut: 0,
+    isOps: true,
+    countIsLoading: true,
+  });
 
-  @Prop({
-    default: () => 0,
-  })
-  private julkaistut!: number;
-
-  @Prop({
-    default: () => true,
-  })
-  private isOps!: boolean;
-
-  @Prop({
-    default: true,
-    type: Boolean,
-  })
-  private countIsLoading: boolean = true;
-
-  get vars() {
-    if (this.isOps) {
-      return {
-        header: 'tile-opetussuunnitelmasi',
-        julkaistua: 'julkaistua',
-        route: {
-          name: 'opetussuunnitelmaListaus',
-        },
-      };
-    }
-    else {
-      return {
-        header: 'tile-pohjasi',
-        julkaistua: 'valmista',
-        route: {
-          name: 'pohjaListaus',
-        },
-      };
-    }
+const vars = computed(() => {
+  if (props.isOps) {
+    return {
+      header: 'tile-opetussuunnitelmasi',
+      julkaistua: 'julkaistua',
+      route: {
+        name: 'opetussuunnitelmaListaus',
+      },
+    };
   }
-}
+  else {
+    return {
+      header: 'tile-pohjasi',
+      julkaistua: 'valmista',
+      route: {
+        name: 'pohjaListaus',
+      },
+    };
+  }
+});
 </script>
 
 <style scoped lang="scss">

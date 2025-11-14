@@ -1,10 +1,19 @@
 <template>
   <div class="kommentti p-3">
     <div class="topbar d-flex align-items-center justify-content-between">
-      <div class="pvm">{{ $ago(innerValue.luotu || new Date()) }}</div>
-      <div class="actions" v-if="innerValue.tunniste">
-        <b-dropdown variant="link" right no-caret>
-          <template v-slot:button-content>
+      <div class="pvm">
+        {{ $ago(innerValue.luotu || new Date()) }}
+      </div>
+      <div
+        v-if="innerValue.tunniste"
+        class="actions"
+      >
+        <b-dropdown
+          variant="link"
+          right
+          no-caret
+        >
+          <template #button-content>
             <EpMaterialIcon>more_horiz</EpMaterialIcon>
           </template>
           <b-dropdown-item @click="muokkaa">
@@ -16,102 +25,105 @@
         </b-dropdown>
       </div>
     </div>
-    <div class="nimi">{{ nimi }}</div>
+    <div class="nimi">
+      {{ nimi }}
+    </div>
     <div class="viesti mt-1">
       <div v-if="editable">
         <textarea
+          v-model="innerValue.sisalto"
           :placeholder="$t('kirjoita-viesti')"
           class="editori"
-          v-model="innerValue.sisalto"></textarea>
+        />
       </div>
       <div v-else>
         {{ innerValue.sisalto }}
       </div>
     </div>
-    <div class="toiminnot" v-if="editable">
+    <div
+      v-if="editable"
+      class="toiminnot"
+    >
       <div class="d-flex flex-row-reverse">
         <b-button
+          variant="primary"
           @click="tallenna"
-          variant="primary">{{ $t('tallenna') }}</b-button>
+        >
+          {{ $t('tallenna') }}
+        </b-button>
         <b-button
+          variant="default"
           @click="peruuta"
-          variant="default">{{ $t('peruuta') }}</b-button>
+        >
+          {{ $t('peruuta') }}
+        </b-button>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Watch, Component, Prop, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue';
 import { KommenttiDto } from '@shared/api/ylops';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { $t, $bvModal } from '@shared/utils/globals';
+import _ from 'lodash';
 
-@Component({
-  components: {
-    EpMaterialIcon,
-  },
-  name: 'ThreadComment',
-})
-export default class ThreadComment extends Vue {
-  @Prop({ required: true })
-  value!: KommenttiDto;
+const props = defineProps<{
+  value: KommenttiDto;
+  save: (uusi: KommenttiDto) => Promise<KommenttiDto>;
+  remove: (uusi: KommenttiDto) => Promise<KommenttiDto>;
+}>();
 
-  @Prop({ required: true, type: Function })
-  private save!: (uusi: KommenttiDto) => Promise<KommenttiDto>;
+const isEditing = ref(false);
+const innerValue = ref<KommenttiDto | null>(null);
 
-  @Prop({ required: true, type: Function })
-  private remove!: (uusi: KommenttiDto) => Promise<KommenttiDto>;
+const updateValue = (val?: KommenttiDto) => {
+  innerValue.value = { ...props.value };
+};
 
-  isEditing: boolean = false;
+watch(() => props.value, updateValue, { immediate: true });
 
-  private innerValue: KommenttiDto | null = null;
+const nimi = computed(() => {
+  return innerValue.value?.nimi || innerValue.value?.muokkaaja || $t('tuntematon-kayttaja');
+});
 
-  @Watch('value', { immediate: true })
-  updateValue(val) {
-    this.innerValue = { ...this.value };
+const editable = computed(() => {
+  return isEditing.value || !props.value.tunniste;
+});
+
+const isNew = computed(() => {
+  return !!props.value.luoja;
+});
+
+const poista = async () => {
+  await props.remove(props.value);
+};
+
+const muokkaa = async () => {
+  isEditing.value = true;
+};
+
+const peruuta = async () => {
+  isEditing.value = false;
+  if (!props.value.tunniste) {
+    await poista();
   }
-
-  get nimi() {
-    return this.innerValue?.nimi || this.innerValue?.muokkaaja || this.$t('tuntematon-kayttaja');
+  else {
+    updateValue(props.value);
   }
+};
 
-  get editable() {
-    return this.isEditing || !this.value.tunniste;
+const tallenna = async () => {
+  if (!innerValue.value) {
+    return;
   }
-
-  get isNew() {
-    return !!this.value.luoja;
-  }
-
-  async poista() {
-    await this.remove(this.value);
-  }
-
-  async muokkaa() {
-    this.isEditing = true;
-  }
-
-  async peruuta() {
-    this.isEditing = false;
-    if (!this.value.tunniste) {
-      await this.poista();
-    }
-    else {
-      this.updateValue(this.value);
-    }
-  }
-
-  async tallenna() {
-    if (!this.innerValue) {
-      return;
-    }
-    await this.save({
-      ...this.value,
-      sisalto: this.innerValue.sisalto,
-    });
-    this.isEditing = false;
-  }
-}
+  await props.save({
+    ...props.value,
+    sisalto: innerValue.value.sisalto,
+  });
+  isEditing.value = false;
+};
 </script>
 
 <style lang="scss" scoped>

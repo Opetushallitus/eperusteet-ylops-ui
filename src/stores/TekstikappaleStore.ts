@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import VueCompositionApi, { reactive, computed } from '@vue/composition-api';
+import { reactive, computed } from 'vue';
 import { Matala, Perusteenosat, Sisallot, PerusteDtoTyyppiEnum, Laaja } from '@shared/api/eperusteet';
 import { Revision } from '@shared/tyypit';
 import _ from 'lodash';
@@ -10,7 +10,6 @@ import { PerusteenOsaDto } from '@shared/generated/eperusteet';
 import { OpetussuunnitelmanSisalto, Opetussuunnitelmat } from '@shared/api/ylops';
 import { OpetussuunnitelmaStore } from './opetussuunnitelma';
 
-Vue.use(VueCompositionApi);
 
 interface TekstikappaleStoreConfig {
   router: VueRouter;
@@ -49,8 +48,11 @@ export class TekstikappaleStore implements IEditoitava {
           .getVersionForTekstiKappaleViite(this.opsId, this.tekstikappaleId, rev.numero as number)).data;
       }
     }
-    const alkuperaiset = _.filter((await OpetussuunnitelmanSisalto
-      .getTekstiKappaleViiteOriginals(this.opsId, this.tekstikappaleId)).data as Matala[], 'tekstiKappale');
+
+    const alkuperaiset = _.chain((await OpetussuunnitelmanSisalto
+      .getTekstiKappaleViiteOriginals(this.opsId, this.tekstikappaleId)).data as Matala[])
+      .filter('tekstiKappale.teksti')
+      .value();
 
     const result = {
       tov: _.omit(_.cloneDeep(teksti), 'lapset'),

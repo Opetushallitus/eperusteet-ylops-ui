@@ -1,9 +1,11 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { oikeustarkastelu } from '../oikeustarkastelu';
 import { Kayttajat } from '@/stores/kayttaja';
 import { delay } from '@shared/utils/delay';
+import { nextTick } from 'vue';
+import { vi } from 'vitest';
 
-jest.mock('@/stores/kayttaja');
+vi.mock('@/stores/kayttaja');
 
 // KayttajaStore.mockImplementation({
 //   Kayttajat: {},
@@ -14,18 +16,16 @@ const eiOikeuksia = Object.freeze({
 });
 
 describe('Directive oikeustarkastelu', () => {
-  const localVue = createLocalVue();
-  localVue.directive('oikeustarkastelu', oikeustarkastelu);
 
   beforeEach(() => {
-    Kayttajat.oikeudet = {
+    (Kayttajat as any).state.oikeudet = {
       opetussuunnitelma: [],
       pohja: [],
     };
   });
 
   test('toimii oletuksena lukuoikeudella', async () => {
-    Kayttajat.oikeudet = {
+    (Kayttajat as any).state.oikeudet = {
       opetussuunnitelma: ['luku'],
     };
 
@@ -35,30 +35,50 @@ describe('Directive oikeustarkastelu', () => {
         <button v-oikeustarkastelu>Hello</button>
         <button v-oikeustarkastelu="{ oikeus: 'muokkaus'}">World</button>
       </div>`,
-    }, { localVue });
+    }, {
+      global: {
+        directives: {
+          oikeustarkastelu,
+        },
+      },
+    });
 
-    expect((wrapper.element.childNodes[0] as HTMLElement).style.display).toEqual('none');
-    expect((wrapper.element.childNodes[2] as HTMLElement).style.display).toEqual('none');
-    await localVue.nextTick();
-    expect((wrapper.element.childNodes[0] as HTMLElement).style.display).toEqual('');
-    expect((wrapper.element.childNodes[2] as HTMLElement).style.display).toEqual('');
-    expect((wrapper.element.childNodes[2] as HTMLInputElement).disabled).toBeTruthy();
+    const buttons = wrapper.findAll('button');
+    expect(buttons.length).toBe(2);
+    expect(buttons[0].element.style.display).toEqual('none');
+    expect(buttons[1].element.style.display).toEqual('none');
+    await nextTick();
+    expect(buttons[0].element.style.display).toEqual('');
+    expect(buttons[1].element.style.display).toEqual('');
+    expect(buttons[1].element.disabled).toBeTruthy();
   });
 
   test('piilottaa elementin kun oikeudet eivät riitä', async () => {
     const wrapper = mount({
       template: '<div v-oikeustarkastelu>Hello</div>',
-    }, { localVue });
+    }, {
+      global: {
+        directives: {
+          oikeustarkastelu,
+        },
+      },
+    });
 
     expect(wrapper.element.style.display).toEqual('none');
   });
 
   test('painikkeet disabloituvat ilman oikeuksia', async () => {
-    Kayttajat.oikeudet = eiOikeuksia;
+    (Kayttajat as any).state.oikeudet = eiOikeuksia;
 
     const wrapper = mount({
       template: '<button v-oikeustarkastelu>Hello</button>',
-    }, { localVue });
+    }, {
+      global: {
+        directives: {
+          oikeustarkastelu,
+        },
+      },
+    });
 
     expect(wrapper.element.style.display).toEqual('none');
     await delay();

@@ -1,32 +1,46 @@
 <template>
   <div class="hallintapaneeli">
-
     <template v-if="!isPohja">
-      <div v-if="pohjallaPuuttuviaTeksteja === null" class="d-flex justify-content-center">
-        {{$t('tarkistetaan-pohjan-tekstimuutokset')}}
+      <div
+        v-if="pohjallaPuuttuviaTeksteja === null"
+        class="d-flex justify-content-center"
+      >
+        {{ $t('tarkistetaan-pohjan-tekstimuutokset') }}
         <EpSpinner />
       </div>
-      <div class="info-box import-box"
+
+      <div
         v-if="pohjallaPuuttuviaTeksteja"
-        v-oikeustarkastelu="oikeustarkastelu">
+        v-oikeustarkastelu="oikeustarkastelu"
+        class="info-box import-box"
+      >
         <template v-if="pohjanaOphPohja || viimeisinPohjaTekstiSyncVirheellinen">
-          <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne')}}</h2>
+          <h2>{{ $t('paivita-opetussuunnitelman-tekstirakenne') }}</h2>
           <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti')" />
         </template>
         <template v-else>
-          <h2>{{$t('paivita-opetussuunnitelman-tekstirakenne-koulun-ops')}}</h2>
+          <h2>{{ $t('paivita-opetussuunnitelman-tekstirakenne-koulun-ops') }}</h2>
           <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-huomioteksti-koulun-ops')" />
         </template>
-        <br/>
-        <div>{{$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-peruste-selvennys')}}</div>
-        <EpExternalLink :url="perusteUrl">{{$kaanna(perusteNimi)}}</EpExternalLink>
+        <br>
+        <div>{{ $t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-peruste-selvennys') }}</div>
+        <EpExternalLink :url="perusteUrl">
+          {{ $kaanna(perusteNimi) }}
+        </EpExternalLink>
 
         <div class="d-flex justify-content-end">
-          <div class="d-flex align-items-end mr-3 disabled-text font-size-08" v-if="viimeisinPohjaTekstiSync">
-            {{$t('viimeisin-synkronisointi-pvm')}} {{$sd(viimeisinPohjaTekstiSync)}}
+          <div
+            v-if="viimeisinPohjaTekstiSync"
+            class="d-flex align-items-end mr-3 disabled-text font-size-08"
+          >
+            {{ $t('viimeisin-synkronisointi-pvm') }} {{ $sd(viimeisinPohjaTekstiSync) }}
           </div>
-          <ep-button @click="syncTekstitPohjasta()" :showSpinner="syncPohja" v-if="pohjanaOphPohja || viimeisinPohjaTekstiSyncVirheellinen">
-            {{$t('paivita-opetussuunnitelma')}}
+          <ep-button
+            v-if="pohjanaOphPohja || viimeisinPohjaTekstiSyncVirheellinen"
+            :show-spinner="syncPohja"
+            @click="syncTekstitPohjasta()"
+          >
+            {{ $t('paivita-opetussuunnitelma') }}
           </ep-button>
         </div>
       </div>
@@ -35,18 +49,25 @@
     <template v-if="isPohja">
       <EpSpinner v-if="pohjanPerustePaivittynyt === null" />
       <div
-        class="info-box sync-box"
         v-else-if="pohjanPerustePaivittynyt"
-        v-oikeustarkastelu="oikeustarkastelu">
-        <h2>{{$t('paivita-pohjan-peruste-opetussuunnitelmiin')}}</h2>
+        v-oikeustarkastelu="oikeustarkastelu"
+        class="info-box sync-box"
+      >
+        <h2>{{ $t('paivita-pohjan-peruste-opetussuunnitelmiin') }}</h2>
         <div v-html="$t('paivita-pohjan-peruste-opetussuunnitelmiin-huomioteksti')" />
 
         <div class="d-flex justify-content-end">
-          <div class="d-flex align-items-end mr-3 disabled-text font-size-08" v-if="ops.viimeisinSyncPvm">
-            {{$t('viimeisin-synkronisointi-pvm')}} {{$sdt(ops.viimeisinSyncPvm)}}
+          <div
+            v-if="ops?.viimeisinSyncPvm"
+            class="d-flex align-items-end mr-3 disabled-text font-size-08"
+          >
+            {{ $t('viimeisin-synkronisointi-pvm') }} {{ $sdt(ops?.viimeisinSyncPvm) }}
           </div>
-          <ep-button @click="synkronisoiPohja" :showSpinner="syncing">
-            {{$t('paivita-peruste')}}
+          <ep-button
+            :show-spinner="syncing"
+            @click="synkronisoiPohja"
+          >
+            {{ $t('paivita-peruste') }}
           </ep-button>
         </div>
       </div>
@@ -54,149 +75,159 @@
 
     <div class="row">
       <div class="col">
-        <ops-perustiedot :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box"/>
-        <ops-muokkaamattomat-osiot :opetussuunnitelmanTekstikappale="store.sisalto" class="info-box"/>
-        <oppiaineet-statistiikka v-if="!yksinkertainen" :opetussuunnitelmaStore="opetussuunnitelmaStore" class="info-box" />
+        <ops-perustiedot
+          :opetussuunnitelma-store="props?.opetussuunnitelmaStore"
+          class="info-box"
+        />
+        <ops-muokkaamattomat-osiot
+          :opetussuunnitelman-tekstikappale="store.sisalto"
+          class="info-box"
+        />
+        <oppiaineet-statistiikka
+          v-if="!yksinkertainen"
+          :opetussuunnitelma-store="props?.opetussuunnitelmaStore"
+          class="info-box"
+        />
       </div>
       <div class="col">
-        <ops-viimeaikainen-toiminta :ops="ops" :muokkaustietoStore="muokkaustietoStore" class="info-box"/>
+        <ops-viimeaikainen-toiminta
+          :ops="ops"
+          :muokkaustieto-store="props?.muokkaustietoStore"
+          class="info-box"
+        />
       </div>
     </div>
 
     <div class="row">
       <div class="col">
-        <ops-aikataulu :ops="ops" :aikatauluStore="aikatauluStore" class="info-box" v-if="!isPohja"/>
+        <ops-aikataulu
+          v-if="!isPohja"
+          :ops="ops"
+          :aikataulu-store="props?.aikatauluStore"
+          class="info-box"
+        />
       </div>
     </div>
-
   </div>
 </template>
 
-<script lang="ts">
-
-import EpOpsRoute from '@/mixins/EpOpsRoute';
-import { Component, Prop } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import _ from 'lodash';
 import OpsPerustiedot from './OpsPerustiedot.vue';
 import OppiaineetStatistiikka from './OppiaineetStatistiikka.vue';
 import OpsMuokkaamattomatOsiot from './OpsMuokkaamattomatOsiot.vue';
 import OpsViimeaikainenToiminta from './OpsViimeaikainenToiminta.vue';
 import OpsAikataulu from './OpsAikataulu.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from '@/stores/aikataulu';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { createLogger } from '@shared/utils/logger';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { KoulutustyyppiToteutus } from '@shared/tyypit';
 import { Kielet } from '@shared/stores/kieli';
 import { buildKatseluUrl } from '@shared/utils/esikatselu';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
-import _ from 'lodash';
 import { MuokkaustietoKayttajallaDtoTapahtumaEnum } from '@shared/api/ylops';
+import { $success, $fail, $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    OpsPerustiedot,
-    OppiaineetStatistiikka,
-    OpsMuokkaamattomatOsiot,
-    OpsViimeaikainenToiminta,
-    OpsAikataulu,
-    EpButton,
-    EpSpinner,
-  },
-})
-export default class RouteYleisnakyma extends EpOpsRoute {
-  @Prop({ required: true })
-  private muokkaustietoStore!: MuokkaustietoStore;
+const props = defineProps<{
+  muokkaustietoStore: MuokkaustietoStore;
+  aikatauluStore: AikatauluStore;
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  @Prop({ required: true })
-  private aikatauluStore!: AikatauluStore;
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 
-  private importing = false;
-  private syncing = false;
-  private syncPohja = false;
+const importing = ref(false);
+const syncing = ref(false);
+const syncPohja = ref(false);
 
-  get perustepaivitys() {
-    return !this.ops.perusteDataTuontiPvm;
+const perustepaivitys = computed(() => {
+  return ops.value?.perusteDataTuontiPvm;
+});
+
+const syncTekstitPohjasta = async () => {
+  syncPohja.value = true;
+  try {
+    await store.value.syncTekstitPohjasta();
+    await props?.muokkaustietoStore.init(props?.opetussuunnitelmaStore.opsId.value);
+    await store.value.init(props?.opetussuunnitelmaStore.opsId.value);
+    $success($t('muutokset-paivitetty-opetussuunnitelmaan') as string);
   }
-
-  async syncTekstitPohjasta() {
-    this.syncPohja = true;
-    try {
-      await this.store.syncTekstitPohjasta();
-      await this.muokkaustietoStore.init();
-      await this.store.init();
-      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmaan') as string);
-    }
-    catch (e) {
-      this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmaan-virhe') as string);
-      createLogger('RouteYleisnakyma').error(e);
-    }
-    this.syncPohja = false;
+  catch (e) {
+    $fail($t('muutokset-paivitetty-opetussuunnitelmaan-virhe') as string);
+    createLogger('RouteYleisnakyma').error(e);
   }
+  syncPohja.value = false;
+};
 
-  async synkronisoiPohja() {
-    this.syncing = true;
-    try {
-      await this.store.synkronisoiPohja();
-      this.$success(this.$t('muutokset-paivitetty-opetussuunnitelmiin') as string);
-      await this.store.init();
-    }
-    catch (e) {
-      this.$fail(this.$t('muutokset-paivitetty-opetussuunnitelmiin-virhe') as string);
-      createLogger('RouteYleisnakyma').error(e);
-    }
-    this.syncing = false;
+const synkronisoiPohja = async () => {
+  syncing.value = true;
+  try {
+    await store.value.synkronisoiPohja();
+    $success($t('muutokset-paivitetty-opetussuunnitelmiin') as string);
+    await store.value.init(props?.opetussuunnitelmaStore.opsId.value);
   }
+  catch (e) {
+    $fail($t('muutokset-paivitetty-opetussuunnitelmiin-virhe') as string);
+    createLogger('RouteYleisnakyma').error(e);
+  }
+  syncing.value = false;
+};
 
-  get yksinkertainen() {
-    return (this.ops?.toteutus as any) === KoulutustyyppiToteutus.yksinkertainen;
-  }
+const yksinkertainen = computed(() => {
+  return (ops.value?.toteutus as any) === KoulutustyyppiToteutus.yksinkertainen;
+});
 
-  get pohjallaPuuttuviaTeksteja() {
-    return this.store.pohjallaPuuttuviaTeksteja;
-  }
+const pohjallaPuuttuviaTeksteja = computed(() => {
+  return store.value.pohjallaPuuttuviaTeksteja.value;
+});
 
-  get viimeisinPohjaTekstiSync() {
-    return this.store.viimeisinPohjaTekstiSync?.luotu || this.ops.perusteDataTuontiPvm || this.ops.luotu;
-  }
+const viimeisinPohjaTekstiSync = computed(() => {
+  return store.value.viimeisinPohjaTekstiSync?.value?.luotu || ops.value?.perusteDataTuontiPvm || ops.value?.luotu;
+});
 
-  get pohjanPerustePaivittynyt() {
-    return this.store.pohjanPerustePaivittynyt;
-  }
+const pohjanPerustePaivittynyt = computed(() => {
+  return store.value.pohjanPerustePaivittynyt.value;
+});
 
-  get isLops2019() {
-    return ((this.ops.toteutus as any) === KoulutustyyppiToteutus.lops2019);
-  }
+const isLops2019 = computed(() => {
+  return ((ops.value?.toteutus as any) === KoulutustyyppiToteutus.lops2019);
+});
 
-  get oikeustarkastelu() {
-    return { oikeus: 'hallinta', kohde: this.isPohja ? 'pohja' : 'opetussuunnitelma' };
-  }
+const oikeustarkastelu = computed(() => {
+  return { oikeus: 'hallinta', kohde: isPohja.value ? 'pohja' : 'opetussuunnitelma' };
+});
 
-  get perusteId() {
-    return this.ops?.perusteenId;
-  }
+const perusteId = computed(() => {
+  return ops.value?.perusteenId;
+});
 
-  get perusteUrl() {
-    return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/${koulutustyyppiTheme(this.ops.koulutustyyppi!)}/${this.perusteId}/muutoshistoria?noscroll`);
-  }
+const perusteUrl = computed(() => {
+  return buildKatseluUrl(Kielet.getSisaltoKieli.value, `/${koulutustyyppiTheme(ops.value!.koulutustyyppi!)}/${perusteId.value}/muutoshistoria?noscroll`);
+});
 
-  get perusteNimi() {
-    return this.store.peruste?.nimi;
-  }
+const perusteNimi = computed(() => {
+  return store.value.peruste?.value?.nimi;
+});
 
-  get pohjanaOphPohja() {
-    return _.toLower(this.ops.pohja?.tyyppi) === 'pohja';
-  }
+const pohjanaOphPohja = computed(() => {
+  return _.toLower(ops.value?.pohja?.tyyppi) === 'pohja';
+});
 
-  get viimeisinPohjaTekstiSyncVirheellinen() {
-    return this.store.viimeisinPohjaTekstiSync?.tapahtuma === _.toLower(MuokkaustietoKayttajallaDtoTapahtumaEnum.VIRHE)
-      || (this.store.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync !== null && this.aikaMyohemminKuin(this.store.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync?.luotu as any, 4));
-  }
+const viimeisinPohjaTekstiSyncVirheellinen = computed(() => {
+  return store.value.viimeisinPohjaTekstiSync?.value?.tapahtuma === _.toLower(MuokkaustietoKayttajallaDtoTapahtumaEnum.VIRHE)
+    || (store.value.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync?.value !== null && aikaMyohemminKuin(store.value.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync?.value?.luotu as any, 4));
+});
 
-  aikaMyohemminKuin(timeInMillis: number, tuntia: number) {
-    return timeInMillis < new Date().getTime() - tuntia * 60 * 60 * 1000;
-  }
-}
+const aikaMyohemminKuin = (timeInMillis: number, tuntia: number) => {
+  return timeInMillis < new Date().getTime() - tuntia * 60 * 60 * 1000;
+};
 </script>
 
 <style scoped lang="scss">

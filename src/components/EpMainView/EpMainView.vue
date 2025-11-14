@@ -1,39 +1,41 @@
 <template>
-<div>
-  <ep-navigation></ep-navigation>
-  <div class="content">
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <slot name="header"></slot>
-        </div>
-      </div>
-      <div class="view-content" v-if="$slots['default']">
+  <div>
+    <ep-navigation />
+    <div class="content">
+      <div class="container">
         <div class="row">
           <div class="col">
-            <slot name="default"></slot>
+            <slot name="header" />
           </div>
         </div>
+        <div
+          v-if="hasDefaultSlot"
+          class="view-content"
+        >
+          <div class="row">
+            <div class="col">
+              <slot name="default" />
+            </div>
+          </div>
+        </div>
+        <slot name="custom-content" />
       </div>
-      <slot name="custom-content"></slot>
     </div>
+    <slot name="after" />
   </div>
-  <slot name="after"></slot>
-</div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
-
+<script setup lang="ts">
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
+import { hasSlotContent } from '@shared/utils/vue-utils';
+import { computed } from 'vue';
+import { useSlots } from 'vue';
 
-@Component({
-  components: {
-    EpNavigation,
-  },
-})
-export default class EpMainView extends Vue {
-}
+const slots = useSlots();
+
+const hasDefaultSlot = computed(() => {
+  return hasSlotContent(slots.default);
+});
 </script>
 
 <style scoped lang="scss">

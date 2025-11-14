@@ -1,32 +1,36 @@
 <template>
-<div v-if="isEditable">
-
-  <ep-multi-list-select
-    v-if="cache"
-    :value="sortedValue"
-    tyyppi="oppiaine"
-    :items="selectOptions"
-    @input="handleInput"
-    :validation="validation"
-    :required="true"
-    :help="help"
-    :multiple="multiple"/>
-
-</div>
-<div v-else-if="value">
-  <div v-if="isArray">
-    <ul>
-      <li v-for="uri in value" :key="uri">
-        <span>{{ $kaanna(oppiaineetMap[uri].nimi) }}</span>
-        <span class="ml-1">({{ oppiaineetMap[uri].koodiArvo }})</span>
-      </li>
-    </ul>
-  </div>
-  <div v-else-if="oppiaineetMap[value]">
-    <span>{{ $kaanna(oppiaineetMap[value].nimi) }}</span>
-    <span class="ml-1">({{ oppiaineetMap[value].koodiArvo }})</span>
-  </div>
-</div>
+  <template v-if="cache">
+    <div v-if="isEditable">
+      <ep-multi-list-select
+        v-if="cache"
+        :model-value="sortedValue"
+        tyyppi="oppiaine"
+        :items="selectOptions"
+        :validation="validation"
+        :required="true"
+        :help="help"
+        :multiple="multiple"
+        @update:model-value="handleInput"
+      />
+    </div>
+    <div v-else-if="modelValue">
+      <div v-if="isArray">
+        <ul>
+          <li
+            v-for="uri in modelValue"
+            :key="uri"
+          >
+            <span>{{ $kaanna(oppiaineetMap[uri].nimi) }}</span>
+            <span class="ml-1">({{ oppiaineetMap[uri].koodiArvo }})</span>
+          </li>
+        </ul>
+      </div>
+      <div v-else-if="oppiaineetMap[modelValue]">
+        <span>{{ $kaanna(oppiaineetMap[modelValue].nimi) }}</span>
+        <span class="ml-1">({{ oppiaineetMap[modelValue].koodiArvo }})</span>
+      </div>
+    </div>
+  </template>
 <!--
 <div v-else>
   <p>{{ $t('oppiainetta-ei-valittu') }}</p>
@@ -34,137 +38,135 @@
 -->
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, onMounted, inject } from 'vue';
 import _ from 'lodash';
-import { Mixins, Component, Prop } from 'vue-property-decorator';
-
-import EpValidation from '@shared/mixins/EpValidation';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
 import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
 import { Kielet } from '@shared/stores/kieli';
 import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
+import { $kaanna } from '@shared/utils/globals';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-@Component({
-  components: {
-    EpMultiListSelect,
-  },
-})
-export default class EpOppiaineSelector extends Mixins(EpValidation, EpOpsComponent) {
-  @Prop({ required: true })
-  private value!: string | string[];
+const props = withDefaults(
+  defineProps<{
+    modelValue: string | string[];
+    opetussuunnitelmaStore: OpetussuunnitelmaStore;
+    isEditable?: boolean;
+    multiple?: boolean;
+    oppiaineFilter: (any: any) => boolean;
+    allowOppiaine?: boolean;
+    help?: string;
+    validation?: any;
+}>(), {
+    isEditable: false,
+    multiple: true,
+    allowOppiaine: false,
+    help: '',
+    validation: undefined,
+  });
 
-  @Prop({ default: true })
-  private isEditable!: boolean;
+const emit = defineEmits(['update:modelValue']);
 
-  @Prop({ default: true })
-  private multiple!: boolean;
+// Use the composable
+const store = computed(() => props.opetussuunnitelmaStore);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
-  @Prop({ required: true })
-  private oppiaineFilter!: (any) => boolean;
+const cache = ref<PerusteCache | null>(null);
 
-  @Prop({ default: false })
-  private allowOppiaine!: boolean;
+const isArray = computed(() => {
+  return _.isArray(props.modelValue);
+});
 
-  @Prop({ default: '', type: String })
-  private help!: string;
-
-  private cache: PerusteCache | null = null;
-
-  get isArray() {
-    return _.isArray(this.value);
+const sortedValue = computed(() => {
+  if (_.isArray(props.modelValue)) {
+    return _.sortBy(props.modelValue || [], _.identity);
   }
-
-  get sortedValue() {
-    if (_.isArray(this.value)) {
-      return _.sortBy(this.value || [], _.identity);
-    }
-    else if (_.isString(this.value)) {
-      return this.value;
-    }
-    else {
-      return null;
-    }
+  else if (_.isString(props.modelValue)) {
+    return props.modelValue;
   }
-
-  get paikallisetOppiaineet() {
-    return _(this.store.paikallisetOppiaineet)
-      .filter(getUri)
-      .map((oa) => {
-        return {
-          ...oa,
-          koodi: {
-            uri: oa.koodi,
-          },
-        };
-      })
-      .value();
+  else {
+    return null;
   }
+});
 
-  get oppiaineet() {
-    if (this.cache) {
-      return [
-        ...this.cache.peruste.oppiaineet,
-        ...this.paikallisetOppiaineet,
-      ];
-    }
-    else {
-      return [];
-    }
-  }
-
-  get oppiaineetJaOppimaarat() {
-    return _(this.oppiaineet)
-      .map((oa: any) => {
-        if (_.isEmpty(oa.oppimaarat)) {
-          return [oa];
-        }
-        else {
-          return [
-            oa,
-            ..._.map(oa.oppimaarat, om => ({
-              ...om,
-              child: true,
-            })),
-          ];
-        }
-      })
-      .flatten()
-      .map(oa => ({
+const paikallisetOppiaineet = computed(() => {
+  return _(store.value.paikallisetOppiaineet.value)
+    .filter(getUri)
+    .map((oa) => {
+      return {
         ...oa,
-        koodiUri: getUri(oa),
-        koodiArvo: getArvo(oa),
-      }))
-      .filter(oppiaine => this.oppiaineFilter(oppiaine))
-      .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
-      .value();
-  }
+        koodi: {
+          uri: oa.koodi,
+        },
+      };
+    })
+    .value();
+});
 
-  get oppiaineetMap() {
-    return _.keyBy(this.oppiaineetJaOppimaarat, getUri);
+const oppiaineet = computed(() => {
+  if (cache.value) {
+    return [
+      ...cache.value.peruste.oppiaineet,
+      ...paikallisetOppiaineet.value,
+    ];
   }
+  else {
+    return [];
+  }
+});
 
-  get selectOptions() {
-    return _.chain(this.oppiaineetJaOppimaarat)
-      .map((oppiaine: any) => {
-        return {
-          value: oppiaine.koodiUri,
-          text: `${(this as any).$kaanna(oppiaine.nimi)} (${oppiaine.koodiArvo})`,
-          unselectable: !_.isEmpty(oppiaine.oppimaarat) && !this.allowOppiaine,
-          child: oppiaine.child,
-        };
-      })
-      .value();
-  }
+const oppiaineetJaOppimaarat = computed(() => {
+  return _(oppiaineet.value)
+    .map((oa: any) => {
+      if (_.isEmpty(oa.oppimaarat)) {
+        return [oa];
+      }
+      else {
+        return [
+          oa,
+          ..._.map(oa.oppimaarat, om => ({
+            ...om,
+            child: true,
+          })),
+        ];
+      }
+    })
+    .flatten()
+    .map(oa => ({
+      ...oa,
+      koodiUri: getUri(oa),
+      koodiArvo: getArvo(oa),
+    }))
+    .filter(oppiaine => props.oppiaineFilter(oppiaine))
+    .sortBy((oa: any) => !_.isString(oa.koodi), koodiAlku, koodiNumero)
+    .value();
+});
 
-  async mounted() {
-    this.cache = await PerusteCache.of(this.opsId);
-  }
+const oppiaineetMap = computed(() => {
+  return _.keyBy(oppiaineetJaOppimaarat.value, getUri);
+});
 
-  handleInput(value: any) {
-    this.$emit('input', value);
-  }
-}
+const selectOptions = computed(() => {
+  return _.chain(oppiaineetJaOppimaarat.value)
+    .map((oppiaine: any) => {
+      return {
+        value: oppiaine.koodiUri,
+        text: `${$kaanna(oppiaine.nimi)} (${oppiaine.koodiArvo})`,
+        unselectable: !_.isEmpty(oppiaine.oppimaarat) && !props.allowOppiaine,
+        child: oppiaine.child,
+      };
+    })
+    .value();
+});
+
+const handleInput = (value: any) => {
+  emit('update:modelValue', value);
+};
+
+onMounted(async () => {
+  cache.value = await PerusteCache.of(opsId.value);
+});
 </script>
 
 <style scoped lang="scss">

@@ -1,5 +1,5 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
+import VueCompositionApi, { reactive, computed, ref, watch } from 'vue';
 import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OppiaineSuppeaDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
@@ -23,8 +23,8 @@ export class PerusopetusoppiaineStore implements IEditoitava {
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
     private versionumero: number,
     private parent: OppiaineSuppeaDto,
-    private resetOps: Function,
-    private init: Function,
+    private resetOps: () => Promise<void>,
+    private init: () => Promise<void>,
     private muokkaaLatauksenJalkeen: boolean) {
   }
 
@@ -150,20 +150,26 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async remove() {
-    await Oppiaineet.deleteOppiaine(this.opsId, this.oppiaineId);
+    try {
+      await Oppiaineet.deleteOppiaine(this.opsId, this.oppiaineId);
 
-    PerusopetusoppiaineStore.config.router.push({
-      name: 'vuosiluokkakokonaisuus',
-      params: {
-        vlkId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id,
-      },
-    } as any);
+      PerusopetusoppiaineStore.config.router.push({
+        name: 'vuosiluokkakokonaisuus',
+        params: {
+          vlkId: this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id,
+        },
+      } as any);
 
-    await this.resetOps();
+      await this.resetOps();
+    }
+    catch (e) {
+      logger.error(e);
+      throw e;
+    }
   }
 
   async hide(data) {
-    await Vuosiluokkakokonaisuudet.piilotaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!);
+    await Vuosiluokkakokonaisuudet.piilotaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!);
 
     if (data.oppiaine.oma) {
       const piilotettu = {
@@ -182,7 +188,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   }
 
   async unHide(data) {
-    await Vuosiluokkakokonaisuudet.palautaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!);
+    await Vuosiluokkakokonaisuudet.palautaOppiaine(this.opsId, this.oppiaineId, this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!);
 
     if (data.oppiaine.oma) {
       const piilotettu = {

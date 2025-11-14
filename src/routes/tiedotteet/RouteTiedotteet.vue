@@ -3,80 +3,83 @@
     <ep-navigation />
     <ep-tiedote-view :tiedotteet="tiedotteet">
       <template #search>
-        <ep-search class="mb-3" v-model="rajain" @input="updateSearch" />
+        <ep-search
+          v-model="rajain"
+          class="mb-3"
+          @input="updateSearch"
+        />
       </template>
       <template #pagination>
-        <b-pagination
-          class="justify-content-center"
+        <EpPagination
           v-model="sivu"
+          class="justify-content-center"
           :per-page="sivukoko"
           :total-rows="kokonaismaara"
           :limit="10"
-          @input="update"
-          aria-controls="tiedotteet" />
+          aria-controls="tiedotteet"
+          @update:model-value="update"
+        />
       </template>
     </ep-tiedote-view>
   </div>
 </template>
 
-<script lang="ts">
-import { Prop, Component, Mixins } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue';
 import _ from 'lodash';
-
 import { Kielet } from '@shared/stores/kieli';
 import { julkaisupaikka } from '@shared/utils/tiedote';
-import { Debounced } from '@shared/utils/delay';
-
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpTiedoteView from '@shared/components/EpTiedoteView/EpTiedoteView.vue';
-
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpRoute from '@/mixins/EpRoot';
 import { Ulkopuoliset } from '@shared/api/ylops';
+import { debounced } from '@shared/utils/delay';
+import { onMounted } from 'vue';
+import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
 
-@Component({
-  components: {
-    EpNavigation,
-    EpTiedoteView,
-    EpSearch,
-  },
-})
-export default class RouteTiedotteet extends Mixins(EpRoute) {
-  private rajain = '';
-  private tiedotteet: any[] | null = null;
-  private sivu = 1;
-  private sivukoko = 10;
-  private kokonaismaara = 0;
+const rajain = ref('');
+const tiedotteet = ref<any[] | null>(null);
+const sivu = ref(1);
+const sivukoko = ref(10);
+const kokonaismaara = ref(0);
 
-  async init() {
-    await this.update();
-  }
+const kieli = computed(() => {
+  return Kielet.getSisaltoKieli.value;
+});
 
-  get kieli() {
-    return Kielet.getSisaltoKieli.value;
-  }
+const update = async () => {
+  tiedotteet.value = null;
+  const tiedotteetHaku = ((await Ulkopuoliset.getTiedotteetHaku(
+    sivu.value - 1,
+    sivukoko.value,
+    [_.toUpper(kieli.value)],
+    rajain.value,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    [julkaisupaikka.ops, julkaisupaikka.lops],
+  )).data as any);
+  tiedotteet.value = tiedotteetHaku.data;
+  kokonaismaara.value = tiedotteetHaku.kokonaismäärä;
+};
 
-  @Debounced(300)
-  async updateSearch() {
-    this.sivu = 1;
-    this.update();
-  }
+const updateSearch = debounced(async () => {
+  sivu.value = 1;
+  await update();
+}, 300);
 
-  async update() {
-    this.tiedotteet = null;
-    const tiedotteetHaku = ((await Ulkopuoliset.getTiedotteetHaku(
-      this.sivu - 1,
-      this.sivukoko,
-      [_.toUpper(this.kieli)],
-      this.rajain,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      [julkaisupaikka.ops, julkaisupaikka.lops],
-    )).data as any);
-    this.tiedotteet = tiedotteetHaku.data;
-    this.kokonaismaara = tiedotteetHaku.kokonaismäärä;
-  }
-}
+// Watch for pagination changes
+watch(sivu, () => {
+  update();
+});
+
+// Watch for search changes
+watch(rajain, () => {
+  updateSearch();
+});
+
+onMounted(async () => {
+  await update();
+});
 </script>

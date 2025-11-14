@@ -1,77 +1,102 @@
 <template>
   <div class="mt-4">
     <slot name="header">
-      <h3 v-if="perusteObject">{{ $kaanna(perusteObject[otsikko]) }}</h3>
+      <h3 v-if="perusteObject">
+        {{ $kaanna(perusteObject[otsikko]) }}
+      </h3>
     </slot>
-    <ep-collapse tyyppi="perusteteksti" :border-bottom="false" :border-top="false" :expanded-by-default="perusteTekstiAvattu" v-if="perusteObject && perusteObject[teksti]">
-      <template v-slot:header><h4>{{$t('perusteen-teksti')}}</h4></template>
-      <span v-html="$kaanna(perusteObject[teksti])"></span>
+    <ep-collapse
+      v-if="perusteObject && perusteObject[teksti]"
+      tyyppi="perusteteksti"
+      :border-bottom="false"
+      :border-top="false"
+      :expanded-by-default="perusteTekstiAvattu"
+    >
+      <template #header>
+        <h4>{{ $t('perusteen-teksti') }}</h4>
+      </template>
+      <span v-html="$kaanna(perusteObject[teksti])" />
     </ep-collapse>
 
-    <ep-collapse class="mb-4" :use-padding="false" tyyppi="pohjateksti" :border-bottom="false" :border-top="false" :expanded-by-default="perusteTekstiAvattu" v-if="hasPohjaObject">
-      <template v-slot:header><h4>{{$t('pohjan-teksti')}}</h4></template>
-      <span v-html="$kaanna(pohjaObject[teksti])"></span>
+    <ep-collapse
+      v-if="hasPohjaObject"
+      class="mb-4"
+      :use-padding="false"
+      tyyppi="pohjateksti"
+      :border-bottom="false"
+      :border-top="false"
+      :expanded-by-default="perusteTekstiAvattu"
+    >
+      <template #header>
+        <h4>{{ $t('pohjan-teksti') }}</h4>
+      </template>
+      <span v-html="$kaanna(pohjaObject[teksti])" />
     </ep-collapse>
 
-    <div v-if="vlkObject && (hasContent || perusteObject)">
-      <slot name="otsikko"></slot>
+    <div v-if="modelValue && (hasContent || perusteObject)">
+      <slot name="otsikko" />
       <h4>{{ $t('paikallinen-teksti') }}</h4>
-      <ep-content v-if="isEditing || contentNotEmpty" v-model="vlkObject[teksti]"
-                    layout="normal"
-                    :is-editable="isEditing"></ep-content>
-      <ep-alert v-if="!isEditing && !contentNotEmpty" :text="$t('paikallista-sisaltoa-ei-maaritetty')" />
+      <ep-content
+        v-if="isEditing || contentNotEmpty"
+        v-model="model"
+        layout="normal"
+        :is-editable="isEditing"
+      />
+      <ep-alert
+        v-if="!isEditing && !contentNotEmpty"
+        :text="$t('paikallista-sisaltoa-ei-maaritetty')"
+      />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed } from 'vue';
+import _ from 'lodash';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
-import _ from 'lodash';
+import { $t, $kaanna } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpCollapse,
-    EpContent,
-    EpAlert,
+const props = withDefaults(
+  defineProps<{
+    perusteObject?: any;
+    pohjaObject?: any;
+    modelValue?: any;
+    isEditing?: boolean;
+    otsikko?: string;
+    teksti?: string;
+    perusteTekstiAvattu?: boolean;
+  }>(), {
+    isEditing: false,
+    otsikko: 'otsikko',
+    teksti: 'teksti',
+    perusteTekstiAvattu: false,
+  });
+
+const emit = defineEmits(['update:modelValue']);
+
+const model = computed({
+  get: () => props.modelValue[props.teksti],
+  set: (value) => {
+    emit('update:modelValue', {
+      ...props.modelValue,
+      [props.teksti]: value,
+    });
   },
-})
-export default class VuosiluokkaSisaltoTeksti extends Vue {
-  @Prop({ required: false })
-  private perusteObject!: any;
+});
 
-  @Prop({ required: false })
-  private pohjaObject!: any;
+const hasContent = computed(() => {
+  return props.modelValue != null && _.has(props.modelValue, props.teksti);
+});
 
-  @Prop({ required: false })
-  private vlkObject!: any;
+const contentNotEmpty = computed(() => {
+  return props.modelValue != null && props.modelValue[props.teksti] != null;
+});
 
-  @Prop({ default: false })
-  private isEditing!: boolean;
-
-  @Prop({ default: 'otsikko' })
-  private otsikko!: string;
-
-  @Prop({ default: 'teksti' })
-  private teksti!: string;
-
-  @Prop({ default: false })
-  private perusteTekstiAvattu!: boolean;
-
-  get hasContent() {
-    return this.vlkObject != null && _.has(this.vlkObject, this.teksti);
-  }
-
-  get contentNotEmpty() {
-    return this.vlkObject != null && this.vlkObject[this.teksti] != null;
-  }
-
-  get hasPohjaObject() {
-    return this.pohjaObject && this.pohjaObject[this.teksti] && Object.keys(this.pohjaObject[this.teksti]).length > 0;
-  }
-}
+const hasPohjaObject = computed(() => {
+  return props.pohjaObject && props.pohjaObject[props.teksti] && Object.keys(props.pohjaObject[props.teksti]).length > 0;
+});
 </script>
 
 <style lang="scss" scoped>

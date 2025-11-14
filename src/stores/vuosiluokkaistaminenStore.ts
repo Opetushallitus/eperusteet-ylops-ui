@@ -1,12 +1,24 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
 import { Oppiaineet, OppiaineenVuosiluokkakokonaisuudet, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
-import { required, maxValue, minValue } from 'vuelidate/lib/validators';
+import { required, maxValue, minValue } from '@vuelidate/validators';
+import { Router } from 'vue-router';
+import { App } from 'vue';
+
+interface VuosiluokkaistaminenStoreConfig {
+  router: Router;
+}
 
 export class VuosiluokkaistaminenStore implements IEditoitava {
-  constructor(private opsId: number, private vlkId: number, private oppiaineId: number, private el, private postSave: Function) {
+  private static config: VuosiluokkaistaminenStoreConfig;
+
+  public static install(app: App, config: VuosiluokkaistaminenStoreConfig) {
+    VuosiluokkaistaminenStore.config = config;
+  }
+
+  constructor(private opsId: number, private vlkId: number, private oppiaineId: number, private el, private postSave: () => Promise<void>) {
   }
 
   async acquire() {
@@ -14,7 +26,7 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
   }
 
   async cancel() {
-    this.el.$router.push({
+    VuosiluokkaistaminenStore.config.router.push({
       name: 'perusopetusoppiaine',
       params: {
         vlkId: this.vlkId,
@@ -114,7 +126,7 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
   }
 
   async release() {
-    this.el.$router.push({
+    VuosiluokkaistaminenStore.config.router.push({
       name: 'perusopetusoppiaine',
       params: {
         vlkId: this.vlkId,

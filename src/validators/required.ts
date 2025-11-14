@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import he from 'he';
 import { Kieli } from '@shared/tyypit';
-import { minLength, required } from 'vuelidate/lib/validators';
+import { minLength, required } from '@vuelidate/validators';
 
 export function notNull() {
   return {

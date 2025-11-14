@@ -1,56 +1,93 @@
 <template>
-  <div id="scroll-anchor" v-if="editointiStore">
+  <div
+    v-if="editointiStore"
+    id="scroll-anchor"
+  >
     <EpEditointi :store="editointiStore">
-      <template v-slot:header="{ data }">
-        <h2 class="m-0">{{ $kaanna(data.oppiaine.nimi) }}, {{ $t('vuosiluokka') }} {{ $t(data.vuosiluokka.vuosiluokka) }}</h2>
+      <template #header="{ data }">
+        <h2 class="m-0">
+          {{ $kaanna(data.oppiaine.nimi) }}, {{ $t('vuosiluokka') }} {{ $t(data.vuosiluokka.vuosiluokka) }}
+        </h2>
       </template>
-      <template v-slot:default="{ data, isEditing }">
+      <template #default="{ data, isEditing }">
         <h2>{{ $t('tavoitteet') }}</h2>
-        <div v-for="(tavoite, idx) in data.vuosiluokka.tavoitteet" :key="idx" :class="{ 'tavoite-editing': isEditing, 'mb-3': isEditing }">
-          <ep-collapse v-if="!isEditing" tyyppi="perusopetus-vuosiluokka-tavoite">
-            <h3 slot="header">{{ $kaanna(tavoite.tavoite) }}</h3>
-
-            <template v-if="data.pohjanTavoitteet[tavoite.tunniste]">
-              <h4>{{$t('pohjan-teksti')}}</h4>
-              <ep-content layout="normal" v-model="data.pohjanTavoitteet[tavoite.tunniste].sisaltoalueet[0].sisaltoalueet.kuvaus" :is-editable="false"></ep-content>
+        <div
+          v-for="(tavoite, idx) in data.vuosiluokka.tavoitteet"
+          :key="idx"
+          :class="{ 'tavoite-editing': isEditing, 'mb-3': isEditing }"
+        >
+          <ep-collapse
+            v-if="!isEditing"
+            tyyppi="perusopetus-vuosiluokka-tavoite"
+          >
+            <template #header>
+              <h3>{{ $kaanna(tavoite.tavoite) }}</h3>
             </template>
 
-            <div v-for="(sa, idx2) in tavoite.sisaltoalueet" :key="idx2">
-              <ep-content layout="normal"
-                          v-model="sa.sisaltoalueet.kuvaus"></ep-content>
+            <template v-if="data.pohjanTavoitteet[tavoite.tunniste]">
+              <h4>{{ $t('pohjan-teksti') }}</h4>
+              <ep-content
+                v-model="data.pohjanTavoitteet[tavoite.tunniste].sisaltoalueet[0].sisaltoalueet.kuvaus"
+                layout="normal"
+                :is-editable="false"
+              />
+            </template>
+
+            <div
+              v-for="(sa, idx2) in tavoite.sisaltoalueet"
+              :key="idx2"
+            >
+              <ep-content
+                v-model="sa.sisaltoalueet.kuvaus"
+                layout="normal"
+              />
             </div>
           </ep-collapse>
           <div v-else>
             <ep-form-content name="tavoitteen-nimi">
-              <ep-field v-model="tavoite.tavoite"
-                        :is-editing="isEditing">
-              </ep-field>
+              <ep-field
+                v-model="tavoite.tavoite"
+                :is-editing="isEditing"
+              />
             </ep-form-content>
 
             <template v-if="data.pohjanTavoitteet[tavoite.tunniste]">
-              <h4>{{$t('pohjan-teksti')}}</h4>
-              <ep-content layout="normal" v-model="data.pohjanTavoitteet[tavoite.tunniste].sisaltoalueet[0].sisaltoalueet.kuvaus" :is-editable="false"></ep-content>
+              <h4>{{ $t('pohjan-teksti') }}</h4>
+              <ep-content
+                v-model="data.pohjanTavoitteet[tavoite.tunniste].sisaltoalueet[0].sisaltoalueet.kuvaus"
+                layout="normal"
+                :is-editable="false"
+              />
             </template>
 
             <ep-form-content name="tavoitteen-kuvaus">
-              <div v-for="(sa, idx2) in tavoite.sisaltoalueet" :key="idx2">
-                <ep-content layout="normal"
-                            v-model="sa.sisaltoalueet.kuvaus"
-                            :is-editable="true"></ep-content>
+              <div
+                v-for="(sa, idx2) in tavoite.sisaltoalueet"
+                :key="idx2"
+              >
+                <ep-content
+                  v-model="sa.sisaltoalueet.kuvaus"
+                  layout="normal"
+                  :is-editable="true"
+                />
               </div>
             </ep-form-content>
-            <ep-button variant="link"
-                       icon="delete"
-                       class="float-right"
-                       @click="poistaTavoite(data.vuosiluokka.tavoitteet, idx)">
+            <ep-button
+              variant="link"
+              icon="delete"
+              class="float-right"
+              @click="poistaTavoite(data.vuosiluokka.tavoitteet, idx)"
+            >
               {{ $t('poista-tavoite') }}
             </ep-button>
           </div>
         </div>
-        <ep-button v-if="isEditing"
-                   variant="link"
-                   icon="add"
-                   @click="lisaaTavoite(data.vuosiluokka.tavoitteet)">
+        <ep-button
+          v-if="isEditing"
+          variant="link"
+          icon="add"
+          @click="lisaaTavoite(data.vuosiluokka.tavoitteet)"
+        >
           {{ $t('lisaa-tavoite') }}
         </ep-button>
       </template>
@@ -58,11 +95,10 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusPaikallinenOppiaineVuosiluokkaStore } from '@/stores/perusopetusPaikallinenOppiaineVuosiluokkaStore';
@@ -72,49 +108,56 @@ import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import VuosiluokkaSisaltoTeksti from '../VuosiluokkaSisaltoTeksti.vue';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { $kaanna, $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpEditointi,
-    EpCollapse,
-    EpContent,
-    EpField,
-    EpFormContent,
-    EpButton,
-  },
-})
-export default class RoutePerusopetusPaikallinenOppiaineVuosiluokka extends Mixins(EpRoute, EpOpsComponent) {
-  private editointiStore: EditointiStore | null = null;
+// Props
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async init() {
-    const vuosiluokkakokonaisuus = _.head(_.filter(this.ops.vuosiluokkakokonaisuudet, vlk =>
-      vlk.vuosiluokkakokonaisuus?.id === _.toNumber(this.$route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
-    this.editointiStore = new EditointiStore(new PerusopetusPaikallinenOppiaineVuosiluokkaStore(
-      this.opsId,
-      _.toNumber(this.$route.params.oppiaineId),
-      vuosiluokkakokonaisuus,
-      _.toNumber(this.$route.params.vuosiluokkaId),
-    ));
-  }
+// Router
+const route = useRoute();
 
-  private lisaaTavoite(tavoitteet) {
-    tavoitteet.push({
-      tavoite: {
+// Use composables
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
+// Reactive data
+const editointiStore = ref<EditointiStore | null>(null);
 
+// Methods
+const lisaaTavoite = (tavoitteet: any) => {
+  tavoitteet.push({
+    tavoite: {
+
+    },
+    sisaltoalueet: [{
+      sisaltoalueet: {
+        kuvaus: {},
       },
-      sisaltoalueet: [{
-        sisaltoalueet: {
-          kuvaus: {},
-        },
-      }],
-    });
-  }
+    }],
+  });
+};
 
-  private poistaTavoite(tavoitteet, idx) {
-    tavoitteet.splice(idx, 1);
-  }
-}
+const poistaTavoite = (tavoitteet: any, idx: number) => {
+  tavoitteet.splice(idx, 1);
+};
+
+const init = async () => {
+  const vuosiluokkakokonaisuus = _.head(_.filter(ops.value?.vuosiluokkakokonaisuudet, vlk =>
+    vlk.vuosiluokkakokonaisuus?.id === _.toNumber(route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
+  editointiStore.value = new EditointiStore(new PerusopetusPaikallinenOppiaineVuosiluokkaStore(
+    opsId.value,
+    _.toNumber(route.params.oppiaineId),
+    vuosiluokkakokonaisuus,
+    _.toNumber(route.params.vuosiluokkaId),
+  ));
+};
+
+// Lifecycle
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style scoped lang="scss">

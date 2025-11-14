@@ -1,138 +1,177 @@
 <template>
   <div class="content">
-    <h2>{{$t('oppiaineet')}}</h2>
+    <h2>{{ $t('oppiaineet') }}</h2>
 
-    <ep-spinner v-if="!cache"></ep-spinner>
+    <ep-spinner v-if="!cache" />
     <div v-else>
-
-      <div class="box d-inline-flex align-items-center flex-column" v-if="isLops2019">
-        <div class="count">{{luodutOpintojaksot}}</div>
-        <div class="topic text-center">{{ $t('luotuja-opintojaksoja') }}</div>
-      </div>
-
-      <div class="box d-inline-flex align-items-center flex-column" v-if="isLops2019">
+      <div
+        v-if="isLops2019"
+        class="box d-inline-flex align-items-center flex-column"
+      >
         <div class="count">
-          <span>{{liitetytModuulitLukumaara}}</span>
-          <span class="secondary">/ {{moduulitLukumaara}}</span>
+          {{ luodutOpintojaksot }}
         </div>
-        <div class="topic text-center">{{ $t('moduulia-liitetty') }}</div>
+        <div class="topic text-center">
+          {{ $t('luotuja-opintojaksoja') }}
+        </div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column" v-if="isLops2019">
-        <div class="count">{{useanOppiaineenOpintojaksot}}</div>
-        <div class="topic text-center">{{$t('usean-oppiaineen-opintojaksoa')}}</div>
+      <div
+        v-if="isLops2019"
+        class="box d-inline-flex align-items-center flex-column"
+      >
+        <div class="count">
+          <span>{{ liitetytModuulitLukumaara }}</span>
+          <span class="secondary">/ {{ moduulitLukumaara }}</span>
+        </div>
+        <div class="topic text-center">
+          {{ $t('moduulia-liitetty') }}
+        </div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column" v-if="!isLops2019">
-        <div class="count">{{oppimaarat}}</div>
-        <div class="topic text-center">{{$t('luotua-oppimaaraa')}}</div>
+      <div
+        v-if="isLops2019"
+        class="box d-inline-flex align-items-center flex-column"
+      >
+        <div class="count">
+          {{ useanOppiaineenOpintojaksot }}
+        </div>
+        <div class="topic text-center">
+          {{ $t('usean-oppiaineen-opintojaksoa') }}
+        </div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column" >
-        <div class="count" v-if="isLops2019">{{paikallisetOppiaineet}}</div>
-        <div class="count" v-if="!isLops2019">{{valinnaisetOppiaineet}}</div>
-        <div class="topic text-center">{{$t('paikallista-oppiainetta')}}</div>
+      <div
+        v-if="!isLops2019"
+        class="box d-inline-flex align-items-center flex-column"
+      >
+        <div class="count">
+          {{ oppimaarat }}
+        </div>
+        <div class="topic text-center">
+          {{ $t('luotua-oppimaaraa') }}
+        </div>
       </div>
 
+      <div class="box d-inline-flex align-items-center flex-column">
+        <div
+          v-if="isLops2019"
+          class="count"
+        >
+          {{ paikallisetOppiaineet }}
+        </div>
+        <div
+          v-if="!isLops2019"
+          class="count"
+        >
+          {{ valinnaisetOppiaineet }}
+        </div>
+        <div class="topic text-center">
+          {{ $t('paikallista-oppiainetta') }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import _ from 'lodash';
-import { OpetussuunnitelmaKevytDto, Lops2019OppiaineDto } from '@shared/api/ylops';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
-import { PerusteCache } from '@/stores/peruste';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import { OpetussuunnitelmaKevytDto, Lops2019OppiaineDto } from '@shared/api/ylops';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { PerusteCache } from '@/stores/peruste';
+import { $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpSpinner,
-  },
-})
-export default class OppiaineetStatistiikka extends Mixins(EpOpsComponent) {
-  private cache: PerusteCache | null = null;
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async mounted() {
-    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
-  }
+const route = useRoute();
+const store = computed(() => props.opetussuunnitelmaStore);
+const isLops2019 = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.toteutus as string === 'lops2019');
 
-  get perusteCache() {
-    return this.cache;
-  }
+const cache = ref<PerusteCache | null>(null);
 
-  get luodutOpintojaksot() {
-    return _.size(this.store.opintojaksot);
-  }
+const perusteCache = computed(() => {
+  return cache.value;
+});
 
-  get liitetytModuulitLukumaara() {
-    return _.size(
-      _.filter(this.moduulit, (moduuli) => _.includes(this.opintojaksojenModuuliKoodiUri, moduuli.koodi!.uri)),
-    );
-  }
+const luodutOpintojaksot = computed(() => {
+  return _.size(store.value.opintojaksot.value);
+});
 
-  get opintojaksojenModuuliKoodiUri() {
-    return _.chain(this.store.opintojaksot)
-      .map((oa) => _.map(oa.moduulit, (moduuli) => moduuli.koodiUri))
-      .flatten()
-      .value();
-  }
+const opintojaksojenModuuliKoodiUri = computed(() => {
+  return _.chain(store.value.opintojaksot.value)
+    .map((oa) => _.map(oa.moduulit, (moduuli) => moduuli.koodiUri))
+    .flatten()
+    .value();
+});
 
-  get moduulit() {
-    return _.chain(this.oppiaineet)
-      .map((oa) => _.map(oa.moduulit, (moduuli) => ({
-        ...moduuli,
+const perusteenOppiaineidenOppimaarat = computed(() => {
+  if (cache.value) {
+    return _.chain(cache.value.peruste.oppiaineet)
+      .map((oa) => _.map(oa.oppimaarat, (oppimaarat) => ({
+        ...oppimaarat,
       })))
       .flatten()
       .value();
   }
-
-  get moduulitLukumaara() {
-    return _.size(this.moduulit);
+  else {
+    return [];
   }
+});
 
-  get useanOppiaineenOpintojaksot() {
-    return _.size(_.filter(this.store.opintojaksot, (opintojakso) => _.size(opintojakso.oppiaineet) > 1));
+const oppiaineet = computed(() => {
+  if (cache.value) {
+    return [
+      ...cache.value.peruste.oppiaineet,
+      ...store.value.paikallisetOppiaineet.value,
+      ...perusteenOppiaineidenOppimaarat.value,
+    ] as Lops2019OppiaineDto[];
   }
+  return undefined;
+});
 
-  get paikallisetOppiaineet() {
-    return _.size(this.store.paikallisetOppiaineet);
-  }
+const moduulit = computed(() => {
+  return _.chain(oppiaineet.value)
+    .map((oa) => _.map(oa.moduulit, (moduuli) => ({
+      ...moduuli,
+    })))
+    .flatten()
+    .value();
+});
 
-  get valinnaisetOppiaineet() {
-    return _.size(this.store.valinnaisetOppiaineet);
-  }
+const liitetytModuulitLukumaara = computed(() => {
+  return _.size(
+    _.filter(moduulit.value, (moduuli) => _.includes(opintojaksojenModuuliKoodiUri.value, moduuli.koodi!.uri)),
+  );
+});
 
-  get oppiaineet() {
-    if (this.cache) {
-      return [
-        ...this.cache.peruste.oppiaineet,
-        ...this.store.paikallisetOppiaineet,
-        ...this.perusteenOppiaineidenOppimaarat,
-      ] as Lops2019OppiaineDto[];
-    }
-  }
+const moduulitLukumaara = computed(() => {
+  return _.size(moduulit.value);
+});
 
-  get perusteenOppiaineidenOppimaarat() {
-    if (this.cache) {
-      return _.chain(this.cache.peruste.oppiaineet)
-        .map((oa) => _.map(oa.oppimaarat, (oppimaarat) => ({
-          ...oppimaarat,
-        })))
-        .flatten()
-        .value();
-    }
-    else {
-      return [];
-    }
-  }
+const useanOppiaineenOpintojaksot = computed(() => {
+  return _.size(_.filter(store.value.opintojaksot.value, (opintojakso) => _.size(opintojakso.oppiaineet) > 1));
+});
 
-  get oppimaarat() {
-    return _.sum(_.map(this.store.opetussuunnitelma?.oppiaineet || [], oppiaine => _.size(oppiaine.oppiaine!.oppimaarat)));
-  }
-}
+const paikallisetOppiaineet = computed(() => {
+  return _.size(store.value.paikallisetOppiaineet.value);
+});
+
+const valinnaisetOppiaineet = computed(() => {
+  return _.size(store.value.valinnaisetOppiaineet.value);
+});
+
+const oppimaarat = computed(() => {
+  return _.sum(_.map(store.value.opetussuunnitelma?.value?.oppiaineet || [], oppiaine => _.size(oppiaine.oppiaine!.oppimaarat)));
+});
+
+onMounted(async () => {
+  cache.value = await PerusteCache.of(_.parseInt(route.params.id as string));
+});
 </script>
 
 <style scoped lang="scss">

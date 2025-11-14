@@ -1,74 +1,101 @@
 <template>
-<div class="content">
-  <ep-spinner v-if="isLoading"></ep-spinner>
-  <div v-if="!isLoading">
-    <h2>{{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})</h2>
-    <p class="kuvaus" v-html="$kaanna(moduuli.kuvaus)"></p>
-    <div class="collapse-container">
-      <ep-collapse :first="true">
-        <h4 slot="header">{{ $t('yleiset-tavoitteet') }}</h4>
-        <ep-prefix-list :value="moduuli.tavoitteet" kohde="kohde" arvot="tavoitteet"></ep-prefix-list>
-      </ep-collapse>
-      <ep-collapse>
-        <h4 slot="header">{{ $t('keskeiset-sisallot') }}</h4>
-        <ep-prefix-list :value="moduuli.sisallot" kohde="kohde" arvot="sisallot"></ep-prefix-list>
-      </ep-collapse>
-      <ep-spinner v-if="!opintojaksot"></ep-spinner>
-      <ep-collapse v-else-if="opintojaksot.length > 0">
-        <h4 slot="header">{{ $t('opintojaksot') }}</h4>
-        <div class="block-container" v-for="opintojakso in opintojaksot" :key="opintojakso.id">
-          <div class="oj-content pakollinen">
-            <span class="nimi">
-              <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
-                {{ $kaanna(opintojakso.nimi) }}
-              </router-link>
-            </span>
-            <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
+  <div class="content">
+    <ep-spinner v-if="isLoading" />
+    <div v-if="!isLoading">
+      <h2>{{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})</h2>
+      <p
+        class="kuvaus"
+        v-html="$kaanna(moduuli.kuvaus)"
+      />
+      <div class="collapse-container">
+        <ep-collapse :first="true">
+          <template #header>
+            <h4>{{ $t('yleiset-tavoitteet') }}</h4>
+          </template>
+          <ep-prefix-list
+            :model-value="moduuli.tavoitteet"
+            kohde="kohde"
+            arvot="tavoitteet"
+          />
+        </ep-collapse>
+        <ep-collapse>
+          <template #header>
+            <h4>{{ $t('keskeiset-sisallot') }}</h4>
+          </template>
+          <ep-prefix-list
+            :model-value="moduuli.sisallot"
+            kohde="kohde"
+            arvot="sisallot"
+          />
+        </ep-collapse>
+        <ep-spinner v-if="!opintojaksot" />
+        <ep-collapse v-else-if="opintojaksot.length > 0">
+          <template #header>
+            <h4>{{ $t('opintojaksot') }}</h4>
+          </template>
+          <div
+            v-for="opintojakso in opintojaksot"
+            :key="opintojakso.id"
+            class="block-container"
+          >
+            <div class="oj-content pakollinen">
+              <span class="nimi">
+                <router-link :to="{ name: 'opintojakso', params: { opintojaksoId: opintojakso.id } }">
+                  {{ $kaanna(opintojakso.nimi) }}
+                </router-link>
+              </span>
+              <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
+            </div>
           </div>
-        </div>
-      </ep-collapse>
+        </ep-collapse>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
-
-import { Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@shared/api/ylops';
-import { PerusteCache } from '@/stores/peruste';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
+import { Lops2019ModuuliDto, Lops2019OpintojaksoDto } from '@shared/api/ylops';
+import { PerusteCache } from '@/stores/peruste';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { $t, $kaanna } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpButton,
-    EpCollapse,
-    EpPrefixList,
-    EpSpinner,
-  },
-})
-export default class RouteOppiaine extends Mixins(EpRoute, EpOpsComponent) {
-  private cache: PerusteCache | null = null;
-  private moduuli: Lops2019ModuuliDto | null = null;
-  private opintojaksot: Lops2019OpintojaksoDto[] = [];
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  async init() {
-    this.cache = await PerusteCache.of(_.parseInt(this.$route.params.id));
-    this.moduuli = await this.cache.getModuuli(
-      _.parseInt(this.$route.params.oppiaineId),
-      _.parseInt(this.$route.params.moduuliId));
-    this.opintojaksot = await this.store.getOpintojaksot({
-      moduuliUri: this.moduuli!.koodi!.uri as string,
-    } as any);
-    this.breadcrumb('moduuli', this.moduuli.nimi);
-  }
-}
+const route = useRoute();
+const store = computed(() => props.opetussuunnitelmaStore);
+
+const cache = ref<PerusteCache | null>(null);
+const moduuli = ref<Lops2019ModuuliDto | null>(null);
+const opintojaksot = ref<Lops2019OpintojaksoDto[]>([]);
+
+const isLoading = computed(() => {
+  return !moduuli.value;
+});
+
+const init = async () => {
+  cache.value = await PerusteCache.of(_.parseInt(route.params.id as string));
+  moduuli.value = await cache.value.getModuuli(
+    _.parseInt(route.params.oppiaineId as string),
+    _.parseInt(route.params.moduuliId as string));
+  opintojaksot.value = await store.value.getOpintojaksot({
+    moduuliUri: moduuli.value!.koodi!.uri as string,
+  } as any);
+  // TODO: Implement breadcrumb functionality if needed
+  // breadcrumb('moduuli', moduuli.value.nimi);
+};
+
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style lang="scss" scoped>

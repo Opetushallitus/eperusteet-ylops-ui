@@ -1,110 +1,128 @@
 <template>
-<div>
-  <ep-button v-b-modal.tekstikappalelisays
-             variant="link"
-             buttonClass="text-decoration-none"
-             icon="add"
-             :paddingx="false">
-    <span>{{ $t('uusi-tekstikappale') }}</span>
-  </ep-button>
-  <b-modal ref="tekstikappalelisaysModal"
-           id="tekstikappalelisays"
-           size="lg"
-           centered
-           :ok-disabled="okDisabled"
-           @hidden="clear">
-    <template v-slot:modal-title>
-      {{ $t('lisaa-uusi-tekstikappale') }}
-    </template>
+  <div>
+    <ep-button
+      v-b-modal.tekstikappalelisays
+      variant="link"
+      button-class="text-decoration-none"
+      icon="add"
+      :paddingx="false"
+    >
+      <span>{{ $t('uusi-tekstikappale') }}</span>
+    </ep-button>
+    <b-modal
+      id="tekstikappalelisays"
+      ref="tekstikappalelisaysModal"
+      size="lg"
+      centered
+      :ok-disabled="okDisabled"
+      @hidden="clear"
+    >
+      <template #modal-title>
+        {{ $t('lisaa-uusi-tekstikappale') }}
+      </template>
 
-    <ep-form-content name="tekstikappale-nimi-ohje">
-      <ep-field class="mb-5" v-model="otsikko" :is-editing="true" />
-    </ep-form-content>
+      <ep-form-content name="tekstikappale-nimi-ohje">
+        <ep-field
+          v-model="otsikko"
+          class="mb-5"
+          :is-editing="true"
+        />
+      </ep-form-content>
 
-    <ep-form-content name="ylaotsikko" v-if="tekstikappaleet.length > 0">
-      <ep-select class="mb-5"
-                 v-model="valittuTekstikappale"
-                 :items="tekstikappaleet"
-                 :is-editing="true"
-                 :enable-empty-option="tyhjaValinta">
-        <template slot-scope="{ item }">
-          {{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}
-        </template>
-      </ep-select>
-    </ep-form-content>
+      <ep-form-content
+        v-if="tekstikappaleet.length > 0"
+        name="ylaotsikko"
+      >
+        <ep-select
+          v-model="valittuTekstikappale"
+          class="mb-5"
+          :items="tekstikappaleet"
+          :is-editing="true"
+          :enable-empty-option="tyhjaValinta"
+        >
+          <template #default="{ item }">
+            {{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}
+          </template>
+        </ep-select>
+      </ep-form-content>
 
-    <template #modal-footer>
-      <EpButton variant="secondary" @click="$refs.tekstikappalelisaysModal.hide()" :disabled="tallentaa">
-        {{ $t('peruuta') }}
-      </EpButton>
-      <EpButton variant="primary" @click="save" :disabled="okDisabled || tallentaa" :showSpinner="tallentaa">
-        {{ $t('lisaa-tekstikappale') }}
-      </EpButton>
-    </template>
-
-  </b-modal>
-</div>
+      <template #modal-footer>
+        <EpButton
+          variant="secondary"
+          :disabled="tallentaa"
+          @click="$refs.tekstikappalelisaysModal.hide()"
+        >
+          {{ $t('peruuta') }}
+        </EpButton>
+        <EpButton
+          variant="primary"
+          :disabled="okDisabled || tallentaa"
+          :show-spinner="tallentaa"
+          @click="save"
+        >
+          {{ $t('lisaa-tekstikappale') }}
+        </EpButton>
+      </template>
+    </b-modal>
+  </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Prop, Component, Mixins } from 'vue-property-decorator';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
+import { ref, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import { Puu } from '@shared/api/ylops';
 import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
-@Component({
-  components: {
-    EpButton,
-    EpField,
-    EpSelect,
-    EpFormContent,
-  },
-})
-export default class EpTekstikappaleLisays extends Mixins(EpRoute, EpOpsComponent) {
-  private otsikko: LokalisoituTekstiDto = {};
-  private valittuTekstikappale: any = {};
-  private tallentaa = false;
+const props = withDefaults(
+  defineProps<{
+    tekstikappaleet: SideMenuEntry[];
+    tyhjaValinta?: boolean;
+    opetussuunnitelmaStore: OpetussuunnitelmaStore;
+  }>(), {
+    tyhjaValinta: false,
+  });
 
-  @Prop({ required: true })
-  private tekstikappaleet!: SideMenuEntry[];
+const store = computed(() => props.opetussuunnitelmaStore);
+const route = useRoute();
+const router = useRouter();
 
-  @Prop({ required: false, type: Boolean, default: false })
-  private tyhjaValinta!: boolean;
+const otsikko = ref<LokalisoituTekstiDto>({});
+const valittuTekstikappale = ref<any>({});
+const tallentaa = ref(false);
 
-  get okDisabled() {
-    return _.isEmpty(this.otsikko);
-  }
+const okDisabled = computed(() => {
+  return _.isEmpty(otsikko.value);
+});
 
-  async save() {
-    const newTekstikappale = {
-      tekstiKappale: {
-        nimi: this.otsikko,
-      },
-    };
+const save = async () => {
+  const newTekstikappale = {
+    tekstiKappale: {
+      nimi: otsikko.value,
+    },
+  };
 
-    this.tallentaa = true;
-    const uusi = await this.store.addTeksti(newTekstikappale as Puu, this.valittuTekstikappale?.route?.params?.osaId);
+  tallentaa.value = true;
+  const uusi = await store.value.addTeksti(newTekstikappale as Puu, valittuTekstikappale.value?.route?.params?.osaId);
 
-    this.$router.push({
-      name: 'tekstikappale',
-      params: {
-        ...this.$route.params,
-        osaId: '' + uusi.id,
-      },
-    });
-  }
+  router.push({
+    name: 'tekstikappale',
+    params: {
+      ...route.params,
+      osaId: '' + uusi.id,
+    },
+  });
+};
 
-  clear() {
-    this.otsikko = {};
-    this.valittuTekstikappale = {};
-  }
-}
+const clear = () => {
+  otsikko.value = {};
+  valittuTekstikappale.value = {};
+};
 
 </script>
 

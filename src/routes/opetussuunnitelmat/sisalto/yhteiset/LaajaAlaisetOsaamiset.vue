@@ -1,37 +1,51 @@
 <template>
-<div>
-  <div v-for="(text, idx) in innerValue" :key="idx">
-    <slot :kooditettu="text">
-      <h4 class="otsikko">{{ $kaanna(used[text.koodi].nimi) }} ({{ used[text.koodi].koodiArvo }})</h4>
-      <ep-content
-        :value="text.kuvaus"
-        @input="updatedKuvaus(text.koodi, $event)"
-        :is-editable="isEditable"
-        layout="normal" />
-    </slot>
-  </div>
+  <div>
+    <div
+      v-for="(text, idx) in innerValue"
+      :key="idx"
+    >
+      <slot :kooditettu="text">
+        <h4 class="otsikko">
+          {{ $kaanna(used[text.koodi].nimi) }} ({{ used[text.koodi].koodiArvo }})
+        </h4>
+        <ep-content
+          :model-value="text.kuvaus"
+          :is-editable="isEditable"
+          layout="normal"
+          @update:model-value="updatedKuvaus(text.koodi, $event)"
+        />
+      </slot>
+    </div>
 
-  <div v-if="isEditable" class="mt-4">
-    <b-dropdown :text="$t(nimi)" variant="primary">
-      <b-dropdown-item-button
-        v-for="(koodi, idx) in used"
-        @click="addKooditettuKuvaus(koodi)"
-        :key="idx"
-        :disabled="koodi.inUse">
-        {{ $kaanna(koodi.nimi) }} ({{ koodi.koodiArvo }})
-      </b-dropdown-item-button>
-    </b-dropdown>
+    <div
+      v-if="isEditable"
+      class="mt-4"
+    >
+      <b-dropdown
+        :text="$t(nimi)"
+        variant="primary"
+      >
+        <b-dropdown-item-button
+          v-for="(koodi, idx) in used"
+          :key="idx"
+          :disabled="koodi.inUse"
+          @click="addKooditettuKuvaus(koodi)"
+        >
+          {{ $kaanna(koodi.nimi) }} ({{ koodi.koodiArvo }})
+        </b-dropdown-item-button>
+      </b-dropdown>
+    </div>
   </div>
-</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed } from 'vue';
 import * as _ from 'lodash';
-import { Vue, Mixins, Component, Prop } from 'vue-property-decorator';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Lops2019PaikallinenLaajaAlainenDto } from '@shared/api/ylops';
 import { LokalisoituTekstiDto } from '@shared/tyypit';
+import { $t, $kaanna } from '@shared/utils/globals';
 
 interface Koodi {
   koodiUri: string;
@@ -44,73 +58,56 @@ export interface KoodiKuvaus {
   kuvaus: LokalisoituTekstiDto;
 }
 
-@Component({
-  components: {
-    EpCollapse,
-    EpContent,
-  },
-})
-export default class LaajaAlaisetOsaamiset extends Vue {
-  @Prop({
-    required: true,
-    type: Array,
-  })
-  private value!: KoodiKuvaus[] | null;
+const props = withDefaults(
+  defineProps<{
+    modelValue: KoodiKuvaus[] | null;
+    koodit: Koodi[] | null;
+    isEditable?: boolean;
+    nimi: string;
+  }>(), {
+    isEditable: false,
+  });
 
-  @Prop({
-    required: true,
-    type: Array,
-    validator(koodit: any[]) {
-      return _.every(koodit, koodi => koodi.koodiUri);
-    },
-  })
-  private koodit!: Koodi[] | null;
+const emit = defineEmits(['update:modelValue']);
 
-  @Prop({ default: false, type: Boolean })
-  private isEditable!: boolean;
-
-  @Prop({ required: true, type: String })
-  private nimi!: string;
-
-  get innerValue() {
-    if (this.value) {
-      return this.value;
-    }
-    else {
-      return [];
-    }
+const innerValue = computed(() => {
+  if (props.modelValue) {
+    return props.modelValue;
   }
-
-  get used() {
-    return _.chain(this.koodit)
-      .map(v => ({
-        ...v,
-        inUse: _.includes(_.map(this.innerValue, 'koodi'), v.koodiUri),
-      }))
-      .keyBy('koodiUri')
-      .value();
+  else {
+    return [];
   }
+});
 
-  updateValue(value) {
-    this.$emit('input', _.sortBy(value, 'koodi'));
-  }
+const used = computed(() => {
+  return _.chain(props.koodit)
+    .map(v => ({
+      ...v,
+      inUse: _.includes(_.map(innerValue.value, 'koodi'), v.koodiUri),
+    }))
+    .keyBy('koodiUri')
+    .value();
+});
 
-  updatedKuvaus(koodi, value) {
-    const nval = [...this.innerValue];
-    const idx = _.findIndex(this.innerValue, { koodi });
-    if (idx > -1) {
-      nval[idx].kuvaus = value;
-      this.updateValue(nval);
-    }
-  }
+const updateValue = (value: KoodiKuvaus[]) => {
+  emit('update:modelValue', _.sortBy(value, 'koodi'));
+};
 
-  addKooditettuKuvaus(koodi: Koodi) {
-    this.updateValue([...this.innerValue, {
-      koodi: koodi.koodiUri,
-      kuvaus: {},
-    }]);
+const updatedKuvaus = (koodi: string, value: LokalisoituTekstiDto) => {
+  const nval = [...innerValue.value];
+  const idx = _.findIndex(innerValue.value, { koodi });
+  if (idx > -1) {
+    nval[idx].kuvaus = value;
+    updateValue(nval);
   }
-}
+};
+
+const addKooditettuKuvaus = (koodi: Koodi) => {
+  updateValue([...innerValue.value, {
+    koodi: koodi.koodiUri,
+    kuvaus: {},
+  }]);
+};
 </script>
 
 <style lang="scss" scoped>

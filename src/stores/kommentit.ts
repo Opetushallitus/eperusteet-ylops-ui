@@ -2,14 +2,13 @@ import _ from 'lodash';
 import { Kommentointi } from '@shared/api/ylops';
 import Vue from 'vue';
 
-import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
+import { reactive, computed, ref, watch } from 'vue';
 import VueScrollTo from 'vue-scrollto';
 import { Kielet } from '@shared/stores/kieli';
 
 import { unwrap } from '@shared/utils/wraps';
 
 import { createLogger } from '@shared/utils/logger';
-Vue.use(VueCompositionApi);
 const logger = createLogger('Kayttaja');
 
 export const UusiKommenttiHandle = 'uusi-kommentti';
@@ -124,7 +123,9 @@ class KommenttiStore {
         try {
           sheet.deleteRule(ActiveCommentStyleIdx);
         }
-        catch (err) { }
+        catch (err) {
+          // Ignore errors when deleting CSS rules
+        }
       }
     }
   }
@@ -156,7 +157,9 @@ class KommenttiStore {
     this.clearCommentStyle();
     this.state.threadUuid = null;
     this.state.thread = null;
-    VueScrollTo.scrollTo('#keskustelu-sisalto', 300);
+    if (document.querySelector('#keskustelu-sisalto')) {
+      VueScrollTo.scrollTo('#keskustelu-sisalto', 300);
+    }
   }
 
   private obs: MutationObserver | null = null;
@@ -290,7 +293,6 @@ class KommenttiStore {
   }
 
   attach(el: Element) {
-    const store = this;
     if (this.obs) {
       this.detach();
     }

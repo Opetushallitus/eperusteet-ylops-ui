@@ -112,8 +112,9 @@ function perusopetusOppiaineLinkki(oppiaine, vlk): SideMenuEntry {
       ...perusopetusOppiaineenLapset(oppiaine.oppimaarat, vlk),
     ];
 
-    children = _.size(children) > 0 ? children : null;
+    children = _.size(children) > 0 ? children : oppiaine.koosteinen ? [] : null;
   }
+
   return {
     item: {
       type: oppiaine.koosteinen ? 'koosteinen-oppiaine' : 'perusopetusoppiaine',

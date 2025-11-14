@@ -1,30 +1,47 @@
 <template>
-<div>
-  <div class="sidenav d-flex">
-    <div class="closed">
-      <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="!toggled">
-        <span class="bar">
-          <EpMaterialIcon>menu</EpMaterialIcon>
-        </span>
-      </button>
-    </div>
-    <div class="bar d-flex flex-column" v-if="toggled">
-      <div class="d-flex flex-row">
-        <button class="btn btn-link menubutton" @click="toggled = !toggled" v-if="toggled">
-          <EpMaterialIcon>menu</EpMaterialIcon>
+  <div>
+    <div class="sidenav d-flex">
+      <div class="closed">
+        <button
+          v-if="!toggled"
+          class="btn btn-link menubutton"
+          @click="toggled = !toggled"
+        >
+          <span class="bar">
+            <EpMaterialIcon>menu</EpMaterialIcon>
+          </span>
         </button>
       </div>
-      <slot name="bar" class="flex-fill"></slot>
-    </div>
-    <div class="view" ref="content">
-      <slot name="view"></slot>
+      <div
+        v-if="toggled"
+        class="bar d-flex flex-column"
+      >
+        <div class="d-flex flex-row">
+          <button
+            v-if="toggled"
+            class="btn btn-link menubutton"
+            @click="toggled = !toggled"
+          >
+            <EpMaterialIcon>menu</EpMaterialIcon>
+          </button>
+        </div>
+        <slot
+          name="bar"
+          class="flex-fill"
+        />
+      </div>
+      <div
+        ref="content"
+        class="view"
+      >
+        <slot name="view" />
+      </div>
     </div>
   </div>
-</div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, watch, useTemplateRef } from 'vue';
 import Sticky from 'vue-sticky-directive';
 import { Kommentit } from '@/stores/kommentit';
 import { setItem, getItem } from '@/utils/localstorage';
@@ -36,49 +53,41 @@ interface SidenavLocalStorage {
 
 const SidenavLocalStorageStr = 'sidenav';
 
-@Component({
-  components: {
-    EpMaterialIcon,
-  },
-  directives: {
-    Sticky,
-  },
-})
-export default class EpSidebar extends Vue {
-  private width = window.innerWidth;
-  private toggled = false;
+const width = ref(window.innerWidth);
+const toggled = ref(false);
+const content = useTemplateRef('content');
 
-  public mounted() {
-    window.addEventListener('resize', this.onResize);
-    Kommentit.attach(this.$refs.content as Element);
-    const sidenavLocalStorage = getItem<SidenavLocalStorage>(SidenavLocalStorageStr, {
-      enabled: false,
+const onResize = () => {
+  toggled.value = window.innerWidth > 991;
+};
+
+onMounted(() => {
+  window.addEventListener('resize', onResize);
+  if (content.value) {
+    Kommentit.attach(content.value as Element);
+  }
+  const sidenavLocalStorage = getItem<SidenavLocalStorage>(SidenavLocalStorageStr, {
+    enabled: false,
+  });
+
+  if (sidenavLocalStorage) {
+    toggled.value = sidenavLocalStorage.enabled;
+  }
+  onResize();
+});
+
+watch(toggled, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    setItem(SidenavLocalStorageStr, {
+      enabled: newVal,
     });
-
-    if (sidenavLocalStorage) {
-      this.toggled = sidenavLocalStorage.enabled;
-    }
-    this.onResize();
   }
+});
 
-  @Watch('toggled')
-  onToggle(newVal, oldVal) {
-    if (newVal !== oldVal) {
-      setItem(SidenavLocalStorageStr, {
-        enabled: newVal,
-      });
-    }
-  }
-
-  public beforeDestroy() {
-    window.removeEventListener('resize', this.onResize);
-    Kommentit.detach();
-  }
-
-  private onResize() {
-    this.toggled = window.innerWidth > 991;
-  }
-}
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', onResize);
+  Kommentit.detach();
+});
 </script>
 
 <style scoped lang="scss">

@@ -1,213 +1,244 @@
 <template>
-<div class="valikko">
-  <div class="item">
-    <slot name="previousLink"
-          v-if="curTopItem"
-          :itemData="curTopItem"
-          :itemRoute="curTopItem.route"
-          :navigate="previousSubmenu"></slot>
-  </div>
-  <div class="item" v-for="(item, idx) in current" :key="idx">
-    <slot :itemData="item"
-          :isSubmenu="isSubmenu(item)"
-          :itemRoute="item.route"
-          :navigate="enterSubmenu"></slot>
-    <div v-if="item.flatten">
-      <div v-for="(subitem, idx) in item.children"
-           :key="idx"
-           class="subitem">
-        <slot :itemData="subitem" :isSubmenu="isSubmenu(subitem)" :itemRoute="subitem.route" :navigate="enterSubmenu"></slot>
+  <div class="valikko">
+    <div class="item">
+      <slot
+        v-if="curTopItem"
+        name="previousLink"
+        :item-data="curTopItem"
+        :item-route="curTopItem.route"
+        :navigate="previousSubmenu"
+      />
+    </div>
+    <div
+      v-for="(item, idx) in current"
+      :key="idx"
+      class="item"
+    >
+      <slot
+        :item-data="item"
+        :is-submenu="isSubmenu(item)"
+        :item-route="item.route"
+        :navigate="enterSubmenu"
+      />
+      <div v-if="item.flatten">
+        <div
+          v-for="(subitem, idx) in item.children"
+          :key="idx"
+          class="subitem"
+        >
+          <slot
+            :item-data="subitem"
+            :is-submenu="isSubmenu(subitem)"
+            :item-route="subitem.route"
+            :navigate="enterSubmenu"
+          />
+        </div>
       </div>
     </div>
+    <slot
+      v-if="curTopItem"
+      name="after"
+      :item-data="curTopItem"
+      :item-route="curTopItem.route"
+      :navigate="previousSubmenu"
+    />
   </div>
-  <slot name="after" v-if="curTopItem" :itemData="curTopItem" :itemRoute="curTopItem.route" :navigate="previousSubmenu"></slot>
-</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { ref, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 import {
   SideMenuEntry,
   SideMenuRoute,
 } from '@shared/tyypit';
+import { nextTick } from 'vue';
 
-@Component
-export default class EpRecursiveNav extends Vue {
-  @Prop({ default: [] })
-  private value: any;
+const props = withDefaults(
+  defineProps<{
+    value?: any[];
+  }>(), {
+    value: () => [],
+  });
 
-  private valueCopy: Array<SideMenuEntry> = [];
-  private current: Array<SideMenuEntry> = [];
-  private curTopItem: SideMenuEntry | null = null;
+const router = useRouter();
+const route = useRoute();
 
-  public created() {
-    this.processNewValue();
+const valueCopy = ref<Array<SideMenuEntry>>([]);
+const current = ref<Array<SideMenuEntry>>([]);
+const curTopItem = ref<SideMenuEntry | null>(null);
+
+const previousSubmenu = (changeRoute: boolean) => {
+  if (!curTopItem.value) {
+    return;
   }
 
-  public previousSubmenu(changeRoute: boolean) {
-    if (!this.curTopItem) {
-      return;
-    }
-
-    if (changeRoute && this.curTopItem.route) {
-      this.$router.replace({
-        name: this.curTopItem.route.name,
-        params: {
-          ...this.curTopItem.route.params,
-        },
-      });
-    }
-
-    this.current = _.get(this.curTopItem, 'parent.children', this.valueCopy);
-    this.curTopItem = _.get(this.curTopItem, 'parent', null);
-  }
-
-  public enterSubmenu(item: SideMenuEntry) {
-    if (!item.children) {
-      return;
-    }
-
-    this.current = item.children;
-    this.curTopItem = item;
-  }
-
-  private isSubmenu(item: SideMenuEntry) {
-    return (item.children && item.children.length > 0 && !item.flatten) || item.allowEmpty;
-  }
-
-  @Watch('value')
-  private onValueChange() {
-    this.processNewValue();
-  }
-
-  private processNewValue() {
-    this.valueCopy = this.value;
-    this.addParentRefs(this.valueCopy, null);
-
-    if (this.$route) {
-      let { found, newTopItem, newCurrent } = this.buildCurrentFromRoute(this.valueCopy, this.curTopItem);
-      this.current = (found && ((newTopItem as any || {}).allowEmpty || newCurrent.length > 0)) ? newCurrent : this.valueCopy;
-      this.curTopItem = newTopItem;
-    }
-    else {
-      this.current = this.valueCopy;
-      this.curTopItem = null;
-    }
-  }
-
-  private matchRouteName(route: SideMenuRoute): boolean {
-    // Most trivial check at first: name must match
-    return (route.name === this.$route.name && this.$route.matched.length > 0);
-  }
-
-  private splitRouteParams(): string[] {
-    // Parse mandatory parameters for current path
-    const matchedRoute = this.$route.matched[this.$route.matched.length - 1];
-    const parentpath = (matchedRoute.parent) ? matchedRoute.parent.path : '';
-
-    return matchedRoute.path
-      .replace(parentpath, '')
-      .split('/')
-      .filter((path) => {
-        return path.substr(0, 1) === ':';
-      })
-      .map(path => {
-        return path.substr(1);
-      });
-  }
-
-  private matchRouteParams(route: SideMenuRoute): boolean {
-    return this.splitRouteParams().every(param => {
-      const p1 = _.get(this.$route.params, param, null);
-      const p2 = _.get(route.params, param, null);
-      return (p1 && p2 && String(p1) === String(p2));
+  if (changeRoute && curTopItem.value.route) {
+    router.replace({
+      name: curTopItem.value.route.name,
+      params: {
+        ...curTopItem.value.route.params,
+      },
     });
   }
 
-  private searchForRouteMatch(menuEntry: SideMenuEntry) {
-    return (menuEntry.route && this.matchRouteName(menuEntry.route) && this.matchRouteParams(menuEntry.route));
+  current.value = _.get(curTopItem.value, 'parent.children', valueCopy.value);
+  curTopItem.value = _.get(curTopItem.value, 'parent', null);
+};
+
+const enterSubmenu = async (item: SideMenuEntry) => {
+  if (!item.children) {
+    return;
   }
 
-  private getEntryDetails(menuEntry: SideMenuEntry) {
-    let newTopItem: SideMenuEntry | null = null;
-    let newCurrent: SideMenuEntry[] = [];
-    const parent = menuEntry.parent;
+  current.value = item.children;
+  curTopItem.value = item;
 
-    if (menuEntry.children && !menuEntry.flatten) {
-      newTopItem = menuEntry;
-      newCurrent = menuEntry.children;
-    }
-    else if (parent) {
-      if (parent.flatten && parent.parent && parent.parent.children) {
-        newTopItem = parent.parent;
-        newCurrent = parent.parent.children;
-      }
-      else if (!parent.flatten && parent.children) {
-        newTopItem = parent;
-        newCurrent = parent.children;
-      }
-    }
+  await nextTick();
+};
 
-    return { found: true, newTopItem, newCurrent };
+const isSubmenu = (item: SideMenuEntry) => {
+  return (item.children && item.children.length > 0 && !item.flatten) || item.allowEmpty;
+};
+
+watch(() => props.value, () => {
+  processNewValue();
+});
+
+const processNewValue = () => {
+  valueCopy.value = props.value || [];
+  addParentRefs(valueCopy.value, null);
+
+  if (route) {
+    let { found, newTopItem, newCurrent } = buildCurrentFromRoute(valueCopy.value, curTopItem.value);
+    current.value = (found && ((newTopItem as any || {}).allowEmpty || newCurrent.length > 0)) ? newCurrent : valueCopy.value;
+    curTopItem.value = newTopItem;
+  }
+  else {
+    current.value = valueCopy.value;
+    curTopItem.value = null;
+  }
+};
+
+const matchRouteName = (routeParam: SideMenuRoute): boolean => {
+  // Most trivial check at first: name must match
+  return (routeParam.name === route.name && route.matched.length > 0);
+};
+
+const splitRouteParams = (): string[] => {
+  // Parse mandatory parameters for current path
+  const matchedRoute = route.matched[route.matched.length - 1];
+  const parentpath = (matchedRoute.parent) ? matchedRoute.parent.path : '';
+
+  return matchedRoute.path
+    .replace(parentpath, '')
+    .split('/')
+    .filter((path) => {
+      return path.substr(0, 1) === ':';
+    })
+    .map(path => {
+      return path.substr(1);
+    });
+};
+
+const matchRouteParams = (routeParam: SideMenuRoute): boolean => {
+  const ignoreParams = ['lang', 'id'];
+  return splitRouteParams().filter(param => !ignoreParams.includes(param))
+    .every(param => {
+      const p1 = _.get(route.params, param, null);
+      const p2 = _.get(routeParam.params, param, null);
+      return (p1 && p2 && String(p1) === String(p2));
+    });
+};
+
+const searchForRouteMatch = (menuEntry: SideMenuEntry) => {
+  return (menuEntry.route && matchRouteName(menuEntry.route) && matchRouteParams(menuEntry.route));
+};
+
+const getEntryDetails = (menuEntry: SideMenuEntry) => {
+  let newTopItem: SideMenuEntry | null = null;
+  let newCurrent: SideMenuEntry[] = [];
+  const parent = menuEntry.parent;
+
+  if (menuEntry.children && !menuEntry.flatten) {
+    newTopItem = menuEntry;
+    newCurrent = menuEntry.children;
+  }
+  else if (parent) {
+    if (parent.flatten && parent.parent && parent.parent.children) {
+      newTopItem = parent.parent;
+      newCurrent = parent.parent.children;
+    }
+    else if (!parent.flatten && parent.children) {
+      newTopItem = parent;
+      newCurrent = parent.children;
+    }
   }
 
-  private buildCurrentFromRoute(menuData: SideMenuEntry[], curTopItem: SideMenuEntry | null) {
-    var found: boolean = false;
-    var newTopItem: SideMenuEntry | null = null;
-    var newCurrent: SideMenuEntry[] = [];
+  return { found: true, newTopItem, newCurrent };
+};
 
-    menuData.every(menuItem => {
-      if (this.searchForRouteMatch(menuItem)) {
-        const retval = this.getEntryDetails(menuItem);
+const buildCurrentFromRoute = (menuData: SideMenuEntry[], curTopItemParam: SideMenuEntry | null) => {
+
+  var found: boolean = false;
+  var newTopItem: SideMenuEntry | null = null;
+  var newCurrent: SideMenuEntry[] = [];
+
+  menuData.every(menuItem => {
+    if (searchForRouteMatch(menuItem)) {
+      const retval = getEntryDetails(menuItem);
+      found = true;
+      newTopItem = retval.newTopItem;
+      newCurrent = retval.newCurrent;
+      return false;
+    }
+
+    // Iterate children (if any)
+    if (menuItem.children) {
+      const retval = buildCurrentFromRoute(menuItem.children, curTopItemParam);
+      if (retval.found) {
         found = true;
         newTopItem = retval.newTopItem;
         newCurrent = retval.newCurrent;
         return false;
       }
+    }
 
-      // Iterate children (if any)
-      if (menuItem.children) {
-        const retval = this.buildCurrentFromRoute(menuItem.children, curTopItem);
-        if (retval.found) {
-          found = true;
-          newTopItem = retval.newTopItem;
-          newCurrent = retval.newCurrent;
-          return false;
-        }
+    // use defined parent navigation if nothing else is found
+    if (route?.meta?.parentNavigation) {
+      if (menuItem.route && menuItem.route.name === route.meta.parentNavigation) {
+        const retval = getEntryDetails(menuItem);
+        found = true;
+        newTopItem = retval.newTopItem;
+        newCurrent = retval.newCurrent;
+        return false;
       }
+    }
 
-      // use defined parent navigation if nothing else is found
-      if (this.$route?.meta?.parentNavigation) {
-        if (menuItem.route && menuItem.route.name === this.$route.meta.parentNavigation) {
-          const retval = this.getEntryDetails(menuItem);
-          found = true;
-          newTopItem = retval.newTopItem;
-          newCurrent = retval.newCurrent;
-          return false;
-        }
-      }
+    return true;
+  });
 
-      return true;
-    });
+  // Return search results
+  return { found, newTopItem, newCurrent };
+};
 
-    // Return search results
-    return { found, newTopItem, newCurrent };
-  }
+const addParentRefs = (menuData: SideMenuEntry[], parent: SideMenuEntry | null) => {
+  menuData.forEach(menuItem => {
+    if (parent) {
+      menuItem.parent = parent;
+    }
 
-  private addParentRefs(menuData: SideMenuEntry[], parent: SideMenuEntry | null) {
-    menuData.forEach(menuItem => {
-      if (parent) {
-        menuItem.parent = parent;
-      }
+    if (menuItem.children) {
+      addParentRefs(menuItem.children, menuItem);
+    }
+  });
+};
 
-      if (menuItem.children) {
-        this.addParentRefs(menuItem.children, menuItem);
-      }
-    });
-  }
-}
+onMounted(() => {
+  processNewValue();
+});
 </script>
 
 <style scoped lang="scss">

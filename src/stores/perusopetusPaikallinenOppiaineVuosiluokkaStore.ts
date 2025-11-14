@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
 
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
 import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokat, OppiaineenVuosiluokkaDto } from '@shared/api/ylops';
@@ -62,7 +62,7 @@ export class PerusopetusPaikallinenOppiaineVuosiluokkaStore implements IEditoita
     return OppiaineenVuosiluokat.updateValinnaisenVuosiluokanSisalto(
       this.opsId,
       this.oppiaineId,
-      this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus?.id!,
+      this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!,
       this.vuosiluokkaId,
       data.vuosiluokka.tavoitteet,
     );

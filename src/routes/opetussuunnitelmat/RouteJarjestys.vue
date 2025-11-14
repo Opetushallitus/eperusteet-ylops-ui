@@ -1,74 +1,91 @@
 <template>
-<div id="scroll-anchor" class="content">
-  <div v-if="editointiStore">
-    <ep-editointi :store="editointiStore">
+  <div
+    id="scroll-anchor"
+    class="content"
+  >
+    <div v-if="editointiStore">
+      <ep-editointi :store="editointiStore">
+        <template #header>
+          <h2 class="otsikko">
+            {{ $t('muokkaa-jarjestysta') }}
+          </h2>
+        </template>
 
-    <template #header>
-      <h2 class="otsikko">{{ $t('muokkaa-jarjestysta') }}</h2>
-    </template>
-
-      <template #default="{ isEditing, data, supportData }">
-
-        <b-tabs v-model="tabIndex">
-          <b-tab :title="$t('tekstikappaleet')">
-            <div class="tree">
-              <ep-jarjesta
-                  :is-editable="isEditing"
+        <template #default="{ isEditing, data, supportData }">
+          <b-tabs v-model="tabIndex">
+            <b-tab :title="$t('tekstikappaleet')">
+              <div class="tree">
+                <ep-jarjesta
                   v-model="data.tekstikappaleet.lapset"
+                  :is-editable="isEditing"
                   child-field="lapset"
-                  rootGroup="sisalto"
+                  root-group="sisalto"
                   group="sisalto"
-                  :allowMove="allowTekstikappaleMove"
+                  :allow-move="allowTekstikappaleMove"
                   :sortable="true"
-                  :draggableClass="'root'">
-                <template #default="{ node }">
-                  <span v-if="isEditing">
-                    {{ $kaanna(node.tekstiKappale.nimi) }}
-                  </span>
-                  <router-link v-else :to="{ name: 'tekstikappale', params: { osaId: node.id } }">
-                    {{ $kaanna(node.tekstiKappale.nimi) }}
-                  </router-link>
-                  <EpMaterialIcon v-if="node.liite"
-                                  v-b-popover="{content: $t('tekstikappale-naytetaan-liitteena'), trigger: 'hover'}"
-                                  size="20px">attach_file</EpMaterialIcon>
-                  <EpMaterialIcon v-if="node.piilotettu"
-                                  v-b-popover="{content: $t('tekstikappale-on-piilotettu'), trigger: 'hover'}"
-                                  size="20px">visibility_off</EpMaterialIcon>
-                </template>
-              </ep-jarjesta>
-            </div>
-          </b-tab>
+                  :draggable-class="'root'"
+                >
+                  <template #default="{ node }">
+                    <span v-if="isEditing">
+                      {{ $kaanna(node.tekstiKappale.nimi) }}
+                    </span>
+                    <router-link
+                      v-else
+                      :to="{ name: 'tekstikappale', params: { osaId: node.id } }"
+                    >
+                      {{ $kaanna(node.tekstiKappale.nimi) }}
+                    </router-link>
+                    <EpMaterialIcon
+                      v-if="node.liite"
+                      v-b-popover="{content: $t('tekstikappale-naytetaan-liitteena'), trigger: 'hover'}"
+                      size="20px"
+                    >
+                      attach_file
+                    </EpMaterialIcon>
+                    <EpMaterialIcon
+                      v-if="node.piilotettu"
+                      v-b-popover="{content: $t('tekstikappale-on-piilotettu'), trigger: 'hover'}"
+                      size="20px"
+                    >
+                      visibility_off
+                    </EpMaterialIcon>
+                  </template>
+                </ep-jarjesta>
+              </div>
+            </b-tab>
 
-          <b-tab :title="supportData.isLops2019 ? $t('oppiaineet-ja-opintojaksot') : $t('oppiaineet')" v-if="data.oppiaineet.length > 0">
-            <div class="tree">
-              <ep-jarjesta
-                  :isEditable="isEditing"
+            <b-tab
+              v-if="data.oppiaineet.length > 0"
+              :title="supportData.isLops2019 ? $t('oppiaineet-ja-opintojaksot') : $t('oppiaineet')"
+            >
+              <div class="tree">
+                <ep-jarjesta
                   v-model="data.oppiaineet"
+                  :is-editable="isEditing"
                   child-field="lapset"
                   group="oppiaineet"
-                  :unique-child-groups="true">
-                <template #default="{ node }">
-                  <span>
-                    {{ $kaanna(node.nimi) }} <span v-if="node.koodi">({{node.koodi}})</span>
-                  </span>
-                </template>
-              </ep-jarjesta>
-            </div>
-          </b-tab>
-        </b-tabs>
-
-      </template>
-    </ep-editointi>
+                  :unique-child-groups="true"
+                >
+                  <template #default="{ node }">
+                    <span>
+                      {{ $kaanna(node.nimi) }} <span v-if="node.koodi">({{ node.koodi }})</span>
+                    </span>
+                  </template>
+                </ep-jarjesta>
+              </div>
+            </b-tab>
+          </b-tabs>
+        </template>
+      </ep-editointi>
+    </div>
   </div>
-</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Mixins, Component } from 'vue-property-decorator';
-import { Kielet } from '@shared/stores/kieli';
-import EpRoute from '@/mixins/EpRoute';
-import EpOpsComponent from '@/mixins/EpOpsComponent';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpJarjesta from '@shared/components/EpJarjesta/EpJarjesta.vue';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
@@ -76,53 +93,48 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { JarjestysStore } from '@/stores/jarjestysStore';
 
-@Component({
-  components: {
-    EpButton,
-    EpEditointi,
-    EpJarjesta,
-    EpMaterialIcon,
-  },
-})
-export default class RouteJarjestys extends Mixins(EpRoute, EpOpsComponent) {
-  private tabIndex: number = 0;
-  private editointiStore: EditointiStore | null = null;
+const props = defineProps<{
+  opetussuunnitelmaStore: OpetussuunnitelmaStore;
+}>();
 
-  get isLoading() {
-    return this.editointiStore?.isLoading?.value || false;
-  }
+const store = computed(() => props.opetussuunnitelmaStore);
+const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
+const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
+const route = useRoute();
 
-  async mounted() {
-    this.editointiStore = new EditointiStore(new JarjestysStore(
-      this.opsId,
-      this.versionumero,
-      (this as any).store, // Access the parent store
-      this.ops, // Pass ops data
-    ));
-  }
+const tabIndex = ref(0);
+const editointiStore = ref<EditointiStore | null>(null);
 
-  get versionumero() {
-    return _.parseInt(_.get(this, '$route.query.versionumero') as any);
-  }
+const versionumero = computed(() => {
+  return _.parseInt(route.query.versionumero as string);
+});
 
-  allowTekstikappaleMove(event) {
-    if (event.draggedContext.element.perusteTekstikappaleId) {
-      if (event.from.classList.contains('root') && event.to.classList.contains('root')) {
-        return true;
-      }
+onMounted(async () => {
+  editointiStore.value = new EditointiStore(new JarjestysStore(
+    opsId.value,
+    versionumero.value,
+    store.value,
+    ops.value,
+  ));
+});
 
-      if (!event.from.classList.contains('root') && !event.to.classList.contains('root')) {
-        return true;
-      }
-    }
-
-    if (!event.draggedContext.element.perusteTekstikappaleId) {
+const allowTekstikappaleMove = (event: any) => {
+  if (event.draggedContext.element.perusteTekstikappaleId) {
+    if (event.from.classList.contains('root') && event.to.classList.contains('root')) {
       return true;
     }
 
-    return false;
+    if (!event.from.classList.contains('root') && !event.to.classList.contains('root')) {
+      return true;
+    }
   }
-}
+
+  if (!event.draggedContext.element.perusteTekstikappaleId) {
+    return true;
+  }
+
+  return false;
+};
 </script>
 
 <style scoped lang="scss">

@@ -1,11 +1,12 @@
 <template>
   <ep-home-tile
     icon="account_balance"
-    :href="href">
-    <template slot="header">
+    :href="href"
+  >
+    <template #header>
       <span>{{ $t('tile-perusteet') }}</span>
     </template>
-    <template slot="content">
+    <template #content>
       <div class="kuvaus">
         <p>{{ $t('tile-perusteet-kuvaus') }}</p>
       </div>
@@ -13,25 +14,18 @@
   </ep-home-tile>
 </template>
 
-<script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { Kielet } from '@shared/stores/kieli';
 import EpHomeTile from '@shared/components/EpHomeTiles/EpHomeTile.vue';
 
-@Component({
-  components: {
-    EpHomeTile,
-  },
-})
-export default class TileOpetussuunnitelmat extends Vue {
-  get kieli() {
-    return Kielet.getUiKieli.value;
-  }
+const kieli = computed(() => {
+  return Kielet.getUiKieli.value;
+});
 
-  get href() {
-    return `https://eperusteet.opintopolku.fi/#/${this.kieli}`;
-  }
-}
+const href = computed(() => {
+  return `https://eperusteet.opintopolku.fi/#/${kieli.value}`;
+});
 </script>
 
 <style scoped lang="scss">

@@ -1,159 +1,167 @@
 <template>
-<div>
-  <ep-button @click="open" variant="link" icon="folder">
-    <span>{{ $t(title) }} </span>
-  </ep-button>
-  <b-modal ref="arkistoidutOpsModal"
-           id="arkistoidutopetussuunnitelmatmodal"
-           size="lg"
-           :title="modalTitle"
-           :hide-footer="true">
-    <div class="search">
-      <ep-search v-model="query" />
-    </div>
-    <EpSpinner v-if="!opetussuunnitelmat" />
+  <div>
+    <ep-button
+      variant="link"
+      icon="folder"
+      @click="open"
+    >
+      <span>{{ $t(title) }} </span>
+    </ep-button>
+    <b-modal
+      id="arkistoidutopetussuunnitelmatmodal"
+      ref="arkistoidutOpsModal"
+      size="lg"
+      :title="modalTitle"
+      :hide-footer="true"
+    >
+      <div class="search">
+        <ep-search v-model="query" />
+      </div>
+      <EpSpinner v-if="!opetussuunnitelmat" />
 
-    <template v-else>
-      <b-table
-              responsive
-              borderless
-              striped
-              :items="opetussuunnitelmat.data"
-              :fields="fields">
+      <template v-else-if="opetussuunnitelmat.data.length > 0">
+        <b-table
+          responsive
+          borderless
+          striped
+          :items="opetussuunnitelmat.data"
+          :fields="fields"
+        >
+          <template #cell(nimi)="data">
+            {{ $kaanna(data.value) }}
+          </template>
 
-        <template v-slot:cell(nimi)="data">
-          {{ $kaanna(data.value) }}
-        </template>
+          <template #cell(muokattu)="data">
+            {{ $sdt(data.value) }}
+          </template>
 
-        <template v-slot:cell(muokattu)="data">
-          {{ $sdt(data.value) }}
-        </template>
+          <template #cell(siirtyminen)="data">
+            <EpPalautusModal
+              :opetussuunnitelma="data.item"
+              @palauta="palauta"
+            />
+          </template>
+        </b-table>
 
-        <template v-slot:cell(siirtyminen)="data">
-          <EpPalautusModal @palauta="palauta" :opetussuunnitelma="data.item"/>
-        </template>
-
-      </b-table>
-
-      <b-pagination
-        v-model="opsSivu"
-        :total-rows="opetussuunnitelmat['kokonaismäärä']"
-        :per-page="10"
-        aria-controls="arkistoidut-opetussuunnitelmat"
-        align="center">
-      </b-pagination>
-    </template>
-  </b-modal>
-</div>
+        <EpPagination
+          v-model="opsSivu"
+          :total-rows="opetussuunnitelmat['kokonaismäärä']"
+          :per-page="10"
+          aria-controls="arkistoidut-opetussuunnitelmat"
+          align="center"
+        />
+      </template>
+    </b-modal>
+  </div>
 </template>
 
-<script lang="ts">
-import { Prop, Component, Vue, Watch } from 'vue-property-decorator';
-import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
+<script setup lang="ts">
+import { computed, ref, watch, useTemplateRef } from 'vue';
+import _ from 'lodash';
+
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import { Debounced } from '@shared/utils/delay';
-import { Page } from '@shared/tyypit';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpPalautusModal from '@/components/EpArkistoidutOps/EpPalautusModal.vue';
-import _ from 'lodash';
+
+import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
+import { debounced } from '@shared/utils/delay';
+import { Page } from '@shared/tyypit';
 import { Kielet } from '@shared/stores/kieli';
+import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
 
-@Component({
-  components: {
-    EpButton,
-    EpSearch,
-    EpSpinner,
-    EpMaterialIcon,
-    EpPalautusModal,
-  },
-})
-export default class EpArkistoidutOps extends Vue {
-  @Prop({ default: 'ops' })
-  private tyyppi!: 'ops' | 'pohja';
+import { $t, $kaanna, $sdt } from '@shared/utils/globals';
 
-  @Prop()
-  private title!: string;
+const props = withDefaults(
+  defineProps<{
+    tyyppi?: 'ops' | 'pohja';
+    title: string;
+  }>(), {
+    tyyppi: 'ops',
+  });
 
-  private opetussuunnitelmat: Page<OpetussuunnitelmaInfoDto> | null = null;
+const emit = defineEmits<{
+  palauta: [ops: any, tila: any, callback: () => Promise<void>];
+}>();
 
-  private query = '';
-  private lisaHaku = false;
-  private opsSivu = 1;
+// Template refs
+const arkistoidutOpsModal = useTemplateRef('arkistoidutOpsModal');
 
-  protected async fetch() {
-    this.opetussuunnitelmat = null;
-    this.opetussuunnitelmat = (await Opetussuunnitelmat.getSivutettu(
-      this.tyyppi as any,
-      'poistettu',
-      undefined,
-      this.query,
-      undefined, undefined,
-      this.opsSivu - 1,
-      10,
-      Kielet.getSisaltoKieli.value,
-    )).data as Page<OpetussuunnitelmaInfoDto>;
-  }
+// Reactive data
+const opetussuunnitelmat = ref<Page<OpetussuunnitelmaInfoDto> | null>(null);
+const query = ref('');
+const lisaHaku = ref(false);
+const opsSivu = ref(1);
 
-  get modalTitle() {
-    return this.$t(this.title) + (this.opetussuunnitelmat ? '(' + this.opetussuunnitelmat['kokonaismäärä'] + ')' : '');
-  }
+const fetch = async () => {
+  opetussuunnitelmat.value = null;
+  opetussuunnitelmat.value = (await Opetussuunnitelmat.getSivutettu(
+    props.tyyppi as any,
+    'poistettu',
+    undefined,
+    query.value,
+    undefined, undefined,
+    opsSivu.value - 1,
+    10,
+    Kielet.getSisaltoKieli.value,
+  )).data as Page<OpetussuunnitelmaInfoDto>;
+};
 
-  async palauta(ops, tila, palautusModalCallBack) {
-    await this.$emit('palauta', ops, tila, async () => {
-      this.opetussuunnitelmat!.data = _.reject(this.opetussuunnitelmat?.data, (o) => o.id === ops.id);
-      this.opetussuunnitelmat!['kokonaismäärä'] = this.opetussuunnitelmat!['kokonaismäärä'] - 1;
-      await palautusModalCallBack();
-    });
-  }
+const modalTitle = computed(() => {
+  return $t(props.title) + (opetussuunnitelmat.value ? '(' + opetussuunnitelmat.value['kokonaismäärä'] + ')' : '');
+});
 
-  @Watch('query')
-  @Debounced()
-  async queryChange() {
-    this.opsSivu = 1;
-    this.opetussuunnitelmat = null;
-    await this.fetch();
-  }
+const palauta = async (ops: any, tila: any, palautusModalCallBack: () => Promise<void>) => {
+  await emit('palauta', ops, tila, async () => {
+    opetussuunnitelmat.value!.data = _.reject(opetussuunnitelmat.value?.data, (o) => o.id === ops.id);
+    opetussuunnitelmat.value!['kokonaismäärä'] = opetussuunnitelmat.value!['kokonaismäärä'] - 1;
+    await palautusModalCallBack();
+  });
+};
 
-  @Watch('opsSivu')
-  async opsSivuChange() {
-    await this.fetch();
-  }
+const fields = computed(() => {
+  return [{
+    key: 'nimi',
+    label: $t('ops-nimi'),
+  }, {
+    key: 'muokattu',
+    label: $t('poistettu'),
+    sortable: false,
+  }, {
+    key: 'arkistoija',
+    label: $t('arkistoija'),
+    sortable: false,
+  }, {
+    key: 'siirtyminen',
+    label: '',
+  }];
+});
 
-  get fields() {
-    return [{
-      key: 'nimi',
-      label: this.$t('ops-nimi'),
-    }, {
-      key: 'muokattu',
-      label: this.$t('poistettu'),
-      sortable: false,
-    }, {
-      key: 'arkistoija',
-      label: this.$t('arkistoija'),
-      sortable: false,
-    }, {
-      key: 'siirtyminen',
-      label: '',
-    }];
-  }
+const open = async () => {
+  arkistoidutOpsModal.value?.show();
+  await fetch();
+};
 
-  async open() {
-    (this.$refs['arkistoidutOpsModal'] as any).show();
-    await this.fetch();
-  }
+const close = () => {
+  arkistoidutOpsModal.value?.hide();
+};
 
-  close() {
-    (this.$refs['arkistoidutOpsModal'] as any).hide();
-  }
-}
+// Watchers
+watch(query, debounced(async () => {
+  opsSivu.value = 1;
+  opetussuunnitelmat.value = null;
+  await fetch();
+}));
 
+watch(opsSivu, async () => {
+  await fetch();
+});
 </script>
 
 <style scoped lang="scss">
 
-::v-deep .ep-button {
+:deep(.ep-button) {
   .btn {
     padding: 0;
   }

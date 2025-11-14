@@ -1,184 +1,238 @@
 <template>
-<div>
-  <ep-main-view>
-    <template slot="header">
-      <h1>{{ $t(tyyppi) }}</h1>
-      <ep-arkistoidut-ops ref="arkistoidutPopup"
-                          :tyyppi="tyyppi"
-                          :title="vars.poistetut"
-                          class="float-right"
-                          @palauta="palauta"/>
-      <p>{{ $t(vars.kuvaus) }}</p>
+  <div>
+    <ep-main-view>
+      <template #header>
+        <h1>{{ $t(tyyppi) }}</h1>
+        <ep-arkistoidut-ops
+          ref="arkistoidutPopup"
+          :tyyppi="tyyppi"
+          :title="vars.poistetut"
+          class="float-right"
+          @palauta="palauta"
+        />
+        <p>{{ $t(vars.kuvaus) }}</p>
 
-      <div class="d-flex flex-lg-row flex-column">
-        <b-form-group :label="$t('nimi')">
-          <ep-search v-model="rajain" :placeholder="$t(vars.etsi)"></ep-search>
-        </b-form-group>
+        <div class="d-flex flex-lg-row flex-column">
+          <b-form-group :label="$t('nimi')">
+            <ep-search
+              v-model="rajain"
+              :placeholder="$t(vars.etsi)"
+            />
+          </b-form-group>
 
-        <b-form-group :label="$t('koulutustyyppi')" class="w-40">
-          <koulutustyyppi-select v-model="koulutustyyppi" :isEditing="true" :koulutustyypit="yleissivistavatKoulutustyypit"/>
-        </b-form-group>
+          <b-form-group
+            :label="$t('koulutustyyppi')"
+            class="w-40"
+          >
+            <koulutustyyppi-select
+              v-model="koulutustyyppi"
+              :is-editing="true"
+              :koulutustyypit="yleissivistavatKoulutustyyppienData"
+            />
+          </b-form-group>
 
-        <b-form-group :label="$t('jarjestys')">
-          <EpMultiSelect
-            class="jarjestys-select"
-            v-model="jarjestys"
-            :is-editing="true"
-            :options="jarjestysOptions">
-            <template slot="singleLabel" slot-scope="{ option }">
-              {{ $t(option.label) }}
-            </template>
-            <template slot="option" slot-scope="{ option }">
-              {{ $t(option.label) }}
-            </template>
-          </EpMultiSelect>
-        </b-form-group>
-      </div>
-    </template>
+          <b-form-group :label="$t('jarjestys')">
+            <EpMultiSelect
+              v-model="jarjestys"
+              class="jarjestys-select"
+              :is-editing="true"
+              :options="jarjestysOptions"
+            >
+              <template #singleLabel="{ option }">
+                {{ $t(option.label) }}
+              </template>
+              <template #option="{ option }">
+                {{ $t(option.label) }}
+              </template>
+            </EpMultiSelect>
+          </b-form-group>
+        </div>
+      </template>
 
-    <b-container fluid class="pl-0">
-      <b-row>
-        <b-col>
-          <div class="opslistaus">
-            <h2>{{ $t(vars.keskeneraiset) }} <span v-if="opslista">({{opslista['kokonaismäärä']}})</span></h2>
+      <b-container
+        fluid
+        class="pl-0"
+      >
+        <b-row>
+          <b-col>
+            <div class="opslistaus">
+              <h2>{{ $t(vars.keskeneraiset) }} <span v-if="opslista">({{ opslista['kokonaismäärä'] }})</span></h2>
 
-            <ep-spinner v-if="!opslista"></ep-spinner>
+              <ep-spinner v-if="!opslista" />
 
-            <div v-else>
-              <div class="info" v-if="opetussuunnitelmat.length === 0">
-                <div v-if="hasRajain">
-                  {{ $t('ei-hakutuloksia') }}
+              <div v-else>
+                <div
+                  v-if="opetussuunnitelmat.length === 0"
+                  class="info"
+                >
+                  <div v-if="hasRajain">
+                    {{ $t('ei-hakutuloksia') }}
+                  </div>
                 </div>
-              </div>
 
-              <div class="opscontainer" :class="{'disabled-events': opsHaku}">
-                <div class="opsbox"
-                    v-oikeustarkastelu="{ oikeus: 'luonti', kohde: 'opetussuunnitelma' }">
-                  <router-link tag="a" :to="{ name: vars.uusiRoute }">
-                    <div class="uusi">
-                      <div class="plus">
-                        <EpMaterialIcon>add</EpMaterialIcon>
-                      </div>
-                      <div class="text">
-                        {{ $t('luo-uusi') }}
-                      </div>
-                    </div>
-                  </router-link>
-                </div>
-
-                <div v-for="ops in opetussuunnitelmat" :key="ops.id">
-                  <div v-if="ops.tuettu"
-                      class="opsbox">
+                <div
+                  class="opscontainer"
+                  :class="{'disabled-events': opsHaku}"
+                >
+                  <div
+                    v-oikeustarkastelu="{ oikeus: 'luonti', kohde: 'opetussuunnitelma' }"
+                    class="opsbox"
+                  >
                     <router-link
-                      tag="a"
-                      :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
-                      :key="ops.id">
-                      <div class="chart" :style="ops.tileStyle">
-                        <div class="progress-clamper">
-                          <ep-progress :slices="[0.2, 0.5, 1]" />
+                      :to="{ name: vars.uusiRoute }"
+                    >
+                      <div class="uusi">
+                        <div class="plus">
+                          <EpMaterialIcon>add</EpMaterialIcon>
                         </div>
+                        <div class="text">
+                          {{ $t('luo-uusi') }}
+                        </div>
+                      </div>
+                    </router-link>
+                  </div>
+
+                  <div
+                    v-for="ops in opetussuunnitelmat"
+                    :key="ops.id"
+                  >
+                    <div
+                      v-if="ops.tuettu"
+                      class="opsbox"
+                    >
+                      <router-link
+                        :key="ops.id"
+                        :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
+                      >
+                        <div
+                          class="chart"
+                          :style="ops.tileStyle"
+                        >
+                          <div class="progress-clamper">
+                            <ep-progress :slices="[0.2, 0.5, 1]" />
+                          </div>
+                        </div>
+                        <div class="info">
+                          <div class="nimi">
+                            {{ $kaanna(ops.nimi, false, false) }}
+                          </div>
+                        </div>
+                      </router-link>
+                    </div>
+                    <div
+                      v-else
+                      ref="disabled"
+                      class="opsbox disabled"
+                    >
+                      <div class="info-top">
+                        <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
                       </div>
                       <div class="info">
                         <div class="nimi">
                           {{ $kaanna(ops.nimi, false, false) }}
                         </div>
                       </div>
-                    </router-link>
-                  </div>
-                  <div v-else
-                      ref="disabled"
-                      class="opsbox disabled">
-                    <div class="info-top">
-                      <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
-                    </div>
-                    <div class="info">
-                      <div class="nimi">
-                        {{ $kaanna(ops.nimi, false, false) }}
-                      </div>
                     </div>
                   </div>
                 </div>
 
-              </div>
-
-              <div class="paginating mt-2">
-                <b-pagination
-                  v-model="opsSivu"
-                  :total-rows="opslista['kokonaismäärä']"
-                  :per-page="14"
-                  aria-controls="opetussuunnitelmat"
-                  align="center">
-                </b-pagination>
+                <div class="paginating mt-2">
+                  <EpPagination
+                    v-model="opsSivu"
+                    :total-rows="opslista['kokonaismäärä']"
+                    :per-page="14"
+                    aria-controls="opetussuunnitelmat"
+                    align="center"
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="opslistaus">
-            <h2 class="mt-4">{{ $t(vars.julkaistut) }} <span v-if="julkaistutLista">({{julkaistutLista['kokonaismäärä']}})</span></h2>
+            <div class="opslistaus">
+              <h2 class="mt-4">
+                {{ $t(vars.julkaistut) }} <span v-if="julkaistutLista">({{ julkaistutLista['kokonaismäärä'] }})</span>
+              </h2>
 
-            <ep-spinner v-if="!julkaistutLista"></ep-spinner>
+              <ep-spinner v-if="!julkaistutLista" />
 
-            <div v-else>
-              <div class="info" v-if="julkaistut.length === 0">
-                <div v-if="hasRajain">
-                  {{ $t('ei-hakutuloksia') }}
+              <div v-else>
+                <div
+                  v-if="julkaistut.length === 0"
+                  class="info"
+                >
+                  <div v-if="hasRajain">
+                    {{ $t('ei-hakutuloksia') }}
+                  </div>
+                  <ep-alert
+                    v-else
+                    :ops="true"
+                    :text="$t(vars.eivalmiita)"
+                  />
                 </div>
-                <ep-alert v-else :ops="true" :text="$t(vars.eivalmiita)" />
-              </div>
 
-              <div class="opscontainer" :class="{'disabled-events': julkaistutHaku}">
-                <div v-for="ops in julkaistut" :key="ops.id">
-                  <div class="opsbox julkaistu" :style="ops.bannerImage">
-                    <router-link
-                      tag="a"
-                      :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
-                      :key="ops.id">
-                      <div class="julkaistu">
-                      </div>
-                      <div class="info d-flex flex-column justify-content-between">
-                        <div class="nimi">
-                          {{ $kaanna(ops.nimi, false, false) }}
-                        </div>
-                        <div v-if="ops.julkaistu" class="nimi">
-                          <hr />
-                          <div class="julkaisu">
-                            {{ $t('julkaistu') }} {{$sd(ops.julkaistu)}}
+                <div
+                  class="opscontainer"
+                  :class="{'disabled-events': julkaistutHaku}"
+                >
+                  <div
+                    v-for="ops in julkaistut"
+                    :key="ops.id"
+                  >
+                    <div
+                      class="opsbox julkaistu"
+                      :style="ops.bannerImage"
+                    >
+                      <router-link
+                        :key="ops.id"
+                        :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
+                      >
+                        <div class="julkaistu" />
+                        <div class="info d-flex flex-column justify-content-between">
+                          <div class="nimi">
+                            {{ $kaanna(ops.nimi, false, false) }}
+                          </div>
+                          <div
+                            v-if="ops.julkaistu"
+                            class="nimi"
+                          >
+                            <hr>
+                            <div class="julkaisu">
+                              {{ $t('julkaistu') }} {{ $sd(ops.julkaistu) }}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </router-link>
+                      </router-link>
+                    </div>
                   </div>
                 </div>
-
-              </div>
-              <div class="paginating mt-2">
-                <b-pagination
-                  v-model="julkaistutSivu"
-                  :total-rows="julkaistutLista['kokonaismäärä']"
-                  :per-page="10"
-                  aria-controls="julkaistut-opetussuunnitelmat"
-                  align="center">
-                </b-pagination>
+                <div class="paginating mt-2">
+                  <EpPagination
+                    v-model="julkaistutSivu"
+                    :total-rows="julkaistutLista['kokonaismäärä']"
+                    :per-page="10"
+                    aria-controls="julkaistut-opetussuunnitelmat"
+                    align="center"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </b-col>
-      </b-row>
-    </b-container>
-  </ep-main-view>
-</div>
+          </b-col>
+        </b-row>
+      </b-container>
+    </ep-main-view>
+  </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash';
-import { Prop, Component, Mixins, Watch } from 'vue-property-decorator';
+import { ref, computed, watch, onMounted } from 'vue';
 import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
-import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { success, fail } from '@/utils/notifications';
+import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
+import { success } from '@/utils/notifications';
 import { Kielet } from '@shared/stores/kieli';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
-import EpRoute from '@/mixins/EpRoot';
+import { useEpRoute } from '@/mixins/EpRoute';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpProgress from '@shared/components/EpProgressPopover/EpProgress.vue';
@@ -190,10 +244,12 @@ import EpSearch from '@shared/components/forms/EpSearch.vue';
 import KoulutustyyppiSelect from '@shared/components/forms/EpKoulutustyyppiSelect.vue';
 import { yleissivistavatKoulutustyypit } from '@shared/utils/perusteet';
 import { tileBackgroundColor, koulutusTyyppiTile } from '@shared/utils/bannerIcons';
-import { Debounced } from '@shared/utils/delay';
+import { debounced } from '@shared/utils/delay';
 import { Page } from '@shared/tyypit';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import { $t, $kaanna, $sd, $success } from '@shared/utils/globals';
+import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
 
 interface Jarjestys {
   jarjestys: string;
@@ -201,193 +257,184 @@ interface Jarjestys {
   label: string;
 }
 
-@Component({
-  directives: {
-    oikeustarkastelu,
-  },
-  components: {
-    EpButton,
-    EpMainView,
-    EpNavigation,
-    EpProgress,
-    EpSpinner,
-    EpAlert,
-    EpArkistoidutOps,
-    EpSearch,
-    KoulutustyyppiSelect,
-    EpMultiSelect,
-    EpMaterialIcon,
-  },
-})
-export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
-  @Prop({ default: 'ops' })
-  private tyyppi!: 'ops' | 'pohja';
+const props = withDefaults(
+  defineProps<{
+    tyyppi?: 'ops' | 'pohja';
+  }>(), {
+    tyyppi: 'ops',
+  });
 
-  private opslista: Page<OpetussuunnitelmaInfoDto> | null = null;
-  private julkaistutLista: Page<OpetussuunnitelmaInfoDto> | null = null;
+// Use composables
+// const { } = useEpRoute(); // Add any needed route functionality
 
-  private rajain = '';
-  private koulutustyyppi = '';
-  private opsSivu = 1;
-  private julkaistutSivu = 1;
-  private opsHaku = false;
-  private julkaistutHaku = false;
-  private jarjestys: Jarjestys = this.jarjestysOptions[2];
+// Reactive data
+const opslista = ref<Page<OpetussuunnitelmaInfoDto> | null>(null);
+const julkaistutLista = ref<Page<OpetussuunnitelmaInfoDto> | null>(null);
+const rajain = ref('');
+const koulutustyyppi = ref('');
+const opsSivu = ref(1);
+const julkaistutSivu = ref(1);
+const opsHaku = ref(false);
+const julkaistutHaku = ref(false);
 
-  get hasRajain() {
-    return !_.isEmpty(this.rajain);
-  }
+// Computed properties
+const jarjestysOptions = computed(() => {
+  return [
+    {
+      jarjestys: 'teksti.teksti',
+      jarjestysSuunta: 'ASC',
+      label: 'aakkosittain-a-o',
+    }, {
+      jarjestys: 'teksti.teksti',
+      jarjestysSuunta: 'DESC',
+      label: 'aakkosittain-o-a',
+    }, {
+      jarjestys: 'luotu',
+      jarjestysSuunta: 'DESC',
+      label: 'uusin',
+    },
+  ];
+});
 
-  get valmisTila() {
-    return this.tyyppi === 'pohja'
-      ? 'valmis'
-      : 'julkaistu';
-  }
+const jarjestys = ref<Jarjestys>(jarjestysOptions.value[2]);
 
-  get opetussuunnitelmat() {
-    return _.chain(this.opslista?.data)
-      .map(ops => {
-        return {
-          ...ops,
-          tuettu: isOpsToteutusSupported(ops),
-          tileStyle: tileBackgroundColor(ops.koulutustyyppi!),
-        };
-      })
-      .value();
-  }
+const hasRajain = computed(() => {
+  return !_.isEmpty(rajain.value);
+});
 
-  get julkaistut() {
-    return _.chain(this.julkaistutLista?.data)
-      .map(ops => {
-        return {
-          ...ops,
-          bannerImage: koulutusTyyppiTile(ops.koulutustyyppi),
-        };
-      })
-      .value();
-  }
+const valmisTila = computed(() => {
+  return props.tyyppi === 'pohja'
+    ? 'valmis'
+    : 'julkaistu';
+});
 
-  get vars() {
-    if (this.tyyppi === 'pohja') {
+const opetussuunnitelmat = computed(() => {
+  return _.chain(opslista.value?.data)
+    .map(ops => {
       return {
-        eiarkistoituja: 'ei-arkistoituja-pohjia',
-        eivalmiita: 'ei-valmiita-pohjia',
-        etsi: 'etsi-pohjista',
-        getTarget: 'POHJA',
-        julkaistut: 'valmiit-pohjat',
-        keskeneraiset: 'keskeneraiset-pohjat',
-        kuvaus: 'pohjat-kuvaus',
-        palautaOps: 'palauta-pohja',
-        palautaOpsKuvaus: 'palauta-pohja-kuvaus',
-        poistetut: 'arkistoidut-pohjat',
-        uusiRoute: 'uusiPohja',
+        ...ops,
+        tuettu: isOpsToteutusSupported(ops),
+        tileStyle: tileBackgroundColor(ops.koulutustyyppi!),
       };
-    }
-    else {
+    })
+    .value();
+});
+
+const julkaistut = computed(() => {
+  return _.chain(julkaistutLista.value?.data)
+    .map(ops => {
       return {
-        eiarkistoituja: 'ei-arkistoituja-opetussuunnitelmia',
-        eivalmiita: 'ei-julkaistuja-opetussuunnitelmia',
-        etsi: 'etsi-opetussuunnitelmia',
-        getTarget: 'OPS',
-        julkaistut: 'julkaistut-opetussuunnitelmat',
-        keskeneraiset: 'keskeneraiset-opetussuunnitelmat',
-        kuvaus: 'opetussuunnitelmat-kuvaus',
-        palautaOps: 'palauta-ops',
-        palautaOpsKuvaus: 'palauta-ops-kuvaus',
-        poistetut: 'arkistoidut-opetussuunnitelmat',
-        uusiRoute: 'uusiOpetussuunnitelma',
+        ...ops,
+        bannerImage: koulutusTyyppiTile(ops.koulutustyyppi),
       };
-    }
-  }
+    })
+    .value();
+});
 
-  async palauta(ops: OpetussuunnitelmaInfoDto, tila, arkistointiCallBack) {
-    await OpetussuunnitelmaStore.updateOpsTila(ops.id!, tila);
-    await arkistointiCallBack();
-    success('palautus-onnistui');
+const vars = computed(() => {
+  if (props.tyyppi === 'pohja') {
+    return {
+      eiarkistoituja: 'ei-arkistoituja-pohjia',
+      eivalmiita: 'ei-valmiita-pohjia',
+      etsi: 'etsi-pohjista',
+      getTarget: 'POHJA',
+      julkaistut: 'valmiit-pohjat',
+      keskeneraiset: 'keskeneraiset-pohjat',
+      kuvaus: 'pohjat-kuvaus',
+      palautaOps: 'palauta-pohja',
+      palautaOpsKuvaus: 'palauta-pohja-kuvaus',
+      poistetut: 'arkistoidut-pohjat',
+      uusiRoute: 'uusiPohja',
+    };
   }
+  else {
+    return {
+      eiarkistoituja: 'ei-arkistoituja-opetussuunnitelmia',
+      eivalmiita: 'ei-julkaistuja-opetussuunnitelmia',
+      etsi: 'etsi-opetussuunnitelmia',
+      getTarget: 'OPS',
+      julkaistut: 'julkaistut-opetussuunnitelmat',
+      keskeneraiset: 'keskeneraiset-opetussuunnitelmat',
+      kuvaus: 'opetussuunnitelmat-kuvaus',
+      palautaOps: 'palauta-ops',
+      palautaOpsKuvaus: 'palauta-ops-kuvaus',
+      poistetut: 'arkistoidut-opetussuunnitelmat',
+      uusiRoute: 'uusiOpetussuunnitelma',
+    };
+  }
+});
 
-  @Watch('koulutustyyppi')
-  async koulutustyyppiChange() {
-    this.opsSivu = 1;
-    this.julkaistutSivu = 1;
-    this.opslista = null;
-    this.julkaistutLista = null;
-    await this.init();
-  }
+const kieli = computed(() => {
+  return Kielet.getSisaltoKieli.value;
+});
 
-  @Watch('rajain')
-  @Debounced()
-  async rajainChange() {
-    this.opsSivu = 1;
-    this.julkaistutSivu = 1;
-    this.opslista = null;
-    this.julkaistutLista = null;
-    await this.init();
-  }
+const yleissivistavatKoulutustyyppienData = computed(() => {
+  return yleissivistavatKoulutustyypit;
+});
 
-  @Watch('opsSivu')
-  async opsSivuChange() {
-    await this.fetchOps();
-  }
+// Methods
+const palauta = async (ops: OpetussuunnitelmaInfoDto, tila: any, arkistointiCallBack: any) => {
+  await OpetussuunnitelmaStore.updateOpsTila(ops.id!, tila);
+  await arkistointiCallBack();
+  $success('palautus-onnistui');
+};
 
-  @Watch('julkaistutSivu')
-  async julkaistutSivuChange() {
-    await this.fetchJulkaisut();
-  }
+const init = async () => {
+  await fetchOps();
+  await fetchJulkaisut();
+};
 
-  @Watch('kieli')
-  async kieliChange() {
-    await this.init();
-  }
+const fetchOps = async () => {
+  opsHaku.value = true;
+  opslista.value = (await Opetussuunnitelmat.getSivutettu(props.tyyppi as any, 'luonnos', koulutustyyppi.value, rajain.value, jarjestys.value.jarjestys, jarjestys.value.jarjestysSuunta, opsSivu.value - 1, 14, kieli.value)).data as Page<OpetussuunnitelmaInfoDto>;
+  opsHaku.value = false;
+};
 
-  protected async init() {
-    await this.fetchOps();
-    await this.fetchJulkaisut();
-  }
+const fetchJulkaisut = async () => {
+  julkaistutHaku.value = true;
+  julkaistutLista.value = (await Opetussuunnitelmat.getSivutettu(props.tyyppi as any, valmisTila.value, koulutustyyppi.value, rajain.value, jarjestys.value.jarjestys, jarjestys.value.jarjestysSuunta, julkaistutSivu.value - 1, 10, kieli.value)).data as Page<OpetussuunnitelmaInfoDto>;
+  julkaistutHaku.value = false;
+};
 
-  protected async fetchOps() {
-    this.opsHaku = true;
-    this.opslista = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, 'luonnos', this.koulutustyyppi, this.rajain, this.jarjestys.jarjestys, this.jarjestys.jarjestysSuunta, this.opsSivu - 1, 14, this.kieli)).data as Page<OpetussuunnitelmaInfoDto>;
-    this.opsHaku = false;
-  }
+// Watchers
+watch(koulutustyyppi, async () => {
+  opsSivu.value = 1;
+  julkaistutSivu.value = 1;
+  opslista.value = null;
+  julkaistutLista.value = null;
+  await init();
+});
 
-  protected async fetchJulkaisut() {
-    this.julkaistutHaku = true;
-    this.julkaistutLista = (await Opetussuunnitelmat.getSivutettu(this.tyyppi as any, this.valmisTila, this.koulutustyyppi, this.rajain, this.jarjestys.jarjestys, this.jarjestys.jarjestysSuunta, this.julkaistutSivu - 1, 10, this.kieli)).data as Page<OpetussuunnitelmaInfoDto>;
-    this.julkaistutHaku = false;
-  }
+const debouncedRajainChange = debounced(async () => {
+  opsSivu.value = 1;
+  julkaistutSivu.value = 1;
+  opslista.value = null;
+  julkaistutLista.value = null;
+  await init();
+});
 
-  get kieli() {
-    return Kielet.getSisaltoKieli.value;
-  }
+watch(rajain, debouncedRajainChange);
 
-  get yleissivistavatKoulutustyypit() {
-    return yleissivistavatKoulutustyypit;
-  }
+watch(opsSivu, async () => {
+  await fetchOps();
+});
 
-  @Watch('jarjestys')
-  async jarjestysChange() {
-    await this.init();
-  }
+watch(julkaistutSivu, async () => {
+  await fetchJulkaisut();
+});
 
-  get jarjestysOptions() {
-    return [
-      {
-        jarjestys: 'teksti.teksti',
-        jarjestysSuunta: 'ASC',
-        label: 'aakkosittain-a-o',
-      }, {
-        jarjestys: 'teksti.teksti',
-        jarjestysSuunta: 'DESC',
-        label: 'aakkosittain-o-a',
-      }, {
-        jarjestys: 'luotu',
-        jarjestysSuunta: 'DESC',
-        label: 'uusin',
-      },
-    ];
-  }
-}
+watch(kieli, async () => {
+  await init();
+});
+
+watch(jarjestys, async () => {
+  await init();
+});
+
+// Initialize on mount
+onMounted(async () => {
+  await init();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -396,17 +443,6 @@ export default class RouteOpetussuunnitelmaListaus extends Mixins(EpRoute) {
 $box-size: 350px;
 
 $box-radius: 10px;
-
-h1 {
-  color: #001A58;
-  font-size: 0.5555555555555556rem;
-  font-weight: 400;
-}
-
-h2 {
-  font-size: 1.1111111111111112rem;
-  font-weight: 400;
-}
 
 .jarjestys-select {
   width: 300px;

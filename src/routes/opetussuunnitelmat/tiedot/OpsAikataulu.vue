@@ -1,89 +1,91 @@
 <template>
   <div class="content">
-
     <div class="row">
       <div class="col">
-        <h2>{{$t('aikataulu')}}</h2>
+        <h2>{{ $t('aikataulu') }}</h2>
       </div>
       <div class="col text-right">
-        <ep-aikataulu-modal ref="aikataulumodal" :rootModel="ops" :aikataulut="aikataulut" @tallenna="tallenna"
-        v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }">
-          <template v-slot:selite>
-            <p>{{ $t('aikataulu-modal-selite')}}</p>
+        <ep-aikataulu-modal
+          ref="aikataulumodal"
+          v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }"
+          :root-model="ops"
+          :aikataulut="aikataulut"
+          @tallenna="tallenna"
+        >
+          <template #selite>
+            <p>{{ $t('aikataulu-modal-selite') }}</p>
           </template>
         </ep-aikataulu-modal>
       </div>
     </div>
 
-    <ep-spinner v-if="!aikataulut"></ep-spinner>
+    <ep-spinner v-if="!aikataulut" />
 
     <div v-else>
-
-      <div v-if="aikataulut.length === 0" class="text-center">
-        <ep-button @click="otaAikatauluKayttoon" buttonClass="pl-5 pr-5">
+      <div
+        v-if="aikataulut.length === 0"
+        class="text-center"
+      >
+        <ep-button
+          button-class="pl-5 pr-5"
+          @click="otaAikatauluKayttoon"
+        >
           <span>{{ $t('ota-kayttoon') }}</span>
         </ep-button>
       </div>
 
       <div v-else>
-        <ep-aikataulu :aikataulut ="aikataulut" />
+        <ep-aikataulu :aikataulut="aikataulut" />
       </div>
-
     </div>
-
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
+<script setup lang="ts">
+import { computed, onMounted, useTemplateRef } from 'vue';
+import * as _ from 'lodash';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpAikataulu from '@shared/components/EpAikataulu/EpAikataulu.vue';
 import EpAikatauluModal from '@shared/components/EpAikataulu/EpAikatauluModal.vue';
+import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import { AikatauluStore } from '@/stores/aikataulu';
 import { success } from '@/utils/notifications';
-import * as _ from 'lodash';
+import { $success, $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpSpinner,
-    EpButton,
-    EpAikataulu,
-    EpAikatauluModal,
-  },
-})
-export default class OpsAikataulu extends Vue {
-  @Prop({ required: true })
-  private ops!: OpetussuunnitelmaKevytDto;
+const props = defineProps<{
+  ops: OpetussuunnitelmaKevytDto;
+  aikatauluStore: AikatauluStore;
+}>();
 
-  @Prop({ required: true })
-  private aikatauluStore!: AikatauluStore;
+const aikataulumodal = useTemplateRef('aikataulumodal');
 
-  async mounted() {
-    await this.aikatauluStore.update();
+const aikataulut = computed(() => {
+  return props.aikatauluStore.aikataulut.value;
+});
+
+const otaAikatauluKayttoon = () => {
+  const modalRef = aikataulumodal.value;
+  if (modalRef) {
+    (modalRef as any).openModal();
   }
+};
 
-  get aikataulut() {
-    return this.aikatauluStore.aikataulut;
-  }
+const tallenna = async (aikataulutData: any) => {
+  const processedAikataulut = _.map(aikataulutData, aikataulu => {
+    return {
+      ...aikataulu,
+      opetussuunnitelmaId: props.ops.id,
+    };
+  });
 
-  otaAikatauluKayttoon() {
-    (this as any).$refs.aikataulumodal.openModal();
-  }
+  await props.aikatauluStore.saveAikataulut(processedAikataulut);
+  $success('aikataulu-tallennettu');
+};
 
-  async tallenna(aikataulut) {
-    aikataulut = _.map(aikataulut, aikataulu => {
-      return {
-        ...aikataulu,
-        opetussuunnitelmaId: this.ops.id,
-      };
-    });
-
-    await this.aikatauluStore.saveAikataulut(aikataulut);
-    success('aikataulu-tallennettu');
-  }
-}
+onMounted(async () => {
+  await props.aikatauluStore.update();
+});
 </script>
 
 <style scoped lang="scss">

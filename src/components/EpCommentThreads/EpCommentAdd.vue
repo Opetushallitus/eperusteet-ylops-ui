@@ -1,48 +1,53 @@
 <template>
-  <div v-if="style" :style="style" ref="box" id="comment-add-box">
+  <div
+    v-if="style"
+    id="comment-add-box"
+    ref="box"
+    :style="style"
+  >
     <div class="commentbox">
       <b-button
         v-if="onAdd"
         variant="primary"
-        @click="onAdd">
-        {{ $t('lisaa-kommentti') }}
+        @click="onAdd"
+      >
+        {{ lisaaKommenttiTeksti }}
       </b-button>
     </div>
   </div>
-  <span v-else></span>
+  <span v-else />
 </template>
 
-<script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed, useTemplateRef } from 'vue';
 import _ from 'lodash';
 import { Kommentit } from '@/stores/kommentit';
 import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
+import { $t } from '@shared/utils/globals';
 
-@Component({
-  components: {
-    EpRoundButton,
-  },
-})
-export default class EpCommentAdd extends Vue {
-  @Prop({ required: true })
-  onAdd!: () => Promise<void>;
+const props = defineProps<{
+  onAdd: () => Promise<void>;
+}>();
 
-  get style() {
-    if (this.bounds) {
-      return {
-        left: window.scrollX + this.bounds.x + 5 + 'px',
-        top: window.scrollY + this.bounds.bottom + 10 + 'px',
-      };
-    }
-    else {
-      return null;
-    }
+const box = useTemplateRef('box');
+
+const lisaaKommenttiTeksti = $t('lisaa-kommentti');
+
+const bounds = computed(() => {
+  return Kommentit.bounds.value;
+});
+
+const style = computed(() => {
+  if (bounds.value) {
+    return {
+      left: window.scrollX + bounds.value.x + 5 + 'px',
+      top: window.scrollY + bounds.value.bottom + 10 + 'px',
+    };
   }
-
-  get bounds() {
-    return Kommentit.bounds.value;
+  else {
+    return null;
   }
-}
+});
 </script>
 
 <style lang="scss" scoped>

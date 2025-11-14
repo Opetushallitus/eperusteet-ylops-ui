@@ -1,175 +1,223 @@
 <template>
   <div class="content text-left">
-    <h2>{{$t('viimeaikainen-toiminta')}}</h2>
+    <h2>{{ $t('viimeaikainen-toiminta') }}</h2>
 
-    <ep-spinner v-if="!muokkaustiedot"></ep-spinner>
+    <ep-spinner v-if="!muokkaustiedot" />
 
-    <div class="container text-center" v-else>
-      <div v-for="(muokkaustieto, index) in muokkaustiedotRouted" :key="muokkaustieto.id" class="row muokkaustieto">
-
+    <div
+      v-else
+      class="container text-center"
+    >
+      <div
+        v-for="(muokkaustieto, index) in muokkaustiedotRouted"
+        :key="muokkaustieto.id"
+        class="row muokkaustieto"
+      >
         <div class="col col-auto ikoni-col center-block">
           <div class="ikoni d-inline-block">
-            <EpMaterialIcon :class="muokkaustieto.iconClass">{{ muokkaustieto.icon }}</EpMaterialIcon>
+            <EpMaterialIcon :class="muokkaustieto.iconClass">
+              {{ muokkaustieto.icon }}
+            </EpMaterialIcon>
           </div>
-          <div class="aikajana" v-if="index != muokkaustiedotRouted.length - 1">&nbsp;</div>
+          <div
+            v-if="index != muokkaustiedotRouted.length - 1"
+            class="aikajana"
+          >
+&nbsp;
+          </div>
         </div>
 
         <div class="col router-col text-left">
           <component
             :is="muokkaustieto.komponentti"
-            :to="muokkaustieto.route">
-            <div class="router-box" :class="{ 'router-box-poistettu': muokkaustieto.poistettu, 'd-flex flex-row-reverse justify-content-between': !muokkaustieto.kayttajaNimi }">
+            :to="muokkaustieto.route"
+          >
+            <div
+              class="router-box"
+              :class="{ 'router-box-poistettu': muokkaustieto.poistettu, 'd-flex flex-row-reverse justify-content-between': !muokkaustieto.kayttajaNimi }"
+            >
               <div class="d-flex justify-content-between">
-                <div class="nimi" v-if="muokkaustieto.kayttajaNimi">{{muokkaustieto.kayttajaNimi}}</div>
-                <div class="aika text-right">{{$ago(muokkaustieto.luotu)}}</div>
+                <div
+                  v-if="muokkaustieto.kayttajaNimi"
+                  class="nimi"
+                >
+                  {{ muokkaustieto.kayttajaNimi }}
+                </div>
+                <div class="aika text-right">
+                  {{ $ago(muokkaustieto.luotu) }}
+                </div>
               </div>
-              <EpExternalLink v-if="muokkaustieto.url" :url="muokkaustieto.url">
-                {{muokkaustieto.tapahtumateksti}}
+              <EpExternalLink
+                v-if="muokkaustieto.url"
+                :url="muokkaustieto.url"
+              >
+                {{ muokkaustieto.tapahtumateksti }}
               </EpExternalLink>
-              <div class="kohde" v-else>{{muokkaustieto.tapahtumateksti}}</div>
+              <div
+                v-else
+                class="kohde"
+              >
+                {{ muokkaustieto.tapahtumateksti }}
+              </div>
             </div>
           </component>
         </div>
-
       </div>
     </div>
 
     <div class="text-center">
-      <span class="tyhja" v-if="muokkaustiedot && muokkaustiedot.length === 0">{{$t('viimeaikainen-toiminta-tyhja')}}</span>
+      <span
+        v-if="muokkaustiedot && muokkaustiedot.length === 0"
+        class="tyhja"
+      >{{ $t('viimeaikainen-toiminta-tyhja') }}</span>
       <div v-else>
-        <ep-button @click="haeLisaa" variant="link" v-if="!lisahaku && muokkaustiedotRouted.length % hakuLukumaara == 0 && muokkaustiedot && (!viimeinenHaku || viimeinenHaku.length > 0)">
-          {{$t('nayta-lisaa')}}
+        <ep-button
+          v-if="!lisahaku && muokkaustiedotRouted.length % hakuLukumaara == 0 && muokkaustiedot && (!viimeinenHaku || viimeinenHaku.length > 0)"
+          variant="link"
+          @click="haeLisaa"
+        >
+          {{ $t('nayta-lisaa') }}
         </ep-button>
-        <ep-spinner v-if="lisahaku"></ep-spinner>
+        <ep-spinner v-if="lisahaku" />
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue';
 import _ from 'lodash';
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { parsiEsitysnimi } from '@/stores/kayttaja';
-import { MuokkaustietoStore } from '@/stores/muokkaustieto';
-import { muokkaustietoRoute, muokkaustietoIcon, muokkaustietoUrl } from '@/utils/tapahtuma';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpExternalLink from '@shared/components/EpExternalLink/EpExternalLink.vue';
+import { MuokkaustietoStore } from '@/stores/muokkaustieto';
+import { muokkaustietoRoute, muokkaustietoIcon, muokkaustietoUrl } from '@/utils/tapahtuma';
 import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
+import { $t, $kaanna, $ago } from '@shared/utils/globals';
+import { parsiEsitysnimi } from '@shared/utils/kayttaja';
+import { useRouter } from 'vue-router';
 
-@Component({
-  components: {
-    EpSpinner,
-    EpButton,
-    EpMaterialIcon,
-  },
-})
-export default class OpsViimeaikainenToiminta extends Vue {
-  @Prop({ required: true })
-  private muokkaustietoStore!: MuokkaustietoStore;
+const props = defineProps<{
+  muokkaustietoStore: MuokkaustietoStore;
+  ops: OpetussuunnitelmaKevytDto;
+}>();
 
-  @Prop({ required: true })
-  private ops!: OpetussuunnitelmaKevytDto;
+const router = useRouter();
+const lisahaku = ref<boolean>(false);
 
-  private lisahaku: boolean = false;
+const muokkaustiedot = computed(() => {
+  return props.muokkaustietoStore.muokkaustiedot.value;
+});
 
-  async mounted() {
-    await this.muokkaustietoStore.update();
+const viimeinenHaku = computed(() => {
+  return props.muokkaustietoStore.viimeinenHaku.value;
+});
+
+const hakuLukumaara = computed(() => {
+  return props.muokkaustietoStore.hakuLukumaara.value;
+});
+
+const muokkaustietoKayttajanimi = (muokkaustieto: any) => {
+  if (muokkaustieto.kohde === 'peruste') {
+    return null;
   }
 
-  get muokkaustiedot() {
-    return this.muokkaustietoStore.muokkaustiedot;
+  if (muokkaustieto.kayttajanTieto) {
+    return parsiEsitysnimi(muokkaustieto.kayttajanTieto);
   }
 
-  get viimeinenHaku() {
-    return this.muokkaustietoStore.viimeinenHaku;
+  return muokkaustieto.muokkaaja;
+};
+
+const tapahtumakaannos = (muokkaustieto: any) => {
+  if (muokkaustieto.tapahtuma === 'luonti') {
+    return 'tapahtuma-' + muokkaustieto.tapahtuma + '-' + muokkaustieto.kohde;
   }
 
-  get hakuLukumaara() {
-    return this.muokkaustietoStore.hakuLukumaara;
+  return 'tapahtuma-' + muokkaustieto.tapahtuma;
+};
+
+const tapahtumakohde = (muokkaustieto: any) => {
+  return $kaanna(muokkaustieto.nimi);
+};
+
+const tapahtumateksti = (muokkaustieto: any) => {
+  if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
+    return $t('tapahtuma-paivitys-opetussuunnitelma-rakenne');
   }
 
-  async haeLisaa() {
-    this.lisahaku = true;
-    await this.muokkaustietoStore.update();
-    this.lisahaku = false;
+  if (muokkaustieto.kohde === 'oppiaineenvuosiluokka') {
+    return $t(tapahtumakaannos(muokkaustieto)) + ': ' + $t('vuosiluokka') + ' ' + $t(muokkaustieto.lisatieto);
   }
 
-  get muokkaustiedotRouted() {
-    return _.chain(this.muokkaustiedot)
-      .map((muokkaustieto) => {
-        return {
-          ...muokkaustieto,
-          route: muokkaustietoRoute(muokkaustieto.kohdeId, muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisaparametrit),
-          url: muokkaustietoUrl(muokkaustieto.kohdeId, muokkaustieto.kohde, this.ops),
-          icon: muokkaustietoIcon(muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisatieto),
-          iconClass: this.muokkaustietoIconClass(muokkaustieto),
-          kayttajaNimi: this.muokkaustietoKayttajanimi(muokkaustieto),
-          tapahtumateksti: this.tapahtumateksti(muokkaustieto),
-        };
-      })
-      .map((muokkaustieto) => {
-        return {
-          ...muokkaustieto,
-          komponentti: muokkaustieto.route ? 'router-link' : 'div',
-        };
-      })
-      .sortBy((muokkaustieto) => muokkaustieto.luotu)
-      .reverse()
-      .value();
+  if (muokkaustieto.lisatieto) {
+    return $t(muokkaustieto.lisatieto);
   }
 
-  muokkaustietoKayttajanimi(muokkaustieto) {
-    if (muokkaustieto.kohde === 'peruste') {
-      return null;
-    }
+  return $t(tapahtumakaannos(muokkaustieto)) + ': ' + tapahtumakohde(muokkaustieto);
+};
 
-    if (muokkaustieto.kayttajanTieto) {
-      return parsiEsitysnimi(muokkaustieto.kayttajanTieto);
-    }
-
-    return muokkaustieto.muokkaaja;
+const muokkaustietoIconClass = (muokkaustieto: any) => {
+  if (muokkaustieto.kohde === 'kommentti') {
+    return 'comment';
   }
 
-  tapahtumateksti(muokkaustieto) {
-    if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
-      return this.$t('tapahtuma-paivitys-opetussuunnitelma-rakenne');
-    }
-
-    if (muokkaustieto.kohde === 'oppiaineenvuosiluokka') {
-      return this.$t(this.tapahtumakaannos(muokkaustieto)) + ': ' + this.$t('vuosiluokka') + ' ' + this.$t(muokkaustieto.lisatieto);
-    }
-
-    if (muokkaustieto.lisatieto) {
-      return this.$t(muokkaustieto.lisatieto);
-    }
-
-    return this.$t(this.tapahtumakaannos(muokkaustieto)) + ': ' + this.tapahtumakohde(muokkaustieto);
+  if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
+    return 'low_priority';
   }
+  return muokkaustieto.tapahtuma;
+};
 
-  tapahtumakaannos(muokkaustieto) {
-    if (muokkaustieto.tapahtuma === 'luonti') {
-      return 'tapahtuma-' + muokkaustieto.tapahtuma + '-' + muokkaustieto.kohde;
-    }
+const muokkaustiedotRouted = computed(() => {
+  return _.chain(muokkaustiedot.value)
+    .map((muokkaustieto) => {
+      return {
+        ...muokkaustieto,
+        route: muokkaustietoRoute(muokkaustieto.kohdeId, muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisaparametrit),
+        url: muokkaustietoUrl(muokkaustieto.kohdeId, muokkaustieto.kohde, props.ops),
+        icon: muokkaustietoIcon(muokkaustieto.kohde, muokkaustieto.tapahtuma, muokkaustieto.lisatieto),
+        iconClass: muokkaustietoIconClass(muokkaustieto),
+        kayttajaNimi: muokkaustietoKayttajanimi(muokkaustieto),
+        tapahtumateksti: tapahtumateksti(muokkaustieto),
+      };
+    })
+    .map((muokkaustieto) => {
+      return {
+        ...muokkaustieto,
+        komponentti: muokkaustieto.route ? 'router-link' : 'div',
+      };
+    })
+    .map((muokkaustieto) => {
+      return {
+        ...muokkaustieto,
+        route: isValidRoute(muokkaustieto.route) ? muokkaustieto.route : null,
+      };
+    })
+    .sortBy((muokkaustieto) => muokkaustieto.luotu)
+    .reverse()
+    .value();
+});
 
-    return 'tapahtuma-' + muokkaustieto.tapahtuma;
+function isValidRoute(to) {
+  try {
+    const resolved = router.resolve(to);
+    return resolved.matched.length > 0;
   }
-
-  tapahtumakohde(muokkaustieto) {
-    return (this as any).$kaanna(muokkaustieto.nimi);
-  }
-
-  muokkaustietoIconClass(muokkaustieto) {
-    if (muokkaustieto.kohde === 'kommentti') {
-      return 'comment';
-    }
-
-    if (muokkaustieto.kohde === 'opetussuunnitelma_rakenne') {
-      return 'low_priority';
-    }
-    return muokkaustieto.tapahtuma;
+  catch (error) {
+    return false;
   }
 }
+
+const haeLisaa = async () => {
+  lisahaku.value = true;
+  await props.muokkaustietoStore.update();
+  lisahaku.value = false;
+};
+
+onMounted(async () => {
+  await props.muokkaustietoStore.update();
+});
 </script>
 
 <style scoped lang="scss">

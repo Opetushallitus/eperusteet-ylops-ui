@@ -1,11 +1,22 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import VueCompositionApi, { reactive, computed, ref, watch } from '@vue/composition-api';
+import VueCompositionApi, { reactive, computed, ref, watch } from 'vue';
+import { Router } from 'vue-router';
+import type { App } from 'vue';
 import { Vuosiluokkakokonaisuudet, Opetussuunnitelmat } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
 import VueScrollTo from 'vue-scrollto';
 
+interface VuosiluokkakokonaisuusStoreConfig {
+  router: Router;
+}
+
 export class VuosiluokkakokonaisuusStore implements IEditoitava {
+  private static config: VuosiluokkakokonaisuusStoreConfig;
+
+  public static install(app: App, config: VuosiluokkakokonaisuusStoreConfig) {
+    VuosiluokkakokonaisuusStore.config = config;
+  }
   constructor(private opsId: number, private vlkId: number, private scrollId: string | null, private el: any, private muokkaaLatauksenJalkeen: boolean) {
   }
 
@@ -108,13 +119,13 @@ export class VuosiluokkakokonaisuusStore implements IEditoitava {
   async copy(data) {
     const kopioituVlk = await Vuosiluokkakokonaisuudet.kopioiVuosiluokkakokonaisuusMuokattavaksi(this.opsId, this.vlkId);
     await this.el.resetOps();
-    this.el.$router.push({
+    VuosiluokkakokonaisuusStore.config.router.push({
       name: 'vuosiluokkakokonaisuus',
       params: {
         vlkId: kopioituVlk.data.id!,
       },
       query: {
-        muokkaa: true,
+        muokkaa: 'true',
       },
     });
   }

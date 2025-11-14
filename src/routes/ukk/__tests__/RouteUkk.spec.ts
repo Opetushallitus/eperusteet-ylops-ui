@@ -1,64 +1,59 @@
 import { makeAxiosResponse } from '&/utils/data';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import RouteUkk from '../RouteUkk.vue';
 import { Kielet } from '@shared/stores/kieli';
 import { Ulkopuoliset, Kysymykset } from '@shared/api/ylops';
-import '@shared/config/bootstrap';
-import VueI18n from 'vue-i18n';
-import { Kaannos } from '@shared/plugins/kaannos';
-import aikaleima from '@shared/plugins/aikaleima';
+import { globalStubs } from '@shared/utils/__tests__/stubs';
+import { vi } from 'vitest';
+import { nextTick } from 'vue';
 
 describe('RouteUkk', () => {
-  const localVue = createLocalVue();
-  localVue.use(VueI18n);
-  localVue.use(aikaleima);
-  Kielet.install(localVue, {
-    messages: {
-      fi: require('@shared/translations/locale-fi.json'),
-      sv: require('@shared/translations/locale-sv.json'),
-    },
-  });
-  localVue.use(new Kaannos());
-  const i18n = Kielet.i18n;
-
   async function createMounted() {
-    jest.spyOn(Ulkopuoliset, 'getUserOrganisations')
+    vi.spyOn(Ulkopuoliset, 'getUserOrganisations')
       .mockImplementation(async () => makeAxiosResponse([{
         oid: '123',
+        nimi: { fi: 'Testiorgi' },
       }]));
 
-    jest.spyOn(Kysymykset, 'createKysymys')
+    vi.spyOn(Kysymykset, 'createKysymys')
       .mockImplementation(async (x: any) => makeAxiosResponse(x));
 
-    jest.spyOn(Kysymykset, 'updateKysymys')
+    vi.spyOn(Kysymykset, 'updateKysymys')
       .mockImplementation(async (x: any) => makeAxiosResponse(x));
 
-    jest.spyOn(Kysymykset, 'deleteKysymys')
+    vi.spyOn(Kysymykset, 'deleteKysymys')
       .mockImplementation(async (x: any) => makeAxiosResponse(null as any));
 
-    jest.spyOn(Kysymykset, 'getKysymykset')
+    vi.spyOn(Kysymykset, 'getKysymykset')
       .mockImplementation(async () => makeAxiosResponse([{
         id: 1,
         kysymys: { fi: 'kysymys?' },
         vastaus: 'vastaus!',
+        luotu: new Date().getTime(),
         organisaatiot: [{
           oid: '123',
         }],
       }] as any));
 
     return mount(RouteUkk as any, {
-      i18n,
-      localVue,
-      stubs: ['EpSelect', 'EpNavigation', 'EpContent'],
+      global: {
+        ...globalStubs,
+        stubs: {
+          ...globalStubs.stubs,
+          'EpSelect': true,
+          'EpNavigation': true,
+          'EpContent': true,
+        },
+      },
     } as any);
   }
 
   test('Rendering', async () => {
     const wrapper = await createMounted();
 
-    await localVue.nextTick();
-    await localVue.nextTick();
-    await localVue.nextTick();
+    // Wait for all promises to resolve (onMounted async operations)
+    await flushPromises();
+    await nextTick();
 
     expect(wrapper.html()).toContain('kysymys?');
     expect(wrapper.html()).toContain('vastaus!');

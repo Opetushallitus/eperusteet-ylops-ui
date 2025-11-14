@@ -1,6 +1,6 @@
 import { IEditoitava } from '@shared/components/EpEditointi/EditointiStore';
-import { computed } from '@vue/composition-api';
-import { required } from 'vuelidate/lib/validators';
+import { computed } from 'vue';
+import { required } from '@vuelidate/validators';
 import { buildKatseluUrl } from '@shared/utils/esikatselu';
 import { Kielet } from '@shared/stores/kieli';
 import * as _ from 'lodash';
@@ -10,10 +10,11 @@ import { opsTiedotValidator } from '@/validators/ops';
 
 export class OpetussuunnitelmaEditStore implements IEditoitava {
   public static opetussuunnitelmantyyppi: string;
+  public validator: any;
 
   constructor(
     private opetussuunnitelmaId: number,
-    private kaanna: Function,
+    private kaanna: (value: any) => string,
   ) {
   }
 
@@ -28,6 +29,13 @@ export class OpetussuunnitelmaEditStore implements IEditoitava {
   async load(supportData) {
     const ops = (await Opetussuunnitelmat.getOpetussuunnitelma(this.opetussuunnitelmaId)).data;
     OpetussuunnitelmaEditStore.opetussuunnitelmantyyppi = ops.tyyppi!;
+
+    // Initialize validator once to prevent recreation
+    if (!this.validator) {
+      this.validator = computed(() => opsTiedotValidator([
+        Kielet.getSisaltoKieli.value,
+      ], OpetussuunnitelmaEditStore.opetussuunnitelmantyyppi === 'ops'));
+    }
     let pohjanVuosiluokkakokonaisuudet: OpsVuosiluokkakokonaisuusKevytDto[] | null = null;
     if (ops.toteutus === _.toLower(OpetussuunnitelmaKevytDtoToteutusEnum.PERUSOPETUS) && ops.pohja) {
       pohjanVuosiluokkakokonaisuudet = (await Opetussuunnitelmat.getOpetussuunnitelmanPohjanVuosiluokkakokonaisuudet(this.opetussuunnitelmaId)).data;
@@ -89,10 +97,4 @@ export class OpetussuunnitelmaEditStore implements IEditoitava {
 
   async start() {
   }
-
-  public readonly validator = computed(() => {
-    return opsTiedotValidator([
-      Kielet.getSisaltoKieli.value, // Validoidaan kentät sisältökielen mukaan
-    ], OpetussuunnitelmaEditStore.opetussuunnitelmantyyppi === 'ops');
-  });
 }

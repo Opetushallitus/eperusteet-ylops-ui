@@ -1,47 +1,48 @@
 <template>
-<div class="home-container">
-  <div class="header">
-    <ep-navigation :sticky="false"></ep-navigation>
-    <div class="container">
-      <div class="container-fluid">
-        <div class="row no-gutters">
-          <div class="col my-4 px-3 px-md-0">
-            <h1>{{ $t('lops-tyokalu-tervetuloa', { nimi }) }}</h1>
-            <p>{{ $t('ylops-tervetuloa-kuvaus') }}</p>
+  <div class="home-container">
+    <div class="header">
+      <ep-navigation :sticky="false" />
+      <div class="container">
+        <div class="container-fluid">
+          <div class="row no-gutters">
+            <div class="col my-4 px-3 px-md-0">
+              <h1>{{ $t('lops-tyokalu-tervetuloa', {nimi }) }}</h1>
+              <p>{{ $t('ylops-tervetuloa-kuvaus') }}</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="container tile-container">
-    <div class="d-flex flex-row flex-wrap justify-content-center">
-      <tile-opetussuunnitelmat
-        :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
-        :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
-        :count-is-loading="isLoading" />
-      <tile-opetussuunnitelmat
-        :keskeneraiset="etusivu.pohjatKeskeneraiset"
-        :julkaistut="etusivu.pohjatJulkaistut"
-        :is-ops="false"
-        v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }"
-        :count-is-loading="isLoading" />
-      <tile-organisaatio />
-      <tile-valtakunnalliset-perusteet />
-      <tile-tiedotteet />
-      <tile-ukk />
-      <tile-oppaat />
+    <div class="container tile-container">
+      <div class="d-flex flex-row flex-wrap justify-content-center">
+        <tile-opetussuunnitelmat
+          :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
+          :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
+          :count-is-loading="isLoading"
+        />
+        <tile-opetussuunnitelmat
+          v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }"
+          :keskeneraiset="etusivu.pohjatKeskeneraiset"
+          :julkaistut="etusivu.pohjatJulkaistut"
+          :is-ops="false"
+          :count-is-loading="isLoading"
+        />
+        <tile-organisaatio />
+        <tile-valtakunnalliset-perusteet />
+        <tile-tiedotteet />
+        <tile-ukk />
+        <tile-oppaat />
+      </div>
     </div>
   </div>
-</div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator';
-
-import { Kayttajat } from '@/stores/kayttaja';
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { KayttajaStore, Kayttajat } from '@/stores/kayttaja';
 import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { EtusivuDto } from '@shared/api/ylops';
-import EpRoute from '@/mixins/EpRoute';
+import { onMounted } from 'vue';
 import TileUkk from './tiles/TileUkk.vue';
 import TileOpetussuunnitelmat from './tiles/TileOpetussuunnitelmat.vue';
 import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet.vue';
@@ -52,43 +53,30 @@ import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
-@Component({
-  components: {
-    EpNavigation,
-    EpSearch,
-    EpSpinner,
-    TileOpetussuunnitelmat,
-    TileOrganisaatio,
-    TileTiedotteet,
-    TileUkk,
-    TileValtakunnallisetPerusteet,
-    TileOppaat,
-  },
-  directives: {
-    oikeustarkastelu,
-  },
-})
-export default class Home extends Mixins(EpRoute) {
-  private rajain: string = '';
-  private etusivu: EtusivuDto = {
-    opetussuunnitelmatKeskeneraiset: 0,
-    opetussuunnitelmatJulkaistut: 0,
-    pohjatKeskeneraiset: 0,
-    pohjatJulkaistut: 0,
-  };
+const props = defineProps<{
+  kayttajaStore: KayttajaStore;
+}>();
 
-  async init() {
-    this.etusivu = await Kayttajat.getEtusivu();
-  }
+const isLoading = ref(true);
+const rajain = ref('');
+const etusivu = ref<EtusivuDto>({
+  opetussuunnitelmatKeskeneraiset: 0,
+  opetussuunnitelmatJulkaistut: 0,
+  pohjatKeskeneraiset: 0,
+  pohjatJulkaistut: 0,
+});
 
-  get nimi() {
-    return Kayttajat.nimi;
-  }
+onMounted(async () => {
+  isLoading.value = true;
+  etusivu.value = await Kayttajat.getEtusivu();
+  isLoading.value = false;
+});
 
-  get kayttaja() {
-    return Kayttajat.tiedot;
-  }
-}
+const nimi = computed(() => kayttajaStore.value.nimi.value || null);
+
+const kayttajaStore = computed(() => props.kayttajaStore);
+
+const kayttaja = computed(() => Kayttajat.tiedot);
 </script>
 
 <style scoped lang="scss">
@@ -103,7 +91,7 @@ export default class Home extends Mixins(EpRoute) {
       font-weight: 300;
     }
     background-color: $etusivu-header-background;
-    background-image: url('~@assets/img/banners/banner_lukio.svg');
+    background-image: url('@assets/img/banners/banner_lukio.svg');
     background-position: 100% 0;
     background-repeat: no-repeat;
     @media only screen and (min-width: 2503px)  {

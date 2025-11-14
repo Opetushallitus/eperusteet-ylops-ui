@@ -1,47 +1,45 @@
 <template>
   <div>
-    <ep-search v-model="query" class="mb-4" />
-    <poistetut-table :poistetut="rajatut" @palauta="palauta" />
+    <ep-search
+      v-model="query"
+      class="mb-4"
+    />
+    <poistetut-table
+      :poistetut="rajatut"
+      @palauta="palauta"
+    />
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref } from 'vue';
 import _ from 'lodash';
-import { Vue, Component, Prop } from 'vue-property-decorator';
-
+import EpSearch from '@shared/components/forms/EpSearch.vue';
+import PoistetutTable from './PoistetutTable.vue';
 import { Lops2019PoistettuDto } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-import PoistetutTable from './PoistetutTable.vue';
-import EpSearch from '@shared/components/forms/EpSearch.vue';
 
-@Component({
-  components: {
-    EpSearch,
-    PoistetutTable,
-  },
-})
-export default class PoistetutHakuTable extends Vue {
-  @Prop({
-    required: true,
-  })
-  private poistetut!: Lops2019PoistettuDto[];
+const props = defineProps<{
+  poistetut: Lops2019PoistettuDto[];
+}>();
 
-  private query = '';
+const emit = defineEmits(['palauta']);
 
-  get rajatut() {
-    const hakutermi = _.toLower(this.query);
-    const kieli = Kielet.getSisaltoKieli.value;
+const query = ref('');
 
-    return _.chain(this.poistetut)
-      .filter(p => _.includes(_.toLower(_.get(p, 'nimi.' + kieli)), hakutermi))
-      .sortBy('muokattu')
-      .reverse()
-      .value();
-  }
+const rajatut = computed(() => {
+  const hakutermi = _.toLower(query.value);
+  const kieli = Kielet.getSisaltoKieli.value;
 
-  palauta(poistettu) {
-    this.$emit('palauta', poistettu);
-  }
-}
+  return _.chain(props.poistetut)
+    .filter(p => _.includes(_.toLower(_.get(p, 'nimi.' + kieli)), hakutermi))
+    .sortBy('muokattu')
+    .reverse()
+    .value();
+});
+
+const palauta = (poistettu: any) => {
+  emit('palauta', poistettu);
+};
 
 </script>

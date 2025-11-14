@@ -1,15 +1,22 @@
 import { mount } from '@vue/test-utils';
 import EpPrefixList from './EpPrefixList.vue';
-import { mocks } from '@shared/utils/jestutils';
+import { globalStubs } from '@shared/utils/__tests__/stubs';
+import { Kielet } from '@shared/stores/kieli';
+import { Kieli } from '@shared/tyypit';
 
 describe('EpPrefixList', () => {
+  beforeEach(() => {
+    // Ensure the language is set to Finnish for tests
+    Kielet.setSisaltoKieli(Kieli.fi);
+  });
+
   it('Read-only', () => {
     const wrapper = mount(EpPrefixList, {
-      mocks: {
-        ...mocks,
+      global: {
+        ...globalStubs,
       },
-      propsData: {
-        value: {
+      props: {
+        modelValue: {
           kohde: {
             fi: 'kohde',
           },
