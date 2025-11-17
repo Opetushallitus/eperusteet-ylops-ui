@@ -67,7 +67,7 @@ import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
 import { metadataToTeksti } from '@/utils/organisaatiot';
 import { Ulkopuoliset } from '@shared/api/ylops';
 import { Koulutustyyppi } from '@shared/tyypit';
-import { $kaanna } from '@shared/utils/globals';
+import { $kaanna, $t } from '@shared/utils/globals';
 
 interface ValueType {
   jarjestajat: any[];
@@ -79,6 +79,7 @@ interface ValueType {
 const props = defineProps<{
   modelValue: ValueType;
   koulutustyyppi?: string | null;
+  sallitutLakkautetutOrganisaatiot?: string[];
 }>();
 
 const emit = defineEmits(['update:modelValue']);
@@ -123,8 +124,6 @@ const filterAndSort = (orgs: any[], queryText: string) => {
     .filter(org => Kielet.search(queryText, org.nimi))
     .map(org => _.omit(org, 'children'))
     .sortBy(org => Kielet.kaanna(org.nimi))
-    // Aakkosjärjestys selkeämpi?
-    // .sortBy(org => kayttajanOrganisaatiot.value[org.oid])
     .value();
 };
 
@@ -168,10 +167,11 @@ const filteredOppilaitokset = computed(() => {
 
 const oppilaitoksetSelectOptions = computed(() => {
   return _.chain(filteredOppilaitokset.value)
+    .filter(org => _.includes(props.sallitutLakkautetutOrganisaatiot || [], org.oid) || org.status !== 'PASSIIVINEN')
     .map(org => {
       return {
         value: org,
-        text: $kaanna((org as any).nimi),
+        text: $kaanna((org as any).nimi) + (org.status === 'PASSIIVINEN' ? ` (${$t('lakkautettu')})` : ''),
         unselectable: false,
         child: false,
       };
