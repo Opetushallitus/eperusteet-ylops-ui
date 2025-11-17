@@ -13,7 +13,7 @@
           {{ $t('tiedot') }}
         </h2>
       </template>
-      <template #default="{ data, validation, isEditing }">
+      <template #default="{ data, validation, isEditing, supportData }">
         <div>
           <div class="row">
             <div class="col-md-6">
@@ -189,6 +189,7 @@
               <ep-organizations
                 v-model="data.kaikkiOrganisaatiot"
                 :koulutustyyppi="data.koulutustyyppi"
+                :sallitutLakkautetutOrganisaatiot="supportData.organisaatioOids"
               />
             </div>
           </div>

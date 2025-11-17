@@ -49,6 +49,10 @@ export class OpetussuunnitelmaEditStore implements IEditoitava {
         .value();
     }
 
+    supportData({
+      organisaatioOids: _.map(ops.organisaatiot, 'oid'),
+    });
+
     return {
       ...ops,
       perusteUrl: buildKatseluUrl(Kielet.getSisaltoKieli.value, `/${koulutustyyppiTheme(ops.koulutustyyppi!)}/${ops.perusteenId}/tiedot`),
