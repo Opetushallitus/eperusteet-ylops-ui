@@ -60,7 +60,7 @@
     "pinia": "^2.2.4",
     "qs": "^6.9.0",
     "register-service-worker": "^1.6.2",
-    "sass": "^1.80.0",
+    "sass": "^1.94.1",
     "svg-url-loader": "^8.0.0",
     "tslib": "^2.2.0",
     "typescript": "^5.8.3",
