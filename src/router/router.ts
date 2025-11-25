@@ -50,7 +50,7 @@ import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { useLoading } from 'vue-loading-overlay';
 import { loadingOptions } from '@/utils/loading';
 import { stores } from '@/stores';
-import { $bvModal } from '@shared/utils/globals';
+import { $bvModal, $success } from '@shared/utils/globals';
 
 const logger = createLogger('Router');
 
@@ -76,11 +76,13 @@ const router = createRouter({
     props,
     children: [{
       name: 'vaihdapohja',
-      path: 'admin/vaihdapohja/:opsId/:pohjaId',
+      path: 'maintenance/opetussuunnitelma/:opsId/pohja/:pohjaId',
       redirect: (to) => {
         const opsId = Number(to.params.opsId);
         const pohjaId = Number(to.params.pohjaId);
-        Opetussuunnitelmat.vaihdaPohja(opsId, pohjaId);
+        Opetussuunnitelmat.vaihdaPohja(opsId, pohjaId).then(() => {
+          $success('Pohja vaihdettu');
+        });
         return {
           name: 'root',
         };
