@@ -43,7 +43,7 @@
                 >
                   {{ muokkaustieto.kayttajaNimi }}
                 </div>
-                <div class="aika text-right">
+                <div class="aika text-right" :title="$sdt(muokkaustieto.luotu)">
                   {{ $ago(muokkaustieto.luotu) }}
                 </div>
               </div>
