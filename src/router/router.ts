@@ -65,13 +65,8 @@ const props = (route: any) => {
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [{
-    path: '',
-    redirect: () => '/fi',
-  }, {
-    path: '/',
-    redirect: () => '/fi',
-  }, {
     path: '/:lang',
+    alias: ['/', ''],
     component: Root,
     props,
     children: [{
@@ -293,7 +288,7 @@ router.beforeEach((to, from, next) => {
 
 router.beforeEach((to, from, next) => {
   if (!EditointiStore.anyEditing()) {
-    loader = $loading.show();
+    loaders.push($loading.show());
   }
   next();
 });
@@ -325,7 +320,7 @@ router.beforeEach(async (to, from, next) => {
 
 router.beforeEach(async (to, from, next) => {
   if (!_.get(to.params, 'lang')) {
-    router.push({ path: '/' + await getCasKayttajaKieli() });
+    router.replace({ path: '/' + await getCasKayttajaKieli() });
   }
 
   next();
@@ -367,7 +362,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 const $loading = useLoading(loadingOptions);
-let loader: any = null;
+const loaders: any[] = [];
 
 router.afterEach(() => {
   hideLoading();
@@ -375,9 +370,9 @@ router.afterEach(() => {
 });
 
 function hideLoading() {
-  if (loader !== null) {
-    (loader as any).hide();
-    loader = null;
+  if (loaders.length > 0) {
+    (loaders[loaders.length - 1] as any).hide();
+    loaders.pop();
   }
 }
 
