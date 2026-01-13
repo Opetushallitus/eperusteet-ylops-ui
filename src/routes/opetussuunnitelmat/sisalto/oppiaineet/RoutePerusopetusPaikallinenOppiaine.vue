@@ -245,7 +245,12 @@ const init = async () => {
     vuosiluokkakokonaisuus,
     _.toNumber(versionumero.value),
     muokkaa.value,
+    resetOps,
   ));
+};
+
+const resetOps = async () => {
+  await props.opetussuunnitelmaStore.init();
 };
 
 // Computed properties

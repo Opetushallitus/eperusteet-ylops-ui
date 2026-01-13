@@ -7,6 +7,7 @@ import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/
 import { Oppiaineet,
   Vuosiluokkakokonaisuudet,
   OpsVuosiluokkakokonaisuusKevytDto,
+  OppiaineenVuosiluokkakokonaisuudet,
 } from '@shared/api/ylops';
 import { Revision } from '@shared/tyypit';
 import { nimiValidator } from '@/validators/required';
@@ -33,6 +34,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
     private versionumero: number,
     private muokkaaLatauksenJalkeen: boolean,
+    private resetOps: () => Promise<void>,
   ) {
     this.isUusi = oppiaineId === 'uusi';
   }
@@ -218,12 +220,50 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
     };
   });
 
+  async hide(data) {
+    await Vuosiluokkakokonaisuudet.piilotaOppiaine(this.opsId, _.toNumber(this.oppiaineId), this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!);
+
+    if (data.oppiaine.oma) {
+      const piilotettu = {
+        piilotettu: true,
+      };
+
+      await OppiaineenVuosiluokkakokonaisuudet
+        .updateVuosiluokkakokonaisuudenSisalto(
+          this.opsId, _.toNumber(this.oppiaineId),
+          data.vuosiluokkakokonaisuus.id,
+          piilotettu);
+    }
+
+    await this.resetOps();
+  }
+
+  async unHide(data) {
+    await Vuosiluokkakokonaisuudet.palautaOppiaine(this.opsId, _.toNumber(this.oppiaineId), this.vuosiluokkakokonaisuus.vuosiluokkakokonaisuus!.id!);
+
+    if (data.oppiaine.oma) {
+      const piilotettu = {
+        id: data.vuosiluokkakokonaisuus.id,
+        piilotettu: false,
+      };
+
+      await OppiaineenVuosiluokkakokonaisuudet
+        .updateVuosiluokkakokonaisuudenSisalto(
+          this.opsId, _.toNumber(this.oppiaineId),
+          data.vuosiluokkakokonaisuus.id,
+          piilotettu);
+    }
+
+    await this.resetOps();
+  }
+
   public features(data) {
     return computed(() => {
       return {
         editable: data.oppiaine.oma,
         removable: true,
-        hideable: false,
+        hideable: true,
+        isHidden: data.vuosiluokkakokonaisuus?.piilotettu,
         recoverable: true,
         copyable: !data.oppiaine.oma,
       } as EditoitavaFeatures;
