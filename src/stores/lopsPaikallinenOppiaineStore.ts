@@ -93,6 +93,7 @@ export class LopsPaikallinenOppiaineStore implements IEditoitava {
       laajaAlaisetKoodit: _.sortBy(laajaAlaisetKoodit, 'koodiArvo'),
       tuotuOppimaara: this.tuotuOppimaara,
       pohjanPaikallisienOppiaineidenKoodit: _.map((await Lops2019Oppiaineet.getPohjanPaikallisetOppiaineet(this.opsId, _.parseInt(this.paikallinenOppiaineId as string))).data, 'koodi'),
+      oppiaineidenKoodit: _.map(_.reject((await Lops2019Oppiaineet.getAllLops2019PaikallisetOppiainet(this.opsId)).data, oppiaine => oppiaine.id === paikallinen.id), 'koodi'),
     });
 
     return paikallinen;
