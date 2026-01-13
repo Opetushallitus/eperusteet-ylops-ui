@@ -74,18 +74,18 @@
                     </EpInfoPopover>
                   </div>
                   <ep-field
-                    :is-warning="isEditing && pohjanPaikallisienOppiaineidenKooditIncludesKoodi"
+                    :is-warning="isEditing && oppiaineidenKooditIncludesKoodi"
                     v-model="data.koodi"
-                    :validation="pohjanPaikallisienOppiaineidenKooditIncludesKoodi ? null : validation.koodi"
+                    :validation="oppiaineidenKooditIncludesKoodi ? null : validation.koodi"
                     type="string"
                     :is-editing="isEditing"
                   >
                     <template #right>
                       <EpInfoPopover
-                        v-if="isEditing && pohjanPaikallisienOppiaineidenKooditIncludesKoodi"
+                        v-if="isEditing && oppiaineidenKooditIncludesKoodi"
                         class="koodi-warning-popover mr-2">
                         <div>
-                          {{ $t('koodi-kaytossa-pohja-opetussuunnitelmassa') }}
+                          {{ $t('koodi-on-jo-kaytossa-opetussuunnitelmassa') }}
                         </div>
                       </EpInfoPopover>
                     </template>
@@ -402,11 +402,15 @@ const oppiaineFilter = (oppiaine: any) => {
 };
 
 const pohjanPaikallisienOppiaineidenKoodit = computed(() => {
-  return editointiStore.value?.supportData?.value?.pohjanPaikallisienOppiaineidenKoodit || [];
+  return editointiStore.value?.supportData?.pohjanPaikallisienOppiaineidenKoodit || [];
 });
 
-const pohjanPaikallisienOppiaineidenKooditIncludesKoodi = computed(() => {
-  return pohjanPaikallisienOppiaineidenKoodit.value.includes(editable.value?.koodi || '');
+const oppiaineidenKoodit = computed(() => {
+  return editointiStore.value?.supportData?.oppiaineidenKoodit || [];
+});
+
+const oppiaineidenKooditIncludesKoodi = computed(() => {
+  return oppiaineidenKoodit.value.includes(editable.value?.koodi || '') || pohjanPaikallisienOppiaineidenKoodit.value.includes(editable.value?.koodi || '');
 });
 
 </script>
