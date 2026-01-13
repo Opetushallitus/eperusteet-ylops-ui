@@ -74,11 +74,22 @@
                     </EpInfoPopover>
                   </div>
                   <ep-field
+                    :is-warning="isEditing && pohjanPaikallisienOppiaineidenKooditIncludesKoodi"
                     v-model="data.koodi"
-                    :validation="validation.koodi"
+                    :validation="pohjanPaikallisienOppiaineidenKooditIncludesKoodi ? null : validation.koodi"
                     type="string"
                     :is-editing="isEditing"
-                  />
+                  >
+                    <template #right>
+                      <EpInfoPopover
+                        v-if="isEditing && pohjanPaikallisienOppiaineidenKooditIncludesKoodi"
+                        class="koodi-warning-popover mr-2">
+                        <div>
+                          {{ $t('koodi-kaytossa-pohja-opetussuunnitelmassa') }}
+                        </div>
+                      </EpInfoPopover>
+                    </template>
+                  </ep-field>
                 </ep-form-content>
               </b-col>
             </b-row>
@@ -389,6 +400,15 @@ const oppiaineFilter = (oppiaine: any) => {
   return _.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
     _.startsWith(oppiaine.koodiUri, laajennos));
 };
+
+const pohjanPaikallisienOppiaineidenKoodit = computed(() => {
+  return editointiStore.value?.supportData?.value?.pohjanPaikallisienOppiaineidenKoodit || [];
+});
+
+const pohjanPaikallisienOppiaineidenKooditIncludesKoodi = computed(() => {
+  return pohjanPaikallisienOppiaineidenKoodit.value.includes(editable.value?.koodi || '');
+});
+
 </script>
 
 <style lang="scss" scoped>
@@ -441,4 +461,7 @@ const oppiaineFilter = (oppiaine: any) => {
   }
 }
 
+.koodi-warning-popover :deep(span) {
+  color: $yellow-2 !important;
+}
 </style>
