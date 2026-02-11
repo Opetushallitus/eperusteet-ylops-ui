@@ -41,7 +41,7 @@
     "animate.css": "^3.7.2",
     "apexcharts": "^4.4.0",
     "autoprefixer": "^10.4.21",
-    "axios": "^1.13.2",
+    "axios": "^1.13.5",
     "bootstrap-vue": "^2.23.1",
     "core-js": "^3.40.0",
     "deepdash": "^5.3.9",
