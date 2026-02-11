@@ -21,6 +21,7 @@ const koulutustyyppiToOppilaitos = {
   'koulutustyyppi_14': [...Perusoppilaitokset, '15'],
   'koulutustyyppi_23': [...Perusoppilaitokset, '15'],
   'koulutustyyppi_17': [...Perusoppilaitokset, '15'],
+  'koulutustyyppi_22': [...Perusoppilaitokset, '15'],
   'koulutustyyppi_999907': [...Perusoppilaitokset, '01', '61'],
 };
 
