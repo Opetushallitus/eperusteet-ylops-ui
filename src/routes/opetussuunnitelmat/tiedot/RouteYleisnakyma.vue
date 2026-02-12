@@ -9,6 +9,12 @@
         <EpSpinner />
       </div>
 
+      <div v-if="perusteArkistoitu"
+      class="info-box arkistoitu-box">
+        <h2>{{ $t('opetussuunnitelman-peruste-arkistoitu') }}</h2>
+        <div v-html="$t('opetussuunnitelman-peruste-arkistoitu-huomioteksti')" />
+      </div>
+
       <div
         v-if="pohjallaPuuttuviaTeksteja"
         v-oikeustarkastelu="oikeustarkastelu"
@@ -228,6 +234,10 @@ const viimeisinPohjaTekstiSyncVirheellinen = computed(() => {
 const aikaMyohemminKuin = (timeInMillis: number, tuntia: number) => {
   return timeInMillis < new Date().getTime() - tuntia * 60 * 60 * 1000;
 };
+
+const perusteArkistoitu = computed(() => {
+  return store.value.perusteArkistoitu.value;
+});
 </script>
 
 <style scoped lang="scss">
@@ -264,6 +274,11 @@ const aikaMyohemminKuin = (timeInMillis: number, tuntia: number) => {
       &.import-box {
         margin-left: 10px;
         background-color: $blue-lighten-4;
+      }
+
+      &.arkistoitu-box {
+        margin-left: 10px;
+        background-color: $red-lighten-1;
       }
     }
 
