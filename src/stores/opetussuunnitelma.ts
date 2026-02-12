@@ -25,6 +25,7 @@ import {
   Muokkaustieto,
   PerusteInfoDto,
   OpetussuunnitelmanMuokkaustietoDto,
+  ArkistoidutPerusteet,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -64,6 +65,7 @@ export class OpetussuunnitelmaStore {
     viimeisinPohjaTekstiSync: null as OpetussuunnitelmanMuokkaustietoDto | null,
     pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync: null as OpetussuunnitelmanMuokkaustietoDto | null,
     peruste: null as PerusteInfoDto | null,
+    perusteArkistoitu: null as boolean | null,
   });
 
   public readonly opsId = computed(() => this.state.opsId);
@@ -86,6 +88,7 @@ export class OpetussuunnitelmaStore {
   public readonly viimeisinPohjaTekstiSync = computed(() => this.state.viimeisinPohjaTekstiSync);
   public readonly pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = computed(() => this.state.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync);
   public readonly peruste = computed(() => this.state.peruste);
+  public readonly perusteArkistoitu = computed(() => this.state.perusteArkistoitu);
 
   // Tekstikappaleet
   public async getOtsikot() {
@@ -131,12 +134,14 @@ export class OpetussuunnitelmaStore {
 
     logger.info('Initing ops store', this.state.opsId);
     this.state.opetussuunnitelma = await this.get();
-    await this.updatePohjanPerustePaivittynyt();
-    await this.updateSisalto();
-    await this.updateValidation();
-    await this.fetchJulkaisut();
-    await this.updateOppiaineet();
-    await this.updatePohjallaPuuttuviaTeksteja();
+    await Promise.all([
+      await this.updatePohjanPerustePaivittynyt(),
+      await this.updateSisalto(),
+      await this.updateValidation(),
+      await this.fetchJulkaisut(),
+      await this.updateOppiaineet(),
+      await this.updatePohjallaPuuttuviaTeksteja()
+    ]);
   }
 
   async updatePohjanPerustePaivittynyt() {
@@ -149,6 +154,7 @@ export class OpetussuunnitelmaStore {
     this.state.viimeisinPohjaTekstiSync = (await Muokkaustieto.getViimeisinPohjatekstiSync(this.state.opetussuunnitelma!.id!)).data;
     this.state.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = (await Muokkaustieto.getOpetussuunnitelmanPohjanViimeisinPohjaTekstiSync(this.state.opetussuunnitelma!.id!)).data;
     this.state.peruste = (await Opetussuunnitelmat.getOpetussuunnitelmanPeruste(this.state.opetussuunnitelma!.id!)).data;
+    this.state.perusteArkistoitu = (await ArkistoidutPerusteet.perusteArkistoitu(this.state.peruste!.id!)).data;
     this.state.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.state.opetussuunnitelma!.id!)).data;
   }
 
