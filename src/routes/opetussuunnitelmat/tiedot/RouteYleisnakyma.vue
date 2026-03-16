@@ -9,8 +9,10 @@
         <EpSpinner />
       </div>
 
-      <div v-if="perusteArkistoitu"
-      class="info-box arkistoitu-box">
+      <div
+        v-if="perusteArkistoitu"
+        class="info-box arkistoitu-box"
+      >
         <h2>{{ $t('opetussuunnitelman-peruste-arkistoitu') }}</h2>
         <div v-html="$t('opetussuunnitelman-peruste-arkistoitu-huomioteksti')" />
       </div>

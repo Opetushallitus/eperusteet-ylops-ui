@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from 'vite';
 import createVuePlugin  from '@vitejs/plugin-vue';
 import commonjs from 'vite-plugin-commonjs';
 import { fileURLToPath, URL } from 'node:url';
+import { cspReportOnlyPlugin } from './eperusteet-frontend-utils/vue/src/plugins/vite-plugin-csp-report-only.js';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -11,6 +12,7 @@ export default defineConfig(({ mode }) => {
   return {
     base: env.NODE_ENV === 'production' ? '/eperusteet-ylops-service/ui' : '/',
     plugins: [
+      cspReportOnlyPlugin(),
       createVuePlugin({
         template: {
           compilerOptions: {

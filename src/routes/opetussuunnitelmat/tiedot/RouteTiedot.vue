@@ -189,7 +189,7 @@
               <ep-organizations
                 v-model="data.kaikkiOrganisaatiot"
                 :koulutustyyppi="data.koulutustyyppi"
-                :sallitutLakkautetutOrganisaatiot="supportData.organisaatioOids"
+                :sallitut-lakkautetut-organisaatiot="supportData.organisaatioOids"
               />
             </div>
           </div>

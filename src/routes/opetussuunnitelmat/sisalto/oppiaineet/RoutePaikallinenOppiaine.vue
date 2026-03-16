@@ -74,8 +74,8 @@
                     </EpInfoPopover>
                   </div>
                   <ep-field
-                    :is-warning="isEditing && oppiaineidenKooditIncludesKoodi"
                     v-model="data.koodi"
+                    :is-warning="isEditing && oppiaineidenKooditIncludesKoodi"
                     :validation="oppiaineidenKooditIncludesKoodi ? null : validation.koodi"
                     type="string"
                     :is-editing="isEditing"
@@ -83,7 +83,8 @@
                     <template #right>
                       <EpInfoPopover
                         v-if="isEditing && oppiaineidenKooditIncludesKoodi"
-                        class="koodi-warning-popover mr-2">
+                        class="koodi-warning-popover mr-2"
+                      >
                         <div>
                           {{ $t('koodi-on-jo-kaytossa-opetussuunnitelmassa') }}
                         </div>
