@@ -140,7 +140,7 @@ export class OpetussuunnitelmaStore {
       await this.updateValidation(),
       await this.fetchJulkaisut(),
       await this.updateOppiaineet(),
-      await this.updatePohjallaPuuttuviaTeksteja()
+      await this.updatePohjallaPuuttuviaTeksteja(),
     ]);
   }
 
