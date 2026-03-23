@@ -18,7 +18,12 @@
           <ep-comment-threads />
         </template>
         <template #header="{ data }">
-          <h2>{{ $kaanna(perusteenTekstikappaleNimi || data.tov.tekstiKappale.nimi) }}</h2>
+          <h2>
+            {{ $kaanna(perusteenTekstikappaleNimi || data.tov.tekstiKappale.nimi) }}
+            <span
+              v-if="perusteenTekstinKoodinArvo"
+            >({{ perusteenTekstinKoodinArvo }})</span>
+          </h2>
         </template>
         <template #postHeader="{ data }">
           <span
@@ -215,7 +220,11 @@ const pohjaNimi = computed(() => {
 });
 
 const perusteenTekstikappaleNimi = computed(() => {
-  return tekstikappaleStore.value?.data?.value?.perusteenTeksti?.perusteenOsa?.nimi;
+  return tekstikappaleStore.value?.data?.perusteenTeksti?.perusteenOsa?.nimi;
+});
+
+const perusteenTekstinKoodinArvo = computed(() => {
+  return tekstikappaleStore.value?.data?.perusteenTeksti?.perusteenOsa?.koodi?.arvo;
 });
 
 watch(versionumero, async () => {
