@@ -133,6 +133,7 @@ const filteredKunnat = computed(() => {
 
 const kunnatSelectOptions = computed(() => {
   return _.chain(filteredKunnat.value)
+    .filter(org => org.status !== 'PASSIIVINEN')
     .map(org => {
       return {
         value: org,
@@ -150,6 +151,7 @@ const filteredJarjestajat = computed(() => {
 
 const jarjestajatSelectOptions = computed(() => {
   return _.chain(filteredJarjestajat.value)
+    .filter(org => org.status !== 'PASSIIVINEN')
     .map(org => {
       return {
         value: org,
