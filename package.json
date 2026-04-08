@@ -8,6 +8,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
+    "dev:qa": "EPERUSTEET_SERVICE=https://eperusteet.testiopintopolku.fi vite",
     "lint": "eslint --ext .js,.vue,.ts src",
     "serve": "vite preview",
     "test": "TZ=Europe/Helsinki vitest",

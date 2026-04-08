@@ -8,6 +8,7 @@ import { cspReportOnlyPlugin } from './eperusteet-frontend-utils/vue/src/plugins
 export default defineConfig(({ mode }) => {
 
   const env = loadEnv(mode, process.cwd(), '');
+  const eperusteetService = env.EPERUSTEET_SERVICE || 'http://localhost:8080';
 
   return {
     base: env.NODE_ENV === 'production' ? '/eperusteet-ylops-service/ui' : '/',
@@ -50,7 +51,7 @@ export default defineConfig(({ mode }) => {
       port: 9040,
       proxy: {
         '/eperusteet-service': {
-          target: 'http://localhost:8080',
+          target: eperusteetService,
           secure: false,
           changeOrigin: true,
           configure: (proxy) => {
