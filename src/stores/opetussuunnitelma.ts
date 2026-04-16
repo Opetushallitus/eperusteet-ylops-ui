@@ -26,6 +26,7 @@ import {
   PerusteInfoDto,
   OpetussuunnitelmanMuokkaustietoDto,
   ArkistoidutPerusteet,
+  YlopsNavigationNodeDto,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -35,6 +36,7 @@ import { success, fail } from '@/utils/notifications';
 import { organizations } from '@/utils/organisaatiot';
 import _ from 'lodash';
 import { $success } from '@shared/utils/globals';
+import { Kielet } from '@shared/stores/kieli';
 
 interface OpintojaksoQuery {
   oppiaineUri?: string;
@@ -48,6 +50,7 @@ export class OpetussuunnitelmaStore {
     opsId: 0,
     sisalto: null as TekstiKappaleViitePerusteTekstillaDto | null,
     opetussuunnitelma: null as OpetussuunnitelmaKevytDto | null,
+    navigation: null as YlopsNavigationNodeDto | null,
     paikallisetOppiaineet: [] as Lops2019PaikallinenOppiaineDto[],
     opintojaksot: [] as Lops2019OpintojaksoDto[],
     tuodutOpintojaksot: [] as Lops2019OpintojaksoDto[],
@@ -71,6 +74,7 @@ export class OpetussuunnitelmaStore {
   public readonly opsId = computed(() => this.state.opsId);
   public readonly sisalto = computed(() => this.state.sisalto);
   public readonly opetussuunnitelma = computed(() => this.state.opetussuunnitelma);
+  public readonly navigation = computed(() => this.state.navigation);
   public readonly paikallisetOppiaineet = computed(() => this.state.paikallisetOppiaineet);
   public readonly opintojaksot = computed(() => this.state.opintojaksot);
   public readonly tuodutOpintojaksot = computed(() => this.state.tuodutOpintojaksot);
@@ -106,6 +110,7 @@ export class OpetussuunnitelmaStore {
 
   public clear() {
     this.state.opetussuunnitelma = null;
+    this.state.navigation = null;
     this.state.sisalto = null;
     this.state.paikallisetOppiaineet = [];
     this.state.opintojaksot = [];
@@ -134,14 +139,17 @@ export class OpetussuunnitelmaStore {
 
     logger.info('Initing ops store', this.state.opsId);
     this.state.opetussuunnitelma = await this.get();
-    await Promise.all([
-      await this.updatePohjanPerustePaivittynyt(),
-      await this.updateSisalto(),
-      await this.updateValidation(),
-      await this.fetchJulkaisut(),
-      await this.updateOppiaineet(),
-      await this.updatePohjallaPuuttuviaTeksteja(),
-    ]);
+    this.initNavigation();
+    this.updatePohjanPerustePaivittynyt();
+    this.updateSisalto();
+    this.updateValidation();
+    this.fetchJulkaisut();
+    this.updateOppiaineet();
+    this.updatePohjallaPuuttuviaTeksteja();
+  }
+
+  public async initNavigation() {
+    this.state.navigation = (await Opetussuunnitelmat.getNavigation(this.state.opsId, Kielet.getSisaltoKieli.value)).data;
   }
 
   async updatePohjanPerustePaivittynyt() {

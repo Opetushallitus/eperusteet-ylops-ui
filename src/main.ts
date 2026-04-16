@@ -34,6 +34,7 @@ import { stores } from './stores';
 import { OpintojaksoStore } from './stores/opintojaksoStore';
 import { PerusopetusoppiaineStore } from './stores/perusopetusoppiaineStore';
 import { LopsPaikallinenOppiaineStore } from './stores/lopsPaikallinenOppiaineStore';
+import { TekstikappaleStore } from './stores/TekstikappaleStore';
 
 const app = createApp(App);
 
@@ -91,5 +92,6 @@ app.use(PerusopetusoppiaineStore, { router });
 app.use(VuosiluokkakokonaisuusStore, { router });
 app.use(OpintojaksoStore, { router });
 app.use(LopsPaikallinenOppiaineStore, { router });
+app.use(TekstikappaleStore, { router });
 
 app.mount('#app');

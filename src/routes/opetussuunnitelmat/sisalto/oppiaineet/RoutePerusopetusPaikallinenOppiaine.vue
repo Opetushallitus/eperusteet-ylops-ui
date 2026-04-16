@@ -250,7 +250,7 @@ const init = async () => {
 };
 
 const resetOps = async () => {
-  await props.opetussuunnitelmaStore.init();
+  await props.opetussuunnitelmaStore.initNavigation();
 };
 
 // Computed properties

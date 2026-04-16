@@ -131,7 +131,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
         vuosiluokat: data.valitutVuosiluokat,
         tavoitteet: [],
       })).data;
-      await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.init(); // Päivitetään sivunavigaatio
+      await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.initNavigation(); // Päivitetään sivunavigaatio
       return () => {
         PerusopetusPaikallinenOppiaineStore.config.router.push({
           name: 'perusopetuspaikallinenoppiaine',
@@ -149,14 +149,14 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
         tavoitteet: [],
       };
       const updated = await Oppiaineet.updateYksinkertainen(this.opsId, _.toNumber(this.oppiaineId), oppiaineenTallennus);
-      await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.init(); // Päivitetään sivunavigaatio
+      await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.initNavigation(); // Päivitetään sivunavigaatio
       return updated;
     }
   }
 
   async remove() {
     await Oppiaineet.deleteOppiaine(this.opsId, _.toNumber(this.oppiaineId));
-    await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.init(); // Päivitetään sivunavigaatio
+    await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.initNavigation(); // Päivitetään sivunavigaatio
     PerusopetusPaikallinenOppiaineStore.config.router.push({
       name: 'perusopetusvalinnaiset',
     });
@@ -192,7 +192,7 @@ export class PerusopetusPaikallinenOppiaineStore implements IEditoitava {
 
   async copy(data) {
     const kopioituOppiaine = (await Oppiaineet.kopioiMuokattavaksi(this.opsId, _.toNumber(this.oppiaineId), true)).data;
-    await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.init();
+    await PerusopetusPaikallinenOppiaineStore.config.opetussuunnitelmaStore.initNavigation();
     PerusopetusPaikallinenOppiaineStore.config.router.push({
       name: 'perusopetuspaikallinenoppiaine',
       params: {

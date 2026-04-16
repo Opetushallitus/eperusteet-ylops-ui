@@ -86,6 +86,7 @@ export class TekstikappaleStore implements IEditoitava {
 
   public async remove() {
     await this.opetussuunnitelmaStore.removeTeksti(this.tekstikappaleId);
+    await this.opetussuunnitelmaStore.initNavigation();
     TekstikappaleStore.config.router.push({
       name: 'opsPoistetut',
       params: {

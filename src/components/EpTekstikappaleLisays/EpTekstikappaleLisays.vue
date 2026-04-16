@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="ep-tekstikappale-lisays">
     <ep-button
-      v-b-modal.tekstikappalelisays
       variant="link"
       button-class="text-decoration-none"
       icon="add"
       :paddingx="false"
+      @click="showModal"
     >
       <span>{{ $t('uusi-tekstikappale') }}</span>
     </ep-button>
@@ -75,7 +75,7 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import { Puu } from '@shared/api/ylops';
+import { Puu, YlopsNavigationNodeDto } from '@shared/api/ylops';
 import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
@@ -84,6 +84,7 @@ const props = withDefaults(
     tekstikappaleet: SideMenuEntry[];
     tyhjaValinta?: boolean;
     opetussuunnitelmaStore: OpetussuunnitelmaStore;
+    parentTekstikappaleId: number;
   }>(), {
     tyhjaValinta: false,
   });
@@ -95,10 +96,15 @@ const router = useRouter();
 const otsikko = ref<LokalisoituTekstiDto>({});
 const valittuTekstikappale = ref<any>({});
 const tallentaa = ref(false);
-
+const tekstikappalelisaysModal = ref<InstanceType<any> | null>(null);
 const okDisabled = computed(() => {
   return _.isEmpty(otsikko.value);
 });
+
+const showModal = () => {
+  tekstikappalelisaysModal.value?.show();
+  valittuTekstikappale.value = _.find(props.tekstikappaleet, (tekstikappale) => _.toNumber(tekstikappale.route?.params?.osaId) === _.toNumber(props.parentTekstikappaleId));
+};
 
 const save = async () => {
   const newTekstikappale = {
@@ -109,6 +115,8 @@ const save = async () => {
 
   tallentaa.value = true;
   const uusi = await store.value.addTeksti(newTekstikappale as Puu, valittuTekstikappale.value?.route?.params?.osaId);
+  tekstikappalelisaysModal.value?.hide();
+  await props.opetussuunnitelmaStore.initNavigation();
 
   router.push({
     name: 'tekstikappale',
@@ -128,4 +136,8 @@ const clear = () => {
 
 <style scoped lang="scss">
 
+.ep-tekstikappale-lisays, .ep-tekstikappale-lisays :deep(button) {
+  margin: 0;
+  padding: 0;
+}
 </style>

@@ -4,6 +4,7 @@
       icon="add"
       :variant="buttonVariant"
       button-class="text-decoration-none"
+      no-padding
       @click="openModal()"
     >
       <span>{{ $t(addButtonText) }}</span>
@@ -78,7 +79,7 @@ import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 
-import { OppiaineSuppeaDto, Oppiaineet, PerusteOppiaineDto, KopioOppimaaraDto, UnwrappedOpsVuosiluokkakokonaisuusDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
+import { OppiaineSuppeaDto, Oppiaineet, PerusteOppiaineDto, KopioOppimaaraDto, UnwrappedOpsVuosiluokkakokonaisuusDto, Vuosiluokkakokonaisuudet, YlopsNavigationNodeDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 
 import { $t, $kaanna, $fail } from '@shared/utils/globals';
@@ -86,10 +87,9 @@ import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
 const props = withDefaults(
   defineProps<{
-    oppiaine: OppiaineSuppeaDto;
-    resetNavi: () => Promise<void>;
     buttonVariant?: string;
     opetussuunnitelmaStore: OpetussuunnitelmaStore;
+    oppiaineId: number;
   }>(), {
     buttonVariant: 'link',
   });
@@ -105,6 +105,7 @@ const perusteenOppiaine = ref<PerusteOppiaineDto | null>(null);
 const vuosiluokkakokonaisuus = ref<UnwrappedOpsVuosiluokkakokonaisuusDto | null>(null);
 const nimi = ref<object | null>(null);
 const valittuOppimaara = ref<OppiaineSuppeaDto | null>(null);
+const oppiaine = ref<OppiaineSuppeaDto | null>(null);
 
 const opsId = computed(() => {
   return props.opetussuunnitelmaStore.opetussuunnitelma.value?.id;
@@ -124,11 +125,11 @@ const addButtonText = computed(() => {
 });
 
 const isUskonto = computed(() => {
-  return props.oppiaine.koodiArvo === 'KT';
+  return oppiaine.value?.koodiArvo === 'KT';
 });
 
 const isKieli = computed(() => {
-  return _.includes(['VK', 'TK'], props.oppiaine.koodiArvo);
+  return _.includes(['VK', 'TK'], oppiaine.value?.koodiArvo);
 });
 
 const muuUskontoNimi = computed(() => {
@@ -207,7 +208,8 @@ const openModal = () => {
 };
 
 const show = async () => {
-  perusteenOppiaine.value = (await Oppiaineet.getPerusteSisalto(opsId.value, (props.oppiaine.id as number))).data;
+  oppiaine.value = _.get(_.find(ops.value?.oppiaineet, oa => oa.oppiaine.id === props.oppiaineId), 'oppiaine');
+  perusteenOppiaine.value = (await Oppiaineet.getPerusteSisalto(opsId.value, (oppiaine.value?.id as number))).data;
   vuosiluokkakokonaisuus.value = (await Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuus(opsId.value, _.toNumber(route.params.vlkId))).data;
 };
 
@@ -218,15 +220,15 @@ const save = async () => {
   } as KopioOppimaaraDto;
 
   try {
-    const uusi = (await Oppiaineet.addOppimaara((ops.value.id as number), (props.oppiaine.id as number), kopio)).data;
-
-    await props.resetNavi();
+    const uusi = (await Oppiaineet.addOppimaara((ops.value.id as number), (oppiaine.value?.id as number), kopio)).data;
+    await props.opetussuunnitelmaStore.initNavigation();
 
     router.push({
       name: 'perusopetusoppiaine',
       params: {
         ...route.params,
         oppiaineId: '' + uusi.id,
+        vlkId: route.params.vlkId,
       },
     });
   }
