@@ -3,7 +3,7 @@ import VueCompositionApi, { reactive, computed, ref, watch } from 'vue';
 import * as _ from 'lodash';
 import { Revision, KoulutustyyppiToteutus } from '@shared/tyypit';
 import { createLogger } from '@shared/utils/logger';
-import VueRouter from 'vue-router';
+import { Router } from 'vue-router';
 import Vue from 'vue';
 import { sortedOppiaineet } from '../utils/opetussuunnitelmat';
 import { PerusteCache } from './peruste';
@@ -15,7 +15,7 @@ import { $success } from '@shared/utils/globals';
 const logger = createLogger('JarjestysStore');
 
 interface JarjestysStoreConfig {
-  router: VueRouter;
+  router: Router;
 }
 
 export class JarjestysStore implements IEditoitava {

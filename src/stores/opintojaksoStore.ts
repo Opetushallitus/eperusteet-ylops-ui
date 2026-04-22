@@ -6,14 +6,14 @@ import { Kielet } from '@shared/stores/kieli';
 import { Revision } from '@shared/tyypit';
 import { createLogger } from '@shared/utils/logger';
 import { opintojaksoValidator } from '@/validators/opintojakso';
-import VueRouter from 'vue-router';
+import { Router } from 'vue-router';
 import Vue from 'vue';
 import * as defaults from '@/defaults';
 
 const logger = createLogger('OpintojaksoStore');
 
 interface OpintojaksoStoreConfig {
-  router: VueRouter;
+  router: Router;
 }
 
 export class OpintojaksoStore implements IEditoitava {
@@ -104,6 +104,7 @@ export class OpintojaksoStore implements IEditoitava {
     }
     else {
       await this.store.saveOpintojakso(data);
+      await this.store.initNavigation();
     }
   }
 
