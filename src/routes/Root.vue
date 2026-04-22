@@ -1,7 +1,7 @@
 <template>
   <div
     class="sticky-container root"
-    sticky-container="sticky-container"
+    sticky-container
   >
     <EpTestiymparisto />
 

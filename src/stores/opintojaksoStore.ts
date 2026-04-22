@@ -91,6 +91,7 @@ export class OpintojaksoStore implements IEditoitava {
   async save(data: Lops2019OpintojaksoDto) {
     if (this.isUusi) {
       const uusi = await this.store.addOpintojakso(data);
+      await this.store.initNavigation();
       return () => {
         OpintojaksoStore.config.router.push({
           name: 'opintojakso',

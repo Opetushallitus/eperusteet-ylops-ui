@@ -265,7 +265,7 @@ const init = async () => {
 };
 
 const resetOps = async () => {
-  await store.value.init();
+  await store.value.initNavigation();
 };
 
 const lisaaPaikallinenTarkennus = (vlkParam, id) => {

@@ -396,7 +396,7 @@ const poistaPaikallinenTarkennus = (oppiaine: any, vapaatekstiId: any) => {
 };
 
 const resetOps = async () => {
-  await store.value.init();
+  await store.value.initNavigation();
 };
 
 const init = async () => {

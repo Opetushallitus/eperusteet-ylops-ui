@@ -129,20 +129,222 @@
       <div class="lower">
         <ep-sidebar>
           <template #bar>
-            <ops-sidenav
-              :key="route.fullPath"
-              v-model="valikkoData"
-              :opetussuunnitelma-store="store"
-            />
+            <div class="m-3 ml-4 mr-4">
+              <EpSearch v-model="query" />
+            </div>
+
+            <EpSpinner v-if="!navigationValue || !naviStore" />
+            <div
+              v-else
+              class="navigation"
+            >
+              <EpTreeNavibar
+                :store="naviStore as any"
+                :query="query"
+              >
+                <template #header>
+                  <div class="heading">
+                    <router-link
+                      :to="{ name: 'yleisnakyma' }"
+                    >
+                      {{ $t('yleisnakyma') }}
+                    </router-link>
+                  </div>
+                </template>
+
+                <template #viite="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'tekstikappale', params: { osaId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-tekstikappale') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #tiedot="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'opsTiedot' }"
+                    :node="item"
+                  >
+                    {{ $t('tiedot') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #oppiaineet="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'oppiaineet' }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('oppiaineet') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #oppiaine="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'oppiaine', params: { oppiaineId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-oppiaine') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #poppiaine="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'paikallinenOppiaine', params: { paikallinenOppiaineId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-oppiaine') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #moduuli="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'moduuli', params: { moduuliId: String(item.id), oppiaineId: String(item.meta?.oppiaine) } }"
+                    :node="item"
+                  >
+                    <ep-color-indicator
+                      :kind="item.meta?.pakollinen ? 'pakollinen': 'valinnainen'"
+                    />
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-moduuli') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #opintojakso="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'opintojakso', params: { opintojaksoId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-opintojakso') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #vuosiluokkakokonaisuus="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'vuosiluokkakokonaisuus', params: { vlkId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-vuosiluokkakokonaisuus') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #perusopetusoppiaine="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: item.meta?.paikallinen ? 'perusopetuspaikallinenoppiaine' : 'perusopetusoppiaine', params: { oppiaineId: String(item.id), vlkId: String(item.meta?.vlkId) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-oppiaine') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #perusopetuspaikallinenoppiaine="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'perusopetuspaikallinenoppiaine', params: { oppiaineId: String(item.id), vlkId: String(item.meta?.vlkId) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-oppiaine') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #oppiaineenvuosiluokka="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'perusopetusoppiainevuosiluokka', params: { oppiaineId: String(item.meta?.['oppiaine-id']), vlkId: String(item.meta?.vlkId), vlId: String(item.meta?.vlId) } }"
+                    :node="item"
+                  >
+                    {{ $t('vuosiluokka') }} {{ $kaannaOlioTaiTeksti(item.meta.vuosiluokka) }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #valinnaisetoppiaineet="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'perusopetusvalinnaiset' }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('valinnaiset-oppiaineet') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #uusi_opintojakso="{ item }">
+                  <div class="new-link-item">
+                    <router-link
+                      :to="{
+                        name: 'uusi-opintojakso',
+                        params: { opintojaksoId: 'uusi', oppiaineKoodi: item.meta?.koodi },
+                        query: {
+                          oppiaineet: item.meta?.koodi,
+                        },
+                      }"
+                    >
+                      <EpMaterialIcon>add</EpMaterialIcon>
+                      {{ $t('luo-uusi-opintojakso') }}
+                    </router-link>
+                  </div>
+                </template>
+
+                <template #uusi_paikallinen_oppiaine="{ item }">
+                  <div class="new-link-item">
+                    <router-link
+                      :to="{
+                        name: 'uusi-paikallinen-oppiaine',
+                        params: {
+                          paikallinenOppiaineId: 'uusi',
+                          oppiaineKoodi: item.meta?.koodi,
+                        },
+                        query: {
+                          oppiaine: item.meta?.koodi,
+                        },
+                      }"
+                    >
+                      <EpMaterialIcon>add</EpMaterialIcon>
+                      {{ $t('luo-uusi-paikallinen-oppiaine') }}
+                    </router-link>
+                  </div>
+                </template>
+
+                <template #uusi_oppimaara="{ item }">
+                  <ep-oppimaara-lisays
+                    :opetussuunnitelma-store="store"
+                    :oppiaine-id="item.meta?.['oppiaine-id']"
+                  />
+                </template>
+
+                <template #uusi_tekstikappale="{ item }">
+                  <EpTekstikappaleLisays
+                    :opetussuunnitelma-store="store"
+                    :tekstikappaleet="tekstikappaleet"
+                    :parent-tekstikappale-id="item.meta?.['parent-tekstikappale-id']"
+                  />
+                </template>
+              </EpTreeNavibar>
+            </div>
           </template>
+
           <template #view>
             <transition
               name="fade"
               mode="out-in"
             >
-              <!-- ep-comment-threads-->
               <router-view :key="route.fullPath" />
             </transition>
+          </template>
+
+          <template #bottom>
+            <div
+              v-if="!isPohja"
+              class="m-2 ml-4"
+            >
+              <router-link
+                v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }"
+                :to="{ name: 'jarjesta' }"
+              >
+                <span class="text-nowrap">
+                  <EpMaterialIcon
+                    icon-shape="outlined"
+                    class="icon"
+                  >reorder</EpMaterialIcon>
+                  <a class="btn btn-link btn-link-nav">{{ $t('muokkaa-jarjestysta') }}</a>
+                </span>
+              </router-link>
+            </div>
           </template>
         </ep-sidebar>
       </div>
@@ -151,34 +353,32 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, provide, onMounted } from 'vue';
+import { computed, ref, provide, watch, unref, onMounted, onBeforeUnmount, shallowRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import _ from 'lodash';
+import { nextTick } from 'vue';
 import { OpetussuunnitelmaKevytDtoTilaEnum } from '@shared/api/ylops';
 import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpSidebar from '@/components/EpSidebar/EpSidebar.vue';
+import EpSidebar from '@shared/components/EpSidebar/EpSidebar.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue';
-import OpsSidenav from '@/components/OpsSidenav/OpsSidenav.vue';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpTreeNavibar from '@shared/components/EpTreeNavibar/EpTreeNavibar.vue';
+import EpNavigationLabel from '@shared/components/EpTreeNavibar/EpNavigationLabel.vue';
+import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
+import { EpTreeNavibarStore } from '@shared/components/EpTreeNavibar/EpTreeNavibarStore';
 import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import { themes } from '@shared/utils/perusteet';
 import { LinkkiHandler, routeToNode } from '@/utils/routing';
-import { Kielet } from '@shared/stores/kieli';
-import { KommenttiKahvaDtoKieliEnum } from '@shared/generated/ylops';
-import { Kommentit } from '@/stores/kommentit';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { $success, $fail, $t, $kaanna, $bvModal, $vahvista } from '@shared/utils/globals';
-import { unref } from 'vue';
+import { $success, $fail, $t, $kaanna, $kaannaOlioTaiTeksti, $bvModal, $vahvista } from '@shared/utils/globals';
 import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
 import { TermitStore } from '@/stores/TermitStore';
 import { KuvaStore } from '@/stores/KuvaStore';
 import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
-import { nextTick } from 'vue';
-import { Murupolku } from '@/stores/murupolku';
-import { Koulutustyyppi } from '@shared/tyypit';
+import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
+import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 
 // Props
 const props = defineProps<{
@@ -195,7 +395,9 @@ const store = computed(() => props.opetussuunnitelmaStore);
 const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
 const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
 // Reactive data
-const valikkoData = ref<any | null>(null);
+/** shallowRef: class instance must not be made deeply reactive */
+const naviStore = shallowRef<EpTreeNavibarStore | null>(null);
+const query = ref('');
 const isValidating = ref(false);
 
 // Computed properties
@@ -322,32 +524,46 @@ const validoi = async () => {
   isValidating.value = false;
 };
 
-// Navigation helper
-const navigationToNode = (items: any[]): any[] => {
-  return _.chain(items)
-    .filter(item => !!item.item.objref?.nimi || !!item.item.i18key)
-    .map(item => {
-      return {
-        label: item.item.objref?.nimi || { [Kielet.getUiKieli.value]: _.isArray(item.item.i18key) ? _.join(_.map(item.item.i18key, key => $t(key)), ', ') : $t(item.item.i18key) },
-        children: navigationToNode(item.children),
-        ...routeToNode(item.route),
-      };
-    })
-    .value();
-};
 
-// Navigation computed
-const navigation = computed(() => {
-  return {
-    type: 'root',
-    children: navigationToNode(valikkoData.value),
-  };
+const navigationValue = computed(() => store.value.navigation.value);
+
+onMounted(() => {
+  naviStore.value = new EpTreeNavibarStore(store.value.navigation as any, routeToNode);
+});
+
+onBeforeUnmount(() => {
+  naviStore.value = null;
+});
+
+watch(
+  () => navigationValue.value,
+  () => {
+    naviStore.value?.updateNavigation(store.value.navigation as any);
+  },
+);
+
+// Tekstikappaleet from navigation tree for the add dialog
+const tekstikappaleet = computed(() => {
+  const connected = naviStore.value?.connected;
+  if (!connected) return [];
+  return _.chain(unref(connected))
+    .filter(node => node.type === 'viite')
+    .map(node => ({
+      item: {
+        prefix: node.chapter,
+        objref: { nimi: node.label },
+      },
+      route: {
+        name: 'tekstikappale',
+        params: { osaId: String(node.id) },
+      },
+    }))
+    .value() as any[];
 });
 
 // Provide reactive values
-provide('navigation', navigation);
+provide('navigation', navigationValue);
 provide('linkkiHandler', new LinkkiHandler());
-provide('kommenttiHandler', Kommentit);
 provide('kasiteHandler', createKasiteHandler(props.termitStore));
 provide('kuvaHandler', createKuvaHandler(new KuvaStore(_.toNumber(route.params.id))));
 
@@ -365,6 +581,23 @@ provide('kuvaHandler', createKuvaHandler(new KuvaStore(_.toNumber(route.params.i
 
 :deep(.btn:focus) {
   box-shadow: unset;
+}
+
+.navigation {
+  height: calc(100% - 145px);
+}
+
+.bottom-menu-item {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.icon {
+  vertical-align: middle;
+}
+
+.btn-link-nav {
+  text-decoration: none;
 }
 
 .center-loading {

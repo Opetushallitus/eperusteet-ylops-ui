@@ -102,6 +102,7 @@ export class LopsPaikallinenOppiaineStore implements IEditoitava {
   async save(data: Lops2019PaikallinenOppiaineDto) {
     if (this.isUusi) {
       const oa = await this.store.addOppiaine(data);
+      await this.store.initNavigation();
       return () => {
         LopsPaikallinenOppiaineStore.config.router.push({
           name: 'paikallinenOppiaine',
