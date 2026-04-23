@@ -6,7 +6,7 @@ import { Kielet } from '@shared/stores/kieli';
 import { Revision } from '@shared/tyypit';
 import { createLogger } from '@shared/utils/logger';
 import { oppiaineValidator } from '@/validators/oppiaineet';
-import VueRouter from 'vue-router';
+import { Router } from 'vue-router';
 import Vue from 'vue';
 import * as defaults from '@/defaults';
 import { KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
@@ -14,7 +14,7 @@ import { KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
 const logger = createLogger('LopsPaikallinenOppiaineStore');
 
 interface LopsPaikallinenOppiaineStoreConfig {
-  router: VueRouter;
+  router: Router;
 }
 
 export class LopsPaikallinenOppiaineStore implements IEditoitava {
@@ -114,6 +114,7 @@ export class LopsPaikallinenOppiaineStore implements IEditoitava {
     }
     else {
       await this.store.savePaikallinenOppiaine(data);
+      await this.store.initNavigation();
     }
   }
 

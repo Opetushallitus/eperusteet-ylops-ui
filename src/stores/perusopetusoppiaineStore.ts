@@ -1,19 +1,17 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import VueCompositionApi, { reactive, computed, ref, watch } from 'vue';
+import { computed, Vue } from 'vue';
 import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OppiaineSuppeaDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
-import { Kielet } from '@shared/stores/kieli';
 import { Revision } from '@shared/tyypit';
 import { isOppiaineUskontoTaiKieli } from '@/utils/opetussuunnitelmat';
 import { createLogger } from '@shared/utils/logger';
 import { requiredLokalisoituTeksti } from '@shared/validators/required';
-import VueRouter from 'vue-router';
-import Vue from 'vue';
+import { Router } from 'vue-router';
 
 const logger = createLogger('PerusopetusoppiaineStore');
 
 interface PerusopetusoppiaineStoreConfig {
-  router: VueRouter;
+  router: Router;
 }
 
 export class PerusopetusoppiaineStore implements IEditoitava {

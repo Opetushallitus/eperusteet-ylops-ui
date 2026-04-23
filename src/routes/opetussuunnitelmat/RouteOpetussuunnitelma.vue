@@ -161,6 +161,16 @@
                   </EpNavigationLabel>
                 </template>
 
+                <template #liite="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'tekstikappale', params: { osaId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-tekstikappale') }}
+                    <EpMaterialIcon size="16px">attach_file</EpMaterialIcon>
+                  </EpNavigationLabel>
+                </template>
+
                 <template #tiedot="{ item }">
                   <EpNavigationLabel
                     :to="{ name: 'opsTiedot' }"

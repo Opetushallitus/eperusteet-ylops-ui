@@ -35,7 +35,6 @@
       >
         <ep-select
           v-model="valittuTekstikappale"
-          class="mb-5"
           :items="tekstikappaleet"
           :is-editing="true"
           :enable-empty-option="tyhjaValinta"
@@ -44,6 +43,14 @@
             {{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}
           </template>
         </ep-select>
+        <ep-button
+          class="text-right w-100"
+          variant="link"
+          @click="tyhjennaValinta"
+          no-padding
+        >
+          {{ $t('tyhjenna-valinta') }}
+        </ep-button>
       </ep-form-content>
 
       <template #modal-footer>
@@ -129,6 +136,10 @@ const save = async () => {
 
 const clear = () => {
   otsikko.value = {};
+  valittuTekstikappale.value = {};
+};
+
+const tyhjennaValinta = () => {
   valittuTekstikappale.value = {};
 };
 

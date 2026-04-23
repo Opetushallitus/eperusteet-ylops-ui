@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { Router } from 'vue-router';
 import { reactive, computed } from 'vue';
 import { Matala, Perusteenosat, Sisallot, PerusteDtoTyyppiEnum, Laaja } from '@shared/api/eperusteet';
 import { Revision } from '@shared/tyypit';
@@ -12,7 +12,7 @@ import { OpetussuunnitelmaStore } from './opetussuunnitelma';
 
 
 interface TekstikappaleStoreConfig {
-  router: VueRouter;
+  router: Router;
 }
 
 export class TekstikappaleStore implements IEditoitava {
@@ -82,6 +82,7 @@ export class TekstikappaleStore implements IEditoitava {
 
   public async save({ tov, ohjeet }) {
     await this.opetussuunnitelmaStore.saveTeksti(tov);
+    await this.opetussuunnitelmaStore.initNavigation();
   }
 
   public async remove() {
