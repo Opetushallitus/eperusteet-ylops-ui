@@ -52,9 +52,6 @@ export function opsLuontiValidator(kielet: Kieli[] = [], luontityyppi: Opetussuu
       ...notNull(),
     },
     organisaatiot: {
-      kunnat: {
-        required,
-      },
       ryhmat: {
         required: requiredIf((value, siblings) => {
           return _.size(siblings.jarjestajat) === 0;

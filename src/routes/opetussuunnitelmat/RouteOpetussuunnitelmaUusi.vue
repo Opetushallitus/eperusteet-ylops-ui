@@ -146,6 +146,7 @@
           v-model="uusi.organisaatiot"
           :validation="$v.uusi.organisaatiot"
           :koulutustyyppi="koulutustyyppi"
+          :kayttajanOrganisaatiot="sallitutOrganisaatiot"
         />
 
         <div v-if="uusi.pohja.toteutus === 'lops2019'">
@@ -231,7 +232,7 @@
 
 <script setup lang="ts">
 import _ from 'lodash';
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, unref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { useRoute, useRouter } from 'vue-router';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
@@ -260,8 +261,13 @@ import { $t, $kaanna, $sd, $success } from '@shared/utils/globals';
 import EpRadio from '@shared/components/forms/EpRadio.vue';
 import EpToggleGroup from '@shared/components/forms/EpToggleGroup.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import { KayttajaStore } from '@/stores/kayttaja';
 
 type PohjaTyyppi = 'pohjasta' | 'opsista';
+
+const props = defineProps<{
+  kayttajaStore: KayttajaStore;
+}>();
 
 // Use composables
 const route = useRoute();
@@ -316,6 +322,8 @@ const steps = computed(() => {
 const koulutustyyppi = computed(() => {
   return _.get(uusi.value, 'pohja.koulutustyyppi');
 });
+
+const sallitutOrganisaatiot = computed(() => unref(props.kayttajaStore.organisaatiot));
 
 const uusiPohjaMuutos = async () => {
   uusi.value.organisaatiot = {

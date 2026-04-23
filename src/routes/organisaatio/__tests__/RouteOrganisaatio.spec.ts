@@ -1,19 +1,13 @@
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import RouteOrganisaatio from '../RouteOrganisaatio.vue';
-import { Kielet } from '@shared/stores/kieli';
-import { Kayttajat as KayttajatApi, Opetussuunnitelmat, Ulkopuoliset } from '@shared/api/ylops';
-import { genKayttaja, makeAxiosResponse } from '&/utils/data';
-import { Kayttajat } from '@/stores/kayttaja';
+import { Ulkopuoliset } from '@shared/api/ylops';
+import { makeAxiosResponse } from '&/utils/data';
 import { delay } from '@shared/utils/delay';
 import { globalStubs } from '@shared/utils/__tests__/stubs';
 import { vi } from 'vitest';
-import { nextTick, h, renderSlot } from 'vue';
 
 describe('RouteOrganisaatio', () => {
   async function createMounted() {
-    vi.spyOn(KayttajatApi, 'getKayttaja')
-      .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
-
     vi.spyOn(Ulkopuoliset, 'getUserOrganisations')
       .mockImplementation(async () => makeAxiosResponse([{
         oid: '1234',
@@ -21,9 +15,6 @@ describe('RouteOrganisaatio', () => {
           fi: 'organisaatio1',
         },
       }]));
-
-    vi.spyOn(Opetussuunnitelmat, 'getOikeudet')
-      .mockImplementation(async () => makeAxiosResponse({}));
 
     vi.spyOn(Ulkopuoliset, 'getOrganisaatioVirkailijat')
       .mockImplementation(async () => makeAxiosResponse([{
@@ -36,7 +27,6 @@ describe('RouteOrganisaatio', () => {
         sukunimi: 'sukunimi2',
       }]));
 
-    await Kayttajat.init();
     return mount(RouteOrganisaatio, {
       global: {
         ...globalStubs,
@@ -44,11 +34,7 @@ describe('RouteOrganisaatio', () => {
           ...globalStubs.stubs,
           'EpNavigation': true,
           'EpToggle': {
-            render() {
-              return h('div', { class: 'ep-toggle-stub' }, [
-                renderSlot(this.$slots, 'default'),
-              ]);
-            },
+            template: '<div class="ep-toggle-stub"><slot /></div>',
           },
         },
       },
@@ -76,7 +62,7 @@ describe('RouteOrganisaatio', () => {
 
     // Set data using Vue 3 syntax
     (wrapper.vm as any).showOrganizations = true;
-    await nextTick();
+    await flushPromises();
 
     await delay();
 
