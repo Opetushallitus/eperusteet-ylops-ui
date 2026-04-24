@@ -1,7 +1,7 @@
 <template>
   <div class="organisaatiot">
     <ep-form-content :show-header="false">
-      <div class="selectors">
+      <div class="selectors" v-if="!sallitutKunnat">
         <div class="form-group required mb-4">
           <label>{{ $t('kunnat') }} *</label>
           <ep-multi-list-select
@@ -65,7 +65,7 @@ import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { Kielet } from '@shared/stores/kieli';
 import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
 import { metadataToTeksti } from '@/utils/organisaatiot';
-import { Ulkopuoliset } from '@shared/api/ylops';
+import { KayttajanOrganisaatiotDto, Ulkopuoliset } from '@shared/api/ylops';
 import { Koulutustyyppi } from '@shared/tyypit';
 import { $kaanna, $t } from '@shared/utils/globals';
 
@@ -80,11 +80,11 @@ const props = defineProps<{
   modelValue: ValueType;
   koulutustyyppi?: string | null;
   sallitutLakkautetutOrganisaatiot?: string[];
+  kayttajanOrganisaatiot?: KayttajanOrganisaatiotDto;
 }>();
 
 const emit = defineEmits(['update:modelValue']);
 
-const kayttajanOrganisaatiot = ref<any>({});
 const kunnat = ref<any[]>([]);
 const jarjestajat = ref<any[]>([]);
 const oppilaitokset = ref<any[]>([]);
@@ -117,6 +117,14 @@ const validationConfig = computed(() => {
       'min-length': minLength(1),
     },
   };
+});
+
+const sallitutKunnat = computed(() => {
+  return props.kayttajanOrganisaatiot?.kunnat;
+});
+
+const sallitutOrganisaatiot = computed(() => {
+  return props.kayttajanOrganisaatiot?.organisaatioOids;
 });
 
 const filterAndSort = (orgs: any[], queryText: string) => {
@@ -152,6 +160,7 @@ const filteredJarjestajat = computed(() => {
 const jarjestajatSelectOptions = computed(() => {
   return _.chain(filteredJarjestajat.value)
     .filter(org => org.status !== 'PASSIIVINEN')
+    .filter(org => !sallitutOrganisaatiot.value || _.includes(sallitutOrganisaatiot.value, org.oid))
     .map(org => {
       return {
         value: org,
@@ -170,6 +179,7 @@ const filteredOppilaitokset = computed(() => {
 const oppilaitoksetSelectOptions = computed(() => {
   return _.chain(filteredOppilaitokset.value)
     .filter(org => _.includes(props.sallitutLakkautetutOrganisaatiot || [], org.oid) || org.status !== 'PASSIIVINEN')
+    .filter(org => !sallitutOrganisaatiot.value || _.includes(sallitutOrganisaatiot.value, org.oid))
     .map(org => {
       return {
         value: org,
@@ -240,8 +250,6 @@ const updateKunnat = async (kunnatList: any[]) => {
     .sortBy((org: any) => Kielet.kaanna(org.nimi))
     .value();
 
-  const kuntaUris = _.map(kunnatList, 'koodiUri');
-
   valitutJarjestajat.value = _.filter(
     valitutJarjestajat.value,
     valittuJarjestaja => _.some(jarjestajat.value, jarjestaja => jarjestajaEquals.value(jarjestaja, valittuJarjestaja)),
@@ -274,7 +282,12 @@ watch(() => props.modelValue, async (value) => {
 }, { immediate: true });
 
 onMounted(async () => {
-  await update();
+  if (!props.kayttajanOrganisaatiot) {
+    await update();
+  }
+  else {
+    await updateKunnat(sallitutKunnat.value.map(kunta => ({ koodiUri: kunta })));
+  }
 });
 
 </script>

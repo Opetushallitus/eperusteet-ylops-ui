@@ -99,6 +99,7 @@ const router = createRouter({
       path: 'uusi/opetussuunnitelma',
       name: 'uusiOpetussuunnitelma',
       component: RouteOpetussuunnitelmaUusi,
+      props,
     }, {
       path: 'tiedotteet',
       name: 'tiedotteet',

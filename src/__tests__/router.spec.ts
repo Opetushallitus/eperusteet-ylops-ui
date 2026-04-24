@@ -1,9 +1,7 @@
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { Kayttajat } from '@/stores/kayttaja';
 import router from '@/router/router';
 import { expectEventually } from '&/utils/assertions';
-import { Kielet } from '@shared/stores/kieli';
-import { Kaannos } from '@shared/plugins/kaannos';
 import {
   makeAxiosResponse,
   genOikeudet,
@@ -15,11 +13,11 @@ import {
   Opetussuunnitelmat,
   Ulkopuoliset,
 } from '@shared/api/ylops';
+import * as ApiCommon from '@shared/api/common';
 
 import axios from 'axios';
 import { globalStubs } from '@shared/utils/__tests__/stubs';
 import Root from '@/routes/Root.vue';
-import nextTick from 'vue';
 import { vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 
@@ -91,6 +89,9 @@ describe('Router', () => {
   async function createMounted(
     oikeudet = genOikeudet('oph'),
   ) {
+    vi.spyOn(ApiCommon, 'getCasKayttaja')
+      .mockResolvedValue({ data: { groups: [], lang: 'fi' } } as any);
+
     vi.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
 
@@ -105,11 +106,11 @@ describe('Router', () => {
         pohjatKeskeneraiset: 45,
       }));
 
-    vi.spyOn(KayttajatApi, 'getOrganisaatioOikeudet')
-      .mockImplementation(async () => makeAxiosResponse([
-        '1234',
-        '2234',
-      ]));
+    vi.spyOn(KayttajatApi, 'getKayttajanOrganisaatiot')
+      .mockImplementation(async () => makeAxiosResponse({
+        organisaatioOids: ['1234', '2234'],
+        kunnat: [],
+      }));
 
     vi.spyOn(Ulkopuoliset, 'getUserOrganisations')
       .mockImplementation(async () => makeAxiosResponse([
@@ -202,7 +203,7 @@ describe('Router', () => {
       console.log(err);
     });
 
-    await nextTick();
+    await flushPromises();
 
     // expect(router.currentRoute.params).toEqual({ lang: 'sv' });
 

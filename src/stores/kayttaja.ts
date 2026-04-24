@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { reactive, computed } from 'vue';
-import { KayttajanTietoDto,
+import { KayttajanOrganisaatiotDto, KayttajanTietoDto,
   Kayttajat as KayttajatApi,
   Opetussuunnitelmat,
   Ulkopuoliset,
@@ -42,6 +42,7 @@ export class KayttajaStore {
       pohja: [],
     } as Oikeudet,
     casKayttaja: null as any | null,
+    organisaatiot: null as KayttajanOrganisaatiotDto | null,
   });
 
   public readonly tiedot = computed(() => this.state.tiedot);
@@ -50,15 +51,15 @@ export class KayttajaStore {
   public readonly casKayttaja = computed(() => this.state.casKayttaja);
   public readonly nimi = computed(() => parsiEsitysnimi(this.state.tiedot));
   public readonly sovellusOikeudet = computed(() => getSovellusoikeudet(this.state.casKayttaja?.groups, 'APP_EPERUSTEET_YLOPS'));
+  public readonly organisaatiot = computed(() => this.state.organisaatiot);
 
   public async init() {
-    logger.info('Haetaan käyttäjän tiedot');
-    this.state.casKayttaja = await getCasKayttaja();
-    this.state.tiedot = (await KayttajatApi.getKayttaja()).data;
-    logger.info('Käyttäjän tiedot', this.state.tiedot);
-    await delay(1000); // EP-2371
-    this.state.oikeudet = ((await Opetussuunnitelmat.getOikeudet()).data as any);
-    logger.info('Käyttäjän oikeudet', this.state.oikeudet);
+    [this.state.casKayttaja, this.state.tiedot, this.state.oikeudet, this.state.organisaatiot] = _.map(await Promise.all([
+      getCasKayttaja(),
+      KayttajatApi.getKayttaja(),
+      Opetussuunnitelmat.getOikeudet(),
+      KayttajatApi.getKayttajanOrganisaatiot(),
+    ]), data => data.data);
   }
 
   public async fetchOrganisaatioVirkailijat() {
