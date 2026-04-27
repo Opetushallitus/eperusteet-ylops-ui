@@ -201,7 +201,7 @@ const jarjestajaEquals = computed(() => {
 
 const updateInput = () => {
   emit('update:modelValue', {
-    kunnat: valitutKunnat.value,
+    kunnat: _.filter(valitutKunnat.value, kunta => _.includes(_.map(valitutJarjestajat.value, 'kotipaikkaUri'), kunta.koodiUri)),
     jarjestajat: valitutJarjestajat.value,
     oppilaitokset: valitutOppilaitokset.value,
     ryhmat: [],
@@ -216,7 +216,7 @@ const updateOppilaitokset = (valitut: any[]) => {
 const updateJarjestajat = (valitut: any[]) => {
   jarjestajatLoading.value = true;
   valitutJarjestajat.value = valitut;
-  const valitutJarjestajaList = _.filter(jarjestajat.value, (jarjestaja) => _.includes(_.map(valitut, 'koodiUri'), jarjestaja.koodiUri));
+  const valitutJarjestajaList = _.filter(jarjestajat.value, (jarjestaja) => _.includes(_.map(valitut, 'oid'), jarjestaja.oid));
   oppilaitokset.value = _.chain(valitutJarjestajaList)
     .map('children')
     .flatten()
@@ -228,6 +228,7 @@ const updateJarjestajat = (valitut: any[]) => {
     })
     .sortBy((org: any) => Kielet.kaanna(org.nimi))
     .value();
+
   const jarjestajaOids = _.map(valitutJarjestajat.value, 'oid');
 
   valitutOppilaitokset.value = _.chain(valitutOppilaitokset.value)
@@ -268,6 +269,7 @@ const update = async () => {
     }))
     .sortBy(org => Kielet.kaanna(org.nimi))
     .value();
+  valitutKunnat.value = props.modelValue.kunnat;
 };
 
 const kouluryhmaChange = async () => {
@@ -276,7 +278,6 @@ const kouluryhmaChange = async () => {
 };
 
 watch(() => props.modelValue, async (value) => {
-  valitutKunnat.value = value.kunnat;
   valitutJarjestajat.value = value.jarjestajat;
   valitutOppilaitokset.value = value.oppilaitokset;
 }, { immediate: true });
