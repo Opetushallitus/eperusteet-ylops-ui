@@ -19,4 +19,8 @@ export class KuvaStore implements IKuvaStore {
   getApi() {
     return Api;
   }
+
+  previewUrl(id: string) {
+    return this.getBaseUrl() + '/' + id + '/preview';
+  }
 }
