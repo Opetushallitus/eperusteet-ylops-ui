@@ -4,8 +4,8 @@
       variant="link"
       button-class="text-decoration-none"
       icon="add"
-      :paddingx="false"
       @click="showModal"
+      no-padding
     >
       <span>{{ $t('uusi-tekstikappale') }}</span>
     </ep-button>
