@@ -15,8 +15,8 @@
       </template>
       <template #default="{ data, validation, isEditing, supportData }">
         <div>
-          <div class="row">
-            <div class="col-md-6">
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12 md:col-span-6">
               <ep-form-content name="ops-nimi">
                 <ep-field
                   v-model="data.nimi"
@@ -26,19 +26,19 @@
                 />
               </ep-form-content>
             </div>
-            <div class="col-md-6">
+            <div class="col-span-12 md:col-span-6">
               <ep-form-content name="peruste">
                 <ep-external-link :url="data.perusteUrl">
                   {{ data.perusteenDiaarinumero }}
                 </ep-external-link>
               </ep-form-content>
             </div>
-            <div class="col-md-6">
+            <div class="col-span-12 md:col-span-6">
               <ep-form-content name="pohjat">
                 <OpsPohjat :ops="data" />
               </ep-form-content>
             </div>
-            <div class="col-md-6">
+            <div class="col-span-12 md:col-span-6">
               <ep-form-content name="julkaisukielet">
                 <ep-select
                   v-model="data.julkaisukielet"
@@ -57,7 +57,7 @@
             </div>
             <div
               v-if="isOps"
-              class="col-md-6"
+              class="col-span-12 md:col-span-6"
             >
               <ep-form-content name="ops-hyvaksyjataho">
                 <ep-field
@@ -71,7 +71,7 @@
             </div>
             <div
               v-if="isOps"
-              class="col-md-6"
+              class="col-span-12 md:col-span-6"
             >
               <ep-form-content name="ops-hyvaksymispvm">
                 <ep-datepicker
@@ -86,7 +86,7 @@
 
             <div
               v-if="isOps"
-              class="col-md-6"
+              class="col-span-12 md:col-span-6"
             >
               <EpEsikatselu
                 v-model="storeData"
@@ -94,7 +94,7 @@
                 :is-editing="isEditing"
               />
             </div>
-            <div class="col-md-6">
+            <div class="col-span-12 md:col-span-6">
               <ep-form-content name="ops-organisaatiot">
                 <ul>
                   <li
@@ -108,7 +108,7 @@
             </div>
             <div
               v-if="hasContentFilters"
-              class="col-md-6"
+              class="col-span-12 md:col-span-6"
             >
               <ep-form-content
                 v-if="features.opintojaksot || features.oppimaarat"
@@ -134,7 +134,7 @@
             </div>
             <div
               v-if="data.ainepainoitteinen"
-              class="col-md-6"
+              class="col-span-12 md:col-span-6"
             >
               <ep-form-content name="opintojaksojen-tarkistus">
                 <ep-toggle
@@ -146,7 +146,7 @@
                 </ep-toggle>
               </ep-form-content>
             </div>
-            <div class="col-md-12">
+            <div class="col-span-12">
               <div v-if="data.pohja && data.toteutus === 'perusopetus' && data.valittavatVuosiluokkakokonaisuudet">
                 <ep-form-content name="vuosiluokkakokonaisuudet">
                   <EpToggleGroup
@@ -169,7 +169,7 @@
                 </ep-form-content>
               </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-span-12">
               <ep-form-content name="ops-kuvaus">
                 <ep-content
                   v-model="data.kuvaus"
@@ -182,7 +182,7 @@
             </div>
             <div
               v-if="isEditing && data.pohja"
-              class="col-md-6"
+              class="col-span-12 md:col-span-6"
             >
               <hr>
               <h3>{{ $t('organisaatiot') }}</h3>
@@ -218,7 +218,7 @@ import OpsPohjat from '@/routes/opetussuunnitelmat/tiedot/OpsPohjat.vue';
 import EpEsikatselu from '@shared/components/EpEsikatselu/EpEsikatselu.vue';
 import { OpetussuunnitelmaEditStore } from '../../../stores/OpetussuunnitelmaEditStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { $t, $kaanna, $bvModal } from '@shared/utils/globals';
+import { $t, $kaanna, $confirmModal } from '@shared/utils/globals';
 import EpToggleGroup from '@shared/components/forms/EpToggleGroup.vue';
 
 const props = defineProps<{
@@ -274,7 +274,7 @@ const confirm = async () => {
     const uudetVlkTunnisteet = _.map(storeData.value?.vuosiluokkakokonaisuudet, opsVlk => _.get(opsVlk.vuosiluokkakokonaisuus, '_tunniste'));
 
     if (!_.every(vanhatVlkTunnisteet, vanhaTunniste => _.includes(uudetVlkTunnisteet, vanhaTunniste))) {
-      return $bvModal.msgBoxConfirm($t('vahvista-vuosiluokkakokonaisuudet-muokkaus-teksti') as any, {
+      return $confirmModal.msgBoxConfirm($t('vahvista-vuosiluokkakokonaisuudet-muokkaus-teksti') as any, {
         title: $t('vahvista-vuosiluokkakokonaisuudet-muokkaus-otsikko'),
         okVariant: 'primary',
         okTitle: $t('tallenna') as any,

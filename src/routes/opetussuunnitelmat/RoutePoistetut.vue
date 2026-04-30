@@ -1,16 +1,17 @@
 <template>
   <div class="poistetut">
-    <div class="ylapaneeli d-flex align-items-center">
+    <div class="ylapaneeli flex items-center">
       <h2 class="otsikko">
         {{ $t('poistetut') }}
       </h2>
     </div>
     <div class="sisalto">
-      <b-tabs
+      <EpTabs
+        v-if="tabs.length > 0"
         v-model="tabIndex"
         content-class="mt-4"
       >
-        <b-tab
+        <EpTab
           v-for="(tab, index) in tabs"
           :key="'tab'+index"
           :title="$t(tab.otsikko)"
@@ -21,8 +22,8 @@
             :poistetut="tab.poistetut"
             @palauta="palauta"
           />
-        </b-tab>
-      </b-tabs>
+        </EpTab>
+      </EpTabs>
 
       <div v-if="!isLoading && tabs.length === 0">
         {{ $t('ei-poistettuja-sisaltoja') }}
@@ -40,6 +41,8 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Lops2019PoistettuDto, PoistettuTekstiKappaleDto } from '@shared/api/ylops';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import PoistetutHakuTable from '@shared/components/EpPoistettuTable/PoistetutHakuTable.vue';
+import EpTabs from '@shared/components/EpTabs/EpTabs.vue';
+import EpTab from '@shared/components/EpTabs/EpTab.vue';
 import { onMounted } from 'vue';
 
 const props = defineProps<{

@@ -1,24 +1,21 @@
 <template>
   <div class="ep-tekstikappale-lisays">
-    <ep-button
+    <EpButton
       variant="link"
       button-class="text-decoration-none"
       icon="add"
-      @click="showModal"
       no-padding
+      @click="showModal"
     >
       <span>{{ $t('uusi-tekstikappale') }}</span>
-    </ep-button>
-    <b-modal
-      id="tekstikappalelisays"
+    </EpButton>
+    <EpModal
       ref="tekstikappalelisaysModal"
       size="lg"
-      centered
-      :ok-disabled="okDisabled"
-      @hidden="clear"
+      @cancel="clear"
     >
       <template #modal-title>
-        {{ $t('lisaa-uusi-tekstikappale') }}
+        <h2 class="text-2xl font-bold">{{ $t('lisaa-uusi-tekstikappale') }}</h2>
       </template>
 
       <ep-form-content name="tekstikappale-nimi-ohje">
@@ -40,24 +37,24 @@
           :enable-empty-option="tyhjaValinta"
         >
           <template #default="{ item }">
-            {{ item.item.prefix + ' ' + $kaanna(item.item.objref.nimi) }}
+            {{ (item.item.prefix ?? '') + ' ' + $kaanna(item.item.objref.nimi) }}
           </template>
         </ep-select>
-        <ep-button
-          class="text-right w-100"
+        <EpButton
+          class="justify-end w-full mt-2"
           variant="link"
-          @click="tyhjennaValinta"
           no-padding
+          @click="tyhjennaValinta"
         >
           {{ $t('tyhjenna-valinta') }}
-        </ep-button>
+        </EpButton>
       </ep-form-content>
 
       <template #modal-footer>
         <EpButton
           variant="secondary"
           :disabled="tallentaa"
-          @click="$refs.tekstikappalelisaysModal.hide()"
+          @click="tekstikappalelisaysModal?.hide()"
         >
           {{ $t('peruuta') }}
         </EpButton>
@@ -70,7 +67,7 @@
           {{ $t('lisaa-tekstikappale') }}
         </EpButton>
       </template>
-    </b-modal>
+    </EpModal>
   </div>
 </template>
 
@@ -79,10 +76,11 @@ import _ from 'lodash';
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpModal from '@shared/components/EpModal/EpModal.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import { Puu, YlopsNavigationNodeDto } from '@shared/api/ylops';
+import { Puu } from '@shared/api/ylops';
 import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
@@ -103,7 +101,7 @@ const router = useRouter();
 const otsikko = ref<LokalisoituTekstiDto>({});
 const valittuTekstikappale = ref<any>({});
 const tallentaa = ref(false);
-const tekstikappalelisaysModal = ref<InstanceType<any> | null>(null);
+const tekstikappalelisaysModal = ref<InstanceType<typeof EpModal> | null>(null);
 const okDisabled = computed(() => {
   return _.isEmpty(otsikko.value);
 });

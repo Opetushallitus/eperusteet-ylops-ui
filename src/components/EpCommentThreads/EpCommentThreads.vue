@@ -20,21 +20,20 @@
             class="editori"
           />
         </div>
-        <div class="d-flex justify-content-end mt-2">
-          <b-button
+        <div class="flex justify-end gap-2 mt-2">
+          <EpButton
             variant="link"
             @click="cancelNewThread"
           >
             {{ $t('peruuta') }}
-          </b-button>
-          <b-button
+          </EpButton>
+          <EpButton
             variant="primary"
             :disabled="!newThread.sisalto"
-            class="ml-1"
             @click="saveNewThread"
           >
             {{ $t('kommentoi') }}
-          </b-button>
+          </EpButton>
         </div>
       </div>
       <div
@@ -62,42 +61,41 @@
             />
             <div
               v-if="reply"
-              class="d-flex justify-content-end"
+              class="flex justify-end"
             >
-              <b-button
+              <EpButton
                 variant="primary"
-                class="ml-1"
                 :disabled="isWorking"
                 @click="tallenna({ sisalto: reply })"
               >
                 {{ $t('vastaa') }}
-              </b-button>
+              </EpButton>
             </div>
           </div>
           <div class="prevnext">
-            <div class="d-flex justify-content-between">
-              <b-button
+            <div class="flex justify-between">
+              <EpButton
                 variant="link"
                 @click="activateThread(surr.previous)"
               >
                 <EpMaterialIcon>arrow_back</EpMaterialIcon>
                 {{ $t('edellinen') }}
-              </b-button>
-              <b-button
+              </EpButton>
+              <EpButton
                 variant="link"
                 @click="activateThread(surr.next)"
               >
                 {{ $t('seuraava') }}
                 <EpMaterialIcon>arrow_forward</EpMaterialIcon>
-              </b-button>
+              </EpButton>
             </div>
             <div class="backbutton text-center">
-              <b-button
+              <EpButton
                 variant="primary"
                 @click="suljeKetju"
               >
                 {{ $t('nayta-kaikki-kommentit') }}
-              </b-button>
+              </EpButton>
             </div>
           </div>
         </div>
@@ -135,6 +133,7 @@ import ThreadComment from './ThreadComment.vue';
 import CollapsedThreads from './CollapsedThreads.vue';
 import EpCommentAdd from './EpCommentAdd.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { Kielet } from '@shared/stores/kieli';
 import { delay } from '@shared/utils/delay';
 import { unwrap, findIndexWithTagsIncluded } from '@/utils/utils';

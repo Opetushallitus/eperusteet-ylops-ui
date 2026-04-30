@@ -12,8 +12,11 @@
         </template>
 
         <template #default="{ isEditing, data, supportData }">
-          <b-tabs v-model="tabIndex">
-            <b-tab :title="$t('tekstikappaleet')">
+          <EpTabs
+            v-model="tabIndex"
+            content-class="mt-4"
+          >
+            <EpTab :title="$t('tekstikappaleet')">
               <div class="tree">
                 <ep-jarjesta
                   v-model="data.tekstikappaleet.lapset"
@@ -35,26 +38,40 @@
                     >
                       {{ $kaanna(node.tekstiKappale.nimi) }}
                     </router-link>
-                    <EpMaterialIcon
+                    <EpPopover
                       v-if="node.liite"
-                      v-b-popover="{content: $t('tekstikappale-naytetaan-liitteena'), trigger: 'hover'}"
-                      size="20px"
+                      :triggers="['hover']"
                     >
-                      attach_file
-                    </EpMaterialIcon>
-                    <EpMaterialIcon
+                      <template #trigger>
+                        <EpMaterialIcon
+                          size="20px"
+                          class="inline-flex align-middle"
+                        >
+                          attach_file
+                        </EpMaterialIcon>
+                      </template>
+                      {{ $t('tekstikappale-naytetaan-liitteena') }}
+                    </EpPopover>
+                    <EpPopover
                       v-if="node.piilotettu"
-                      v-b-popover="{content: $t('tekstikappale-on-piilotettu'), trigger: 'hover'}"
-                      size="20px"
+                      :triggers="['hover']"
                     >
-                      visibility_off
-                    </EpMaterialIcon>
+                      <template #trigger>
+                        <EpMaterialIcon
+                          size="20px"
+                          class="inline-flex align-middle"
+                        >
+                          visibility_off
+                        </EpMaterialIcon>
+                      </template>
+                      {{ $t('tekstikappale-on-piilotettu') }}
+                    </EpPopover>
                   </template>
                 </ep-jarjesta>
               </div>
-            </b-tab>
+            </EpTab>
 
-            <b-tab
+            <EpTab
               v-if="data.oppiaineet.length > 0"
               :title="supportData.isLops2019 ? $t('oppiaineet-ja-opintojaksot') : $t('oppiaineet')"
             >
@@ -73,8 +90,8 @@
                   </template>
                 </ep-jarjesta>
               </div>
-            </b-tab>
-          </b-tabs>
+            </EpTab>
+          </EpTabs>
         </template>
       </ep-editointi>
     </div>
@@ -86,10 +103,12 @@ import _ from 'lodash';
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpJarjesta from '@shared/components/EpJarjesta/EpJarjesta.vue';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpTabs from '@shared/components/EpTabs/EpTabs.vue';
+import EpTab from '@shared/components/EpTabs/EpTab.vue';
+import EpPopover from '@shared/components/EpPopover/EpPopover.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { JarjestysStore } from '@/stores/jarjestysStore';
 

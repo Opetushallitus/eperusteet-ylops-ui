@@ -7,8 +7,8 @@
     >
       <div class="alue-editing">
         <div class="header">
-          <div class="row">
-            <div class="col-sm-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="min-w-0">
               <ep-input
                 v-model="alue.nimi"
                 :help="props.arvot + '-nimi'"
@@ -16,15 +16,15 @@
                 :is-editing="true"
               />
             </div>
-            <div class="col-sm-6">
+            <div class="min-w-0">
               <div class="actions">
-                <ep-button
+                <EpButton
                   variant="danger"
                   icon="close"
                   @click="poistaIndeksi(internal, alueIdx)"
                 >
                   {{ $t('poista-alue-' + props.arvot) }}
-                </ep-button>
+                </EpButton>
               </div>
             </div>
           </div>
@@ -55,32 +55,32 @@
                 />
               </div>
               <div class="actions">
-                <ep-button
+                <EpButton
                   variant="danger"
                   icon="close"
                   @click="poistaIndeksi(alue[props.arvot], idx)"
                 >
                   {{ $t('poista') }}
-                </ep-button>
+                </EpButton>
               </div>
             </div>
           </VueDraggable>
-          <ep-button
+          <EpButton
             icon="add"
             @click="lisaaArvo(alue)"
           >
             {{ $t('lisaa-arvo-' + props.arvo) }}
-          </ep-button>
+          </EpButton>
         </div>
       </div>
     </div>
-    <ep-button
+    <EpButton
       v-if="hasMultiple"
       icon="add"
       @click="lisaaAlue()"
     >
       {{ $t('lisaa-alue-' + props.arvot) }}
-    </ep-button>
+    </EpButton>
   </div>
   <div v-else>
     <div

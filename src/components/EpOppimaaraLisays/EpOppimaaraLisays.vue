@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ep-button
+    <EpButton
       icon="add"
       :variant="buttonVariant"
       button-class="text-decoration-none"
@@ -8,18 +8,15 @@
       @click="openModal()"
     >
       <span>{{ $t(addButtonText) }}</span>
-    </ep-button>
-    <b-modal
-      id="oppimaaralisays"
+    </EpButton>
+    <EpModal
       ref="oppimaaralisaysModal"
       size="lg"
-      centered
       :ok-disabled="okDisabled"
-      static
-      lazy
-      @hidden="clear"
-      @show="show"
+      :ok-text="$t(addText)"
+      :cancel-text="$t('peruuta')"
       @ok="save"
+      @cancel="clear"
     >
       <template #modal-title>
         {{ $t(addText) }}
@@ -56,14 +53,7 @@
           :validation="$v.nimi"
         />
       </ep-form-content>
-
-      <template #modal-cancel>
-        {{ $t('peruuta') }}
-      </template>
-      <template #modal-ok>
-        {{ $t(addText) }}
-      </template>
-    </b-modal>
+    </EpModal>
   </div>
 </template>
 
@@ -78,8 +68,9 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpModal from '@shared/components/EpModal/EpModal.vue';
 
-import { OppiaineSuppeaDto, Oppiaineet, PerusteOppiaineDto, KopioOppimaaraDto, UnwrappedOpsVuosiluokkakokonaisuusDto, Vuosiluokkakokonaisuudet, YlopsNavigationNodeDto } from '@shared/api/ylops';
+import { OppiaineSuppeaDto, Oppiaineet, PerusteOppiaineDto, KopioOppimaaraDto, UnwrappedOpsVuosiluokkakokonaisuusDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 
 import { $t, $kaanna, $fail } from '@shared/utils/globals';
@@ -97,10 +88,8 @@ const props = withDefaults(
 const route = useRoute();
 const router = useRouter();
 
-// Template refs
 const oppimaaralisaysModal = useTemplateRef('oppimaaralisaysModal');
 
-// Reactive data
 const perusteenOppiaine = ref<PerusteOppiaineDto | null>(null);
 const vuosiluokkakokonaisuus = ref<UnwrappedOpsVuosiluokkakokonaisuusDto | null>(null);
 const nimi = ref<object | null>(null);
@@ -115,7 +104,6 @@ const ops = computed(() => {
   return props.opetussuunnitelmaStore.opetussuunnitelma.value;
 });
 
-// Computed properties
 const addText = computed(() => {
   return isUskonto.value ? 'lisaa-muu-uskonto' : 'lisaa-kielitarjonta';
 });
@@ -172,7 +160,6 @@ const oppimaaratTyhjalla = computed(() => {
   return undefined;
 });
 
-// Validation setup
 const validationRules = computed(() => ({
   valittuOppimaara: {
     required,
@@ -190,7 +177,6 @@ const okDisabled = computed(() => {
   return $v.value.$invalid;
 });
 
-// Watchers
 watch(valittuOppimaara, (val) => {
   if (val) {
     if (val.tyhjanimi) {
@@ -202,15 +188,15 @@ watch(valittuOppimaara, (val) => {
   }
 });
 
-// Methods
-const openModal = () => {
-  oppimaaralisaysModal.value?.show();
-};
-
-const show = async () => {
+const loadModalData = async () => {
   oppiaine.value = _.get(_.find(ops.value?.oppiaineet, oa => oa.oppiaine.id === props.oppiaineId), 'oppiaine');
   perusteenOppiaine.value = (await Oppiaineet.getPerusteSisalto(opsId.value, (oppiaine.value?.id as number))).data;
   vuosiluokkakokonaisuus.value = (await Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuus(opsId.value, _.toNumber(route.params.vlkId))).data;
+};
+
+const openModal = async () => {
+  await loadModalData();
+  oppimaaralisaysModal.value?.show();
 };
 
 const save = async () => {
@@ -220,8 +206,9 @@ const save = async () => {
   } as KopioOppimaaraDto;
 
   try {
-    const uusi = (await Oppiaineet.addOppimaara((ops.value.id as number), (oppiaine.value?.id as number), kopio)).data;
+    const uusi = (await Oppiaineet.addOppimaara((ops.value!.id as number), (oppiaine.value?.id as number), kopio)).data;
     await props.opetussuunnitelmaStore.initNavigation();
+    oppimaaralisaysModal.value?.hide();
 
     router.push({
       name: 'perusopetusoppiaine',

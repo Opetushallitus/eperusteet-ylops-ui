@@ -3,7 +3,7 @@
     <template v-if="!isPohja">
       <div
         v-if="pohjallaPuuttuviaTeksteja === null"
-        class="d-flex justify-content-center"
+        class="flex justify-center"
       >
         {{ $t('tarkistetaan-pohjan-tekstimuutokset') }}
         <EpSpinner />
@@ -36,20 +36,20 @@
           {{ $kaanna(perusteNimi) }}
         </EpExternalLink>
 
-        <div class="d-flex justify-content-end">
+        <div class="flex justify-end">
           <div
             v-if="viimeisinPohjaTekstiSync"
-            class="d-flex align-items-end mr-3 disabled-text font-size-08"
+            class="flex items-end mr-3 disabled-text font-size-08"
           >
             {{ $t('viimeisin-synkronisointi-pvm') }} {{ $sd(viimeisinPohjaTekstiSync) }}
           </div>
-          <ep-button
+          <EpButton
             v-if="pohjanaOphPohja || viimeisinPohjaTekstiSyncVirheellinen"
             :show-spinner="syncPohja"
             @click="syncTekstitPohjasta()"
           >
             {{ $t('paivita-opetussuunnitelma') }}
-          </ep-button>
+          </EpButton>
         </div>
       </div>
     </template>
@@ -64,25 +64,25 @@
         <h2>{{ $t('paivita-pohjan-peruste-opetussuunnitelmiin') }}</h2>
         <div v-html="$t('paivita-pohjan-peruste-opetussuunnitelmiin-huomioteksti')" />
 
-        <div class="d-flex justify-content-end">
+        <div class="flex justify-end">
           <div
             v-if="ops?.viimeisinSyncPvm"
-            class="d-flex align-items-end mr-3 disabled-text font-size-08"
+            class="flex items-end mr-3 disabled-text font-size-08"
           >
             {{ $t('viimeisin-synkronisointi-pvm') }} {{ $sdt(ops?.viimeisinSyncPvm) }}
           </div>
-          <ep-button
+          <EpButton
             :show-spinner="syncing"
             @click="synkronisoiPohja"
           >
             {{ $t('paivita-peruste') }}
-          </ep-button>
+          </EpButton>
         </div>
       </div>
     </template>
 
-    <div class="row">
-      <div class="col">
+    <div class="m-0 grid grid-cols-1 gap-4 px-2.5 pt-2.5 lg:grid-cols-2">
+      <div class="min-w-0">
         <ops-perustiedot
           :opetussuunnitelma-store="props?.opetussuunnitelmaStore"
           class="info-box"
@@ -97,7 +97,7 @@
           class="info-box"
         />
       </div>
-      <div class="col">
+      <div class="min-w-0">
         <ops-viimeaikainen-toiminta
           :ops="ops"
           :muokkaustieto-store="props?.muokkaustietoStore"
@@ -106,8 +106,8 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col">
+    <div class="m-0 grid grid-cols-1 gap-4 px-2.5 pt-2.5">
+      <div class="min-w-0">
         <ops-aikataulu
           v-if="!isPohja"
           :ops="ops"
@@ -250,16 +250,6 @@ const perusteArkistoitu = computed(() => {
     height: 100%;
     background-color: $gray-lighten-5;
     padding: 10px;
-
-    .row {
-      margin: 0px;
-      padding-top: 10px;
-
-      .col {
-        padding: 0px;
-        padding-left: 10px;
-      }
-    }
 
     .info-box {
       margin-bottom: 10px;

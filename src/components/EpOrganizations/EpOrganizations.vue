@@ -1,7 +1,10 @@
 <template>
   <div class="organisaatiot">
     <ep-form-content :show-header="false">
-      <div class="selectors" v-if="!sallitutKunnat">
+      <div
+        v-if="!sallitutKunnat"
+        class="selectors"
+      >
         <div class="form-group required mb-4">
           <label>{{ $t('kunnat') }} *</label>
           <ep-multi-list-select
@@ -36,7 +39,7 @@
         class="selectors mb-4"
         :class="{'disabled-events': valitutJarjestajat.length === 0}"
       >
-        <div class="d-flex">
+        <div class="flex">
           <label>{{ $t('oppilaitokset') }}</label>
           <slot name="oppilaitokset-label-suffix" />
         </div>
