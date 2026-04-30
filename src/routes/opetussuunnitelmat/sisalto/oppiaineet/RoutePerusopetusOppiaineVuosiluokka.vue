@@ -15,8 +15,8 @@
         </h2>
       </template>
       <template #default="{ data, isEditing }">
-        <b-tabs v-model="tabIndex">
-          <b-tab :title="$t('tavoitteet')">
+        <EpTabs v-model="tabIndex">
+          <EpTab :title="$t('tavoitteet')">
             <ep-collapse
               v-for="(tavoite, index) in data.perusteenTavoitteet"
               ref="tavoitecollapse"
@@ -125,8 +125,8 @@
                 </ep-collapse>
               </div>
 
-              <b-row>
-                <b-col v-if="tavoite.laajaalaisetosaamiset.length > 0">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-if="tavoite.laajaalaisetosaamiset.length > 0">
                   <div class="inner-collapse mb-4">
                     <h4>{{ $t('laaja-alaisen-osaamisen-alueet') }}</h4>
 
@@ -160,8 +160,8 @@
                       </div>
                     </ep-collapse>
                   </div>
-                </b-col>
-                <b-col v-if="tavoite.kohdealueet.length > 0 && tavoite.kohdealueet[0].nimi">
+                </div>
+                <div v-if="tavoite.kohdealueet.length > 0 && tavoite.kohdealueet[0].nimi">
                   <div
                     v-for="(kohdealue, index) in tavoite.kohdealueet"
                     :key="'kohdealue'+index"
@@ -173,8 +173,8 @@
                     />
                     <span>{{ $kaanna(kohdealue.nimi) }}</span>
                   </div>
-                </b-col>
-              </b-row>
+                </div>
+              </div>
 
               <div
                 v-if="tavoite.arvioinninKuvaus"
@@ -203,9 +203,9 @@
                 <span v-html="$kaanna(tavoite.vapaaTeksti)" />
               </div>
             </ep-collapse>
-          </b-tab>
+          </EpTab>
 
-          <b-tab :title="$t('keskeiset-sisallot')">
+          <EpTab :title="$t('keskeiset-sisallot')">
             <template v-if="data.perusteenVlk.vapaatTekstit">
               <ep-collapse
                 v-for="(vapaateksti, index) in data.perusteenVlk.vapaatTekstit"
@@ -256,8 +256,8 @@
               </vuosiluokka-sisalto-teksti>
               <hr>
             </div>
-          </b-tab>
-        </b-tabs>
+          </EpTab>
+        </EpTabs>
       </template>
     </EpEditointi>
   </div>
@@ -274,13 +274,15 @@ import { PerusopetusoppiaineVuosiluokkaStore } from '@/stores/perusopetusoppiain
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
+import EpTabs from '@shared/components/EpTabs/EpTabs.vue';
+import EpTab from '@shared/components/EpTabs/EpTab.vue';
 import EpOrderColorBall from '@shared/components/EpColorIndicator/EpOrderColorBall.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpArvioinninkohteetTable from '@shared/components/EpArvioinninkohteetTable/EpArvioinninkohteetTable.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { $kaanna, $t, $bvModal } from '@shared/utils/globals';
+import { $kaanna, $t, $confirmModal } from '@shared/utils/globals';
 
 
 // Props
@@ -346,7 +348,7 @@ const varmistaValutus = async () => {
     return true;
   }
 
-  const valuta = await $bvModal.msgBoxConfirm($t('vahvista-vuosiluokan-tietojen-valutus-teksti'), {
+  const valuta = await $confirmModal.msgBoxConfirm($t('vahvista-vuosiluokan-tietojen-valutus-teksti'), {
     title: $t('vahvista-vuosiluokan-tietojen-valutus-otsikko'),
     okVariant: 'primary',
     okTitle: $t('kylla'),

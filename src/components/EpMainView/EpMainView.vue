@@ -1,21 +1,16 @@
 <template>
   <div>
-    <ep-navigation />
     <div class="content">
       <div class="container">
-        <div class="row">
-          <div class="col">
-            <slot name="header" />
-          </div>
+        <div class="w-full min-w-0">
+          <slot name="header" />
         </div>
         <div
           v-if="hasDefaultSlot"
           class="view-content"
         >
-          <div class="row">
-            <div class="col">
-              <slot name="default" />
-            </div>
+          <div class="w-full min-w-0">
+            <slot name="default" />
           </div>
         </div>
         <slot name="custom-content" />
@@ -26,7 +21,6 @@
 </template>
 
 <script setup lang="ts">
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import { hasSlotContent } from '@shared/utils/vue-utils';
 import { computed } from 'vue';
 import { useSlots } from 'vue';

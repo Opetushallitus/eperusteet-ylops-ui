@@ -4,40 +4,38 @@
 
     <ep-spinner v-if="!opetussuunnitelmanTekstikappale" />
     <div v-else-if="hasMuokkaamattomatTekstikappaleet">
-      <b-table
-        responsive
-        borderless
-        striped
-        :items="muokkaamattomatTekstikappaleet"
-        :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
-      >
-        <template #cell(nimi)="data">
-          <router-link
-            :key="data.item.osaId"
-            :to="{ name: 'tekstikappale', params: { osaId: data.item.osaId } }"
-          >
-            {{ $kaanna(data.value) }}
-          </router-link>
-        </template>
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-left text-sm">
+          <tbody>
+            <tr
+              v-for="row in pagedMuokkaamattomat"
+              :key="row.osaId"
+              class="border-b border-surface-100 odd:bg-surface-50"
+            >
+              <td class="p-3">
+                <router-link
+                  :to="{ name: 'tekstikappale', params: { osaId: row.osaId } }"
+                >
+                  {{ $kaanna(row.nimi) }}
+                </router-link>
+              </td>
+              <td class="p-3 text-right align-middle">
+                <EpMaterialIcon>chevron_right</EpMaterialIcon>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <template #cell(siirtyminen)>
-          <EpMaterialIcon>chevron_right</EpMaterialIcon>
-        </template>
-      </b-table>
-
-      <EpPagination
+      <EpBPagination
         v-model="currentPage"
-        :total-rows="muokkaamattomatTekstikappaleet.length"
-        :per-page="perPage"
-        aria-controls="arkistoidut-opetussuunnitelmat"
-        align="center"
+        :items-per-page="perPage"
+        :total="muokkaamattomatTekstikappaleet.length"
       />
     </div>
     <div
       v-else-if="opetussuunnitelmanTekstikappale && !hasMuokkaamattomatTekstikappaleet"
-      class="d-flex flex-column align-items-center justify-content-center mt-4"
+      class="flex flex-col items-center justify-center mt-4"
     >
       <img
         src="@assets/img/images/papukaijamerkki.svg"
@@ -59,7 +57,7 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import { TekstiKappaleViitePerusteTekstillaDto, TekstiKappaleKevytDto } from '@shared/api/ylops';
 import { $t, $kaanna } from '@shared/utils/globals';
 import { unref } from 'vue';
-import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
+import EpBPagination from '@shared/components/EpBPagination/EpBPagination.vue';
 
 const props = defineProps<{
   opetussuunnitelmanTekstikappale: TekstiKappaleViitePerusteTekstillaDto;
@@ -112,15 +110,9 @@ const hasMuokkaamattomatTekstikappaleet = computed(() => {
   return !_.isEmpty(muokkaamattomatTekstikappaleet.value);
 });
 
-const fields = computed(() => {
-  return [{
-    key: 'nimi',
-    label: '',
-  }, {
-    key: 'siirtyminen',
-    label: '',
-    tdClass: 'text-right',
-  }];
+const pagedMuokkaamattomat = computed(() => {
+  const start = (currentPage.value - 1) * perPage.value;
+  return muokkaamattomatTekstikappaleet.value.slice(start, start + perPage.value);
 });
 </script>
 

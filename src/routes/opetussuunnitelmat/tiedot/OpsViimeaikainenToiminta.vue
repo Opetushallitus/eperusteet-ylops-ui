@@ -6,14 +6,14 @@
 
     <div
       v-else
-      class="container text-center"
+      class="muokkaukset text-center"
     >
       <div
         v-for="(muokkaustieto, index) in muokkaustiedotRouted"
         :key="muokkaustieto.id"
-        class="row muokkaustieto"
+        class="flex flex-wrap muokkaustieto"
       >
-        <div class="col col-auto ikoni-col center-block">
+        <div class="ikoni-col flex w-auto shrink-0 flex-col items-center mr-2">
           <div class="ikoni d-inline-block">
             <EpMaterialIcon :class="muokkaustieto.iconClass">
               {{ muokkaustieto.icon }}
@@ -27,16 +27,16 @@
           </div>
         </div>
 
-        <div class="col router-col text-left">
+        <div class="router-col min-w-0 flex-1 basis-0 text-left">
           <component
             :is="muokkaustieto.komponentti"
             :to="muokkaustieto.route"
           >
             <div
               class="router-box"
-              :class="{ 'router-box-poistettu': muokkaustieto.poistettu, 'd-flex flex-row-reverse justify-content-between': !muokkaustieto.kayttajaNimi }"
+              :class="{ 'router-box-poistettu': muokkaustieto.poistettu, 'flex flex-row-reverse justify-between': !muokkaustieto.kayttajaNimi }"
             >
-              <div class="d-flex justify-content-between">
+              <div class="flex justify-between">
                 <div
                   v-if="muokkaustieto.kayttajaNimi"
                   class="nimi"
@@ -44,7 +44,7 @@
                   {{ muokkaustieto.kayttajaNimi }}
                 </div>
                 <div
-                  class="aika text-right"
+                  class="aika text-end"
                   :title="$sdt(muokkaustieto.luotu)"
                 >
                   {{ $ago(muokkaustieto.luotu) }}
@@ -74,13 +74,13 @@
         class="tyhja"
       >{{ $t('viimeaikainen-toiminta-tyhja') }}</span>
       <div v-else>
-        <ep-button
+        <EpButton
           v-if="!lisahaku && muokkaustiedotRouted.length % hakuLukumaara == 0 && muokkaustiedot && (!viimeinenHaku || viimeinenHaku.length > 0)"
           variant="link"
           @click="haeLisaa"
         >
           {{ $t('nayta-lisaa') }}
-        </ep-button>
+        </EpButton>
         <ep-spinner v-if="lisahaku" />
       </div>
     </div>
@@ -226,7 +226,7 @@ onMounted(async () => {
 <style scoped lang="scss">
 @import "@shared/styles/_variables.scss";
 
-  .container {
+  .muokkaukset {
     margin-top: 40px;
     margin-bottom: 20px;
     min-width: 450px;
@@ -283,7 +283,8 @@ onMounted(async () => {
 
         .aikajana {
           z-index: 10;
-          height: 100%;
+          height: 100px;
+          position: absolute;
           background: linear-gradient($gray-lighten-2, $gray-lighten-2) no-repeat center/2px 100%;
         }
 
@@ -291,7 +292,7 @@ onMounted(async () => {
 
       .router-col {
         padding: 0;
-        width: 0;
+        min-width: 0;
 
         .router-box {
           line-height: 1;

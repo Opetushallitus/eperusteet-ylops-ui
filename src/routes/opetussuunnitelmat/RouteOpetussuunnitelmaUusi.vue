@@ -9,7 +9,7 @@
         <template #header>
           <h3>{{ $t('mita-haluat-luoda') }} *</h3>
         </template>
-        <b-form-group class="mt-0">
+        <div class="mt-2 flex flex-col">
           <EpRadio
             v-model="opetussuunnitelmaOrganisaatioTaso"
             name="uusi-ops-organisaatiotasovalinta"
@@ -24,15 +24,17 @@
           >
             {{ $t('oppilaitoksen-opetussuunnitelman') }}
           </EpRadio>
-        </b-form-group>
+        </div>
       </ep-form-content>
-      <ep-form-content name="opetussuunnitelman-pohjatyyppi-pakollinen">
-        <b-form-group class="mt-0">
+      <ep-form-content>
+        <template #header>
+          <h3>{{ $t('opetussuunnitelman-pohjatyyppi-pakollinen') }}</h3>
+        </template>
+        <div class="mt-2 flex flex-col">
           <EpRadio
             v-model="oletuspohjasta"
             name="uusi-ops-pohjavalinta"
             value="pohjasta"
-            @change="updateOletuspohja"
           >
             {{ $t('vain-perustetta') }}
           </EpRadio>
@@ -40,19 +42,20 @@
             v-model="oletuspohjasta"
             name="uusi-ops-pohjavalinta"
             value="opsista"
-            @change="updateOletuspohja"
           >
             {{ $t('toista-opetussuunnitelmaa') }}
           </EpRadio>
-        </b-form-group>
+        </div>
       </ep-form-content>
       <div v-if="oletuspohjasta">
         <div class="form-group">
           <div v-if="pohjat">
             <ep-form-content
               v-if="pohjat.length > 0"
-              name="uusi-ops-pohja-pakollinen"
             >
+              <template #header>
+                <h3>{{ $t('uusi-ops-pohja-pakollinen') }}</h3>
+              </template>
               <EpMultiSelect
                 v-model="uusi.pohja"
                 track-by="id"
@@ -134,7 +137,7 @@
       </div>
       <div v-if="uusi.pohja">
         <hr>
-        <div class="d-flex">
+        <div class="flex">
           <h2 class="mb-3">
             {{ $t('organisaatiot') }}
           </h2>
@@ -210,20 +213,20 @@
         </div>
 
         <div class="text-right">
-          <b-button
+          <EpButton
             class="mr-4"
             variant="link"
             :to="{ name: 'opetussuunnitelmaListaus'}"
           >
             {{ $t('peruuta') }}
-          </b-button>
-          <ep-button
+          </EpButton>
+          <EpButton
             :disabled="$v.uusi.$invalid || addingOpetussuunnitelma"
             :show-spinner="addingOpetussuunnitelma"
             @click="luoUusiOpetussuunnitelma"
           >
             {{ $t('luo-opetussuunnitelma') }}
-          </ep-button>
+          </EpButton>
         </div>
       </div>
     </div>
@@ -384,7 +387,7 @@ const pohjatFilter = (pohjatParam: OpetussuunnitelmaInfoDto[] | null) => {
     .value();
 };
 
-const updateOletuspohja = (value: PohjaTyyppi) => {
+watch(oletuspohjasta, (value) => {
   oletuspohjasta.value = value;
   initUusi();
   uusi.value.luontityyppi = OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA;
@@ -392,7 +395,7 @@ const updateOletuspohja = (value: PohjaTyyppi) => {
   if (oletuspohjasta.value === 'pohjasta') {
     uusi.value.luontityyppi = OpetussuunnitelmaLuontiDtoLuontityyppiEnum.KOPIO;
   }
-};
+});
 
 const nimiSearchIdentity = (obj: any) => {
   return _.toLower($kaanna(obj.nimi));

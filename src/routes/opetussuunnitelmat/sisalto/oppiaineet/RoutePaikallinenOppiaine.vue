@@ -13,16 +13,16 @@
           v-if="tuotuOppimaara"
           #muokkaa-content
         >
-          <div class="muokkaus-esto align-self-center">
+          <div class="muokkaus-esto self-center">
             {{ $t('et-voi-muokata-pohjan-oppimaaraa') }}
             <div class="d-inline">
-              <b-button
+              <EpButton
                 id="muokkaus-esto"
                 variant="link"
                 @click="remove()"
               >
                 {{ $t('poista-oppimaara') }}
-              </b-button>
+              </EpButton>
             </div>
           </div>
         </template>
@@ -39,8 +39,11 @@
         </template>
         <template #default="{ data, validation, isEditing, supportData }">
           <div class="content">
-            <b-row v-if="isEditing">
-              <b-col>
+            <div
+              v-if="isEditing"
+              class="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+              <div>
                 <ep-form-content :name="data.perusteenOppiaineUri ? 'oppimaara-nimi-ohje' : 'oppiaine-nimi-ohje'">
                   <ep-field
                     v-model="data.nimi"
@@ -49,11 +52,11 @@
                     :is-editing="isEditing"
                   />
                 </ep-form-content>
-              </b-col>
-              <b-col />
-            </b-row>
-            <b-row>
-              <b-col v-if="isEditing || data.perusteenOppiaineUri">
+              </div>
+              <div class="hidden md:block" />
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-if="isEditing || data.perusteenOppiaineUri">
                 <ep-form-content name="oppiainekoodi">
                   <ep-oppiaine-selector
                     v-model="data.perusteenOppiaineUri"
@@ -64,10 +67,10 @@
                     :oppiaine-filter="oppiaineFilter"
                   />
                 </ep-form-content>
-              </b-col>
-              <b-col>
+              </div>
+              <div>
                 <ep-form-content>
-                  <div class="d-flex">
+                  <div class="flex">
                     <label class="mr-1">{{ $t('koodi') }}</label>
                     <EpInfoPopover v-if="isEditing">
                       <div v-html="$t('koodiohje')" />
@@ -92,8 +95,8 @@
                     </template>
                   </ep-field>
                 </ep-form-content>
-              </b-col>
-            </b-row>
+              </div>
+            </div>
             <div>
               <ep-collapse
                 tyyppi="tehtava"
@@ -246,14 +249,14 @@
                     <span class="pituus">{{ opintojakso.laajuus }} {{ $t('opintopiste') }}</span>
                   </div>
                 </div>
-                <ep-button
+                <EpButton
                   v-if="!isUusi()"
                   class="mt-2"
                   icon="add"
                   @click="uusiOpintojakso()"
                 >
                   {{ $t('uusi-opintojakso') }}
-                </ep-button>
+                </EpButton>
               </div>
             </div>
           </div>
