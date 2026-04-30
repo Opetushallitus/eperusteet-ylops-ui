@@ -2,9 +2,9 @@
   <ep-spinner v-if="isLoading" />
   <div
     v-else
-    class="sidebar d-flex flex-column flex-fill"
+    class="sidebar flex flex-col flex-auto"
   >
-    <ul class="navigation flex-fill">
+    <ul class="navigation flex-auto">
       <li class="p-0">
         <router-link :to="{name: 'yleisnakyma'}">
           <div class="hallintapaneeli">
@@ -15,7 +15,7 @@
 
       <ep-recursive-nav :value="valikkoData">
         <template #previousLink="{ itemData, itemRoute, navigate }">
-          <li class="previous-link align-items-start">
+          <li class="previous-link flex items-start">
             <ops-sidenav-link
               class="back-btn"
               tag="span"
@@ -81,7 +81,7 @@
             </div>
             <div
               v-else
-              class="d-inline-flex"
+              class="inline-flex"
             >
               <div v-if="onModuuli(itemData.item)">
                 <ep-color-indicator
@@ -118,8 +118,8 @@
             :to="itemRoute"
             :click="navigate"
           >
-            <div class="d-flex w-100">
-              <div class="flex-grow-1">
+            <div class="flex w-full">
+              <div class="grow">
                 {{ kaanna(itemData.item) }}
                 <span
                   v-if="haeKoodi(itemData.item)"

@@ -227,6 +227,10 @@ const perusteenTekstinKoodinArvo = computed(() => {
   return tekstikappaleStore.value?.data?.perusteenTeksti?.perusteenOsa?.koodi?.arvo;
 });
 
+const isPohja = computed(() => {
+  return ops.value?.tyyppi === 'pohja';
+});
+
 watch(versionumero, async () => {
   await fetch();
 }, { immediate: true });

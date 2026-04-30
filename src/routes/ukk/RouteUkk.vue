@@ -1,5 +1,5 @@
 <template>
-  <ep-main-view>
+  <ep-main-view container>
     <!-- Rajaimet-->
     <template #header>
       <h1>{{ $t('ukk') }}</h1>
@@ -11,20 +11,21 @@
           class="mb-3"
         />
         <p>{{ $t('ukk-luoja-rajaus') }}:</p>
-        <div
-          v-for="(org, idx) in organisaatiot"
-          :key="idx"
-          class="form-check form-check-inline"
-        >
-          <ep-toggle
-            :id="org.oid"
-            v-model="org.$checked"
+        <div class="flex flex-wrap gap-1">
+          <div
+            v-for="(org, idx) in organisaatiot"
+            :key="idx"
           >
-            {{ $kaanna(org.nimi) }}
-          </ep-toggle>
+            <ep-toggle
+              :id="org.oid"
+              v-model="org.$checked"
+            >
+              {{ $kaanna(org.nimi) }}
+            </ep-toggle>
+          </div>
         </div>
         <p>
-          <ep-button
+          <EpButton
             v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }"
             class="float-right"
             variant="outline-primary"
@@ -32,20 +33,23 @@
             @click="startKysymysModal(null)"
           >
             {{ $t('lisaa-uusi-kysymys') }}
-          </ep-button>
+          </EpButton>
         </p>
       </div>
     </template>
 
     <!-- Kysymykset-->
     <template #custom-content>
-      <div v-if="!isLoading">
+      <div
+        v-if="!isLoading"
+        class="mt-12"
+      >
         <div
           v-for="kysymys in kysymyksetFormatted"
           :key="kysymys.id"
-          class="row"
+          class="w-full"
         >
-          <div class="col">
+          <div class="w-full min-w-0">
             <div
               v-oikeustarkastelu="{ oikeus: 'tilanvaihto', kohde: 'pohja' }"
               class="float-right"
@@ -81,56 +85,49 @@
       </div>
     </template>
 
-    <!-- Kysymyksen poiston vahvistus modal-->
-    <b-modal
+    <EpModal
       id="removeKysymys"
       ref="removeKysymys"
       class="backdrop"
-      :lazy="true"
       size="lg"
+      :ok-text="$t('poista')"
+      :cancel-text="$t('peruuta')"
       @ok="deleteKysymys"
     >
-      <span class="mr-2">{{ $t('haluatko-poistaa-kysymyksen') }}</span>
-      <template #modal-cancel>
-        {{ $t('peruuta') }}
+      <template #modal-title>
+        {{ $t('haluatko-poistaa-kysymyksen') }}
       </template>
-      <template #modal-ok>
-        {{ $t('poista') }}
-      </template>
-    </b-modal>
+    </EpModal>
 
     <!-- Kysymyksen luomisen ja muokkaamisen modaali-->
     <template #after>
-      <b-modal
+      <EpModal
         id="createUpdateKysymys"
         ref="createUpdateKysymys"
         class="backdrop"
-        :no-close-on-backdrop="true"
-        :no-enforce-focus="true"
-        :lazy="true"
-        :ok-disabled="$v.kysymys.$invalid"
         size="lg"
+        :ok-disabled="$v.kysymys.$invalid"
+        :ok-text="kysymys.$uusi ? $t('lisaa-kysymys') : $t('tallenna')"
+        :cancel-text="$t('peruuta')"
         @ok="createUpdateKysymysHandler"
       >
         <template #modal-title>
-          <span class="mr-2">{{ kysymys.$uusi ? $t('lisaa-uusi-kysymys') : $t('muokkaa-kysymys') }}</span>
-          <!-- Sisällön kieli-->
-          <b-dropdown
-            class="float-right"
-            size="sm"
-          >
-            <template #button-content>
-              <span>{{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}</span>
-            </template>
-            <b-dropdown-item
-              v-for="kieli in sovelluksenKielet"
-              :key="kieli"
-              :disabled="kieli === sisaltoKieli"
-              @click="valitseSisaltoKieli(kieli)"
-            >
-              {{ kieli }}
-            </b-dropdown-item>
-          </b-dropdown>
+          <div class="flex flex-wrap items-center justify-between gap-2 w-full">
+            <span>{{ kysymys.$uusi ? $t('lisaa-uusi-kysymys') : $t('muokkaa-kysymys') }}</span>
+            <EpDropdown class="shrink-0">
+              <template #button-content>
+                <span>{{ $t('kieli-sisalto') }}: {{ sisaltoKieli }}</span>
+              </template>
+              <EpDropdownItem
+                v-for="kieli in sovelluksenKielet"
+                :key="kieli"
+                :disabled="kieli === sisaltoKieli"
+                @click="valitseSisaltoKieli(kieli as Kieli)"
+              >
+                {{ $t(kieli) }}
+              </EpDropdownItem>
+            </EpDropdown>
+          </div>
         </template>
         <ep-form-content name="kysymys-nimi">
           <ep-content
@@ -151,25 +148,29 @@
           />
         </ep-form-content>
         <ep-form-content name="nayta-organisaatioissa">
-          <ep-select
+          <ep-multi-select
             v-model="kysymys.organisaatiot"
             help="kysymys-organisaatiot-ohje"
             :is-editing="true"
-            :items="organisaatiot"
+            :options="organisaatiot"
             :multiple="true"
+            label="nimi"
+            track-by="oid"
+            :searchable="false"
+            open-direction="top"
           >
-            <template #default="{ item }">
-              {{ $kaanna(item.nimi) }}
+            <!-- <template #tag="{ option, remove }">
+              <span class="mr-2 border-1 border-solid px-2 py-1 rounded-md">
+                {{ $kaanna(option.nimi) }}
+              </span>
             </template>
-          </ep-select>
+
+            <template #option="{ option }">
+              {{ $kaanna(option.nimi) }}
+            </template> -->
+          </ep-multi-select>
         </ep-form-content>
-        <template #modal-cancel>
-          {{ $t('peruuta') }}
-        </template>
-        <template #modal-ok>
-          {{ kysymys.$uusi ? $t('lisaa-kysymys') : $t('tallenna') }}
-        </template>
-      </b-modal>
+      </EpModal>
     </template>
   </ep-main-view>
 </template>
@@ -187,12 +188,16 @@ import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
-import EpMainView from '@/components/EpMainView/EpMainView.vue';
+import EpMainView from '@shared/components/EpMainView/EpMainView.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpModal from '@shared/components/EpModal/EpModal.vue';
+import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
+import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
+import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 
 export interface KysymysLaajennettuDto extends KysymysDto {
   $uusi?: boolean;
@@ -267,6 +272,10 @@ const kysymyksetFormatted = computed(() => {
 
       return found;
     })
+    .map(k => ({
+      ...k,
+      organisaatiot: _.map(k.organisaatiot, org => _.find(orgs.value, o => o.oid === org.oid) || org),
+    }))
     .sortBy((k: any) => -k.luotu) // Laskeva järjestys
     .value();
 });
@@ -280,8 +289,7 @@ const organisaatiotOptions = computed(() => {
 });
 
 // Luodaan uusi kysymys tai muokataan kysymystä riippuen tilanteesta
-const createUpdateKysymysHandler = async (event: any) => {
-  event.preventDefault(); // Piilotetaan modaali myöhemmin
+const createUpdateKysymysHandler = async () => {
   try {
     if (kysymys.value.id) {
       // Muokataan olemassa olevaa

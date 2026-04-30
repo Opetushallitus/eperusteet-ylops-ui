@@ -5,9 +5,12 @@
     </router-link>
 
     <ep-spinner v-if="!ops || !virkailijat" />
-    <div v-else>
-      <div class="row">
-        <div class="col-5">
+    <div
+      v-else
+      class="flex flex-col gap-4"
+    >
+      <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-12 md:col-span-5">
           <EpPerustietoData icon="account_balance">
             <template #header>
               {{ $t('peruste') }}
@@ -15,7 +18,7 @@
             {{ ops.perusteenDiaarinumero }}
           </EpPerustietoData>
         </div>
-        <div class="col-7">
+        <div class="col-span-12 md:col-span-7">
           <EpPerustietoData icon="language">
             <template #header>
               {{ $t('julkaisukielet') }}
@@ -25,8 +28,8 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-5">
+      <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-12 md:col-span-5">
           <EpPerustietoData icon="calendar_month">
             <template #header>
               {{ $t('luotu') }}
@@ -34,7 +37,7 @@
             {{ $sdt(ops.luotu) }}
           </EpPerustietoData>
         </div>
-        <div class="col-7">
+        <div class="col-span-12 md:col-span-7">
           <EpPerustietoData icon="calendar_month">
             <template #header>
               {{ $t('julkaistu') }}
@@ -44,8 +47,8 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-5">
+      <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-12 md:col-span-5">
           <EpPerustietoData icon="groups">
             <template #header>
               {{ $t('tyoryhma') }}
@@ -57,25 +60,25 @@
             >
               {{ virkailija.esitysnimi }}
             </p>
-            <ep-button
+            <EpButton
               v-if="!naytaLisaaTyoryhmaa && virkailijat.length > tyoryhmaAlkuMaara"
               variant="link"
               button-class="pl-0 mt-2"
               @click="naytaLisaaTyoryhmaa = true"
             >
               {{ $t('nayta-lisaa') }}
-            </ep-button>
-            <ep-button
+            </EpButton>
+            <EpButton
               v-if="naytaLisaaTyoryhmaa"
               variant="link"
               button-class="pl-0 mt-2"
               @click="naytaLisaaTyoryhmaa = false"
             >
               {{ $t('piilota') }}
-            </ep-button>
+            </EpButton>
           </EpPerustietoData>
         </div>
-        <div class="col-7">
+        <div class="col-span-12 md:col-span-7">
           <EpPerustietoData icon="visibility">
             <template #header>
               {{ $t('esikatsele-opetussuunnitelmaa') }}
@@ -90,8 +93,8 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-12">
+      <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-12">
           <EpPerustietoData icon="folder">
             <template #header>
               {{ $t('pohjat') }}
