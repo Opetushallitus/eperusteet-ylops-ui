@@ -5,17 +5,15 @@
     sticky-z-index="600"
     :class="headerClass"
   >
-    <b-navbar
+    <nav
       id="navigation-bar"
-      class="ep-navbar"
-      :type="headerClass"
-      toggleable="md"
+      class="ep-navbar flex flex-wrap items-center min-h-14 px-3 w-full"
       :class="'navbar-style-' + tyyli"
       :style="{ 'background-attachment': sticky ? 'fixed' : '', ...headerStyle }"
     >
-      <b-navbar-nav>
+      <div class="flex flex-1 flex-wrap items-center min-w-0">
         <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
+          <ol class="breadcrumb flex flex-wrap list-none pl-0 mb-0">
             <li class="breadcrumb-item">
               <router-link
                 id="nav-admin"
@@ -25,35 +23,34 @@
               </router-link>
             </li>
             <li
-              v-for="(route, idx) in routePath"
+              v-for="(routeItem, idx) in routePath"
               :key="idx"
               class="breadcrumb-item"
             >
               <router-link
-                v-if="route.muru && route.muru.location"
-                :to="route.muru.location"
+                v-if="routeItem.muru && routeItem.muru.location"
+                :to="routeItem.muru.location"
               >
-                {{ $kaanna(route.muru.name) }}
+                {{ $kaanna(routeItem.muru.name) }}
               </router-link>
-              <span v-else-if="route.muru">
-                {{ $kaanna(route.muru.name) }}
+              <span v-else-if="routeItem.muru">
+                {{ $kaanna(routeItem.muru.name) }}
               </span>
-              <span v-else>{{ $t('route-' + route.name) }}</span>
+              <span v-else>{{ $t('route-' + routeItem.name) }}</span>
             </li>
           </ol>
         </nav>
-      </b-navbar-nav>
-      <b-navbar-nav class="ml-auto">
-        <!-- Sisällön kieli-->
-        <b-nav-item-dropdown
+      </div>
+      <div class="flex items-center gap-2 ml-auto shrink-0">
+        <EpDropdown
           id="content-lang-selector"
-          right
+          :right="true"
         >
           <template #button-content>
             <span class="kielivalitsin">{{ $t("kieli-sisalto") }}: {{ $t(sisaltoKieli) }}</span>
           </template>
-          <div class="kielet">
-            <b-dd-item
+          <div class="kielet text-right min-w-48">
+            <EpDropdownItem
               v-for="kieli in sovelluksenKielet"
               :key="kieli"
               :disabled="kieli === sisaltoKieli"
@@ -66,17 +63,17 @@
                 check
               </EpMaterialIcon>
               {{ $t(kieli) }}
-            </b-dd-item>
+            </EpDropdownItem>
           </div>
-        </b-nav-item-dropdown>
+        </EpDropdown>
 
         <ep-kayttaja
           :tiedot="tiedot"
           :sovellus-oikeudet="sovellusOikeudet"
           :logout-href="logoutHref"
         />
-      </b-navbar-nav>
-    </b-navbar>
+      </div>
+    </nav>
   </div>
 </template>
 
@@ -84,16 +81,15 @@
 import _ from 'lodash';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import Sticky from 'vue-sticky-directive';
 import { Kieli } from '@shared/tyypit';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { Murupolku } from '@/stores/murupolku';
-import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
 import { Kayttajat } from '@/stores/kayttaja';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpKayttaja from '@shared/components/EpKayttaja/EpKayttaja.vue';
 import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
+import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
 import { baseURL } from '@shared/api/ylops';
 
 const props = withDefaults(
@@ -106,7 +102,8 @@ const props = withDefaults(
     sticky: false,
     tyyli: 'normaali',
     headerClass: 'dark',
-  });
+  },
+);
 
 const route = useRoute();
 
@@ -201,27 +198,10 @@ const logoutHref = computed(() => {
     }
 
     .kielet {
-      text-align: right;
-
       .valittu {
         color: #3467E3;
         vertical-align: -0.25em;
       }
-    }
-
-    :deep(.dropdown-menu) {
-      padding: 0;
-      color: #000000;
-      min-width: initial;
-    }
-
-    :deep(.dropdown-item) {
-      padding: 0.5rem 1rem;
-      color: #000000;
-    }
-
-    :deep(.dropdown-item:hover) {
-      background-color: inherit;
     }
 
   }

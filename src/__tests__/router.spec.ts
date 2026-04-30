@@ -21,6 +21,18 @@ import Root from '@/routes/Root.vue';
 import { vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 
+function teleportPassthroughStub() {
+  return {
+    inheritAttrs: false,
+    setup(
+      _props: unknown,
+      ctx: { slots: { default?: (...args: unknown[]) => unknown } },
+    ) {
+      return () => ctx.slots.default?.();
+    },
+  };
+}
+
 vi.mock('vue3-text-clamp', () => ({
   default: {
     install: vi.fn(),
@@ -62,6 +74,9 @@ vi.mock('axios', () => {
 describe('Router', () => {
 
   beforeEach(async () => {
+    // vue-router scrollBehavior calls scrollTo; jsdom does not implement it
+    window.scrollTo = vi.fn() as typeof window.scrollTo;
+
     // Create and activate a fresh Pinia instance for each test
     const pinia = createPinia();
     setActivePinia(pinia);
@@ -175,8 +190,15 @@ describe('Router', () => {
 
     await Kayttajat.init();
     return mount(Root, {
+      props: {
+        kayttajaStore: Kayttajat,
+      },
       global: {
         ...globalStubs,
+        stubs: {
+          ...globalStubs.stubs,
+          Teleport: teleportPassthroughStub(),
+        },
         plugins: [
           ...(globalStubs.plugins || []),
           router,

@@ -131,13 +131,13 @@
                 </div>
               </div>
             </div>
-            <ep-button
+            <EpButton
               v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }"
               icon="add"
               @click="uusiOpintojakso()"
             >
               {{ $t('uusi-opintojakso') }}
-            </ep-button>
+            </EpButton>
           </ep-collapse>
         </div>
       </div>

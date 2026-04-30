@@ -1,21 +1,21 @@
 <template>
   <div>
-    <ep-button
+    <EpButton
       icon="keyboard_return"
       variant="link"
       :show-spinner="palautuksessa"
       @click="showModal"
     >
       {{ $t('palauta') }}
-    </ep-button>
+    </EpButton>
 
-    <b-modal
+    <EpModal
       ref="opsPalautusModal"
       size="lg"
       class="palautus-modal"
     >
-      <template #modal-header>
-        <h5 class="modal-title">
+      <template #modal-title>
+        <h5 class="modal-title m-0 font-semibold">
           {{ $t(tyyppitekstit.palautaOps) }}
         </h5>
       </template>
@@ -26,36 +26,36 @@
       />
 
       <template #modal-footer>
-        <div class="d-flex">
-          <ep-button
+        <div class="flex flex-wrap gap-2 justify-end">
+          <EpButton
             variant="link"
             @click="peruuta"
           >
             {{ $t('peruuta') }}
-          </ep-button>
-          <ep-button
+          </EpButton>
+          <EpButton
             variant="primary"
             @click="palauta('luonnos')"
           >
             {{ $t('palauta-luonnokseksi') }}
-          </ep-button>
-          <ep-button
+          </EpButton>
+          <EpButton
             v-if="isJulkaistu"
             variant="primary"
-            class="ml-3"
             @click="palauta('julkaistu')"
           >
             {{ $t('palauta-julkaistuksi') }}
-          </ep-button>
+          </EpButton>
         </div>
       </template>
-    </b-modal>
+    </EpModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpModal from '@shared/components/EpModal/EpModal.vue';
 
 import { $t } from '@shared/utils/globals';
 
@@ -67,13 +67,10 @@ const emit = defineEmits<{
   palauta: [opetussuunnitelma: any, tila: 'luonnos' | 'julkaistu', callback: () => void];
 }>();
 
-// Template refs
 const opsPalautusModal = useTemplateRef('opsPalautusModal');
 
-// Reactive data
 const palautuksessa = ref(false);
 
-// Computed properties
 const isJulkaistu = computed(() => {
   return !!props.opetussuunnitelma?.viimeisinJulkaisuAika;
 });
@@ -97,7 +94,6 @@ const tyyppitekstit = computed(() => {
   return tekstit[props.opetussuunnitelma.tyyppi];
 });
 
-// Methods
 const showModal = () => {
   opsPalautusModal.value?.show();
 };

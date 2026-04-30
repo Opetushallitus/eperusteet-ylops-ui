@@ -6,7 +6,7 @@
     <div v-else>
       <div
         v-if="isLops2019"
-        class="box d-inline-flex align-items-center flex-column"
+        class="box inline-flex items-center flex-col"
       >
         <div class="count">
           {{ luodutOpintojaksot }}
@@ -18,7 +18,7 @@
 
       <div
         v-if="isLops2019"
-        class="box d-inline-flex align-items-center flex-column"
+        class="box inline-flex items-center flex-col"
       >
         <div class="count">
           <span>{{ liitetytModuulitLukumaara }}</span>
@@ -31,7 +31,7 @@
 
       <div
         v-if="isLops2019"
-        class="box d-inline-flex align-items-center flex-column"
+        class="box inline-flex items-center flex-col"
       >
         <div class="count">
           {{ useanOppiaineenOpintojaksot }}
@@ -43,7 +43,7 @@
 
       <div
         v-if="!isLops2019"
-        class="box d-inline-flex align-items-center flex-column"
+        class="box inline-flex items-center flex-col"
       >
         <div class="count">
           {{ oppimaarat }}
@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <div class="box d-inline-flex align-items-center flex-column">
+      <div class="box inline-flex items-center flex-col">
         <div
           v-if="isLops2019"
           class="count"

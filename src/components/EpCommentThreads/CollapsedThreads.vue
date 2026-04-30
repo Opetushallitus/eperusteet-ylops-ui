@@ -2,7 +2,7 @@
   <div class="ketju">
     <div v-if="first">
       <div class="kommentti p-3">
-        <div class="topbar d-flex align-items-center justify-content-between">
+        <div class="topbar flex items-center justify-between">
           <div class="pvm">
             {{ $ago(first.luotu || new Date()) }}
           </div>
@@ -22,7 +22,7 @@
     </div>
     <div v-if="last">
       <div class="kommentti p-3">
-        <div class="topbar d-flex align-items-center justify-content-between">
+        <div class="topbar flex items-center justify-between">
           <div class="pvm">
             {{ $ago(last.luotu || new Date()) }}
           </div>
@@ -37,12 +37,11 @@
     </div>
     <div>
       <div class="kommentti purettu pl-1 text-muted">
-        <b-button
+        <EpButton
           variant="link"
+          icon="search"
           @click="activateThread()"
-        >
-          <EpMaterialIcon>search</EpMaterialIcon>
-        </b-button>
+        />
       </div>
     </div>
   </div>
@@ -53,7 +52,7 @@ import { computed } from 'vue';
 import { KommenttiDto } from '@shared/api/ylops';
 import { Kommentit } from '@/stores/kommentit';
 import _ from 'lodash';
-import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { $t } from '@shared/utils/globals';
 
 const props = defineProps<{

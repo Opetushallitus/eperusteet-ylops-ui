@@ -6,13 +6,13 @@
     :style="style"
   >
     <div class="commentbox">
-      <b-button
+      <EpButton
         v-if="onAdd"
         variant="primary"
         @click="onAdd"
       >
         {{ lisaaKommenttiTeksti }}
-      </b-button>
+      </EpButton>
     </div>
   </div>
   <span v-else />
@@ -22,7 +22,7 @@
 import { computed, useTemplateRef } from 'vue';
 import _ from 'lodash';
 import { Kommentit } from '@/stores/kommentit';
-import EpRoundButton from '@shared/components/EpButton/EpRoundButton.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { $t } from '@shared/utils/globals';
 
 const props = defineProps<{

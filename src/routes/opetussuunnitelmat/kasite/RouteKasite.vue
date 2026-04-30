@@ -1,6 +1,6 @@
 <template>
   <div class="kasitteet">
-    <div class="ylapaneeli d-flex align-items-center">
+    <div class="ylapaneeli flex items-center">
       <h2 class="otsikko">
         {{ $t('kasitteet') }}
       </h2>
@@ -16,12 +16,13 @@
           class="mb-3"
         />
         <div class="lisaysnappi">
-          <button @click="avaaMuokkausModal(null)">
-            <EpMaterialIcon class="mr-2">
-              add
-            </EpMaterialIcon>
-            <span>{{ $t('lisaa-kasite') }}</span>
-          </button>
+          <EpButton
+            variant="outline-primary"
+            icon="add"
+            @click="avaaMuokkausModal(null)"
+          >
+            {{ $t('lisaa-kasite') }}
+          </EpButton>
         </div>
       </div>
       <div class="kasitelista">
@@ -43,20 +44,20 @@
             layout="normal"
           />
           <div class="toiminnot">
-            <button
-              class="btn btn-link"
+            <EpMaterialIcon
+              class="cursor-pointer text-blue-600 mr-2"
               @click="avaaPoistoModal(k.kasite)"
             >
-              <EpMaterialIcon>delete</EpMaterialIcon>
-            </button>
-            <button
-              class="btn btn-link"
+              delete
+            </EpMaterialIcon>
+            <EpMaterialIcon
+              class="cursor-pointer text-blue-600 mr-2"
               @click="avaaMuokkausModal(k.kasite)"
             >
               <EpMaterialIcon>edit</EpMaterialIcon>
-            </button>
+            </EpMaterialIcon>
             <button
-              class="btn btn-link"
+              class="btn btn-link text-blue-600"
               @click="k.closed = !k.closed"
             >
               <EpMaterialIcon v-if="k.closed">
@@ -70,50 +71,47 @@
         </div>
       </div>
     </div>
-    <!-- Käsitteen poisto modal-->
-    <b-modal
+    <EpModal
       id="kasitteenPoistoModal"
       ref="kasitteenPoistoModal"
       class="backdrop"
-      :lazy="true"
       size="lg"
+      :ok-text="$t('poista')"
+      :cancel-text="$t('peruuta')"
       @ok="poistaKasite"
     >
-      <span class="mr-2">{{ $t('haluatko-poistaa-kasitteen') }}</span><template #modal-cancel>
-        {{ $t('peruuta') }}
-      </template><template #modal-ok>
-        {{ $t('poista') }}
+      <template #modal-title>
+        {{ $t('haluatko-poistaa-kasitteen') }}
       </template>
-    </b-modal>
+    </EpModal>
     <!-- Käsitteen luomisen ja muokkaamisen modaali-->
-    <b-modal
+    <EpModal
       id="kasitteenLuontiModal"
       ref="kasitteenLuontiModal"
       class="backdrop"
-      :no-close-on-backdrop="true"
-      :no-enforce-focus="true"
-      :lazy="true"
-      :ok-disabled="validation.$invalid"
       size="lg"
+      :ok-disabled="validation.$invalid"
+      :ok-text="kasite.id ? $t('tallenna') : $t('lisaa-kasite')"
+      :cancel-text="$t('peruuta')"
       @ok="tallennaKasite"
     >
       <template #modal-title>
-        <span class="mr-2">{{ kasite.id ? $t('muokkaa-kasitetta') : $t('lisaa-uusi-kasite') }}</span><!-- Sisällön kieli--><b-dropdown
-          class="float-right"
-          size="sm"
-        >
-          <template #button-content>
-            <span>{{ $t("kieli-sisalto") }}: {{ sisaltoKieli }}</span>
-          </template>
-          <b-dropdown-item
-            v-for="kieli in sovelluksenKielet"
-            :key="kieli"
-            :disabled="kieli === sisaltoKieli"
-            @click="valitseSisaltoKieli(kieli as Kieli)"
-          >
-            {{ kieli }}
-          </b-dropdown-item>
-        </b-dropdown>
+        <div class="flex flex-wrap items-center justify-between gap-2 w-full">
+          <span>{{ kasite.id ? $t('muokkaa-kasitetta') : $t('lisaa-uusi-kasite') }}</span>
+          <EpDropdown class="shrink-0">
+            <template #button-content>
+              <span>{{ $t('kieli-sisalto') }}: {{ sisaltoKieli }}</span>
+            </template>
+            <EpDropdownItem
+              v-for="kieli in sovelluksenKielet"
+              :key="kieli"
+              :disabled="kieli === sisaltoKieli"
+              @click="valitseSisaltoKieli(kieli as Kieli)"
+            >
+              {{ $t(kieli) }}
+            </EpDropdownItem>
+          </EpDropdown>
+        </div>
       </template>
       <ep-form-content name="kasite-termi">
         <ep-input
@@ -137,18 +135,14 @@
         <ep-toggle v-model="kasite.alaviite">
           {{ $t('merkitse-kasite-alaviitteeksi') }}
         </ep-toggle>
-      </ep-form-content><template #modal-cancel>
-        {{ $t('peruuta') }}
-      </template><template #modal-ok>
-        {{ kasite.id ? $t('tallenna') : $t('lisaa-kasite') }}
-      </template>
-    </b-modal>
+      </ep-form-content>
+    </EpModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import _ from 'lodash';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, useTemplateRef } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { TermiDto, Termisto } from '@shared/api/ylops';
@@ -161,9 +155,13 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpInput from '@shared/components/forms/EpInput.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpModal from '@shared/components/EpModal/EpModal.vue';
+import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
+import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
 import { $t } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { TermitStore } from '@/stores/TermitStore';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 
 interface Kasite {
   kasite: TermiDto;
@@ -181,8 +179,8 @@ const store = computed(() => props.opetussuunnitelmaStore);
 const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 const isLoading = computed(() => false); // Not needed from the route mixin
 // Template refs
-const kasitteenPoistoModal = ref();
-const kasitteenLuontiModal = ref();
+const kasitteenPoistoModal = useTemplateRef('kasitteenPoistoModal');
+const kasitteenLuontiModal = useTemplateRef('kasitteenLuontiModal');
 
 // Reactive data
 const termisto = ref<Kasite[]>([]);
@@ -253,9 +251,7 @@ const tallennaUusi = async () => {
   });
 };
 
-const tallennaKasite = async (e: Event) => {
-  e.preventDefault();
-
+const tallennaKasite = async () => {
   try {
     if (kasite.value.id) {
       await tallennaMuuttunut(kasite.value.id);

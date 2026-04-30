@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="sidenav d-flex">
+    <div class="sidenav flex">
       <div class="closed">
         <button
           v-if="!toggled"
@@ -14,9 +14,9 @@
       </div>
       <div
         v-if="toggled"
-        class="bar d-flex flex-column"
+        class="bar flex flex-col"
       >
-        <div class="d-flex flex-row">
+        <div class="flex flex-row">
           <button
             v-if="toggled"
             class="btn btn-link menubutton"
@@ -27,7 +27,7 @@
         </div>
         <slot
           name="bar"
-          class="flex-fill"
+          class="flex-auto"
         />
       </div>
       <div

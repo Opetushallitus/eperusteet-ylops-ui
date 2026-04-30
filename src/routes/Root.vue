@@ -1,11 +1,27 @@
 <template>
   <div
-    class="sticky-container root"
+    class="home-container minfull"
     sticky-container
   >
     <EpTestiymparisto />
 
-    <router-view class="view-container" />
+    <div class="view-container">
+      <EpNavbar
+        :kayttaja="kayttaja"
+        :sovellus-oikeudet="sovellusOikeudet"
+        :logout-href="logoutHref"
+        :sticky="routeStickyNavi"
+        :style="headerStyling"
+        :class="headerClass"
+      />
+      <div
+        ref="header"
+        class="header"
+      >
+        <div id="headerExtension" />
+      </div>
+      <RouterView />
+    </div>
     <ep-footer>
       <template #palaute>
         <EpPalauteLinkki yllapito-avain="ops-tyokalu-palaute-url" />
@@ -16,17 +32,61 @@
 
 <script setup lang="ts">
 import _ from 'lodash';
-import { computed } from 'vue';
+import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useHead } from '@unhead/vue';
-import Sticky from 'vue-sticky-directive';
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpFooter from '@shared/components/EpFooter/EpFooter.vue';
 import EpTestiymparisto from '@shared/components/EpTestiymparisto/EpTestiymparisto.vue';
 import EpPalauteLinkki from '@shared/components/EpPalauteLinkki/EpPalauteLinkki.vue';
-import { $t } from '@shared/utils/globals';
+import { $t, setConfirmModal } from '@shared/utils/globals';
+import { useConfirm } from 'primevue/useconfirm';
+import EpNavbar from '@shared/components/EpNavbar/EpNavbar.vue';
+import { computed } from 'vue';
+import { KayttajaStore } from '@/stores/kayttaja';
+import { baseURL } from '@shared/api/ylops';
+import { ref } from 'vue';
+import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
+import { provide } from 'vue';
+import { themes } from '@shared/utils/perusteet';
+import { Kielet } from '@shared/stores/kieli';
+import { updatePrimeVueLocale } from '@shared/utils/primevueUtils';
+import { usePrimeVue } from 'primevue/config';
+import { watch } from 'vue';
 
 const route = useRoute();
+
+const props = defineProps<{
+  kayttajaStore: KayttajaStore;
+}>();
+
+const headerStyling = ref(koulutustyyppiBanner('lukiokoulutus'));
+const headerClass = ref('dark');
+const primevue = usePrimeVue();
+
+provide('updateHeaderStyling', (koulutustyyppi: string) => {
+  headerStyling.value = koulutustyyppiBanner(koulutustyyppi);
+  headerClass.value = koulutustyyppi && themes[koulutustyyppi] !== 'lukiokoulutus' ? 'light' : 'dark';
+});
+
+const kayttaja = computed(() => {
+  return props.kayttajaStore?.tiedot?.value || null;
+});
+
+const sovellusOikeudet = computed(() => {
+  return props.kayttajaStore?.sovellusOikeudet.value;
+});
+
+const logoutHref = computed(() => {
+  return baseURL + '/api/logout';
+});
+
+const routeStickyNavi = computed(() => {
+  return route.name !== 'root';
+});
+
+watch(() => Kielet.uiKieli.value, () => {
+  updatePrimeVueLocale(primevue);
+}, { immediate: true });
 
 const getMetaInfo = () => {
   const lang = _.get(route, 'params.lang');
@@ -73,14 +133,32 @@ const getMetaInfo = () => {
 
 useHead(getMetaInfo);
 
+onMounted(() => {
+  setConfirmModal(useConfirm());
+});
 </script>
 <style lang="scss" scoped>
-@import '@/styles/_variables.scss';
+@import '@shared/styles/_variables.scss';
 
-.root {
+.home-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+
+  .header, :deep(.topbar) {
+    color: white;
+    background-image: url('@assets/img/banners/banner_lukio.svg');
+    background-attachment: fixed;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+    background-size: 100% 200px;
+    @media only screen and (min-width: 2503px)  {
+    }
+
+    h1 {
+      font-weight: 300;
+    }
+  }
 }
 
 .view-container {

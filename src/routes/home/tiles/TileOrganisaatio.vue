@@ -9,16 +9,15 @@
     <template #content>
       <ep-spinner v-if="isLoading" />
       <div v-else>
-        <b-row class="mx-5 virkailijat">
-          <b-col
+        <div class="mx-5 virkailijat grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div
             v-for="virkailija in virkailijatPrewview"
             :key="virkailija.oid"
             class="virkailija text-left"
-            sm="6"
           >
             <span>{{ virkailija.esitysnimi }}</span>
-          </b-col>
-        </b-row>
+          </div>
+        </div>
         <p
           v-if="virkailijat && virkailijat.length > previewSize"
           class="mt-3 mb-0"

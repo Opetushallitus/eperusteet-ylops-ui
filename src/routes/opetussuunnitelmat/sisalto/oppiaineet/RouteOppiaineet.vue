@@ -5,13 +5,13 @@
         <span>{{ $t('oppiaineet') }}</span>
       </h2>
 
-      <div class="row">
-        <div class="col-md-9">
+      <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-12 lg:col-span-9">
           <div>
             <p>{{ $t('route-oppiaineet-kuvaus') }}</p>
           </div>
           <div>
-            <div class="d-flex align-items-center">
+            <div class="flex items-center">
               <div class="p-2">
                 <ep-search v-model="query" />
               </div>
@@ -23,27 +23,24 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div>
-            <ep-button
-              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
-              class="w-100"
-              variant="outline-primary"
-              icon="add"
-              @click="uusiOppiaine()"
-            >
-              {{ $t('paikallinen-oppiaine') }}
-            </ep-button>
-            <ep-button
-              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
-              class="w-100"
-              variant="outline-primary"
-              icon="add"
-              @click="uusiOpintojakso()"
-            >
-              {{ $t('opintojakso') }}
-            </ep-button>
-          </div>
+        <div class="col-span-12 lg:col-span-3">
+          <EpButton
+            v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+            variant="outline"
+            icon="add"
+            @click="uusiOppiaine()"
+            class="mb-1"
+          >
+            {{ $t('paikallinen-oppiaine') }}
+          </EpButton>
+          <EpButton
+            v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
+            variant="outline-primary"
+            icon="add"
+            @click="uusiOpintojakso()"
+          >
+            {{ $t('opintojakso') }}
+          </EpButton>
         </div>
       </div>
       <table class="table table-borderless oppiaineet">
@@ -746,6 +743,9 @@ table.oppiaineet {
 
   th, td {
     border: none;
+    padding: 5px;
+    padding-left: 30px;
+    text-align: left;
   }
 
   thead {
@@ -773,11 +773,11 @@ table.oppiaineet {
     }
 
     &.oppimaara td:first-of-type {
-      padding-left: 40px;
+      padding-left: 50px;
     }
 
     td.actions {
-      padding: 5px;
+      padding-left: 30px;
     }
 
     .invalid {
@@ -796,6 +796,7 @@ table.oppiaineet {
 
     td {
       padding: 14px;
+      padding-left: 30px;
     }
   }
 
@@ -813,22 +814,16 @@ table.oppiaineet {
 
       tr.item {
         padding: 0;
-
-        td.op {
-          padding: 4px;
-        }
-        td.nimi {
-          padding: 4px;
-        }
       }
 
       .opintojakso {
         padding: 4px;
-        padding-left: 0;
+        padding-left: 30px;
       }
 
       .moduuli {
         padding: 4px;
+        padding-left: 30px;
         color: #000;
       }
 

@@ -3,11 +3,21 @@
     <div
       v-for="(text, idx) in innerValue"
       :key="idx"
+      class="mb-3"
     >
       <slot :kooditettu="text">
-        <h4 class="otsikko">
-          {{ $kaanna(used[text.koodi].nimi) }} ({{ used[text.koodi].koodiArvo }})
-        </h4>
+        <div class="flex items-center justify-between mb-1">
+          <h4 class="otsikko !m-0">
+            {{ $kaanna(used[text.koodi].nimi) }} ({{ used[text.koodi].koodiArvo }})
+          </h4>
+          <EpButton
+            v-if="isEditable"
+            variant="link"
+            @click="poistaKooditettuKuvaus(text)"
+          >
+            {{ $t('poista') }}
+          </EpButton>
+        </div>
         <ep-content
           :model-value="text.kuvaus"
           :is-editable="isEditable"
@@ -21,19 +31,21 @@
       v-if="isEditable"
       class="mt-4"
     >
-      <b-dropdown
-        :text="$t(nimi)"
-        variant="primary"
-      >
-        <b-dropdown-item-button
+      <EpDropdown>
+        <template #button-content>
+          <EpButton variant="primary">
+            {{ $t(nimi) }}
+          </EpButton>
+        </template>
+        <EpDropdownItem
           v-for="(koodi, idx) in used"
           :key="idx"
           :disabled="koodi.inUse"
           @click="addKooditettuKuvaus(koodi)"
         >
           {{ $kaanna(koodi.nimi) }} ({{ koodi.koodiArvo }})
-        </b-dropdown-item-button>
-      </b-dropdown>
+        </EpDropdownItem>
+      </EpDropdown>
     </div>
   </div>
 </template>
@@ -41,9 +53,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import * as _ from 'lodash';
-import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
-import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Lops2019PaikallinenLaajaAlainenDto } from '@shared/api/ylops';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
+import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
 import { LokalisoituTekstiDto } from '@shared/tyypit';
 import { $t, $kaanna } from '@shared/utils/globals';
 
@@ -90,6 +103,7 @@ const used = computed(() => {
 });
 
 const updateValue = (value: KoodiKuvaus[]) => {
+  console.log('updateValue', value);
   emit('update:modelValue', _.sortBy(value, 'koodi'));
 };
 
@@ -107,6 +121,10 @@ const addKooditettuKuvaus = (koodi: Koodi) => {
     koodi: koodi.koodiUri,
     kuvaus: {},
   }]);
+};
+
+const poistaKooditettuKuvaus = (item: KoodiKuvaus) => {
+  updateValue(innerValue.value.filter(k => k.koodi !== item.koodi));
 };
 </script>
 

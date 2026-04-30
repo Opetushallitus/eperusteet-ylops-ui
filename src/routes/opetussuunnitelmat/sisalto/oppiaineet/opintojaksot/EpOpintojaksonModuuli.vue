@@ -12,7 +12,7 @@
       {{ $kaanna(moduuli.nimi) }} ({{ moduuli.koodi.arvo }})
     </div>
     <div class="bottom">
-      <div class="d-flex bd-highlight justify-content-end">
+      <div class="flex justify-end">
         <div class="px-2 info">
           <span class="op">{{ moduuli.laajuus }} {{ $t('opintopiste') }}</span>
           <ep-color-indicator :kind="moduuli.pakollinen ? 'pakollinen' : 'valinnainen'" />

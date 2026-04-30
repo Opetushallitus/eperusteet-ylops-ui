@@ -28,13 +28,13 @@
       </ep-form-content>
     </div>
     <ep-spinner v-else />
-    <ep-button
+    <EpButton
       :disabled="$v.uusi.$invalid"
       :show-spinner="isSaving"
       @click="luoUusiPeruste"
     >
       {{ $t('luo-pohja') }}
-    </ep-button>
+    </EpButton>
   </ep-main-view>
 </template>
 
@@ -47,14 +47,12 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Ulkopuoliset, Opetussuunnitelmat, PerusteInfoDto, OpetussuunnitelmaLuontiDto } from '@shared/api/ylops';
 import { pohjaLuontiValidator } from '@/validators/ops';
 import { isPerusteSupported } from '@/utils/perusteet';
 import { createLogger } from '@shared/utils/logger';
-import { success } from '@/utils/notifications';
 import { Kieli } from '@shared/tyypit';
 import { $t, $kaanna, $success } from '@shared/utils/globals';
 
