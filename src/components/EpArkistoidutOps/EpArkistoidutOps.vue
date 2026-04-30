@@ -1,18 +1,16 @@
 <template>
   <div>
-    <ep-button
+    <EpButton
       variant="link"
       icon="folder"
       @click="open"
     >
       <span>{{ $t(title) }} </span>
-    </ep-button>
-    <b-modal
-      id="arkistoidutopetussuunnitelmatmodal"
+    </EpButton>
+    <EpModal
       ref="arkistoidutOpsModal"
       size="lg"
-      :title="modalTitle"
-      :hide-footer="true"
+      :header="modalTitle"
     >
       <div class="search">
         <ep-search v-model="query" />
@@ -20,38 +18,33 @@
       <EpSpinner v-if="!opetussuunnitelmat" />
 
       <template v-else-if="opetussuunnitelmat.data.length > 0">
-        <b-table
-          responsive
-          borderless
-          striped
-          :items="opetussuunnitelmat.data"
-          :fields="fields"
-        >
-          <template #cell(nimi)="data">
-            {{ $kaanna(data.value) }}
-          </template>
-
-          <template #cell(muokattu)="data">
-            {{ $sdt(data.value) }}
-          </template>
-
-          <template #cell(siirtyminen)="data">
-            <EpPalautusModal
-              :opetussuunnitelma="data.item"
-              @palauta="palauta"
-            />
-          </template>
-        </b-table>
-
-        <EpPagination
-          v-model="opsSivu"
-          :total-rows="opetussuunnitelmat['kokonaismäärä']"
-          :per-page="10"
-          aria-controls="arkistoidut-opetussuunnitelmat"
-          align="center"
-        />
+        <div class="overflow-x-auto">
+          <EpTable
+            data-key="id"
+            responsive
+            :items="opetussuunnitelmat.data"
+            :fields="fields"
+            :per-page="10"
+          >
+            <template #cell(siirtyminen)="{ item }">
+              <EpPalautusModal
+                :opetussuunnitelma="item"
+                @palauta="palauta"
+              />
+            </template>
+          </EpTable>
+        </div>
       </template>
-    </b-modal>
+
+      <template #modal-footer>
+        <EpButton
+          variant="link"
+          @click="arkistoidutOpsModal.hide()"
+        >
+          {{ $t('sulje') }}
+        </EpButton>
+      </template>
+    </EpModal>
   </div>
 </template>
 
@@ -62,7 +55,7 @@ import _ from 'lodash';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpModal from '@shared/components/EpModal/EpModal.vue';
 import EpPalautusModal from '@/components/EpArkistoidutOps/EpPalautusModal.vue';
 
 import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
@@ -70,6 +63,7 @@ import { debounced } from '@shared/utils/delay';
 import { Page } from '@shared/tyypit';
 import { Kielet } from '@shared/stores/kieli';
 import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
+import EpTable from '@shared/components/EpTable/EpTable.vue';
 
 import { $t, $kaanna, $sdt } from '@shared/utils/globals';
 
@@ -79,19 +73,17 @@ const props = withDefaults(
     title: string;
   }>(), {
     tyyppi: 'ops',
-  });
+  },
+);
 
 const emit = defineEmits<{
   palauta: [ops: any, tila: any, callback: () => Promise<void>];
 }>();
 
-// Template refs
 const arkistoidutOpsModal = useTemplateRef('arkistoidutOpsModal');
 
-// Reactive data
 const opetussuunnitelmat = ref<Page<OpetussuunnitelmaInfoDto> | null>(null);
 const query = ref('');
-const lisaHaku = ref(false);
 const opsSivu = ref(1);
 
 const fetch = async () => {
@@ -124,10 +116,13 @@ const fields = computed(() => {
   return [{
     key: 'nimi',
     label: $t('ops-nimi'),
+    sortable: false,
+    formatter: (_value: unknown, _key: string, item: OpetussuunnitelmaInfoDto) => $kaanna(item.nimi),
   }, {
     key: 'muokattu',
     label: $t('poistettu'),
     sortable: false,
+    formatter: (value: unknown) => $sdt(value),
   }, {
     key: 'arkistoija',
     label: $t('arkistoija'),
@@ -135,6 +130,7 @@ const fields = computed(() => {
   }, {
     key: 'siirtyminen',
     label: '',
+    sortable: false,
   }];
 });
 
@@ -147,7 +143,6 @@ const close = () => {
   arkistoidutOpsModal.value?.hide();
 };
 
-// Watchers
 watch(query, debounced(async () => {
   opsSivu.value = 1;
   opetussuunnitelmat.value = null;

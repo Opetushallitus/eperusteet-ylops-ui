@@ -1,10 +1,10 @@
 <template>
   <div class="content">
-    <div class="row">
-      <div class="col">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="min-w-0">
         <h2>{{ $t('aikataulu') }}</h2>
       </div>
-      <div class="col text-right">
+      <div class="shrink-0 text-end">
         <ep-aikataulu-modal
           ref="aikataulumodal"
           v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }"
@@ -26,12 +26,12 @@
         v-if="aikataulut.length === 0"
         class="text-center"
       >
-        <ep-button
+        <EpButton
           button-class="pl-5 pr-5"
           @click="otaAikatauluKayttoon"
         >
           <span>{{ $t('ota-kayttoon') }}</span>
-        </ep-button>
+        </EpButton>
       </div>
 
       <div v-else>
@@ -50,7 +50,6 @@ import EpAikataulu from '@shared/components/EpAikataulu/EpAikataulu.vue';
 import EpAikatauluModal from '@shared/components/EpAikataulu/EpAikatauluModal.vue';
 import { OpetussuunnitelmaKevytDto } from '@shared/api/ylops';
 import { AikatauluStore } from '@/stores/aikataulu';
-import { success } from '@/utils/notifications';
 import { $success, $t } from '@shared/utils/globals';
 
 const props = defineProps<{
