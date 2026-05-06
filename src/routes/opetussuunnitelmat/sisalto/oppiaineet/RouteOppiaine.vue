@@ -131,12 +131,12 @@
                 </div>
               </div>
             </div>
-            <ep-button
+            <EpButton
               icon="add"
               @click="uusiOpintojakso()"
             >
               {{ $t('uusi-opintojakso') }}
-            </ep-button>
+            </EpButton>
           </ep-collapse>
         </div>
       </div>
