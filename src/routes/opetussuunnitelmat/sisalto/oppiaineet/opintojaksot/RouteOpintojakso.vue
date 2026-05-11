@@ -130,31 +130,33 @@
                   >
                     {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
                   </div>
-                  <div
-                    v-if="isEditing && !oa.isModuuliton"
-                    class="moduulikuvaukset mr-5 d-inline-flex"
-                  >
-                    <div>
-                      <ep-color-indicator kind="pakollinen" />
-                      <span class="ml-2">{{ $t('pakollinen') }}</span>
+                  <template v-if="oppiaineidenModuulitMap[oa.koodi].moduulit.length > 0">
+                    <div
+                      v-if="isEditing && !oa.isModuuliton"
+                      class="moduulikuvaukset mr-5 d-inline-flex"
+                    >
+                      <div>
+                        <ep-color-indicator kind="pakollinen" />
+                        <span class="ml-2">{{ $t('pakollinen') }}</span>
+                      </div>
+                      <div>
+                        <ep-color-indicator
+                          class="ml-4"
+                          kind="valinnainen"
+                        />
+                        <span class="ml-2">{{ $t('valinnainen') }}</span>
+                      </div>
                     </div>
-                    <div>
-                      <ep-color-indicator
-                        class="ml-4"
-                        kind="valinnainen"
-                      />
-                      <span class="ml-2">{{ $t('valinnainen') }}</span>
-                    </div>
-                  </div>
-                  <ep-toggle
-                    class="mb-2"
-                    :model-value="oa.isModuuliton"
-                    @update:model-value="toggleLaajuus(oa, $event)"
-                  >
-                    <span class="label">
-                      {{ $t('ilman-moduuleita') }}
-                    </span>
-                  </ep-toggle>
+                    <ep-toggle
+                      class="mb-2"
+                      :model-value="oa.isModuuliton"
+                      @update:model-value="toggleLaajuus(oa, $event)"
+                    >
+                      <span class="label">
+                        {{ $t('ilman-moduuleita') }}
+                      </span>
+                    </ep-toggle>
+                  </template>
                 </div>
                 <div
                   v-if="!oa.isModuuliton"
@@ -174,7 +176,7 @@
                   </div>
                 </div>
                 <div class="col-md-4 mt-3 px-0">
-                  <ep-form-content :name="oa.isModuuliton ? 'laajuus' : 'lisalaajuus'">
+                  <ep-form-content :name="oa.isModuuliton || oppiaineidenModuulitMap[oa.koodi].moduulit.length === 0 ? 'laajuus' : 'lisalaajuus'">
                     <ep-field
                       v-model="oa.laajuus"
                       type="number"
@@ -910,13 +912,6 @@ const moduulitMap = computed(() => {
     .value();
 });
 
-const filteredOppiaineet = computed(() => {
-  return _.chain(oppiaineetJaOppimaarat.value)
-    .filter((org) => Kielet.search(oppiaineQuery.value, org.nimi))
-    .map('koodi.uri')
-    .value();
-});
-
 const oppiaineetModuuliTaiIlman = computed(() => {
   return _.chain(editable.value?.oppiaineet || [])
     .filter((oppiaine) => !_.includes(_.map(paikallistenOpintojaksojenOppiaineet.value, 'koodi'), oppiaine.koodi))
@@ -936,28 +931,6 @@ const lisalaajuus = computed(() => {
 
 const laajuusModuuleista = computed(() => {
   return laajuus.value - lisalaajuus.value;
-});
-
-const opintojaksonOppiaineet = computed(() => {
-  return _.chain(editable.value?.oppiaineet || [])
-    .map(({ koodi }) => koodi)
-    .sortBy(...koodiSorters() as any[])
-    .uniq()
-    .map((uri: string) => {
-      if (oppiaineetMap.value[uri]?.parentUri) {
-        return [oppiaineetMap.value[uri].parentUri, uri];
-      }
-      else {
-        return [uri];
-      }
-    })
-    .flatten()
-    .map((uri: string) => {
-      return {
-        ...oppiaineetMap.value[uri],
-      };
-    })
-    .value();
 });
 
 const getOppiaineTieto = (oppiaineet: any[], tieto: string): any => {
@@ -1134,10 +1107,6 @@ const updateOppiaineet = (koodit: string[]) => {
     oppiaineet: updatedOppiaineet,
     paikallisetOpintojaksot: filteredPaikallisetOpintojaksot,
   };
-};
-
-const isModuuliton = (oa: OpintojaksonOppiaine) => {
-  return _.isEmpty(editable.value?.moduulit) || _.isEmpty(oppiaineidenModuulitMap.value[oa.koodi]) || _.isEmpty(oppiaineidenModuulitMap.value[oa.koodi]?.moduulit);
 };
 </script>
 
