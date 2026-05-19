@@ -52,7 +52,13 @@ export class VuosiluokkaistaminenStore implements IEditoitava {
     ])), 'data');
 
     const oppiaineenVlk = _.head(_.filter(oppiaine.vuosiluokkakokonaisuudet, vlk => vlk._vuosiluokkakokonaisuus === perusteenVlk.tunniste));
-    perusteenOppiaineenVlk = (await OppiaineenVuosiluokkakokonaisuudet.getOppiaineenVuosiluokkakokonaisuudenPerusteSisalto(this.opsId, this.oppiaineId, oppiaineenVlk.id)).data;
+    try {
+      perusteenOppiaineenVlk = (await OppiaineenVuosiluokkakokonaisuudet.getOppiaineenVuosiluokkakokonaisuudenPerusteSisalto(this.opsId, this.oppiaineId, oppiaineenVlk.id)).data;
+    }
+    catch (e) {
+      console.error(e);
+      perusteenOppiaineenVlk = {};
+    }
 
     const sisaltoalueetMap = _.keyBy(perusteenOppiaineenVlk.sisaltoalueet, 'tunniste');
     const tavoitteetMap = _.keyBy(perusteenOppiaineenVlk.tavoitteet, 'tunniste');
