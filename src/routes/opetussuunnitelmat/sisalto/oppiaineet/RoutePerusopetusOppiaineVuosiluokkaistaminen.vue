@@ -14,7 +14,7 @@
           class="m-3"
           v-if="tavoitteet.length === 0"
         >
-          {{ $t('oppiaineen-tavoitteita-ei-ole-maaritelty-perusteessa') }}
+          {{ $t('oppiaineen-x-tavoitteita-ei-ole-maaritelty-perusteessa', { nimi: $kaanna(data.oppiaine.nimi) }) }}
         </ep-alert-error>
 
         <template v-else>
