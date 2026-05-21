@@ -40,7 +40,7 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
       type: 'moduuli',
       id: Number(route.params!.moduuliId!),
       meta: {
-        oppiaine: route.params!.oppiaineId,
+        oppiaine: Number(route.params!.oppiaineId),
       } as any,
     };
   case 'vuosiluokkakokonaisuus':
@@ -59,7 +59,7 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
       type: 'perusopetusoppiaine',
       id: Number(route.params!.oppiaineId!),
       meta: {
-        vlkId: route.params!.vlkId,
+        vlkId: Number(route.params!.vlkId),
       } as any,
     };
   case 'perusopetuspaikallinenoppiaine':
@@ -67,11 +67,21 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
       type: 'perusopetusoppiaine',
       id: Number(route.params!.oppiaineId!),
       meta: {
-        vlkId: route.params!.vlkId,
+        vlkId: Number(route.params!.vlkId),
         paikallinen: true,
       } as any,
     };
+  case 'perusopetusoppiainevuosiluokka':
+    return {
+      type: 'oppiaineenvuosiluokka',
+      meta: {
+        vlkId: Number(route.params!.vlkId),
+        vlId: Number(route.params!.vlId),
+        ['oppiaine-id']: Number(route.params!.oppiaineId),
+      } as any,
+    };
   default:
+    console.error('Unknown route', route.name);
     break;
   }
 
