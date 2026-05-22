@@ -239,7 +239,7 @@
 
                 <template #perusopetusoppiaine="{ item }">
                   <EpNavigationLabel
-                    :to="{ name: item.meta?.paikallinen ? 'perusopetuspaikallinenoppiaine' : 'perusopetusoppiaine', params: { oppiaineId: String(item.id), vlkId: String(item.meta?.vlkId) } }"
+                    :to="{ name: 'perusopetusoppiaine', params: { oppiaineId: String(item.id), vlkId: String(item.meta?.vlkId) } }"
                     :node="item"
                   >
                     {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-oppiaine') }}
@@ -257,7 +257,16 @@
 
                 <template #oppiaineenvuosiluokka="{ item }">
                   <EpNavigationLabel
-                    :to="{ name: 'perusopetusoppiainevuosiluokka', params: { oppiaineId: String(item.meta?.['oppiaine-id']), vlkId: String(item.meta?.vlkId), vlId: String(item.meta?.vlId) } }"
+                    :to="{ name: 'perusopetusoppiainevuosiluokka', params: { oppiaineId: String(item.meta?.oppiaineId), vlkId: String(item.meta?.vlkId), vlId: String(item.meta?.vlId) } }"
+                    :node="item"
+                  >
+                    {{ $t('vuosiluokka') }} {{ $kaannaOlioTaiTeksti(item.meta.vuosiluokka) }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #paikallinenoppiainevuosiluokka="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'perusopetuspaikallinenoppiainevuosiluokka', params: { oppiaineId: String(item.meta?.oppiaineId), vlkId: String(item.meta?.vlkId), vuosiluokkaId: String(item.meta?.vlId) } }"
                     :node="item"
                   >
                     {{ $t('vuosiluokka') }} {{ $kaannaOlioTaiTeksti(item.meta.vuosiluokka) }}
@@ -313,7 +322,7 @@
                 <template #uusi_oppimaara="{ item }">
                   <ep-oppimaara-lisays
                     :opetussuunnitelma-store="store"
-                    :oppiaine-id="item.meta?.['oppiaine-id']"
+                    :oppiaine-id="item.meta?.oppiaineId"
                   />
                 </template>
 

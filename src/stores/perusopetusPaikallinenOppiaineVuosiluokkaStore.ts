@@ -11,7 +11,6 @@ export class PerusopetusPaikallinenOppiaineVuosiluokkaStore implements IEditoita
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
     private vuosiluokkaId: number,
   ) {
-
   }
 
   async acquire() {
