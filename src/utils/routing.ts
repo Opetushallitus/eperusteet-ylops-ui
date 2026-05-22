@@ -51,7 +51,9 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
   case 'perusopetusvalinnaiset':
     return {
       type: 'valinnaisetoppiaineet',
-      id: Number(route.params!.vlkId!),
+      meta: {
+        vlkId: Number(route.params!.vlkId),
+      } as any,
     };
   case 'koosteinen-oppiaine':
   case 'perusopetusoppiaine':
@@ -64,11 +66,10 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
     };
   case 'perusopetuspaikallinenoppiaine':
     return {
-      type: 'perusopetusoppiaine',
+      type: 'perusopetuspaikallinenoppiaine',
       id: Number(route.params!.oppiaineId!),
       meta: {
         vlkId: Number(route.params!.vlkId),
-        paikallinen: true,
       } as any,
     };
   case 'perusopetusoppiainevuosiluokka':
@@ -77,7 +78,16 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
       meta: {
         vlkId: Number(route.params!.vlkId),
         vlId: Number(route.params!.vlId),
-        ['oppiaine-id']: Number(route.params!.oppiaineId),
+        oppiaineId: Number(route.params!.oppiaineId),
+      } as any,
+    };
+  case 'perusopetuspaikallinenoppiainevuosiluokka':
+    return {
+      type: 'paikallinenoppiainevuosiluokka',
+      meta: {
+        vlkId: Number(route.params!.vlkId),
+        vlId: Number(route.params!.vuosiluokkaId),
+        oppiaineId: Number(route.params!.oppiaineId),
       } as any,
     };
   default:
