@@ -398,6 +398,7 @@ import { KuvaStore } from '@/stores/KuvaStore';
 import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
+import { Kommentit } from '@/stores/kommentit';
 
 // Props
 const props = defineProps<{
@@ -585,6 +586,7 @@ provide('navigation', navigationValue);
 provide('linkkiHandler', new LinkkiHandler());
 provide('kasiteHandler', createKasiteHandler(props.termitStore));
 provide('kuvaHandler', createKuvaHandler(new KuvaStore(_.toNumber(route.params.id))));
+provide('kommenttiHandler', Kommentit);
 
 </script>
 
