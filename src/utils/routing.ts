@@ -170,6 +170,23 @@ export function nodeToRoute(node: NavigationNodeDto): Location | null {
         vlkId: _.toString(node.meta?.vlkId),
       },
     };
+  case 'perusopetuspaikallinenoppiaine':
+    return {
+      name: 'perusopetuspaikallinenoppiaine',
+      params: {
+        vlkId: _.toString(node.meta?.vlkId),
+        oppiaineId: _.toString(node.id),
+      },
+    };
+  case 'paikallinenoppiainevuosiluokka':
+    return {
+      name: 'perusopetuspaikallinenoppiainevuosiluokka',
+      params: {
+        vlkId: _.toString(node.meta?.vlkId),
+        vuosiluokkaId: _.toString(node.meta?.vuosiluokkaId),
+        oppiaineId: _.toString(node.meta?.oppiaineId),
+      },
+    };
   default:
     console.error('Unknown node', node.type);
     break;
