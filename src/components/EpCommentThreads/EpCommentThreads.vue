@@ -509,6 +509,7 @@ watch(originalThread, (value: KommenttiDto[]) => {
 
 .thread {
   z-index: 1000;
+  background-color: $white;
 
   .thread-comment {
     box-shadow: 0 2px 4px 0 rgba(207, 207, 207, 0.5);
