@@ -7,6 +7,7 @@ import VueScrollTo from 'vue-scrollto';
 import { Kielet } from '@shared/stores/kieli';
 
 import { unwrap } from '@shared/utils/wraps';
+import { syncProseMirrorEditor } from '@/utils/utils';
 
 import { createLogger } from '@shared/utils/logger';
 const logger = createLogger('Kayttaja');
@@ -163,10 +164,9 @@ class KommenttiStore {
   }
 
   private obs: MutationObserver | null = null;
+  private clickHandler: ((event: Event) => void) | null = null;
 
   public async activateThread(uuid: string) {
-    this.state.thread = null;
-
     if (uuid === UusiKommenttiHandle) {
       return;
     }
@@ -176,12 +176,13 @@ class KommenttiStore {
       return;
     }
 
-    if (uuid === UusiKommenttiHandle) {
-      this.state.threadUuid = UusiKommenttiHandle;
+    if (this.state.threadUuid === uuid && this.state.thread) {
       return;
     }
 
     logger.info('activating thread', uuid);
+
+    this.state.thread = null;
 
     this.clearCommentStyle();
     ActiveCommentStyleIdx = (CommentStyles.sheet as CSSStyleSheet).insertRule(`span[kommentti="${uuid}"] {
@@ -234,16 +235,24 @@ class KommenttiStore {
     logger.info('removing comment', tunniste);
     await Kommentointi.poistaKommenttiKetju2019(tunniste);
     this.state.thread = _.reject(this.state.thread, c => c.tunniste === tunniste);
-    unwrap(document.querySelector(`span[kommentti="${tunniste}"]`));
+    const commentEl = document.querySelector(`span[kommentti="${tunniste}"]`) as HTMLElement | null;
+    const editorEl = commentEl?.closest('.ProseMirror') as HTMLElement | null;
+    unwrap(commentEl);
+    syncProseMirrorEditor(editorEl);
     this.clearCommentStyle();
+    this.updateVisibleThreads();
   }
 
   detach() {
+    if (this.clickHandler) {
+      document.removeEventListener('click', this.clickHandler);
+      this.clickHandler = null;
+    }
     if (this.obs) {
       this.obs.disconnect();
-      this.state.thread = null;
       this.obs = null;
     }
+    this.state.thread = null;
   }
 
   public readonly updateVisibleThreads = _.debounce(() => {
@@ -293,33 +302,33 @@ class KommenttiStore {
   }
 
   attach(el: Element) {
-    if (this.obs) {
+    if (this.obs || this.clickHandler) {
       this.detach();
     }
 
-    const mountCommentThreads = async (targets: Element[]) => {
-      for (const thread of targets) {
-        if (thread) {
-          thread.addEventListener('click', () => {
-            const uuid = thread.getAttribute('kommentti');
-            if (uuid) {
-              this.activateThread(uuid);
-            }
-          });
-        }
+    this.clickHandler = (event: Event) => {
+      if ((event.target as Element | null)?.closest('.ProseMirror')) {
+        return;
+      }
+
+      const thread = (event.target as Element | null)?.closest('[kommentti]');
+      if (!thread) {
+        return;
+      }
+
+      const uuid = thread.getAttribute('kommentti');
+      if (uuid) {
+        void this.activateThread(uuid);
       }
     };
 
-    this.obs = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        mountCommentThreads((mutation.target as any).querySelectorAll('[kommentti]'));
-      }
+    document.addEventListener('click', this.clickHandler);
+
+    this.obs = new MutationObserver(() => {
       this.updateVisibleThreads();
     });
 
-    mountCommentThreads((document as any).querySelectorAll('[kommentti]'));
-
-    this.obs.observe(el, {
+    this.obs.observe(document.body, {
       attributeFilter: ['kommentti'],
       attributeOldValue: false,
       attributes: true,
@@ -328,6 +337,8 @@ class KommenttiStore {
       childList: true,
       subtree: true,
     });
+
+    this.updateVisibleThreads();
   }
 }
 
