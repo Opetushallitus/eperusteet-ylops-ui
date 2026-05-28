@@ -137,7 +137,13 @@ import EpCommentAdd from './EpCommentAdd.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { Kielet } from '@shared/stores/kieli';
 import { delay } from '@shared/utils/delay';
-import { unwrap, findIndexWithTagsIncluded } from '@/utils/utils';
+import {
+  findIndexWithTagsIncluded,
+  saveSelectionRange,
+  syncProseMirrorEditor,
+  unwrapAndSyncProseMirror,
+  wrapRangeWithCommentSpan,
+} from '@/utils/utils';
 import { $fail, $success, $t } from '@shared/utils/globals';
 
 // Get current app instance to copy config to dynamically created apps
@@ -211,11 +217,13 @@ const enterClass = computed(() => {
 });
 
 // Methods
-const addNewComment = async () => {
-  await lisaaKommenttiKahva();
-  newThread.value = {
-    sisalto: '',
-  };
+const addNewComment = async (savedRange?: Range | null) => {
+  const success = await lisaaKommenttiKahva(savedRange);
+  if (success) {
+    newThread.value = {
+      sisalto: '',
+    };
+  }
 };
 
 const clear = async (clearThread = false) => {
@@ -236,12 +244,14 @@ const saveNewThread = async () => {
       ...newKahva.value,
       aloituskommentti: newThread.value,
     });
-    const doc = document.querySelector(`span[kommentti="${UusiKommenttiHandle}"]`);
+    const doc = document.querySelector(`span[kommentti="${UusiKommenttiHandle}"]`) as HTMLElement | null;
     if (doc) {
       doc.setAttribute('kommentti', kahva.thread!);
+      syncProseMirrorEditor(doc.closest('.ProseMirror') as HTMLElement | null);
     }
     newThread.value = null;
     newKahva.value = null;
+    Kommentit.updateVisibleThreads();
     await delay(50);
     await Kommentit.activateThread(kahva.thread!);
   }
@@ -257,7 +267,7 @@ const activateThread = async (uuid: string) => {
 };
 
 const cancelNewThread = async () => {
-  unwrap(document.querySelector(`span[kommentti="${UusiKommenttiHandle}"]`));
+  unwrapAndSyncProseMirror(document.querySelector(`span[kommentti="${UusiKommenttiHandle}"]`) as HTMLElement | null);
   newThread.value = null;
   newKahva.value = null;
 };
@@ -315,10 +325,11 @@ const onSelectionImpl = async (val: any, old: any) => {
         render: () => {
           return h(EpCommentAdd, {
             onAdd: async () => {
+              const savedRange = saveSelectionRange();
               removeAddBox();
               await Kommentit.clearThread();
               await delay(100);
-              await addNewComment();
+              await addNewComment(savedRange);
             },
           });
         },
@@ -346,8 +357,7 @@ const onSelectionImpl = async (val: any, old: any) => {
  *
  * @returns Start and stop index of the user selection relational to the given parent node
  */
-const distanceFromParentBegin = (selection: Selection, parent: Node) => {
-  const range = selection.getRangeAt(0);
+const distanceFromParentBegin = (range: Range, parent: Node) => {
   const clone = range.cloneRange();
   clone.selectNodeContents(parent);
   clone.setEnd(range.startContainer, range.startOffset);
@@ -368,16 +378,15 @@ const distanceFromParentBegin = (selection: Selection, parent: Node) => {
  *
  * @returns {undefined}
  */
-const lisaaKommenttiKahva = async () => {
-  const selection = document.getSelection();
-  const node = selection?.anchorNode;
-  if (!node || !selection) {
+const lisaaKommenttiKahva = async (savedRange?: Range | null): Promise<boolean> => {
+  const range = savedRange ?? saveSelectionRange();
+  if (!range || range.collapsed) {
     $fail('virheellinen-valinta');
-    return;
+    return false;
   }
 
-  // First find the ProseMirror editor element
-  let editorEl = node.parentNode;
+  const node = range.commonAncestorContainer;
+  let editorEl = node.nodeType === Node.TEXT_NODE ? node.parentNode : node;
   while (editorEl !== null && editorEl !== editorEl.parentNode) {
     if ((editorEl as HTMLElement)?.classList?.contains('ProseMirror')) {
       break;
@@ -387,39 +396,47 @@ const lisaaKommenttiKahva = async () => {
 
   if (!editorEl || !(editorEl as HTMLElement)?.classList?.contains('ProseMirror')) {
     $fail('virheellinen-valinta');
-    return;
+    return false;
   }
 
-  // Get tekstiId from data attribute (more reliable than Vue internals, works in production)
-  const tekstiId = Number((editorEl as HTMLElement).getAttribute('data-teksti-id'));
+  const editorElement = editorEl as HTMLElement;
+  const tekstiId = Number(editorElement.getAttribute('data-teksti-id'));
 
   if (!tekstiId) {
     $fail('virheellinen-valinta');
-    return;
+    return false;
   }
 
-  // Get the HTML content from the editor element
-  const teksti = (editorEl as HTMLElement).innerHTML;
-
-  if (tekstiId && teksti) {
-    const { start, stop } = distanceFromParentBegin(selection, editorEl);
-
-    newKahva.value = {
-      opsId: Number(route.params.id),
-      tekstiId: tekstiId,
-      kieli: Kielet.getSisaltoKieli.value,
-      start: findIndexWithTagsIncluded(teksti, start),
-      stop: findIndexWithTagsIncluded(teksti, stop),
-    };
-
-    const kspan = document.createElement('span');
-    kspan.setAttribute('kommentti', UusiKommenttiHandle);
-    kspan.className = 'animated jackInTheBox slower';
-    selection?.getRangeAt(0)?.surroundContents(kspan);
-    setTimeout(() => {
-      kspan.className = '';
-    }, 1000);
+  const teksti = editorElement.innerHTML;
+  if (!teksti) {
+    $fail('virheellinen-valinta');
+    return false;
   }
+
+  const { start, stop } = distanceFromParentBegin(range, editorElement);
+
+  newKahva.value = {
+    opsId: Number(route.params.id),
+    tekstiId: tekstiId,
+    kieli: Kielet.getSisaltoKieli.value,
+    start: findIndexWithTagsIncluded(teksti, start),
+    stop: findIndexWithTagsIncluded(teksti, stop),
+  };
+
+  const kspan = wrapRangeWithCommentSpan(range, UusiKommenttiHandle);
+  if (!kspan) {
+    $fail('virheellinen-valinta');
+    return false;
+  }
+
+  kspan.className = 'animated jackInTheBox slower';
+  syncProseMirrorEditor(editorElement);
+  Kommentit.updateVisibleThreads();
+  setTimeout(() => {
+    kspan.className = '';
+  }, 1000);
+
+  return true;
 };
 
 const withOpsId = (kommentti: KommenttiDto): KommenttiDto => {

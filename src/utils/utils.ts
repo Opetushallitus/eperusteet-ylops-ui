@@ -1,3 +1,45 @@
+export function saveSelectionRange(): Range | null {
+  const selection = document.getSelection();
+  if (!selection || selection.isCollapsed || selection.rangeCount === 0) {
+    return null;
+  }
+  return selection.getRangeAt(0).cloneRange();
+}
+
+export function syncProseMirrorEditor(editorEl: HTMLElement | null) {
+  if (!editorEl) {
+    return;
+  }
+
+  const editor = (editorEl as HTMLElement & { __tiptapEditor?: { commands: { setContent: (content: string, options?: { emitUpdate?: boolean }) => void } } }).__tiptapEditor;
+  if (editor) {
+    editor.commands.setContent(editorEl.innerHTML, { emitUpdate: true });
+  }
+
+  document.getSelection()?.removeAllRanges();
+}
+
+export function wrapRangeWithCommentSpan(range: Range, uuid: string): HTMLSpanElement | null {
+  const kspan = document.createElement('span');
+  kspan.setAttribute('kommentti', uuid);
+
+  try {
+    range.surroundContents(kspan);
+  }
+  catch {
+    try {
+      const fragment = range.extractContents();
+      kspan.appendChild(fragment);
+      range.insertNode(kspan);
+    }
+    catch {
+      return null;
+    }
+  }
+
+  return kspan;
+}
+
 export function unwrap(el: HTMLElement | null) {
   if (!el || !el.parentNode) {
     return;
@@ -7,6 +49,16 @@ export function unwrap(el: HTMLElement | null) {
     el.parentNode.insertBefore(el.removeChild(el.firstChild), el);
   }
   el.parentNode.removeChild(el);
+}
+
+export function unwrapAndSyncProseMirror(el: HTMLElement | null) {
+  if (!el) {
+    return;
+  }
+
+  const editorEl = el.closest('.ProseMirror');
+  unwrap(el);
+  syncProseMirrorEditor(editorEl as HTMLElement | null);
 }
 
 export function findIndexWithTagsIncluded(innerHtml: string, targetIdx: number) {

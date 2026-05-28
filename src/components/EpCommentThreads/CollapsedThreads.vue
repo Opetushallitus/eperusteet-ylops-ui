@@ -28,7 +28,7 @@
           </div>
         </div>
         <div class="nimi">
-          {{ last.luoja }}
+          {{ last.nimi }}
         </div>
         <div class="viesti mt-1">
           {{ last.sisalto }}
