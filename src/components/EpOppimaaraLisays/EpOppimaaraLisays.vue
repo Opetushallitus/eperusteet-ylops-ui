@@ -61,7 +61,8 @@
         {{ $t('peruuta') }}
       </template>
       <template #modal-ok>
-        {{ $t(addText) }}
+        <EpSpinner v-if="saving" small color="white"/>
+        <span v-else>{{ $t(addText) }}</span>
       </template>
     </b-modal>
   </div>
@@ -78,12 +79,14 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 import { OppiaineSuppeaDto, Oppiaineet, PerusteOppiaineDto, KopioOppimaaraDto, UnwrappedOpsVuosiluokkakokonaisuusDto, Vuosiluokkakokonaisuudet, YlopsNavigationNodeDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 
 import { $t, $kaanna, $fail } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import { onMounted } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -106,6 +109,7 @@ const vuosiluokkakokonaisuus = ref<UnwrappedOpsVuosiluokkakokonaisuusDto | null>
 const nimi = ref<object | null>(null);
 const valittuOppimaara = ref<OppiaineSuppeaDto | null>(null);
 const oppiaine = ref<OppiaineSuppeaDto | null>(null);
+const saving = ref(false);
 
 const opsId = computed(() => {
   return props.opetussuunnitelmaStore.opetussuunnitelma.value?.id;
@@ -208,12 +212,13 @@ const openModal = () => {
 };
 
 const show = async () => {
-  oppiaine.value = _.get(_.find(ops.value?.oppiaineet, oa => oa.oppiaine.id === props.oppiaineId), 'oppiaine');
   perusteenOppiaine.value = (await Oppiaineet.getPerusteSisalto(opsId.value, (oppiaine.value?.id as number))).data;
   vuosiluokkakokonaisuus.value = (await Vuosiluokkakokonaisuudet.getVuosiluokkakokonaisuus(opsId.value, _.toNumber(route.params.vlkId))).data;
 };
 
-const save = async () => {
+const save = async (event: Event) => {
+  event.preventDefault();
+  saving.value = true;
   const kopio = {
     omaNimi: nimi.value as { [key: string]: string; },
     tunniste: valittuOppimaara.value?.tunniste,
@@ -231,16 +236,26 @@ const save = async () => {
         vlkId: route.params.vlkId,
       },
     });
+
+    oppimaaralisaysModal.value?.hide();
   }
   catch (err: any) {
     $fail($t('tallennus-epaonnistui') as string);
     $fail(err.response.data.syy);
+  }
+  finally {
+    saving.value = false;
   }
 };
 
 const clear = () => {
   valittuOppimaara.value = null;
 };
+
+onMounted(() => {
+  oppiaine.value = _.get(_.find(ops.value?.oppiaineet, oa => oa.oppiaine.id === props.oppiaineId), 'oppiaine');
+});
+
 </script>
 
 <style scoped lang="scss">
