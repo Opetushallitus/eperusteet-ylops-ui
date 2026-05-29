@@ -4,8 +4,8 @@
       variant="link"
       button-class="text-decoration-none"
       icon="add"
-      @click="showModal"
       no-padding
+      @click="showModal"
     >
       <span>{{ $t('uusi-tekstikappale') }}</span>
     </ep-button>
@@ -46,8 +46,8 @@
         <ep-button
           class="text-right w-100"
           variant="link"
-          @click="tyhjennaValinta"
           no-padding
+          @click="tyhjennaValinta"
         >
           {{ $t('tyhjenna-valinta') }}
         </ep-button>

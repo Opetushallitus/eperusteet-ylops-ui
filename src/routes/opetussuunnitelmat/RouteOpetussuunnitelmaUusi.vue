@@ -146,7 +146,7 @@
           v-model="uusi.organisaatiot"
           :validation="$v.uusi.organisaatiot"
           :koulutustyyppi="koulutustyyppi"
-          :kayttajanOrganisaatiot="sallitutOrganisaatiot"
+          :kayttajan-organisaatiot="sallitutOrganisaatiot"
         />
 
         <div v-if="uusi.pohja.toteutus === 'lops2019'">
