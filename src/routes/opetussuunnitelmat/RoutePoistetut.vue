@@ -41,6 +41,7 @@ import { Lops2019PoistettuDto, PoistettuTekstiKappaleDto } from '@shared/api/ylo
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import PoistetutHakuTable from '@shared/components/EpPoistettuTable/PoistetutHakuTable.vue';
 import { onMounted } from 'vue';
+import { nextTick } from 'vue';
 
 const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
@@ -112,6 +113,7 @@ const fetchPoistetut = async () => {
 const palauta = async (poistettu: any) => {
   await store.value.palauta(poistettu);
   await fetchPoistetut();
+  await nextTick();
 };
 
 onMounted(async () => {
