@@ -11,8 +11,8 @@
       </template>
       <template #default="{ data }">
         <ep-alert-error
-          class="m-3"
           v-if="tavoitteet.length === 0"
+          class="m-3"
         >
           {{ $t('oppiaineen-x-tavoitteita-ei-ole-maaritelty-perusteessa', { nimi: $kaanna(data.oppiaine.nimi) }) }}
         </ep-alert-error>
@@ -23,7 +23,8 @@
           </div>
 
           <b-container
-            class="vuosiluokkaistaminen">
+            class="vuosiluokkaistaminen"
+          >
             <b-row>
               <b-col
                 cols="6"

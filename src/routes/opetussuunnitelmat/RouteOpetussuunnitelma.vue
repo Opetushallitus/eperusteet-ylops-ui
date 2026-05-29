@@ -167,7 +167,9 @@
                     :node="item"
                   >
                     {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-tekstikappale') }}
-                    <EpMaterialIcon size="16px">attach_file</EpMaterialIcon>
+                    <EpMaterialIcon size="16px">
+                      attach_file
+                    </EpMaterialIcon>
                   </EpNavigationLabel>
                 </template>
 

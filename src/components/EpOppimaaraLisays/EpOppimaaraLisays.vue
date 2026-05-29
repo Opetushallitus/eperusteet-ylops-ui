@@ -61,7 +61,11 @@
         {{ $t('peruuta') }}
       </template>
       <template #modal-ok>
-        <EpSpinner v-if="saving" small color="white"/>
+        <EpSpinner
+          v-if="saving"
+          small
+          color="white"
+        />
         <span v-else>{{ $t(addText) }}</span>
       </template>
     </b-modal>

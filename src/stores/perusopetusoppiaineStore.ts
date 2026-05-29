@@ -20,13 +20,13 @@ export class PerusopetusoppiaineStore implements IEditoitava {
     private oppiaineId: number,
     private vuosiluokkakokonaisuus: OpsVuosiluokkakokonaisuusKevytDto,
     private versionumero: number,
-    private parent: OppiaineSuppeaDto,
     private resetOps: () => Promise<void>,
     private init: () => Promise<void>,
     private muokkaaLatauksenJalkeen: boolean) {
   }
 
   private static config: PerusopetusoppiaineStoreConfig;
+  private parent: OppiaineSuppeaDto | undefined;
 
   public static install(vue: typeof Vue, config: PerusopetusoppiaineStoreConfig) {
     PerusopetusoppiaineStore.config = config;
@@ -48,6 +48,9 @@ export class PerusopetusoppiaineStore implements IEditoitava {
 
   async load(supportDataProvider) {
     const oppiaine = (await this.getOppiaineVersion()).data;
+    if ((oppiaine as any)._oppiaine) {
+      this.parent = (await Oppiaineet.getOppiaine(this.opsId, Number((oppiaine as any)._oppiaine))).data as OppiaineSuppeaDto;
+    }
     let perusteenOppiaine;
     try {
       perusteenOppiaine = (await Oppiaineet.getPerusteSisalto(this.opsId, this.oppiaineId)).data;

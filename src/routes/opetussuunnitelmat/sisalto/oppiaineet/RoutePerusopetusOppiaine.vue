@@ -403,19 +403,11 @@ const init = async () => {
   const vuosiluokkakokonaisuus = _.head(_.filter(ops.value?.vuosiluokkakokonaisuudet, vlk =>
     vlk.vuosiluokkakokonaisuus?.id === _.toNumber(route.params.vlkId))) as OpsVuosiluokkakokonaisuusKevytDto;
 
-  const parent = _.chain(ops.value?.oppiaineet)
-    .map('oppiaine')
-    .filter(oppiaine => !_.isEmpty(oppiaine?.oppimaarat))
-    .filter(oppiaine => _.some(oppiaine?.oppimaarat, oppimaara => oppimaara.id === _.toNumber(route.params.oppiaineId)))
-    .head()
-    .value();
-
   editointiStore.value = new EditointiStore(new PerusopetusoppiaineStore(
     opsId.value,
     _.toNumber(route.params.oppiaineId),
     vuosiluokkakokonaisuus,
     _.toNumber(route.query.versionumero),
-    parent,
     resetOps,
     init,
     muokkaa.value));
