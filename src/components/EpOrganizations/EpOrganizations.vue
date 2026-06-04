@@ -60,11 +60,8 @@
 import { computed, ref, onMounted, watch } from 'vue';
 import * as _ from 'lodash';
 import { minLength, required } from '@vuelidate/validators';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpToggle from '@shared/components/forms/EpToggle.vue';
 import { Kielet } from '@shared/stores/kieli';
 import { koulutustyypinOppilaitokset } from '@/utils/perusteet';
 import { metadataToTeksti } from '@/utils/organisaatiot';
@@ -79,12 +76,18 @@ interface ValueType {
   ryhmat: any[];
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   modelValue: ValueType;
   koulutustyyppi?: string | null;
   sallitutLakkautetutOrganisaatiot?: string[];
   kayttajanOrganisaatiot?: KayttajanOrganisaatiotDto;
-}>();
+  rajaaKunnatJarjestajienKotipaikoilla?: boolean;
+}>(), {
+  rajaaKunnatJarjestajienKotipaikoilla: true,
+  koulutustyyppi: null,
+  sallitutLakkautetutOrganisaatiot: () => [],
+  kayttajanOrganisaatiot: null,
+});
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -103,23 +106,6 @@ const query = ref({
   jarjestajat: '',
   oppilaitokset: '',
   kunnat: '',
-});
-
-const taiteenperusopetus = computed(() => {
-  return props.koulutustyyppi === Koulutustyyppi.tpo;
-});
-
-const validationConfig = computed(() => {
-  return {
-    valitutKunnat: {
-      required,
-      'min-length': minLength(1),
-    },
-    valitutJarjestajat: {
-      required,
-      'min-length': minLength(1),
-    },
-  };
 });
 
 const sallitutKunnat = computed(() => {
@@ -204,7 +190,7 @@ const jarjestajaEquals = computed(() => {
 
 const updateInput = () => {
   emit('update:modelValue', {
-    kunnat: _.filter(valitutKunnat.value, kunta => _.includes(_.map(valitutJarjestajat.value, 'kotipaikkaUri'), kunta.koodiUri)),
+    kunnat: props.rajaaKunnatJarjestajienKotipaikoilla ? _.filter(valitutKunnat.value, kunta => _.includes(_.map(valitutJarjestajat.value, 'kotipaikkaUri'), kunta.koodiUri)) : valitutKunnat.value,
     jarjestajat: valitutJarjestajat.value,
     oppilaitokset: valitutOppilaitokset.value,
     ryhmat: [],
