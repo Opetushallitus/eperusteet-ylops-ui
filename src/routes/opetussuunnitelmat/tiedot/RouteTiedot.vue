@@ -188,6 +188,7 @@
               <h3>{{ $t('organisaatiot') }}</h3>
               <ep-organizations
                 v-model="data.kaikkiOrganisaatiot"
+                :rajaa-kunnat-jarjestajien-kotipaikoilla="false"
                 :koulutustyyppi="data.koulutustyyppi"
                 :sallitut-lakkautetut-organisaatiot="supportData.organisaatioOids"
               />
