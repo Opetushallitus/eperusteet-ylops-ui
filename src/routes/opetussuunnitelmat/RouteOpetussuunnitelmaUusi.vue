@@ -73,7 +73,7 @@
                     v-if="uusi.pohja && oletuspohjasta !== 'pohjasta'"
                     class="form-text info-box mt-2"
                   >
-                    {{ $t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio') }}
+                    <div v-html="$t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio', { pohja: $kaanna(uusi.pohja.nimi) })"></div>
                     <template v-if="luontityyppi.toLowerCase() === 'kopio' && opetussuunnitelmaOrganisaatioTaso === 'oppilaitos'">
                       <EpSpinner
                         v-if="!valitunPohjanPohja"
