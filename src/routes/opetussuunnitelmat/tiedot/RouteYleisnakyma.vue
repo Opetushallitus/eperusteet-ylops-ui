@@ -17,8 +17,19 @@
         <div v-html="$t('opetussuunnitelman-peruste-arkistoitu-huomioteksti')" />
       </div>
 
+      <div v-if="pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja && pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja?.id !== ops?.pohja?.id"
+        class="info-box import-box">
+        <h2>{{ $t('paivita-opetussuunnitelman-tekstirakenne-koulun-ops') }}</h2>
+        <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjassa-puuttuvat-tekstit-huomioteksti', { 'pohja-nimi': $kaanna(ops?.pohja?.nimi) })" />
+        <br>
+        <div>{{ $t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-peruste-selvennys') }}</div>
+        <EpExternalLink :url="perusteUrl">
+          {{ $kaanna(perusteNimi) }}
+        </EpExternalLink>
+      </div>
+
       <div
-        v-if="pohjallaPuuttuviaTeksteja"
+        v-if="pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja?.id === ops?.pohja?.id"
         v-oikeustarkastelu="oikeustarkastelu"
         class="info-box import-box"
       >
@@ -192,8 +203,8 @@ const yksinkertainen = computed(() => {
   return (ops.value?.toteutus as any) === KoulutustyyppiToteutus.yksinkertainen;
 });
 
-const pohjallaPuuttuviaTeksteja = computed(() => {
-  return store.value.pohjallaPuuttuviaTeksteja.value;
+const pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja = computed(() => {
+  return store.value.pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja.value;
 });
 
 const viimeisinPohjaTekstiSync = computed(() => {

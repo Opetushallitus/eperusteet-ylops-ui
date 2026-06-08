@@ -60,7 +60,7 @@ export class OpetussuunnitelmaStore {
     valinnaisetOppiaineet: [] as OppiaineDto[],
     julkaisut: null as OpetussuunnitelmanJulkaisuDto[] | null,
     validointi: null as Array<Validointi> | null,
-    pohjallaPuuttuviaTeksteja: null as boolean | null,
+    pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja: null as boolean | null,
     pohjanPerustePaivittynyt: null as boolean | null,
     julkaisemattomiaMuutoksia: null as boolean | null,
     viimeisinJulkaisuTila: null as string | null,
@@ -84,7 +84,7 @@ export class OpetussuunnitelmaStore {
   public readonly valinnaisetOppiaineet = computed(() => this.state.valinnaisetOppiaineet);
   public readonly julkaisut = computed(() => this.state.julkaisut);
   public readonly validointi = computed(() => this.state.validointi);
-  public readonly pohjallaPuuttuviaTeksteja = computed(() => this.state.pohjallaPuuttuviaTeksteja);
+  public readonly pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja = computed(() => this.state.pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja);
   public readonly pohjanPerustePaivittynyt = computed(() => this.state.pohjanPerustePaivittynyt);
   public readonly julkaisemattomiaMuutoksia = computed(() => this.state.julkaisemattomiaMuutoksia);
   public readonly viimeisinJulkaisuTila = computed(() => this.state.viimeisinJulkaisuTila);
@@ -121,7 +121,7 @@ export class OpetussuunnitelmaStore {
     this.state.valinnaisetOppiaineet = [];
     this.state.julkaisut = null;
     this.state.validointi = null;
-    this.state.pohjallaPuuttuviaTeksteja = null;
+    this.state.pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja = null;
     this.state.pohjanPerustePaivittynyt = null;
     this.state.julkaisemattomiaMuutoksia = null;
     this.state.viimeisinJulkaisuTila = null;
@@ -163,7 +163,7 @@ export class OpetussuunnitelmaStore {
     this.state.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = (await Muokkaustieto.getOpetussuunnitelmanPohjanViimeisinPohjaTekstiSync(this.state.opetussuunnitelma!.id!)).data;
     this.state.peruste = (await Opetussuunnitelmat.getOpetussuunnitelmanPeruste(this.state.opetussuunnitelma!.id!)).data;
     this.state.perusteArkistoitu = (await ArkistoidutPerusteet.perusteArkistoitu(this.state.peruste!.id!)).data;
-    this.state.pohjallaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.state.opetussuunnitelma!.id!)).data;
+    this.state.pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja = (await Opetussuunnitelmat.opetussuunnitelmanPohjallaUusiaTeksteja(this.state.opetussuunnitelma!.id!)).data;
   }
 
   async updateOppiaineet() {
