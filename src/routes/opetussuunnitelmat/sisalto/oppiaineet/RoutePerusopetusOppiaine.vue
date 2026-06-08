@@ -149,7 +149,7 @@
 
         <div v-if="!data.oppiaine.koosteinen && data.vuosiluokkakokonaisuus && !isCopyable">
           <div v-if="data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.vuosiluokat.length > 0">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="flex justify-between items-center">
               <h3 class="mb-0">
                 {{ $t('tavoitteet-ja-sisallot-vuosiluokittain') }}
               </h3>
@@ -157,7 +157,7 @@
                 v-if="!isEditing"
                 :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}"
               >
-                <ep-button>{{ $t('vuosiluokkaista-tavoitteet') }}</ep-button>
+                <EpButton>{{ $t('vuosiluokkaista-tavoitteet') }}</EpButton>
               </router-link>
             </div>
 
@@ -166,9 +166,9 @@
               :key="'vuosiluokka'+index"
             >
               <router-link :to="{name:'perusopetusoppiainevuosiluokka', params: {vlId: vuosiluokka.id}}">
-                <ep-button variant="link">
+                <EpButton variant="link">
                   {{ $t('vuosiluokka') }} {{ $t(vuosiluokka.vuosiluokka) }}
-                </ep-button>
+                </EpButton>
               </router-link>
             </div>
 
@@ -183,7 +183,7 @@
               v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }"
               :to="{name:'perusopetusoppiainevuosiluokkaistaminen'}"
             >
-              <ep-button>{{ $t('vuosiluokkaista-tavoitteet') }}</ep-button>
+              <EpButton>{{ $t('vuosiluokkaista-tavoitteet') }}</EpButton>
             </router-link>
 
             <hr class="mt-5 mb-4">
@@ -256,17 +256,25 @@
           <h3 class="mb-3">
             {{ $t('oppimaarat') }}
           </h3>
-          <b-table
-            striped
-            :items="data.oppiaine.oppimaarat"
-            :fields="oppimaaratFields"
-          >
-            <template #cell(nimi)="data">
-              <router-link :to="{ name: 'perusopetusoppiaine', params: {vlkId: vlkId,oppiaineId: data.item.id}}">
-                {{ $kaanna(data.item.nimi) }}
-              </router-link>
-            </template>
-          </b-table>
+          <div class="overflow-x-auto">
+            <ep-table
+              responsive
+              striped
+              hover
+              :show-headers="false"
+              data-key="id"
+              class="w-full border-collapse text-left text-sm"
+              :items="data.oppiaine.oppimaarat"
+              :fields="oppimaaratTableFields"
+              row-class="border-b border-surface-100"
+            >
+              <template #cell(nimi)="{ item }">
+                <router-link :to="{ name: 'perusopetusoppiaine', params: { vlkId: vlkId, oppiaineId: item.id } }">
+                  {{ $kaanna(item.nimi) }}
+                </router-link>
+              </template>
+            </ep-table>
+          </div>
 
           <ep-oppimaara-lisays
             v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
@@ -297,28 +305,26 @@ import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
+import EpTable from '@shared/components/EpTable/EpTable.vue';
 import { isOppiaineUskontoTaiVierasKieli as checkIsOppiaineUskontoTaiVierasKieli } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { $bvModal, $kaanna, $t } from '@shared/utils/globals';
+import { $confirmModal, $kaanna, $t } from '@shared/utils/globals';
 
-// Props
 const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
 }>();
 
-// Router
 const route = useRoute();
 
-// Use composables
+const oppimaaratTableFields = [{ key: 'nimi', label: '', tdClass: 'p-2' }];
+
 const store = computed(() => props.opetussuunnitelmaStore);
 const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
 const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.tyyppi as string === 'pohja');
-// Reactive data
 const editointiStore = ref<EditointiStore | null>(null);
 
-// Computed properties
 const versionumero = computed(() => {
   return route.query.versionumero;
 });
@@ -367,15 +373,6 @@ const isOppiaineUskontoTaiVierasKieli = computed(() => {
 
 const muokkaa = computed(() => {
   return _.has(route.query, 'muokkaa');
-});
-
-const oppimaaratFields = computed(() => {
-  return [{
-    key: 'nimi',
-    thStyle: {
-      display: 'none',
-    },
-  }];
 });
 
 // Methods
@@ -435,7 +432,7 @@ const varmistaValutus = async () => {
     return;
   }
 
-  const valuta = await $bvModal.msgBoxConfirm($t('vahvista-oppiaineen-tietojen-valutus-teksti'), {
+  const valuta = await $confirmModal.msgBoxConfirm($t('vahvista-oppiaineen-tietojen-valutus-teksti'), {
     title: $t('vahvista-oppiaineen-tietojen-valutus-otsikko'),
     okVariant: 'primary',
     okTitle: $t('kylla') as any,
