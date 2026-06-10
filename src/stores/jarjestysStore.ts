@@ -42,7 +42,7 @@ export class JarjestysStore implements IEditoitava {
   }
 
   async editAfterLoad() {
-    return false; // Never edit after load for jarjestys
+    return true;
   }
 
   async init() {
