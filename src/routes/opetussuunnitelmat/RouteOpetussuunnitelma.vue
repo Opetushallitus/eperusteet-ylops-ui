@@ -19,8 +19,8 @@
         class="header"
         :style="headerStyle"
       >
-        <div class="progress-chart">
-          <EpValidPopover
+        <div class="progress-chart mt-2">
+          <EpValidStatus
             :validoitava="ops"
             :validoinnit="validoinnit"
             :julkaisemattomia-muutoksia="onkoJulkaisemattomiaMuutoksia"
@@ -385,7 +385,7 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpTreeNavibar from '@shared/components/EpTreeNavibar/EpTreeNavibar.vue';
 import EpNavigationLabel from '@shared/components/EpTreeNavibar/EpNavigationLabel.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
-import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue';
+import EpValidStatus from '@shared/components/EpValidStatus/EpValidStatus.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
 import { EpTreeNavibarStore } from '@shared/components/EpTreeNavibar/EpTreeNavibarStore';
@@ -655,13 +655,13 @@ provide('kommenttiHandler', Kommentit);
     color: $color-ops-header-text;
     background-position: 100% -56px;
     background-repeat: no-repeat;
-    height: 190px;
+    height: 160px;
     @media only screen and (min-width: 2503px)  {
       background-size: 100%;
     }
 
     display: flex;
-    align-items: center;
+    //align-items: center;
 
     h1 :deep(button) {
       color: inherit;
@@ -669,7 +669,6 @@ provide('kommenttiHandler', Kommentit);
 
     .progress-chart {
       width: $sidebar-width;
-      height: 150px;
 
       @media only screen and (max-width: 1024px) {
         display: none;
@@ -678,11 +677,11 @@ provide('kommenttiHandler', Kommentit);
 
     .progress-chart > div {
       width: 100%;
-      margin: 0 auto;
     }
 
     .info {
       padding-left: 15px;
+      margin-top: 21px;
 
       @media only screen and (max-width: 768px) {
         padding-left: 30px;
