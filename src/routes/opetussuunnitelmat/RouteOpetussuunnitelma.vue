@@ -19,7 +19,7 @@
         class="header"
         :style="headerStyle"
       >
-        <div class="progress-chart">
+        <div class="progress-chart mt-2">
           <EpValidStatus
             :validoitava="ops"
             :validoinnit="validoinnit"
@@ -47,13 +47,21 @@
               class="ml-2 mr-2"
             >|</span>
             <span>{{ ops?.perusteenDiaarinumero }}</span>
-            <EpEsikatseluLinkkiMetaInfo
-              v-if="!isPohja && ops"
-              tyyppi="opetussuunnitelma"
-              :model="ops"
-              :salli-esikatselu="salliEsikatselu"
-            />
 
+            <template v-if="!isPohja && ops">
+              <span class="ml-2 mr-2">|</span>
+              <EpEsikatseluLinkkiMetaInfo
+                tyyppi="opetussuunnitelma"
+                :model="ops"
+                :salli-esikatselu="salliEsikatselu"
+              >
+                <template #link-text>
+                  {{ $t('esikatsele-opetussuunnitelmaa') }}
+                </template>
+              </EpEsikatseluLinkkiMetaInfo>
+            </template>
+
+            <span class="ml-2 mr-2">|</span>
             <b-dropdown
               class="asetukset"
               size="sm"
@@ -391,6 +399,7 @@ import EpTreeNavibar from '@shared/components/EpTreeNavibar/EpTreeNavibar.vue';
 import EpNavigationLabel from '@shared/components/EpTreeNavibar/EpNavigationLabel.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpEsikatseluLinkkiMetaInfo from '@shared/components/EpEsikatseluLinkkiMetaInfo/EpEsikatseluLinkkiMetaInfo.vue';
+import EpValidStatus from '@shared/components/EpValidStatus/EpValidStatus.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
 import { EpTreeNavibarStore } from '@shared/components/EpTreeNavibar/EpTreeNavibarStore';
@@ -406,7 +415,6 @@ import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler'
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 import { Kommentit } from '@/stores/kommentit';
-import EpValidStatus from '@shared/components/EpValidStatus/EpValidStatus.vue';
 
 // Props
 const props = defineProps<{
@@ -666,13 +674,13 @@ provide('kommenttiHandler', Kommentit);
     color: $color-ops-header-text;
     background-position: 100% -56px;
     background-repeat: no-repeat;
-    height: 190px;
+    height: 160px;
     @media only screen and (min-width: 2503px)  {
       background-size: 100%;
     }
 
     display: flex;
-    align-items: center;
+    //align-items: center;
 
     h1 :deep(button) {
       color: inherit;
@@ -680,7 +688,6 @@ provide('kommenttiHandler', Kommentit);
 
     .progress-chart {
       width: $sidebar-width;
-      height: 150px;
 
       @media only screen and (max-width: 1024px) {
         display: none;
@@ -689,11 +696,11 @@ provide('kommenttiHandler', Kommentit);
 
     .progress-chart > div {
       width: 100%;
-      margin: 0 auto;
     }
 
     .info {
       padding-left: 15px;
+      margin-top: 21px;
 
       @media only screen and (max-width: 768px) {
         padding-left: 30px;
