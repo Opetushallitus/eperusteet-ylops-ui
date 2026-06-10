@@ -75,19 +75,7 @@
             </ep-button>
           </EpPerustietoData>
         </div>
-        <div class="col-7">
-          <EpPerustietoData icon="visibility">
-            <template #header>
-              {{ $t('esikatsele-opetussuunnitelmaa') }}
-            </template>
-            <template v-if="!ops.esikatseltavissa">
-              {{ $t('esikatselua-ei-ole-sallittu') }}
-            </template>
-            <template v-else>
-              <ep-external-link :url="esikatseluUrl" />
-            </template>
-          </EpPerustietoData>
-        </div>
+
       </div>
 
       <div class="row">
@@ -134,10 +122,7 @@ const julkaisukieliet = computed(() => {
   return _.map(ops.value?.julkaisukielet, (kieli) => Kielet.kaannaOlioTaiTeksti(kieli)).join(', ');
 });
 
-const virkailijat = computed(() => {
-  // return store.virkailijat;
-  return {};
-});
+const virkailijat = computed(() => props.opetussuunnitelmaStore.virkailijat.value);
 
 const virkailijatFormatted = computed(() => {
   return _.chain(virkailijat.value)
@@ -149,10 +134,6 @@ const virkailijatFormatted = computed(() => {
     })
     .take(!naytaLisaaTyoryhmaa.value ? tyoryhmaAlkuMaara : _.size(virkailijat.value))
     .value();
-});
-
-const esikatseluUrl = computed(() => {
-  return buildEsikatseluUrl(Kielet.getSisaltoKieli.value, `/opetussuunnitelma/${ops.value.id}`, `/${koulutustyyppiTheme(ops.value.koulutustyyppi!)}/tiedot`);
 });
 
 onMounted(async () => {
