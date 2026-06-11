@@ -47,7 +47,12 @@
               class="ml-2 mr-2"
             >|</span>
             <span>{{ ops?.perusteenDiaarinumero }}</span>
-            <span class="ml-2 mr-2">|</span>
+            <EpEsikatseluLinkkiMetaInfo
+              v-if="!isPohja && ops"
+              tyyppi="opetussuunnitelma"
+              :model="ops"
+              :salli-esikatselu="salliEsikatselu"
+            />
 
             <b-dropdown
               class="asetukset"
@@ -386,6 +391,7 @@ import EpTreeNavibar from '@shared/components/EpTreeNavibar/EpTreeNavibar.vue';
 import EpNavigationLabel from '@shared/components/EpTreeNavibar/EpNavigationLabel.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpValidPopover from '@shared/components/EpValidPopover/EpValidPopover.vue';
+import EpEsikatseluLinkkiMetaInfo from '@shared/components/EpEsikatseluLinkkiMetaInfo/EpEsikatseluLinkkiMetaInfo.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
 import { EpTreeNavibarStore } from '@shared/components/EpTreeNavibar/EpTreeNavibarStore';
@@ -544,6 +550,11 @@ const validoi = async () => {
   isValidating.value = true;
   await store.value.updateValidation();
   isValidating.value = false;
+};
+
+const salliEsikatselu = async () => {
+  const ops = await store.value.get();
+  await store.value.save({ ...ops, esikatseltavissa: true });
 };
 
 
