@@ -146,6 +146,7 @@ export class OpetussuunnitelmaStore {
     this.fetchJulkaisut();
     this.updateOppiaineet();
     this.updatePohjallaPuuttuviaTeksteja();
+    this.fetchOrganisaatioVirkailijat();
   }
 
   public async initNavigation() {
@@ -463,6 +464,7 @@ export class OpetussuunnitelmaStore {
       .filter(org => org.oid !== organizations.oph.oid)
       .map(org => org.oid as string)
       .value();
+    this.state.virkailijat = null;
     this.state.virkailijat = _.uniqBy((await Ulkopuoliset.getOrganisaatioVirkailijat(orgOids)).data as any[], 'oid');
   }
 
