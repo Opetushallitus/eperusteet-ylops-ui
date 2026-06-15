@@ -126,6 +126,7 @@
                     v-model="alkuperainen.tekstiKappale.teksti"
                     layout="normal"
                     :is-editable="false"
+                    copyable
                   />
                 </template>
                 <div
@@ -148,6 +149,7 @@
                   v-model="data.tov.tekstiKappale.teksti"
                   layout="normal"
                   :is-editable="isEditing"
+                  copyable
                 />
                 <ep-alert
                   v-if="!isEditing && !$kaanna(data.tov.tekstiKappale.teksti)"
