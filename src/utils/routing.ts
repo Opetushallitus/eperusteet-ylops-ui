@@ -178,6 +178,15 @@ export function nodeToRoute(node: NavigationNodeDto): Location | null {
         oppiaineId: _.toString(node.id),
       },
     };
+  case 'oppiaineenvuosiluokka':
+    return {
+      name: 'perusopetusoppiainevuosiluokka',
+      params: {
+        vlkId: _.toString(node.meta?.vlkId),
+        vlId: _.toString(node.meta?.vuosiluokkaId),
+        oppiaineId: _.toString(node.meta?.oppiaineId),
+      },
+    };
   case 'paikallinenoppiainevuosiluokka':
     return {
       name: 'perusopetuspaikallinenoppiainevuosiluokka',
