@@ -132,6 +132,7 @@
               </div>
             </div>
             <ep-button
+              v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: 'opetussuunnitelma' }"
               icon="add"
               @click="uusiOpintojakso()"
             >
@@ -280,7 +281,10 @@ const isOppimaaria = computed(() => {
 });
 
 const isAllowedOppiaine = computed(() => {
-  return !isPaikallisestiSallittuLaajennos(oppiaine.value?.koodi?.uri as string);
+  return !isPaikallisestiSallittuLaajennos(
+    oppiaine.value?.koodi?.uri as string,
+    store.value.paikallisetLaajennuksetSallitutOppiaineKoodit.value,
+  );
 });
 
 // Methods

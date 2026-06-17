@@ -42,20 +42,8 @@ export function isPerusteSupported(peruste: any) {
   return _.includes(YlopsKoulutustyypit, koulutustyyppi);
 }
 
-export function paikallisestiSallitutLaajennokset() {
-  return [
-    'oppiaineetjaoppimaaratlops2021_ai3',
-    'oppiaineetjaoppimaaratlops2021_ai12',
-    'oppiaineetjaoppimaaratlops2021_ux',
-    'oppiaineetjaoppimaaratlops2021_vka1',
-    'oppiaineetjaoppimaaratlops2021_vkaab3',
-    'oppiaineetjaoppimaaratlops2021_vkb',
-    'oppiaineetjaoppimaaratlops2021_vksk',
-  ];
-}
-
-export function isPaikallisestiSallittuLaajennos(koodi: string): boolean {
-  return _.some(paikallisestiSallitutLaajennokset(), laajennos =>
+export function isPaikallisestiSallittuLaajennos(koodi: string, sallitutLaajennokset: string[]): boolean {
+  return _.some(sallitutLaajennokset, laajennos =>
     _.startsWith(koodi, laajennos));
 }
 

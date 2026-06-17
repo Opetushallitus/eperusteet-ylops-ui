@@ -43,8 +43,7 @@ import { computed, ref, onMounted, inject } from 'vue';
 import _ from 'lodash';
 import EpMultiListSelect from '@shared/components/forms/EpMultiListSelect.vue';
 import { PerusteCache } from '@/stores/peruste';
-import { Kielet } from '@shared/stores/kieli';
-import { getArvo, getUri, paikallisestiSallitutLaajennokset, koodiNumero, koodiAlku } from '@/utils/perusteet';
+import { getArvo, getUri, koodiNumero, koodiAlku } from '@/utils/perusteet';
 import { $kaanna } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 

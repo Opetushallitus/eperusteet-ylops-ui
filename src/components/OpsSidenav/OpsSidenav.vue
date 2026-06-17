@@ -297,6 +297,10 @@ const opintojaksot = computed(() => {
     .value();
 });
 
+const paikallisetLaajennuksetSallitutOppiaineKoodit = computed(() => {
+  return store.value.paikallisetLaajennuksetSallitutOppiaineKoodit.value;
+});
+
 // Lifecycle
 onMounted(async () => {
   cache.value = await PerusteCache.of(_.parseInt(route.params.id as string));
@@ -306,7 +310,7 @@ onMounted(async () => {
 const opintojaksoModuuliLista = (source: OpintojaksoModuuliSource) => {
   const result: SideMenuEntry[] = [];
   const oppiaineenOpintojaksot = oppimaaraOpintojaksoLinkit(opintojaksot.value, source);
-  if (!isPaikallisestiSallittuLaajennos(source.koodi) || _.size(oppiaineenOpintojaksot) > 0) {
+  if (!isPaikallisestiSallittuLaajennos(source.koodi, paikallisetLaajennuksetSallitutOppiaineKoodit.value) || _.size(oppiaineenOpintojaksot) > 0) {
     result.push({
       item: {
         type: 'staticlink',
@@ -315,12 +319,12 @@ const opintojaksoModuuliLista = (source: OpintojaksoModuuliSource) => {
       flatten: true,
       children: [
         ...oppiaineenOpintojaksot,
-        ...(!isPaikallisestiSallittuLaajennos(source.koodi) ? [oppimaaraUusiLinkki(source)] : []),
+        ...(!isPaikallisestiSallittuLaajennos(source.koodi, paikallisetLaajennuksetSallitutOppiaineKoodit.value) ? [oppimaaraUusiLinkki(source)] : []),
       ],
     });
   }
 
-  if (isPaikallisestiSallittuLaajennos(source.koodi)) {
+  if (isPaikallisestiSallittuLaajennos(source.koodi, paikallisetLaajennuksetSallitutOppiaineKoodit.value)) {
     result.push({
       item: {
         type: 'uusi-paikallinen-oppiaine',

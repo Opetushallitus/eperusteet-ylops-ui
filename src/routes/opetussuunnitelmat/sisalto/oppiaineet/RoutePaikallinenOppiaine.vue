@@ -282,7 +282,7 @@ import EpCommentThreads from '@/components/EpCommentThreads/EpCommentThreads.vue
 import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
 import { Lops2019PaikallinenOppiaineDto, Opetussuunnitelmat } from '@shared/api/ylops';
 import { Kielet } from '@shared/stores/kieli';
-import { KoodistoLops2019LaajaAlaiset, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
+import { KoodistoLops2019LaajaAlaiset, isPaikallisestiSallittuLaajennos } from '@/utils/perusteet';
 import { PerusteCache } from '@/stores/peruste';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { LopsPaikallinenOppiaineStore } from '@/stores/lopsPaikallinenOppiaineStore';
@@ -398,8 +398,10 @@ const oppimaara = computed(() => {
 });
 
 const oppiaineFilter = (oppiaine: any) => {
-  return _.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
-    _.startsWith(oppiaine.koodiUri, laajennos));
+  return isPaikallisestiSallittuLaajennos(
+    oppiaine.koodiUri,
+    store.value.paikallisetLaajennuksetSallitutOppiaineKoodit.value,
+  );
 };
 
 const pohjanPaikallisienOppiaineidenKoodit = computed(() => {
