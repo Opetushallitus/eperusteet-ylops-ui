@@ -14,6 +14,7 @@ import {
   Opintojaksot,
   Lops2019Oppiaineet,
   Opetussuunnitelmat,
+  LukioOpetussuunnitelmat,
   Lops2019OppiaineJarjestysDto,
   Oppiaineet,
   OppiaineDto,
@@ -69,6 +70,7 @@ export class OpetussuunnitelmaStore {
     pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync: null as OpetussuunnitelmanMuokkaustietoDto | null,
     peruste: null as PerusteInfoDto | null,
     perusteArkistoitu: null as boolean | null,
+    paikallisetLaajennuksetSallitutOppiaineKoodit: [] as string[],
   });
 
   public readonly opsId = computed(() => this.state.opsId);
@@ -93,6 +95,7 @@ export class OpetussuunnitelmaStore {
   public readonly pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = computed(() => this.state.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync);
   public readonly peruste = computed(() => this.state.peruste);
   public readonly perusteArkistoitu = computed(() => this.state.perusteArkistoitu);
+  public readonly paikallisetLaajennuksetSallitutOppiaineKoodit = computed(() => this.state.paikallisetLaajennuksetSallitutOppiaineKoodit);
 
   // Tekstikappaleet
   public async getOtsikot() {
@@ -129,6 +132,7 @@ export class OpetussuunnitelmaStore {
     this.state.viimeisinPohjaTekstiSync = null;
     this.state.pohjaOpetussuunnitelmaViimeisinPohjaTekstiSync = null;
     this.state.peruste = null;
+    this.state.paikallisetLaajennuksetSallitutOppiaineKoodit = [];
     this.state.opsId = 0;
   }
 
@@ -173,6 +177,7 @@ export class OpetussuunnitelmaStore {
       this.state.tuodutOpintojaksot = (await Opintojaksot.getTuodutOpintojaksot(this.state.opetussuunnitelma!.id!)).data;
       this.state.paikallisetOppiaineet = await this.getPaikallisetOppiaineet();
       this.state.oppiaineJarjestykset = (await Lops2019Oppiaineet.getLops2019OppiaineJarjestys(this.state.opetussuunnitelma!.id!)).data;
+      this.state.paikallisetLaajennuksetSallitutOppiaineKoodit = (await LukioOpetussuunnitelmat.getPaikallisetLaajennuksetSallitutOppiaineKoodit(this.state.opetussuunnitelma!.id!)).data;
     }
     else {
       this.state.valinnaisetOppiaineet = (await Oppiaineet.getValinnaiset(this.state.opetussuunnitelma!.id!)).data;

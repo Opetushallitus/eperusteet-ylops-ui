@@ -692,7 +692,7 @@ import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { OpintojaksoStore } from '@/stores/opintojaksoStore';
 import { PerusteCache } from '@/stores/peruste';
 import { Lops2019ModuuliDto, Lops2019OpintojaksoDto, Lops2019OppiaineDto, Opetussuunnitelmat, Lops2019OpintojaksonModuuliDto } from '@shared/api/ylops';
-import { KoodistoLops2019LaajaAlaiset, koodiSorters, paikallisestiSallitutLaajennokset } from '@/utils/perusteet';
+import { KoodistoLops2019LaajaAlaiset, koodiSorters, isPaikallisestiSallittuLaajennos } from '@/utils/perusteet';
 import { Kielet } from '@shared/stores/kieli';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { Koulutustyyppi } from '@shared/tyypit';
@@ -760,8 +760,10 @@ const init = async () => {
 };
 
 const oppiaineFilter = (oppiaine) => {
-  return !_.some(paikallisestiSallitutLaajennokset(), (laajennos) =>
-    _.startsWith(oppiaine.koodiUri, laajennos));
+  return !isPaikallisestiSallittuLaajennos(
+    oppiaine.koodiUri,
+    store.value.paikallisetLaajennuksetSallitutOppiaineKoodit.value,
+  );
 };
 
 // Lifecycle
