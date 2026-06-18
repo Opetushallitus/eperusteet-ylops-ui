@@ -143,6 +143,7 @@
           </EpInfoPopover>
         </div>
         <ep-organizations
+          ref="organizationsRef"
           v-model="uusi.organisaatiot"
           :validation="$v.uusi.organisaatiot"
           :koulutustyyppi="koulutustyyppi"
@@ -295,7 +296,7 @@ const uusi = ref({
   luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA,
 });
 const valitunPohjanPohja = ref<OpetussuunnitelmaNimiDto | null>(null);
-
+const organizationsRef = ref<InstanceType<typeof EpOrganizations> | null>(null);
 // Constants
 const LUONTITYYPPI_KOPIO = OpetussuunnitelmaLuontiDtoLuontityyppiEnum.KOPIO;
 const LUONTITYYPPI_VIITTEILLA = OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA;
@@ -326,10 +327,10 @@ const koulutustyyppi = computed(() => {
 const sallitutOrganisaatiot = computed(() => unref(props.kayttajaStore.organisaatiot));
 
 const uusiPohjaMuutos = async () => {
+  organizationsRef.value?.init();
   uusi.value.organisaatiot = {
     jarjestajat: [],
     oppilaitokset: [],
-    kunnat: [],
   };
   uusi.value.vuosiluokkakokonaisuudet = [];
   valitunPohjanPohja.value = null;
