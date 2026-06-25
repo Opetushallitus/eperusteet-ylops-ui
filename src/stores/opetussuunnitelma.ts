@@ -33,10 +33,9 @@ import {
 import { AxiosResponse } from 'axios';
 import { createLogger } from '@shared/utils/logger';
 import { reactive, computed } from 'vue';
-import { success, fail } from '@/utils/notifications';
 import { organizations } from '@/utils/organisaatiot';
 import _ from 'lodash';
-import { $success } from '@shared/utils/globals';
+import { $fail, $success } from '@shared/utils/globals';
 import { Kielet } from '@shared/stores/kieli';
 
 interface OpintojaksoQuery {
@@ -428,7 +427,7 @@ export class OpetussuunnitelmaStore {
       await this.init(this.state.opsId);
     }
     catch (err: any) {
-      fail('palautus-epaonnistui', err.response.data.syy);
+      $fail('palautus-epaonnistui', err.response.data.syy);
     }
   }
 
