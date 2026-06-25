@@ -267,14 +267,6 @@
               </router-link>
             </template>
           </b-table>
-
-          <ep-oppimaara-lisays
-            v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
-            :opetussuunnitelma-store="store"
-            :oppiaine="data.oppiaine"
-            :reset-navi="resetOps"
-            button-variant="outline"
-          />
         </div>
       </template>
     </EpEditointi>
