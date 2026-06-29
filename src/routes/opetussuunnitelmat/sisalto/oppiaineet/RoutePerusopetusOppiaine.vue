@@ -180,7 +180,7 @@
         </div>
 
         <div v-if="data.vuosiluokkakokonaisuus">
-          <template v-if="data.vuosiluokkakokonaisuus.tehtava?.teksti?.[kieli] || perusteenVuosiluokkakokonaisuus.tehtava">
+          <template v-if="onkoLokalisoituTekstiAnnettu(data.vuosiluokkakokonaisuus.tehtava?.teksti) || perusteenVuosiluokkakokonaisuus.tehtava">
             <vuosiluokka-sisalto-teksti
               v-model="data.vuosiluokkakokonaisuus.tehtava"
               :peruste-object="perusteenVuosiluokkakokonaisuus.tehtava"
@@ -299,6 +299,7 @@ import EpField from '@shared/components/forms/EpField.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import { isOppiaineUskontoTaiVierasKieli as checkIsOppiaineUskontoTaiVierasKieli } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
+import { Kieli } from '@shared/tyypit';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { $bvModal, $kaanna, $t } from '@shared/utils/globals';
 
@@ -395,6 +396,13 @@ const poistaPaikallinenTarkennus = (oppiaine: any, vapaatekstiId: any) => {
   oppiaine.vapaatTekstit = _.filter(oppiaine.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
 };
 
+const onkoLokalisoituTekstiAnnettu = (teksti?: Record<string, string> | null): boolean => {
+  if (!teksti) {
+    return false;
+  }
+  return _.some(Object.values(Kieli), kieli => (!!teksti[kieli]));
+};
+
 const resetOps = async () => {
   await store.value.initNavigation();
 };
@@ -450,10 +458,6 @@ const varmistaValutus = async () => {
     valuta,
   };
 };
-
-const kieli = computed(() => {
-  return Kielet.getSisaltoKieli.value;
-});
 
 // Lifecycle
 onMounted(async () => {
