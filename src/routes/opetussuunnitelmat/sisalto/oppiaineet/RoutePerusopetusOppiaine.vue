@@ -123,17 +123,6 @@
           </ep-collapse>
         </template>
 
-        <div v-if="data.vuosiluokkakokonaisuus && perusteenVuosiluokkakokonaisuus.tehtava">
-          <vuosiluokka-sisalto-teksti
-            v-model="data.vuosiluokkakokonaisuus.tehtava"
-            :peruste-object="perusteenVuosiluokkakokonaisuus.tehtava"
-            :pohja-object="pohjaOppiaineenVuosiluokkakokonaisuus.tehtava"
-            :is-editing="isEditing"
-            :peruste-teksti-avattu="true"
-          />
-          <hr class="mt-5 mb-4">
-        </div>
-
         <vuosiluokka-sisalto-teksti
           v-if="data.oppiaine.tyyppi === 'yhteinen' && data.vuosiluokkakokonaisuus && data.vuosiluokkakokonaisuus.yleistavoitteet"
           v-model="data.vuosiluokkakokonaisuus.yleistavoitteet"
@@ -191,6 +180,25 @@
         </div>
 
         <div v-if="data.vuosiluokkakokonaisuus">
+          <template v-if="data.vuosiluokkakokonaisuus.tehtava?.teksti?.[kieli] || perusteenVuosiluokkakokonaisuus.tehtava">
+            <vuosiluokka-sisalto-teksti
+              v-model="data.vuosiluokkakokonaisuus.tehtava"
+              :peruste-object="perusteenVuosiluokkakokonaisuus.tehtava"
+              :pohja-object="pohjaOppiaineenVuosiluokkakokonaisuus.tehtava"
+              :is-editing="isEditing"
+              :peruste-teksti-avattu="true"
+            >
+            <template #otsikko>
+                <h3
+                  class="mb-3"
+                >
+                  {{ $t('tehtava') }}
+                </h3>
+              </template>
+            </vuosiluokka-sisalto-teksti>
+            <hr class="mt-5 mb-4">
+          </template>
+
           <vuosiluokka-sisalto-teksti
             v-model="data.vuosiluokkakokonaisuus.tyotavat"
             :peruste-object="perusteenVuosiluokkakokonaisuus.tyotavat"
@@ -442,6 +450,10 @@ const varmistaValutus = async () => {
     valuta,
   };
 };
+
+const kieli = computed(() => {
+  return Kielet.getSisaltoKieli.value;
+});
 
 // Lifecycle
 onMounted(async () => {
