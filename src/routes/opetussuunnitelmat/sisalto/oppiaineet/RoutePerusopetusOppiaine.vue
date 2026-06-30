@@ -59,14 +59,16 @@
           />
         </ep-form-content>
 
-        <vuosiluokka-sisalto-teksti
-          v-model="data.oppiaine.tehtava"
-          :peruste-object="perusteenOppiaine.tehtava"
-          :pohja-object="supportData.pohjanOppiaine.tehtava"
-          :is-editing="isEditing"
-          :peruste-teksti-avattu="true"
-        />
-        <hr class="mt-5 mb-4">
+        <template v-if="onkoLokalisoituTekstiAnnettu(data.oppiaine.tehtava?.teksti) || perusteenOppiaine.tehtava">
+          <vuosiluokka-sisalto-teksti
+            v-model="data.oppiaine.tehtava"
+            :peruste-object="perusteenOppiaine.tehtava"
+            :pohja-object="supportData.pohjanOppiaine.tehtava"
+            :is-editing="isEditing"
+            :peruste-teksti-avattu="true"
+          />
+          <hr class="mt-5 mb-4">
+        </template>
 
         <template v-if="perusteenOppiaine.vapaatTekstit">
           <ep-collapse
