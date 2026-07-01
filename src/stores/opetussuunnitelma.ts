@@ -490,6 +490,10 @@ export class OpetussuunnitelmaStore {
     this.state.pohjanPerustePaivittynyt = false;
   }
 
+  public setOpetussuunnitelma(opetussuunnitelma: OpetussuunnitelmaKevytDto) {
+    this.state.opetussuunnitelma = opetussuunnitelma;
+  }
+
   public setOpetussuunnitelmaNimi(nimi) {
     this.state.opetussuunnitelma = {
       ...this.state.opetussuunnitelma,
