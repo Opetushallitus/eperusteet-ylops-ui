@@ -5,8 +5,9 @@ import { buildKatseluUrl } from '@shared/utils/esikatselu';
 import { Kielet } from '@shared/stores/kieli';
 import * as _ from 'lodash';
 import { koulutustyyppiTheme } from '@shared/utils/perusteet';
-import { OpetussuunnitelmaDto, OpetussuunnitelmaKevytDtoTilaEnum, OpetussuunnitelmaKevytDtoToteutusEnum, Opetussuunnitelmat, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
+import { OpetussuunnitelmaDto, OpetussuunnitelmaKevytDto, OpetussuunnitelmaKevytDtoTilaEnum, OpetussuunnitelmaKevytDtoToteutusEnum, Opetussuunnitelmat, OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import { opsTiedotValidator } from '@/validators/ops';
+import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
 export class OpetussuunnitelmaEditStore implements IEditoitava {
   public static opetussuunnitelmantyyppi: string;
@@ -15,6 +16,7 @@ export class OpetussuunnitelmaEditStore implements IEditoitava {
   constructor(
     private opetussuunnitelmaId: number,
     private kaanna: (value: any) => string,
+    private opetussuunnitelmaStore: OpetussuunnitelmaStore,
   ) {
   }
 
@@ -85,6 +87,7 @@ export class OpetussuunnitelmaEditStore implements IEditoitava {
 
     };
     const res = await Opetussuunnitelmat.updateOpetussuunnitelma(data.id as number, data as OpetussuunnitelmaDto);
+    this.opetussuunnitelmaStore.setOpetussuunnitelma(res.data as OpetussuunnitelmaKevytDto);
     return res.data;
   }
 

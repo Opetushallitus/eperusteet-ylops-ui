@@ -226,14 +226,13 @@ const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
 }>();
 
-const store = computed(() => props.opetussuunnitelmaStore);
 const ops = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value);
 const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
 const editStore = ref<EditointiStore | null>(null);
 
 onMounted(async () => {
-  editStore.value = new EditointiStore(new OpetussuunnitelmaEditStore(opsId.value, $kaanna));
+  editStore.value = new EditointiStore(new OpetussuunnitelmaEditStore(opsId.value, $kaanna, props.opetussuunnitelmaStore));
 });
 
 const hasContentFilters = computed(() => {
@@ -295,12 +294,10 @@ const storeData = computed({
   set: (data) => editStore?.value?.setData(data),
 });
 
-const nimi = computed(() => {
-  return storeData.value?.nimi;
-});
+const nimi = computed(() => storeData.value?.nimi);
 
-watch(nimi, async () => {
-  store.value.setOpetussuunnitelmaNimi(nimi.value);
+watch(nimi, () => {
+  props.opetussuunnitelmaStore.setOpetussuunnitelmaNimi(nimi.value);
 });
 </script>
 
