@@ -16,6 +16,16 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
       type: 'viite',
       id: Number(route.params!.osaId!),
     };
+  case 'taiteenala':
+    return {
+      type: 'taiteenala',
+      id: Number(route.params!.taiteenalaId!),
+    };
+  case 'taiteenosa':
+    return {
+      type: 'taiteenosa',
+      id: Number(route.params!.taiteenosaId!),
+    };
   case 'opintojakso':
     return {
       type: 'opintojakso',
@@ -113,6 +123,20 @@ export function nodeToRoute(node: NavigationNodeDto): Location | null {
       name: 'tekstikappale',
       params: {
         osaId: _.toString(node.id),
+      },
+    };
+  case 'taiteenala':
+    return {
+      name: 'taiteenala',
+      params: {
+        taiteenalaId: _.toString(node.id),
+      },
+    };
+  case 'taiteenosa':
+    return {
+      name: 'taiteenosa',
+      params: {
+        taiteenosaId: _.toString(node.id),
       },
     };
   case 'oppiaineet':

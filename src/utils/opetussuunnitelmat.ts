@@ -1,13 +1,15 @@
 import { OpetussuunnitelmaInfoDtoToteutusEnum } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
+import { KoulutustyyppiToteutus } from '@shared/tyypit';
 
 export function isOpsToteutusSupported(ops: any) {
   const { toteutus } = ops;
   return _.includes([
-    OpetussuunnitelmaInfoDtoToteutusEnum.LOPS2019.toLowerCase(),
-    OpetussuunnitelmaInfoDtoToteutusEnum.YKSINKERTAINEN.toLowerCase(),
-    OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase(),
+    KoulutustyyppiToteutus.lops2019.toLowerCase(),
+    KoulutustyyppiToteutus.yksinkertainen.toLowerCase(),
+    KoulutustyyppiToteutus.perusopetus.toLowerCase(),
+    KoulutustyyppiToteutus.tpo.toLowerCase(),
   ], toteutus);
 }
 

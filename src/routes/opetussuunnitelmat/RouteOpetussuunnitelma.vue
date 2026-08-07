@@ -297,6 +297,24 @@
                   </EpNavigationLabel>
                 </template>
 
+                <template #taiteenala="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'taiteenala', params: { taiteenalaId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimeton') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #taiteenosa="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'taiteenosa', params: { taiteenosaId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimeton') }}
+                  </EpNavigationLabel>
+                </template>
+
                 <template #uusi_opintojakso="{ item }">
                   <div class="new-link-item">
                     <router-link
@@ -347,6 +365,10 @@
                     :tekstikappaleet="tekstikappaleet"
                     :parent-tekstikappale-id="item.meta?.['parent-tekstikappale-id']"
                   />
+                </template>
+
+                <template #uusi_taiteenala>
+                  <EpTaiteenalaLisays :opetussuunnitelma-store="store" />
                 </template>
               </EpTreeNavibar>
             </div>
@@ -402,6 +424,7 @@ import EpEsikatseluLinkkiMetaInfo from '@shared/components/EpEsikatseluLinkkiMet
 import EpValidStatus from '@shared/components/EpValidStatus/EpValidStatus.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
+import EpTaiteenalaLisays from '@/components/EpTaiteenalaLisays/EpTaiteenalaLisays.vue';
 import { EpTreeNavibarStore } from '@shared/components/EpTreeNavibar/EpTreeNavibarStore';
 import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import { themes } from '@shared/utils/perusteet';

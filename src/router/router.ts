@@ -19,6 +19,8 @@ import RoutePaikallinenOppiaine from '@/routes/opetussuunnitelmat/sisalto/oppiai
 import RouteOrganisaatio from '@/routes/organisaatio/RouteOrganisaatio.vue';
 import RoutePohjaUusi from '@/routes/opetussuunnitelmat/RoutePohjaUusi.vue';
 import RoutePoistetut from '@/routes/opetussuunnitelmat/RoutePoistetut.vue';
+import RouteTaiteenala from '@/routes/opetussuunnitelmat/sisalto/taiteenperusopetus/RouteTaiteenala.vue';
+import RouteTaiteenosa from '@/routes/opetussuunnitelmat/sisalto/taiteenperusopetus/RouteTaiteenosa.vue';
 import RouteTekstikappale from '@/routes/opetussuunnitelmat/sisalto/tekstikappale/RouteTekstikappale.vue';
 import RouteTiedot from '@/routes/opetussuunnitelmat/tiedot/RouteTiedot.vue';
 import RouteYleisnakyma from '@/routes/opetussuunnitelmat/tiedot/RouteYleisnakyma.vue';
@@ -212,6 +214,16 @@ const router = createRouter({
         path: 'tekstikappaleet/:osaId',
         component: RouteTekstikappale,
         name: 'tekstikappale',
+        props,
+      }, {
+        path: 'taiteenalat/:taiteenalaId',
+        component: RouteTaiteenala,
+        name: 'taiteenala',
+        props,
+      }, {
+        path: 'taiteenosat/:taiteenosaId',
+        component: RouteTaiteenosa,
+        name: 'taiteenosa',
         props,
       }, {
         path: 'vuosiluokkakokonaisuus/:vlkId',
