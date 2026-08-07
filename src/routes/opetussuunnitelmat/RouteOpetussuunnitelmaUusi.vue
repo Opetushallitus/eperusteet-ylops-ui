@@ -151,6 +151,23 @@
           </EpToggleGroup>
         </ep-form-content>
       </div>
+      <div v-if="uusi.pohja && uusi.pohja.toteutus === KoulutustyyppiToteutus.tpo.toLowerCase()">
+        <hr/>
+        <ep-form-content name="taiteenalat">
+          <EpSpinner v-if="!perusteenTaiteenalat" />
+          <EpToggleGroup
+            v-else
+            v-model="uusi.taiteenalat"
+            :items="perusteenTaiteenalat"
+            :stacked="true"
+            :is-editing="true"
+          >
+            <template #default="{ item }">
+              {{ $kaanna(item.nimi) }}
+            </template>
+          </EpToggleGroup>
+        </ep-form-content>
+      </div>
       <div v-if="uusi.pohja">
         <hr>
         <div class="flex">
@@ -274,11 +291,15 @@ import {
   OpetussuunnitelmaLuontiDtoLuontityyppiEnum,
   OpetussuunnitelmaNimiDto,
   AIPEPerusteVaiheKevytDto,
+  Taiteenperusopetus,
+  TpoPerusteenTaiteenalaDto,
+  TpoSisaltoViiteDto,
 } from '@shared/api/ylops';
+import { KoulutustyyppiToteutus } from '@shared/tyypit';
 import { opsLuontiValidator, LuotavaOpsOrganisaatioTaso } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
-import { $t, $kaanna, $sd, $success } from '@shared/utils/globals';
+import { $t, $kaanna, $sd, $success, $fail } from '@shared/utils/globals';
 import EpRadio from '@shared/components/forms/EpRadio.vue';
 import EpToggleGroup from '@shared/components/forms/EpToggleGroup.vue';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
@@ -302,6 +323,7 @@ const opetussuunnitelmaOrganisaatioTaso = ref<LuotavaOpsOrganisaatioTaso>('kunta
 const addingOpetussuunnitelma = ref(false);
 const vuosiluokkakokonaisuudet = ref<OpsVuosiluokkakokonaisuusKevytDto[] | null>(null);
 const vaiheet = ref<AIPEPerusteVaiheKevytDto[] | null>(null);
+const perusteenTaiteenalat = ref<TpoPerusteenTaiteenalaDto[] | null>(null);
 const uusi = ref({
   pohja: null as (OpetussuunnitelmaInfoDto | null),
   nimi: {},
@@ -315,6 +337,7 @@ const uusi = ref({
   ainepainoitteinen: false,
   vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
   vaiheet: [] as AIPEPerusteVaiheKevytDto[],
+  taiteenalat: [] as TpoPerusteenTaiteenalaDto[],
   luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA,
 });
 const valitunPohjanPohja = ref<OpetussuunnitelmaNimiDto | null>(null);
@@ -326,6 +349,39 @@ const LUONTITYYPPI_VIITTEILLA = OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITT
 // Methods
 const initUusi = () => {
   uusi.value.pohja = null;
+  uusi.value.taiteenalat = [];
+  perusteenTaiteenalat.value = null;
+};
+
+const litista = (viite?: TpoSisaltoViiteDto): TpoSisaltoViiteDto[] => {
+  return viite ? [viite, ..._.flatMap(viite.lapset, litista)] : [];
+};
+
+const haePerusteenTaiteenalat = async (pohjaId: number) => {
+  perusteenTaiteenalat.value = null;
+  uusi.value.taiteenalat = [];
+
+  try {
+    const sisalto = (await Taiteenperusopetus.getPerusteSisalto(pohjaId)).data;
+    const taiteenalat = _.chain(litista(sisalto.sisalto))
+      .map('perusteenOsa')
+      .filter(perusteenOsa => _.get(perusteenOsa, 'osanTyyppi') === 'taiteenala')
+      .filter(perusteenOsa => !!_.get(perusteenOsa, 'koodi.uri'))
+      .sortBy(taiteenala => $kaanna(taiteenala.nimi))
+      .value() as TpoPerusteenTaiteenalaDto[];
+
+    perusteenTaiteenalat.value = taiteenalat;
+
+    if (oletuspohjasta.value === 'opsista') {
+      const existing = (await Taiteenperusopetus.getTaiteenalat(pohjaId)).data;
+      const existingKoodit = _.map(existing, 'koodi') as string[];
+      uusi.value.taiteenalat = taiteenalat.filter(taiteenala => _.includes(existingKoodit, taiteenala.koodi?.uri));
+    }
+  }
+  catch (err) {
+    perusteenTaiteenalat.value = [];
+    $fail($t('perusteen-taiteenalojen-haku-epaonnistui'));
+  }
 };
 
 // Computed properties
@@ -357,6 +413,8 @@ const uusiPohjaMuutos = async () => {
   uusi.value.vuosiluokkakokonaisuudet = [];
   uusi.value.vaiheet = [];
   vaiheet.value = null;
+  uusi.value.taiteenalat = [];
+  perusteenTaiteenalat.value = null;
   valitunPohjanPohja.value = null;
 
   if (uusi.value.pohja?.id) {
@@ -371,6 +429,9 @@ const uusiPohjaMuutos = async () => {
     if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase()) {
       const perusteVaiheet = (await AIPE.getPerusteVaiheet(uusi.value.pohja.id)).data || [];
       vaiheet.value = _.sortBy(perusteVaiheet, v => $kaanna(v.nimi as any));
+    }
+    if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.TPO.toLowerCase()) {
+      await haePerusteenTaiteenalat(uusi.value.pohja.id);
     }
 
     const pohjaOps = (await Opetussuunnitelmat.getOpetussuunnitelmaNimi(uusi.value.pohja.id)).data;
@@ -452,6 +513,15 @@ const luoUusiOpetussuunnitelma = async () =>   {
   }
   try {
     const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
+
+    if (uusi.value.taiteenalat.length > 0) {
+      await Promise.all(
+        uusi.value.taiteenalat.map(taiteenala =>
+          Taiteenperusopetus.addTaiteenala(luotu.id!, { koodi: taiteenala.koodi?.uri }),
+        ),
+      );
+    }
+
     $success('lisays-opetussuunnitelma-onnistui');
     router.replace({
       name: 'yleisnakyma',

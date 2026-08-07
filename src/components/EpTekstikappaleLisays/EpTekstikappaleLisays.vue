@@ -2,11 +2,17 @@
   <div class="ep-tekstikappale-lisays">
     <EpButton
       variant="link"
-      button-class="text-decoration-none"
-      icon="add"
+      button-class="text-decoration-none font-size-1-125"
       no-padding
       @click="showModal"
     >
+      <EpMaterialIcon
+        :color="'inherit'"
+        :background="'inherit'"
+        size="18px"
+      >
+        add
+      </EpMaterialIcon>
       <span>{{ $t('uusi-tekstikappale') }}</span>
     </EpButton>
     <EpModal
@@ -83,6 +89,7 @@ import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import { Puu } from '@shared/api/ylops';
 import { LokalisoituTekstiDto, SideMenuEntry } from '@shared/tyypit';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 const props = withDefaults(
   defineProps<{
