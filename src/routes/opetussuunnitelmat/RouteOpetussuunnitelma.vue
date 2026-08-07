@@ -293,6 +293,24 @@
                   </EpNavigationLabel>
                 </template>
 
+                <template #taiteenala="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'taiteenala', params: { taiteenalaId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimeton') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #taiteenosa="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'taiteenosa', params: { taiteenosaId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimeton') }}
+                  </EpNavigationLabel>
+                </template>
+
                 <template #uusi_opintojakso="{ item }">
                   <div class="new-link-item">
                     <router-link
@@ -386,6 +404,10 @@
                     :opetussuunnitelma-store="store"
                   />
                 </template>
+
+                <template #uusi_taiteenala>
+                  <EpTaiteenalaLisays :opetussuunnitelma-store="store" />
+                </template>
               </EpTreeNavibar>
             </div>
           </template>
@@ -438,6 +460,7 @@ import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
 import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
 import EpDropdownDivider from '@shared/components/EpDropdown/EpDropdownDivider.vue';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
+import EpTaiteenalaLisays from '@/components/EpTaiteenalaLisays/EpTaiteenalaLisays.vue';
 import { EpTreeNavibarStore } from '@shared/components/EpTreeNavibar/EpTreeNavibarStore';
 import { themes } from '@shared/utils/perusteet';
 import { LinkkiHandler, routeToNode } from '@/utils/routing';
