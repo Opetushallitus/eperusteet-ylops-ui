@@ -1,12 +1,18 @@
 <template>
   <div>
     <ep-button
-      icon="add"
       :variant="buttonVariant"
-      button-class="text-decoration-none"
+      button-class="text-decoration-none font-size-1-125"
       no-padding
       @click="openModal()"
     >
+      <EpMaterialIcon
+        :color="'inherit'"
+        :background="'inherit'"
+        size="18px"
+      >
+        add
+      </EpMaterialIcon>
       <span>{{ $t(addButtonText) }}</span>
     </ep-button>
     <b-modal
@@ -91,6 +97,7 @@ import { Kielet, UiKielet } from '@shared/stores/kieli';
 import { $t, $kaanna, $fail } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { onMounted } from 'vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 const props = withDefaults(
   defineProps<{
