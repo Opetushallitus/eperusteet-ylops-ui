@@ -34,6 +34,9 @@ import RoutePerusopetusPaikallinenOppiaineVuosiluokka from '@/routes/opetussuunn
 import RoutePerusopetusOppiaineVuosiluokkaistaminen from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokkaistaminen.vue';
 import RoutePerusopetusOppiaineVuosiluokka from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusOppiaineVuosiluokka.vue';
 import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/sisalto/oppiaineet/RoutePerusopetusVuosiluokkaValinnaiset.vue';
+import RouteAIPEVaihe from '@/routes/opetussuunnitelmat/sisalto/aipe/RouteAIPEVaihe.vue';
+import RouteAIPEOppiaine from '@/routes/opetussuunnitelmat/sisalto/aipe/RouteAIPEOppiaine.vue';
+import RouteAIPEKurssi from '@/routes/opetussuunnitelmat/sisalto/aipe/RouteAIPEKurssi.vue';
 
 import { Kielet } from '@shared/stores/kieli';
 import { changeLang, convertRouteParamsToNumbers } from '@shared/utils/router';
@@ -247,6 +250,21 @@ const router = createRouter({
         path: 'vuosiluokkakokonaisuus/:vlkId/valinnaiset',
         component: RoutePerusopetusVuosiluokkaValinnaiset,
         name: 'perusopetusvalinnaiset',
+        props,
+      }, {
+        path: 'vaiheet/:vaiheId',
+        component: RouteAIPEVaihe,
+        name: 'aipevaihe',
+        props,
+      }, {
+        path: 'vaiheet/:vaiheId/oppiaineet/:oppiaineId',
+        component: RouteAIPEOppiaine,
+        name: 'aipeoppiaine',
+        props,
+      }, {
+        path: 'vaiheet/:vaiheId/oppiaineet/:oppiaineId/kurssit/:kurssiId',
+        component: RouteAIPEKurssi,
+        name: 'aipekurssi',
         props,
       },
       ],

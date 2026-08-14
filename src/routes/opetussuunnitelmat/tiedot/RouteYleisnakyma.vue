@@ -17,8 +17,10 @@
         <div v-html="$t('opetussuunnitelman-peruste-arkistoitu-huomioteksti')" />
       </div>
 
-      <div v-if="pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja && pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja?.id !== ops?.pohja?.id"
-        class="info-box import-box">
+      <div
+        v-if="pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja && pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja?.id !== ops?.pohja?.id"
+        class="info-box import-box"
+      >
         <h2>{{ $t('paivita-opetussuunnitelman-tekstirakenne-koulun-ops') }}</h2>
         <div v-html="$t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjassa-puuttuvat-tekstit-huomioteksti', { 'pohja-nimi': $kaanna(ops?.pohja?.nimi) })" />
         <br>

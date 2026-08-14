@@ -8,6 +8,7 @@ export function isOpsToteutusSupported(ops: any) {
     OpetussuunnitelmaInfoDtoToteutusEnum.LOPS2019.toLowerCase(),
     OpetussuunnitelmaInfoDtoToteutusEnum.YKSINKERTAINEN.toLowerCase(),
     OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase(),
+    OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase(),
   ], toteutus);
 }
 
