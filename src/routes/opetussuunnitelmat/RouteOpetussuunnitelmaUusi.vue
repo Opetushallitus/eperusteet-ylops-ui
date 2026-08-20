@@ -133,13 +133,12 @@
         </ep-form-content>
       </div>
       <div v-if="uusi.pohja && uusi.pohja.toteutus === 'aipe'">
-        <ep-form-content name="vaiheet-pakollinen">
+        <ep-form-content name="vaiheet">
           <EpSpinner v-if="!vaiheet" />
           <EpToggleGroup
             v-else
             v-model="uusi.vaiheet"
             :items="vaiheet"
-            :validation="$v.uusi.vaiheet"
             :stacked="true"
             :is-editing="true"
           >
