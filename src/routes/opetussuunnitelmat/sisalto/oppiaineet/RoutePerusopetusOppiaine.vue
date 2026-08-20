@@ -190,7 +190,7 @@
               :is-editing="isEditing"
               :peruste-teksti-avattu="true"
             >
-            <template #otsikko>
+              <template #otsikko>
                 <h3
                   v-if="!perusteenVuosiluokkakokonaisuus.tehtava"
                   class="mb-3"

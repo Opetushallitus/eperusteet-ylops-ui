@@ -73,7 +73,7 @@
                     v-if="uusi.pohja && oletuspohjasta !== 'pohjasta'"
                     class="form-text info-box mt-2"
                   >
-                    <div v-html="$t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio', { pohja: $kaanna(uusi.pohja.nimi) })"></div>
+                    <div v-html="$t('valittu-' + opetussuunnitelmaOrganisaatioTaso + '-' + luontityyppi.toLowerCase() + '-huomio', { pohja: $kaanna(uusi.pohja.nimi) })" />
                     <template v-if="luontityyppi.toLowerCase() === 'kopio' && opetussuunnitelmaOrganisaatioTaso === 'oppilaitos'">
                       <EpSpinner
                         v-if="!valitunPohjanPohja"
@@ -128,6 +128,23 @@
           >
             <template #default="{ item }">
               {{ $kaanna(item.vuosiluokkakokonaisuus.nimi) }}
+            </template>
+          </EpToggleGroup>
+        </ep-form-content>
+      </div>
+      <div v-if="uusi.pohja && uusi.pohja.toteutus === 'aipe'">
+        <ep-form-content name="vaiheet-pakollinen">
+          <EpSpinner v-if="!vaiheet" />
+          <EpToggleGroup
+            v-else
+            v-model="uusi.vaiheet"
+            :items="vaiheet"
+            :validation="$v.uusi.vaiheet"
+            :stacked="true"
+            :is-editing="true"
+          >
+            <template #default="{ item }">
+              {{ $kaanna(item.nimi) }}
             </template>
           </EpToggleGroup>
         </ep-form-content>
@@ -244,6 +261,7 @@ import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import {
+  AIPE,
   Opetussuunnitelmat,
   OpetussuunnitelmaInfoDto,
   OpetussuunnitelmaLuontiDto,
@@ -253,6 +271,7 @@ import {
   OpetussuunnitelmaInfoDtoTilaEnum,
   OpetussuunnitelmaLuontiDtoLuontityyppiEnum,
   OpetussuunnitelmaNimiDto,
+  AIPEPerusteVaiheKevytDto,
 } from '@shared/api/ylops';
 import { opsLuontiValidator, LuotavaOpsOrganisaatioTaso } from '@/validators/ops';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
@@ -280,6 +299,7 @@ const oletuspohjasta = ref<PohjaTyyppi | null>(null);
 const opetussuunnitelmaOrganisaatioTaso = ref<LuotavaOpsOrganisaatioTaso>('kunta');
 const addingOpetussuunnitelma = ref(false);
 const vuosiluokkakokonaisuudet = ref<OpsVuosiluokkakokonaisuusKevytDto[] | null>(null);
+const vaiheet = ref<AIPEPerusteVaiheKevytDto[] | null>(null);
 const uusi = ref({
   pohja: null as (OpetussuunnitelmaInfoDto | null),
   nimi: {},
@@ -292,6 +312,7 @@ const uusi = ref({
   tuoPohjanOppimaarat: null as (boolean | null),
   ainepainoitteinen: false,
   vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
+  vaiheet: [] as AIPEPerusteVaiheKevytDto[],
   luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA,
 });
 const valitunPohjanPohja = ref<OpetussuunnitelmaNimiDto | null>(null);
@@ -332,6 +353,8 @@ const uusiPohjaMuutos = async () => {
     kunnat: [],
   };
   uusi.value.vuosiluokkakokonaisuudet = [];
+  uusi.value.vaiheet = [];
+  vaiheet.value = null;
   valitunPohjanPohja.value = null;
 
   if (uusi.value.pohja?.id) {
@@ -341,6 +364,11 @@ const uusiPohjaMuutos = async () => {
       vuosiluokkakokonaisuudet.value = _.sortBy((ops.vuosiluokkakokonaisuudet as OpsVuosiluokkakokonaisuusKevytDto[]), [(vlk) => {
         return $kaanna((vlk.vuosiluokkakokonaisuus?.nimi as any));
       }]);
+    }
+
+    if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase()) {
+      const perusteVaiheet = (await AIPE.getPerusteVaiheet(uusi.value.pohja.id)).data || [];
+      vaiheet.value = _.sortBy(perusteVaiheet, v => $kaanna(v.nimi as any));
     }
 
     const pohjaOps = (await Opetussuunnitelmat.getOpetussuunnitelmaNimi(uusi.value.pohja.id)).data;
@@ -417,6 +445,9 @@ const luoUusiOpetussuunnitelma = async () =>   {
   };
 
   (ops as any)._pohja = '' + uusi.value.pohja!.id;
+  if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase()) {
+    (ops as any).perusteenVaiheIdt = _.map(uusi.value.vaiheet, v => v.id);
+  }
   try {
     const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
     $success('lisays-opetussuunnitelma-onnistui');

@@ -90,6 +90,28 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
         oppiaineId: Number(route.params!.oppiaineId),
       } as any,
     };
+  case 'aipevaihe':
+    return {
+      type: 'aipevaihe',
+      id: Number(route.params!.vaiheId!),
+    };
+  case 'aipeoppiaine':
+    return {
+      type: 'aipeoppiaine',
+      id: Number(route.params!.oppiaineId!),
+      meta: {
+        vaiheId: Number(route.params!.vaiheId),
+      } as any,
+    };
+  case 'aipekurssi':
+    return {
+      type: 'aipekurssi',
+      id: Number(route.params!.kurssiId!),
+      meta: {
+        vaiheId: Number(route.params!.vaiheId),
+        oppiaineId: Number(route.params!.oppiaineId),
+      } as any,
+    };
   default:
     console.error('Unknown route', route.name);
     break;
@@ -194,6 +216,31 @@ export function nodeToRoute(node: NavigationNodeDto): Location | null {
         vlkId: _.toString(node.meta?.vlkId),
         vuosiluokkaId: _.toString(node.meta?.vuosiluokkaId),
         oppiaineId: _.toString(node.meta?.oppiaineId),
+      },
+    };
+  case 'aipevaihe':
+    return {
+      name: 'aipevaihe',
+      params: {
+        vaiheId: _.toString(node.id),
+      },
+    };
+  case 'aipeoppiaine':
+  case 'aipeoppimaara':
+    return {
+      name: 'aipeoppiaine',
+      params: {
+        vaiheId: _.toString(node.meta?.vaiheId),
+        oppiaineId: _.toString(node.id),
+      },
+    };
+  case 'aipekurssi':
+    return {
+      name: 'aipekurssi',
+      params: {
+        vaiheId: _.toString(node.meta?.vaiheId),
+        oppiaineId: _.toString(node.meta?.oppiaineId),
+        kurssiId: _.toString(node.id),
       },
     };
   default:

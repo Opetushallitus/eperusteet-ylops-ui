@@ -348,6 +348,48 @@
                     :parent-tekstikappale-id="item.meta?.['parent-tekstikappale-id']"
                   />
                 </template>
+
+                <template #aipevaihe="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'aipevaihe', params: { vaiheId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimeton') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #aipeoppiaine="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'aipeoppiaine', params: { vaiheId: String(item.meta?.vaiheId), oppiaineId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-oppiaine') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #aipeoppimaara="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'aipeoppiaine', params: { vaiheId: String(item.meta?.vaiheId), oppiaineId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimetön-oppiaine') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #aipekurssi="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'aipekurssi', params: { vaiheId: String(item.meta?.vaiheId), oppiaineId: String(item.meta?.oppiaineId), kurssiId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimeton-kurssi') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #uusi_vaihe>
+                  <EpAIPEVaiheLisays
+                    :opetussuunnitelma-store="store"
+                  />
+                </template>
               </EpTreeNavibar>
             </div>
           </template>
@@ -414,6 +456,7 @@ import { KuvaStore } from '@/stores/KuvaStore';
 import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler';
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
+import EpAIPEVaiheLisays from '@/components/EpAIPEVaiheLisays/EpAIPEVaiheLisays.vue';
 import { Kommentit } from '@/stores/kommentit';
 
 // Props

@@ -25,6 +25,14 @@ export function opsPerusopetusLuontiValidators() {
   };
 }
 
+export function opsAipeLuontiValidators() {
+  return {
+    vaiheet: {
+      required,
+    },
+  };
+}
+
 export function lops2019Validators(luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum) {
   return {
     tuoPohjanOpintojaksot: {
@@ -76,6 +84,13 @@ export function opsLuontiValidator(kielet: Kieli[] = [], luontityyppi: Opetussuu
     opsValidators = {
       ...opsValidators,
       ...opsPerusopetusLuontiValidators(),
+    };
+  }
+
+  if (toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase()) {
+    opsValidators = {
+      ...opsValidators,
+      ...opsAipeLuontiValidators(),
     };
   }
 
