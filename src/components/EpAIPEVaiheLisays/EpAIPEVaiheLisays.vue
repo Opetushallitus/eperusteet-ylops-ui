@@ -15,6 +15,7 @@
       size="lg"
       centered
       :ok-disabled="okDisabled"
+      :ok-only="kaikkiLisatty"
       static
       lazy
       @hidden="clear"
@@ -25,25 +26,31 @@
         {{ $t('lisaa-vaihe') }}
       </template>
 
-      <div>{{ $t('vaihe-lisays-modal-selite') }}</div>
+      <ep-spinner v-if="loading" />
+      <div v-else-if="kaikkiLisatty">
+        {{ $t('vaihe-lisays-kaikki-lisatty') }}
+      </div>
+      <template v-else>
+        <div>{{ $t('vaihe-lisays-modal-selite') }}</div>
 
-      <ep-form-content
-        :show-header="false"
-        class="mt-4"
-      >
-        <h3>{{ $t('valitse-vaihe') }}</h3>
-        <ep-select
-          v-model="valittuVaihe"
-          class="mb-5"
-          :items="vaiheet"
-          :is-editing="true"
-          :enable-empty-option="true"
+        <ep-form-content
+          :show-header="false"
+          class="mt-4"
         >
-          <template #default="{ item }">
-            {{ $kaanna(item.nimi) }}
-          </template>
-        </ep-select>
-      </ep-form-content>
+          <h3>{{ $t('valitse-vaihe') }}</h3>
+          <ep-select
+            v-model="valittuVaihe"
+            class="mb-5"
+            :items="vaiheet"
+            :is-editing="true"
+            :enable-empty-option="true"
+          >
+            <template #default="{ item }">
+              {{ $kaanna(item.nimi) }}
+            </template>
+          </ep-select>
+        </ep-form-content>
+      </template>
 
       <template #modal-cancel>
         {{ $t('peruuta') }}
@@ -54,7 +61,7 @@
           small
           color="white"
         />
-        <span v-else>{{ $t('lisaa-vaihe') }}</span>
+        <span v-else>{{ $t(kaikkiLisatty ? 'sulje' : 'lisaa-vaihe') }}</span>
       </template>
     </b-modal>
   </div>
@@ -84,25 +91,37 @@ const vaihelisaysModal = useTemplateRef('vaihelisaysModal');
 const vaiheet = ref<AIPEPerusteVaiheKevytDto[]>([]);
 const valittuVaihe = ref<AIPEPerusteVaiheKevytDto | null>(null);
 const saving = ref(false);
+const loading = ref(true);
 
 const opsId = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.id);
 
-const okDisabled = computed(() => !valittuVaihe.value);
+const kaikkiLisatty = computed(() => !loading.value && vaiheet.value.length === 0);
+
+const okDisabled = computed(() => !kaikkiLisatty.value && !valittuVaihe.value);
 
 const openModal = () => {
   vaihelisaysModal.value?.show();
 };
 
 const show = async () => {
-  const [perusteVaiheet, opsVaiheet] = await Promise.all([
-    AIPE.getPerusteVaiheet(opsId.value as number),
-    AIPE.getVaiheet(opsId.value as number),
-  ]);
-  const lisatyt = new Set((opsVaiheet.data || []).map(v => v.perusteenVaiheId));
-  vaiheet.value = (perusteVaiheet.data || []).filter(v => !lisatyt.has(v.id));
+  loading.value = true;
+  try {
+    const [perusteVaiheet, opsVaiheet] = await Promise.all([
+      AIPE.getPerusteVaiheet(opsId.value as number),
+      AIPE.getVaiheet(opsId.value as number),
+    ]);
+    const lisatyt = new Set((opsVaiheet.data || []).map(v => v.perusteenVaiheId));
+    vaiheet.value = (perusteVaiheet.data || []).filter(v => !lisatyt.has(v.id));
+  }
+  finally {
+    loading.value = false;
+  }
 };
 
 const save = async (event: Event) => {
+  if (kaikkiLisatty.value) {
+    return;
+  }
   event.preventDefault();
   saving.value = true;
   try {
@@ -131,6 +150,7 @@ const save = async (event: Event) => {
 const clear = () => {
   valittuVaihe.value = null;
   vaiheet.value = [];
+  loading.value = true;
 };
 </script>
 
