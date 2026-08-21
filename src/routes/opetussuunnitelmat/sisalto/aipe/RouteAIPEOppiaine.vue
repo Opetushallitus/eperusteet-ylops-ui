@@ -28,12 +28,12 @@
           {{ $t('perusteen-sisaltoa-ei-maaritetty') }}
         </EpAlertError>
 
-        <b-form-group
+        <EpFormContent
           v-if="data.perusteSisalto?.koodi"
-          :label="$t('koodi')"
+          name="koodi"
         >
           {{ data.perusteSisalto.koodi.arvo }}
-        </b-form-group>
+        </EpFormContent>
 
         <EpAIPEPerusteKentta
           :teksti-osa="data.perusteSisalto?.tehtava"
@@ -83,10 +83,10 @@
           </div>
         </div>
 
-        <b-form-group
+        <EpFormContent
           v-if="data.perusteSisalto?.sisaltoalueet?.length"
           class="mt-4"
-          :label="$t('keskeiset-sisaltoalueet')"
+          name="keskeiset-sisaltoalueet"
         >
           <div
             v-for="(alue, index) in data.perusteSisalto.sisaltoalueet"
@@ -96,12 +96,12 @@
             <h4>{{ $kaanna(alue.nimi) }}</h4>
             <div v-html="$kaanna(alue.kuvaus)" />
           </div>
-        </b-form-group>
+        </EpFormContent>
 
-        <b-form-group
+        <EpFormContent
           v-if="tavoitteet.length"
           class="mt-4"
-          :label="$t('opetuksen-tavoitteet')"
+          name="opetuksen-tavoitteet"
         >
           <EpCollapse
             v-for="tavoite in tavoitteet"
@@ -136,7 +136,7 @@
             </div>
             <EpAIPEOppiaineenTavoite :tavoite="tavoite" />
           </EpCollapse>
-        </b-form-group>
+        </EpFormContent>
 
         <div class="mt-4">
           <h3>{{ $t('paikallinen-tarkennus') }}</h3>
@@ -159,21 +159,29 @@
           <h3 class="mb-3">
             {{ $t('oppimaarat') }}
           </h3>
-          <b-table
-            striped
-            :items="data.oppimaarat"
-            :fields="listaFields"
-          >
-            <template #cell(nimi)="{ item }">
-              <router-link :to="{ name: 'aipeoppiaine', params: { vaiheId: String(route.params.vaiheId), oppiaineId: String(item.id) } }">
-                {{ $kaanna(item.nimi) }}
-              </router-link>
-              <span
-                v-if="item.piilotettu"
-                class="additional-info-text"
-              >({{ $t('piilotettu') }})</span>
-            </template>
-          </b-table>
+          <div class="overflow-x-auto">
+            <EpTable
+              responsive
+              striped
+              hover
+              :show-headers="false"
+              data-key="id"
+              class="w-full border-collapse text-left text-sm"
+              :items="data.oppimaarat"
+              :fields="listaFields"
+              row-class="border-b border-surface-100"
+            >
+              <template #cell(nimi)="{ item }">
+                <router-link :to="{ name: 'aipeoppiaine', params: { vaiheId: String(route.params.vaiheId), oppiaineId: String(item.id) } }">
+                  {{ $kaanna(item.nimi) }}
+                </router-link>
+                <span
+                  v-if="item.piilotettu"
+                  class="additional-info-text"
+                >({{ $t('piilotettu') }})</span>
+              </template>
+            </EpTable>
+          </div>
         </div>
 
         <div
@@ -183,21 +191,29 @@
           <h3 class="mb-3">
             {{ $t('kurssit') }}
           </h3>
-          <b-table
-            striped
-            :items="data.kurssit"
-            :fields="listaFields"
-          >
-            <template #cell(nimi)="{ item }">
-              <router-link :to="{ name: 'aipekurssi', params: { vaiheId: String(route.params.vaiheId), oppiaineId: String(data.id), kurssiId: String(item.id) } }">
-                {{ $kaanna(item.nimi) }}
-              </router-link>
-              <span
-                v-if="item.piilotettu"
-                class="additional-info-text"
-              >({{ $t('piilotettu') }})</span>
-            </template>
-          </b-table>
+          <div class="overflow-x-auto">
+            <EpTable
+              responsive
+              striped
+              hover
+              :show-headers="false"
+              data-key="id"
+              class="w-full border-collapse text-left text-sm"
+              :items="data.kurssit"
+              :fields="listaFields"
+              row-class="border-b border-surface-100"
+            >
+              <template #cell(nimi)="{ item }">
+                <router-link :to="{ name: 'aipekurssi', params: { vaiheId: String(route.params.vaiheId), oppiaineId: String(data.id), kurssiId: String(item.id) } }">
+                  {{ $kaanna(item.nimi) }}
+                </router-link>
+                <span
+                  v-if="item.piilotettu"
+                  class="additional-info-text"
+                >({{ $t('piilotettu') }})</span>
+              </template>
+            </EpTable>
+          </div>
         </div>
       </template>
     </EpEditointi>
@@ -219,6 +235,8 @@ import EpAIPEOppiaineenTavoite from '@/components/EpAIPEOppiaineenTavoite/EpAIPE
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpAlertError from '@shared/components/EpAlert/EpAlertError.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpTable from '@shared/components/EpTable/EpTable.vue';
 import { $kaanna, $t } from '@shared/utils/globals';
 
 const props = defineProps<{
@@ -267,12 +285,7 @@ const init = async () => {
 
 watch(() => route.params.oppiaineId, init, { immediate: true });
 
-const listaFields = [{
-  key: 'nimi',
-  thStyle: {
-    display: 'none',
-  },
-}];
+const listaFields = [{ key: 'nimi', label: '', tdClass: 'p-2' }];
 </script>
 
 <style scoped lang="scss">

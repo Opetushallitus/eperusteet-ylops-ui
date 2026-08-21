@@ -17,6 +17,8 @@
       <div
         ref="header"
         class="header"
+        :style="headerStyling"
+        :class="headerClass"
       >
         <div id="headerExtension" />
       </div>
@@ -63,7 +65,7 @@ const headerStyling = ref(koulutustyyppiBanner('lukiokoulutus'));
 const headerClass = ref('dark');
 const primevue = usePrimeVue();
 
-provide('updateHeaderStyling', (koulutustyyppi: string) => {
+provide('updateHeaderStyling', (koulutustyyppi?: string | null) => {
   headerStyling.value = koulutustyyppiBanner(koulutustyyppi);
   headerClass.value = koulutustyyppi && themes[koulutustyyppi] !== 'lukiokoulutus' ? 'light' : 'dark';
 });
@@ -151,13 +153,17 @@ onMounted(() => {
     background-attachment: fixed;
     background-position: 100% 0;
     background-repeat: no-repeat;
-    background-size: 100% 200px;
+    background-size: 100% 216px;
     @media only screen and (min-width: 2503px)  {
     }
 
     h1 {
       font-weight: 300;
     }
+  }
+
+  .header.light {
+    color: $color-ops-header-black-text;
   }
 }
 
