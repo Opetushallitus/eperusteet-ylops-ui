@@ -58,21 +58,6 @@
           </div>
         </div>
 
-        <b-form-group
-          v-if="data.perusteSisalto?.opetuksenKohdealueet?.length"
-          class="mt-4"
-          :label="$t('opetuksen-tavoitealueet')"
-        >
-          <ul>
-            <li
-              v-for="(kohdealue, index) in data.perusteSisalto.opetuksenKohdealueet"
-              :key="'kohdealue' + index"
-            >
-              {{ $kaanna(kohdealue.nimi) }}
-            </li>
-          </ul>
-        </b-form-group>
-
         <div class="mt-4">
           <h3>{{ $t('paikallinen-tarkennus') }}</h3>
           <EpContent
