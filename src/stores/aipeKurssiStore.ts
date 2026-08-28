@@ -16,11 +16,11 @@ export class AipeKurssiStore implements IEditoitava {
   }
 
   async load() {
-    return (await AIPE.getKurssi(this.opsId, this.kurssiId)).data;
+    return (await AIPE.getAipeKurssi(this.opsId, this.kurssiId)).data;
   }
 
   async save(data: AIPEKurssiDto) {
-    const saved = (await AIPE.updateKurssi(this.opsId, this.kurssiId, data)).data;
+    const saved = (await AIPE.updateAipeKurssi(this.opsId, this.kurssiId, data)).data;
     await this.opsStore.initNavigation();
     return saved;
   }

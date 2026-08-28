@@ -16,11 +16,11 @@ export class AipeOppiaineStore implements IEditoitava {
   }
 
   async load() {
-    return (await AIPE.getOppiaine(this.opsId, this.oppiaineId)).data;
+    return (await AIPE.getAipeOppiaine(this.opsId, this.oppiaineId)).data;
   }
 
   async save(data: AIPEOppiaineDto) {
-    const saved = (await AIPE.updateOppiaine(this.opsId, this.oppiaineId, data)).data;
+    const saved = (await AIPE.updateAipeOppiaine(this.opsId, this.oppiaineId, data)).data;
     await this.opsStore.initNavigation();
     return saved;
   }
