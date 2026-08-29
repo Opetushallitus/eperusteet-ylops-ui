@@ -272,12 +272,20 @@ watch(() => props.modelValue, async (value) => {
 }, { immediate: true });
 
 onMounted(async () => {
+  await init();
+});
+
+const init = async () => {
   if (!props.kayttajanOrganisaatiot) {
     await update();
   }
   else {
     await updateKunnat(sallitutKunnat.value.map(kunta => ({ koodiUri: kunta })));
   }
+};
+
+defineExpose({
+  init,
 });
 
 </script>
