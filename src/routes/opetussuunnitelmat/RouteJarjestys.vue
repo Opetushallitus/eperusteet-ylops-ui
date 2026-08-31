@@ -74,6 +74,39 @@
                 </ep-jarjesta>
               </div>
             </b-tab>
+
+            <b-tab
+              v-if="supportData.isAipe && data.vaiheet?.length > 1"
+              :title="$t('vaiheet')"
+            >
+              <div class="tree">
+                <ep-jarjesta
+                  v-model="data.vaiheet"
+                  :is-editable="isEditing"
+                  group="vaiheet"
+                >
+                  <template #default="{ node }">
+                    <span v-if="isEditing">
+                      {{ $kaanna(node.nimi) }}
+                    </span>
+                    <router-link
+                      v-else
+                      :to="{ name: 'aipevaihe', params: { vaiheId: String(node.id) } }"
+                    >
+                      {{ $kaanna(node.nimi) }}
+                    </router-link>
+                    <EpMaterialIcon
+                      v-if="node.piilotettu"
+                      class="ml-2"
+                      v-b-popover="{content: $t('piilotettu-julkisesta-opetussuunnitelmasta'), trigger: 'hover'}"
+                      size="20px"
+                    >
+                      visibility_off
+                    </EpMaterialIcon>
+                  </template>
+                </ep-jarjesta>
+              </div>
+            </b-tab>
           </b-tabs>
         </template>
       </ep-editointi>
@@ -86,7 +119,6 @@ import _ from 'lodash';
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpJarjesta from '@shared/components/EpJarjesta/EpJarjesta.vue';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';

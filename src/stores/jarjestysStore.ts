@@ -11,6 +11,7 @@ import { PerusteCache } from './peruste';
 import { koodiSorters } from '@shared/utils/perusteet';
 import { success } from '@/utils/notifications';
 import { $success } from '@shared/utils/globals';
+import { AIPE } from '@shared/api/ylops';
 
 const logger = createLogger('JarjestysStore');
 
@@ -231,6 +232,14 @@ export class JarjestysStore implements IEditoitava {
     return ((this.ops.toteutus as any) === KoulutustyyppiToteutus.lops2019);
   }
 
+  get isAipe() {
+    return _.toLower(this.ops?.toteutus) === KoulutustyyppiToteutus.aipe;
+  }
+
+  get isPerusopetus() {
+    return _.toLower(this.ops?.toteutus) === KoulutustyyppiToteutus.perusopetus;
+  }
+
   async load(supportDataProvider) {
     await this.init();
 
@@ -241,8 +250,7 @@ export class JarjestysStore implements IEditoitava {
     if (this.isLops2019) {
       oppiaineet = this.getOppiaineet(oppiaineJarjestykset);
     }
-    else {
-      // Perusopetus oppiaineet
+    else if (this.isPerusopetus) {
       const vuosiluokkakokonaisuudet = _.map(this.ops.vuosiluokkakokonaisuudet, 'vuosiluokkakokonaisuus._tunniste');
       oppiaineet = _.chain(sortedOppiaineet(this.ops.oppiaineet))
         .filter(oppiaine => _.some(vuosiluokkakokonaisuudet, vlk => _.includes(_.map(oppiaine.vuosiluokkakokonaisuudet, '_vuosiluokkakokonaisuus'), vlk))
@@ -254,15 +262,24 @@ export class JarjestysStore implements IEditoitava {
         })
         .value();
     }
+    else {
+      oppiaineet = [];
+    }
+
+    const vaiheet = this.isAipe
+      ? ((await AIPE.getVaiheet(this.opsId)).data || [])
+      : [];
 
     supportDataProvider({
       hasPohja: !_.isEmpty(this.ops.pohja),
       isLops2019: this.isLops2019,
+      isAipe: this.isAipe,
     });
 
     return {
       tekstikappaleet,
       oppiaineet,
+      vaiheet,
     };
   }
 
@@ -287,7 +304,7 @@ export class JarjestysStore implements IEditoitava {
         await this.store.updateOppiaineJaOpintojaksojarjestys(data.oppiaineet);
         await this.store.init();
       }
-      else {
+      else if (this.isPerusopetus) {
         let jnro = 0;
         let valinnainenjnro = 0;
         const oppiainejarjestys = _.chain(data.oppiaineet)
@@ -309,6 +326,11 @@ export class JarjestysStore implements IEditoitava {
         await this.store.updateOppiainejarjestys(oppiainejarjestys);
         await this.store.init();
       }
+    }
+
+    if (this.isAipe && _.size(data.vaiheet) > 1) {
+      await AIPE.updateVaiheJarjestys(this.opsId, _.map(data.vaiheet, 'id'));
+      await this.store.initNavigation();
     }
 
     $success('tallennus-onnistui-jarjestys');
