@@ -23,6 +23,10 @@
           {{ $t('piilotettu-julkisesta-opetussuunnitelmasta') }}
         </div>
 
+        <EpAlertError v-if="!data.perusteSisalto">
+          {{ $t('perusteen-sisaltoa-ei-maaritetty') }}
+        </EpAlertError>
+
         <EpAIPEPerusteKentta
           :teksti-osa="data.perusteSisalto?.siirtymaEdellisesta"
           otsikko-key="siirtyma-edellisesta"
@@ -111,6 +115,7 @@ import { AipeVaiheStore } from '@/stores/aipeVaiheStore';
 import EpAIPEPerusteKentta from '@/components/EpAIPEPerusteKentta/EpAIPEPerusteKentta.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import EpAlertError from '@shared/components/EpAlert/EpAlertError.vue';
 import { $kaanna, $t } from '@shared/utils/globals';
 
 const props = defineProps<{

@@ -24,6 +24,10 @@
           {{ $t('piilotettu-julkisesta-opetussuunnitelmasta') }}
         </div>
 
+        <EpAlertError v-if="!data.perusteSisalto">
+          {{ $t('perusteen-sisaltoa-ei-maaritetty') }}
+        </EpAlertError>
+
         <b-form-group
           v-if="data.perusteSisalto?.koodi"
           :label="$t('koodi')"
@@ -79,6 +83,7 @@ import { AipeKurssiStore } from '@/stores/aipeKurssiStore';
 import EpAIPEPerusteKentta from '@/components/EpAIPEPerusteKentta/EpAIPEPerusteKentta.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import EpAlertError from '@shared/components/EpAlert/EpAlertError.vue';
 import { getTavoiteNumero } from '@shared/utils/perusteet';
 import { $kaanna, $t } from '@shared/utils/globals';
 

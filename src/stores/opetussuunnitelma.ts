@@ -28,6 +28,7 @@ import {
   OpetussuunnitelmanMuokkaustietoDto,
   ArkistoidutPerusteet,
   YlopsNavigationNodeDto,
+  AIPE,
 } from '@shared/api/ylops';
 
 import { AxiosResponse } from 'axios';
@@ -63,6 +64,7 @@ export class OpetussuunnitelmaStore {
     validointi: null as Array<Validointi> | null,
     pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja: null as boolean | null,
     pohjanPerustePaivittynyt: null as boolean | null,
+    aipePuuttuviaSisaltoja: null as boolean | null,
     julkaisemattomiaMuutoksia: null as boolean | null,
     viimeisinJulkaisuTila: null as string | null,
     tilaPolling: null as any | null,
@@ -88,6 +90,7 @@ export class OpetussuunnitelmaStore {
   public readonly validointi = computed(() => this.state.validointi);
   public readonly pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja = computed(() => this.state.pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja);
   public readonly pohjanPerustePaivittynyt = computed(() => this.state.pohjanPerustePaivittynyt);
+  public readonly aipePuuttuviaSisaltoja = computed(() => this.state.aipePuuttuviaSisaltoja);
   public readonly julkaisemattomiaMuutoksia = computed(() => this.state.julkaisemattomiaMuutoksia);
   public readonly viimeisinJulkaisuTila = computed(() => this.state.viimeisinJulkaisuTila);
   public readonly tilaPolling = computed(() => this.state.tilaPolling);
@@ -126,6 +129,7 @@ export class OpetussuunnitelmaStore {
     this.state.validointi = null;
     this.state.pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja = null;
     this.state.pohjanPerustePaivittynyt = null;
+    this.state.aipePuuttuviaSisaltoja = null;
     this.state.julkaisemattomiaMuutoksia = null;
     this.state.viimeisinJulkaisuTila = null;
     this.state.tilaPolling = null;
@@ -150,6 +154,7 @@ export class OpetussuunnitelmaStore {
     this.fetchJulkaisut();
     this.updateOppiaineet();
     this.updatePohjallaPuuttuviaTeksteja();
+    this.updateAipePuuttuviaSisaltoja();
     this.fetchOrganisaatioVirkailijat();
   }
 
@@ -488,6 +493,19 @@ export class OpetussuunnitelmaStore {
   public async synkronisoiPohja() {
     await Opetussuunnitelmat.sync(this.state.opetussuunnitelma!.id!);
     this.state.pohjanPerustePaivittynyt = false;
+  }
+
+  async updateAipePuuttuviaSisaltoja() {
+    if ((this.state.opetussuunnitelma!.toteutus as any) !== 'aipe') {
+      this.state.aipePuuttuviaSisaltoja = false;
+      return;
+    }
+    this.state.aipePuuttuviaSisaltoja = (await AIPE.onkoPuuttuviaSisaltoja(this.state.opetussuunnitelma!.id!)).data;
+  }
+
+  public async lisaaPuuttuvatAipeSisallot() {
+    await AIPE.lisaaPuuttuvatSisallot(this.state.opetussuunnitelma!.id!);
+    this.state.aipePuuttuviaSisaltoja = false;
   }
 
   public setOpetussuunnitelma(opetussuunnitelma: OpetussuunnitelmaKevytDto) {

@@ -94,6 +94,29 @@
       </div>
     </template>
 
+    <div
+      v-if="isAipe && aipePuuttuviaSisaltoja && !isPohja"
+      v-oikeustarkastelu="aipeOikeustarkastelu"
+      class="info-box import-box"
+    >
+      <h2>{{ $t('paivita-aipe-sisalto') }}</h2>
+      <div v-html="$t('paivita-aipe-sisalto-huomioteksti')" />
+      <br>
+      <div>{{ $t('paivita-opetussuunnitelma-perustetekstikappaleet-pohjasta-peruste-selvennys') }}</div>
+      <EpExternalLink :url="perusteUrl">
+        {{ $kaanna(perusteNimi) }}
+      </EpExternalLink>
+
+      <div class="d-flex justify-content-end">
+        <ep-button
+          :show-spinner="syncAipe"
+          @click="synkronoiAipeSisalto"
+        >
+          {{ $t('paivita-opetussuunnitelma') }}
+        </ep-button>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col">
         <ops-perustiedot
@@ -167,6 +190,7 @@ const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.va
 const importing = ref(false);
 const syncing = ref(false);
 const syncPohja = ref(false);
+const syncAipe = ref(false);
 
 const perustepaivitys = computed(() => {
   return ops.value?.perusteDataTuontiPvm;
@@ -201,6 +225,21 @@ const synkronisoiPohja = async () => {
   syncing.value = false;
 };
 
+const synkronoiAipeSisalto = async () => {
+  syncAipe.value = true;
+  try {
+    await store.value.lisaaPuuttuvatAipeSisallot();
+    await props?.muokkaustietoStore.init(props?.opetussuunnitelmaStore.opsId.value);
+    await store.value.init(props?.opetussuunnitelmaStore.opsId.value);
+    $success($t('muutokset-paivitetty-opetussuunnitelmaan') as string);
+  }
+  catch (e) {
+    $fail($t('muutokset-paivitetty-opetussuunnitelmaan-virhe') as string);
+    createLogger('RouteYleisnakyma').error(e);
+  }
+  syncAipe.value = false;
+};
+
 const yksinkertainen = computed(() => {
   return (ops.value?.toteutus as any) === KoulutustyyppiToteutus.yksinkertainen;
 });
@@ -217,12 +256,24 @@ const pohjanPerustePaivittynyt = computed(() => {
   return store.value.pohjanPerustePaivittynyt.value;
 });
 
+const aipePuuttuviaSisaltoja = computed(() => {
+  return store.value.aipePuuttuviaSisaltoja.value;
+});
+
+const isAipe = computed(() => {
+  return (ops.value?.toteutus as any) === KoulutustyyppiToteutus.aipe;
+});
+
 const isLops2019 = computed(() => {
   return ((ops.value?.toteutus as any) === KoulutustyyppiToteutus.lops2019);
 });
 
 const oikeustarkastelu = computed(() => {
   return { oikeus: 'hallinta', kohde: isPohja.value ? 'pohja' : 'opetussuunnitelma' };
+});
+
+const aipeOikeustarkastelu = computed(() => {
+  return { oikeus: 'muokkaus', kohde: isPohja.value ? 'pohja' : 'opetussuunnitelma' };
 });
 
 const perusteId = computed(() => {
