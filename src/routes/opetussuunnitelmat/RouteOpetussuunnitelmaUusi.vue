@@ -473,22 +473,17 @@ const luoUusiOpetussuunnitelma = async () =>   {
     ],
     ainepainoitteinen: uusi.value.ainepainoitteinen,
     vuosiluokkakokonaisuudet: uusi.value.vuosiluokkakokonaisuudet,
+    taiteenalat: uusi.value.taiteenalat.map(taiteenala => ({
+      koodi: taiteenala.koodi?.uri,
+    })),
     tuoPohjanOpintojaksot: uusi.value.tuoPohjanOpintojaksot ? uusi.value.tuoPohjanOpintojaksot : false,
     tuoPohjanOppimaarat: uusi.value.tuoPohjanOppimaarat ? uusi.value.tuoPohjanOppimaarat : false,
     luontityyppi: luontityyppi.value,
-  };
+  } as OpetussuunnitelmaLuontiDto;
 
   (ops as any)._pohja = '' + uusi.value.pohja!.id;
   try {
     const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
-
-    if (uusi.value.taiteenalat.length > 0) {
-      await Promise.all(
-        uusi.value.taiteenalat.map(taiteenala =>
-          Taiteenperusopetus.addTaiteenala(luotu.id!, { koodi: taiteenala.koodi?.uri }),
-        ),
-      );
-    }
 
     $success('lisays-opetussuunnitelma-onnistui');
     router.replace({
