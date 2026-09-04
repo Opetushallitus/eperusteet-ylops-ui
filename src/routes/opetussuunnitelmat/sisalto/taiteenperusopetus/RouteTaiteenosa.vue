@@ -14,13 +14,12 @@
           v-if="perusteenTaiteenosa"
           class="taiteenosa"
         >
-          <div
+          <EpFormContent
             v-if="perusteenTaiteenosa.laajuus"
-            class="laajuus"
+            name="laajuus"
           >
-            <span class="otsikko">{{ $t('laajuus') }}</span>
-            <span>{{ perusteenTaiteenosa.laajuus }} {{ $t('opintopiste-partitiivi') }}</span>
-          </div>
+            <div>{{ perusteenTaiteenosa.laajuus }} {{ $t('opintopiste-partitiivi') }}</div>
+          </EpFormContent>
 
           <ep-content
             v-if="perusteenTaiteenosa.kuvaus"
@@ -75,6 +74,7 @@ import { $kaanna, $t } from '@shared/utils/globals';
 import _ from 'lodash';
 import { UiKielet } from '@shared/stores/kieli';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 
 const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;

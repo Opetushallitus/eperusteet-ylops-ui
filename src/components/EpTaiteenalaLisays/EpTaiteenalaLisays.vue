@@ -15,14 +15,10 @@
       </EpMaterialIcon>
       <span>{{ $t('lisaa-taiteenala') }}</span>
     </ep-button>
-    <b-modal
-      id="taiteenalalisays"
+    <EpModal
       ref="taiteenalalisaysModal"
       size="lg"
-      centered
-      lazy
-      @show="haeTaiteenalat"
-      @hidden="clear"
+      @cancel="clear"
     >
       <template #modal-title>
         {{ $t('lisaa-taiteenala') }}
@@ -37,28 +33,23 @@
       >
         {{ $t('kaikki-perusteen-taiteenalat-lisatty') }}
       </div>
-      <ep-form-content
+      <ep-select
         v-else
-        class="mt-4"
-        name="valitse-taiteenala"
+        v-model="valittuTaiteenala"
+        :items="valittavatTaiteenalat"
+        :is-editing="true"
+        :enable-empty-option="true"
       >
-        <ep-select
-          v-model="valittuTaiteenala"
-          :items="valittavatTaiteenalat"
-          :is-editing="true"
-          :enable-empty-option="true"
-        >
-          <template #default="{ item }">
-            {{ $kaanna(item.koodi.nimi) || $kaanna(item.nimi) }}
-          </template>
-        </ep-select>
-      </ep-form-content>
+        <template #default="{ item }">
+          {{ $kaanna(item.koodi.nimi) || $kaanna(item.nimi) }}
+        </template>
+      </ep-select>
 
-      <template #modal-footer>
+      <template #modal-footer="{ onCancel }">
         <EpButton
           variant="secondary"
           :disabled="tallentaa"
-          @click="hideModal"
+          @click="onCancel"
         >
           {{ $t('peruuta') }}
         </EpButton>
@@ -71,7 +62,7 @@
           {{ $t('lisaa-taiteenala') }}
         </EpButton>
       </template>
-    </b-modal>
+    </EpModal>
   </div>
 </template>
 
@@ -81,12 +72,13 @@ import { computed, ref, useTemplateRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpModal from '@shared/components/EpModal/EpModal.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { Taiteenperusopetus, TpoPerusteenTaiteenalaDto, TpoSisaltoViiteDto } from '@shared/api/ylops';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { $fail, $kaanna, $t } from '@shared/utils/globals';
-import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 
 const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
@@ -145,6 +137,7 @@ const save = async () => {
     const uusi = (await Taiteenperusopetus.addTaiteenala(opsId.value, { koodi: valittuTaiteenala.value?.koodi?.uri })).data;
     await props.opetussuunnitelmaStore.initNavigation();
     hideModal();
+    clear();
 
     router.push({
       name: 'taiteenala',
@@ -162,8 +155,9 @@ const save = async () => {
   }
 };
 
-const showModal = () => {
+const showModal = async () => {
   taiteenalalisaysModal.value?.show();
+  await haeTaiteenalat();
 };
 
 const hideModal = () => {

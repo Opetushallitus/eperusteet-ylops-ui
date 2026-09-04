@@ -15,16 +15,33 @@
           v-if="perusteenTaiteenala"
           class="taiteenala"
         >
-          <b-form-group
-             v-if="perusteenTaiteenala.laajuus"
+          <EpFormContent
+            v-if="perusteenTaiteenala.laajuus"
+            name="laajuus"
           >
-            <template #label>
-              {{ $t('laajuus') }}
-            </template>
             <div>{{ perusteenTaiteenala.laajuus }} {{ $t('opintopiste-partitiivi') }}</div>
-          </b-form-group>
+          </EpFormContent>
 
-          <div v-html="$kaanna(perusteenTaiteenala.teksti)" />
+          <ep-content
+            v-if="perusteenTaiteenala.teksti"
+            :model-value="perusteenTaiteenala.teksti"
+            :is-editable="false"
+            layout="normal"
+          />
+
+          <div
+          v-if="perusteenTaiteenala.vapaatTekstit?.length"
+          class="mt-4"
+          >
+            <div
+              v-for="(vapaa, index) in perusteenTaiteenala.vapaatTekstit"
+              :key="'vapaa' + index"
+              class="mt-3"
+            >
+              <h3>{{ $kaanna(vapaa.nimi) }}</h3>
+              <div v-html="$kaanna(vapaa.teksti)" />
+            </div>
+          </div>
 
           <hr class="my-4"/>
         </div>
@@ -54,6 +71,7 @@ import _ from 'lodash';
 import { UiKielet } from '@shared/stores/kieli';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { TpoPerusteenTaiteenalaDto } from '@shared/api/ylops';

@@ -418,7 +418,7 @@ const uusiPohjaMuutos = async () => {
   valitunPohjanPohja.value = null;
 
   if (uusi.value.pohja?.id) {
-    if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.PERUSOPETUS.toLowerCase()) {
+    if (uusi.value.pohja?.toteutus === KoulutustyyppiToteutus.perusopetus.toLowerCase()) {
       vuosiluokkakokonaisuudet.value = null;
       const ops = (await Opetussuunnitelmat.getOpetussuunnitelmaOrganisaatiotarkistuksella(uusi.value.pohja?.id)).data;
       vuosiluokkakokonaisuudet.value = _.sortBy((ops.vuosiluokkakokonaisuudet as OpsVuosiluokkakokonaisuusKevytDto[]), [(vlk) => {
@@ -426,11 +426,11 @@ const uusiPohjaMuutos = async () => {
       }]);
     }
 
-    if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase()) {
+    if (uusi.value.pohja?.toteutus === KoulutustyyppiToteutus.aipe.toLowerCase()) {
       const perusteVaiheet = (await AIPE.getPerusteVaiheet(uusi.value.pohja.id)).data || [];
       vaiheet.value = _.sortBy(perusteVaiheet, v => $kaanna(v.nimi as any));
     }
-    if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.TPO.toLowerCase()) {
+    if (uusi.value.pohja?.toteutus === KoulutustyyppiToteutus.tpo.toLowerCase()) {
       await haePerusteenTaiteenalat(uusi.value.pohja.id);
     }
 
@@ -502,10 +502,13 @@ const luoUusiOpetussuunnitelma = async () =>   {
     ],
     ainepainoitteinen: uusi.value.ainepainoitteinen,
     vuosiluokkakokonaisuudet: uusi.value.vuosiluokkakokonaisuudet,
+    taiteenalat: uusi.value.taiteenalat.map(taiteenala => ({
+      koodi: taiteenala.koodi?.uri,
+    })),
     tuoPohjanOpintojaksot: uusi.value.tuoPohjanOpintojaksot ? uusi.value.tuoPohjanOpintojaksot : false,
     tuoPohjanOppimaarat: uusi.value.tuoPohjanOppimaarat ? uusi.value.tuoPohjanOppimaarat : false,
     luontityyppi: luontityyppi.value,
-  };
+  } as OpetussuunnitelmaLuontiDto;
 
   (ops as any)._pohja = '' + uusi.value.pohja!.id;
   if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase()) {
@@ -513,14 +516,6 @@ const luoUusiOpetussuunnitelma = async () =>   {
   }
   try {
     const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;
-
-    if (uusi.value.taiteenalat.length > 0) {
-      await Promise.all(
-        uusi.value.taiteenalat.map(taiteenala =>
-          Taiteenperusopetus.addTaiteenala(luotu.id!, { koodi: taiteenala.koodi?.uri }),
-        ),
-      );
-    }
 
     $success('lisays-opetussuunnitelma-onnistui');
     router.replace({
