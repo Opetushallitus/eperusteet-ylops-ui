@@ -105,7 +105,7 @@ describe('Router', () => {
     oikeudet = genOikeudet('oph'),
   ) {
     vi.spyOn(ApiCommon, 'getCasKayttaja')
-      .mockResolvedValue({ data: { groups: [], lang: 'fi' } } as any);
+      .mockResolvedValue({ groups: [], lang: 'fi' } as any);
 
     vi.spyOn(KayttajatApi, 'getKayttaja')
       .mockImplementation(async () => makeAxiosResponse(genKayttaja()));
