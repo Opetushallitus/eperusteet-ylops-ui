@@ -27,7 +27,7 @@
       "scripthost"
     ],
     "resolveJsonModule": true,
-    "types": ["vitest/globals", "vue/ref-macros", "vue/types/vue"],
+    "types": ["vitest/globals", "vite/client"],
   },
   "include": [
     "src/**/*.ts",

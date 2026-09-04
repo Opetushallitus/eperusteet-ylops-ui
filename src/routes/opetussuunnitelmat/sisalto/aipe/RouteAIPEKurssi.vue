@@ -28,22 +28,22 @@
           {{ $t('perusteen-sisaltoa-ei-maaritetty') }}
         </EpAlertError>
 
-        <b-form-group
+        <EpFormContent
           v-if="data.perusteSisalto?.koodi"
-          :label="$t('koodi')"
+          name="koodi"
         >
           {{ data.perusteSisalto.koodi.arvo }}
-        </b-form-group>
+        </EpFormContent>
 
         <EpAIPEPerusteKentta
           :teksti="data.perusteSisalto?.kuvaus"
           otsikko-key="tavoitteisiin-liittyvat-keskeiset-sisaltoalueet"
         />
 
-        <b-form-group
+        <EpFormContent
           v-if="data.perusteSisalto?.tavoitteet?.length"
           class="mt-4"
-          :label="$t('liitetyt-tavoitteet')"
+          name="liitetyt-tavoitteet"
         >
           <div
             v-for="tavoite in sortedTavoitteet(data.perusteSisalto.tavoitteet)"
@@ -52,7 +52,7 @@
           >
             {{ $kaanna(tavoite.tavoite) }}
           </div>
-        </b-form-group>
+        </EpFormContent>
 
         <div class="mt-4">
           <h3>{{ $t('paikallinen-tarkennus') }}</h3>
@@ -84,6 +84,7 @@ import EpAIPEPerusteKentta from '@/components/EpAIPEPerusteKentta/EpAIPEPerusteK
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpAlertError from '@shared/components/EpAlert/EpAlertError.vue';
+import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import { getTavoiteNumero } from '@shared/utils/perusteet';
 import { $kaanna, $t } from '@shared/utils/globals';
 

@@ -11,19 +11,19 @@
       >
         <template #muokkaa-content="{ data }">
           <template v-if="data.tuotuOpintojakso">
-            <div class="muokkaus-esto align-self-center">
+            <div class="muokkaus-esto self-center">
               {{ $t('et-voi-muokata-pohjan-opintojaksoa') }}
               <div
                 v-if="data.opintojaksonOpetussuunnitelma"
                 class="d-inline"
               >
-                <b-button
+                <EpButton
                   id="muokkaus-esto"
                   variant="link"
                   @click="remove(data)"
                 >
                   {{ $t('poista-opintojakso') }}
-                </b-button>
+                </EpButton>
               </div>
             </div>
           </template>
@@ -44,8 +44,8 @@
         </template>
         <template #default="{ data, validation, isEditing }">
           <div class="osio">
-            <div class="row">
-              <div class="col-md-6">
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-12 md:col-span-6">
                 <ep-form-content name="nimi">
                   <ep-field
                     v-model="data.nimi"
@@ -56,9 +56,9 @@
                   />
                 </ep-form-content>
               </div>
-              <div class="col-md-6">
+              <div class="col-span-12 md:col-span-6">
                 <ep-form-content>
-                  <div class="d-flex">
+                  <div class="flex">
                     <label class="mr-1">{{ $t('koodi') }}</label>
                     <EpInfoPopover v-if="isEditing">
                       <div v-html="$t('koodiohje')" />
@@ -74,8 +74,8 @@
                 </ep-form-content>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-6">
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-12 md:col-span-6">
                 <ep-form-content name="oppiaineet">
                   <ep-oppiaine-selector
                     v-if="isEditing"
@@ -99,7 +99,7 @@
                   </div>
                 </ep-form-content>
               </div>
-              <div class="col-md-6">
+              <div class="col-span-12 md:col-span-6">
                 <ep-form-content name="opintopisteet">
                   <span>{{ laajuus }} {{ $t('opintopiste') }} {{ laajuusJohdettavusTeksti }}</span>
                 </ep-form-content>
@@ -123,17 +123,17 @@
                 :key="index+'oppiaineetModuuliTaiIlman'"
                 class="mb-4"
               >
-                <div class="d-flex moduuliotsikko">
+                <div class="flex moduuliotsikko">
                   <div
                     v-if="oppiaineetMap[oa.koodi]"
-                    class="flex-grow-1"
+                    class="grow"
                   >
                     {{ $kaanna(oppiaineetMap[oa.koodi].nimi) }}
                   </div>
                   <template v-if="oppiaineidenModuulitMap[oa.koodi].moduulit.length > 0">
                     <div
                       v-if="isEditing && !oa.isModuuliton"
-                      class="moduulikuvaukset mr-5 d-inline-flex"
+                      class="moduulikuvaukset mr-5 inline-flex"
                     >
                       <div>
                         <ep-color-indicator kind="pakollinen" />
@@ -175,7 +175,7 @@
                     />
                   </div>
                 </div>
-                <div class="col-md-4 mt-3 px-0">
+                <div class="mt-3 px-0 w-full md:w-1/3">
                   <ep-form-content :name="oa.isModuuliton || oppiaineidenModuulitMap[oa.koodi].moduulit.length === 0 ? 'laajuus' : 'lisalaajuus'">
                     <ep-field
                       v-model="oa.laajuus"
@@ -220,8 +220,8 @@
                 v-for="(moduuli, idx) in editable.moduulit"
                 :key="idx+'editable.moduulit.moduulilista'"
               >
-                <div class="d-flex">
-                  <div class="p-2 flex-grow-1">
+                <div class="flex">
+                  <div class="p-2 grow">
                     <EpMaterialIcon class="checked">
                       check
                     </EpMaterialIcon>
@@ -452,16 +452,18 @@
                 class="paikallinen-laaja-alainen"
               >
                 <div>
-                  <span v-if="laajaAlaisetKooditByUri[lo.koodi]">
-                    <h5 class="d-inline">{{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}</h5>
-                    <b-button
+                  <div v-if="laajaAlaisetKooditByUri[lo.koodi]" class="flex items-center mb-1 justify-between">
+                    <h5 class="!mb-0 mr-2">{{ $kaanna(laajaAlaisetKooditByUri[lo.koodi].nimi) }}</h5>
+                    <EpButton
                       v-if="isEditing"
                       variant="link"
-                      @click.stop="poistaLaaja(lo)"
+                      @click="poistaLaaja(lo)"
+                      no-padding
+                      size="sm"
                     >
-                      <EpMaterialIcon>close</EpMaterialIcon>
-                    </b-button>
-                  </span>
+                      {{ $t('poista-laaja-alainen-osaaminen') }}
+                    </EpButton>
+                  </div>
                 </div>
                 <ep-content
                   v-model="lo.kuvaus"
@@ -476,21 +478,24 @@
               >
                 {{ $t('ei-paikallista-tarkennusta') }}
               </div>
-              <b-dropdown
+              <EpDropdown
                 v-if="isEditing"
-                :text="$t('lisaa-laaja-alainen-osaaminen')"
-                variant="primary"
                 class="mb-4"
               >
-                <b-dropdown-item-button
+                <template #button-content>
+                  <EpButton variant="primary">
+                    {{ $t('lisaa-laaja-alainen-osaaminen') }}
+                  </EpButton>
+                </template>
+                <EpDropdownItem
                   v-for="(laaja, index) in laajaAlaistenKoodit"
                   :key="index+'addlaaja'"
                   :disabled="laaja.hasPaikallinenKuvaus"
                   @click="addLaaja(laaja)"
                 >
                   {{ $kaanna(laaja.nimi) }}
-                </b-dropdown-item-button>
-              </b-dropdown>
+                </EpDropdownItem>
+              </EpDropdown>
 
               <div
                 v-for="(paikallinenOpintojakso, index) in data.paikallisetOpintojaksot"
@@ -682,6 +687,9 @@ import EpInput from '@shared/components/forms/EpInput.vue';
 import EpList from '@shared/components/forms/EpList.vue';
 import EpToggle from '@shared/components/forms/EpToggle.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
+import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
 import EpInfoPopover from '@shared/components/EpInfoPopover/EpInfoPopover.vue';
 import EpOppiaineSelector from '@/components/EpOppiaineSelector/EpOppiaineSelector.vue';
 import EpPrefixList from '@/components/EpPrefixList/EpPrefixList.vue';

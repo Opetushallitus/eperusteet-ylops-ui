@@ -1,20 +1,23 @@
 <template>
-  <div class="home-container">
-    <div class="header">
-      <ep-navigation :sticky="false" />
+  <div>
+    <Teleport
+      defer
+      to="#headerExtension"
+    >
       <div class="container">
         <div class="container-fluid">
-          <div class="row no-gutters">
-            <div class="col my-4 px-3 px-md-0">
+          <div class="flex flex-wrap -mx-0">
+            <div class="flex-1 min-w-0 my-4 px-3 md:px-0">
               <h1>{{ $t('lops-tyokalu-tervetuloa', {nimi }) }}</h1>
               <p>{{ $t('ylops-tervetuloa-kuvaus') }}</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Teleport>
+
     <div class="container tile-container">
-      <div class="d-flex flex-row flex-wrap justify-content-center">
+      <div class="flex flex-wrap justify-center">
         <tile-opetussuunnitelmat
           :keskeneraiset="etusivu.opetussuunnitelmatKeskeneraiset"
           :julkaistut="etusivu.opetussuunnitelmatJulkaistut"
@@ -49,9 +52,6 @@ import TileValtakunnallisetPerusteet from './tiles/TileValtakunnallisetPerusteet
 import TileOrganisaatio from './tiles/TileOrganisaatio.vue';
 import TileTiedotteet from './tiles/TileTiedotteet.vue';
 import TileOppaat from './tiles/TileOppaat.vue';
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
-import EpSearch from '@shared/components/forms/EpSearch.vue';
-import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 
 const props = defineProps<{
   kayttajaStore: KayttajaStore;
@@ -83,28 +83,14 @@ const kayttaja = computed(() => Kayttajat.tiedot);
 @import '@shared/styles/_variables.scss';
 
 .home-container {
-  background-color: $etusivu-background;
-  overflow: auto;
-
   .header {
     h1 {
       font-weight: 300;
     }
-    background-color: $etusivu-header-background;
-    background-image: url('@assets/img/banners/banner_lukio.svg');
-    background-position: 100% 0;
-    background-repeat: no-repeat;
-    @media only screen and (min-width: 2503px)  {
-      background-size: 100%;
-    }
-
-    color: white;
   }
 
   .tile-container {
-    padding: 0;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 50px;
   }
 }
 </style>

@@ -72,24 +72,24 @@
                 />
               </div>
             </ep-form-content>
-            <ep-button
+            <EpButton
               variant="link"
               icon="delete"
               class="float-right"
               @click="poistaTavoite(data.vuosiluokka.tavoitteet, idx)"
             >
               {{ $t('poista-tavoite') }}
-            </ep-button>
+            </EpButton>
           </div>
         </div>
-        <ep-button
+        <EpButton
           v-if="isEditing"
           variant="link"
           icon="add"
           @click="lisaaTavoite(data.vuosiluokka.tavoitteet)"
         >
           {{ $t('lisaa-tavoite') }}
-        </ep-button>
+        </EpButton>
       </template>
     </EpEditointi>
   </div>

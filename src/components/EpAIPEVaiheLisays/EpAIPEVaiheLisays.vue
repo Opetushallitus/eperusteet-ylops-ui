@@ -9,18 +9,9 @@
     >
       <span>{{ $t('lisaa-vaihe') }}</span>
     </ep-button>
-    <b-modal
-      id="aipevaihelisays"
+    <EpModal
       ref="vaihelisaysModal"
-      size="lg"
-      centered
-      :ok-disabled="okDisabled"
-      :ok-only="kaikkiLisatty"
-      static
-      lazy
-      @hidden="clear"
-      @show="show"
-      @ok="save"
+      @cancel="clear"
     >
       <template #modal-title>
         {{ $t('lisaa-vaihe') }}
@@ -37,7 +28,6 @@
           :show-header="false"
           class="mt-4"
         >
-          <h3>{{ $t('valitse-vaihe') }}</h3>
           <ep-select
             v-model="valittuVaihe"
             class="mb-5"
@@ -52,18 +42,25 @@
         </ep-form-content>
       </template>
 
-      <template #modal-cancel>
-        {{ $t('peruuta') }}
+      <template #modal-footer>
+        <EpButton
+          v-if="!kaikkiLisatty"
+          variant="link"
+          :disabled="saving"
+          @click="cancel"
+        >
+          {{ $t('peruuta') }}
+        </EpButton>
+        <EpButton
+          variant="primary"
+          :disabled="okDisabled || saving"
+          :show-spinner="saving"
+          @click="kaikkiLisatty ? cancel() : save()"
+        >
+          {{ $t(kaikkiLisatty ? 'sulje' : 'lisaa-vaihe') }}
+        </EpButton>
       </template>
-      <template #modal-ok>
-        <EpSpinner
-          v-if="saving"
-          small
-          color="white"
-        />
-        <span v-else>{{ $t(kaikkiLisatty ? 'sulje' : 'lisaa-vaihe') }}</span>
-      </template>
-    </b-modal>
+    </EpModal>
   </div>
 </template>
 
@@ -75,10 +72,11 @@ import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
+import EpModal from '@shared/components/EpModal/EpModal.vue';
 
-import { $t, $kaanna, $fail } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { AIPE, AIPEPerusteVaiheKevytDto } from '@shared/api/ylops';
+import { $t, $kaanna, $fail } from '@shared/utils/globals';
 
 const props = defineProps<{
   opetussuunnitelmaStore: OpetussuunnitelmaStore;
@@ -99,11 +97,12 @@ const kaikkiLisatty = computed(() => !loading.value && vaiheet.value.length === 
 
 const okDisabled = computed(() => !kaikkiLisatty.value && !valittuVaihe.value);
 
-const openModal = () => {
+const openModal = async () => {
   vaihelisaysModal.value?.show();
+  await load();
 };
 
-const show = async () => {
+const load = async () => {
   loading.value = true;
   try {
     const [perusteVaiheet, opsVaiheet] = await Promise.all([
@@ -118,14 +117,13 @@ const show = async () => {
   }
 };
 
-const save = async (event: Event) => {
-  if (kaikkiLisatty.value) {
+const save = async () => {
+  if (kaikkiLisatty.value || !valittuVaihe.value?.id) {
     return;
   }
-  event.preventDefault();
   saving.value = true;
   try {
-    const uusi = (await AIPE.addVaihe(opsId.value as number, valittuVaihe.value.id!)).data;
+    const uusi = (await AIPE.addVaihe(opsId.value as number, valittuVaihe.value.id)).data;
     await props.opetussuunnitelmaStore.initNavigation();
     await router.push({
       name: 'aipevaihe',
@@ -135,6 +133,7 @@ const save = async (event: Event) => {
       },
     });
     vaihelisaysModal.value?.hide();
+    clear();
   }
   catch (err: any) {
     $fail($t('tallennus-epaonnistui') as string);
@@ -145,6 +144,11 @@ const save = async (event: Event) => {
   finally {
     saving.value = false;
   }
+};
+
+const cancel = () => {
+  vaihelisaysModal.value?.hide();
+  clear();
 };
 
 const clear = () => {

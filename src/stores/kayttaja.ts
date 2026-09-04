@@ -54,12 +54,16 @@ export class KayttajaStore {
   public readonly organisaatiot = computed(() => this.state.organisaatiot);
 
   public async init() {
-    [this.state.casKayttaja, this.state.tiedot, this.state.oikeudet, this.state.organisaatiot] = _.map(await Promise.all([
+    const [casKayttaja, kayttaja, oikeudet, organisaatiot] = await Promise.all([
       getCasKayttaja(),
       KayttajatApi.getKayttaja(),
       Opetussuunnitelmat.getOikeudet(),
       KayttajatApi.getKayttajanOrganisaatiot(),
-    ]), data => data.data);
+    ]);
+    this.state.casKayttaja = casKayttaja;
+    this.state.tiedot = kayttaja.data;
+    this.state.oikeudet = oikeudet.data as Oikeudet;
+    this.state.organisaatiot = organisaatiot.data;
   }
 
   public async fetchOrganisaatioVirkailijat() {

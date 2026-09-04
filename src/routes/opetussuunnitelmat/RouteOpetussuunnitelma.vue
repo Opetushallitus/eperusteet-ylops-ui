@@ -1,11 +1,5 @@
 <template>
   <div>
-    <ep-navigation
-      tyyli="ops"
-      :koulutustyyppi="koulutustyyppi"
-      :header-class="headerClass"
-      :sticky="true"
-    />
     <ep-spinner
       v-if="!ops"
       class="center-loading"
@@ -13,26 +7,29 @@
     <div
       v-else
       class="opetussuunnitelma"
-      :class="headerClass"
     >
-      <div
-        class="header"
-        :style="headerStyle"
+      <Teleport
+        defer
+        to="#headerExtension"
       >
-        <div class="progress-chart mt-2">
-          <EpValidStatus
-            :validoitava="ops"
-            :validoinnit="validoinnit"
-            :julkaisemattomia-muutoksia="onkoJulkaisemattomiaMuutoksia"
-            :julkaistava="!isPohja"
-            :is-validating="isValidating"
-            tyyppi="opetussuunnitelma"
-            @aseta-valmiiksi="valmistaPohja"
-            @palauta="palauta"
-            @validoi="validoi"
-          />
-        </div>
-        <div class="info">
+        <div
+          class="portal-menu flex"
+          :class="headerClass"
+        >
+          <div class="progress-chart mt-2">
+            <EpValidStatus
+              :validoitava="ops"
+              :validoinnit="validoinnit"
+              :julkaisemattomia-muutoksia="onkoJulkaisemattomiaMuutoksia"
+              :julkaistava="!isPohja"
+              :is-validating="isValidating"
+              :tyyppi="ValidoitavatTyypit.OPETUSSUUNNITELMA"
+              @aseta-valmiiksi="valmistaPohja"
+              @palauta="palauta"
+              @validoi="validoi"
+            />
+          </div>
+          <div class="info">
           <h1>
             <span>{{ $kaanna(ops?.nimi) }}</span>
             <span
@@ -40,7 +37,7 @@
               class="ml-2"
             >({{ $t('pohja') }})</span>
           </h1>
-          <div>
+          <div class="flex items-center">
             <span v-if="koulutustyyppi">{{ $t(koulutustyyppi) }}</span>
             <span
               v-if="koulutustyyppi"
@@ -62,11 +59,9 @@
             </template>
 
             <span class="ml-2 mr-2">|</span>
-            <b-dropdown
+            <EpDropdown
               class="asetukset"
-              size="sm"
-              no-caret
-              variant="transparent"
+              :no-caret="true"
             >
               <template #button-content>
                 <span>{{ $t('lisatoiminnot') }}</span>
@@ -79,7 +74,7 @@
                 </EpMaterialIcon>
               </template>
 
-              <b-dropdown-item :to="{ name: 'opsTiedot' }">
+              <EpDropdownItem :to="{ name: 'opsTiedot' }">
                 <EpMaterialIcon
                   class="mr-2"
                   icon-shape="outlined"
@@ -87,8 +82,8 @@
                   info
                 </EpMaterialIcon>
                 <span class="dropdown-text">{{ isPohja ? $t('pohja-tiedot') : $t('tiedot') }}</span>
-              </b-dropdown-item>
-              <b-dropdown-item :to="{ name: 'opsDokumentti' }">
+              </EpDropdownItem>
+              <EpDropdownItem :to="{ name: 'opsDokumentti' }">
                 <EpMaterialIcon
                   class="mr-2"
                   icon-shape="outlined"
@@ -96,8 +91,8 @@
                   picture_as_pdf
                 </EpMaterialIcon>
                 <span class="dropdown-text">{{ $t('luo-pdf') }}</span>
-              </b-dropdown-item>
-              <b-dropdown-item :to="{ name: 'opsKasitteet' }">
+              </EpDropdownItem>
+              <EpDropdownItem :to="{ name: 'opsKasitteet' }">
                 <EpMaterialIcon
                   class="mr-2"
                   icon-shape="outlined"
@@ -105,8 +100,8 @@
                   book
                 </EpMaterialIcon>
                 <span class="dropdown-text">{{ $t('kasitteet') }}</span>
-              </b-dropdown-item>
-              <b-dropdown-item
+              </EpDropdownItem>
+              <EpDropdownItem
                 v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
                 :to="{ name: 'opsPoistetut' }"
               >
@@ -117,12 +112,12 @@
                   delete
                 </EpMaterialIcon>
                 <span class="dropdown-text">{{ $t('poistetut') }}</span>
-              </b-dropdown-item>
-              <b-dropdown-divider
+              </EpDropdownItem>
+              <EpDropdownDivider
                 v-if="ops?.tila !== 'poistettu'"
                 v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
               />
-              <b-dropdown-item
+              <EpDropdownItem
                 v-if="ops?.tila !== 'poistettu'"
                 v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
                 @click="arkistoiOps"
@@ -134,11 +129,12 @@
                   archive
                 </EpMaterialIcon>
                 <span class="dropdown-text">{{ $t('arkistoi-' + tyyppi) }}</span>
-              </b-dropdown-item>
-            </b-dropdown>
+              </EpDropdownItem>
+            </EpDropdown>
+          </div>
           </div>
         </div>
-      </div>
+      </Teleport>
       <div class="lower">
         <ep-sidebar>
           <template #bar>
@@ -395,12 +391,7 @@
           </template>
 
           <template #view>
-            <transition
-              name="fade"
-              mode="out-in"
-            >
-              <router-view :key="route.fullPath" />
-            </transition>
+            <router-view :key="route.fullPath" />
           </template>
 
           <template #bottom>
@@ -443,13 +434,15 @@ import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpEsikatseluLinkkiMetaInfo from '@shared/components/EpEsikatseluLinkkiMetaInfo/EpEsikatseluLinkkiMetaInfo.vue';
 import EpValidStatus from '@shared/components/EpValidStatus/EpValidStatus.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
+import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
+import EpDropdownDivider from '@shared/components/EpDropdown/EpDropdownDivider.vue';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
 import { EpTreeNavibarStore } from '@shared/components/EpTreeNavibar/EpTreeNavibarStore';
-import { koulutustyyppiBanner } from '@shared/utils/bannerIcons';
 import { themes } from '@shared/utils/perusteet';
 import { LinkkiHandler, routeToNode } from '@/utils/routing';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { $success, $fail, $t, $kaanna, $kaannaOlioTaiTeksti, $bvModal, $vahvista } from '@shared/utils/globals';
+import { $success, $fail, $t, $kaanna, $kaannaOlioTaiTeksti, $confirmModal, $vahvista } from '@shared/utils/globals';
 import { createKuvaHandler } from '@shared/components/EpContent/KuvaHandler';
 import { TermitStore } from '@/stores/TermitStore';
 import { KuvaStore } from '@/stores/KuvaStore';
@@ -458,6 +451,9 @@ import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicat
 import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 import EpAIPEVaiheLisays from '@/components/EpAIPEVaiheLisays/EpAIPEVaiheLisays.vue';
 import { Kommentit } from '@/stores/kommentit';
+import { inject } from 'vue';
+import { onUnmounted } from 'vue';
+import { ValidoitavatTyypit } from '@shared/components/EpValidStatus/EpValidStatusTypes';
 
 // Props
 const props = defineProps<{
@@ -478,6 +474,15 @@ const isPohja = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.va
 const naviStore = shallowRef<EpTreeNavibarStore | null>(null);
 const query = ref('');
 const isValidating = ref(false);
+const updateHeaderStyling = inject<(koulutustyyppi?: string | null) => void>('updateHeaderStyling');
+
+watch(() => ops.value?.koulutustyyppi, (koulutustyyppi) => {
+  updateHeaderStyling?.(koulutustyyppi);
+}, { immediate: true });
+
+onUnmounted(() => {
+  updateHeaderStyling?.(null);
+});
 
 // Computed properties
 const koulutustyyppi = computed(() => {
@@ -486,13 +491,6 @@ const koulutustyyppi = computed(() => {
 
 const tyyppi = computed(() => {
   return isPohja.value ? 'pohja' : 'opetussuunnitelma';
-});
-
-const headerStyle = computed(() => {
-  if (ops.value?.koulutustyyppi) {
-    return koulutustyyppiBanner(ops.value?.koulutustyyppi);
-  }
-  return '';
 });
 
 const headerClass = computed(() => {
@@ -576,7 +574,7 @@ const palauta = async () => {
 };
 
 const valmistaPohja = async () => {
-  const valmista = await $bvModal.msgBoxConfirm($t('pohja-valmis-varmistus'), {
+  const valmista = await $confirmModal.msgBoxConfirm($t('pohja-valmis-varmistus'), {
     title: $t('aseta-pohja-valmiiksi'),
     okVariant: 'primary',
     okTitle: $t('aseta-valmiiksi'),
@@ -707,47 +705,38 @@ provide('kommenttiHandler', Kommentit);
 
 .opetussuunnitelma {
   background: white;
+}
+
+.portal-menu {
+  height: 160px;
+  color: $color-ops-header-text;
+
   &.light {
-    .header, .progress-chart {
-      color: $color-ops-header-black-text;
+    color: $color-ops-header-black-text;
+  }
+
+  h1 :deep(button) {
+    color: inherit;
+  }
+
+  .progress-chart {
+    width: $sidebar-width;
+
+    @media only screen and (max-width: 1024px) {
+      display: none;
     }
   }
 
-  .header {
-    color: $color-ops-header-text;
-    background-position: 100% -56px;
-    background-repeat: no-repeat;
-    height: 160px;
-    @media only screen and (min-width: 2503px)  {
-      background-size: 100%;
-    }
+  .progress-chart > div {
+    width: 100%;
+  }
 
-    display: flex;
-    //align-items: center;
+  .info {
+    padding-left: 15px;
+    margin-top: 21px;
 
-    h1 :deep(button) {
-      color: inherit;
-    }
-
-    .progress-chart {
-      width: $sidebar-width;
-
-      @media only screen and (max-width: 1024px) {
-        display: none;
-      }
-    }
-
-    .progress-chart > div {
-      width: 100%;
-    }
-
-    .info {
-      padding-left: 15px;
-      margin-top: 21px;
-
-      @media only screen and (max-width: 768px) {
-        padding-left: 30px;
-      }
+    @media only screen and (max-width: 768px) {
+      padding-left: 30px;
     }
   }
 }

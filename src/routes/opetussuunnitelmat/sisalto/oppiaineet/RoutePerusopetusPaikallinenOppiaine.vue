@@ -17,8 +17,8 @@
         </h2>
       </template>
       <template #default="{ data, isEditing, supportData }">
-        <div class="row">
-          <div class="col-md-12">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12">
             <ep-form-content name="valinnaisen-oppiaineen-nimi">
               <ep-field
                 v-model="data.oppiaine.nimi"
@@ -28,10 +28,10 @@
           </div>
           <div
             v-if="isEditing"
-            class="col-md-12"
+            class="col-span-12"
           >
             <ep-form-content name="valinnaisen-oppiaineen-tyyppi">
-              <b-form-group>
+              <div class="flex flex-col gap-2">
                 <EpRadio
                   v-model="data.oppiaine.valinnainenTyyppi"
                   name="valinnaisen-oppiaineen-tyyppi-syventava"
@@ -84,10 +84,10 @@
                     </template>
                   </ep-multi-select>
                 </ep-form-content>
-              </b-form-group>
+              </div>
             </ep-form-content>
           </div>
-          <div class="col-md-6">
+          <div class="col-span-12 md:col-span-6">
             <ep-form-content name="vuosiluokat-joilla-esintyy">
               <ul v-if="!isEditing">
                 <li
@@ -108,7 +108,7 @@
               </EpToggleGroup>
             </ep-form-content>
           </div>
-          <div class="col-md-6">
+          <div class="col-span-12 md:col-span-6">
             <ep-form-content name="laajuus">
               <ep-field
                 v-model="data.oppiaine.laajuus"
@@ -118,7 +118,7 @@
               />
             </ep-form-content>
           </div>
-          <div class="col-md-12">
+          <div class="col-span-12">
             <vuosiluokka-sisalto-teksti
               v-model="data.vuosiluokkakokonaisuus.tehtava"
               :pohja-object="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.tehtava"
@@ -130,7 +130,7 @@
             </vuosiluokka-sisalto-teksti>
             <hr>
           </div>
-          <div class="col-md-12">
+          <div class="col-span-12">
             <vuosiluokka-sisalto-teksti
               v-model="data.vuosiluokkakokonaisuus.tyotavat"
               :pohja-object="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.tyotavat"
@@ -142,7 +142,7 @@
             </vuosiluokka-sisalto-teksti>
             <hr>
           </div>
-          <div class="col-md-12">
+          <div class="col-span-12">
             <vuosiluokka-sisalto-teksti
               v-model="data.vuosiluokkakokonaisuus.ohjaus"
               :pohja-object="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.ohjaus"
@@ -154,7 +154,7 @@
             </vuosiluokka-sisalto-teksti>
             <hr>
           </div>
-          <div class="col-md-12">
+          <div class="col-span-12">
             <vuosiluokka-sisalto-teksti
               v-model="data.vuosiluokkakokonaisuus.arviointi"
               :pohja-object="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.arviointi"
@@ -166,7 +166,7 @@
             </vuosiluokka-sisalto-teksti>
             <hr>
           </div>
-          <div class="col-md-12">
+          <div class="col-span-12">
             <vuosiluokka-sisalto-teksti
               v-model="data.vuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet"
               :pohja-object="supportData.pohjaOppiaineenVuosiluokkakokonaisuus.tavoitteistaJohdetutOppimisenTavoitteet"
@@ -180,22 +180,20 @@
           </div>
           <div
             v-if="!isEditing && data.vuosiluokkakokonaisuus"
-            class="col-md-12"
+            class="col-span-12"
           >
             <ep-form-content name="tavoitteet-ja-sisallot-vuosiluokittain">
-              <b-table
-                responsive
-                borderless
-                striped
-                :items="data.vuosiluokat"
-                :fields="[{ key: 'vuosiluokka', thStyle: { display: 'none' } }]"
-              >
-                <template #cell(vuosiluokka)="vuosiluokka">
-                  <router-link :to="{ name: 'perusopetuspaikallinenoppiainevuosiluokka', params: { vuosiluokkaId: vuosiluokka.item.id } }">
-                    {{ $t('vuosiluokka') }} {{ $t(vuosiluokka.item.vuosiluokka) }}
+              <ul class="list-none pl-0 m-0">
+                <li
+                  v-for="vl in data.vuosiluokat"
+                  :key="vl.id"
+                  class="py-1"
+                >
+                  <router-link :to="{ name: 'perusopetuspaikallinenoppiainevuosiluokka', params: { vuosiluokkaId: vl.id } }">
+                    {{ $t('vuosiluokka') }} {{ $t(vl.vuosiluokka) }}
                   </router-link>
-                </template>
-              </b-table>
+                </li>
+              </ul>
             </ep-form-content>
           </div>
         </div>

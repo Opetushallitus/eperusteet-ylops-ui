@@ -22,22 +22,17 @@
             {{ $t('lisaa-tavoitteet-vuosiluokille') }}
           </div>
 
-          <b-container
-            class="vuosiluokkaistaminen"
-          >
-            <b-row>
-              <b-col
-                cols="6"
-                class="pl-0 tavoitesisallot"
-              >
-                <div class="d-flex justify-content-between align-items-center">
+          <div class="vuosiluokkaistaminen w-full max-w-full">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="pl-0 tavoitesisallot w-full min-w-0">
+                <div class="flex justify-between items-center">
                   <h3>{{ $t('tavoitteet-ja-sisallot') }}</h3>
-                  <ep-button
+                  <EpButton
                     variant="link"
                     @click="suljeAvaaKaikki()"
                   >
                     {{ $t('avaa-sulje-kaikki') }}
-                  </ep-button>
+                  </EpButton>
                 </div>
 
                 <VueDraggable
@@ -49,7 +44,7 @@
                   <div
                     v-for="(tavoite, index) in tavoitteet"
                     :key="'tavoite'+index"
-                    class="tavoite d-flex"
+                    class="tavoite flex"
                     :class="{'valittu': tavoite.valittu}"
                   >
                     <EpMaterialIcon class="raahaus">
@@ -57,15 +52,15 @@
                     </EpMaterialIcon>
                     <ep-collapse
                       ref="sisaltocollapse"
-                      class="flex-grow-1"
+                      class="grow"
                       :border-bottom="false"
                       :border-top="false"
                     >
                       <template #header>
                         <h4 v-html="$kaanna(tavoite.tavoite)" />
                       </template>
-                      <div class="row">
-                        <div class="col-7">
+                      <div class="grid grid-cols-12 gap-2 gap-y-4">
+                        <div class="col-span-12 md:col-span-7">
                           <div
                             v-for="(sisaltoalue, index) in tavoite.sisaltoalueet"
                             :key="'sisaltoalue'+index"
@@ -75,7 +70,7 @@
                           </div>
                         </div>
 
-                        <div class="col-5 align-self-end text-right kohdealueet">
+                        <div class="col-span-12 md:col-span-5 self-end text-right kohdealueet">
                           <div
                             v-for="(kohdealue, index) in tavoite.kohdealueet"
                             :key="'kohdealue'+index"
@@ -92,9 +87,9 @@
                     </ep-collapse>
                   </div>
                 </VueDraggable>
-              </b-col>
+              </div>
 
-              <b-col cols="6">
+              <div class="w-full min-w-0">
                 <h3> {{ $t('vuosiluokat') }}</h3>
 
                 <div
@@ -102,34 +97,34 @@
                   :key="'vuosiluokka'+index"
                   class="vuosiluokka"
                 >
-                  <div class="d-flex justify-content-between align-items-center otsikko">
-                    <h4 class="flex-grow">
+                  <div class="flex justify-between items-center otsikko">
+                    <h4 class="grow">
                       {{ $t('vuosiluokka') }} {{ $t(vuosiluokka.vuosiluokka) }}
                     </h4>
                     <div class="text-right">
-                      <ep-button
-                        class="tuokaikki"
+                      <EpButton
+                        class="tuokaikki mr-2"
                         variant="link"
                         icon="add"
                         @click="lisaaKaikkiTavoitteet(vuosiluokka)"
                       >
                         {{ $t('tuo-kaikki') }}
-                      </ep-button>
-                      <ep-button
+                      </EpButton>
+                      <EpButton
                         :disabled="vuosiluokka.tavoitteet.length === 0"
                         variant="link"
                         icon="delete"
                         @click="poistaKaikkiTavoitteet(vuosiluokka)"
                       >
                         {{ $t('tyhjenna') }}
-                      </ep-button>
+                      </EpButton>
                     </div>
                   </div>
 
                   <VueDraggable
                     v-bind="vuosiluokatOptions"
                     v-model="vuosiluokka.tavoitteet"
-                    class="d-flex flex-wrap sisalto"
+                    class="flex flex-wrap sisalto"
                     :class="{'tyhja': vuosiluokka.tavoitteet.length === 0}"
                     tag="div"
                   >
@@ -143,16 +138,16 @@
                         <EpMaterialIcon>delete</EpMaterialIcon>
                       </div>
                       <text-clamp
-                        class="teksti"
+                        class="teksti mr-1"
                         :max-lines="4"
                         :text="$plaintext($kaanna(tavoite.tavoite))"
                       />
                     </div>
                   </VueDraggable>
                 </div>
-              </b-col>
-            </b-row>
-          </b-container>
+              </div>
+            </div>
+          </div>
         </template>
       </template>
     </EpEditointi>
@@ -398,13 +393,13 @@ onMounted(async () => {
           margin: 5px;
           padding: 5px;
           height: 100px;
-          width: 100px;
+          width: 125px;
           overflow: hidden;
 
           .roskalaatikko {
             position: relative;
             height: 22px;
-            left: 65px;
+            left: 90px;
             color: $blue-lighten-5;
 
             svg {
@@ -413,6 +408,7 @@ onMounted(async () => {
           }
 
           .teksti {
+            width: 100px;
             position: relative;
             top: -20px;
           }
