@@ -44,19 +44,24 @@
             layout="normal"
           />
           <div class="toiminnot">
-            <EpMaterialIcon
-              class="cursor-pointer text-blue-600 mr-2"
+            <button
+              type="button"
+              class="btn btn-link text-blue-600"
+              :aria-label="$t('poista')"
               @click="avaaPoistoModal(k.kasite)"
             >
-              delete
-            </EpMaterialIcon>
-            <EpMaterialIcon
-              class="cursor-pointer text-blue-600 mr-2"
+              <EpMaterialIcon>delete</EpMaterialIcon>
+            </button>
+            <button
+              type="button"
+              class="btn btn-link text-blue-600"
+              :aria-label="$t('muokkaa')"
               @click="avaaMuokkausModal(k.kasite)"
             >
               <EpMaterialIcon>edit</EpMaterialIcon>
-            </EpMaterialIcon>
+            </button>
             <button
+              type="button"
               class="btn btn-link text-blue-600"
               @click="k.closed = !k.closed"
             >
@@ -76,12 +81,23 @@
       ref="kasitteenPoistoModal"
       class="backdrop"
       size="lg"
-      :ok-text="$t('poista')"
-      :cancel-text="$t('peruuta')"
-      @ok="poistaKasite"
     >
       <template #modal-title>
         {{ $t('haluatko-poistaa-kasitteen') }}
+      </template>
+      <template #modal-footer="{ onCancel }">
+        <EpButton
+          variant="link"
+          @click="onCancel"
+        >
+          {{ $t('peruuta') }}
+        </EpButton>
+        <EpButton
+          variant="primary"
+          @click="poistaKasite"
+        >
+          {{ $t('poista') }}
+        </EpButton>
       </template>
     </EpModal>
     <!-- Käsitteen luomisen ja muokkaamisen modaali-->
@@ -90,10 +106,6 @@
       ref="kasitteenLuontiModal"
       class="backdrop"
       size="lg"
-      :ok-disabled="validation.$invalid"
-      :ok-text="kasite.id ? $t('tallenna') : $t('lisaa-kasite')"
-      :cancel-text="$t('peruuta')"
-      @ok="tallennaKasite"
     >
       <template #modal-title>
         <div class="flex flex-wrap items-center justify-between gap-2 w-full">
@@ -136,6 +148,21 @@
           {{ $t('merkitse-kasite-alaviitteeksi') }}
         </ep-toggle>
       </ep-form-content>
+      <template #modal-footer="{ onCancel }">
+        <EpButton
+          variant="link"
+          @click="onCancel"
+        >
+          {{ $t('peruuta') }}
+        </EpButton>
+        <EpButton
+          variant="primary"
+          :disabled="validation.$invalid"
+          @click="tallennaKasite"
+        >
+          {{ kasite.id ? $t('tallenna') : $t('lisaa-kasite') }}
+        </EpButton>
+      </template>
     </EpModal>
   </div>
 </template>
@@ -214,6 +241,7 @@ const poistaKasite = async () => {
     _.remove(termisto.value, k => k.kasite.id === kasite.value.id);
     termisto.value = [...termisto.value];
     await store.value.updateSisalto();
+    kasitteenPoistoModal.value?.hide();
   }
   catch (err) {
     // Todo: Termin poisto epäonnistui

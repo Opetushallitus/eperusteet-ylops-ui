@@ -42,7 +42,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, useTemplateRef } from 'vue';
-import Sticky from 'vue-sticky-directive';
 import { Kommentit } from '@/stores/kommentit';
 import { setItem, getItem } from '@/utils/localstorage';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';

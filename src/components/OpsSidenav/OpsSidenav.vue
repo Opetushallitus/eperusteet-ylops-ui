@@ -157,8 +157,7 @@
             <ep-oppimaara-lisays
               v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
               :opetussuunnitelma-store="store"
-              :oppiaine="itemData.item.objref"
-              :reset-navi="reset"
+              :oppiaine-id="itemData.item.objref.id"
             />
           </li>
         </template>
@@ -197,7 +196,6 @@ import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicat
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import OpsSidenavLink from './OpsSidenavLink.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import Sticky from 'vue-sticky-directive';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
 import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
@@ -626,10 +624,6 @@ const valikkoData = computed(() => {
 
   return menuOpsData;
 });
-
-const reset = () => {
-  store.value.init(store.value.opsId.value);
-};
 
 const tekstikappaleet = computed(() => {
   return _.filter(tekstikappaleRec(valikkoData.value), item => item.item.type === 'tekstikappale');

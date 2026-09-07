@@ -24,7 +24,6 @@
             responsive
             :items="opetussuunnitelmat.data"
             :fields="fields"
-            :per-page="10"
           >
             <template #cell(siirtyminen)="{ item }">
               <EpPalautusModal
@@ -34,6 +33,11 @@
             </template>
           </EpTable>
         </div>
+        <EpBPagination
+          v-model="opsSivu"
+          :items-per-page="sivukoko"
+          :total="opetussuunnitelmat['kokonaismäärä']"
+        />
       </template>
 
       <template #modal-footer>
@@ -62,7 +66,7 @@ import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops'
 import { debounced } from '@shared/utils/delay';
 import { Page } from '@shared/tyypit';
 import { Kielet } from '@shared/stores/kieli';
-import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
+import EpBPagination from '@shared/components/EpBPagination/EpBPagination.vue';
 import EpTable from '@shared/components/EpTable/EpTable.vue';
 
 import { $t, $kaanna, $sdt } from '@shared/utils/globals';
@@ -85,6 +89,7 @@ const arkistoidutOpsModal = useTemplateRef('arkistoidutOpsModal');
 const opetussuunnitelmat = ref<Page<OpetussuunnitelmaInfoDto> | null>(null);
 const query = ref('');
 const opsSivu = ref(1);
+const sivukoko = 10;
 
 const fetch = async () => {
   opetussuunnitelmat.value = null;
@@ -95,7 +100,7 @@ const fetch = async () => {
     query.value,
     undefined, undefined,
     opsSivu.value - 1,
-    10,
+    sivukoko,
     Kielet.getSisaltoKieli.value,
   )).data as Page<OpetussuunnitelmaInfoDto>;
 };

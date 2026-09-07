@@ -290,8 +290,7 @@
           <ep-oppimaara-lisays
             v-oikeustarkastelu="{ oikeus: 'muokkaus', kohde: isPohja ? 'pohja' : 'opetussuunnitelma' }"
             :opetussuunnitelma-store="store"
-            :oppiaine="data.oppiaine"
-            :reset-navi="resetOps"
+            :oppiaine-id="data.oppiaine.id"
             button-variant="outline"
           />
         </div>
