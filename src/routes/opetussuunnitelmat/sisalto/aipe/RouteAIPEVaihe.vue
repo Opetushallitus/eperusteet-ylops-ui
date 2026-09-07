@@ -83,21 +83,29 @@
           <h3 class="mb-3">
             {{ $t('oppiaineet') }}
           </h3>
-          <b-table
-            striped
-            :items="data.oppiaineet"
-            :fields="listaFields"
-          >
-            <template #cell(nimi)="{ item }">
-              <router-link :to="{ name: 'aipeoppiaine', params: { vaiheId: String(data.id), oppiaineId: String(item.id) } }">
-                {{ $kaanna(item.nimi) }}
-              </router-link>
-              <span
-                v-if="item.piilotettu"
-                class="additional-info-text"
-              >({{ $t('piilotettu') }})</span>
-            </template>
-          </b-table>
+          <div class="overflow-x-auto">
+            <EpTable
+              responsive
+              striped
+              hover
+              :show-headers="false"
+              data-key="id"
+              class="w-full border-collapse text-left text-sm"
+              :items="data.oppiaineet"
+              :fields="listaFields"
+              row-class="border-b border-surface-100"
+            >
+              <template #cell(nimi)="{ item }">
+                <router-link :to="{ name: 'aipeoppiaine', params: { vaiheId: String(data.id), oppiaineId: String(item.id) } }">
+                  {{ $kaanna(item.nimi) }}
+                </router-link>
+                <span
+                  v-if="item.piilotettu"
+                  class="additional-info-text"
+                >({{ $t('piilotettu') }})</span>
+              </template>
+            </EpTable>
+          </div>
         </div>
       </template>
     </EpEditointi>
@@ -116,6 +124,7 @@ import EpAIPEPerusteKentta from '@/components/EpAIPEPerusteKentta/EpAIPEPerusteK
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpAlertError from '@shared/components/EpAlert/EpAlertError.vue';
+import EpTable from '@shared/components/EpTable/EpTable.vue';
 import { $kaanna, $t } from '@shared/utils/globals';
 
 const props = defineProps<{
@@ -142,10 +151,5 @@ const init = async () => {
 
 watch(() => route.params.vaiheId, init, { immediate: true });
 
-const listaFields = [{
-  key: 'nimi',
-  thStyle: {
-    display: 'none',
-  },
-}];
+const listaFields = [{ key: 'nimi', label: '', tdClass: 'p-2' }];
 </script>

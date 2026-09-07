@@ -1,7 +1,9 @@
-declare module 'vue' {
-  import { CompatVue } from 'vue';
-  const Vue: CompatVue;
-  export default Vue;
-  const { configureCompat } = Vue;
-  export { configureCompat };
+declare module '*.svg' {
+  const value: string;
+  export default value;
+}
+
+declare module '*.png' {
+  const value: string;
+  export default value;
 }

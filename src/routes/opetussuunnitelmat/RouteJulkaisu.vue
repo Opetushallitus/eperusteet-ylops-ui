@@ -1,17 +1,13 @@
 <template>
   <div class="p-4">
-    <div class="d-flex justify-content-between">
+    <div class="flex justify-between items-start gap-4">
       <h2>{{ $t('julkaisunakyma') }}</h2>
       <div v-oikeustarkastelu="{ oikeus: 'hallinta', kohde: 'pohja' }">
         <EpSpinner v-if="hallintaLoading" />
-        <b-dropdown
+        <EpDropdown
           v-else
           class="asetukset"
-          size="lg"
-          variant="link"
-          dropleft
-          toggle-class="text-decoration-none"
-          no-caret
+          :no-caret="true"
         >
           <template #button-content>
             {{ $t('hallinta') }}
@@ -19,13 +15,10 @@
               settings
             </EpMaterialIcon>
           </template>
-          <EpButton
-            variant="link"
-            @click="palautaTekstirakenne"
-          >
+          <EpDropdownItem @click="palautaTekstirakenne">
             {{ $t('palauta-aiempi-tekstirakenne') }}
-          </EpButton>
-        </b-dropdown>
+          </EpDropdownItem>
+        </EpDropdown>
       </div>
     </div>
     <div>
@@ -50,7 +43,7 @@
       <div v-else>
         <div
           v-if="isValid"
-          class="d-flex"
+          class="flex"
         >
           <EpMaterialIcon class="no-errors">
             check_circle
@@ -61,7 +54,7 @@
         </div>
         <div
           v-else
-          class="d-flex"
+          class="flex"
         >
           <EpMaterialIcon class="errors">
             info
@@ -96,8 +89,8 @@
     >
       <h3>{{ $t('tiedot') }}</h3>
       <div>
-        <div class="row">
-          <div class="col-md-6">
+        <div class="grid grid-cols-12">
+          <div class="col-span-12 md:col-span-6">
             <ep-form-content name="ops-nimi">
               <ep-field
                 v-model="ops.nimi"
@@ -105,12 +98,12 @@
               />
             </ep-form-content>
           </div>
-          <div class="col-md-6">
+          <div class="col-span-12 md:col-span-6">
             <ep-form-content name="peruste">
               <ep-field v-model="ops.perusteenDiaarinumero" />
             </ep-form-content>
           </div>
-          <div class="col-md-6">
+          <div class="col-span-12 md:col-span-6">
             <ep-form-content name="julkaisukielet">
               <ep-select
                 v-model="ops.julkaisukielet"
@@ -122,7 +115,7 @@
           </div>
           <div
             v-if="isOps"
-            class="col-md-6"
+            class="col-span-12 md:col-span-6"
           >
             <ep-form-content name="ops-hyvaksyjataho">
               <ep-field
@@ -134,7 +127,7 @@
           </div>
           <div
             v-if="isOps"
-            class="col-md-6"
+            class="col-span-12 md:col-span-6"
           >
             <ep-form-content name="ops-hyvaksymispvm">
               <ep-datepicker
@@ -145,7 +138,7 @@
           </div>
           <div
             v-if="isOps && julkaisuhistoria && julkaisuhistoria.length > 0"
-            class="col-md-6"
+            class="col-span-12 md:col-span-6"
           >
             <ep-form-content name="esikatsele-opetussuunnitelmaa">
               <ep-external-link
@@ -154,7 +147,7 @@
               />
             </ep-form-content>
           </div>
-          <div class="col-md-12">
+          <div class="col-span-12">
             <ep-form-content name="ops-kuvaus">
               <ep-content
                 v-model="ops.kuvaus"
@@ -171,7 +164,8 @@
     <div class="mt-4">
       <div v-if="!validating && isValid">
         <h3>{{ $t('uusi-julkaisu') }}</h3>
-        <b-form-group :label="$t('julkaisun-tiedote')">
+        <div class="flex flex-col gap-1 mt-4">
+          <label class="font-medium">{{ $t('julkaisun-tiedote') }}</label>
           <div class="font-size-08 mb-2">
             {{ $t('tiedote-naytetaan-tyoryhmalle-taman-sivun-julkaisuhistoriassa') }}
           </div>
@@ -186,12 +180,13 @@
             :julkaise="julkaise"
             :julkaisu-kesken="julkaisuKesken"
           />
-        </b-form-group>
+        </div>
       </div>
 
       <EpJulkaisuHistoria
         :julkaisut="julkaisuhistoria"
         :palauta="palautaJulkaisu"
+        class="mt-4"
       >
         <template #empty>
           <div>{{ $t('opetussuunnitelmaa-ei-viela-julkaistu') }}</div>
@@ -215,8 +210,9 @@ import _ from 'lodash';
 import { UusiJulkaisuDto } from '@shared/api/ylops';
 import { Kielet, UiKielet } from '@shared/stores/kieli';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
+import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
+import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
 import EpField from '@shared/components/forms/EpField.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
 import EpSelect from '@shared/components/forms/EpSelect.vue';

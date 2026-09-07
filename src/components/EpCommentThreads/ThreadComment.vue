@@ -1,6 +1,6 @@
 <template>
   <div class="kommentti p-3">
-    <div class="topbar d-flex align-items-center justify-content-between">
+    <div class="topbar flex items-center justify-between">
       <div class="pvm">
         {{ $ago(innerValue.luotu || new Date()) }}
       </div>
@@ -8,21 +8,20 @@
         v-if="innerValue.tunniste"
         class="actions"
       >
-        <b-dropdown
-          variant="link"
-          right
-          no-caret
+        <EpDropdown
+          :right="true"
+          :no-caret="true"
         >
           <template #button-content>
             <EpMaterialIcon>more_horiz</EpMaterialIcon>
           </template>
-          <b-dropdown-item @click="muokkaa">
+          <EpDropdownItem @click="muokkaa">
             {{ $t('muokkaa') }}
-          </b-dropdown-item>
-          <b-dropdown-item @click="poista">
+          </EpDropdownItem>
+          <EpDropdownItem @click="poista">
             {{ $t('poista') }}
-          </b-dropdown-item>
-        </b-dropdown>
+          </EpDropdownItem>
+        </EpDropdown>
       </div>
     </div>
     <div class="nimi">
@@ -44,19 +43,19 @@
       v-if="editable"
       class="toiminnot"
     >
-      <div class="d-flex flex-row-reverse">
-        <b-button
+      <div class="flex flex-row-reverse gap-2">
+        <EpButton
           variant="primary"
           @click="tallenna"
         >
           {{ $t('tallenna') }}
-        </b-button>
-        <b-button
-          variant="default"
+        </EpButton>
+        <EpButton
+          variant="secondary"
           @click="peruuta"
         >
           {{ $t('peruuta') }}
-        </b-button>
+        </EpButton>
       </div>
     </div>
   </div>
@@ -66,7 +65,10 @@
 import { ref, computed, watch } from 'vue';
 import { KommenttiDto } from '@shared/api/ylops';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
-import { $t, $bvModal } from '@shared/utils/globals';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
+import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
+import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
+import { $t } from '@shared/utils/globals';
 import _ from 'lodash';
 
 const props = defineProps<{

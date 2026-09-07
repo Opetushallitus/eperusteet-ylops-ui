@@ -19,40 +19,48 @@
           {{ $t('valinnaisia-aineita-ei-ole-luotu') }}
         </div>
 
-        <ep-button
+        <EpButton
           variant="outline-primary"
           icon="add"
           @click="uusiOppiaine()"
         >
           {{ $t('lisaa-valinnainen-oppiaine') }}
-        </ep-button>
+        </EpButton>
 
-        <b-table
+        <div
           v-if="data.oppiaineet.length > 0"
-          :items="data.oppiaineet"
-          :fields="sarakkeet"
+          class="overflow-x-auto mt-4"
         >
-          <template #cell(nimi)="{ item }">
-            <router-link :to="{ name:'perusopetuspaikallinenoppiaine', params: { oppiaineId: item.id } }">
-              <span>{{ $kaanna(item.nimi) }}</span>
-            </router-link>
-          </template>
-
-          <template #cell(laajuus)="{ item }">
-            <span>{{ item.laajuus }} {{ $t('oppiaine-laajuus-lyhenne') }}</span>
-          </template>
-
-          <template #cell(vuosiluokat)="{ item }">
-            <div
-              v-for="(vuosiluokka, index) in item.vuosiluokat"
-              :key="'vuosiluokka'+index"
-            >
-              <router-link :to="{ name:'perusopetuspaikallinenoppiainevuosiluokka', params: { oppiaineId: item.id, vuosiluokkaId: vuosiluokka.id } }">
-                <span>{{ $t('vuosiluokka') }} {{ $t(vuosiluokka.vuosiluokka) }}</span>
+          <ep-table
+            responsive
+            striped
+            hover
+            data-key="id"
+            class="w-full border-collapse text-left text-sm"
+            :items="data.oppiaineet"
+            :fields="valinnaisetTableFields"
+            row-class="border-b border-surface-100"
+          >
+            <template #cell(nimi)="{ item }">
+              <router-link :to="{ name:'perusopetuspaikallinenoppiaine', params: { oppiaineId: item.id } }">
+                <span>{{ $kaanna(item.nimi) }}</span>
               </router-link>
-            </div>
-          </template>
-        </b-table>
+            </template>
+            <template #cell(laajuus)="{ item }">
+              <span>{{ item.laajuus }} {{ $t('oppiaine-laajuus-lyhenne') }}</span>
+            </template>
+            <template #cell(vuosiluokat)="{ item }">
+              <div
+                v-for="(vuosiluokka, index) in item.vuosiluokat"
+                :key="'vuosiluokka'+index"
+              >
+                <router-link :to="{ name:'perusopetuspaikallinenoppiainevuosiluokka', params: { oppiaineId: item.id, vuosiluokkaId: vuosiluokka.id } }">
+                  <span>{{ $t('vuosiluokka') }} {{ $t(vuosiluokka.vuosiluokka) }}</span>
+                </router-link>
+              </div>
+            </template>
+          </ep-table>
+        </div>
       </template>
     </EpEditointi>
   </div>
@@ -67,7 +75,8 @@ import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { PerusopetusVuosiluokkaValinnaisetStore } from '@/stores/perusopetusvuosiluokkavalinnaisetStore';
 import { OpsVuosiluokkakokonaisuusKevytDto } from '@shared/api/ylops';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import { $t } from '@shared/utils/globals';
+import EpTable from '@shared/components/EpTable/EpTable.vue';
+import { $t, $kaanna } from '@shared/utils/globals';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 
 const props = defineProps<{
@@ -89,20 +98,30 @@ const init = async () => {
   editointiStore.value = new EditointiStore(new PerusopetusVuosiluokkaValinnaisetStore(ops.value, vuosiluokkakokonaisuus));
 };
 
-const sarakkeet = computed(() => {
-  return [{
-    key: 'nimi',
-    label: $t('valinnaisen-nimi'),
-    sortable: true,
-  }, {
-    key: 'laajuus',
-    label: $t('laajuus'),
-    sortable: true,
-  }, {
-    key: 'vuosiluokat',
-    label: $t('vuosiluokat-ja-tavoitteet'),
-    sortable: true,
-  }];
+const valinnaisetTableFields = computed(() => {
+  return [
+    {
+      key: 'nimi',
+      label: $t('valinnaisen-nimi'),
+      sortable: true,
+      thClass: 'p-3 font-semibold border-b border-surface-200',
+      tdClass: 'p-3 align-middle',
+    },
+    {
+      key: 'laajuus',
+      label: $t('laajuus'),
+      sortable: true,
+      thClass: 'p-3 font-semibold border-b border-surface-200',
+      tdClass: 'p-3 align-middle',
+    },
+    {
+      key: 'vuosiluokat',
+      label: $t('vuosiluokat-ja-tavoitteet'),
+      sortable: true,
+      thClass: 'p-3 font-semibold border-b border-surface-200',
+      tdClass: 'p-3 align-middle',
+    },
+  ];
 });
 
 const uusiOppiaine = () => {

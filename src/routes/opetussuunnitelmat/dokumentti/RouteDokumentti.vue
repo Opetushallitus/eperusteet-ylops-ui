@@ -1,6 +1,6 @@
 <template>
   <div class="dokumentit">
-    <div class="ylapaneeli d-flex align-items-center">
+    <div class="ylapaneeli flex items-center">
       <h2 class="otsikko">
         {{ $t('luo-pdf') }}
       </h2>
@@ -25,19 +25,19 @@
           :pdfnimi="$kaanna(opetussuunnitelmanimi)"
         />
         <div class="btn-group">
-          <ep-button
+          <EpButton
             :disabled="!dto || polling"
             :show-spinner="polling"
             button-class="px-5"
             @click="createDocument"
           >
             <span>{{ $t('luo-uusi-pdf') }}</span>
-          </ep-button>
+          </EpButton>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col kuvalataus">
+      <div class="grid grid-cols-12 gap-4 items-start">
+        <div class="col-span-12 md:col-span-8 kuvalataus min-w-0">
           <EpPdfKuvalataus
             tyyppi="kansikuva"
             :kuva-url="kansikuvaUrl"
@@ -45,7 +45,7 @@
             @remove-image="removeImage"
           />
         </div>
-        <div class="col-4 text-center sijaintikuva">
+        <div class="col-span-12 md:col-span-4 text-center sijaintikuva">
           <div class="sijainti-topic">
             {{ $t('sijainti') }}
           </div>
@@ -53,8 +53,8 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col kuvalataus">
+      <div class="grid grid-cols-12 gap-4 items-start">
+        <div class="col-span-12 md:col-span-8 kuvalataus min-w-0">
           <EpPdfKuvalataus
             tyyppi="ylatunniste"
             :kuva-url="ylatunnisteUrl"
@@ -62,7 +62,7 @@
             @remove-image="removeImage"
           />
         </div>
-        <div class="col-4 text-center sijaintikuva">
+        <div class="col-span-12 md:col-span-4 text-center sijaintikuva">
           <div class="sijainti-topic">
 &nbsp;
           </div>
@@ -70,8 +70,8 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col kuvalataus">
+      <div class="grid grid-cols-12 gap-4 items-start">
+        <div class="col-span-12 md:col-span-8 kuvalataus min-w-0">
           <EpPdfKuvalataus
             tyyppi="alatunniste"
             :kuva-url="alatunnisteUrl"
@@ -79,7 +79,7 @@
             @remove-image="removeImage"
           />
         </div>
-        <div class="col-4 text-center sijaintikuva">
+        <div class="col-span-12 md:col-span-4 text-center sijaintikuva">
           <div class="sijainti-topic">
 &nbsp;
           </div>

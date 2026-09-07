@@ -1,7 +1,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useHead } from '@unhead/vue';
-import { $t, $bvModal } from '@shared/utils/globals';
+import { $t, $confirmModal } from '@shared/utils/globals';
 
 export function useEpRoot() {
   const route = useRoute();
@@ -26,7 +26,7 @@ export function useEpRoot() {
   useHead(getMetaInfo);
 
   const vahvista = async (title = 'vahvista-toiminto', msg = 'vahvista-toiminto-viesti', okTitle = 'kylla', config: any = {}) => {
-    return await $bvModal.msgBoxConfirm($t(msg) as any, {
+    return await $confirmModal.msgBoxConfirm($t(msg) as any, {
       title: $t(title),
       okVariant: 'primary',
       okTitle: $t(okTitle) as any,

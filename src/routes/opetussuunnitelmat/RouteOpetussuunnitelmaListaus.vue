@@ -12,26 +12,26 @@
         />
         <p>{{ $t(vars.kuvaus) }}</p>
 
-        <div class="d-flex flex-lg-row flex-column">
-          <b-form-group :label="$t('nimi')">
+        <div class="flex flex-col lg:flex-row gap-4 flex-wrap">
+          <div class="flex flex-col gap-1 min-w-0 flex-1">
+            <label class="font-medium">{{ $t('nimi') }}</label>
             <ep-search
               v-model="rajain"
               :placeholder="$t(vars.etsi)"
             />
-          </b-form-group>
+          </div>
 
-          <b-form-group
-            :label="$t('koulutustyyppi')"
-            class="w-40"
-          >
+          <div class="flex flex-col gap-1 w-full lg:w-2/5 max-w-md">
+            <label class="font-medium">{{ $t('koulutustyyppi') }}</label>
             <koulutustyyppi-select
               v-model="koulutustyyppi"
               :is-editing="true"
               :koulutustyypit="yleissivistavatKoulutustyyppienData"
             />
-          </b-form-group>
+          </div>
 
-          <b-form-group :label="$t('jarjestys')">
+          <div class="flex flex-col gap-1 min-w-0 flex-1">
+            <label class="font-medium">{{ $t('jarjestys') }}</label>
             <EpMultiSelect
               v-model="jarjestys"
               class="jarjestys-select"
@@ -45,180 +45,171 @@
                 {{ $t(option.label) }}
               </template>
             </EpMultiSelect>
-          </b-form-group>
+          </div>
         </div>
       </template>
 
-      <b-container
-        fluid
-        class="pl-0"
-      >
-        <b-row>
-          <b-col>
-            <div class="opslistaus">
-              <h2>{{ $t(vars.keskeneraiset) }} <span v-if="opslista">({{ opslista['kokonaismäärä'] }})</span></h2>
+      <div class="w-full max-w-full pl-0">
+        <div class="w-full">
+          <div class="opslistaus">
+            <h2>{{ $t(vars.keskeneraiset) }} <span v-if="opslista">({{ opslista['kokonaismäärä'] }})</span></h2>
 
-              <ep-spinner v-if="!opslista" />
+            <ep-spinner v-if="!opslista" />
 
-              <div v-else>
+            <div v-else>
+              <div
+                v-if="opetussuunnitelmat.length === 0"
+                class="info"
+              >
+                <div v-if="hasRajain">
+                  {{ $t('ei-hakutuloksia') }}
+                </div>
+              </div>
+
+              <div
+                class="opscontainer"
+                :class="{'disabled-events': opsHaku}"
+              >
                 <div
-                  v-if="opetussuunnitelmat.length === 0"
-                  class="info"
+                  v-oikeustarkastelu="{ oikeus: 'luonti', kohde: 'opetussuunnitelma' }"
+                  class="opsbox"
                 >
-                  <div v-if="hasRajain">
-                    {{ $t('ei-hakutuloksia') }}
-                  </div>
+                  <router-link
+                    :to="{ name: vars.uusiRoute }"
+                  >
+                    <div class="uusi">
+                      <div class="plus">
+                        <EpMaterialIcon>add</EpMaterialIcon>
+                      </div>
+                      <div class="text">
+                        {{ $t('luo-uusi') }}
+                      </div>
+                    </div>
+                  </router-link>
                 </div>
 
                 <div
-                  class="opscontainer"
-                  :class="{'disabled-events': opsHaku}"
+                  v-for="ops in opetussuunnitelmat"
+                  :key="ops.id"
                 >
                   <div
-                    v-oikeustarkastelu="{ oikeus: 'luonti', kohde: 'opetussuunnitelma' }"
+                    v-if="ops.tuettu"
                     class="opsbox"
                   >
                     <router-link
-                      :to="{ name: vars.uusiRoute }"
+                      :key="ops.id"
+                      :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
                     >
-                      <div class="uusi">
-                        <div class="plus">
-                          <EpMaterialIcon>add</EpMaterialIcon>
-                        </div>
-                        <div class="text">
-                          {{ $t('luo-uusi') }}
-                        </div>
-                      </div>
-                    </router-link>
-                  </div>
-
-                  <div
-                    v-for="ops in opetussuunnitelmat"
-                    :key="ops.id"
-                  >
-                    <div
-                      v-if="ops.tuettu"
-                      class="opsbox"
-                    >
-                      <router-link
-                        :key="ops.id"
-                        :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
+                      <div
+                        class="chart"
+                        :style="ops.tileStyle"
                       >
-                        <div
-                          class="chart"
-                          :style="ops.tileStyle"
-                        >
-                          <div class="progress-clamper">
-                            <ep-progress :slices="[0.2, 0.5, 1]" />
-                          </div>
+                        <div class="progress-clamper">
+                          <ep-progress :slices="[0.2, 0.5, 1]" />
                         </div>
-                        <div class="info">
-                          <div class="nimi">
-                            {{ $kaanna(ops.nimi, false, false) }}
-                          </div>
-                        </div>
-                      </router-link>
-                    </div>
-                    <div
-                      v-else
-                      ref="disabled"
-                      class="opsbox disabled"
-                    >
-                      <div class="info-top">
-                        <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
                       </div>
                       <div class="info">
                         <div class="nimi">
                           {{ $kaanna(ops.nimi, false, false) }}
                         </div>
                       </div>
+                    </router-link>
+                  </div>
+                  <div
+                    v-else
+                    ref="disabled"
+                    class="opsbox disabled"
+                  >
+                    <div class="info-top">
+                      <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
+                    </div>
+                    <div class="info">
+                      <div class="nimi">
+                        {{ $kaanna(ops.nimi, false, false) }}
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div class="paginating mt-2">
-                  <EpPagination
-                    v-model="opsSivu"
-                    :total-rows="opslista['kokonaismäärä']"
-                    :per-page="14"
-                    aria-controls="opetussuunnitelmat"
-                    align="center"
-                  />
-                </div>
+              <div class="paginating mt-2">
+                <EpBPagination
+                  v-model="opsSivu"
+                  :items-per-page="14"
+                  :total="opslista['kokonaismäärä']"
+                />
               </div>
             </div>
+          </div>
 
-            <div class="opslistaus">
-              <h2 class="mt-4">
-                {{ $t(vars.julkaistut) }} <span v-if="julkaistutLista">({{ julkaistutLista['kokonaismäärä'] }})</span>
-              </h2>
+          <div class="opslistaus">
+            <h2 class="mt-4">
+              {{ $t(vars.julkaistut) }} <span v-if="julkaistutLista">({{ julkaistutLista['kokonaismäärä'] }})</span>
+            </h2>
 
-              <ep-spinner v-if="!julkaistutLista" />
+            <ep-spinner v-if="!julkaistutLista" />
 
-              <div v-else>
-                <div
-                  v-if="julkaistut.length === 0"
-                  class="info"
-                >
-                  <div v-if="hasRajain">
-                    {{ $t('ei-hakutuloksia') }}
-                  </div>
-                  <ep-alert
-                    v-else
-                    :ops="true"
-                    :text="$t(vars.eivalmiita)"
-                  />
+            <div v-else>
+              <div
+                v-if="julkaistut.length === 0"
+                class="info"
+              >
+                <div v-if="hasRajain">
+                  {{ $t('ei-hakutuloksia') }}
                 </div>
+                <ep-alert
+                  v-else
+                  :ops="true"
+                  :text="$t(vars.eivalmiita)"
+                />
+              </div>
 
+              <div
+                class="opscontainer"
+                :class="{'disabled-events': julkaistutHaku}"
+              >
                 <div
-                  class="opscontainer"
-                  :class="{'disabled-events': julkaistutHaku}"
+                  v-for="ops in julkaistut"
+                  :key="ops.id"
                 >
                   <div
-                    v-for="ops in julkaistut"
-                    :key="ops.id"
+                    class="opsbox julkaistu"
+                    :style="ops.bannerImage"
                   >
-                    <div
-                      class="opsbox julkaistu"
-                      :style="ops.bannerImage"
+                    <router-link
+                      :key="ops.id"
+                      :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
                     >
-                      <router-link
-                        :key="ops.id"
-                        :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
-                      >
-                        <div class="julkaistu" />
-                        <div class="info d-flex flex-column justify-content-between">
-                          <div class="nimi">
-                            {{ $kaanna(ops.nimi, false, false) }}
-                          </div>
-                          <div
-                            v-if="ops.julkaistu"
-                            class="nimi"
-                          >
-                            <hr>
-                            <div class="julkaisu">
-                              {{ $t('julkaistu') }} {{ $sd(ops.julkaistu) }}
-                            </div>
+                      <div class="julkaistu" />
+                      <div class="info flex flex-col justify-between">
+                        <div class="nimi">
+                          {{ $kaanna(ops.nimi, false, false) }}
+                        </div>
+                        <div
+                          v-if="ops.julkaistu"
+                          class="nimi"
+                        >
+                          <hr>
+                          <div class="julkaisu">
+                            {{ $t('julkaistu') }} {{ $sd(ops.julkaistu) }}
                           </div>
                         </div>
-                      </router-link>
-                    </div>
+                      </div>
+                    </router-link>
                   </div>
                 </div>
-                <div class="paginating mt-2">
-                  <EpPagination
-                    v-model="julkaistutSivu"
-                    :total-rows="julkaistutLista['kokonaismäärä']"
-                    :per-page="10"
-                    aria-controls="julkaistut-opetussuunnitelmat"
-                    align="center"
-                  />
-                </div>
+              </div>
+              <div class="paginating mt-2">
+                <EpBPagination
+                  v-model="julkaistutSivu"
+                  :items-per-page="10"
+                  :total="julkaistutLista['kokonaismäärä']"
+                />
               </div>
             </div>
-          </b-col>
-        </b-row>
-      </b-container>
+          </div>
+        </div>
+      </div>
     </ep-main-view>
   </div>
 </template>
@@ -228,16 +219,11 @@ import _ from 'lodash';
 import { ref, computed, watch, onMounted } from 'vue';
 import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
-import { oikeustarkastelu } from '@/directives/oikeustarkastelu';
-import { success } from '@/utils/notifications';
 import { Kielet } from '@shared/stores/kieli';
 import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
-import { useEpRoute } from '@/mixins/EpRoute';
 import EpMainView from '@/components/EpMainView/EpMainView.vue';
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import EpProgress from '@shared/components/EpProgressPopover/EpProgress.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
 import EpArkistoidutOps from '@/components/EpArkistoidutOps/EpArkistoidutOps.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
@@ -249,7 +235,7 @@ import { Page } from '@shared/tyypit';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { $t, $kaanna, $sd, $success } from '@shared/utils/globals';
-import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
+import EpBPagination from '@shared/components/EpBPagination/EpBPagination.vue';
 
 interface Jarjestys {
   jarjestys: string;

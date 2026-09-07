@@ -1,14 +1,14 @@
 <template>
   <footer>
     <div class="footer-content">
-      <div class="row">
-        <div class="col-lg col-slot">
+      <div class="footer-columns flex flex-wrap items-center">
+        <div class="col-slot flex-shrink-0">
           <img
             src="@assets/img/banners/oph_logo.svg"
             :alt="$t('oph')"
           >
         </div>
-        <div class="col-md col-slot">
+        <div class="col-slot min-w-0 flex-1 basis-0">
           <p class="linkki-kuvaus">
             {{ $t('opetushallitus') }}
           </p>
@@ -17,7 +17,7 @@
             icon="launch"
           />
         </div>
-        <div class="col-md col-slot">
+        <div class="col-slot min-w-0 flex-1 basis-0">
           <p class="linkki-kuvaus">
             {{ $t('opintopolku') }}
           </p>
@@ -26,7 +26,7 @@
             icon="launch"
           />
         </div>
-        <div class="col-md col-slot">
+        <div class="col-slot min-w-0 flex-1 basis-0">
           <p class="linkki-kuvaus">
             {{ $t('eperusteet') }}
           </p>
@@ -35,7 +35,7 @@
             icon="launch"
           />
         </div>
-        <div class="col-md col-slot">
+        <div class="col-slot min-w-0 flex-1 basis-0">
           <a :href="$kaanna(linkit.seloste)">{{ $t('tietosuojaseloste') }}</a>
         </div>
       </div>
@@ -84,7 +84,7 @@ footer {
     margin: 0 auto;
     padding: 20px 0;
 
-    .row {
+    .footer-columns {
       align-items: center;
       .col-slot {
         padding: 16px;

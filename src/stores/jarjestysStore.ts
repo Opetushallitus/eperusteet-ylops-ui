@@ -9,7 +9,6 @@ import { sortedOppiaineet } from '../utils/opetussuunnitelmat';
 import { PerusteCache } from './peruste';
 
 import { koodiSorters } from '@shared/utils/perusteet';
-import { success } from '@/utils/notifications';
 import { $success } from '@shared/utils/globals';
 import { AIPE } from '@shared/api/ylops';
 

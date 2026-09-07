@@ -1,34 +1,18 @@
 <template>
   <div v-if="mahdollisetTilat">
-    <ep-button
+    <EpButton
       id="opetussuunnitelma-tilanvaihto"
-      v-b-modal.tilanvaihtomodal
+      @click="modal?.show()"
     >
       {{ $t('vaihda-tilaa') }}
-    </ep-button>
-    <b-modal
+    </EpButton>
+    <EpModal
       id="tilanvaihtomodal"
       ref="modal"
       size="lg"
-      title="testi"
     >
       <template #modal-title>
         {{ $t('vaihda-tilaa') }}
-      </template>
-      <template #modal-footer>
-        <ep-button
-          :disabled="!selected"
-          :show-spinner="isUpdating"
-          @click="tallenna()"
-        >
-          {{ $t('ok') }}
-        </ep-button>
-        <ep-button
-          :disabled="isUpdating"
-          @click="peruuta()"
-        >
-          {{ $t('peruuta') }}
-        </ep-button>
       </template>
       <div class="tilat">
         <button
@@ -72,7 +56,22 @@
           </div>
         </button>
       </div>
-    </b-modal>
+      <template #modal-footer>
+        <EpButton
+          :disabled="isUpdating"
+          @click="peruuta()"
+        >
+          {{ $t('peruuta') }}
+        </EpButton>
+        <EpButton
+          :disabled="!selected"
+          :show-spinner="isUpdating"
+          @click="tallenna()"
+        >
+          {{ $t('ok') }}
+        </EpButton>
+      </template>
+    </EpModal>
   </div>
   <div v-else>
     <ep-spinner />
@@ -82,9 +81,9 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue';
 import EpButton from '@shared/components/EpButton/EpButton.vue';
-import EpInput from '@shared/components/forms/EpInput.vue';
 import EpSpinner from '@shared/components/EpSpinner/EpSpinner.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
+import EpModal from '@shared/components/EpModal/EpModal.vue';
 import { sallittuSiirtyma } from '@/utils/tilat';
 import { $t } from '@shared/utils/globals';
 
@@ -106,11 +105,7 @@ const tallenna = async () => {
   isUpdating.value = true;
   try {
     if (selected.value && await props.onSave(selected.value)) {
-      // this.$emit('input', tila);
-      const modalRef = modal.value;
-      if (modalRef) {
-        (modalRef as any).hide();
-      }
+      modal.value?.hide();
     }
   }
   finally {
@@ -120,10 +115,7 @@ const tallenna = async () => {
 
 const peruuta = () => {
   selected.value = null;
-  const modalRef = modal.value;
-  if (modalRef) {
-    (modalRef as any).hide();
-  }
+  modal.value?.hide();
 };
 
 const vaihdaTila = async (tila: string) => {

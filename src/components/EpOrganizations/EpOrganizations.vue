@@ -39,7 +39,7 @@
         class="selectors mb-4"
         :class="{'disabled-events': valitutJarjestajat.length === 0}"
       >
-        <div class="d-flex">
+        <div class="flex">
           <label>{{ $t('oppilaitokset') }}</label>
           <slot name="oppilaitokset-label-suffix" />
         </div>

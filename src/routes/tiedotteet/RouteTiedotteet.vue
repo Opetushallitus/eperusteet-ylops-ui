@@ -1,6 +1,5 @@
 <template>
   <div>
-    <ep-navigation />
     <ep-tiedote-view :tiedotteet="tiedotteet">
       <template #search>
         <ep-search
@@ -12,7 +11,7 @@
       <template #pagination>
         <EpPagination
           v-model="sivu"
-          class="justify-content-center"
+          class="flex justify-center"
           :per-page="sivukoko"
           :total-rows="kokonaismaara"
           :limit="10"
@@ -31,7 +30,6 @@ import { Kielet } from '@shared/stores/kieli';
 import { julkaisupaikka } from '@shared/utils/tiedote';
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpTiedoteView from '@shared/components/EpTiedoteView/EpTiedoteView.vue';
-import EpNavigation from '@/components/EpNavigation/EpNavigation.vue';
 import { Ulkopuoliset } from '@shared/api/ylops';
 import { debounced } from '@shared/utils/delay';
 import { onMounted } from 'vue';

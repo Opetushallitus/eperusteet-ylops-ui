@@ -4,7 +4,7 @@
       <div
         v-for="(pohja, idx) in ops.periytyvatPohjat"
         :key="'per' + (idx + 1)"
-        class="d-flex"
+        class="flex"
       >
         <EpMaterialIcon
           v-if="idx > 0"
@@ -39,7 +39,7 @@
     </div>
     <div
       v-if="ops.joissaPohjana && ops.joissaPohjana.length > 0"
-      class="d-flex"
+      class="flex"
     >
       <EpMaterialIcon
         class="mr-1"

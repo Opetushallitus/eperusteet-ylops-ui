@@ -1,7 +1,5 @@
 import _ from 'lodash';
-import Vue from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
-import VueMeta from 'vue-meta';
 
 import Root from '@/routes/Root.vue';
 import Home from '@/routes/home/RouteHome.vue';
@@ -45,15 +43,14 @@ import { createLogger } from '@shared/utils/logger';
 import { MuokkaustietoStore } from '@/stores/muokkaustieto';
 import { AikatauluStore } from '../stores/aikataulu';
 import { Kommentit } from '@/stores/kommentit';
-import VueApexCharts from 'vue-apexcharts';
 import { getCasKayttajaKieli } from '@shared/api/common';
 import { Opetussuunnitelmat } from '@shared/api/ylops';
 import { BrowserStore } from '@shared/stores/BrowserStore';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { useLoading } from 'vue-loading-overlay';
-import { loadingOptions } from '@/utils/loading';
+import { loadingOptions } from '@shared/config/loading';
 import { stores } from '@/stores';
-import { $bvModal, $success } from '@shared/utils/globals';
+import { $confirmModal, $success } from '@shared/utils/globals';
 
 const logger = createLogger('Router');
 
@@ -67,9 +64,18 @@ const props = (route: any) => {
 
 const router = createRouter({
   history: createWebHashHistory(),
+  scrollBehavior(to, _from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    return { top: 0, left: 0 };
+  },
   routes: [{
+    path: '/',
+    alias: '',
+    component: { template: '<div></div>' },
+  }, {
     path: '/:lang',
-    alias: ['/', ''],
     component: Root,
     props,
     children: [{
@@ -270,7 +276,7 @@ const router = createRouter({
       ],
     }],
   }, {
-    path: '/:catchAll(.*)',
+    path: '/:catchAll(.*)*',
     redirect: (to) => {
       logger.error('Unknown route', to);
       return {
@@ -315,7 +321,7 @@ router.beforeEach((to, from, next) => {
 // Estetään tilan vaihtaminen muokkaustilassa
 router.beforeEach(async (to, from, next) => {
   if (EditointiStore.anyEditing()) {
-    const value = await $bvModal.msgBoxConfirm(
+    const value = await $confirmModal.msgBoxConfirm(
       Kielet.kaannaOlioTaiTeksti('poistumisen-varmistusteksti-dialogi'), {
         title: Kielet.kaannaOlioTaiTeksti('haluatko-poistua-tallentamatta'),
         okTitle: Kielet.kaannaOlioTaiTeksti('poistu-tallentamatta'),
@@ -359,7 +365,6 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.params.id && to.params.id !== from.params.id) {
     const opsId = _.parseInt(to.params.id);
-    window.scrollTo(0, 0);
     try {
       stores.opetussuunnitelmaStore.clear();
       stores.muokkaustietoStore.clear();
@@ -383,7 +388,7 @@ router.beforeEach(async (to, from, next) => {
 const $loading = useLoading(loadingOptions);
 const loaders: any[] = [];
 
-router.afterEach(() => {
+router.afterEach(async () => {
   hideLoading();
   BrowserStore.changeLocation(location.href);
 });

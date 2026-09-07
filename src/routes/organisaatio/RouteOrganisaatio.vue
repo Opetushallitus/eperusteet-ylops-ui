@@ -14,12 +14,12 @@
     <ep-spinner v-if="isLoading" />
     <div
       v-else-if="virkailijatFormatted"
-      class="row virkailijat"
+      class="grid grid-cols-1 sm:grid-cols-2 gap-4 virkailijat"
     >
       <div
         v-for="virkailija in virkailijatFormatted"
         :key="virkailija.oid"
-        class="virkailija text-left col-sm-6"
+        class="virkailija text-left"
       >
         <span class="mr-2">{{ virkailija.esitysnimi }}</span>
         <ul v-if="showOrganizations">
