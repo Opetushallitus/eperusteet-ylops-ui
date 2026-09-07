@@ -50,11 +50,11 @@
         </EpButton>
       </ep-form-content>
 
-      <template #modal-footer>
+      <template #modal-footer="{ onCancel }">
         <EpButton
           variant="secondary"
           :disabled="tallentaa"
-          @click="tekstikappalelisaysModal?.hide()"
+          @click="onCancel"
         >
           {{ $t('peruuta') }}
         </EpButton>

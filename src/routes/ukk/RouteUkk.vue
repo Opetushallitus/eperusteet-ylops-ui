@@ -90,12 +90,23 @@
       ref="removeKysymys"
       class="backdrop"
       size="lg"
-      :ok-text="$t('poista')"
-      :cancel-text="$t('peruuta')"
-      @ok="deleteKysymys"
     >
       <template #modal-title>
         {{ $t('haluatko-poistaa-kysymyksen') }}
+      </template>
+      <template #modal-footer="{ onCancel }">
+        <EpButton
+          variant="link"
+          @click="onCancel"
+        >
+          {{ $t('peruuta') }}
+        </EpButton>
+        <EpButton
+          variant="primary"
+          @click="deleteKysymys"
+        >
+          {{ $t('poista') }}
+        </EpButton>
       </template>
     </EpModal>
 
@@ -106,10 +117,6 @@
         ref="createUpdateKysymys"
         class="backdrop"
         size="lg"
-        :ok-disabled="$v.kysymys.$invalid"
-        :ok-text="kysymys.$uusi ? $t('lisaa-kysymys') : $t('tallenna')"
-        :cancel-text="$t('peruuta')"
-        @ok="createUpdateKysymysHandler"
       >
         <template #modal-title>
           <div class="flex flex-wrap items-center justify-between gap-2 w-full">
@@ -170,6 +177,21 @@
             </template> -->
           </ep-multi-select>
         </ep-form-content>
+        <template #modal-footer="{ onCancel }">
+          <EpButton
+            variant="link"
+            @click="onCancel"
+          >
+            {{ $t('peruuta') }}
+          </EpButton>
+          <EpButton
+            variant="primary"
+            :disabled="$v.kysymys.$invalid"
+            @click="createUpdateKysymysHandler"
+          >
+            {{ kysymys.$uusi ? $t('lisaa-kysymys') : $t('tallenna') }}
+          </EpButton>
+        </template>
       </EpModal>
     </template>
   </ep-main-view>
@@ -322,6 +344,7 @@ const deleteKysymys = async () => {
     kysymykset.value = [
       ...kysymykset.value,
     ];
+    removeKysymys.value?.hide();
   }
   catch (e) {
     // Todo: Poistaminen epäonnistui

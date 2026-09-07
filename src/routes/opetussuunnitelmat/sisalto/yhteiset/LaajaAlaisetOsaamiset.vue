@@ -31,11 +31,9 @@
       v-if="isEditable"
       class="mt-4"
     >
-      <EpDropdown>
+      <EpDropdown variant="primary">
         <template #button-content>
-          <EpButton variant="primary">
-            {{ $t(nimi) }}
-          </EpButton>
+          {{ $t(nimi) }}
         </template>
         <EpDropdownItem
           v-for="(koodi, idx) in used"
@@ -103,7 +101,6 @@ const used = computed(() => {
 });
 
 const updateValue = (value: KoodiKuvaus[]) => {
-  console.log('updateValue', value);
   emit('update:modelValue', _.sortBy(value, 'koodi'));
 };
 

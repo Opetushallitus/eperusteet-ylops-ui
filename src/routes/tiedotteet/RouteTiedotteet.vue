@@ -9,14 +9,11 @@
         />
       </template>
       <template #pagination>
-        <EpPagination
+        <EpBPagination
           v-model="sivu"
-          class="flex justify-center"
-          :per-page="sivukoko"
-          :total-rows="kokonaismaara"
-          :limit="10"
+          :items-per-page="sivukoko"
+          :total="kokonaismaara"
           aria-controls="tiedotteet"
-          @update:model-value="update"
         />
       </template>
     </ep-tiedote-view>
@@ -33,7 +30,7 @@ import EpTiedoteView from '@shared/components/EpTiedoteView/EpTiedoteView.vue';
 import { Ulkopuoliset } from '@shared/api/ylops';
 import { debounced } from '@shared/utils/delay';
 import { onMounted } from 'vue';
-import EpPagination from '@shared/components/EpPagination/EpPagination.vue';
+import EpBPagination from '@shared/components/EpBPagination/EpBPagination.vue';
 
 const rajain = ref('');
 const tiedotteet = ref<any[] | null>(null);

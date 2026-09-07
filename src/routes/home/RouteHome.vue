@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home-container">
     <Teleport
       defer
       to="#headerExtension"
