@@ -39,7 +39,6 @@ export default defineConfig(({ mode }) => {
         '&': fileURLToPath(new URL('./tests', import.meta.url)),
         '~': fileURLToPath(new URL('./node_modules', import.meta.url)),
       },
-      dedupe: ['vue'],
     },
     server: {
       port: 9040,

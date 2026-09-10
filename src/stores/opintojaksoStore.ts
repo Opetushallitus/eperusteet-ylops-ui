@@ -1,5 +1,5 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import VueCompositionApi, { reactive, computed, ref, watch } from 'vue';
+import { computed, type App } from 'vue';
 import { Opetussuunnitelmat, Lops2019OpintojaksoDto } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
@@ -7,7 +7,6 @@ import { Revision } from '@shared/tyypit';
 import { createLogger } from '@shared/utils/logger';
 import { opintojaksoValidator } from '@/validators/opintojakso';
 import { Router } from 'vue-router';
-import Vue from 'vue';
 import * as defaults from '@/defaults';
 
 const logger = createLogger('OpintojaksoStore');
@@ -29,7 +28,7 @@ export class OpintojaksoStore implements IEditoitava {
 
   private static config: OpintojaksoStoreConfig;
 
-  public static install(vue: typeof Vue, config: OpintojaksoStoreConfig) {
+  public static install(app: App, config: OpintojaksoStoreConfig) {
     OpintojaksoStore.config = config;
   }
 
@@ -96,7 +95,7 @@ export class OpintojaksoStore implements IEditoitava {
         OpintojaksoStore.config.router.push({
           name: 'opintojakso',
           params: {
-            ...OpintojaksoStore.config.router.currentRoute.params,
+            ...OpintojaksoStore.config.router.currentRoute.value.params,
             opintojaksoId: _.toString(uusi.id),
           },
         });
