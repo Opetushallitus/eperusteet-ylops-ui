@@ -52,6 +52,7 @@ export class KayttajaStore {
   public readonly nimi = computed(() => parsiEsitysnimi(this.state.tiedot));
   public readonly sovellusOikeudet = computed(() => getSovellusoikeudet(this.state.casKayttaja?.groups, 'APP_EPERUSTEET_YLOPS'));
   public readonly organisaatiot = computed(() => this.state.organisaatiot);
+  public readonly userOid = computed(() => this.state.tiedot.oidHenkilo || '');
 
   public async init() {
     const [casKayttaja, kayttaja, oikeudet, organisaatiot] = await Promise.all([

@@ -1,5 +1,5 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import { reactive, computed, ref, watch } from 'vue';
+import { computed, type App } from 'vue';
 import { Opetussuunnitelmat, Lops2019PaikallinenOppiaineDto, Lops2019Oppiaineet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Kielet } from '@shared/stores/kieli';
@@ -7,7 +7,6 @@ import { Revision } from '@shared/tyypit';
 import { createLogger } from '@shared/utils/logger';
 import { oppiaineValidator } from '@/validators/oppiaineet';
 import { Router } from 'vue-router';
-import Vue from 'vue';
 import * as defaults from '@/defaults';
 import { KoodistoLops2019LaajaAlaiset } from '@/utils/perusteet';
 
@@ -31,7 +30,7 @@ export class LopsPaikallinenOppiaineStore implements IEditoitava {
   private static config: LopsPaikallinenOppiaineStoreConfig;
   private tuotuOppimaara = false;
 
-  public static install(vue: typeof Vue, config: LopsPaikallinenOppiaineStoreConfig) {
+  public static install(app: App, config: LopsPaikallinenOppiaineStoreConfig) {
     LopsPaikallinenOppiaineStore.config = config;
   }
 

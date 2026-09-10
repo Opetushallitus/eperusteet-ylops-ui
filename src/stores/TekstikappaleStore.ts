@@ -1,6 +1,5 @@
-import Vue from 'vue';
+import { reactive, computed, type App } from 'vue';
 import { Router } from 'vue-router';
-import { reactive, computed } from 'vue';
 import { Matala, Perusteenosat, Sisallot, PerusteDtoTyyppiEnum, Laaja } from '@shared/api/eperusteet';
 import { Revision } from '@shared/tyypit';
 import _ from 'lodash';
@@ -25,7 +24,7 @@ export class TekstikappaleStore implements IEditoitava {
 
   private static config: TekstikappaleStoreConfig;
 
-  public static install(vue: typeof Vue, config: TekstikappaleStoreConfig) {
+  public static install(app: App, config: TekstikappaleStoreConfig) {
     TekstikappaleStore.config = config;
   }
 

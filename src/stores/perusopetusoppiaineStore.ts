@@ -1,5 +1,5 @@
 import { IEditoitava, EditoitavaFeatures } from '@shared/components/EpEditointi/EditointiStore';
-import { computed, Vue } from 'vue';
+import { computed, type App } from 'vue';
 import { Oppiaineet, OpsVuosiluokkakokonaisuusKevytDto, OppiaineenVuosiluokkakokonaisuudet, OppiaineSuppeaDto, Vuosiluokkakokonaisuudet } from '@shared/api/ylops';
 import * as _ from 'lodash';
 import { Revision } from '@shared/tyypit';
@@ -28,7 +28,7 @@ export class PerusopetusoppiaineStore implements IEditoitava {
   private static config: PerusopetusoppiaineStoreConfig;
   private parent: OppiaineSuppeaDto | undefined;
 
-  public static install(vue: typeof Vue, config: PerusopetusoppiaineStoreConfig) {
+  public static install(app: App, config: PerusopetusoppiaineStoreConfig) {
     PerusopetusoppiaineStore.config = config;
   }
 
