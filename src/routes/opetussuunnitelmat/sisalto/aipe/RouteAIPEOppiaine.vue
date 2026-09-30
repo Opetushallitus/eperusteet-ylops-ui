@@ -99,41 +99,22 @@
         </EpFormContent>
 
         <EpFormContent
-          v-if="tavoitteet.length"
+          v-if="data.perusteSisalto?.tavoitteet?.length"
           class="mt-4"
           name="opetuksen-tavoitteet"
         >
           <EpCollapse
-            v-for="tavoite in tavoitteet"
+            v-for="tavoite in data.perusteSisalto.tavoitteet"
             :key="'tavoite' + tavoite.id"
             class="tavoite p-3 mb-4"
             :border-bottom="false"
             :use-padding="false"
           >
             <template #header>
-              <div class="d-flex justify-content-between w-100 align-items-center">
-                <h4 class="mb-0">
-                  {{ $kaanna(tavoite.tavoite) }}
-                </h4>
-                <div
-                  v-if="isEditing"
-                  @click.stop
-                >
-                  <EpButton
-                    variant="link"
-                    @click="toggleTavoite(data, tavoite.id)"
-                  >
-                    {{ onkoTavoitePiilotettu(data, tavoite.id) ? $t('nayta-tavoite') : $t('piilota-tavoite') }}
-                  </EpButton>
-                </div>
-              </div>
+              <h4 class="mb-0">
+                {{ $kaanna(tavoite.tavoite) }}
+              </h4>
             </template>
-            <div
-              v-if="onkoTavoitePiilotettu(data, tavoite.id)"
-              class="disabled-text mb-2"
-            >
-              {{ $t('piilotettu-julkisesta-opetussuunnitelmasta') }}
-            </div>
             <EpAIPEOppiaineenTavoite :tavoite="tavoite" />
           </EpCollapse>
         </EpFormContent>
@@ -221,13 +202,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import _ from 'lodash';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
-import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { AipeOppiaineStore } from '@/stores/aipeOppiaineStore';
 import EpAIPEPerusteKentta from '@/components/EpAIPEPerusteKentta/EpAIPEPerusteKentta.vue';
@@ -245,30 +225,6 @@ const props = defineProps<{
 
 const route = useRoute();
 const editointiStore = ref<EditointiStore | null>(null);
-
-const onkoTavoitePiilotettu = (data: any, tavoiteId: number) => {
-  return _.includes(_.map(data.piilotetutTavoitteet || [], Number), Number(tavoiteId));
-};
-
-const tavoitteet = computed(() => {
-  const data = editointiStore.value?.data;
-  const isEditing = editointiStore.value?.isEditing;
-  const all = data.perusteSisalto?.tavoitteet || [];
-  if (isEditing) {
-    return all;
-  }
-  return _.filter(all, t => !onkoTavoitePiilotettu(data, t.id));
-});
-
-const toggleTavoite = (data: any, tavoiteId: number) => {
-  const current = _.map(data.piilotetutTavoitteet || [], Number);
-  if (_.includes(current, Number(tavoiteId))) {
-    data.piilotetutTavoitteet = _.filter(current, id => id !== Number(tavoiteId));
-  }
-  else {
-    data.piilotetutTavoitteet = [...current, Number(tavoiteId)];
-  }
-};
 
 const init = async () => {
   const opsId = props.opetussuunnitelmaStore.opetussuunnitelma.value?.id;
