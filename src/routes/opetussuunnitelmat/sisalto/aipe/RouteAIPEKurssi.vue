@@ -41,16 +41,32 @@
         />
 
         <EpFormContent
-          v-if="data.perusteSisalto?.tavoitteet?.length"
+          v-if="naytettavatTavoitteet.length"
           class="mt-4"
           name="liitetyt-tavoitteet"
         >
           <div
-            v-for="tavoite in sortedTavoitteet(data.perusteSisalto.tavoitteet)"
+            v-for="tavoite in naytettavatTavoitteet"
             :key="tavoite.id"
-            class="listaus p-3"
+            class="listaus p-3 flex justify-between items-center gap-4"
           >
-            {{ $kaanna(tavoite.tavoite) }}
+            <div>
+              <div>{{ $kaanna(tavoite.tavoite) }}</div>
+              <div
+                v-if="tavoite.piilotettu"
+                class="disabled-text"
+              >
+                {{ $t('piilotettu-julkisesta-opetussuunnitelmasta') }}
+              </div>
+            </div>
+            <EpButton
+              v-if="isEditing"
+              class="shrink-0"
+              variant="link"
+              @click="toggleTavoite(tavoite.id)"
+            >
+              {{ tavoite.piilotettu ? $t('nayta-tavoite') : $t('piilota-tavoite') }}
+            </EpButton>
           </div>
         </EpFormContent>
 
@@ -73,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import _ from 'lodash';
 import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
@@ -85,6 +101,7 @@ import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpAlertError from '@shared/components/EpAlert/EpAlertError.vue';
 import EpFormContent from '@shared/components/forms/EpFormContent.vue';
+import EpButton from '@shared/components/EpButton/EpButton.vue';
 import { getTavoiteNumero } from '@shared/utils/perusteet';
 import { $kaanna, $t } from '@shared/utils/globals';
 
@@ -95,8 +112,30 @@ const props = defineProps<{
 const route = useRoute();
 const editointiStore = ref<EditointiStore | null>(null);
 
-const sortedTavoitteet = (tavoitteet: any[]) => {
-  return _.sortBy(tavoitteet, t => getTavoiteNumero(t.tavoite));
+const data = computed(() => editointiStore.value?.data);
+const isEditing = computed(() => !!editointiStore.value?.isEditing);
+
+const piilotetutTavoitteet = computed<number[]>(() => _.map(data.value?.piilotetutTavoitteet || [], Number));
+
+const naytettavatTavoitteet = computed(() => {
+  const tavoitteet = _.chain(data.value?.perusteSisalto?.tavoitteet || [])
+    .sortBy(t => getTavoiteNumero(t.tavoite))
+    .map(t => ({
+      ...t,
+      piilotettu: _.includes(piilotetutTavoitteet.value, Number(t.id)),
+    }))
+    .value();
+  if (isEditing.value) {
+    return tavoitteet;
+  }
+  return _.reject(tavoitteet, 'piilotettu');
+});
+
+const toggleTavoite = (tavoiteId: number) => {
+  const id = Number(tavoiteId);
+  data.value.piilotetutTavoitteet = _.includes(piilotetutTavoitteet.value, id)
+    ? _.without(piilotetutTavoitteet.value, id)
+    : [...piilotetutTavoitteet.value, id];
 };
 
 const init = async () => {
