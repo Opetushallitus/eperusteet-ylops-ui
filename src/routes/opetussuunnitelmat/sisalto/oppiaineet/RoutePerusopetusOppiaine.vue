@@ -260,6 +260,58 @@
               </h3>
             </template>
           </vuosiluokka-sisalto-teksti>
+          <ep-collapse
+            v-for="(vapaateksti, index) in perusteenVuosiluokkakokonaisuusVapaatTekstit"
+            :key="'perustevlkvapaateksti' + index"
+            tyyppi="perusteteksti"
+            :border-bottom="true"
+            :border-top="false"
+            :expanded-by-default="true"
+          >
+            <template #header>
+              <h4>{{ $kaanna(vapaateksti.nimi) }}</h4>
+            </template>
+            <span v-html="$kaanna(vapaateksti.teksti)" />
+
+            <h4 class="mt-4">
+              {{ $t('paikallinen-teksti') }}
+            </h4>
+            <EpButton
+              v-if="isEditing && !vapaateksti.hasPaikallinenTarkennus"
+              icon="add"
+              variant="link"
+              class="mb-1"
+              @click="lisaaPaikallinenTarkennus(data.vuosiluokkakokonaisuus, vapaateksti.id)"
+            >
+              {{ $t('lisaa-paikallinen-tarkennus') }}
+            </EpButton>
+            <EpAlert
+              v-if="!isEditing && !vapaateksti.hasPaikallinenTarkennus"
+              :text="$t('paikallista-sisaltoa-ei-maaritetty')"
+            />
+
+            <div
+              v-for="(teksti, tekstiIndex) in data.vuosiluokkakokonaisuus.vapaatTekstit"
+              :key="'vlkteksti'+tekstiIndex"
+            >
+              <div v-if="vapaateksti.id === teksti.perusteenVapaaTekstiId">
+                <EpContent
+                  v-model="teksti.paikallinenTarkennus"
+                  layout="normal"
+                  :is-editable="isEditing"
+                />
+
+                <EpButton
+                  v-if="isEditing"
+                  variant="link"
+                  icon="delete"
+                  @click="poistaPaikallinenTarkennus(data.vuosiluokkakokonaisuus, vapaateksti.id)"
+                >
+                  {{ $t('poista-paikallinen-tarkennus') }}
+                </EpButton>
+              </div>
+            </div>
+          </ep-collapse>
         </div>
 
         <div v-if="data.oppiaine.oppimaarat && data.oppiaine.oppimaarat.length > 0">
@@ -359,6 +411,15 @@ const perusteenOppiaineVapaatTekstit = computed(() => {
 
 const perusteenVuosiluokkakokonaisuus = computed(() => {
   return editointiStore.value?.data.perusteenVuosiluokkakokonaisuus || {};
+});
+
+const perusteenVuosiluokkakokonaisuusVapaatTekstit = computed(() => {
+  return _.map(perusteenVuosiluokkakokonaisuus.value.vapaatTekstit || [], pvt => {
+    return {
+      ...pvt,
+      hasPaikallinenTarkennus: _.some(editointiStore.value?.data.vuosiluokkakokonaisuus?.vapaatTekstit, vt => pvt.id === vt.perusteenVapaaTekstiId),
+    };
+  });
 });
 
 const pohjaOppiaineenVuosiluokkakokonaisuus = computed(() => {
