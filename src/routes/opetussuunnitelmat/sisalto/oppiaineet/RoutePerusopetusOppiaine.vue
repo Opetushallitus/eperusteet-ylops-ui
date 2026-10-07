@@ -87,13 +87,30 @@
             <h4 class="mt-4">
               {{ $t('paikallinen-teksti') }}
             </h4>
+            <EpButton
+              v-if="isEditing && !vapaateksti.paikallinenTarkennus"
+              icon="add"
+              variant="link"
+              class="mb-1"
+              @click="lisaaPaikallinenTarkennus(data.oppiaine, vapaateksti.id)"
+            >
+              {{ $t('lisaa-paikallinen-tarkennus') }}
+            </EpButton>
             <EpContent
-              v-if="isEditing || vapaateksti.hasPaikallinenTarkennus"
+              v-if="vapaateksti.paikallinenTarkennus && (isEditing || vapaateksti.hasPaikallinenTarkennus)"
               :model-value="vapaateksti.paikallinenTarkennus"
               layout="normal"
               :is-editable="isEditing"
               @update:model-value="asetaPaikallinenTarkennus(data.oppiaine, vapaateksti.id, $event)"
             />
+            <EpButton
+              v-if="isEditing && vapaateksti.paikallinenTarkennus"
+              variant="link"
+              icon="delete"
+              @click="poistaPaikallinenTarkennus(data.oppiaine, vapaateksti.id)"
+            >
+              {{ $t('poista-paikallinen-tarkennus') }}
+            </EpButton>
             <EpAlert
               v-if="!isEditing && !vapaateksti.hasPaikallinenTarkennus"
               :text="$t('paikallista-sisaltoa-ei-maaritetty')"
@@ -252,13 +269,30 @@
             <h4 class="mt-4">
               {{ $t('paikallinen-teksti') }}
             </h4>
+            <EpButton
+              v-if="isEditing && !vapaateksti.paikallinenTarkennus"
+              icon="add"
+              variant="link"
+              class="mb-1"
+              @click="lisaaPaikallinenTarkennus(data.vuosiluokkakokonaisuus, vapaateksti.id)"
+            >
+              {{ $t('lisaa-paikallinen-tarkennus') }}
+            </EpButton>
             <EpContent
-              v-if="isEditing || vapaateksti.hasPaikallinenTarkennus"
+              v-if="vapaateksti.paikallinenTarkennus && (isEditing || vapaateksti.hasPaikallinenTarkennus)"
               :model-value="vapaateksti.paikallinenTarkennus"
               layout="normal"
               :is-editable="isEditing"
               @update:model-value="asetaPaikallinenTarkennus(data.vuosiluokkakokonaisuus, vapaateksti.id, $event)"
             />
+            <EpButton
+              v-if="isEditing && vapaateksti.paikallinenTarkennus"
+              variant="link"
+              icon="delete"
+              @click="poistaPaikallinenTarkennus(data.vuosiluokkakokonaisuus, vapaateksti.id)"
+            >
+              {{ $t('poista-paikallinen-tarkennus') }}
+            </EpButton>
             <EpAlert
               v-if="!isEditing && !vapaateksti.hasPaikallinenTarkennus"
               :text="$t('paikallista-sisaltoa-ei-maaritetty')"
@@ -321,6 +355,7 @@ import EpField from '@shared/components/forms/EpField.vue';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import EpTable from '@shared/components/EpTable/EpTable.vue';
 import { isOppiaineUskontoTaiVierasKieli as checkIsOppiaineUskontoTaiVierasKieli } from '@/utils/opetussuunnitelmat';
+import { Kielet } from '@shared/stores/kieli';
 import { Kieli } from '@shared/tyypit';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { $confirmModal, $kaanna, $t } from '@shared/utils/globals';
@@ -428,6 +463,25 @@ const muokkaa = computed(() => {
 });
 
 // Methods
+const lisaaPaikallinenTarkennus = (kohde: any, perusteenVapaaTekstiId: number) => {
+  kohde.vapaatTekstit = [
+    ...(kohde.vapaatTekstit || []),
+    {
+      perusteenVapaaTekstiId,
+      paikallinenTarkennus: {
+        [Kielet.getSisaltoKieli.value]: '',
+      },
+    },
+  ];
+};
+
+const poistaPaikallinenTarkennus = (kohde: any, perusteenVapaaTekstiId: number) => {
+  kohde.vapaatTekstit = _.filter(
+    kohde.vapaatTekstit,
+    teksti => teksti.perusteenVapaaTekstiId !== perusteenVapaaTekstiId,
+  );
+};
+
 const onkoLokalisoituTekstiAnnettu =  (teksti?: Record<string, string> | null): boolean => {
   if (!teksti) {
     return false;
