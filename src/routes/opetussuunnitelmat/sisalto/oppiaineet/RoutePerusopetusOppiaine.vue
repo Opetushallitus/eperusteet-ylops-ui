@@ -88,7 +88,7 @@
               {{ $t('paikallinen-teksti') }}
             </h4>
             <EpButton
-              v-if="isEditing && !vapaateksti.hasPaikallinenTarkennus"
+              v-if="isEditing && !vapaateksti.paikallinenTarkennus"
               icon="add"
               variant="link"
               class="mb-1"
@@ -96,32 +96,25 @@
             >
               {{ $t('lisaa-paikallinen-tarkennus') }}
             </EpButton>
+            <EpContent
+              v-if="vapaateksti.paikallinenTarkennus && (isEditing || vapaateksti.hasPaikallinenTarkennus)"
+              :model-value="vapaateksti.paikallinenTarkennus"
+              layout="normal"
+              :is-editable="isEditing"
+              @update:model-value="asetaPaikallinenTarkennus(data.oppiaine, vapaateksti.id, $event)"
+            />
+            <EpButton
+              v-if="isEditing && vapaateksti.paikallinenTarkennus"
+              variant="link"
+              icon="delete"
+              @click="poistaPaikallinenTarkennus(data.oppiaine, vapaateksti.id)"
+            >
+              {{ $t('poista-paikallinen-tarkennus') }}
+            </EpButton>
             <EpAlert
               v-if="!isEditing && !vapaateksti.hasPaikallinenTarkennus"
               :text="$t('paikallista-sisaltoa-ei-maaritetty')"
             />
-
-            <div
-              v-for="(teksti, index) in data.oppiaine.vapaatTekstit"
-              :key="'teksti'+index"
-            >
-              <div v-if="vapaateksti.id === teksti.perusteenVapaaTekstiId">
-                <EpContent
-                  v-model="teksti.paikallinenTarkennus"
-                  layout="normal"
-                  :is-editable="isEditing"
-                />
-
-                <EpButton
-                  v-if="isEditing"
-                  variant="link"
-                  icon="delete"
-                  @click="poistaPaikallinenTarkennus(data.oppiaine, vapaateksti.id)"
-                >
-                  {{ $t('poista-paikallinen-tarkennus') }}
-                </EpButton>
-              </div>
-            </div>
           </ep-collapse>
         </template>
 
@@ -260,6 +253,51 @@
               </h3>
             </template>
           </vuosiluokka-sisalto-teksti>
+          <ep-collapse
+            v-for="(vapaateksti, index) in perusteenVuosiluokkakokonaisuusVapaatTekstit"
+            :key="'perustevlkvapaateksti' + index"
+            tyyppi="perusteteksti"
+            :border-bottom="true"
+            :border-top="false"
+            :expanded-by-default="true"
+          >
+            <template #header>
+              <h4>{{ $kaanna(vapaateksti.nimi) }}</h4>
+            </template>
+            <span v-html="$kaanna(vapaateksti.teksti)" />
+
+            <h4 class="mt-4">
+              {{ $t('paikallinen-teksti') }}
+            </h4>
+            <EpButton
+              v-if="isEditing && !vapaateksti.paikallinenTarkennus"
+              icon="add"
+              variant="link"
+              class="mb-1"
+              @click="lisaaPaikallinenTarkennus(data.vuosiluokkakokonaisuus, vapaateksti.id)"
+            >
+              {{ $t('lisaa-paikallinen-tarkennus') }}
+            </EpButton>
+            <EpContent
+              v-if="vapaateksti.paikallinenTarkennus && (isEditing || vapaateksti.hasPaikallinenTarkennus)"
+              :model-value="vapaateksti.paikallinenTarkennus"
+              layout="normal"
+              :is-editable="isEditing"
+              @update:model-value="asetaPaikallinenTarkennus(data.vuosiluokkakokonaisuus, vapaateksti.id, $event)"
+            />
+            <EpButton
+              v-if="isEditing && vapaateksti.paikallinenTarkennus"
+              variant="link"
+              icon="delete"
+              @click="poistaPaikallinenTarkennus(data.vuosiluokkakokonaisuus, vapaateksti.id)"
+            >
+              {{ $t('poista-paikallinen-tarkennus') }}
+            </EpButton>
+            <EpAlert
+              v-if="!isEditing && !vapaateksti.hasPaikallinenTarkennus"
+              :text="$t('paikallista-sisaltoa-ei-maaritetty')"
+            />
+          </ep-collapse>
         </div>
 
         <div v-if="data.oppiaine.oppimaarat && data.oppiaine.oppimaarat.length > 0">
@@ -348,11 +386,17 @@ const perusteenOppiaine = computed(() => {
   return editointiStore.value?.data.perusteenOppiaine || {};
 });
 
+const haePaikallinenTarkennus = (kohde: any, perusteenVapaaTekstiId: number) => {
+  return _.find(kohde?.vapaatTekstit, vt => vt.perusteenVapaaTekstiId === perusteenVapaaTekstiId)?.paikallinenTarkennus ?? null;
+};
+
 const perusteenOppiaineVapaatTekstit = computed(() => {
   return _.map(editointiStore.value?.data.perusteenOppiaine.vapaatTekstit || {}, pvt => {
+    const paikallinenTarkennus = haePaikallinenTarkennus(oppiaine.value, pvt.id);
     return {
       ...pvt,
-      hasPaikallinenTarkennus: _.some(oppiaine.value?.vapaatTekstit, vt => pvt.id === vt.perusteenVapaaTekstiId),
+      paikallinenTarkennus,
+      hasPaikallinenTarkennus: onkoLokalisoituTekstiAnnettu(paikallinenTarkennus),
     };
   });
 });
@@ -360,6 +404,34 @@ const perusteenOppiaineVapaatTekstit = computed(() => {
 const perusteenVuosiluokkakokonaisuus = computed(() => {
   return editointiStore.value?.data.perusteenVuosiluokkakokonaisuus || {};
 });
+
+const perusteenVuosiluokkakokonaisuusVapaatTekstit = computed(() => {
+  return _.map(perusteenVuosiluokkakokonaisuus.value.vapaatTekstit || [], pvt => {
+    const paikallinenTarkennus = haePaikallinenTarkennus(editointiStore.value?.data.vuosiluokkakokonaisuus, pvt.id);
+    return {
+      ...pvt,
+      paikallinenTarkennus,
+      hasPaikallinenTarkennus: onkoLokalisoituTekstiAnnettu(paikallinenTarkennus),
+    };
+  });
+});
+
+const asetaPaikallinenTarkennus = (kohde: any, perusteenVapaaTekstiId: number, paikallinenTarkennus: any) => {
+  if (!kohde) {
+    return;
+  }
+
+  const olemassaOleva = _.find(kohde.vapaatTekstit, vt => vt.perusteenVapaaTekstiId === perusteenVapaaTekstiId);
+  if (olemassaOleva) {
+    olemassaOleva.paikallinenTarkennus = paikallinenTarkennus;
+  }
+  else {
+    kohde.vapaatTekstit = [
+      ...(kohde.vapaatTekstit || []),
+      { perusteenVapaaTekstiId, paikallinenTarkennus },
+    ];
+  }
+};
 
 const pohjaOppiaineenVuosiluokkakokonaisuus = computed(() => {
   return editointiStore.value?.data.pohjaOppiaineenVuosiluokkakokonaisuus || {};
@@ -387,23 +459,26 @@ const muokkaa = computed(() => {
 });
 
 // Methods
-const lisaaPaikallinenTarkennus = (oppiaine: any, id: any) => {
-  if (!oppiaine.vapaatTekstit) {
-    oppiaine.vapaatTekstit = [];
-  }
-  oppiaine.vapaatTekstit.push({
-    perusteenVapaaTekstiId: id,
-    paikallinenTarkennus: {
-      [Kielet.getSisaltoKieli.value]: '',
+const lisaaPaikallinenTarkennus = (kohde: any, perusteenVapaaTekstiId: number) => {
+  kohde.vapaatTekstit = [
+    ...(kohde.vapaatTekstit || []),
+    {
+      perusteenVapaaTekstiId,
+      paikallinenTarkennus: {
+        [Kielet.getSisaltoKieli.value]: '',
+      },
     },
-  });
+  ];
 };
 
-const poistaPaikallinenTarkennus = (oppiaine: any, vapaatekstiId: any) => {
-  oppiaine.vapaatTekstit = _.filter(oppiaine.vapaatTekstit, teksti => teksti.perusteenVapaaTekstiId !== vapaatekstiId);
+const poistaPaikallinenTarkennus = (kohde: any, perusteenVapaaTekstiId: number) => {
+  kohde.vapaatTekstit = _.filter(
+    kohde.vapaatTekstit,
+    teksti => teksti.perusteenVapaaTekstiId !== perusteenVapaaTekstiId,
+  );
 };
 
-const onkoLokalisoituTekstiAnnettu = (teksti?: Record<string, string> | null): boolean => {
+const onkoLokalisoituTekstiAnnettu =  (teksti?: Record<string, string> | null): boolean => {
   if (!teksti) {
     return false;
   }
