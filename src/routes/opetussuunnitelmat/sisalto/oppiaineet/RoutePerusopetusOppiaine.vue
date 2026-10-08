@@ -390,17 +390,13 @@ const haePaikallinenTarkennus = (kohde: any, perusteenVapaaTekstiId: number) => 
   return _.find(kohde?.vapaatTekstit, vt => vt.perusteenVapaaTekstiId === perusteenVapaaTekstiId)?.paikallinenTarkennus ?? null;
 };
 
-const onkoPaikallinenTarkennusAnnettu = (paikallinenTarkennus: any) => {
-  return _.some(_.values(paikallinenTarkennus), teksti => !!teksti);
-};
-
 const perusteenOppiaineVapaatTekstit = computed(() => {
   return _.map(editointiStore.value?.data.perusteenOppiaine.vapaatTekstit || {}, pvt => {
     const paikallinenTarkennus = haePaikallinenTarkennus(oppiaine.value, pvt.id);
     return {
       ...pvt,
       paikallinenTarkennus,
-      hasPaikallinenTarkennus: onkoPaikallinenTarkennusAnnettu(paikallinenTarkennus),
+      hasPaikallinenTarkennus: onkoLokalisoituTekstiAnnettu(paikallinenTarkennus),
     };
   });
 });
@@ -415,7 +411,7 @@ const perusteenVuosiluokkakokonaisuusVapaatTekstit = computed(() => {
     return {
       ...pvt,
       paikallinenTarkennus,
-      hasPaikallinenTarkennus: onkoPaikallinenTarkennusAnnettu(paikallinenTarkennus),
+      hasPaikallinenTarkennus: onkoLokalisoituTekstiAnnettu(paikallinenTarkennus),
     };
   });
 });
