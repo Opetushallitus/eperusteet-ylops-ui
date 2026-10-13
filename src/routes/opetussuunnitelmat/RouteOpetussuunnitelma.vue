@@ -286,7 +286,7 @@
 
                 <template #valinnaisetoppiaineet="{ item }">
                   <EpNavigationLabel
-                    :to="{ name: 'perusopetusvalinnaiset' }"
+                    :to="{ name: 'perusopetusvalinnaiset', params: { vlkId: String(item.meta?.vlkId) } }"
                     :node="item"
                   >
                     {{ $kaannaOlioTaiTeksti(item.label) || $t('valinnaiset-oppiaineet') }}
