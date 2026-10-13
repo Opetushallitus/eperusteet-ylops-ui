@@ -11,6 +11,10 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
   }
 
   switch (route.name) {
+  case 'yleisnakyma':
+    return {
+      type: 'root',
+    };
   case 'tekstikappale':
     return {
       type: 'viite',
@@ -181,7 +185,7 @@ export function nodeToRoute(node: NavigationNodeDto): Location | null {
     return {
       name: 'perusopetusvalinnaiset',
       params: {
-        vlkId: _.toString(node.id),
+        vlkId: _.toString(node.meta?.vlkId),
       },
     };
   case 'perusopetusoppiaine':
