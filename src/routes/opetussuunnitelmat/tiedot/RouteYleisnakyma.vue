@@ -2,7 +2,7 @@
   <div class="hallintapaneeli">
     <template v-if="!isPohja">
       <div
-        v-if="pohjallaPuuttuviaTeksteja === null"
+        v-if="pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja === null"
         class="flex justify-center"
       >
         {{ $t('tarkistetaan-pohjan-tekstimuutokset') }}
