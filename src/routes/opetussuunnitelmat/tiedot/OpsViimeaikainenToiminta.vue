@@ -188,13 +188,13 @@ const muokkaustiedotRouted = computed(() => {
     .map((muokkaustieto) => {
       return {
         ...muokkaustieto,
-        komponentti: muokkaustieto.route ? 'router-link' : 'div',
+        route: isValidRoute(muokkaustieto.route) ? muokkaustieto.route : null,
       };
     })
     .map((muokkaustieto) => {
       return {
         ...muokkaustieto,
-        route: isValidRoute(muokkaustieto.route) ? muokkaustieto.route : null,
+        komponentti: muokkaustieto.route ? 'router-link' : 'div',
       };
     })
     .sortBy((muokkaustieto) => muokkaustieto.luotu)
@@ -203,6 +203,10 @@ const muokkaustiedotRouted = computed(() => {
 });
 
 function isValidRoute(to) {
+  if (!to) {
+    return false;
+  }
+
   try {
     const resolved = router.resolve(to);
     return resolved.matched.length > 0;
