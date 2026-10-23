@@ -24,6 +24,9 @@
             responsive
             :items="opetussuunnitelmat.data"
             :fields="fields"
+            :per-page="sivukoko"
+            :total-rows="opetussuunnitelmat['kokonaismäärä']"
+            v-model:current-page="opsSivu"
           >
             <template #cell(siirtyminen)="{ item }">
               <EpPalautusModal
@@ -33,11 +36,6 @@
             </template>
           </EpTable>
         </div>
-        <EpBPagination
-          v-model="opsSivu"
-          :items-per-page="sivukoko"
-          :total="opetussuunnitelmat['kokonaismäärä']"
-        />
       </template>
 
       <template #modal-footer>
@@ -66,7 +64,7 @@ import { OpetussuunnitelmaInfoDto, Opetussuunnitelmat } from '@shared/api/ylops'
 import { debounced } from '@shared/utils/delay';
 import { Page } from '@shared/tyypit';
 import { Kielet } from '@shared/stores/kieli';
-import EpBPagination from '@shared/components/EpBPagination/EpBPagination.vue';
+
 import EpTable from '@shared/components/EpTable/EpTable.vue';
 
 import { $t, $kaanna, $sdt } from '@shared/utils/globals';
