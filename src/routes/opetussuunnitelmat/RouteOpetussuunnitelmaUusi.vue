@@ -369,8 +369,7 @@ const uusiPohjaMuutos = async () => {
     }
 
     if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase()) {
-      const perusteVaiheet = (await AIPE.getPerusteVaiheet(uusi.value.pohja.id)).data || [];
-      vaiheet.value = _.sortBy(perusteVaiheet, v => $kaanna(v.nimi as any));
+      vaiheet.value = (await AIPE.getPerusteVaiheet(uusi.value.pohja.id)).data || [];
     }
 
     const pohjaOps = (await Opetussuunnitelmat.getOpetussuunnitelmaNimi(uusi.value.pohja.id)).data;
