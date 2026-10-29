@@ -88,58 +88,56 @@
                   </router-link>
                 </div>
 
-                <EpTable
-                  :items="opetussuunnitelmat"
-                  :fields="[{ key: 'id' }]"
-                  :show-headers="false"
-                  borderless
-                  :per-page="14"
-                  :total-rows="opslista['kokonaismäärä']"
-                  :current-page="opsSivu"
-                  @update:current-page="opsSivu = $event"
+                <div
+                  v-for="ops in opetussuunnitelmat"
+                  :key="ops.id"
                 >
-                  <template #cell(id)="{ item }">
-                    <div>
+                  <div
+                    v-if="ops.tuettu"
+                    class="opsbox"
+                  >
+                    <router-link
+                      :key="ops.id"
+                      :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
+                    >
                       <div
-                        v-if="item.tuettu"
-                        class="opsbox"
+                        class="chart"
+                        :style="ops.tileStyle"
                       >
-                        <router-link
-                          :key="item.id"
-                          :to="{ name: 'yleisnakyma', params: { id: item.id } }"
-                        >
-                          <div
-                            class="chart"
-                            :style="item.tileStyle"
-                          >
-                            <div class="progress-clamper">
-                              <ep-progress :slices="[0.2, 0.5, 1]" />
-                            </div>
-                          </div>
-                          <div class="info">
-                            <div class="nimi">
-                              {{ $kaanna(item.nimi, false, false) }}
-                            </div>
-                          </div>
-                        </router-link>
+                        <div class="progress-clamper">
+                          <ep-progress :slices="[0.2, 0.5, 1]" />
+                        </div>
                       </div>
-                      <div
-                        v-else
-                        ref="disabled"
-                        class="opsbox disabled"
-                      >
-                        <div class="info-top">
-                          <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
+                      <div class="info">
+                        <div class="nimi">
+                          {{ $kaanna(ops.nimi, false, false) }}
                         </div>
-                        <div class="info">
-                          <div class="nimi">
-                            {{ $kaanna(item.nimi, false, false) }}
-                          </div>
-                        </div>
+                      </div>
+                    </router-link>
+                  </div>
+                  <div
+                    v-else
+                    ref="disabled"
+                    class="opsbox disabled"
+                  >
+                    <div class="info-top">
+                      <p>{{ $t('koulutustyyppi-ei-ole-toteutettu') }}</p>
+                    </div>
+                    <div class="info">
+                      <div class="nimi">
+                        {{ $kaanna(ops.nimi, false, false) }}
                       </div>
                     </div>
-                  </template>
-                </EpTable>
+                  </div>
+                </div>
+              </div>
+
+              <div class="paginating mt-2">
+                <EpBPagination
+                  v-model="opsSivu"
+                  :items-per-page="14"
+                  :total="opslista['kokonaismäärä']"
+                />
               </div>
             </div>
           </div>
@@ -170,46 +168,43 @@
                 class="opscontainer"
                 :class="{'disabled-events': julkaistutHaku}"
               >
-                <EpTable
-                  :items="julkaistut"
-                  :fields="[{ key: 'id' }]"
-                  :show-headers="false"
-                  borderless
-                  :per-page="10"
-                  :total-rows="julkaistutLista['kokonaismäärä']"
-                  :current-page="julkaistutSivu"
-                  @update:current-page="julkaistutSivu = $event"
+                <div
+                  v-for="ops in julkaistut"
+                  :key="ops.id"
                 >
-                  <template #cell(id)="{ item }">
-                    <div>
-                      <div
-                        class="opsbox julkaistu"
-                        :style="item.bannerImage"
-                      >
-                        <router-link
-                          :key="item.id"
-                          :to="{ name: 'yleisnakyma', params: { id: item.id } }"
+                  <div
+                    class="opsbox julkaistu"
+                    :style="ops.bannerImage"
+                  >
+                    <router-link
+                      :key="ops.id"
+                      :to="{ name: 'yleisnakyma', params: { id: ops.id } }"
+                    >
+                      <div class="julkaistu" />
+                      <div class="info flex flex-col justify-between">
+                        <div class="nimi">
+                          {{ $kaanna(ops.nimi, false, false) }}
+                        </div>
+                        <div
+                          v-if="ops.julkaistu"
+                          class="nimi"
                         >
-                          <div class="julkaistu" />
-                          <div class="info flex flex-col justify-between">
-                            <div class="nimi">
-                              {{ $kaanna(item.nimi, false, false) }}
-                            </div>
-                            <div
-                              v-if="item.julkaistu"
-                              class="nimi"
-                            >
-                              <hr>
-                              <div class="julkaisu">
-                                {{ $t('julkaistu') }} {{ $sd(item.julkaistu) }}
-                              </div>
-                            </div>
+                          <hr>
+                          <div class="julkaisu">
+                            {{ $t('julkaistu') }} {{ $sd(ops.julkaistu) }}
                           </div>
-                        </router-link>
+                        </div>
                       </div>
-                    </div>
-                  </template>
-                </EpTable>
+                    </router-link>
+                  </div>
+                </div>
+              </div>
+              <div class="paginating mt-2">
+                <EpBPagination
+                  v-model="julkaistutSivu"
+                  :items-per-page="10"
+                  :total="julkaistutLista['kokonaismäärä']"
+                />
               </div>
             </div>
           </div>
@@ -240,7 +235,7 @@ import { Page } from '@shared/tyypit';
 import EpMultiSelect from '@shared/components/forms/EpMultiSelect.vue';
 import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
 import { $t, $kaanna, $sd, $success } from '@shared/utils/globals';
-import EpTable from '@shared/components/EpTable/EpTable.vue';
+import EpBPagination from '@shared/components/EpBPagination/EpBPagination.vue';
 
 interface Jarjestys {
   jarjestys: string;

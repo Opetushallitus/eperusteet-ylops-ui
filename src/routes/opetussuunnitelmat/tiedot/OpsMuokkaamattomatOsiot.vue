@@ -5,28 +5,33 @@
     <ep-spinner v-if="!opetussuunnitelmanTekstikappale" />
     <div v-else-if="hasMuokkaamattomatTekstikappaleet">
       <div class="overflow-x-auto">
-        <EpTable
-          :items="muokkaamattomatTekstikappaleet"
-          :fields="[{ key: 'nimi', tdClass: 'p-3' }, { key: 'osaId', tdClass: 'p-3 text-right align-middle' }]"
-          :show-headers="false"
-          borderless
-          striped
-          :per-page="perPage"
-          :current-page="currentPage"
-          @update:current-page="currentPage = $event"
-        >
-          <template #cell(nimi)="{ item }">
-            <router-link
-              :to="{ name: 'tekstikappale', params: { osaId: item.osaId } }"
+        <table class="w-full border-collapse text-left text-sm">
+          <tbody>
+            <tr
+              v-for="row in pagedMuokkaamattomat"
+              :key="row.osaId"
+              class="border-b border-surface-100 odd:bg-surface-50"
             >
-              {{ $kaanna(item.nimi) }}
-            </router-link>
-          </template>
-          <template #cell(osaId)>
-            <EpMaterialIcon>chevron_right</EpMaterialIcon>
-          </template>
-        </EpTable>
+              <td class="p-3">
+                <router-link
+                  :to="{ name: 'tekstikappale', params: { osaId: row.osaId } }"
+                >
+                  {{ $kaanna(row.nimi) }}
+                </router-link>
+              </td>
+              <td class="p-3 text-right align-middle">
+                <EpMaterialIcon>chevron_right</EpMaterialIcon>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+
+      <EpBPagination
+        v-model="currentPage"
+        :items-per-page="perPage"
+        :total="muokkaamattomatTekstikappaleet.length"
+      />
     </div>
     <div
       v-else-if="opetussuunnitelmanTekstikappale && !hasMuokkaamattomatTekstikappaleet"
@@ -52,7 +57,7 @@ import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue
 import { TekstiKappaleViitePerusteTekstillaDto, TekstiKappaleKevytDto } from '@shared/api/ylops';
 import { $t, $kaanna } from '@shared/utils/globals';
 import { unref } from 'vue';
-import EpTable from '@shared/components/EpTable/EpTable.vue';
+import EpBPagination from '@shared/components/EpBPagination/EpBPagination.vue';
 
 const props = defineProps<{
   opetussuunnitelmanTekstikappale: TekstiKappaleViitePerusteTekstillaDto;
@@ -105,6 +110,10 @@ const hasMuokkaamattomatTekstikappaleet = computed(() => {
   return !_.isEmpty(muokkaamattomatTekstikappaleet.value);
 });
 
+const pagedMuokkaamattomat = computed(() => {
+  const start = (currentPage.value - 1) * perPage.value;
+  return muokkaamattomatTekstikappaleet.value.slice(start, start + perPage.value);
+});
 </script>
 
 <style scoped lang="scss">
