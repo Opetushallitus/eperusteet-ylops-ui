@@ -68,6 +68,10 @@
           :teksti="data.perusteSisalto?.soveltavaKurssiKuvaus"
           otsikko-key="soveltava-kurssi-kuvaus-header"
         />
+        <EpAIPEPerusteKentta
+          :teksti="data.perusteSisalto?.kielikasvatus"
+          otsikko-key="kielikasvatus-kuvaus-header"
+        />
 
         <div
           v-if="data.perusteSisalto?.vapaatTekstit?.length"
