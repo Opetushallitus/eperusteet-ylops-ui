@@ -1,5 +1,8 @@
 <template>
-  <div class="content">
+  <div
+    v-if="!isAipe"
+    class="content"
+  >
     <h2>{{ $t('oppiaineet') }}</h2>
 
     <ep-spinner v-if="!cache" />
@@ -91,6 +94,7 @@ const props = defineProps<{
 const route = useRoute();
 const store = computed(() => props.opetussuunnitelmaStore);
 const isLops2019 = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.toteutus as string === 'lops2019');
+const isAipe = computed(() => props.opetussuunnitelmaStore.opetussuunnitelma.value?.toteutus === 'aipe');
 
 const cache = ref<PerusteCache | null>(null);
 
