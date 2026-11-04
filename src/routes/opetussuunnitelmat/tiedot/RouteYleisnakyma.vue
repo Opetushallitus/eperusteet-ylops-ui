@@ -128,7 +128,7 @@
           class="info-box"
         />
         <oppiaineet-statistiikka
-          v-if="!yksinkertainen"
+          v-if="naytaOppiaineetStatistiikka"
           :opetussuunnitelma-store="props?.opetussuunnitelmaStore"
           class="info-box"
         />
@@ -240,8 +240,8 @@ const synkronoiAipeSisalto = async () => {
   syncAipe.value = false;
 };
 
-const yksinkertainen = computed(() => {
-  return (ops.value?.toteutus as any) === KoulutustyyppiToteutus.yksinkertainen;
+const naytaOppiaineetStatistiikka = computed(() => {
+  return !_.includes([KoulutustyyppiToteutus.yksinkertainen, KoulutustyyppiToteutus.tpo], ops.value?.toteutus as any);
 });
 
 const pohjaOpetussuunnitelmaJostaPuuttuviaTeksteja = computed(() => {

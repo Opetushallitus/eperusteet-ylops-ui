@@ -386,6 +386,57 @@
                     :opetussuunnitelma-store="store"
                   />
                 </template>
+
+                <template #taiteenala="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'taiteenala', params: { taiteenalaId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimeton-taiteenala') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #taiteenalanvaihe="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'taiteenalanvaihe', params: { taiteenalaId: String(item.meta?.taiteenalaId), vaiheId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimeton-vaihe') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #taiteenopintokokonaisuus="{ item }">
+                  <EpNavigationLabel
+                    :to="{ name: 'taiteenopintokokonaisuus', params: { taiteenalaId: String(item.meta?.taiteenalaId), vaiheId: String(item.meta?.vaiheId), opintokokonaisuusId: String(item.id) } }"
+                    :node="item"
+                  >
+                    {{ $kaannaOlioTaiTeksti(item.label) || $t('nimeton-opintokokonaisuus') }}
+                  </EpNavigationLabel>
+                </template>
+
+                <template #uusi_taiteenala>
+                  <EpTaiteenalaLisays
+                    :opetussuunnitelma-store="store"
+                  />
+                </template>
+
+                <template #uusi_opintokokonaisuus="{ item }">
+                  <div class="new-link-item">
+                    <router-link
+                      :to="{
+                        name: 'taiteenopintokokonaisuus',
+                        params: {
+                          taiteenalaId: String(item.meta?.taiteenalaId),
+                          vaiheId: String(item.meta?.vaiheId),
+                          opintokokonaisuusId: 'uusi',
+                        },
+                      }"
+                    >
+                      <EpMaterialIcon>add</EpMaterialIcon>
+                      {{ $t('lisaa-opintokokonaisuus') }}
+                    </router-link>
+                  </div>
+                </template>
               </EpTreeNavibar>
             </div>
           </template>
@@ -433,8 +484,7 @@ import EpNavigationLabel from '@shared/components/EpTreeNavibar/EpNavigationLabe
 import EpSearch from '@shared/components/forms/EpSearch.vue';
 import EpEsikatseluLinkkiMetaInfo from '@shared/components/EpEsikatseluLinkkiMetaInfo/EpEsikatseluLinkkiMetaInfo.vue';
 import EpValidStatus from '@shared/components/EpValidStatus/EpValidStatus.vue';
-import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';
-import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
+import EpMaterialIcon from '@shared/components/EpMaterialIcon/EpMaterialIcon.vue';import EpDropdown from '@shared/components/EpDropdown/EpDropdown.vue';
 import EpDropdownItem from '@shared/components/EpDropdown/EpDropdownItem.vue';
 import EpDropdownDivider from '@shared/components/EpDropdown/EpDropdownDivider.vue';
 import EpTekstikappaleLisays from '@/components/EpTekstikappaleLisays/EpTekstikappaleLisays.vue';
@@ -450,6 +500,7 @@ import { createKasiteHandler } from '@shared/components/EpContent/KasiteHandler'
 import EpColorIndicator from '@shared/components/EpColorIndicator/EpColorIndicator.vue';
 import EpOppimaaraLisays from '@/components/EpOppimaaraLisays/EpOppimaaraLisays.vue';
 import EpAIPEVaiheLisays from '@/components/EpAIPEVaiheLisays/EpAIPEVaiheLisays.vue';
+import EpTaiteenalaLisays from '@/components/EpTaiteenalaLisays/EpTaiteenalaLisays.vue';
 import { Kommentit } from '@/stores/kommentit';
 import { inject } from 'vue';
 import { onUnmounted } from 'vue';

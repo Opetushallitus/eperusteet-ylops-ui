@@ -116,6 +116,37 @@ export function routeToNode(route: Location): NavigationNodeDto | null {
         oppiaineId: Number(route.params!.oppiaineId),
       } as any,
     };
+  case 'taiteenala':
+    return {
+      type: 'taiteenala',
+      id: Number(route.params!.taiteenalaId!),
+    };
+  case 'taiteenalanvaihe':
+    return {
+      type: 'taiteenalanvaihe',
+      id: Number(route.params!.vaiheId!),
+      meta: {
+        taiteenalaId: Number(route.params!.taiteenalaId),
+      } as any,
+    };
+  case 'taiteenopintokokonaisuus':
+    if (route.params!.opintokokonaisuusId === 'uusi') {
+      return {
+        type: 'taiteenalanvaihe',
+        id: Number(route.params!.vaiheId!),
+        meta: {
+          taiteenalaId: Number(route.params!.taiteenalaId),
+        } as any,
+      };
+    }
+    return {
+      type: 'taiteenopintokokonaisuus',
+      id: Number(route.params!.opintokokonaisuusId!),
+      meta: {
+        taiteenalaId: Number(route.params!.taiteenalaId),
+        vaiheId: Number(route.params!.vaiheId),
+      } as any,
+    };
   default:
     console.error('Unknown route', route.name);
     break;
@@ -245,6 +276,30 @@ export function nodeToRoute(node: NavigationNodeDto): Location | null {
         vaiheId: _.toString(node.meta?.vaiheId),
         oppiaineId: _.toString(node.meta?.oppiaineId),
         kurssiId: _.toString(node.id),
+      },
+    };
+  case 'taiteenala':
+    return {
+      name: 'taiteenala',
+      params: {
+        taiteenalaId: _.toString(node.id),
+      },
+    };
+  case 'taiteenalanvaihe':
+    return {
+      name: 'taiteenalanvaihe',
+      params: {
+        taiteenalaId: _.toString(node.meta?.taiteenalaId),
+        vaiheId: _.toString(node.id),
+      },
+    };
+  case 'taiteenopintokokonaisuus':
+    return {
+      name: 'taiteenopintokokonaisuus',
+      params: {
+        taiteenalaId: _.toString(node.meta?.taiteenalaId),
+        vaiheId: _.toString(node.meta?.vaiheId),
+        opintokokonaisuusId: _.toString(node.id),
       },
     };
   default:

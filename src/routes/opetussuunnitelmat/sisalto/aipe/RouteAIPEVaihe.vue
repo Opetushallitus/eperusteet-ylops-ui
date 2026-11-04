@@ -27,23 +27,23 @@
           {{ $t('perusteen-sisaltoa-ei-maaritetty') }}
         </EpAlertError>
 
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.siirtymaEdellisesta"
           otsikko-key="siirtyma-edellisesta"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.tehtava"
           otsikko-key="tehtava"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.siirtymaSeuraavaan"
           otsikko-key="siirtyma-seuraavaan"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.laajaalainenOsaaminen"
           otsikko-key="laaja-alainen-osaaminen"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.paikallisestiPaatettavatAsiat"
           otsikko-key="paikallisesti-paatettavat-asiat"
         />
@@ -120,7 +120,7 @@ import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { AipeVaiheStore } from '@/stores/aipeVaiheStore';
-import EpAIPEPerusteKentta from '@/components/EpAIPEPerusteKentta/EpAIPEPerusteKentta.vue';
+import EpPerusteKentta from '@/components/EpPerusteKentta/EpPerusteKentta.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpAlertError from '@shared/components/EpAlert/EpAlertError.vue';

@@ -35,40 +35,40 @@
           {{ data.perusteSisalto.koodi.arvo }}
         </EpFormContent>
 
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.tehtava"
           otsikko-key="tehtava"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.tyotavat"
           otsikko-key="oppiaine-osio-tyotavat"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.ohjaus"
           otsikko-key="oppiaine-osio-ohjaus"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.arviointi"
           otsikko-key="arviointi"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti-osa="data.perusteSisalto?.sisaltoalueinfo"
           otsikko-key="sisaltoalueet"
         />
 
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti="data.perusteSisalto?.pakollinenKurssiKuvaus"
           otsikko-key="pakollinen-kurssi-kuvaus-header"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti="data.perusteSisalto?.syventavaKurssiKuvaus"
           otsikko-key="syventava-kurssi-kuvaus-header"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti="data.perusteSisalto?.soveltavaKurssiKuvaus"
           otsikko-key="soveltava-kurssi-kuvaus-header"
         />
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti="data.perusteSisalto?.kielikasvatus"
           otsikko-key="kielikasvatus-kuvaus-header"
         />
@@ -214,7 +214,7 @@ import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import EpCollapse from '@shared/components/EpCollapse/EpCollapse.vue';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { AipeOppiaineStore } from '@/stores/aipeOppiaineStore';
-import EpAIPEPerusteKentta from '@/components/EpAIPEPerusteKentta/EpAIPEPerusteKentta.vue';
+import EpPerusteKentta from '@/components/EpPerusteKentta/EpPerusteKentta.vue';
 import EpAIPEOppiaineenTavoite from '@/components/EpAIPEOppiaineenTavoite/EpAIPEOppiaineenTavoite.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
