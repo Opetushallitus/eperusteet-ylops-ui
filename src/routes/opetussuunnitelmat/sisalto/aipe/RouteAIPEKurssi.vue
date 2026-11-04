@@ -35,7 +35,7 @@
           {{ data.perusteSisalto.koodi.arvo }}
         </EpFormContent>
 
-        <EpAIPEPerusteKentta
+        <EpPerusteKentta
           :teksti="data.perusteSisalto?.kuvaus"
           otsikko-key="tavoitteisiin-liittyvat-keskeiset-sisaltoalueet"
         />
@@ -96,7 +96,7 @@ import EpEditointi from '@shared/components/EpEditointi/EpEditointi.vue';
 import { EditointiStore } from '@shared/components/EpEditointi/EditointiStore';
 import { OpetussuunnitelmaStore } from '@/stores/opetussuunnitelma';
 import { AipeKurssiStore } from '@/stores/aipeKurssiStore';
-import EpAIPEPerusteKentta from '@/components/EpAIPEPerusteKentta/EpAIPEPerusteKentta.vue';
+import EpPerusteKentta from '@/components/EpPerusteKentta/EpPerusteKentta.vue';
 import EpContent from '@shared/components/EpContent/EpContent.vue';
 import EpAlert from '@shared/components/EpAlert/EpAlert.vue';
 import EpAlertError from '@shared/components/EpAlert/EpAlertError.vue';
