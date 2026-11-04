@@ -151,6 +151,22 @@
           </EpToggleGroup>
         </ep-form-content>
       </div>
+      <div v-if="uusi.pohja && isTpoToteutus(uusi.pohja)">
+        <ep-form-content name="taiteenalat">
+          <EpSpinner v-if="!taiteenalat" />
+          <EpToggleGroup
+            v-else
+            v-model="uusi.taiteenalat"
+            :items="taiteenalat"
+            :stacked="true"
+            :is-editing="true"
+          >
+            <template #default="{ item }">
+              {{ $kaanna(item.nimi) }}
+            </template>
+          </EpToggleGroup>
+        </ep-form-content>
+      </div>
       <div v-if="uusi.pohja">
         <hr>
         <div class="flex">
@@ -274,9 +290,11 @@ import {
   OpetussuunnitelmaLuontiDtoLuontityyppiEnum,
   OpetussuunnitelmaNimiDto,
   AIPEPerusteVaiheKevytDto,
+  Taiteenperusopetus,
+  TpoPerusteenTaiteenalaDto,
 } from '@shared/api/ylops';
 import { opsLuontiValidator, LuotavaOpsOrganisaatioTaso } from '@/validators/ops';
-import { isOpsToteutusSupported } from '@/utils/opetussuunnitelmat';
+import { isOpsToteutusSupported, isTpoToteutus } from '@/utils/opetussuunnitelmat';
 import { Kielet } from '@shared/stores/kieli';
 import { $t, $kaanna, $sd, $success } from '@shared/utils/globals';
 import EpRadio from '@shared/components/forms/EpRadio.vue';
@@ -302,6 +320,7 @@ const opetussuunnitelmaOrganisaatioTaso = ref<LuotavaOpsOrganisaatioTaso>('kunta
 const addingOpetussuunnitelma = ref(false);
 const vuosiluokkakokonaisuudet = ref<OpsVuosiluokkakokonaisuusKevytDto[] | null>(null);
 const vaiheet = ref<AIPEPerusteVaiheKevytDto[] | null>(null);
+const taiteenalat = ref<TpoPerusteenTaiteenalaDto[] | null>(null);
 const uusi = ref({
   pohja: null as (OpetussuunnitelmaInfoDto | null),
   nimi: {},
@@ -315,6 +334,7 @@ const uusi = ref({
   ainepainoitteinen: false,
   vuosiluokkakokonaisuudet: [] as (OpsVuosiluokkakokonaisuusDto[]),
   vaiheet: [] as AIPEPerusteVaiheKevytDto[],
+  taiteenalat: [] as TpoPerusteenTaiteenalaDto[],
   luontityyppi: OpetussuunnitelmaLuontiDtoLuontityyppiEnum.VIITTEILLA,
 });
 const valitunPohjanPohja = ref<OpetussuunnitelmaNimiDto | null>(null);
@@ -357,6 +377,8 @@ const uusiPohjaMuutos = async () => {
   uusi.value.vuosiluokkakokonaisuudet = [];
   uusi.value.vaiheet = [];
   vaiheet.value = null;
+  uusi.value.taiteenalat = [];
+  taiteenalat.value = null;
   valitunPohjanPohja.value = null;
 
   if (uusi.value.pohja?.id) {
@@ -370,6 +392,16 @@ const uusiPohjaMuutos = async () => {
 
     if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase()) {
       vaiheet.value = (await AIPE.getPerusteVaiheet(uusi.value.pohja.id)).data || [];
+    }
+
+    if (isTpoToteutus(uusi.value.pohja)) {
+      const perusteTaiteenalat = (await Taiteenperusopetus.getPerusteTaiteenalat(uusi.value.pohja.id)).data || [];
+      if (oletuspohjasta.value === 'opsista') {
+        const pohjanTaiteenalat = (await Taiteenperusopetus.getTaiteenalat(uusi.value.pohja.id)).data || [];
+        const valitut = _.map(pohjanTaiteenalat, 'perusteenTaiteenalaId');
+        uusi.value.taiteenalat = _.filter(perusteTaiteenalat, ta => _.includes(valitut, ta.id));
+      }
+      taiteenalat.value = perusteTaiteenalat;
     }
 
     const pohjaOps = (await Opetussuunnitelmat.getOpetussuunnitelmaNimi(uusi.value.pohja.id)).data;
@@ -448,6 +480,9 @@ const luoUusiOpetussuunnitelma = async () =>   {
   (ops as any)._pohja = '' + uusi.value.pohja!.id;
   if (uusi.value.pohja?.toteutus === OpetussuunnitelmaInfoDtoToteutusEnum.AIPE.toLowerCase()) {
     (ops as any).perusteenVaiheIdt = _.map(uusi.value.vaiheet, v => v.id);
+  }
+  if (isTpoToteutus(uusi.value.pohja)) {
+    ops.taiteenalat = _.map(uusi.value.taiteenalat, ta => ta.id!);
   }
   try {
     const luotu = (await Opetussuunnitelmat.addOpetussuunnitelma(ops)).data;

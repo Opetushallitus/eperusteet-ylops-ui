@@ -35,6 +35,9 @@ import RoutePerusopetusVuosiluokkaValinnaiset from '@/routes/opetussuunnitelmat/
 import RouteAIPEVaihe from '@/routes/opetussuunnitelmat/sisalto/aipe/RouteAIPEVaihe.vue';
 import RouteAIPEOppiaine from '@/routes/opetussuunnitelmat/sisalto/aipe/RouteAIPEOppiaine.vue';
 import RouteAIPEKurssi from '@/routes/opetussuunnitelmat/sisalto/aipe/RouteAIPEKurssi.vue';
+import RouteTaiteenala from '@/routes/opetussuunnitelmat/sisalto/taiteenperusopetus/RouteTaiteenala.vue';
+import RouteTaiteenalanVaihe from '@/routes/opetussuunnitelmat/sisalto/taiteenperusopetus/RouteTaiteenalanVaihe.vue';
+import RouteTaiteenOpintokokonaisuus from '@/routes/opetussuunnitelmat/sisalto/taiteenperusopetus/RouteTaiteenOpintokokonaisuus.vue';
 
 import { Kielet } from '@shared/stores/kieli';
 import { changeLang, convertRouteParamsToNumbers } from '@shared/utils/router';
@@ -271,6 +274,21 @@ const router = createRouter({
         path: 'vaiheet/:vaiheId/oppiaineet/:oppiaineId/kurssit/:kurssiId',
         component: RouteAIPEKurssi,
         name: 'aipekurssi',
+        props,
+      }, {
+        path: 'taiteenalat/:taiteenalaId',
+        component: RouteTaiteenala,
+        name: 'taiteenala',
+        props,
+      }, {
+        path: 'taiteenalat/:taiteenalaId/vaiheet/:vaiheId',
+        component: RouteTaiteenalanVaihe,
+        name: 'taiteenalanvaihe',
+        props,
+      }, {
+        path: 'taiteenalat/:taiteenalaId/vaiheet/:vaiheId/opintokokonaisuudet/:opintokokonaisuusId',
+        component: RouteTaiteenOpintokokonaisuus,
+        name: 'taiteenopintokokonaisuus',
         props,
       },
       ],
