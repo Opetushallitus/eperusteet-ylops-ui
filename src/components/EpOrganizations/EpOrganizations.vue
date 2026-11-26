@@ -237,6 +237,7 @@ const updateKunnat = async (kunnatList: any[]) => {
   jarjestajat.value = _.chain((await Ulkopuoliset.getKoulutustoimijat(
     _.map(kunnatList, 'koodiUri'),
     koulutustyypinOppilaitokset(props.koulutustyyppi))).data)
+    .uniqBy('oid')
     .sortBy((org: any) => Kielet.kaanna(org.nimi))
     .value();
 
